@@ -1,0 +1,928 @@
+{
+ "src/ap/wpa_auth.h": [
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.h",
+   "line": 92,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ft_rrb_frame {\n\tu8 frame_type; /* RSN_REMOTE_FRAME_TYPE_FT_RRB */\n\tu8 packet_type; /* FT_PACKET_REQUEST/FT_PACKET_RESPONSE */\n\tle16 action_length; /* little endian length of action_frame */\n\tu8 ap_address[ETH_ALEN];\n\t/*\n\t * Followed by action_length bytes of FT Action frame (from Category\n\t * field to the end of Action Frame body.\n\t */\n}' and 'struct ft_rrb_tlv {\n\tle16 type;\n\tle16 len;\n\t/* followed by data of length len */\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.h",
+   "line": 98,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ft_rrb_frame {\n\tu8 frame_type; /* RSN_REMOTE_FRAME_TYPE_FT_RRB */\n\tu8 packet_type; /* FT_PACKET_REQUEST/FT_PACKET_RESPONSE */\n\tle16 action_length; /* little endian length of action_frame */\n\tu8 ap_address[ETH_ALEN];\n\t/*\n\t * Followed by action_length bytes of FT Action frame (from Category\n\t * field to the end of Action Frame body.\n\t */\n}' and 'struct ft_rrb_seq {\n\tle32 dom;\n\tle32 seq;\n\tle32 ts;\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 58,
+   "file": "src/ap/wpa_auth.h",
+   "line": 497,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 56,
+   "file": "src/ap/wpa_auth.h",
+   "line": 498,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.h",
+   "line": 502,
+   "message": "Function has pointer parameter without size argument: 'const u8 * wpa_auth_get_pmk(struct wpa_state_machine *sm, int *len);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'int *len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.h",
+   "line": 515,
+   "message": "Function has pointer parameter without size argument: 'const u8 * wpa_auth_get_wpa_ie(struct wpa_authenticator *wpa_auth,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 66,
+   "file": "src/ap/wpa_auth.h",
+   "line": 534,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 14,
+   "file": "src/ap/wpa_auth.h",
+   "line": 538,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.h",
+   "line": 550,
+   "message": "Function has pointer parameter without size argument: 'int wpa_auth_pmksa_get_pmk(struct wpa_authenticator *wpa_auth,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *pmk_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.h",
+   "line": 556,
+   "message": "Function has pointer parameter without size argument: 'void wpa_auth_pmksa_set_to_sm(struct rsn_pmksa_cache_entry *pmksa,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *pmk_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 10,
+   "file": "src/ap/wpa_auth.h",
+   "line": 575,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.h",
+   "line": 587,
+   "message": "Function has pointer parameter without size argument: 'int wpa_ft_fetch_pmk_r1(struct wpa_authenticator *wpa_auth,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'int *pairwise' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.h",
+   "line": 587,
+   "message": "Function has pointer parameter without size argument: 'int wpa_ft_fetch_pmk_r1(struct wpa_authenticator *wpa_auth,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *identity_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.h",
+   "line": 587,
+   "message": "Function has pointer parameter without size argument: 'int wpa_ft_fetch_pmk_r1(struct wpa_authenticator *wpa_auth,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'int *session_timeout' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 40,
+   "file": "src/ap/wpa_auth.h",
+   "line": 589,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wpa_auth.h",
+   "line": 593,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.h",
+   "line": 635,
+   "message": "Function has pointer parameter without size argument: 'int get_sta_tx_parameters(struct wpa_state_machine *sm, int ap_max_chanwidth,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'int *seg1_idx' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.h",
+   "line": 641,
+   "message": "Function has pointer parameter without size argument: 'void wpa_auth_get_fils_aead_params(struct wpa_state_machine *sm,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *fils_kek_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 38,
+   "file": "src/ap/wpa_auth.h",
+   "line": 683,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.h",
+   "line": 718,
+   "message": "Function-like macro 'for_each_sm_auth' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.h",
+   "line": 718,
+   "message": "Macro parameter 'sm' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'sm' in parentheses: (sm) instead of sm"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.h",
+   "line": 718,
+   "message": "Macro parameter 'link_id' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'link_id' in parentheses: (link_id) instead of link_id"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.h",
+   "line": 718,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (for (link_id = 0; link_id < MAX_NUM_MLD_LINKS; link_id++)\t\\\n\t\tif (sm->mld_links[link_id].valid &&\t\t\t\\\n\t\t    sm->mld_links[link_id].wpa_auth &&\t\t\t\\\n\t\t    sm->wpa_auth != sm->mld_links[link_id].wpa_auth))"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.h",
+   "line": 718,
+   "message": "Multistatement macro 'for_each_sm_auth' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+   "rule_id": "PRE10-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.h",
+   "line": 718,
+   "message": "Macro evaluates parameter 'sm' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 64,
+   "file": "src/ap/wpa_auth.h",
+   "line": 724,
+   "message": "Pointer parameter 'conf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conf'"
+  }
+ ],
+ "src/common/wpa_ctrl.h": [
+  {
+   "column": 1,
+   "file": "src/common/wpa_ctrl.h",
+   "line": 34,
+   "message": "Macro 'WPA_EVENT_AUTH_REJECT' contains hard-coded sensitive information: \"CTRL-EVENT-AUTH-REJECT \". Sensitive data should not be embedded in source code.",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Read sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_ctrl.h",
+   "line": 38,
+   "message": "Macro 'WPA_EVENT_PASSWORD_CHANGED' contains hard-coded sensitive information: \"CTRL-EVENT-PASSWORD-CHANGED \". Sensitive data should not be embedded in source code.",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Read sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_ctrl.h",
+   "line": 109,
+   "message": "Macro 'WPA_EVENT_SAE_UNKNOWN_PASSWORD_IDENTIFIER' contains hard-coded sensitive information: \"CTRL-EVENT-SAE-UNKNOWN-PASSWORD-IDENTIFIER \". Sensitive data should not be embedded in source code.",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Read sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_ctrl.h",
+   "line": 161,
+   "message": "Macro 'WPS_EVENT_AP_AVAILABLE_AUTH' contains hard-coded sensitive information: \"WPS-AP-AVAILABLE-AUTH \". Sensitive data should not be embedded in source code.",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Read sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_ctrl.h",
+   "line": 164,
+   "message": "Macro 'WPS_EVENT_AP_AVAILABLE_PIN' contains hard-coded sensitive information: \"WPS-AP-AVAILABLE-PIN \". Sensitive data should not be embedded in source code.",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Read sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_ctrl.h",
+   "line": 199,
+   "message": "Macro 'DPP_EVENT_AUTH_SUCCESS' contains hard-coded sensitive information: \"DPP-AUTH-SUCCESS \". Sensitive data should not be embedded in source code.",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Read sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_ctrl.h",
+   "line": 200,
+   "message": "Macro 'DPP_EVENT_AUTH_INIT_FAILED' contains hard-coded sensitive information: \"DPP-AUTH-INIT-FAILED \". Sensitive data should not be embedded in source code.",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Read sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_ctrl.h",
+   "line": 204,
+   "message": "Macro 'DPP_EVENT_AUTH_DIRECTION' contains hard-coded sensitive information: \"DPP-AUTH-DIRECTION \". Sensitive data should not be embedded in source code.",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Read sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_ctrl.h",
+   "line": 212,
+   "message": "Macro 'DPP_EVENT_CONFOBJ_PASS' contains hard-coded sensitive information: \"DPP-CONFOBJ-PASS \". Sensitive data should not be embedded in source code.",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Read sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_ctrl.h",
+   "line": 216,
+   "message": "Macro 'DPP_EVENT_C_SIGN_KEY' contains hard-coded sensitive information: \"DPP-C-SIGN-KEY \". Sensitive data should not be embedded in source code.",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Read sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_ctrl.h",
+   "line": 217,
+   "message": "Macro 'DPP_EVENT_PP_KEY' contains hard-coded sensitive information: \"DPP-PP-KEY \". Sensitive data should not be embedded in source code.",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Read sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_ctrl.h",
+   "line": 218,
+   "message": "Macro 'DPP_EVENT_NET_ACCESS_KEY' contains hard-coded sensitive information: \"DPP-NET-ACCESS-KEY \". Sensitive data should not be embedded in source code.",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Read sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_ctrl.h",
+   "line": 257,
+   "message": "Macro 'MESH_SAE_AUTH_FAILURE' contains hard-coded sensitive information: \"MESH-SAE-AUTH-FAILURE \". Sensitive data should not be embedded in source code.",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Read sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_ctrl.h",
+   "line": 258,
+   "message": "Macro 'MESH_SAE_AUTH_BLOCKED' contains hard-coded sensitive information: \"MESH-SAE-AUTH-BLOCKED \". Sensitive data should not be embedded in source code.",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Read sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_ctrl.h",
+   "line": 283,
+   "message": "Macro 'P2P_EVENT_PROV_DISC_SHOW_PIN' contains hard-coded sensitive information: \"P2P-PROV-DISC-SHOW-PIN \". Sensitive data should not be embedded in source code.",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Read sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_ctrl.h",
+   "line": 285,
+   "message": "Macro 'P2P_EVENT_PROV_DISC_ENTER_PIN' contains hard-coded sensitive information: \"P2P-PROV-DISC-ENTER-PIN \". Sensitive data should not be embedded in source code.",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Read sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_ctrl.h",
+   "line": 361,
+   "message": "Macro 'WPS_EVENT_PIN_NEEDED' contains hard-coded sensitive information: \"WPS-PIN-NEEDED \". Sensitive data should not be embedded in source code.",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Read sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_ctrl.h",
+   "line": 366,
+   "message": "Macro 'WPS_EVENT_AP_PIN_ENABLED' contains hard-coded sensitive information: \"WPS-AP-PIN-ENABLED \". Sensitive data should not be embedded in source code.",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Read sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_ctrl.h",
+   "line": 367,
+   "message": "Macro 'WPS_EVENT_AP_PIN_DISABLED' contains hard-coded sensitive information: \"WPS-AP-PIN-DISABLED \". Sensitive data should not be embedded in source code.",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Read sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_ctrl.h",
+   "line": 368,
+   "message": "Macro 'WPS_EVENT_PIN_ACTIVE' contains hard-coded sensitive information: \"WPS-PIN-ACTIVE \". Sensitive data should not be embedded in source code.",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Read sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_ctrl.h",
+   "line": 473,
+   "message": "Macro 'PASN_AUTH_STATUS' contains hard-coded sensitive information: \"PASN-AUTH-STATUS \". Sensitive data should not be embedded in source code.",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Read sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_ctrl.h",
+   "line": 601,
+   "message": "Function has pointer parameter without size argument: 'int wpa_ctrl_request(struct wpa_ctrl *ctrl, const char *cmd, size_t cmd_len,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *reply_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 56,
+   "file": "src/common/wpa_ctrl.h",
+   "line": 601,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 13,
+   "file": "src/common/wpa_ctrl.h",
+   "line": 602,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_ctrl.h",
+   "line": 645,
+   "message": "Function has pointer parameter without size argument: 'int wpa_ctrl_recv(struct wpa_ctrl *ctrl, char *reply, size_t *reply_len);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *reply_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 47,
+   "file": "src/common/wpa_ctrl.h",
+   "line": 645,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ],
+ "src/ap/mbo_ap.c": [
+  {
+   "column": 1,
+   "file": "src/ap/mbo_ap.c",
+   "line": 12,
+   "message": "Header file 'ieee802_11_defs.h' has the same first 8 characters (case-insensitive) as 'ieee802_11_common.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_defs.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/mbo_ap.c",
+   "line": 19,
+   "message": "Function 'mbo_ap_sta_free' does not validate pointer parameter 'sta' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sta' at the start of the function, e.g., 'if (!sta) { return error_code; }'"
+  },
+  {
+   "column": 26,
+   "file": "src/ap/mbo_ap.c",
+   "line": 45,
+   "message": "Dereference of uninitialized pointer 'info'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'info' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/mbo_ap.c",
+   "line": 65,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/mbo_ap.c",
+   "line": 70,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/mbo_ap.c",
+   "line": 83,
+   "message": "Function 'mbo_ap_check_sta_assoc' does not validate pointer parameter 'sta' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sta' at the start of the function, e.g., 'if (!sta) { return error_code; }'"
+  },
+  {
+   "column": 49,
+   "file": "src/ap/mbo_ap.c",
+   "line": 83,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 32,
+   "file": "src/ap/mbo_ap.c",
+   "line": 84,
+   "message": "Pointer parameter 'elems' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *elems'"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/mbo_ap.c",
+   "line": 109,
+   "message": "Use-after-free: passing freed pointer 'sta' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 1,
+   "file": "src/ap/mbo_ap.c",
+   "line": 115,
+   "message": "Function 'mbo_ap_get_info' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/mbo_ap.c",
+   "line": 115,
+   "message": "Function 'mbo_ap_get_info' does not validate integer parameter 'buflen' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'buflen' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 37,
+   "file": "src/ap/mbo_ap.c",
+   "line": 115,
+   "message": "Pointer parameter 'sta' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sta'"
+  },
+  {
+   "column": 48,
+   "file": "src/ap/mbo_ap.c",
+   "line": 115,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/mbo_ap.c",
+   "line": 117,
+   "message": "Pointer to const assigned to non-const pointer without cast: *pos = buf: '*pos = buf'",
+   "rule_id": "EXP40-C",
+   "severity": "Low",
+   "suggestion": "Either remove const qualifier if the object should be modifiable, or use explicit casts to show intentional const removal"
+  },
+  {
+   "column": 10,
+   "file": "src/ap/mbo_ap.c",
+   "line": 128,
+   "message": "Signed integer subtraction 'pos - buf' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b < 0 && a > INT_MAX + b) || (b > 0 && a < INT_MIN + b)) { /* handle error */ }"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/mbo_ap.c",
+   "line": 129,
+   "message": "Signed integer compound addition 'pos += ret' may overflow without checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/mbo_ap.c",
+   "line": 132,
+   "message": "Pointer to const assigned to non-const pointer without cast: *pos2 = pos: '*pos2 = pos'",
+   "rule_id": "EXP40-C",
+   "severity": "Low",
+   "suggestion": "Either remove const qualifier if the object should be modifiable, or use explicit casts to show intentional const removal"
+  },
+  {
+   "column": 27,
+   "file": "src/ap/mbo_ap.c",
+   "line": 157,
+   "message": "Subtracting pointers from different arrays ('end' from 'buf' and 'pos2' from 'NULL'). Pointer subtraction is only defined for pointers within the same array object.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Only subtract pointers that point to elements within the same array object."
+  },
+  {
+   "column": 25,
+   "file": "src/ap/mbo_ap.c",
+   "line": 158,
+   "message": "Subtracting pointers from different arrays ('end' from 'buf' and 'pos2' from 'NULL'). Pointer subtraction is only defined for pointers within the same array object.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Only subtract pointers that point to elements within the same array object."
+  },
+  {
+   "column": 9,
+   "file": "src/ap/mbo_ap.c",
+   "line": 164,
+   "message": "Signed integer subtraction 'pos - buf' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b < 0 && a > INT_MAX + b) || (b > 0 && a < INT_MIN + b)) { /* handle error */ }"
+  },
+  {
+   "column": 15,
+   "file": "src/ap/mbo_ap.c",
+   "line": 182,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/mbo_ap.c",
+   "line": 194,
+   "message": "Use-after-free: passing freed pointer 'sta' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 3,
+   "file": "src/ap/mbo_ap.c",
+   "line": 197,
+   "message": "Use-after-free: passing freed pointer 'sta' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 1,
+   "file": "src/ap/mbo_ap.c",
+   "line": 208,
+   "message": "Function 'mbo_ap_wnm_notification_req' does not validate pointer parameter 'addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'addr' at the start of the function, e.g., 'if (!addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/mbo_ap.c",
+   "line": 208,
+   "message": "Function 'mbo_ap_wnm_notification_req' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  }
+ ],
+ "src/common/gas_server.c": [
+  {
+   "column": 63,
+   "file": "src/common/gas_server.c",
+   "line": 60,
+   "message": "Pointer parameter 'user_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *user_ctx'"
+  },
+  {
+   "column": 40,
+   "file": "src/common/gas_server.c",
+   "line": 91,
+   "message": "Pointer parameter 'gas' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *gas'"
+  },
+  {
+   "column": 30,
+   "file": "src/common/gas_server.c",
+   "line": 221,
+   "message": "Dereference of uninitialized pointer 'response'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'response' before dereferencing"
+  },
+  {
+   "column": 1,
+   "file": "src/common/gas_server.c",
+   "line": 379,
+   "message": "Function 'gas_server_rx' does not validate pointer parameter 'da' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'da' at the start of the function, e.g., 'if (!da) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/gas_server.c",
+   "line": 379,
+   "message": "Function 'gas_server_rx' does not validate pointer parameter 'sa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sa' at the start of the function, e.g., 'if (!sa) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/gas_server.c",
+   "line": 379,
+   "message": "Function 'gas_server_rx' does not validate pointer parameter 'bssid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'bssid' at the start of the function, e.g., 'if (!bssid) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/gas_server.c",
+   "line": 401,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/common/gas_server.c",
+   "line": 448,
+   "message": "Function 'gas_server_tx_status' does not validate pointer parameter 'gas' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'gas' at the start of the function, e.g., 'if (!gas) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/gas_server.c",
+   "line": 448,
+   "message": "Function 'gas_server_tx_status' does not validate pointer parameter 'dst' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dst' at the start of the function, e.g., 'if (!dst) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/gas_server.c",
+   "line": 483,
+   "message": "Function 'gas_server_set_resp' does not validate pointer parameter 'gas' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'gas' at the start of the function, e.g., 'if (!gas) { return error_code; }'"
+  },
+  {
+   "column": 54,
+   "file": "src/common/gas_server.c",
+   "line": 483,
+   "message": "Pointer parameter 'resp_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *resp_ctx'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/gas_server.c",
+   "line": 491,
+   "message": "Value assigned to 'response' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 4,
+   "file": "src/common/gas_server.c",
+   "line": 491,
+   "message": "Local variable 'tmp' assigned to global/static variable 'response' - creates dangling pointer",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage for local variable or copy data instead of assigning pointer"
+  },
+  {
+   "column": 1,
+   "file": "src/common/gas_server.c",
+   "line": 510,
+   "message": "Function 'gas_server_set_comeback_delay' does not validate pointer parameter 'gas' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'gas' at the start of the function, e.g., 'if (!gas) { return error_code; }'"
+  },
+  {
+   "column": 64,
+   "file": "src/common/gas_server.c",
+   "line": 510,
+   "message": "Pointer parameter 'resp_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *resp_ctx'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/gas_server.c",
+   "line": 518,
+   "message": "Value assigned to 'response' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 4,
+   "file": "src/common/gas_server.c",
+   "line": 518,
+   "message": "Local variable 'tmp' assigned to global/static variable 'response' - creates dangling pointer",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage for local variable or copy data instead of assigning pointer"
+  },
+  {
+   "column": 1,
+   "file": "src/common/gas_server.c",
+   "line": 535,
+   "message": "Function 'gas_server_response_sent' does not validate pointer parameter 'gas' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'gas' at the start of the function, e.g., 'if (!gas) { return error_code; }'"
+  },
+  {
+   "column": 60,
+   "file": "src/common/gas_server.c",
+   "line": 535,
+   "message": "Pointer parameter 'resp_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *resp_ctx'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/gas_server.c",
+   "line": 550,
+   "message": "Function 'gas_server_init' does not validate pointer parameter 'tx' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'tx' at the start of the function, e.g., 'if (!tx) { return error_code; }'"
+  },
+  {
+   "column": 25,
+   "file": "src/common/gas_server.c",
+   "line": 558,
+   "message": "Dereference of uninitialized pointer 'gas'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'gas' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/common/gas_server.c",
+   "line": 565,
+   "message": "Function returns pointer to local variable 'gas' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/common/gas_server.c",
+   "line": 593,
+   "message": "Function 'gas_server_register' does not validate pointer parameter 'req_cb' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'req_cb' at the start of the function, e.g., 'if (!req_cb) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/gas_server.c",
+   "line": 593,
+   "message": "Function 'gas_server_register' does not validate pointer parameter 'status_cb' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'status_cb' at the start of the function, e.g., 'if (!status_cb) { return error_code; }'"
+  },
+  {
+   "column": 29,
+   "file": "src/common/gas_server.c",
+   "line": 607,
+   "message": "Dereference of uninitialized pointer 'handler'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'handler' before dereferencing"
+  }
+ ]
+}

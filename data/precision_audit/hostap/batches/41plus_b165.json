@@ -1,0 +1,1237 @@
+{
+ "src/crypto/tls_gnutls.c": [
+  {
+   "column": 1,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 24,
+   "message": "Shared variable 'tls_gnutls_ref_count' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 86,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'pos' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 4,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 88,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 28,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 109,
+   "message": "Dereference of uninitialized pointer 'global'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'global' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 129,
+   "message": "Function returns pointer to local variable 'global' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 25,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 150,
+   "message": "Pointer parameter 'ssl_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssl_ctx'"
+  },
+  {
+   "column": 63,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 156,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 69,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 185,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 54,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 200,
+   "message": "Pointer parameter 'global' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *global'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 235,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 26,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 249,
+   "message": "Dereference of uninitialized pointer 'conn'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'conn' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 276,
+   "message": "Function returns pointer to local variable 'conn' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 33,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 280,
+   "message": "Pointer parameter 'ssl_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssl_ctx'"
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 282,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 297,
+   "message": "Function 'tls_connection_established' does not validate pointer parameter 'conn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conn' at the start of the function, e.g., 'if (!conn) { return error_code; }'"
+  },
+  {
+   "column": 37,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 297,
+   "message": "Pointer parameter 'ssl_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssl_ctx'"
+  },
+  {
+   "column": 69,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 297,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 44,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 303,
+   "message": "Pointer parameter 'tls_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tls_ctx'"
+  },
+  {
+   "column": 33,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 304,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 316,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 36,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 358,
+   "message": "Pointer parameter 'tls_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tls_ctx'"
+  },
+  {
+   "column": 9,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 457,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 9,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 532,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 0,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 537,
+   "message": "Function 'tls_connection_set_params' accesses bit-field 'tls_connection.disable_time_checks' without mutex protection in a multi-threaded context",
+   "rule_id": "CON32-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field accesses with mutex locks or use separate byte-sized members instead of bit-fields"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 537,
+   "message": "Bit-field 'disable_time_checks' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 0,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 549,
+   "message": "Function 'tls_connection_set_params' accesses bit-field 'tls_connection.disable_time_checks' without mutex protection in a multi-threaded context",
+   "rule_id": "CON32-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field accesses with mutex locks or use separate byte-sized members instead of bit-fields"
+  },
+  {
+   "column": 4,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 549,
+   "message": "Bit-field 'disable_time_checks' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 9,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 655,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 66,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 709,
+   "message": "Pointer parameter 'ptr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ptr'"
+  },
+  {
+   "column": 49,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 764,
+   "message": "Use-after-free: accessing freed pointer 'global->xcred'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 4,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 773,
+   "message": "Use-after-free: accessing freed pointer 'global->xcred'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 779,
+   "message": "Use-after-free: accessing freed pointer 'global->xcred'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 792,
+   "message": "Use-after-free: accessing freed pointer 'global->xcred'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 798,
+   "message": "Use-after-free: accessing freed pointer 'global->xcred'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 4,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 806,
+   "message": "Use-after-free: accessing freed pointer 'global->xcred'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 812,
+   "message": "Use-after-free: accessing freed pointer 'global->xcred'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 9,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 821,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 4,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 826,
+   "message": "Use-after-free: accessing freed pointer 'global->xcred'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 851,
+   "message": "Use-after-free: accessing freed pointer 'global->xcred'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 858,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 32,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 864,
+   "message": "Pointer parameter 'ssl_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssl_ctx'"
+  },
+  {
+   "column": 36,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 871,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 36,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 871,
+   "message": "Pointer parameter 'ssl_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssl_ctx'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 887,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 36,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 887,
+   "message": "Pointer parameter 'ssl_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssl_ctx'"
+  },
+  {
+   "column": 68,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 887,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 21,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 896,
+   "message": "sizeof applied to pointer/array parameter 'keys' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*keys)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 910,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 36,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 910,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 36,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 910,
+   "message": "Pointer parameter 'tls_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tls_ctx'"
+  },
+  {
+   "column": 68,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 910,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 21,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 911,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 42,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 931,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 42,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 931,
+   "message": "Pointer parameter 'tls_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tls_ctx'"
+  },
+  {
+   "column": 74,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 931,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 12,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 932,
+   "message": "Pointer parameter 'out' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *out'"
+  },
+  {
+   "column": 57,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 938,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1000,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1012,
+   "message": "Implicit boolean test on 'gnutls_ocsp_status_request_is_checked(session, 0)'. May be unclear what constitutes success or failure.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Use explicit test: gnutls_ocsp_status_request_is_checked(session, 0) == 0 or gnutls_ocsp_status_request_is_checked(session, 0) != 0 depending on success convention"
+  },
+  {
+   "column": 25,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1166,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1312,
+   "message": "Variable 'hash' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'hash' before use, e.g., at its declaration"
+  },
+  {
+   "column": 14,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1313,
+   "message": "File-scope identifier '_addr' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 14,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1313,
+   "message": "Variable '_addr' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize '_addr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 14,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1313,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 11,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1314,
+   "message": "File-scope identifier '_len' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 11,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1314,
+   "message": "Variable '_len' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize '_len' before use, e.g., at its declaration"
+  },
+  {
+   "column": 11,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1314,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1321,
+   "message": "Accessing union 'ev' member 'peer_cert' after writing to 'cert_fail' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1366,
+   "message": "Double free detected: 'buf' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1390,
+   "message": "Double free detected: 'buf' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 4,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1407,
+   "message": "Double free detected: 'buf' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1412,
+   "message": "Double free detected: 'buf' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1423,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 67,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1430,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1439,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1453,
+   "message": "Function returns pointer to local variable 'ad' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1477,
+   "message": "Use-after-free: accessing freed pointer 'conn->pull_buf'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 39,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1479,
+   "message": "Use-after-free: accessing freed pointer 'conn->pull_buf'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1500,
+   "message": "Accessing union 'ev' member 'alert' after writing to 'cert_fail' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1568,
+   "message": "Use-after-free: accessing freed pointer 'conn->pull_buf'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1574,
+   "message": "Function returns pointer to local variable 'out_data' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1578,
+   "message": "Function 'tls_connection_server_handshake' does not validate pointer parameter 'tls_ctx' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'tls_ctx' at the start of the function, e.g., 'if (!tls_ctx) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1578,
+   "message": "Function 'tls_connection_server_handshake' does not validate pointer parameter 'conn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conn' at the start of the function, e.g., 'if (!conn) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1578,
+   "message": "Function 'tls_connection_server_handshake' does not validate pointer parameter 'in_data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'in_data' at the start of the function, e.g., 'if (!in_data) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1578,
+   "message": "Function 'tls_connection_server_handshake' does not validate pointer parameter 'appl_data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'appl_data' at the start of the function, e.g., 'if (!appl_data) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1587,
+   "message": "Function 'tls_connection_encrypt' does not validate pointer parameter 'conn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conn' at the start of the function, e.g., 'if (!conn) { return error_code; }'"
+  },
+  {
+   "column": 45,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1587,
+   "message": "Pointer parameter 'tls_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tls_ctx'"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1594,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 27,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1594,
+   "message": "Potential null pointer dereference in member access of variable 'conn'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'conn' is not NULL before member access"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1604,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 45,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1608,
+   "message": "Pointer parameter 'tls_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tls_ctx'"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1615,
+   "message": "Potential null pointer dereference in member access of variable 'conn'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'conn' is not NULL before member access"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1622,
+   "message": "Use-after-free: accessing freed pointer 'conn->pull_buf'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 38,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1624,
+   "message": "Use-after-free: accessing freed pointer 'conn->pull_buf'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1636,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1646,
+   "message": "Function returns pointer to local variable 'out' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 33,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1650,
+   "message": "Pointer parameter 'ssl_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssl_ctx'"
+  },
+  {
+   "column": 65,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1650,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1652,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 41,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1658,
+   "message": "Pointer parameter 'tls_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tls_ctx'"
+  },
+  {
+   "column": 73,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1658,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 11,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1659,
+   "message": "Pointer parameter 'ciphers' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ciphers'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1666,
+   "message": "Function 'tls_get_version' does not validate pointer parameter 'conn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conn' at the start of the function, e.g., 'if (!conn) { return error_code; }'"
+  },
+  {
+   "column": 26,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1666,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 26,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1666,
+   "message": "Pointer parameter 'ssl_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssl_ctx'"
+  },
+  {
+   "column": 58,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1666,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 12,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1667,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1684,
+   "message": "Function 'tls_get_cipher' does not validate pointer parameter 'conn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conn' at the start of the function, e.g., 'if (!conn) { return error_code; }'"
+  },
+  {
+   "column": 25,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1684,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 25,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1684,
+   "message": "Pointer parameter 'ssl_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssl_ctx'"
+  },
+  {
+   "column": 57,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1684,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 11,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1685,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1720,
+   "message": "Function 'tls_connection_enable_workaround' does not validate pointer parameter 'conn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conn' at the start of the function, e.g., 'if (!conn) { return error_code; }'"
+  },
+  {
+   "column": 43,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1720,
+   "message": "Pointer parameter 'ssl_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssl_ctx'"
+  },
+  {
+   "column": 32,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1721,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 42,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1728,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 42,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1728,
+   "message": "Pointer parameter 'ssl_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssl_ctx'"
+  },
+  {
+   "column": 74,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1728,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 36,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1737,
+   "message": "Pointer parameter 'ssl_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssl_ctx'"
+  },
+  {
+   "column": 68,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1737,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1739,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 41,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1745,
+   "message": "Pointer parameter 'ssl_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssl_ctx'"
+  },
+  {
+   "column": 73,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1745,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1747,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 42,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1753,
+   "message": "Pointer parameter 'ssl_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssl_ctx'"
+  },
+  {
+   "column": 74,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1753,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1755,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 47,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1761,
+   "message": "Pointer parameter 'tls_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tls_ctx'"
+  },
+  {
+   "column": 29,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1762,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 38,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1763,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1769,
+   "message": "Function 'tls_get_library_version' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  },
+  {
+   "column": 34,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1769,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 60,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1776,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1783,
+   "message": "Identifier 'tls_connection_set_success_data_resumed' agrees with 'tls_connection_set_success_data' in its first 31 significant characters; they may collide as the same external identifier on a conforming implementation",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Shorten one of the identifiers so they differ within the first 31 characters"
+  },
+  {
+   "column": 68,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1783,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 55,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1789,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 58,
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1795,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  }
+ ]
+}

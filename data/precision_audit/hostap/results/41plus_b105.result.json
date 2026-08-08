@@ -1,0 +1,1211 @@
+{
+ "labels": [
+  {
+   "rule": "API02-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 49,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "excluded is a scalar int* out-param, not an array; API02-C misapplied (categorical_patterns.md scalar-out-param class)"
+  },
+  {
+   "rule": "API02-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 52,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "excluded is a scalar int* out-param, not an array; API02-C misapplied (categorical_patterns.md scalar-out-param class)"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 59,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cred_prio_cmp(a,b) only ever called after callers short-circuit-guard the arg non-NULL (selected==NULL|| / cred==NULL||)"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 59,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cred_prio_cmp(a,b) only ever called after callers short-circuit-guard the arg non-NULL (selected==NULL|| / cred==NULL||)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 97,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "info_ids[] param in anqp_build_req only read (wpabuf_put_le16(buf,info_ids[i])), genuinely could be const"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 112,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "info_ids is a function *parameter* (anqp_build_req), not a declared-uninitialized local array; caller supplies real data"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 120,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf holds the return of gas_anqp_build_initial_req() (heap wpabuf), not automatic storage - heap-vs-automatic-storage confusion"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 142,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "cred_with_*(wpa_s) helpers only read wpa_s->conf->cred chain, plain internal helper genuine-if-low-value TP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 158,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "cred_with_*(wpa_s) helpers only read wpa_s->conf->cred chain, plain internal helper genuine-if-low-value TP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 170,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "cred_with_*(wpa_s) helpers only read wpa_s->conf->cred chain, plain internal helper genuine-if-low-value TP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 186,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "cred_with_*(wpa_s) helpers only read wpa_s->conf->cred chain, plain internal helper genuine-if-low-value TP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 201,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "cred_with_*(wpa_s) helpers only read wpa_s->conf->cred chain, plain internal helper genuine-if-low-value TP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 216,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "cred_with_*(wpa_s) helpers only read wpa_s->conf->cred chain, plain internal helper genuine-if-low-value TP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 240,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "interworking_continue_anqp matches eloop_timeout_handler typedef void(*)(void*,void*) - fixed dispatch-contract signature, confirmed FP class"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 351,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain if(ptr==NULL) guard flagged for 'use a dedicated validation function' - confirmed stylistic FP, check is present"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 367,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end are the classic paired bounds-parameter idiom delimiting the same buffer, not different arrays - confirmed FP class"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 373,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end are the classic paired bounds-parameter idiom delimiting the same buffer, not different arrays - confirmed FP class"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 386,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end are the classic paired bounds-parameter idiom delimiting the same buffer, not different arrays - confirmed FP class"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 394,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end are the classic paired bounds-parameter idiom delimiting the same buffer, not different arrays - confirmed FP class"
+  },
+  {
+   "rule": "CON43-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 407,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "single-threaded parse of a private local buffer (no shared/volatile memory, no concurrent writer) - CON43-C double-fetch concern doesn't apply"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 459,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "e_end/f_end are pointers derived from the pos parameter into the caller's heap/anqp buffer, not local automatic storage"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 470,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end are the classic paired bounds-parameter idiom delimiting the same buffer, not different arrays - confirmed FP class"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 478,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end are the classic paired bounds-parameter idiom delimiting the same buffer, not different arrays - confirmed FP class"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 481,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end are the classic paired bounds-parameter idiom delimiting the same buffer, not different arrays - confirmed FP class"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 514,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "loop counter e is initialized in its own for-loop init-clause (for(e=0;...)) - for-loop init-clause ARR00/EXP33 FP family"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 516,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain if(ptr==NULL) guard flagged for 'use a dedicated validation function' - confirmed stylistic FP, check is present"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 520,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "e_end/f_end are pointers derived from the pos parameter into the caller's heap/anqp buffer, not local automatic storage"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 531,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain if(ptr==NULL) guard flagged for 'use a dedicated validation function' - confirmed stylistic FP, check is present"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 564,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "realm = os_calloc(...) is heap memory, not automatic storage - heap-vs-automatic-storage confusion"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 568,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "nai_realm_match's realm param only read (realm->realm), genuine low-value const opportunity"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 587,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char assignment (*pos++ = literal / *end = '\\0'), no widening conversion actually occurs - confirmed STR34-C plain-assignment FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 604,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "nai_realm_cred_username/cert's eap param only reads fields (method/inner_method/inner_non_eap), genuine low-value const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 674,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "nai_realm_cred_username/cert's eap param only reads fields (method/inner_method/inner_non_eap), genuine low-value const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 696,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "nai_realm_find_eap's cred/realm params only read, genuine low-value const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 697,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "nai_realm_find_eap's cred/realm params only read, genuine low-value const opportunity"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 752,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bit-packing/nibble-extraction idiom on unsigned (u8) values - INT14-C stylistic-pedantry mismatch, not a real defect (confirmed class)"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 760,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain if(ptr==NULL) guard flagged for 'use a dedicated validation function' - confirmed stylistic FP, check is present"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 763,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bit-packing/nibble-extraction idiom on unsigned (u8) values - INT14-C stylistic-pedantry mismatch, not a real defect (confirmed class)"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 766,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pos guaranteed non-NULL: reached only after end-pos>=2 check on same wpabuf, buf->buf never NULL for a valid wpabuf"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 817,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nai+nai_len / imsi are the idiomatic pointer+size (or NUL-terminated string) pattern - confirmed API05-C FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 817,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nai IS mutated inside build_root_nai via the pos=nai;*pos++=...; alias - DCL13-C buf/pos output-idiom FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 817,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nai+nai_len / imsi are the idiomatic pointer+size (or NUL-terminated string) pattern - confirmed API05-C FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 851,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char assignment (*pos++ = literal / *end = '\\0'), no widening conversion actually occurs - confirmed STR34-C plain-assignment FP class"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 856,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "os_snprintf's return value IS used (pos += ret); buffer is provably sized large enough by earlier IMSI/MNC length validation, truncation/negative return is not reachable here"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 858,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char assignment (*pos++ = literal / *end = '\\0'), no widening conversion actually occurs - confirmed STR34-C plain-assignment FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 859,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char assignment (*pos++ = literal / *end = '\\0'), no widening conversion actually occurs - confirmed STR34-C plain-assignment FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 860,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char assignment (*pos++ = literal / *end = '\\0'), no widening conversion actually occurs - confirmed STR34-C plain-assignment FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 862,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char assignment (*pos++ = literal / *end = '\\0'), no widening conversion actually occurs - confirmed STR34-C plain-assignment FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 863,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char assignment (*pos++ = literal / *end = '\\0'), no widening conversion actually occurs - confirmed STR34-C plain-assignment FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 864,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char assignment (*pos++ = literal / *end = '\\0'), no widening conversion actually occurs - confirmed STR34-C plain-assignment FP class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 878,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 885,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "already_connected/remove_duplicate_network only read cred/bss fields, never mutate them; genuine low-value const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 885,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "already_connected/remove_duplicate_network only read cred/bss fields, never mutate them; genuine low-value const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 911,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "already_connected/remove_duplicate_network only read cred/bss fields, never mutate them; genuine low-value const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 912,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "already_connected/remove_duplicate_network only read cred/bss fields, never mutate them; genuine low-value const opportunity"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 964,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 965,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 965,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 966,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 969,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 969,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1031,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1031,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1035,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1035,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1039,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1039,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1051,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "prefix is only read after the `if (res < 0) goto fail;` guard, which is only passed once one of the 3 switch cases (each setting prefix) executed"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1057,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1060,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "deliberate guard-clause if/else-if chain (mutually exclusive optional config paths); falling through with no action is correct, not a missing case"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1061,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1061,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1064,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1070,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1076,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1101,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain if(ptr==NULL) guard flagged for 'use a dedicated validation function' - confirmed stylistic FP, check is present"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1118,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bit-packing/nibble-extraction idiom on unsigned (u8) values - INT14-C stylistic-pedantry mismatch, not a real defect (confirmed class)"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1143,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain if(ptr==NULL) guard flagged for 'use a dedicated validation function' - confirmed stylistic FP, check is present"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1202,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "cred_no_required_oi_match/cred_excluded_ssid/cred_below_min_backhaul/cred_conn_capab_missing only read cred/bss, genuine low-value const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1229,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "cred_no_required_oi_match/cred_excluded_ssid/cred_below_min_backhaul/cred_conn_capab_missing only read cred/bss, genuine low-value const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1229,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "cred_no_required_oi_match/cred_excluded_ssid/cred_below_min_backhaul/cred_conn_capab_missing only read cred/bss, genuine low-value const opportunity"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1237,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "e (struct excluded_ssid*) is only read (e->ssid_len/e->ssid), genuine low-value const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1248,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "cred_no_required_oi_match/cred_excluded_ssid/cred_below_min_backhaul/cred_conn_capab_missing only read cred/bss, genuine low-value const opportunity"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1258,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cred always non-NULL here: only reached via wpa_s->conf->cred linked-list walk (cred!=NULL loop condition), never a nullable external input"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1314,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cred always non-NULL here: only reached via wpa_s->conf->cred linked-list walk (cred!=NULL loop condition), never a nullable external input"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1334,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end are the classic paired bounds-parameter idiom delimiting the same buffer, not different arrays - confirmed FP class"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1347,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end are the classic paired bounds-parameter idiom delimiting the same buffer, not different arrays - confirmed FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1361,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "cred_no_required_oi_match/cred_excluded_ssid/cred_below_min_backhaul/cred_conn_capab_missing only read cred/bss, genuine low-value const opportunity"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1369,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cred always non-NULL here: only reached via wpa_s->conf->cred linked-list walk (cred!=NULL loop condition), never a nullable external input"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1450,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain if(ptr==NULL) guard flagged for 'use a dedicated validation function' - confirmed stylistic FP, check is present"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1485,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*cred->eap_method) applies to the dereferenced struct field type, not to array-decay of the cred parameter itself - confirmed ARR01-C misattribution class"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1499,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid->eap.eap_methods ownership is transferred into the ssid struct, which the caller's fail: path fully frees via wpa_config_remove_network->wpa_config_free_ssid->eap_peer_config_free; anon/id are demonstrably os_free()'d on every one of their own return paths - identical leak-list repeated verbatim at every return regardless of actual path (flow-insensitive whole-function aggregation)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1502,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos here is `const char *pos` (line 1491), a pointer variable, not a char scalar - cross-scope name conflation with the byte-iterator 'pos' used elsewhere in the file"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1505,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid->eap.eap_methods ownership is transferred into the ssid struct, which the caller's fail: path fully frees via wpa_config_remove_network->wpa_config_free_ssid->eap_peer_config_free; anon/id are demonstrably os_free()'d on every one of their own return paths - identical leak-list repeated verbatim at every return regardless of actual path (flow-insensitive whole-function aggregation)"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1510,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid->eap.eap_methods ownership is transferred into the ssid struct, which the caller's fail: path fully frees via wpa_config_remove_network->wpa_config_free_ssid->eap_peer_config_free; anon/id are demonstrably os_free()'d on every one of their own return paths - identical leak-list repeated verbatim at every return regardless of actual path (flow-insensitive whole-function aggregation)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1512,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1515,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid->eap.eap_methods ownership is transferred into the ssid struct, which the caller's fail: path fully frees via wpa_config_remove_network->wpa_config_free_ssid->eap_peer_config_free; anon/id are demonstrably os_free()'d on every one of their own return paths - identical leak-list repeated verbatim at every return regardless of actual path (flow-insensitive whole-function aggregation)"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1531,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid->eap.eap_methods ownership is transferred into the ssid struct, which the caller's fail: path fully frees via wpa_config_remove_network->wpa_config_free_ssid->eap_peer_config_free; anon/id are demonstrably os_free()'d on every one of their own return paths - identical leak-list repeated verbatim at every return regardless of actual path (flow-insensitive whole-function aggregation)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1533,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1536,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid->eap.eap_methods ownership is transferred into the ssid struct, which the caller's fail: path fully frees via wpa_config_remove_network->wpa_config_free_ssid->eap_peer_config_free; anon/id are demonstrably os_free()'d on every one of their own return paths - identical leak-list repeated verbatim at every return regardless of actual path (flow-insensitive whole-function aggregation)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1537,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "deliberate guard-clause if/else-if chain (mutually exclusive optional config paths); falling through with no action is correct, not a missing case"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1538,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1539,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid->eap.eap_methods ownership is transferred into the ssid struct, which the caller's fail: path fully frees via wpa_config_remove_network->wpa_config_free_ssid->eap_peer_config_free; anon/id are demonstrably os_free()'d on every one of their own return paths - identical leak-list repeated verbatim at every return regardless of actual path (flow-insensitive whole-function aggregation)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1543,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1544,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid->eap.eap_methods ownership is transferred into the ssid struct, which the caller's fail: path fully frees via wpa_config_remove_network->wpa_config_free_ssid->eap_peer_config_free; anon/id are demonstrably os_free()'d on every one of their own return paths - identical leak-list repeated verbatim at every return regardless of actual path (flow-insensitive whole-function aggregation)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1546,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1548,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid->eap.eap_methods ownership is transferred into the ssid struct, which the caller's fail: path fully frees via wpa_config_remove_network->wpa_config_free_ssid->eap_peer_config_free; anon/id are demonstrably os_free()'d on every one of their own return paths - identical leak-list repeated verbatim at every return regardless of actual path (flow-insensitive whole-function aggregation)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1552,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1553,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid->eap.eap_methods ownership is transferred into the ssid struct, which the caller's fail: path fully frees via wpa_config_remove_network->wpa_config_free_ssid->eap_peer_config_free; anon/id are demonstrably os_free()'d on every one of their own return paths - identical leak-list repeated verbatim at every return regardless of actual path (flow-insensitive whole-function aggregation)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1559,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1559,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1560,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1562,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1562,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1563,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid->eap.eap_methods ownership is transferred into the ssid struct, which the caller's fail: path fully frees via wpa_config_remove_network->wpa_config_free_ssid->eap_peer_config_free; anon/id are demonstrably os_free()'d on every one of their own return paths - identical leak-list repeated verbatim at every return regardless of actual path (flow-insensitive whole-function aggregation)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1567,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1568,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid->eap.eap_methods ownership is transferred into the ssid struct, which the caller's fail: path fully frees via wpa_config_remove_network->wpa_config_free_ssid->eap_peer_config_free; anon/id are demonstrably os_free()'d on every one of their own return paths - identical leak-list repeated verbatim at every return regardless of actual path (flow-insensitive whole-function aggregation)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1571,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1573,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid->eap.eap_methods ownership is transferred into the ssid struct, which the caller's fail: path fully frees via wpa_config_remove_network->wpa_config_free_ssid->eap_peer_config_free; anon/id are demonstrably os_free()'d on every one of their own return paths - identical leak-list repeated verbatim at every return regardless of actual path (flow-insensitive whole-function aggregation)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1576,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1577,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid->eap.eap_methods ownership is transferred into the ssid struct, which the caller's fail: path fully frees via wpa_config_remove_network->wpa_config_free_ssid->eap_peer_config_free; anon/id are demonstrably os_free()'d on every one of their own return paths - identical leak-list repeated verbatim at every return regardless of actual path (flow-insensitive whole-function aggregation)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1580,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1581,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid->eap.eap_methods ownership is transferred into the ssid struct, which the caller's fail: path fully frees via wpa_config_remove_network->wpa_config_free_ssid->eap_peer_config_free; anon/id are demonstrably os_free()'d on every one of their own return paths - identical leak-list repeated verbatim at every return regardless of actual path (flow-insensitive whole-function aggregation)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1584,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1585,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid->eap.eap_methods ownership is transferred into the ssid struct, which the caller's fail: path fully frees via wpa_config_remove_network->wpa_config_free_ssid->eap_peer_config_free; anon/id are demonstrably os_free()'d on every one of their own return paths - identical leak-list repeated verbatim at every return regardless of actual path (flow-insensitive whole-function aggregation)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1588,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1589,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid->eap.eap_methods ownership is transferred into the ssid struct, which the caller's fail: path fully frees via wpa_config_remove_network->wpa_config_free_ssid->eap_peer_config_free; anon/id are demonstrably os_free()'d on every one of their own return paths - identical leak-list repeated verbatim at every return regardless of actual path (flow-insensitive whole-function aggregation)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1603,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1604,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid->eap.eap_methods ownership is transferred into the ssid struct, which the caller's fail: path fully frees via wpa_config_remove_network->wpa_config_free_ssid->eap_peer_config_free; anon/id are demonstrably os_free()'d on every one of their own return paths - identical leak-list repeated verbatim at every return regardless of actual path (flow-insensitive whole-function aggregation)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1607,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1609,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid->eap.eap_methods ownership is transferred into the ssid struct, which the caller's fail: path fully frees via wpa_config_remove_network->wpa_config_free_ssid->eap_peer_config_free; anon/id are demonstrably os_free()'d on every one of their own return paths - identical leak-list repeated verbatim at every return regardless of actual path (flow-insensitive whole-function aggregation)"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1613,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid->eap.eap_methods ownership is transferred into the ssid struct, which the caller's fail: path fully frees via wpa_config_remove_network->wpa_config_free_ssid->eap_peer_config_free; anon/id are demonstrably os_free()'d on every one of their own return paths - identical leak-list repeated verbatim at every return regardless of actual path (flow-insensitive whole-function aggregation)"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1692,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label is reached via `goto fail;` elsewhere in the function; sqc's CFG doesn't connect the goto to the label - confirmed goto-label-blindness FP class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1708,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "excluded=0 initializer is unconditionally overwritten (via *excl write-through in the first callee call) before its first read"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1745,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sqc misreports a call to the static function interworking_credentials_available_realm/_3gpp as a 'static variable' use - parser/rule bug, not a real uninitialized-static finding"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1754,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sqc misreports a call to the static function interworking_credentials_available_realm/_3gpp as a 'static variable' use - parser/rule bug, not a real uninitialized-static finding"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1794,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "excl=NULL here is the last assignment to excl in the function; it is never read afterward - genuine (harmless) dead store"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1873,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1884,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1890,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1890,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1895,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1895,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1900,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1900,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1905,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1905,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1911,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1911,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1919,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare var/value as const char* (config.h:1938-1941) - cannot modify a literal by signature, confirmed rule-logic-bug class"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 24,
+  "fp": 126,
+  "fn": 0
+ }
+}

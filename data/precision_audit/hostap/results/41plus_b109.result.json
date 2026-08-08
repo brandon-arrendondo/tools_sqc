@@ -1,0 +1,1221 @@
+{
+ "labels": [
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 93,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr) never evaluates ptr; os_zalloc(sizeof(*x)) idiom, not a dereference"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 101,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Misattributed to wpa_config_get_line/fgets-style while header, not a real unbounded pos-scan"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 115,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-literal assignment (*p='\\0'/','), never a widening char-to-int conversion"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 156,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Returns heap pointer from os_zalloc, not automatic-storage local; confuses variable with storage"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 167,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr) never evaluates ptr; os_zalloc(sizeof(*x)) idiom, not a dereference"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 173,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Misattributed to wpa_config_get_line/fgets-style while header, not a real unbounded pos-scan"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 187,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-literal assignment (*p='\\0'/','), never a widening char-to-int conversion"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 212,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Returns heap pointer from os_zalloc, not automatic-storage local; confuses variable with storage"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 251,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free(NULL) is a documented safe no-op; encoded may legitimately be NULL here"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 255,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr) never evaluates ptr; os_zalloc(sizeof(*x)) idiom, not a dereference"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 269,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Returns heap pointer from os_zalloc, not automatic-storage local; confuses variable with storage"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 285,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-literal assignment (*p='\\0'/','), never a widening char-to-int conversion"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 307,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr) never evaluates ptr; os_zalloc(sizeof(*x)) idiom, not a dereference"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 312,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Misattributed to wpa_config_get_line/fgets-style while header, not a real unbounded pos-scan"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 327,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-literal assignment (*p='\\0'/','), never a widening char-to-int conversion"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 354,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Returns heap pointer from os_zalloc, not automatic-storage local; confuses variable with storage"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 358,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_supplicant config parsing is single-threaded; no pthread anywhere in file/codebase"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 358,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cfgp itself never dereferenced for writes; const would break `config = cfgp` alias write-back"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 368,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere; static config-parser counters, single-threaded eloop model"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 369,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere; static config-parser counters, single-threaded eloop model"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 370,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere; static config-parser counters, single-threaded eloop model"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 373,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Ordinary `if (name==NULL)` guard; stylistic ad-hoc-NULL-check class, not a real gap"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 378,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_alloc_empty(NULL,NULL): both literal NULLs, no real pointer aliasing"
+  },
+  {
+   "rule": "FIO05-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 395,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Admin-supplied local wpa_supplicant.conf path, not adversarial/network-controlled input"
+  },
+  {
+   "rule": "WIN03-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 395,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "config_file.c is compiled into CONFIG_NATIVE_WINDOWS builds; fopen lacks 'N' no-inherit flag"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 400,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage in codebase; strerror() thread-safety concern doesn't apply"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 400,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage in codebase; strerror() thread-safety concern doesn't apply"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 425,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tail set from head via same walk; else-branch guarantees tail non-NULL when head!=NULL"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 446,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cred_tail mirrors cred_head walk; else-branch guarantees non-NULL"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 472,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "identity_tail mirrors identity_head walk; else-branch guarantees non-NULL"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 475,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Final else-if is a deliberate catch-all (wpa_config_process_global); guard-clause pedantry"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 486,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Read-only FILE* opened \"r\"; no data-loss risk from ignoring fclose() on a read stream"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 486,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Read-only FILE* opened \"r\"; no data-loss risk from ignoring fclose() on a read stream"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 493,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "static base_identity_id read back on the NEXT wpa_config_read() call; cross-call significance"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 500,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "head is set NULL only to be discarded; never read again before function returns"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 504,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "config is either caller-supplied cfgp or heap from wpa_config_alloc_empty, never local storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 510,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f only forwarded to fprintf(), whose FILE* param is not const-qualified; const would not compile"
+  },
+  {
+   "rule": "INT00-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 515,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fabricated: statement is fprintf(f,\"\\t%s=%s\\n\",field,value), both args char*, no int involved"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 520,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f only forwarded to fprintf(); non-const FILE* param, const would not compile"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 524,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "value is `int value` (write_int's own param), not a pointer; type claim is false"
+  },
+  {
+   "rule": "DCL11-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 524,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "value is `int value`, not char*; type claim is false, likely cross-function name conflation"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 528,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f only forwarded to fprintf(); non-const FILE* param, const would not compile"
+  },
+  {
+   "rule": "INT00-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 533,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fabricated: fprintf(f,\"\\tbssid=%s\\n\",value), value is char*, no int involved"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 538,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f only forwarded to fprintf(); non-const FILE* param, const would not compile"
+  },
+  {
+   "rule": "INT00-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 544,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fabricated: fprintf(f,\"\\tbssid_hint=%s\\n\",value), value is char*, no int involved"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 549,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f only forwarded to fprintf(); non-const FILE* param, const would not compile"
+  },
+  {
+   "rule": "INT00-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 559,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fabricated: fprintf(f,\"\\tpsk=%s\\n\",value), value is char*, no int involved"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 564,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f only forwarded to fprintf(); non-const FILE* param, const would not compile"
+  },
+  {
+   "rule": "INT00-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 575,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fabricated: fprintf(f,\"\\tproto=%s\\n\",value), value is char*, no int involved"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 580,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f only forwarded to fprintf(); non-const FILE* param, const would not compile"
+  },
+  {
+   "rule": "INT00-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 591,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fabricated: fprintf(f,\"\\tkey_mgmt=%s\\n\",value), value is char*, no int involved"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 596,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f only forwarded to fprintf(); non-const FILE* param, const would not compile"
+  },
+  {
+   "rule": "INT00-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 607,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fabricated: fprintf(f,\"\\tpairwise=%s\\n\",value), value is char*, no int involved"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 612,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f only forwarded to fprintf(); non-const FILE* param, const would not compile"
+  },
+  {
+   "rule": "INT00-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 623,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fabricated: fprintf(f,\"\\tgroup=%s\\n\",value), value is char*, no int involved"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 628,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f only forwarded to fprintf(); non-const FILE* param, const would not compile"
+  },
+  {
+   "rule": "INT00-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 639,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fabricated: fprintf(f,\"\\tgroup_mgmt=%s\\n\",value), value is char*, no int involved"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 644,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f only forwarded to fprintf(); non-const FILE* param, const would not compile"
+  },
+  {
+   "rule": "INT00-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 655,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fabricated: fprintf(f,\"\\tauth_alg=%s\\n\",value), value is char*, no int involved"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 661,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f only forwarded to fprintf(); non-const FILE* param, const would not compile"
+  },
+  {
+   "rule": "INT00-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 670,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fabricated: fprintf(f,\"\\teap=%s\\n\",value), value is char*, no int involved"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 677,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f only forwarded to fprintf(); non-const FILE* param, const would not compile"
+  },
+  {
+   "rule": "INT00-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 687,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fabricated: fprintf(f,\"\\t%s=%s\\n\",field,value), both char*, no int involved"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 696,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f only forwarded to fprintf(); non-const FILE* param, const would not compile"
+  },
+  {
+   "rule": "INT00-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 701,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fabricated: fprintf(f,\"\\tgo_p2p_dev_addr=%s\\n\",value), value is char*"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 705,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f only forwarded to fprintf(); non-const FILE* param, const would not compile"
+  },
+  {
+   "rule": "INT00-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 710,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fabricated: fprintf(f,\"\\tp2p_client_list=%s\\n\",value), value is char*"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 715,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f only forwarded to fprintf(); non-const FILE* param, const would not compile"
+  },
+  {
+   "rule": "INT00-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 721,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fabricated: fprintf(f,\"\\tp2p2_client_list=%s\\n\",value), value is char*"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 726,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f only forwarded to fprintf(); non-const FILE* param, const would not compile"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 729,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hex[32*2+1] is a fixed compile-time-constant-sized array, not a VLA"
+  },
+  {
+   "rule": "DCL11-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 733,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MACSTR/MAC2STR macro-expansion hides 6 %02x specifiers + 6 args sqc doesn't count; total is balanced"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 733,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MACSTR/MAC2STR macro-expansion hides 6 %02x specifiers + 6 args; argument count is actually balanced"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 733,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; only macro tokens (MACSTR) concatenated into the literal"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 743,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f only forwarded to fprintf(); non-const FILE* param, const would not compile"
+  },
+  {
+   "rule": "INT00-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 753,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fabricated: fprintf(f,\"\\tmka_cak=%s\\n\",value), value is char*, no int involved"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 758,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f only forwarded to fprintf(); non-const FILE* param, const would not compile"
+  },
+  {
+   "rule": "INT00-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 768,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fabricated: fprintf(f,\"\\tmka_ckn=%s\\n\",value), value is char*, no int involved"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 776,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "config only read (walked via config->identity); genuine if low-value const opportunity"
+  },
+  {
+   "rule": "PRE05-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 778,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "STR(t) is only ever invoked with a bare field-name identifier, never a macro needing pre-expansion"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 779,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "t is a token pasted into #t/ssid->t, never runtime-evaluated; category error like __AKM precedent"
+  },
+  {
+   "rule": "PRE05-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 779,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "INT(t) only ever invoked with a bare field-name identifier, never a macro needing pre-expansion"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 779,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "t is a token pasted into #t/ssid->t, never runtime-evaluated; not a real multiple-evaluation"
+  },
+  {
+   "rule": "PRE05-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 780,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "INTe(t,m) only ever invoked with bare identifiers, never a macro needing pre-expansion"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 781,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "t is a token pasted into #t/ssid->t, never runtime-evaluated; category error"
+  },
+  {
+   "rule": "PRE05-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 781,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "INT_DEF(t,def) only ever invoked with bare identifiers, never a macro needing pre-expansion"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 781,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "t is a token pasted into #t/ssid->t, never runtime-evaluated; category error"
+  },
+  {
+   "rule": "PRE05-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 782,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "INT_DEFe(t,m,def) only ever invoked with bare identifiers, never needing pre-expansion"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 864,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INTe(erp,erp) macro args are bare identifiers token-pasted into #t/member access, not pointers at all"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 879,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT_DEFe(fragment_size,fragment_size,...) macro args are bare identifiers, not pointers"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 883,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT_DEFe(sim_num,sim_num,...) macro args are bare identifiers, not pointers"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1030,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hex[255*2+1] is a fixed compile-time-constant-sized array, not a VLA"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1032,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idx is initialized in the for-loop's own init clause (idx=0); not an uninitialized bound"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1033,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/wpabuf_len are pure read-only accessors; no unsequenced side effects"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1046,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f only forwarded to fprintf(); non-const FILE* param, const would not compile"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1046,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "cred only read via cred-> member access throughout; genuine if low-value const opportunity"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1060,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate if/else-if guard: skip-branch (no password) needs no explicit else action"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1069,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf with a string literal + struct field"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1078,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf with a string literal + struct field"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1094,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "e is a pointer never reassigned in its loop scope; genuine low-value const opportunity"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1104,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1118,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1121,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1124,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1127,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1131,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1141,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1212,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1215,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1221,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f only forwarded to fprintf(); non-const FILE* param, const would not compile"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1221,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "blob only read (blob->data/len/name); genuine if low-value const opportunity"
+  },
+  {
+   "rule": "DCL11-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1229,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "blob->name and encoded are both proven non-NULL by this point (guaranteed by earlier checks)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1236,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f only forwarded to fprintf(); non-const FILE* param, const would not compile"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1242,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Ordinary `if (val==NULL) return;` guard; stylistic ad-hoc-NULL-check class"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1259,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1267,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1273,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1278,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1283,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1295,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1298,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1301,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1324,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "_buf is a block-scope local (inside a nested {} block), not file-scope; DCL37-C misapplied"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1328,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "WPS_DEV_TYPE_BUFSIZE(21) exactly fits max width of \"%u-%08X-%u\"; os_snprintf/buf provably never NULL"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1331,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1336,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1339,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1355,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "_buf is a block-scope local (inside a nested {} block), not file-scope; DCL37-C misapplied"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1365,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1368,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1371,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1380,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1387,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1410,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1425,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1428,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1433,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1440,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "DCL11-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1441,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2p_bootstrap_methods is declared `int` in config.h:903; type claim is false"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1445,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1448,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1451,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1456,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1460,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1464,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1468,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1472,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1477,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1483,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1487,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No preprocessor directive in the call; plain fprintf"
+  }
+ ],
+ "fns": [
+  {
+   "file": "wpa_supplicant/config_file.c",
+   "line": 1846,
+   "rule": "INT32-C",
+   "desc": "tmp_len = os_strlen(name)+5 with no overflow check before os_malloc; theoretical only, name is a local admin path",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [
+  "wpa_supplicant/config_file.c"
+ ],
+ "summary": {
+  "tp": 6,
+  "fp": 144,
+  "fn": 1
+ }
+}

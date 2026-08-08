@@ -1,0 +1,1086 @@
+{
+ "src/common/dpp_backup.c": [
+  {
+   "column": 1,
+   "file": "src/common/dpp_backup.c",
+   "line": 20,
+   "message": "Function 'dpp_free_asymmetric_key' does not validate pointer parameter 'key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+  },
+  {
+   "column": 70,
+   "file": "src/common/dpp_backup.c",
+   "line": 35,
+   "message": "Pointer parameter 'conf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conf'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_backup.c",
+   "line": 37,
+   "message": "Value assigned to 'priv_key' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 8,
+   "file": "src/common/dpp_backup.c",
+   "line": 55,
+   "message": "Memory allocated with 'wpabuf_alloc' for variable 'buf' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(buf)' before the variable goes out of scope"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_backup.c",
+   "line": 74,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_backup.c",
+   "line": 75,
+   "message": "Double-free: 'priv_key' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_backup.c",
+   "line": 75,
+   "message": "Double free detected: 'priv_key' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_clear_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 9,
+   "file": "src/common/dpp_backup.c",
+   "line": 98,
+   "message": "Memory allocated with 'wpabuf_alloc' for variable 'attr' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(attr)' before the variable goes out of scope"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_backup.c",
+   "line": 108,
+   "message": "Memory leak: 'attr' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'attr' before this return statement"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_backup.c",
+   "line": 147,
+   "message": "Function returns pointer to local variable 'res' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 68,
+   "file": "src/common/dpp_backup.c",
+   "line": 151,
+   "message": "Pointer parameter 'auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *auth'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_backup.c",
+   "line": 153,
+   "message": "Value assigned to 'priv_key' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 8,
+   "file": "src/common/dpp_backup.c",
+   "line": 179,
+   "message": "Memory allocated with 'wpabuf_alloc' for variable 'key' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(key)' before the variable goes out of scope"
+  },
+  {
+   "column": 55,
+   "file": "src/common/dpp_backup.c",
+   "line": 264,
+   "message": "Pointer parameter 'auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *auth'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_backup.c",
+   "line": 269,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_backup.c",
+   "line": 270,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 8,
+   "file": "src/common/dpp_backup.c",
+   "line": 281,
+   "message": "Function 'dpp_hkdf_expand' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 6,
+   "file": "src/common/dpp_backup.c",
+   "line": 287,
+   "message": "Function 'dpp_pbkdf2' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 3,
+   "file": "src/common/dpp_backup.c",
+   "line": 290,
+   "message": "Potential memory leak: 'salt' allocated with 'wpabuf_alloc' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'salt' is freed before this goto or at the target label"
+  },
+  {
+   "column": 6,
+   "file": "src/common/dpp_backup.c",
+   "line": 297,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 9,
+   "file": "src/common/dpp_backup.c",
+   "line": 318,
+   "message": "Memory allocated with 'wpabuf_alloc' for variable 'pwri' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(pwri)' before the variable goes out of scope"
+  },
+  {
+   "column": 6,
+   "file": "src/common/dpp_backup.c",
+   "line": 405,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_backup.c",
+   "line": 446,
+   "message": "Function returns pointer to local variable 'key' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_backup.c",
+   "line": 450,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_backup.c",
+   "line": 454,
+   "message": "Value assigned to 'cont_enc_key' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_backup.c",
+   "line": 517,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 25,
+   "file": "src/common/dpp_backup.c",
+   "line": 560,
+   "message": "Pointer subtraction between pointers from different arrays: 'hdr.payload' and 'next'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 29,
+   "file": "src/common/dpp_backup.c",
+   "line": 581,
+   "message": "Pointer subtraction between pointers from different arrays: 'hdr.payload' and 'next'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 28,
+   "file": "src/common/dpp_backup.c",
+   "line": 585,
+   "message": "Pointer subtraction between pointers from different arrays: 'hdr.payload' and 'next'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 12,
+   "file": "src/common/dpp_backup.c",
+   "line": 593,
+   "message": "Pointer subtraction between pointers from different arrays: 'hdr.payload' and 'next'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 25,
+   "file": "src/common/dpp_backup.c",
+   "line": 595,
+   "message": "Pointer subtraction between pointers from different arrays: 'hdr.payload' and 'next'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 27,
+   "file": "src/common/dpp_backup.c",
+   "line": 605,
+   "message": "Pointer subtraction between pointers from different arrays: 'hdr.payload' and 'next'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 25,
+   "file": "src/common/dpp_backup.c",
+   "line": 636,
+   "message": "Pointer subtraction between pointers from different arrays: 'hdr.payload' and 'next'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 28,
+   "file": "src/common/dpp_backup.c",
+   "line": 652,
+   "message": "Pointer subtraction between pointers from different arrays: 'hdr.payload' and 'next'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 28,
+   "file": "src/common/dpp_backup.c",
+   "line": 659,
+   "message": "Pointer subtraction between pointers from different arrays: 'hdr.payload' and 'next'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 29,
+   "file": "src/common/dpp_backup.c",
+   "line": 667,
+   "message": "Pointer subtraction between pointers from different arrays: 'hdr.payload' and 'next'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 27,
+   "file": "src/common/dpp_backup.c",
+   "line": 695,
+   "message": "Subtracting pointers from different arrays ('end' from 'pos' and 'pos' from 'next'). Pointer subtraction is only defined for pointers within the same array object.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Only subtract pointers that point to elements within the same array object."
+  },
+  {
+   "column": 27,
+   "file": "src/common/dpp_backup.c",
+   "line": 695,
+   "message": "Pointer subtraction between pointers from different arrays: 'hdr.payload' and 'next'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 25,
+   "file": "src/common/dpp_backup.c",
+   "line": 714,
+   "message": "Subtracting pointers from different arrays ('end' from 'pos' and 'pos' from 'next'). Pointer subtraction is only defined for pointers within the same array object.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Only subtract pointers that point to elements within the same array object."
+  },
+  {
+   "column": 25,
+   "file": "src/common/dpp_backup.c",
+   "line": 714,
+   "message": "Pointer subtraction between pointers from different arrays: 'hdr.payload' and 'next'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 29,
+   "file": "src/common/dpp_backup.c",
+   "line": 741,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:pos' and 'hdr.payload'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp_backup.c",
+   "line": 744,
+   "message": "Variable 'hdr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'hdr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 6,
+   "file": "src/common/dpp_backup.c",
+   "line": 745,
+   "message": "Pointer comparison '<' between pointers from different arrays: 'hdr.payload' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before comparison"
+  },
+  {
+   "column": 13,
+   "file": "src/common/dpp_backup.c",
+   "line": 748,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:pos' and 'hdr.payload'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 24,
+   "file": "src/common/dpp_backup.c",
+   "line": 756,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:pos' and 'hdr.payload'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 27,
+   "file": "src/common/dpp_backup.c",
+   "line": 769,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:pos' and 'hdr.payload'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 25,
+   "file": "src/common/dpp_backup.c",
+   "line": 786,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:pos' and 'hdr.payload'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 21,
+   "file": "src/common/dpp_backup.c",
+   "line": 807,
+   "message": "sizeof applied to pointer/array parameter 'data' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*data)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 8,
+   "file": "src/common/dpp_backup.c",
+   "line": 829,
+   "message": "Variable 'hdr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'hdr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 25,
+   "file": "src/common/dpp_backup.c",
+   "line": 871,
+   "message": "Dereference of uninitialized pointer 'key'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'key' before dereferencing"
+  },
+  {
+   "column": 8,
+   "file": "src/common/dpp_backup.c",
+   "line": 888,
+   "message": "Variable 'hdr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'hdr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_backup.c",
+   "line": 1091,
+   "message": "Function returns pointer to local variable 'key' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_backup.c",
+   "line": 1092,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 9,
+   "file": "src/common/dpp_backup.c",
+   "line": 1116,
+   "message": "Assignment in if statement condition: 'key = dpp_parse_one_asymmetric_key(hdr.payload,'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 44,
+   "file": "src/common/dpp_backup.c",
+   "line": 1116,
+   "message": "Variable 'hdr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'hdr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_backup.c",
+   "line": 1136,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_backup.c",
+   "line": 1138,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_backup.c",
+   "line": 1139,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 8,
+   "file": "src/common/dpp_backup.c",
+   "line": 1154,
+   "message": "Function 'dpp_hkdf_expand' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 17,
+   "file": "src/common/dpp_backup.c",
+   "line": 1160,
+   "message": "Variable 'data' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'data' before use, e.g., at its declaration"
+  }
+ ],
+ "wpa_supplicant/ibss_rsn.c": [
+  {
+   "column": 65,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 27,
+   "message": "Pointer parameter 'ibss_rsn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ibss_rsn'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 35,
+   "message": "Function returns pointer to local variable 'peer' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 44,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 55,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 33,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 62,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 33,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 62,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 35,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 85,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 35,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 85,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 61,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 85,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 45,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 86,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 20,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 93,
+   "message": "Dereference of uninitialized pointer 'hdr'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'hdr' before dereferencing"
+  },
+  {
+   "column": 36,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 114,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 123,
+   "message": "string/character literal contains a non-ASCII byte (>= 0x80) -- not portable across locales/national ASCII variants",
+   "rule_id": "MSC09-C",
+   "severity": "Low",
+   "suggestion": "Restrict string and character literals to the portable ASCII subset (letters, digits, space, and basic punctuation)"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 124,
+   "message": "string/character literal contains a non-ASCII byte (>= 0x80) -- not portable across locales/national ASCII variants",
+   "rule_id": "MSC09-C",
+   "severity": "Low",
+   "suggestion": "Restrict string and character literals to the portable ASCII subset (letters, digits, space, and basic punctuation)"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 125,
+   "message": "string/character literal contains a non-ASCII byte (>= 0x80) -- not portable across locales/national ASCII variants",
+   "rule_id": "MSC09-C",
+   "severity": "Low",
+   "suggestion": "Restrict string and character literals to the portable ASCII subset (letters, digits, space, and basic punctuation)"
+  },
+  {
+   "column": 30,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 146,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 41,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 187,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 41,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 194,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 43,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 204,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 38,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 210,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 33,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 216,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 22,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 257,
+   "message": "sizeof applied to pointer/array parameter 'peer' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(peer->supp_ie)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 30,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 271,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 37,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 282,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 37,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 282,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 32,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 284,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 33,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 300,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 33,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 300,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 30,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 322,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 38,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 373,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 35,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 380,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 21,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 390,
+   "message": "Function 'cb' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 53,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 398,
+   "message": "Pointer parameter 'ibss_rsn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ibss_rsn'"
+  },
+  {
+   "column": 30,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 399,
+   "message": "Pointer parameter 'peer' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *peer'"
+  },
+  {
+   "column": 45,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 446,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 47,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 484,
+   "message": "Pointer parameter 'ibss_rsn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ibss_rsn'"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 496,
+   "message": "string/character literal contains a non-ASCII byte (>= 0x80) -- not portable across locales/national ASCII variants",
+   "rule_id": "MSC09-C",
+   "severity": "Low",
+   "suggestion": "Restrict string and character literals to the portable ASCII subset (letters, digits, space, and basic punctuation)"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 497,
+   "message": "string/character literal contains a non-ASCII byte (>= 0x80) -- not portable across locales/national ASCII variants",
+   "rule_id": "MSC09-C",
+   "severity": "Low",
+   "suggestion": "Restrict string and character literals to the portable ASCII subset (letters, digits, space, and basic punctuation)"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 498,
+   "message": "string/character literal contains a non-ASCII byte (>= 0x80) -- not portable across locales/national ASCII variants",
+   "rule_id": "MSC09-C",
+   "severity": "Low",
+   "suggestion": "Restrict string and character literals to the portable ASCII subset (letters, digits, space, and basic punctuation)"
+  },
+  {
+   "column": 47,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 515,
+   "message": "Pointer parameter 'ibss_rsn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ibss_rsn'"
+  },
+  {
+   "column": 55,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 518,
+   "message": "Variable 'auth' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'auth' before use, e.g., at its declaration"
+  },
+  {
+   "column": 58,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 540,
+   "message": "Pointer parameter 'peer' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *peer'"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 551,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 558,
+   "message": "Function returns pointer to local variable 'peer' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 583,
+   "message": "Function returns pointer to local variable 'peer' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 57,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 587,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 667,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 670,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 45,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 685,
+   "message": "loop termination uses '!=' with a step other than +-1 -- the counter can skip over the target value and never terminate",
+   "rule_id": "MSC21-C",
+   "severity": "Low",
+   "suggestion": "Use a relational operator (<, <=, >, >=) to terminate the loop instead of an equality operator, unless the step is exactly 1"
+  },
+  {
+   "column": 30,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 708,
+   "message": "Dereference of uninitialized pointer 'ibss_rsn'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ibss_rsn' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 718,
+   "message": "Function returns pointer to local variable 'ibss_rsn' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 726,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 752,
+   "message": "Dereference of uninitialized pointer 'hdr'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'hdr' before dereferencing"
+  },
+  {
+   "column": 34,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 752,
+   "message": "Dereference of uninitialized pointer 'key'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'key' before dereferencing"
+  },
+  {
+   "column": 54,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 786,
+   "message": "Pointer parameter 'ibss_rsn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ibss_rsn'"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 831,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 861,
+   "message": "Function 'ibss_rsn_set_psk' does not validate pointer parameter 'psk' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'psk' at the start of the function, e.g., 'if (!psk) { return error_code; }'"
+  },
+  {
+   "column": 39,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 861,
+   "message": "Pointer parameter 'ibss_rsn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ibss_rsn'"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 863,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 930,
+   "message": "Function 'ibss_rsn_handle_auth' does not validate pointer parameter 'auth_frame' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'auth_frame' at the start of the function, e.g., 'if (!auth_frame) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 949,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  }
+ ]
+}

@@ -1,0 +1,1233 @@
+{
+ "labels": [
+  {
+   "rule": "PRE08-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 32,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "PRE08-C: dbus_new_helpers.h/dbus_new.h literally share first 8 chars; established literal-true-TP convention"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 32,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "PRE08-C: dbus_new_helpers.h/dbus_new_handlers.c literally share first 8 chars; literal-true-TP convention"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 33,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "PRE08-C: dbus_new.h/dbus_new_handlers.c literally share first 8 chars; literal-true-TP convention"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 43,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR02-C on file-scope self-sized initializer array (debug_strings[]); confirmed FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 56,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API convention: message just forwarded to dbus_message_new_error"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 101,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API convention: message just forwarded to dbus_message_new_error"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 113,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C confuses local pointer variable with local storage; reply points to heap DBusMessage"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 134,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API convention: message just forwarded"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 141,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR02-C on ifdef-varying self-sized initializer array (dont_quote[]); hardcoding would be wrong"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 179,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "DCL13-C: global param only traversed/read in get_iface_by_dbus_path, not a callback/vtable signature"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 186,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C: wpa_s is a loop variable pointing into global->ifaces (heap-owned list), not automatic storage"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 316,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ARR00-C: value freed at loop end then freshly reassigned via os_zalloc/os_strdup each iteration before this read; free-tracking not cleared on reassignment"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 319,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C no-final-else stylistic pedantry; optional per-key post-processing, not exhaustive dispatch"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 328,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ERR07-C atoi() immediately compared against fixed literal 3; malformed input safely fails the check"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 328,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ERR34-C same atoi() call; malformed input yields 0 which safely fails the ==3 check"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 334,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C double-free FP: mutually-exclusive loop-iteration branches (CONFIG_BGSCAN continue vs skip_update) conflated"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 341,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR30-C: dbus_set_error_const's message param is const char*, cannot be modified; rule-logic bug"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 348,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC07-C unreachable-after-return FP: error: is a goto target reached from earlier goto statements"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 349,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C double-free FP: error: path's os_free(value) is reached via goto before any per-iteration free runs"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 351,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR30-C: dbus_set_error_const const char* param, cannot modify literal"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 358,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "DCL13-C: entry param only read (entry->...) in set_cred_property, not a callback signature"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 478,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "DCL13-C: wpa_s param unused/unmodified in set_cred_properties, real const opportunity"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 500,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR30-C: dbus_set_error_const const char* param"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 528,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C: dbus_set_error is a real libdbus function from <dbus/dbus.h>, external-header blindness"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 528,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR30-C: dbus_set_error's format param is const char*"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 537,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C: dbus_message_iter_close_container is a real libdbus function"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 538,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C: dbus_set_error external libdbus function"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 538,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR30-C: dbus_set_error const char* param"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 563,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C: dbus_set_error external libdbus function"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 563,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR30-C: dbus_set_error const char* param"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 571,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR30-C: dbus_set_error_const const char* param"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 593,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only generic getter helper, error param always supplied by internal callers"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 595,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C: array+array_len is the idiomatic ptr+len pair, not a conformant-array-syntax gap"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 605,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C: dbus_set_error external libdbus function"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 605,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR30-C: dbus_set_error const char* param"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 611,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "EXP34-C: sub_type_str can only be NULL for types wpa_dbus_type_as_string doesn't handle; all real call sites pass BYTE/UINT32/STRING which are handled"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 617,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C: dbus_set_error external libdbus function"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 617,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR30-C: dbus_set_error const char* param"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 647,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C: dbus_set_error external libdbus function"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 647,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR30-C: dbus_set_error const char* param"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 654,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR39-C double-scaling misfire on (const char*)array + i*element_size; char* is single-scaled, confirmed FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 656,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C: dbus_set_error external libdbus function"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 656,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR30-C: dbus_set_error const char* param"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 663,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C: dbus_message_iter_close_container external libdbus function"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 664,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C: dbus_message_iter_close_container external libdbus function"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 665,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C: dbus_set_error external libdbus function"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 665,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR30-C: dbus_set_error const char* param"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 688,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "DCL13-C: array (struct wpabuf**) only read via wpabuf_head/len, not a callback/vtable signature, real opportunity"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 699,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C: dbus_set_error external libdbus function"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 699,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR30-C: dbus_set_error const char* param"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 705,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "EXP34-C: sub_type_str NULL only for unhandled types; both real call sites pass DBUS_TYPE_BYTE"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 712,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C: dbus_set_error external libdbus function"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 712,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR30-C: dbus_set_error const char* param"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 718,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C: wpabuf_head/wpabuf_len are pure side-effect-free accessors, confirmed FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 724,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C: dbus_message_iter_close_container external libdbus function"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 725,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C: dbus_message_iter_close_container external libdbus function"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 726,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C: dbus_set_error external libdbus function"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 726,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR30-C: dbus_set_error const char* param"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 745,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only generic getter helper"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 745,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only generic getter helper"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 745,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only generic getter helper"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 767,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C: message dispatched only via WPADBusMethodHandler contract, always valid"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 767,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C: global param always valid from dispatch"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 767,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC37-C reach-end-without-return FP: every exit path (error/oom labels) sets reply then goto out; return reply always executes"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 771,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "MSC13-C dead-assignment: reply=NULL initializer never read, always overwritten before use; genuine but harmless, established convention"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 782,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C: dbus_message_iter_init external libdbus function"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 893,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C: dbus_message_new_method_return external libdbus function"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 911,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MEM31-C double-free FP: driver freed-then-reassigned via os_strdup on each Driver key occurrence before final cleanup free"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 912,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MEM31-C double-free FP: ifname freed-then-reassigned via os_strdup before final cleanup free"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 913,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MEM31-C double-free FP: confname freed-then-reassigned via os_strdup before final cleanup free"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 914,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MEM31-C double-free FP: bridge_ifname freed-then-reassigned via os_strdup before final cleanup free"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 918,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC07-C unreachable FP: error: is a goto target reached from multiple earlier goto error statements"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 938,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C: message always valid via dispatch contract"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 938,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C: global param always valid from dispatch"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 938,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC37-C reach-end FP: function always falls through to out: return reply on every path (delete_iface false case returns NULL success)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 989,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C: global param always valid from dispatch"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 992,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "MSC13-C dead-assignment: reply=NULL never read, always overwritten before any return; genuine harmless TP"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1005,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C: dbus_message_new_method_return external libdbus function"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1027,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only property getter, iter always supplied by dispatcher"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1027,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only property getter, error always supplied by dispatcher"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1027,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL15-C: wpas_dbus_getter_debug_level referenced from dbus_new.c property table, external linkage required"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1029,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C: user_data matches WPADBusPropertyAccessor dispatch-contract typedef, cannot const-qualify"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1053,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only property getter"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1053,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only property getter"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1053,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL15-C: wpas_dbus_getter_debug_timestamp referenced from dbus_new.c property table"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1055,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C: user_data matches WPADBusPropertyAccessor dispatch-contract typedef"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1074,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only property getter"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1074,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only property getter"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1074,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL15-C: wpas_dbus_getter_debug_show_keys referenced from dbus_new.c property table"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1076,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C: user_data matches WPADBusPropertyAccessor dispatch-contract typedef"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1094,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL15-C: wpas_dbus_setter_debug_level referenced from dbus_new.c property table, external linkage required"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1107,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "EXP34-C: str set via wpas_dbus_simple_property_setter which validates DBUS_TYPE_STRING before get_basic, guaranteed non-NULL on TRUE return"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1115,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR30-C: dbus_set_error_const const char* param"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1133,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL15-C: wpas_dbus_setter_debug_timestamp referenced from dbus_new.c property table"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1159,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL15-C: wpas_dbus_setter_debug_show_keys referenced from dbus_new.c property table"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1188,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only property getter"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1188,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only property getter"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1188,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL15-C: wpas_dbus_getter_interfaces referenced from dbus_new.c property table"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1190,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C: user_data matches WPADBusPropertyAccessor dispatch-contract typedef"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1205,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR30-C: dbus_set_error_const const char* param"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1233,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only property getter"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1233,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only property getter"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1233,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL15-C: wpas_dbus_getter_eap_methods referenced from dbus_new.c property table"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1235,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C: user_data matches WPADBusPropertyAccessor dispatch-contract typedef"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1243,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR30-C: dbus_set_error_const const char* param"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1253,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT30-C: num_items decremented only inside while(num_items) guard, cannot wrap below zero; guarded-loop FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1270,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only property getter"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1270,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only property getter"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1270,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL15-C: wpas_dbus_getter_global_capabilities referenced from dbus_new.c property table"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1272,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C: user_data matches WPADBusPropertyAccessor dispatch-contract typedef"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1336,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "EXP33-C: capabilities array-write count tracked exactly by num_items across #ifdef branches; getter only reads up to num_items, preprocessor-blind CFG misfire"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1428,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C: dbus_message_iter_next external libdbus function"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1474,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C: dbus_message_iter_next external libdbus function"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1488,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C: dbus_message_iter_next external libdbus function"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1549,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C: dbus_message_iter_next external libdbus function"
+  },
+  {
+   "rule": "INT33-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1565,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT33-C: FREQS_ALLOC_CHUNK is a #define'd literal constant (32), compile-time provably nonzero"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1578,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ARR00-C: freqs realloc-fail path frees+nulls, then immediate if(freqs==NULL) return -1 guards this line; mutually exclusive with the freed state"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1581,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C: dbus_message_iter_next external libdbus function"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1592,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ARR00-C: same realloc-fail-then-guarded-return pattern as line 1578, freqs never accessed after being freed"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1626,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C: message always valid via WPADBusMethodHandler dispatch contract"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1626,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C: wpa_s always valid via dispatch contract"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1641,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C: dbus_message_iter_init external libdbus function"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1649,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C: dbus_message_iter_next external libdbus function"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1652,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP34-C: key guaranteed valid string by dispatcher's is_signature_correct() validating message signature == \"a{sv}\" before handler runs"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1656,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP34-C: same is_signature_correct() guarantee as line 1652"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1660,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP34-C: same is_signature_correct() guarantee"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1665,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP34-C: same is_signature_correct() guarantee"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1669,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP34-C: same is_signature_correct() guarantee"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1675,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP34-C: same is_signature_correct() guarantee"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1681,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP34-C: same is_signature_correct() guarantee"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1689,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP34-C: key passed to wpa_printf %s also guaranteed valid string by is_signature_correct()"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1694,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C: dbus_message_iter_next external libdbus function"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1778,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MEM30-C: params.ssids[i].ssid never freed anywhere else in this function/reachable path before this cleanup loop; cross-function conflation"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1779,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MEM30-C: params.extra_ies never freed anywhere else before this cleanup line; cross-function conflation"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1814,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C: message always valid via dispatch contract"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1814,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C: wpa_s always valid via dispatch contract"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1817,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "MSC13-C dead-assignment: reply=NULL never read, always overwritten before err: return; genuine harmless TP"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1820,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC13-C: path_buf is used indirectly via alias pointer path=path_buf, written/read throughout the function"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1820,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ENV01-C: no getenv() anywhere in this function; fixed local buffer misfire, confirmed FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1823,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C: dbus_message_iter_init external libdbus function"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1853,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C: dbus_message_new_method_return external libdbus function"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1867,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC07-C unreachable FP: err: is a goto target reached from earlier goto statements"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1882,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C: message always valid via dispatch contract"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1882,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C: wpa_s always valid via dispatch contract"
+  },
+  {
+   "rule": "ERR32-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1904,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ERR32-C: not a signal handler; textbook errno=0/strtoul/errno-check idiom, confirmed misfire class"
+  },
+  {
+   "rule": "ERR32-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1906,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ERR32-C: same textbook errno-checked strtoul idiom, not a signal handler"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1944,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C: wpa_s always valid via dispatch contract"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1965,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C: wpa_s always valid via dispatch contract"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1987,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C: message always valid via dispatch contract"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1987,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C: wpa_s always valid via dispatch contract"
+  }
+ ],
+ "fns": [
+  {
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1425,
+   "rule": "MEM31-C",
+   "desc": "wpas_dbus_get_scan_ssids: fresh ssids_num=0 each call overwrites params->ssids[i].ssid entries without freeing prior allocations if 'SSIDs' dict key is sent twice in one Scan() call (a{sv} has no dedup guarantee)",
+   "upstream_present": "unknown"
+  },
+  {
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1491,
+   "rule": "MEM31-C",
+   "desc": "wpas_dbus_get_scan_ies: fresh ies=NULL each call; params->extra_ies unconditionally overwritten, leaking prior allocation if 'IEs' key sent twice",
+   "upstream_present": "unknown"
+  },
+  {
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1594,
+   "rule": "MEM31-C",
+   "desc": "wpas_dbus_get_scan_channels: fresh freqs=NULL each call; params->freqs unconditionally overwritten, leaking prior allocation if 'Channels' key sent twice",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 10,
+  "fp": 140,
+  "fn": 3
+ }
+}

@@ -1,0 +1,742 @@
+{
+ "src/pasn/pasn_initiator.c": [
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 16,
+   "message": "Header file 'ieee802_11_common.h' has the same first 8 characters (case-insensitive) as 'ieee802_11_defs.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_common.h' -> unique name)"
+  },
+  {
+   "column": 9,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 32,
+   "message": "Function 'pmksa_cache_init' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 36,
+   "message": "Function 'pasn_initiator_pmksa_cache_deinit' does not validate pointer parameter 'pmksa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pmksa' at the start of the function, e.g., 'if (!pmksa) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 54,
+   "message": "Function 'pasn_initiator_pmksa_cache_remove' does not validate pointer parameter 'pmksa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pmksa' at the start of the function, e.g., 'if (!pmksa) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 54,
+   "message": "Function 'pasn_initiator_pmksa_cache_remove' does not validate pointer parameter 'bssid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'bssid' at the start of the function, e.g., 'if (!bssid) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 67,
+   "message": "Function 'pasn_initiator_pmksa_cache_get' does not validate pointer parameter 'pmksa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pmksa' at the start of the function, e.g., 'if (!pmksa) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 67,
+   "message": "Function 'pasn_initiator_pmksa_cache_get' does not validate pointer parameter 'bssid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'bssid' at the start of the function, e.g., 'if (!bssid) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 84,
+   "message": "Function 'pasn_initiator_pmksa_cache_flush' does not validate pointer parameter 'pmksa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pmksa' at the start of the function, e.g., 'if (!pmksa) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 102,
+   "message": "Value assigned to 'buf' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 6,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 143,
+   "message": "Array declaration 'groups[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 209,
+   "message": "Value assigned to 'buf_len' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 239,
+   "message": "Value assigned to 'buf' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 67,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 263,
+   "message": "Pointer parameter 'pasn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pasn'"
+  },
+  {
+   "column": 8,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 324,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 333,
+   "message": "Value assigned to 'erp_msg' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 337,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 338,
+   "message": "Double free detected: 'erp_msg' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 367,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 372,
+   "message": "Value assigned to 'fils_wd' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 7,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 413,
+   "message": "Variable 'elems' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'elems' before use, e.g., at its declaration"
+  },
+  {
+   "column": 2,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 459,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 463,
+   "message": "Value assigned to 'fils_wd' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 532,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 533,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 62,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 555,
+   "message": "Pointer parameter 'pasn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pasn'"
+  },
+  {
+   "column": 2,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 611,
+   "message": "Function 'wpa_pasn_build_auth_header' called with overlapping memory regions. If parameters are restrict-qualified, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure memory regions do not overlap when using restrict pointers"
+  },
+  {
+   "column": 9,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 623,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 8,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 630,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 675,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 677,
+   "message": "Double-free: 'wrapped_data_buf' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 677,
+   "message": "Double free detected: 'wrapped_data_buf' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 678,
+   "message": "Double-free: 'pubkey' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 678,
+   "message": "Double free detected: 'pubkey' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 687,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 6,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 743,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 770,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 772,
+   "message": "Double free detected: 'wrapped_data_buf' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 778,
+   "message": "Function 'wpa_pasn_reset' does not validate pointer parameter 'pasn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pasn' at the start of the function, e.g., 'if (!pasn) { return error_code; }'"
+  },
+  {
+   "column": 28,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 793,
+   "message": "sizeof applied to pointer/array parameter 'pasn' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(pasn->pmk)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 29,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 794,
+   "message": "sizeof applied to pointer/array parameter 'pasn' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(pasn->ptk)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 28,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 816,
+   "message": "sizeof applied to pointer/array parameter 'pasn' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(pasn->fils)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 31,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 820,
+   "message": "sizeof applied to pointer/array parameter 'pasn' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(pasn->pmk_r1)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 34,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 822,
+   "message": "sizeof applied to pointer/array parameter 'pasn' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(pasn->pmk_r1_name)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 18,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 838,
+   "message": "Use-after-free: accessing freed pointer 'pasn->extra_ies'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 28,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 851,
+   "message": "Pointer parameter 'rsn_data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *rsn_data'"
+  },
+  {
+   "column": 37,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 852,
+   "message": "Pointer parameter 'pasn_data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pasn_data'"
+  },
+  {
+   "column": 18,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 855,
+   "message": "Array declaration 'pasn_default_pmk[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 26,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 857,
+   "message": "sizeof applied to pointer/array parameter 'pasn' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(pasn->pmk)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 965,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 8,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 1021,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 1034,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 1039,
+   "message": "Function 'wpas_pasn_start' does not validate pointer parameter 'pasn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pasn' at the start of the function, e.g., 'if (!pasn) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 1039,
+   "message": "Function 'wpas_pasn_start' does not validate pointer parameter 'own_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'own_addr' at the start of the function, e.g., 'if (!own_addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 1039,
+   "message": "Function 'wpas_pasn_start' does not validate pointer parameter 'peer_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'peer_addr' at the start of the function, e.g., 'if (!peer_addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 1039,
+   "message": "Function 'wpas_pasn_start' does not validate pointer parameter 'bssid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'bssid' at the start of the function, e.g., 'if (!bssid) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 1039,
+   "message": "Function 'wpas_pasn_start' does not validate pointer parameter 'beacon_rsne' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'beacon_rsne' at the start of the function, e.g., 'if (!beacon_rsne) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 1039,
+   "message": "Function 'wpas_pasn_start' does not validate pointer parameter 'beacon_rsnxe' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'beacon_rsnxe' at the start of the function, e.g., 'if (!beacon_rsnxe) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 1039,
+   "message": "Function 'wpas_pasn_start' does not validate pointer parameter 'comeback' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'comeback' at the start of the function, e.g., 'if (!comeback) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 1054,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 1106,
+   "message": "Function 'wpa_pasn_verify' does not validate pointer parameter 'own_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'own_addr' at the start of the function, e.g., 'if (!own_addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 1106,
+   "message": "Function 'wpa_pasn_verify' does not validate pointer parameter 'peer_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'peer_addr' at the start of the function, e.g., 'if (!peer_addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 1106,
+   "message": "Function 'wpa_pasn_verify' does not validate pointer parameter 'bssid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'bssid' at the start of the function, e.g., 'if (!bssid) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 1106,
+   "message": "Function 'wpa_pasn_verify' does not validate pointer parameter 'beacon_rsne' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'beacon_rsne' at the start of the function, e.g., 'if (!beacon_rsne) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 1106,
+   "message": "Function 'wpa_pasn_verify' does not validate pointer parameter 'beacon_rsnxe' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'beacon_rsnxe' at the start of the function, e.g., 'if (!beacon_rsnxe) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 1106,
+   "message": "Function 'wpa_pasn_verify' does not validate pointer parameter 'comeback' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'comeback' at the start of the function, e.g., 'if (!comeback) { return error_code; }'"
+  },
+  {
+   "column": 49,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 1120,
+   "message": "Pointer parameter 'pasn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pasn'"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 1155,
+   "message": "Function 'wpa_pasn_auth_rx' does not validate pointer parameter 'data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'data' at the start of the function, e.g., 'if (!data) { return error_code; }'"
+  },
+  {
+   "column": 3,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 1162,
+   "message": "Casting from char * (alignment 1) to const struct ieee80211_mgmt * (alignment 4) may cause alignment issues",
+   "rule_id": "EXP36-C",
+   "severity": "Low",
+   "suggestion": "Use memcpy or ensure proper alignment before casting"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 1163,
+   "message": "Value assigned to 'frame' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 1164,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 8,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 1193,
+   "message": "Pointer arithmetic on struct pointer with byte offset. Cast to char* before adding offset.",
+   "rule_id": "EXP08-C",
+   "severity": "Medium",
+   "suggestion": null
+  },
+  {
+   "column": 7,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 1201,
+   "message": "Variable 'elems' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'elems' before use, e.g., at its declaration"
+  },
+  {
+   "column": 11,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 1290,
+   "message": "Function 'crypto_ecdh_set_peerkey' called with overlapping memory regions. If parameters are restrict-qualified, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure memory regions do not overlap when using restrict pointers"
+  },
+  {
+   "column": 8,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 1316,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 13,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 1357,
+   "message": "Pointer arithmetic on struct pointer with byte offset. Cast to char* before adding offset.",
+   "rule_id": "EXP08-C",
+   "severity": "Medium",
+   "suggestion": null
+  },
+  {
+   "column": 9,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 1367,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 8,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 1437,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 1452,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 1454,
+   "message": "Double free detected: 'wrapped_data' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 1455,
+   "message": "Double free detected: 'secret' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 1456,
+   "message": "Double free detected: 'copy' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 3,
+   "file": "src/pasn/pasn_initiator.c",
+   "line": 1477,
+   "message": "Casting from char * (alignment 1) to const struct ieee80211_mgmt * (alignment 4) may cause alignment issues",
+   "rule_id": "EXP36-C",
+   "severity": "Low",
+   "suggestion": "Use memcpy or ensure proper alignment before casting"
+  }
+ ]
+}

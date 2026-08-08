@@ -1,0 +1,1354 @@
+{
+ "wpa_supplicant/eapol_test.c#part1of2": [
+  {
+   "column": 1,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 36,
+   "message": "Variable 'wpa_drivers' should be declared static if it doesn't need external linkage",
+   "rule_id": "DCL15-C",
+   "severity": "Low",
+   "suggestion": "Add 'static' storage-class specifier"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 36,
+   "message": "File-scope variable should have minimal scope. Consider making it static within a function or limiting its scope.",
+   "rule_id": "DCL19-C",
+   "severity": "Low",
+   "suggestion": "Move variable to the smallest scope where it's used, or make it static inside a function"
+  },
+  {
+   "column": 36,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 36,
+   "message": "Array declaration 'wpa_drivers[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 36,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 93,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 36,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 93,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 32,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 94,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 31,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 105,
+   "message": "Pointer parameter 'attr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *attr'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 110,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 110,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 126,
+   "message": "Variable 'len' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 30,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 131,
+   "message": "Variable 'buf' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'buf' before use, e.g., at its declaration"
+  },
+  {
+   "column": 15,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 137,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 15,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 137,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 32,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 156,
+   "message": "Pointer parameter 'attrs' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *attrs'"
+  },
+  {
+   "column": 42,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 168,
+   "message": "Pointer parameter 'attrs' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *attrs'"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 173,
+   "message": "Function returns pointer to local variable 'p' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 183,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 183,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 223,
+   "message": "Potential memory leak: 'msg' allocated with 'radius_msg_new' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'msg' is freed before this goto or at the target label"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 230,
+   "message": "Potential memory leak: 'msg' allocated with 'radius_msg_new' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'msg' is freed before this goto or at the target label"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 237,
+   "message": "Potential memory leak: 'msg' allocated with 'radius_msg_new' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'msg' is freed before this goto or at the target label"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 247,
+   "message": "Potential memory leak: 'msg' allocated with 'radius_msg_new' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'msg' is freed before this goto or at the target label"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 256,
+   "message": "Potential memory leak: 'msg' allocated with 'radius_msg_new' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'msg' is freed before this goto or at the target label"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 263,
+   "message": "Potential memory leak: 'msg' allocated with 'radius_msg_new' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'msg' is freed before this goto or at the target label"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 270,
+   "message": "Potential memory leak: 'msg' allocated with 'radius_msg_new' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'msg' is freed before this goto or at the target label"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 278,
+   "message": "Potential memory leak: 'msg' allocated with 'radius_msg_new' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'msg' is freed before this goto or at the target label"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 286,
+   "message": "Potential memory leak: 'msg' allocated with 'radius_msg_new' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'msg' is freed before this goto or at the target label"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 297,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 11,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 297,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Could not copy State attribute from previous \"\n\t\t\t       \"Access-Challenge\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 299,
+   "message": "Potential memory leak: 'msg' allocated with 'radius_msg_new' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'msg' is freed before this goto or at the target label"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 310,
+   "message": "Memory leak: 'msg' allocated with 'radius_msg_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'msg' before this return statement"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 312,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 39,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 317,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 39,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 317,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 320,
+   "message": "Format specifier '%lu' makes assumptions about type sizes - violates data model assumptions",
+   "rule_id": "INT00-C",
+   "severity": "Medium",
+   "suggestion": "Use correct format specifier or verify data model assumptions with static assertions"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 320,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 324,
+   "message": "Passing pointer to uninitialized variable 'eapol_test' to 'ieee802_1x_encapsulate_radius' which reads the value",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'eapol_test' before passing its address to 'ieee802_1x_encapsulate_radius'"
+  },
+  {
+   "column": 45,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 330,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 333,
+   "message": "Variable 'e' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const e = ..."
+  },
+  {
+   "column": 33,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 339,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 341,
+   "message": "Variable 'e' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const e = ..."
+  },
+  {
+   "column": 43,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 346,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 348,
+   "message": "Variable 'e' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const e = ..."
+  },
+  {
+   "column": 51,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 356,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 378,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 387,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 389,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 396,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 41,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 425,
+   "message": "Pointer parameter 'eapol' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *eapol'"
+  },
+  {
+   "column": 0,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 430,
+   "message": "Function 'eapol_sm_cb' accesses bit-field 'eapol_test_data.id_req_sent' without mutex protection in a multi-threaded context",
+   "rule_id": "CON32-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field accesses with mutex locks or use separate byte-sized members instead of bit-fields"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 430,
+   "message": "Bit-field 'id_req_sent' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 0,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 431,
+   "message": "Function 'eapol_sm_cb' accesses bit-field 'eapol_test_data.ctrl_iface' without mutex protection in a multi-threaded context",
+   "rule_id": "CON32-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field accesses with mutex locks or use separate byte-sized members instead of bit-fields"
+  },
+  {
+   "column": 40,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 443,
+   "message": "Pointer parameter 'f' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *f'"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 448,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 451,
+   "message": "Function 'fprintf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 451,
+   "message": "Argument to 'fprintf' contains preprocessor directive: '\"%s\\n-----BEGIN CERTIFICATE-----\\n%s\"\n\t\t\"-----END CERTIFICATE-----\\n\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 46,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 458,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 461,
+   "message": "Variable 'e' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const e = ..."
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 494,
+   "message": "Array/pointer 'buf' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'buf' after calling free(). Set pointer to NULL after freeing: free(buf); buf = NULL;"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 494,
+   "message": "Potentially unsafe array access with variable index 'len': Buffer 'buf' with size 64 (allocated at line 774)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 496,
+   "message": "Array/pointer 'buf' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'buf' after calling free(). Set pointer to NULL after freeing: free(buf); buf = NULL;"
+  },
+  {
+   "column": 37,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 505,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 64,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 505,
+   "message": "Pointer parameter 'cert' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *cert'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 508,
+   "message": "Variable 'e' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const e = ..."
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 522,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 41,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 542,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 41,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 542,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 544,
+   "message": "Variable 'e' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const e = ..."
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 555,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 556,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 556,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 564,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 50,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 573,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 575,
+   "message": "Variable 'e' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const e = ..."
+  },
+  {
+   "column": 25,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 589,
+   "message": "Dereference of uninitialized pointer 'ctx'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ctx' before dereferencing"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 622,
+   "message": "Dereference of uninitialized pointer 'wctx'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'wctx' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 686,
+   "message": "Bit-field 'ctrl_iface' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 44,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 702,
+   "message": "Pointer parameter 'eloop_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *eloop_ctx'"
+  },
+  {
+   "column": 61,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 702,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 34,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 709,
+   "message": "Variable 'buf' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'buf' before use, e.g., at its declaration"
+  },
+  {
+   "column": 54,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 728,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 31,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 794,
+   "message": "Dereference of uninitialized pointer 'hdr'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'hdr' before dereferencing"
+  },
+  {
+   "column": 28,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 843,
+   "message": "Dereference of uninitialized pointer 'dot1x'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'dot1x' before dereferencing"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 848,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 903,
+   "message": "Double free detected: 'keys' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 920,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 927,
+   "message": "Potential null pointer dereference in member access of variable 'hdr'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'hdr' is not NULL before member access"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 933,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 0,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 969,
+   "message": "Function 'ieee802_1x_receive_auth' accesses bit-field 'eapol_test_data.ctrl_iface' without mutex protection in a multi-threaded context",
+   "rule_id": "CON32-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field accesses with mutex locks or use separate byte-sized members instead of bit-fields"
+  },
+  {
+   "column": 33,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 977,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 0,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 988,
+   "message": "Function 'driver_get_bssid' accesses bit-field 'eapol_test_data.ctrl_iface' without mutex protection in a multi-threaded context",
+   "rule_id": "CON32-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field accesses with mutex locks or use separate byte-sized members instead of bit-fields"
+  },
+  {
+   "column": 0,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 988,
+   "message": "Function 'driver_get_bssid' accesses bit-field 'eapol_test_data.id_req_sent' without mutex protection in a multi-threaded context",
+   "rule_id": "CON32-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field accesses with mutex locks or use separate byte-sized members instead of bit-fields"
+  },
+  {
+   "column": 0,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 991,
+   "message": "Function 'driver_get_bssid' accesses bit-field 'eapol_test_data.id_req_sent' without mutex protection in a multi-threaded context",
+   "rule_id": "CON32-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field accesses with mutex locks or use separate byte-sized members instead of bit-fields"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 991,
+   "message": "Bit-field 'id_req_sent' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 33,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1000,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 21,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1002,
+   "message": "sizeof applied to pointer/array parameter 'capa' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*capa)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1008,
+   "message": "Shared variable 'eapol_test_drv_ops' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1008,
+   "message": "Variable 'eapol_test_drv_ops' should be declared static if it doesn't need external linkage",
+   "rule_id": "DCL15-C",
+   "severity": "Low",
+   "suggestion": "Add 'static' storage-class specifier"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1008,
+   "message": "File-scope variable should have minimal scope. Consider making it static within a function or limiting its scope.",
+   "rule_id": "DCL19-C",
+   "severity": "Low",
+   "suggestion": "Move variable to the smallest scope where it's used, or make it static inside a function"
+  },
+  {
+   "column": 36,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1031,
+   "message": "sizeof applied to pointer/array parameter 'wpa_s' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(wpa_s->ifname)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1042,
+   "message": "Return value from sscanf() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from sscanf()"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1042,
+   "message": "Return value of 'sscanf' ignored: 'sscanf(authsrv, \"%d.%d.%d.%d\", &a[0], &a[1], &a[2], &a[3])' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1042,
+   "message": "Use of 'sscanf()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace sscanf() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1042,
+   "message": "Type mismatch in sscanf(): format specifier '%d' expects Integer but argument 1 ('\"%d.%d.%d.%d\"') is Pointer",
+   "rule_id": "FIO47-C",
+   "severity": "High",
+   "suggestion": "Ensure format specifiers match argument types"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1042,
+   "message": "Input function 'sscanf' used for integer conversion without errno check for ERANGE",
+   "rule_id": "INT05-C",
+   "severity": "Medium",
+   "suggestion": "Either use fgets() + strtol/strtoll() for safe conversion, or check errno for ERANGE after scanf"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1042,
+   "message": "'sscanf' is deprecated/obsolescent -- prefer sscanf_s()",
+   "rule_id": "MSC24-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'sscanf' with sscanf_s()"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1042,
+   "message": "Do not cast away const qualification: 'authsrv'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 35,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1042,
+   "message": "Reading from 'a' which may contain uninitialized data",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize the contents of 'a' before reading"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1044,
+   "message": "Increment/decrement operation 'pos++' on struct member pointer 'pos'. Pointer arithmetic on struct members is undefined behavior",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Do not perform pointer arithmetic across struct members"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1045,
+   "message": "Increment/decrement operation 'pos++' on struct member pointer 'pos'. Pointer arithmetic on struct members is undefined behavior",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Do not perform pointer arithmetic across struct members"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1046,
+   "message": "Increment/decrement operation 'pos++' on struct member pointer 'pos'. Pointer arithmetic on struct members is undefined behavior",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Do not perform pointer arithmetic across struct members"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1047,
+   "message": "Increment/decrement operation 'pos++' on struct member pointer 'pos'. Pointer arithmetic on struct members is undefined behavior",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Do not perform pointer arithmetic across struct members"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1054,
+   "message": "Runtime assert() used with constant expression; consider using static_assert() instead",
+   "rule_id": "DCL03-C",
+   "severity": "Low",
+   "suggestion": "Replace assert() with static_assert() to evaluate at compile time"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1079,
+   "message": "Runtime assert() used with constant expression; consider using static_assert() instead",
+   "rule_id": "DCL03-C",
+   "severity": "Low",
+   "suggestion": "Replace assert() with static_assert() to evaluate at compile time"
+  },
+  {
+   "column": 46,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1092,
+   "message": "Pointer parameter 'e' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *e'"
+  },
+  {
+   "column": 16,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1097,
+   "message": "File-scope identifier '_rand' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 16,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1103,
+   "message": "Variable length array with potentially unsafe size 'num_triplets'. Ensure size is validated to be positive and within reasonable bounds.",
+   "rule_id": "ARR32-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking: if (size == 0 || size > MAX_ARRAY) { /* handle error */ }"
+  },
+  {
+   "column": 16,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1104,
+   "message": "Variable length array with potentially unsafe size 'num_triplets'. Ensure size is validated to be positive and within reasonable bounds.",
+   "rule_id": "ARR32-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking: if (size == 0 || size > MAX_ARRAY) { /* handle error */ }"
+  },
+  {
+   "column": 16,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1105,
+   "message": "Variable length array with potentially unsafe size 'num_triplets'. Ensure size is validated to be positive and within reasonable bounds.",
+   "rule_id": "ARR32-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking: if (size == 0 || size > MAX_ARRAY) { /* handle error */ }"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1118,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1149,
+   "message": "Loop uses uninitialized variable 'num_triplets' as bound for array access. This has indeterminate value and can cause out-of-bounds access.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize 'num_triplets' to a valid value before using it in the loop"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1150,
+   "message": "Reading from uninitialized array 'rand_' inside a loop. Array was declared but never initialized before being read.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize array 'rand_' before reading: int rand_[N] = {0}; or assign values before use"
+  },
+  {
+   "column": 33,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1150,
+   "message": "Reading from uninitialized array 'rand_' inside a loop. Array was declared but never initialized before being read.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize array 'rand_' before reading: int rand_[N] = {0}; or assign values before use"
+  },
+  {
+   "column": 29,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1151,
+   "message": "Reading from uninitialized array 'rand_' inside a loop. Array was declared but never initialized before being read.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize array 'rand_' before reading: int rand_[N] = {0}; or assign values before use"
+  },
+  {
+   "column": 39,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1151,
+   "message": "Reading from uninitialized array 'sres_' inside a loop. Array was declared but never initialized before being read.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize array 'sres_' before reading: int sres_[N] = {0}; or assign values before use"
+  },
+  {
+   "column": 49,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1151,
+   "message": "Reading from uninitialized array 'kc_' inside a loop. Array was declared but never initialized before being read.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize array 'kc_' before reading: int kc_[N] = {0}; or assign values before use"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1155,
+   "message": "Loop uses uninitialized variable 'num_triplets' as bound for array access. This has indeterminate value and can cause out-of-bounds access.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize 'num_triplets' to a valid value before using it in the loop"
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1161,
+   "message": "Reading from uninitialized array 'rand_' inside a loop. Array was declared but never initialized before being read.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize array 'rand_' before reading: int rand_[N] = {0}; or assign values before use"
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1164,
+   "message": "Reading from uninitialized array 'sres_' inside a loop. Array was declared but never initialized before being read.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize array 'sres_' before reading: int sres_[N] = {0}; or assign values before use"
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1167,
+   "message": "Reading from uninitialized array 'kc_' inside a loop. Array was declared but never initialized before being read.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize array 'kc_' before reading: int kc_[N] = {0}; or assign values before use"
+  },
+  {
+   "column": 22,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1175,
+   "message": "string/character literal contains a non-ASCII byte (>= 0x80) -- not portable across locales/national ASCII variants",
+   "rule_id": "MSC09-C",
+   "severity": "Low",
+   "suggestion": "Restrict string and character literals to the portable ASCII subset (letters, digits, space, and basic punctuation)"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1176,
+   "message": "string/character literal contains a non-ASCII byte (>= 0x80) -- not portable across locales/national ASCII variants",
+   "rule_id": "MSC09-C",
+   "severity": "Low",
+   "suggestion": "Restrict string and character literals to the portable ASCII subset (letters, digits, space, and basic punctuation)"
+  },
+  {
+   "column": 54,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1201,
+   "message": "Pointer parameter 'e' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *e'"
+  },
+  {
+   "column": 73,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1201,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 16,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1206,
+   "message": "File-scope identifier '_rand' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 35,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1213,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 35,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1213,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1276,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1276,
+   "message": "User input used as format string in 'printf()' call: \"usage:\\n\"\n\t       \"eapol_test [-enWSv] -c<conf> [-a<AS IP>] [-p<AS port>] \"\n\t       \"[-s<AS secret>] \\\\\\n\"\n\t       \"           [-X<RADIUS protocol> \\\\\\n\"\n\t       \"           [-r<count>] [-t<timeout>] [-C<Connect-Info>] \\\\\\n\"\n\t       \"           [-M<client MAC address>] [-o<server cert file] \\\\\\n\"\n\t       \"           [-N<attr spec>] [-R<PC/SC reader>] \"\n\t       \"[-P<PC/SC PIN>] \\\\\\n\"\n#ifdef CONFIG_RADIUS_TLS\n\t       \"           [-j<CA cert>] [-J<client cert>] \\\\\\n\"\n\t       \"[-k<private key] [-K<private key passwd>] \\\\\\n\"\n#endif",
+   "rule_id": "FIO30-C",
+   "severity": "Medium",
+   "suggestion": "Use a literal format string: printf(\"%s\", user_input) instead of printf(user_input)"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1276,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"usage:\\n\"\n\t       \"eapol_test [-enWSv] -c<conf> [-a<AS IP>] [-p<AS port>] \"\n\t       \"[-s<AS secret>] \\\\\\n\"\n\t       \"           [-X<RADIUS protocol> \\\\\\n\"\n\t       \"           [-r<count>] [-t<timeout>] [-C<Connect-Info>] \\\\\\n\"\n\t       \"           [-M<client MAC address>] [-o<server cert file] \\\\\\n\"\n\t       \"           [-N<attr spec>] [-R<PC/SC reader>] \"\n\t       \"[-P<PC/SC PIN>] \\\\\\n\"\n#ifdef CONFIG_RADIUS_TLS\n\t       \"           [-j<CA cert>] [-J<client cert>] \\\\\\n\"\n\t       \"[-k<private key] [-K<private key passwd>] \\\\\\n\"\n#endif'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1288,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"           [-A<client IP>] [-i<ifname>] [-T<ctrl_iface>]\\n\"\n\t       \"eapol_test scard\\n\"\n\t       \"eapol_test sim <PIN> <num triplets> [debug]\\n\"\n\t       \"\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1292,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1292,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"options:\\n\"\n\t       \"  -c<conf> = configuration file\\n\"\n\t       \"  -a<AS IP> = IP address of the authentication server, \"\n\t       \"default 127.0.0.1\\n\"\n\t       \"  -p<AS port> = Port of the authentication server,\\n\"\n\t       \"                default 1812 for RADIUS/UDP and 2083 for RADIUS/TLS\\n\"\n\t       \"  -s<AS secret> = shared secret with the authentication server,\\n\"\n\t       \"                  default 'radius' for RADIUS/UDP and 'radsec' for RADIUS/TLS\\n\"\n\t       \"  -X<RADIUS protocol> = RADIUS protocol to use: UDP (default) or TLS\\n\"\n\t       \"  -A<client IP> = IP address of the client, default: select \"\n\t       \"automatically\\n\"\n\t       \"  -r<count> = number of re-authentications\\n\"\n\t       \"  -e = Request EAP-Key-Name\\n\"\n\t       \"  -W = wait for a control interface monitor before starting\\n\"\n\t       \"  -S = save configuration after authentication\\n\"\n\t       \"  -n = no MPPE keys expected\\n\"\n\t       \"  -v = show version\\n\"\n\t       \"  -t<timeout> = sets timeout in seconds (default: 30 s)\\n\"\n\t       \"  -C<Connect-Info> = RADIUS Connect-Info (default: \"\n\t       \"CONNECT 11Mbps 802.11b)\\n\"\n\t       \"  -M<client MAC address> = Set own MAC address \"\n\t       \"(Calling-Station-Id,\\n\"\n\t       \"                           default: 02:00:00:00:00:01)\\n\"\n\t       \"  -o<server cert file> = Write received server certificate\\n\"\n\t       \"                         chain to the specified file\\n\"\n\t       \"  -N<attr spec> = send arbitrary attribute specified by:\\n\"\n\t       \"                  attr_id:syntax:value or attr_id\\n\"\n\t       \"                  attr_id - number id of the attribute\\n\"\n\t       \"                  syntax - one of: s, d, x\\n\"\n\t       \"                     s = string\\n\"\n\t       \"                     d = integer\\n\"\n\t       \"                     x = octet string\\n\"\n\t       \"                  value - attribute value.\\n\"\n\t       \"       When only attr_id is specified, NULL will be used as \"\n\t       \"value.\\n\"\n\t       \"       Multiple attributes can be specified by using the \"\n\t       \"option several times.\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1337,
+   "message": "Pointer variable '(unknown)' is assigned a string literal without const qualification. String literals are immutable and should be declared as 'const char *' or 'const wchar_t *'.",
+   "rule_id": "STR05-C",
+   "severity": "Low",
+   "suggestion": "Add 'const' qualifier to the pointee type (e.g., change 'char *' to 'const char *')."
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1339,
+   "message": "Sensitive buffer 'as_secret' not cleared before function exit",
+   "rule_id": "MEM03-C",
+   "severity": "Medium",
+   "suggestion": "Call SecureZeroMemory(as_secret, size) or memset(as_secret, 0, size) before the buffer goes out of scope"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1385,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1413,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1413,
+   "message": "Return value of 'fclose' ignored: 'fclose(eapol_test.server_cert_file)' - Returns non-zero on error",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (fclose(file) != 0) for close errors"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1414,
+   "message": "Return value of 'fopen' assigned to 'eapol_test.server_cert_file' but not checked for errors: 'fopen(optarg, \"w\")' - Returns NULL if file cannot be opened",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (file == NULL) before using the file pointer"
+  },
+  {
+   "column": 34,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1414,
+   "message": "Return value from fopen() should be checked for errors",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Check if fopen() returned an error value (NULL, -1, etc.)"
+  }
+ ]
+}

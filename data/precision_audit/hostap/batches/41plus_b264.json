@@ -1,0 +1,1014 @@
+{
+ "src/ap/pmksa_cache_auth.c": [
+  {
+   "column": 1,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 13,
+   "message": "Header file 'eapol_auth_sm.h' has the same first 8 characters (case-insensitive) as 'eapol_auth_sm_i.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'eapol_auth_sm.h' -> unique name)"
+  },
+  {
+   "column": 24,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 48,
+   "message": "sizeof applied to pointer/array parameter 'entry' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*entry)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 1,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 52,
+   "message": "Function 'pmksa_cache_free_entry' does not validate pointer parameter 'pmksa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pmksa' at the start of the function, e.g., 'if (!pmksa) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 102,
+   "message": "Function 'pmksa_cache_auth_flush' does not validate pointer parameter 'pmksa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pmksa' at the start of the function, e.g., 'if (!pmksa) { return error_code; }'"
+  },
+  {
+   "column": 54,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 112,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 5,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 149,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 174,
+   "message": "Potential null pointer dereference of variable 'entry->vlan_desc'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'entry->vlan_desc' is not NULL before dereferencing"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 174,
+   "message": "Direct assignment of flexible array structure instances. Use memcpy() for dynamic copying.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Use memcpy() to copy the structure and its flexible array member"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 183,
+   "message": "Function 'pmksa_cache_to_eapol_data' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 281,
+   "message": "Function 'pmksa_cache_auth_add' does not validate pointer parameter 'aa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'aa' at the start of the function, e.g., 'if (!aa) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 281,
+   "message": "Function 'pmksa_cache_auth_add' does not validate pointer parameter 'spa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'spa' at the start of the function, e.g., 'if (!spa) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 281,
+   "message": "Function 'pmksa_cache_auth_add' does not validate pointer parameter 'eapol' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'eapol' at the start of the function, e.g., 'if (!eapol) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 297,
+   "message": "Function returns pointer to local variable 'entry' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 317,
+   "message": "Function 'pmksa_cache_auth_create_entry' does not validate pointer parameter 'spa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'spa' at the start of the function, e.g., 'if (!spa) { return error_code; }'"
+  },
+  {
+   "column": 27,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 332,
+   "message": "Dereference of uninitialized pointer 'entry'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'entry' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 359,
+   "message": "Function returns pointer to local variable 'entry' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 372,
+   "message": "Function 'pmksa_cache_auth_add_entry' does not validate pointer parameter 'pmksa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pmksa' at the start of the function, e.g., 'if (!pmksa) { return error_code; }'"
+  },
+  {
+   "column": 5,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 377,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 400,
+   "message": "Function 'pmksa_cache_add_okc' does not validate pointer parameter 'pmksa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pmksa' at the start of the function, e.g., 'if (!pmksa) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 400,
+   "message": "Function 'pmksa_cache_add_okc' does not validate pointer parameter 'old_entry' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'old_entry' at the start of the function, e.g., 'if (!old_entry) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 400,
+   "message": "Function 'pmksa_cache_add_okc' does not validate pointer parameter 'pmkid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pmkid' at the start of the function, e.g., 'if (!pmkid) { return error_code; }'"
+  },
+  {
+   "column": 27,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 407,
+   "message": "Dereference of uninitialized pointer 'entry'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'entry' before dereferencing"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 434,
+   "message": "Potential null pointer dereference of variable 'entry->vlan_desc'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'entry->vlan_desc' is not NULL before dereferencing"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 434,
+   "message": "Direct assignment of flexible array structure instances. Use memcpy() for dynamic copying.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Use memcpy() to copy the structure and its flexible array member"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 442,
+   "message": "Function returns pointer to local variable 'entry' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 5,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 455,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 478,
+   "message": "Function 'pmksa_cache_auth_set_ctx' does not validate pointer parameter 'cache' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cache' at the start of the function, e.g., 'if (!cache) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 491,
+   "message": "Function 'pmksa_cache_auth_get' does not validate pointer parameter 'pmksa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pmksa' at the start of the function, e.g., 'if (!pmksa) { return error_code; }'"
+  },
+  {
+   "column": 45,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 492,
+   "message": "Pointer parameter 'pmksa' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pmksa'"
+  },
+  {
+   "column": 5,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 503,
+   "message": "Function returns pointer to local variable 'entry' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 5,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 509,
+   "message": "Function returns pointer to local variable 'entry' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 527,
+   "message": "Function 'pmksa_cache_get_okc' does not validate pointer parameter 'pmksa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pmksa' at the start of the function, e.g., 'if (!pmksa) { return error_code; }'"
+  },
+  {
+   "column": 25,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 528,
+   "message": "Pointer parameter 'pmksa' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pmksa'"
+  },
+  {
+   "column": 5,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 540,
+   "message": "Function returns pointer to local variable 'entry' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 555,
+   "message": "Function returns pointer to local variable 'entry' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 27,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 573,
+   "message": "Dereference of uninitialized pointer 'pmksa'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'pmksa' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 579,
+   "message": "Function returns pointer to local variable 'pmksa' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 56,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 583,
+   "message": "Pointer parameter 'entry' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *entry'"
+  },
+  {
+   "column": 30,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 584,
+   "message": "Pointer parameter 'attr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *attr'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 628,
+   "message": "Function 'pmksa_cache_auth_radius_das_disconnect' does not validate pointer parameter 'pmksa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pmksa' at the start of the function, e.g., 'if (!pmksa) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 664,
+   "message": "Function 'pmksa_cache_auth_list' does not validate pointer parameter 'pmksa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pmksa' at the start of the function, e.g., 'if (!pmksa) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 664,
+   "message": "Function 'pmksa_cache_auth_list' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 664,
+   "message": "Function 'pmksa_cache_auth_list' does not validate pointer parameter 'index' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'index' at the start of the function, e.g., 'if (!index) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 664,
+   "message": "Function 'pmksa_cache_auth_list' does not validate integer parameter 'len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 50,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 664,
+   "message": "Pointer parameter 'pmksa' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pmksa'"
+  },
+  {
+   "column": 63,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 664,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 10,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 665,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 680,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 710,
+   "message": "Function 'pmksa_cache_auth_list_mesh' does not validate pointer parameter 'pmksa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pmksa' at the start of the function, e.g., 'if (!pmksa) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 710,
+   "message": "Function 'pmksa_cache_auth_list_mesh' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 710,
+   "message": "Function 'pmksa_cache_auth_list_mesh' does not validate integer parameter 'len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 55,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 710,
+   "message": "Pointer parameter 'pmksa' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pmksa'"
+  },
+  {
+   "column": 16,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 711,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 16,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 711,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 737,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 745,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  }
+ ],
+ "src/crypto/crypto_nettle.c": [
+  {
+   "column": 13,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 39,
+   "message": "Variable 'i' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 10,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 40,
+   "message": "Output operation on file stream 'tmp' follows input without intervening positioning call (fseek, fsetpos, or rewind)",
+   "rule_id": "FIO50-C",
+   "severity": "Low",
+   "suggestion": "Insert a positioning function (fseek, fsetpos, rewind) between input and output operations, unless input encountered EOF"
+  },
+  {
+   "column": 10,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 40,
+   "message": "Output operation on file stream 'tmp' follows input without intervening positioning call (fseek, fsetpos, or rewind)",
+   "rule_id": "FIO50-C",
+   "severity": "Low",
+   "suggestion": "Insert a positioning function (fseek, fsetpos, rewind) between input and output operations, unless input encountered EOF"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 44,
+   "message": "Function 'nettle_des_set_key' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 45,
+   "message": "Function 'nettle_des_encrypt' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 84,
+   "message": "Function 'sha1_vector' does not validate pointer parameter 'addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'addr' at the start of the function, e.g., 'if (!addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 84,
+   "message": "Function 'sha1_vector' does not validate pointer parameter 'len' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'len' at the start of the function, e.g., 'if (!len) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 84,
+   "message": "Function 'sha1_vector' does not validate pointer parameter 'mac' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'mac' at the start of the function, e.g., 'if (!mac) { return error_code; }'"
+  },
+  {
+   "column": 25,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 251,
+   "message": "Dereference of uninitialized pointer 'ctx'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ctx' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 255,
+   "message": "Function 'nettle_aes_set_encrypt_key' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 257,
+   "message": "Function returns pointer to local variable 'ctx' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 264,
+   "message": "Function 'nettle_aes_encrypt' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 25,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 282,
+   "message": "Dereference of uninitialized pointer 'ctx'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ctx' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 286,
+   "message": "Function 'nettle_aes_set_decrypt_key' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 288,
+   "message": "Function returns pointer to local variable 'ctx' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 295,
+   "message": "Function 'nettle_aes_decrypt' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 307,
+   "message": "Function 'crypto_dh_init' does not validate integer parameter 'prime_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'prime_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 333,
+   "message": "Function 'crypto_dh_derive_secret' does not validate pointer parameter 'privkey' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'privkey' at the start of the function, e.g., 'if (!privkey) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 347,
+   "message": "Function 'mpz_init' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 11,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 347,
+   "message": "Variable 'pub' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'pub' before use, e.g., at its declaration"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 348,
+   "message": "Function 'mpz_import' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 349,
+   "message": "Function 'mpz_cmp_d' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 357,
+   "message": "Function 'mpz_inits' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 13,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 357,
+   "message": "Variable 'p' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'p' before use, e.g., at its declaration"
+  },
+  {
+   "column": 16,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 357,
+   "message": "Variable 'q' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'q' before use, e.g., at its declaration"
+  },
+  {
+   "column": 19,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 357,
+   "message": "Variable 'tmp' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tmp' before use, e.g., at its declaration"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 358,
+   "message": "Function 'mpz_import' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 359,
+   "message": "Function 'mpz_import' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 360,
+   "message": "Function 'mpz_powm' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 12,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 361,
+   "message": "Function 'mpz_cmp_d' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 362,
+   "message": "Function 'mpz_clears' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 370,
+   "message": "Function 'mpz_clear' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 375,
+   "message": "Function 'crypto_mod_exp' does not validate pointer parameter 'power' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'power' at the start of the function, e.g., 'if (!power) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 375,
+   "message": "Function 'crypto_mod_exp' does not validate pointer parameter 'modulus' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'modulus' at the start of the function, e.g., 'if (!modulus) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 384,
+   "message": "Function 'mpz_inits' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 12,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 384,
+   "message": "Variable 'bn_base' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'bn_base' before use, e.g., at its declaration"
+  },
+  {
+   "column": 21,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 384,
+   "message": "Variable 'bn_exp' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'bn_exp' before use, e.g., at its declaration"
+  },
+  {
+   "column": 29,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 384,
+   "message": "Variable 'bn_modulus' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'bn_modulus' before use, e.g., at its declaration"
+  },
+  {
+   "column": 41,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 384,
+   "message": "Variable 'bn_result' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'bn_result' before use, e.g., at its declaration"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 385,
+   "message": "Function 'mpz_import' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 386,
+   "message": "Function 'mpz_import' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 387,
+   "message": "Function 'mpz_import' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 389,
+   "message": "Function 'mpz_powm' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 390,
+   "message": "Function 'mpz_sizeinbase' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 394,
+   "message": "Function 'mpz_export' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 398,
+   "message": "Function 'mpz_clears' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 25,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 417,
+   "message": "Dereference of uninitialized pointer 'ctx'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ctx' before dereferencing"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 425,
+   "message": "Function 'nettle_arcfour_set_key' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 432,
+   "message": "Function returns pointer to local variable 'ctx' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 432,
+   "message": "Use-after-free: returning freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not return freed memory from functions."
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 436,
+   "message": "Function 'crypto_cipher_encrypt' does not validate pointer parameter 'plain' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'plain' at the start of the function, e.g., 'if (!plain) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 436,
+   "message": "Function 'crypto_cipher_encrypt' does not validate pointer parameter 'crypt' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'crypt' at the start of the function, e.g., 'if (!crypt) { return error_code; }'"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 441,
+   "message": "Function 'nettle_arcfour_crypt' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 451,
+   "message": "Function 'crypto_cipher_decrypt' does not validate pointer parameter 'crypt' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'crypt' at the start of the function, e.g., 'if (!crypt) { return error_code; }'"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 456,
+   "message": "Function 'nettle_arcfour_crypt' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 22,
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 468,
+   "message": "sizeof applied to pointer/array parameter 'ctx' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*ctx)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  }
+ ]
+}

@@ -1,0 +1,1187 @@
+{
+  "labels": [
+    {
+      "rule": "CON33-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 37,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 37,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "POS02-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 45,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "POS02-C codebase-wide no-privilege-separation FP class (hostap has no priv-drop architecture); bind() is AF_ALG crypto socket, not a privileged network bind"
+    },
+    {
+      "rule": "CON33-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 48,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 48,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 57,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "addr[]/len companion-array + num_elem count idiom, established API05-C FP class"
+    },
+    {
+      "rule": "CON33-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 73,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 73,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON33-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 81,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 81,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "FIO24-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 82,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "close(s) at :74/:82 are on mutually-exclusive early-return branches (setsockopt-fail vs accept-fail), not a real double close"
+    },
+    {
+      "rule": "CON33-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 91,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 91,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON33-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 106,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 106,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "INT31-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 112,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "(int) mac_len cast used only for printf %d display in an error log, never in a later comparison/arithmetic"
+    },
+    {
+      "rule": "FIO24-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 119,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "close(s) at fail: label reached only via goto from send/recv-fail branches that never executed the earlier :74/:82 closes; mutually exclusive"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 139,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sha1_vector is an internal crypto-vector API always called with valid caller-owned buffers, no externally-nullable path; established API00-C internal-API FP class"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 139,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sha1_vector is an internal crypto-vector API always called with valid caller-owned buffers, no externally-nullable path; established API00-C internal-API FP class"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 139,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sha1_vector is an internal crypto-vector API always called with valid caller-owned buffers, no externally-nullable path; established API00-C internal-API FP class"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 245,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "os_zalloc(sizeof(*ctx)) \u2014 sizeof does not evaluate its operand, not a dereference; established sizeof(*ptr) FP class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 288,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "mutually-exclusive branch confusion: ctx is only freed on the switch's default: case or an earlier setsockopt/accept-fail branch, each of which returns immediately; the flagged access/free is on a disjoint, never-both-taken path"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 289,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "mutually-exclusive branch confusion: ctx is only freed on the switch's default: case or an earlier setsockopt/accept-fail branch, each of which returns immediately; the flagged access/free is on a disjoint, never-both-taken path"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 289,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same mutually-exclusive-branch free-tracking bug as the co-located MEM30-C findings on ctx"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 294,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "mutually-exclusive branch confusion: ctx is only freed on the switch's default: case or an earlier setsockopt/accept-fail branch, each of which returns immediately; the flagged access/free is on a disjoint, never-both-taken path"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 294,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "mutually-exclusive branch confusion: ctx is only freed on the switch's default: case or an earlier setsockopt/accept-fail branch, each of which returns immediately; the flagged access/free is on a disjoint, never-both-taken path"
+    },
+    {
+      "rule": "CON33-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 296,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 296,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 297,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "mutually-exclusive branch confusion: ctx is only freed on the switch's default: case or an earlier setsockopt/accept-fail branch, each of which returns immediately; the flagged access/free is on a disjoint, never-both-taken path"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 297,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "mutually-exclusive branch confusion: ctx is only freed on the switch's default: case or an earlier setsockopt/accept-fail branch, each of which returns immediately; the flagged access/free is on a disjoint, never-both-taken path"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 298,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "mutually-exclusive branch confusion: ctx is only freed on the switch's default: case or an earlier setsockopt/accept-fail branch, each of which returns immediately; the flagged access/free is on a disjoint, never-both-taken path"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 298,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same mutually-exclusive-branch free-tracking bug as the co-located MEM30-C findings on ctx"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 302,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "mutually-exclusive branch confusion: ctx is only freed on the switch's default: case or an earlier setsockopt/accept-fail branch, each of which returns immediately; the flagged access/free is on a disjoint, never-both-taken path"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 302,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "mutually-exclusive branch confusion: ctx is only freed on the switch's default: case or an earlier setsockopt/accept-fail branch, each of which returns immediately; the flagged access/free is on a disjoint, never-both-taken path"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 303,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "mutually-exclusive branch confusion: ctx is only freed on the switch's default: case or an earlier setsockopt/accept-fail branch, each of which returns immediately; the flagged access/free is on a disjoint, never-both-taken path"
+    },
+    {
+      "rule": "CON33-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 305,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 305,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "FIO24-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 306,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "close(ctx->s) at :306 (accept-fail branch) vs :297 (setsockopt-fail branch) are on mutually-exclusive early-return paths, not a real double close"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 306,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "mutually-exclusive branch confusion: ctx is only freed on the switch's default: case or an earlier setsockopt/accept-fail branch, each of which returns immediately; the flagged access/free is on a disjoint, never-both-taken path"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 306,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "mutually-exclusive branch confusion: ctx is only freed on the switch's default: case or an earlier setsockopt/accept-fail branch, each of which returns immediately; the flagged access/free is on a disjoint, never-both-taken path"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 307,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "mutually-exclusive branch confusion: ctx is only freed on the switch's default: case or an earlier setsockopt/accept-fail branch, each of which returns immediately; the flagged access/free is on a disjoint, never-both-taken path"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 307,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same mutually-exclusive-branch free-tracking bug as the co-located MEM30-C findings on ctx"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 311,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ctx is a local pointer *variable* but points to heap memory from os_zalloc(); established DCL30-C heap-vs-stack-confusion FP class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 311,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "mutually-exclusive branch confusion: ctx is only freed on the switch's default: case or an earlier setsockopt/accept-fail branch, each of which returns immediately; the flagged access/free is on a disjoint, never-both-taken path"
+    },
+    {
+      "rule": "CON33-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 326,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 326,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON33-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 376,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 376,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 415,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "pointer+size_t idiom (key/key_len), established API05-C FP class"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 419,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "os_zalloc(sizeof(*skcipher)) \u2014 sizeof(*ptr) not a dereference; established FP class"
+    },
+    {
+      "rule": "CON33-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 430,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 430,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON33-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 437,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 437,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 441,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "skcipher is heap-allocated via os_zalloc, not automatic storage; established DCL30-C FP class"
+    },
+    {
+      "rule": "MSC07-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 442,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "fail: label is reached via goto from earlier failure branches (:421,426,431,438); established goto-label-blindness MSC07-C FP class"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 448,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "linux_af_alg_skcipher_oper is a plain static internal helper (not a vtable/callback dispatch contract) and only reads skcipher->t; genuine low-severity DCL13-C per the established plain-internal-helper TP disposition"
+    },
+    {
+      "rule": "MEM05-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 451,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "char buf[CMSG_SPACE(sizeof(u32))] \u2014 CMSG_SPACE(sizeof(...)) is a compile-time-constant macro expression, not a runtime-sized VLA; extends the established MEM05-C fixed-size-macro-expression FP class"
+    },
+    {
+      "rule": "STR31-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 452,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf is an ancillary sendmsg/recvmsg control-message (cmsg) byte buffer, never used to hold a NUL-terminated string; established STR31-C misapplied-to-non-char/non-string-buffer FP class"
+    },
+    {
+      "rule": "EXP05-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 458,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "(void*)in forced by struct iovec.iov_base's unconditionally-non-const type per POSIX; in is only read (send direction); established EXP05-C cast-away-const-on-read-only-iovec FP class (categorical_patterns.md 16-40_b22)"
+    },
+    {
+      "rule": "DCL39-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 473,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "msg (struct msghdr) is explicitly os_memset-zeroed immediately before use, and is a local kernel-syscall descriptor never itself serialized to the peer (only the iovec payload is sent); established DCL39-C FP class (categorical_patterns.md 16-40_b22)"
+    },
+    {
+      "rule": "CON33-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 476,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 476,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON33-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 483,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 483,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "MSC41-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 499,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "the flagged string is a Linux kernel crypto-API transform/algorithm name (e.g. \"ecb(aes)\", \"cbc(aes)\", \"kw(aes)\"), not a secret/password/key/token; MSC41-C's hardcoded-secret heuristic misfires on algorithm identifiers"
+    },
+    {
+      "rule": "MSC41-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 519,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "the flagged string is a Linux kernel crypto-API transform/algorithm name (e.g. \"ecb(aes)\", \"cbc(aes)\", \"kw(aes)\"), not a secret/password/key/token; MSC41-C's hardcoded-secret heuristic misfires on algorithm identifiers"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 537,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "rc4_skip's skip/data_len are internal-API params from a small set of internal WEP callers with protocol-bounded values, not externally-nullable/attacker-controlled; established API00-C internal-API FP class"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 537,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "rc4_skip's skip/data_len are internal-API params from a small set of internal WEP callers with protocol-bounded values, not externally-nullable/attacker-controlled; established API00-C internal-API FP class"
+    },
+    {
+      "rule": "MEM05-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 542,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "char buf[CMSG_SPACE(sizeof(u32))] \u2014 CMSG_SPACE(sizeof(...)) is a compile-time-constant macro expression, not a runtime-sized VLA; extends the established MEM05-C fixed-size-macro-expression FP class"
+    },
+    {
+      "rule": "MSC41-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 552,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "the flagged string is a Linux kernel crypto-API transform/algorithm name (e.g. \"ecb(aes)\", \"cbc(aes)\", \"kw(aes)\"), not a secret/password/key/token; MSC41-C's hardcoded-secret heuristic misfires on algorithm identifiers"
+    },
+    {
+      "rule": "DCL39-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 575,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "msg (struct msghdr) is explicitly os_memset-zeroed immediately before use, and is a local kernel-syscall descriptor never itself serialized to the peer (only the iovec payload is sent); established DCL39-C FP class (categorical_patterns.md 16-40_b22)"
+    },
+    {
+      "rule": "CON33-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 578,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 578,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON33-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 590,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 590,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "MEM05-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 612,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "char buf[CMSG_SPACE(sizeof(u32))] \u2014 CMSG_SPACE(sizeof(...)) is a compile-time-constant macro expression, not a runtime-sized VLA; extends the established MEM05-C fixed-size-macro-expression FP class"
+    },
+    {
+      "rule": "STR31-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 613,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf is an ancillary sendmsg/recvmsg control-message (cmsg) byte buffer, never used to hold a NUL-terminated string; established STR31-C misapplied-to-non-char/non-string-buffer FP class"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 624,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "i is an ordinary loop counter used for array indexing and as a shift amount \u2014 idiomatic, not a real bitwise/arithmetic conflation; matches established INT14-C stylistic-pedantry FP class"
+    },
+    {
+      "rule": "INT13-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 624,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "tmp is a u8 (0-255) promoted to non-negative int; right-shifting a non-negative value by i (0-6) is well-defined, no implementation-defined behavior actually occurs"
+    },
+    {
+      "rule": "FIO50-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 625,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "'tmp' here is a plain u8 byte variable (parity-bit computation), not a FILE*/stream at all \u2014 no I/O anywhere near this line; established FIO50-C name-based-misfire-on-non-stream-variable FP class"
+    },
+    {
+      "rule": "FIO50-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 625,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "'tmp' here is a plain u8 byte variable (parity-bit computation), not a FILE*/stream at all \u2014 no I/O anywhere near this line; established FIO50-C name-based-misfire-on-non-stream-variable FP class"
+    },
+    {
+      "rule": "INT13-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 625,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "next = tmp << (7-i): tmp is u8 (0-255, non-negative after promotion), shift amount 1-7, result fits in int with no UB; same reasoning as the :624 sibling finding"
+    },
+    {
+      "rule": "MSC41-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 629,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "the flagged string is a Linux kernel crypto-API transform/algorithm name (e.g. \"ecb(aes)\", \"cbc(aes)\", \"kw(aes)\"), not a secret/password/key/token; MSC41-C's hardcoded-secret heuristic misfires on algorithm identifiers"
+    },
+    {
+      "rule": "EXP05-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 633,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "(void*)clear forced by struct iovec.iov_base's non-const type; clear is only read (encrypt-source direction); established cast-away-const-on-read-only-iovec FP class"
+    },
+    {
+      "rule": "DCL39-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 648,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "msg (struct msghdr) is explicitly os_memset-zeroed immediately before use, and is a local kernel-syscall descriptor never itself serialized to the peer (only the iovec payload is sent); established DCL39-C FP class (categorical_patterns.md 16-40_b22)"
+    },
+    {
+      "rule": "CON33-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 651,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 651,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON33-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 658,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 658,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "STR31-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 680,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf is an ancillary sendmsg/recvmsg control-message (cmsg) byte buffer, never used to hold a NUL-terminated string; established STR31-C misapplied-to-non-char/non-string-buffer FP class"
+    },
+    {
+      "rule": "MSC41-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 688,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "the flagged string is a Linux kernel crypto-API transform/algorithm name (e.g. \"ecb(aes)\", \"cbc(aes)\", \"kw(aes)\"), not a secret/password/key/token; MSC41-C's hardcoded-secret heuristic misfires on algorithm identifiers"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 698,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*alg_iv) inside a msg_controllen size computation \u2014 sizeof(*ptr) not a dereference; established FP class"
+    },
+    {
+      "rule": "DCL39-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 717,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "msg (struct msghdr) is explicitly os_memset-zeroed immediately before use, and is a local kernel-syscall descriptor never itself serialized to the peer (only the iovec payload is sent); established DCL39-C FP class (categorical_patterns.md 16-40_b22)"
+    },
+    {
+      "rule": "CON33-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 720,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 720,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON33-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 728,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 728,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 757,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "key is an internal crypto-vector API param, always caller-supplied and valid at the small set of internal call sites; established API00-C internal-API FP class"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 765,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "key is an internal crypto-vector API param, always caller-supplied and valid at the small set of internal call sites; established API00-C internal-API FP class"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 772,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "key is an internal crypto-vector API param, always caller-supplied and valid at the small set of internal call sites; established API00-C internal-API FP class"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 778,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "key is an internal crypto-vector API param, always caller-supplied and valid at the small set of internal call sites; established API00-C internal-API FP class"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 784,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "kek/n are internal aes_unwrap params (key-unwrap block count bounded by protocol-fixed key sizes at all internal callers), not attacker-controlled; established API00-C internal-API FP class"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 784,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "kek/n are internal aes_unwrap params (key-unwrap block count bounded by protocol-fixed key sizes at all internal callers), not attacker-controlled; established API00-C internal-API FP class"
+    },
+    {
+      "rule": "STR31-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 789,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf is an ancillary sendmsg/recvmsg control-message (cmsg) byte buffer, never used to hold a NUL-terminated string; established STR31-C misapplied-to-non-char/non-string-buffer FP class"
+    },
+    {
+      "rule": "MSC41-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 797,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "the flagged string is a Linux kernel crypto-API transform/algorithm name (e.g. \"ecb(aes)\", \"cbc(aes)\", \"kw(aes)\"), not a secret/password/key/token; MSC41-C's hardcoded-secret heuristic misfires on algorithm identifiers"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 802,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "n is the AES-key-wrap block count, bounded by protocol-fixed key sizes at all internal callers of aes_unwrap; no realistic overflow of n*8 in an int"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 807,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*alg_iv) inside msg_controllen computation \u2014 sizeof(*ptr) not a dereference; established FP class"
+    },
+    {
+      "rule": "DCL39-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 826,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "msg (struct msghdr) is explicitly os_memset-zeroed immediately before use, and is a local kernel-syscall descriptor never itself serialized to the peer (only the iovec payload is sent); established DCL39-C FP class (categorical_patterns.md 16-40_b22)"
+    },
+    {
+      "rule": "CON33-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 829,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 829,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 833,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "same n*8 bounded-block-count reasoning as :802"
+    },
+    {
+      "rule": "CON33-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 836,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 836,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 843,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "n*8 used only as a printf display argument in an error-log message; same bounded-value reasoning as :802"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 871,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "os_zalloc(sizeof(*ctx)) \u2014 sizeof(*ptr) not a dereference; established FP class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 897,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "mutually-exclusive branch confusion: ctx is only freed on the switch's default: case or the !ctx->skcipher branch, each of which returns immediately; flagged access is on a disjoint path"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 898,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same mutually-exclusive-branch confusion as :897"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 898,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same mutually-exclusive-branch confusion as :897/:898 MEM30-C"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 906,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*alg_iv) \u2014 sizeof(*ptr) not a dereference; established FP class"
+    },
+    {
+      "rule": "DCL39-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 915,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "msg (struct msghdr) is explicitly os_memset-zeroed immediately before use, and is a local kernel-syscall descriptor never itself serialized to the peer (only the iovec payload is sent); established DCL39-C FP class (categorical_patterns.md 16-40_b22)"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 915,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "mutually-exclusive branch confusion: ctx is only freed on the switch's default: case or the !ctx->skcipher branch, each of which returns immediately; flagged access is on a disjoint path"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 915,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "mutually-exclusive branch confusion: ctx is only freed on the switch's default: case or the !ctx->skcipher branch, each of which returns immediately; flagged access is on a disjoint path"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 915,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "mutually-exclusive branch confusion: ctx is only freed on the switch's default: case or the !ctx->skcipher branch, each of which returns immediately; flagged access is on a disjoint path"
+    },
+    {
+      "rule": "CON33-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 918,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 918,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 919,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "mutually-exclusive branch confusion: ctx is only freed on the switch's default: case or the !ctx->skcipher branch, each of which returns immediately; flagged access is on a disjoint path"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 919,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "mutually-exclusive branch confusion: ctx is only freed on the switch's default: case or the !ctx->skcipher branch, each of which returns immediately; flagged access is on a disjoint path"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 920,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same mutually-exclusive-branch confusion as :897"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 920,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same mutually-exclusive-branch confusion"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 925,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ctx is heap-allocated via os_zalloc, not automatic storage; established DCL30-C FP class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 925,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "mutually-exclusive branch confusion: ctx is only freed on the switch's default: case or the !ctx->skcipher branch, each of which returns immediately; flagged access is on a disjoint path"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 929,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "crypto_cipher_oper is a plain static internal helper (not a dispatch-contract vtable) and only reads ctx->skcipher->t; genuine low-severity DCL13-C per established plain-internal-helper TP disposition"
+    },
+    {
+      "rule": "MEM05-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 932,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "char buf[CMSG_SPACE(sizeof(u32))] \u2014 CMSG_SPACE(sizeof(...)) is a compile-time-constant macro expression, not a runtime-sized VLA; extends the established MEM05-C fixed-size-macro-expression FP class"
+    },
+    {
+      "rule": "STR31-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 933,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf is an ancillary sendmsg/recvmsg control-message (cmsg) byte buffer, never used to hold a NUL-terminated string; established STR31-C misapplied-to-non-char/non-string-buffer FP class"
+    },
+    {
+      "rule": "EXP05-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 939,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "(void*)in forced by iovec.iov_base's non-const type, in only read; established FP class"
+    },
+    {
+      "rule": "DCL39-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 954,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "msg (struct msghdr) is explicitly os_memset-zeroed immediately before use, and is a local kernel-syscall descriptor never itself serialized to the peer (only the iovec payload is sent); established DCL39-C FP class (categorical_patterns.md 16-40_b22)"
+    },
+    {
+      "rule": "CON33-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 957,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 957,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON33-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 964,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 964,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread CON33/34-C strerror() FP class (single-threaded eloop codebase, per categorical_patterns.md)"
+    },
+    {
+      "rule": "INT31-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 970,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "(int) len cast used only for printf %d display in an error log, not in a later comparison/arithmetic"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 978,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "crypto_cipher_encrypt/decrypt are thin internal wrappers around crypto_cipher_oper, called only with valid caller-owned buffers; established API00-C internal-API FP class"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 978,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "crypto_cipher_encrypt/decrypt are thin internal wrappers around crypto_cipher_oper, called only with valid caller-owned buffers; established API00-C internal-API FP class"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 985,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "crypto_cipher_encrypt/decrypt are thin internal wrappers around crypto_cipher_oper, called only with valid caller-owned buffers; established API00-C internal-API FP class"
+    },
+    {
+      "rule": "DCL15-C",
+      "file": "src/crypto/crypto_linux.c",
+      "line": 1001,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "crypto_global_init is the exported crypto-backend entry point, called externally from src/tls/tlsv1_client.c and tlsv1_server.c (and declared in crypto.h); external linkage is required, not incidental"
+    }
+  ],
+  "fns": [
+    {
+      "file": "src/crypto/crypto_linux.c",
+      "line": 826,
+      "rule": "MEM31-C",
+      "desc": "aes_unwrap(): the sendmsg() failure branch (`if (ret < 0) { ...; return -1; }` at lines 826-831) returns without calling linux_af_alg_skcipher_deinit(skcipher), leaking the two AF_ALG socket fds (skcipher->s, skcipher->t) and the heap-allocated struct linux_af_alg_skcipher \u2014 the two adjacent read()-failure branches a few lines later (:834-839, :840-846) correctly call the deinit, making this an inconsistent/skipped cleanup on one specific early-return path.",
+      "upstream_present": "unknown"
+    }
+  ],
+  "files_clean_for_fn": [],
+  "summary": {
+    "tp": 2,
+    "fp": 144,
+    "fn": 1
+  }
+}

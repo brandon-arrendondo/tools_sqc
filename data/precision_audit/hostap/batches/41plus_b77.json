@@ -1,0 +1,1354 @@
+{
+ "src/common/dpp.c#part1of3": [
+  {
+   "column": 46,
+   "file": "src/common/dpp.c",
+   "line": 42,
+   "message": "Pointer parameter 'auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *auth'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 48,
+   "message": "Function 'dpp_alloc_msg' does not validate integer parameter 'len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 62,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 4,
+   "file": "src/common/dpp.c",
+   "line": 80,
+   "message": "Function returns pointer to local variable 'pos' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 9,
+   "file": "src/common/dpp.c",
+   "line": 99,
+   "message": "Subtracting pointers from different arrays ('end' from 'buf' and 'pos' from 'prev'). Pointer subtraction is only defined for pointers within the same array object.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Only subtract pointers that point to elements within the same array object."
+  },
+  {
+   "column": 9,
+   "file": "src/common/dpp.c",
+   "line": 99,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:buf' and 'param:prev'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 14,
+   "file": "src/common/dpp.c",
+   "line": 104,
+   "message": "Subtracting pointers from different arrays ('end' from 'buf' and 'pos' from 'prev'). Pointer subtraction is only defined for pointers within the same array object.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Only subtract pointers that point to elements within the same array object."
+  },
+  {
+   "column": 14,
+   "file": "src/common/dpp.c",
+   "line": 104,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:buf' and 'param:prev'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 4,
+   "file": "src/common/dpp.c",
+   "line": 108,
+   "message": "Function returns pointer to local variable 'pos' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 190,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'info' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 23,
+   "file": "src/common/dpp.c",
+   "line": 191,
+   "message": "Pointer dereference '*info++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 208,
+   "message": "Function 'dpp_parse_uri_chan_list' does not validate pointer parameter 'chan_list' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'chan_list' at the start of the function, e.g., 'if (!chan_list) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 214,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'pos2' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 14,
+   "file": "src/common/dpp.c",
+   "line": 219,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 14,
+   "file": "src/common/dpp.c",
+   "line": 219,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 13,
+   "file": "src/common/dpp.c",
+   "line": 224,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 13,
+   "file": "src/common/dpp.c",
+   "line": 224,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 255,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 49,
+   "file": "src/common/dpp.c",
+   "line": 261,
+   "message": "Pointer parameter 'bi' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bi'"
+  },
+  {
+   "column": 3,
+   "file": "src/common/dpp.c",
+   "line": 401,
+   "message": "Pointer dereference '*port++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 15,
+   "file": "src/common/dpp.c",
+   "line": 403,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 15,
+   "file": "src/common/dpp.c",
+   "line": 403,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 5,
+   "file": "src/common/dpp.c",
+   "line": 410,
+   "message": "Pointer dereference '*port++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 16,
+   "file": "src/common/dpp.c",
+   "line": 411,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 16,
+   "file": "src/common/dpp.c",
+   "line": 411,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 24,
+   "file": "src/common/dpp.c",
+   "line": 487,
+   "message": "Dereference of uninitialized pointer 'bi'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'bi' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 503,
+   "message": "Function returns pointer to local variable 'bi' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 56,
+   "file": "src/common/dpp.c",
+   "line": 527,
+   "message": "Pointer parameter 'own_modes' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *own_modes'"
+  },
+  {
+   "column": 3,
+   "file": "src/common/dpp.c",
+   "line": 537,
+   "message": "Loop uses uninitialized variable 'c' as bound for array access. This has indeterminate value and can cause out-of-bounds access.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize 'c' to a valid value before using it in the loop"
+  },
+  {
+   "column": 39,
+   "file": "src/common/dpp.c",
+   "line": 576,
+   "message": "sizeof applied to pointer/array parameter 'freqs' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(freqs[0])'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 31,
+   "file": "src/common/dpp.c",
+   "line": 606,
+   "message": "Pointer parameter 'own_modes' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *own_modes'"
+  },
+  {
+   "column": 3,
+   "file": "src/common/dpp.c",
+   "line": 624,
+   "message": "Loop uses uninitialized variable 'c' as bound for array access. This has indeterminate value and can cause out-of-bounds access.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize 'c' to a valid value before using it in the loop"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 650,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 650,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 686,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 696,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 713,
+   "message": "Pointer arithmetic moves 4 elements beyond buffer bounds (effective size: 1): Buffer 'len' with size 1 (allocated at line 3989)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 4,
+   "file": "src/common/dpp.c",
+   "line": 722,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 4,
+   "file": "src/common/dpp.c",
+   "line": 725,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 4,
+   "file": "src/common/dpp.c",
+   "line": 741,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 4,
+   "file": "src/common/dpp.c",
+   "line": 743,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 4,
+   "file": "src/common/dpp.c",
+   "line": 746,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 769,
+   "message": "Function 'dpp_alloc_auth' does not validate pointer parameter 'dpp' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dpp' at the start of the function, e.g., 'if (!dpp) { return error_code; }'"
+  },
+  {
+   "column": 26,
+   "file": "src/common/dpp.c",
+   "line": 774,
+   "message": "Dereference of uninitialized pointer 'auth'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'auth' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 780,
+   "message": "Function returns pointer to local variable 'auth' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 793,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 14,
+   "file": "src/common/dpp.c",
+   "line": 808,
+   "message": "Unsigned integer addition '4 + nonce_len' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }"
+  },
+  {
+   "column": 16,
+   "file": "src/common/dpp.c",
+   "line": 818,
+   "message": "Unsigned integer addition '4 + auth->curve->hash_len' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }"
+  },
+  {
+   "column": 13,
+   "file": "src/common/dpp.c",
+   "line": 822,
+   "message": "Scaled integer arithmetic with pointer: '4 + clear_len + AES_BLOCK_SIZE'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 3,
+   "file": "src/common/dpp.c",
+   "line": 825,
+   "message": "Unsigned integer compound addition 'attr_len += 5' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 26,
+   "file": "src/common/dpp.c",
+   "line": 839,
+   "message": "Unsigned integer subtraction 'nonce_len - 1' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 41,
+   "file": "src/common/dpp.c",
+   "line": 840,
+   "message": "Unsigned integer subtraction 'nonce_len - 1' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 6,
+   "file": "src/common/dpp.c",
+   "line": 892,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 943,
+   "message": "Function 'dpp_build_conf_req' does not validate pointer parameter 'auth' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'auth' at the start of the function, e.g., 'if (!auth) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 943,
+   "message": "Function 'dpp_build_conf_req' does not validate pointer parameter 'json' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'json' at the start of the function, e.g., 'if (!json) { return error_code; }'"
+  },
+  {
+   "column": 13,
+   "file": "src/common/dpp.c",
+   "line": 948,
+   "message": "Function 'dpp_build_conf_req_attr' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 966,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 970,
+   "message": "Function 'dpp_build_conf_req_helper' does not validate pointer parameter 'auth' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'auth' at the start of the function, e.g., 'if (!auth) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 970,
+   "message": "Function 'dpp_build_conf_req_helper' does not validate pointer parameter 'name' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'name' at the start of the function, e.g., 'if (!name) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 970,
+   "message": "Function 'dpp_build_conf_req_helper' does not validate pointer parameter 'extra_value' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'extra_value' at the start of the function, e.g., 'if (!extra_value) { return error_code; }'"
+  },
+  {
+   "column": 9,
+   "file": "src/common/dpp.c",
+   "line": 1004,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 34,
+   "file": "src/common/dpp.c",
+   "line": 1058,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 63,
+   "file": "src/common/dpp.c",
+   "line": 1058,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 1064,
+   "message": "Function 'dpp_configuration_alloc' does not validate pointer parameter 'type' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'type' at the start of the function, e.g., 'if (!type) { return error_code; }'"
+  },
+  {
+   "column": 26,
+   "file": "src/common/dpp.c",
+   "line": 1070,
+   "message": "Dereference of uninitialized pointer 'conf'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'conf' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 1100,
+   "message": "Function returns pointer to local variable 'conf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 1101,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 23,
+   "file": "src/common/dpp.c",
+   "line": 1175,
+   "message": "sizeof applied to pointer/array parameter 'conf' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*conf)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 13,
+   "file": "src/common/dpp.c",
+   "line": 1198,
+   "message": "Memory allocated with 'dpp_configuration_alloc' for variable 'conf' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(conf)' before the variable goes out of scope"
+  },
+  {
+   "column": 24,
+   "file": "src/common/dpp.c",
+   "line": 1238,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 24,
+   "file": "src/common/dpp.c",
+   "line": 1238,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 3,
+   "file": "src/common/dpp.c",
+   "line": 1298,
+   "message": "Return value of 'strtol' assigned to 'val' but not checked for errors: 'strtol(pos, NULL, 0)' - Sets errno on overflow/underflow, uses endptr for parsing errors",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check errno and endptr: errno = 0; val = strtol(str, &endptr, base); if (errno != 0 || endptr == str) handle_error();"
+  },
+  {
+   "column": 9,
+   "file": "src/common/dpp.c",
+   "line": 1298,
+   "message": "Return value from strtol() should be checked for errors",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Check if strtol() returned an error value (NULL, -1, etc.)"
+  },
+  {
+   "column": 9,
+   "file": "src/common/dpp.c",
+   "line": 1298,
+   "message": "strtol() can set errno but errno is not checked after the call",
+   "rule_id": "ERR01-C",
+   "severity": "Low",
+   "suggestion": "Set errno to 0 before calling strtol() and check errno afterward to detect errors"
+  },
+  {
+   "column": 9,
+   "file": "src/common/dpp.c",
+   "line": 1298,
+   "message": "In-band function 'strtol' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+   "rule_id": "ERR30-C",
+   "severity": "Medium",
+   "suggestion": "Set errno before call: 'errno = 0; val = strtol(...); if (errno == ERANGE) { ... }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 1358,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 1391,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 4,
+   "file": "src/common/dpp.c",
+   "line": 1411,
+   "message": "Function returns pointer to local variable 'conf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 54,
+   "file": "src/common/dpp.c",
+   "line": 1451,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 54,
+   "file": "src/common/dpp.c",
+   "line": 1451,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 28,
+   "file": "src/common/dpp.c",
+   "line": 1462,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 28,
+   "file": "src/common/dpp.c",
+   "line": 1462,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 28,
+   "file": "src/common/dpp.c",
+   "line": 1468,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 28,
+   "file": "src/common/dpp.c",
+   "line": 1468,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 23,
+   "file": "src/common/dpp.c",
+   "line": 1536,
+   "message": "sizeof applied to pointer/array parameter 'auth' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*auth)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 48,
+   "file": "src/common/dpp.c",
+   "line": 1541,
+   "message": "Pointer parameter 'auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *auth'"
+  },
+  {
+   "column": 33,
+   "file": "src/common/dpp.c",
+   "line": 1542,
+   "message": "Pointer parameter 'conf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conf'"
+  },
+  {
+   "column": 3,
+   "file": "src/common/dpp.c",
+   "line": 1564,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 1584,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 1588,
+   "message": "Function 'dpp_build_jwk' does not validate pointer parameter 'key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+  },
+  {
+   "column": 32,
+   "file": "src/common/dpp.c",
+   "line": 1625,
+   "message": "Pointer parameter 'conf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conf'"
+  },
+  {
+   "column": 9,
+   "file": "src/common/dpp.c",
+   "line": 1637,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 3,
+   "file": "src/common/dpp.c",
+   "line": 1638,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 16,
+   "file": "src/common/dpp.c",
+   "line": 1638,
+   "message": "sizeof applied to pointer/array parameter 'conf' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(conf->psk)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 17,
+   "file": "src/common/dpp.c",
+   "line": 1641,
+   "message": "sizeof applied to pointer/array parameter 'conf' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(conf->psk)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 77,
+   "file": "src/common/dpp.c",
+   "line": 1663,
+   "message": "Pointer parameter 'bi' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bi'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 1839,
+   "message": "Unsigned integer compound addition 'tailroom += 2 * curve->prime_len * 4 / 3 + os_strlen(auth->conf->kid)' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 14,
+   "file": "src/common/dpp.c",
+   "line": 1839,
+   "message": "Unsigned integer multiplication '2 * curve->prime_len' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (a > UINT_MAX / b) { /* handle error */ }"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 1840,
+   "message": "Unsigned integer compound addition 'tailroom += os_strlen(signed_conn)' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 3,
+   "file": "src/common/dpp.c",
+   "line": 1842,
+   "message": "Unsigned integer compound addition 'tailroom += 1000' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 4,
+   "file": "src/common/dpp.c",
+   "line": 1845,
+   "message": "Unsigned integer compound addition 'tailroom += 2 * wpabuf_len(auth->certbag)' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 4,
+   "file": "src/common/dpp.c",
+   "line": 1847,
+   "message": "Unsigned integer compound addition 'tailroom += 2 * wpabuf_len(auth->cacert)' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 4,
+   "file": "src/common/dpp.c",
+   "line": 1849,
+   "message": "Unsigned integer compound addition 'tailroom += os_strlen(auth->trusted_eap_server_name)' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 3,
+   "file": "src/common/dpp.c",
+   "line": 1850,
+   "message": "Unsigned integer compound addition 'tailroom += 1000' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 3,
+   "file": "src/common/dpp.c",
+   "line": 1853,
+   "message": "Unsigned integer compound addition 'tailroom += 10 + os_strlen(conf->extra_name) +\n\t\t\tos_strlen(conf->extra_value)' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 3,
+   "file": "src/common/dpp.c",
+   "line": 1874,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 4,
+   "file": "src/common/dpp.c",
+   "line": 1878,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 1922,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 1992,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 1995,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 24,
+   "file": "src/common/dpp.c",
+   "line": 2008,
+   "message": "Dereference of uninitialized pointer 'bi'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'bi' before dereferencing"
+  },
+  {
+   "column": 8,
+   "file": "src/common/dpp.c",
+   "line": 2037,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 9,
+   "file": "src/common/dpp.c",
+   "line": 2039,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 8,
+   "file": "src/common/dpp.c",
+   "line": 2042,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 10,
+   "file": "src/common/dpp.c",
+   "line": 2073,
+   "message": "Function 'dpp_build_conf_obj_dpp' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 10,
+   "file": "src/common/dpp.c",
+   "line": 2076,
+   "message": "Function 'dpp_build_conf_obj_dpp' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 12,
+   "file": "src/common/dpp.c",
+   "line": 2089,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 9,
+   "file": "src/common/dpp.c",
+   "line": 2090,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 4,
+   "file": "src/common/dpp.c",
+   "line": 2105,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp.c",
+   "line": 2116,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp.c",
+   "line": 2120,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 13,
+   "file": "src/common/dpp.c",
+   "line": 2168,
+   "message": "Scaled integer arithmetic with pointer: '4 + 1 + 4 + clear_len + AES_BLOCK_SIZE'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 3,
+   "file": "src/common/dpp.c",
+   "line": 2171,
+   "message": "Unsigned integer compound addition 'attr_len += 5' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 9,
+   "file": "src/common/dpp.c",
+   "line": 2218,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 6,
+   "file": "src/common/dpp.c",
+   "line": 2293,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 10,
+   "file": "src/common/dpp.c",
+   "line": 2359,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Missing or invalid required Wrapped Data attribute\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 18,
+   "file": "src/common/dpp.c",
+   "line": 2365,
+   "message": "Scaled integer arithmetic with pointer: 'wrapped_data_len - AES_BLOCK_SIZE'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 23,
+   "file": "src/common/dpp.c",
+   "line": 2372,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"AES-SIV decryption failed\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 10,
+   "file": "src/common/dpp.c",
+   "line": 2388,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Missing or invalid Enrollee Nonce attribute\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 10,
+   "file": "src/common/dpp.c",
+   "line": 2399,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Enrollee included a new protocol key even though one was not expected\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 3,
+   "file": "src/common/dpp.c",
+   "line": 2404,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 23,
+   "file": "src/common/dpp.c",
+   "line": 2418,
+   "message": "Hard-coded sensitive information detected passed to `dpp_debug_print_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"New Peer Protocol Key (Pe)\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 11,
+   "file": "src/common/dpp.c",
+   "line": 2431,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Missing Initiator Authentication Tag\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 11,
+   "file": "src/common/dpp.c",
+   "line": 2437,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Mismatch in Initiator Authenticating Tag\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 10,
+   "file": "src/common/dpp.c",
+   "line": 2452,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Missing or invalid Config Attributes attribute\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 23,
+   "file": "src/common/dpp.c",
+   "line": 2482,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Unsupported wi-fi_tech\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 23,
+   "file": "src/common/dpp.c",
+   "line": 2501,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Unsupported netRole\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 5,
+   "file": "src/common/dpp.c",
+   "line": 2543,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 9,
+   "file": "src/common/dpp.c",
+   "line": 2572,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp.c",
+   "line": 2635,
+   "message": "sizeof applied to pointer/array parameter 'conf' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(conf->passphrase)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 8,
+   "file": "src/common/dpp.c",
+   "line": 2639,
+   "message": "sizeof applied to pointer/array parameter 'conf' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(conf->password_id)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 8,
+   "file": "src/common/dpp.c",
+   "line": 2728,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 2733,
+   "message": "Local variable 'curve' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 6,
+   "file": "src/common/dpp.c",
+   "line": 2760,
+   "message": "Use of 'sscanf()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace sscanf() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 6,
+   "file": "src/common/dpp.c",
+   "line": 2760,
+   "message": "Type mismatch in sscanf(): format specifier '%u' expects Integer but argument 1 ('\"%04u-%02u-%02uT%02u:%02u:%02u\"') is Pointer",
+   "rule_id": "FIO47-C",
+   "severity": "High",
+   "suggestion": "Ensure format specifiers match argument types"
+  },
+  {
+   "column": 6,
+   "file": "src/common/dpp.c",
+   "line": 2760,
+   "message": "Input function 'sscanf' used for integer conversion without errno check for ERANGE",
+   "rule_id": "INT05-C",
+   "severity": "Medium",
+   "suggestion": "Either use fgets() + strtol/strtoll() for safe conversion, or check errno for ERANGE after scanf"
+  },
+  {
+   "column": 6,
+   "file": "src/common/dpp.c",
+   "line": 2760,
+   "message": "'sscanf' is deprecated/obsolescent -- prefer sscanf_s()",
+   "rule_id": "MSC24-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'sscanf' with sscanf_s()"
+  },
+  {
+   "column": 13,
+   "file": "src/common/dpp.c",
+   "line": 2760,
+   "message": "Do not cast away const qualification: 'timestamp'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 16,
+   "file": "src/common/dpp.c",
+   "line": 2767,
+   "message": "Variable 'year' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'year' before use, e.g., at its declaration"
+  },
+  {
+   "column": 22,
+   "file": "src/common/dpp.c",
+   "line": 2767,
+   "message": "Variable 'month' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'month' before use, e.g., at its declaration"
+  }
+ ]
+}

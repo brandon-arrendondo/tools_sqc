@@ -1,0 +1,1354 @@
+{
+ "hostapd/hlr_auc_gw.c#part1of2": [
+  {
+   "column": 1,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 63,
+   "message": "Shared variable 'serv_sock' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 64,
+   "message": "Shared variable 'milenage_file' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 65,
+   "message": "Shared variable 'update_milenage' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 66,
+   "message": "Shared variable 'sqn_changes' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 67,
+   "message": "Shared variable 'ind_len' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 68,
+   "message": "Shared variable 'stdout_debug' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 69,
+   "message": "Shared variable 'stop' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 13,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 69,
+   "message": "Global flag variable 'stop' appears to be used for synchronization without proper primitives. Use mutexes, condition variables, or atomic operations instead.",
+   "rule_id": "CON02-C",
+   "severity": "High",
+   "suggestion": "Replace with proper synchronization primitives like mtx_t (C11 threads), pthread_mutex_t (POSIX), or atomic types (_Atomic)"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 80,
+   "message": "Shared variable 'gsm_db' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 94,
+   "message": "Shared variable 'milenage_db' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 109,
+   "message": "Shared variable 'sqlite_db' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 117,
+   "message": "main() returns without calling fclose(stdout) - data may be unflushed",
+   "rule_id": "FIO23-C",
+   "severity": "Medium",
+   "suggestion": "Call fclose(stdout) before return to ensure data is flushed"
+  },
+  {
+   "column": 32,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 136,
+   "message": "Type mismatch in variadic function call: format specifier '%s' expects char* but argument 1 is NULL",
+   "rule_id": "DCL11-C",
+   "severity": "High",
+   "suggestion": "Use correct format specifier for NULL or cast argument to char*"
+  },
+  {
+   "column": 32,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 136,
+   "message": "Passing potentially null pointer 'err' to function",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'err' is not NULL before passing to function"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 150,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 162,
+   "message": "Function returns pointer to local variable 'db' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 54,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 166,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 68,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 166,
+   "message": "Pointer parameter 'col' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *col'"
+  },
+  {
+   "column": 17,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 199,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 17,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 199,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 207,
+   "message": "Function 'db_get_milenage' performs compound operation on shared static variables (db_tmp_milenage, sqlite_db) without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 213,
+   "message": "Use of 'atoll' which lacks error checking - prefer 'strtoll'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoll' with 'strtoll': strtoll provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 213,
+   "message": "Use of 'atoll()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoll() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 62,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 228,
+   "message": "Pointer parameter 'm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *m'"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 236,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 237,
+   "message": "Potential null pointer dereference of variable 'pos'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'pos' is not NULL before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 237,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 7,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 240,
+   "message": "Variable 'val' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'val' before use, e.g., at its declaration"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 242,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 6,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 266,
+   "message": "Privileged operation 'bind' without subsequent privilege dropping",
+   "rule_id": "POS02-C",
+   "severity": "Medium",
+   "suggestion": "Call setuid/setgid to drop privileges after setup"
+  },
+  {
+   "column": 5,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 283,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 6,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 286,
+   "message": "File opened for reading using variable filename 'fname' without verifying file attributes (fstat + st_uid/st_gid check)",
+   "rule_id": "FIO05-C",
+   "severity": "Medium",
+   "suggestion": "Use fstat() to check file ownership (st_uid, st_gid) before reading untrusted files"
+  },
+  {
+   "column": 6,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 286,
+   "message": "fopen() called without 'N' flag in mode string \"r\". On Windows, file handles are inheritable by default unless the 'N' flag is specified.",
+   "rule_id": "WIN03-C",
+   "severity": "High",
+   "suggestion": "Add 'N' flag to the mode string (e.g., \"rwN\") to disable handle inheritance on Windows."
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 293,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'pos' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 33,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 293,
+   "message": "Do not cast away const qualification: 'f'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 4,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 304,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 352,
+   "message": "Local variable 'g' assigned to global/static variable 'gsm_db' - creates dangling pointer",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage for local variable or copy data instead of assigning pointer"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 352,
+   "message": "Stack pointer escape: local array/VLA assigned to global 'gsm_db'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not save pointers to stack-allocated memory in global variables."
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 357,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 369,
+   "message": "Value assigned to 'gsm_db_pos' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 4,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 369,
+   "message": "Stack pointer escape: local array/VLA assigned to global 'gsm_db_pos'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not save pointers to stack-allocated memory in global variables."
+  },
+  {
+   "column": 4,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 370,
+   "message": "Function returns pointer to local variable 'g' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 378,
+   "message": "Value assigned to 'gsm_db_pos' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 4,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 378,
+   "message": "Stack pointer escape: local array/VLA assigned to global 'gsm_db_pos'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not save pointers to stack-allocated memory in global variables."
+  },
+  {
+   "column": 4,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 379,
+   "message": "Function returns pointer to local variable 'g' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 5,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 395,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 6,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 398,
+   "message": "File reopened using filename 'fname' without verifying file attributes (st_dev, st_ino)",
+   "rule_id": "FIO05-C",
+   "severity": "Medium",
+   "suggestion": "Use fstat() to check st_dev and st_ino before and after reopening, or avoid closing and reopening the file"
+  },
+  {
+   "column": 6,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 398,
+   "message": "fopen() called without 'N' flag in mode string \"r\". On Windows, file handles are inheritable by default unless the 'N' flag is specified.",
+   "rule_id": "WIN03-C",
+   "severity": "High",
+   "suggestion": "Add 'N' flag to the mode string (e.g., \"rwN\") to disable handle inheritance on Windows."
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 405,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'pos' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 33,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 405,
+   "message": "Do not cast away const qualification: 'f'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 4,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 416,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 17,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 474,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 17,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 474,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 11,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 478,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 486,
+   "message": "Local variable 'm' assigned to global/static variable 'milenage_db' - creates dangling pointer",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage for local variable or copy data instead of assigning pointer"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 486,
+   "message": "Stack pointer escape: local array/VLA assigned to global 'milenage_db'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not save pointers to stack-allocated memory in global variables."
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 491,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 14,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 501,
+   "message": "Variable 'buf' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'buf' before use, e.g., at its declaration"
+  },
+  {
+   "column": 6,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 505,
+   "message": "fopen() called without 'N' flag in mode string \"r\". On Windows, file handles are inheritable by default unless the 'N' flag is specified.",
+   "rule_id": "WIN03-C",
+   "severity": "High",
+   "suggestion": "Add 'N' flag to the mode string (e.g., \"rwN\") to disable handle inheritance on Windows."
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 511,
+   "message": "Return value of 'snprintf' ignored: 'snprintf(name, sizeof(name), \"%s.new\", fname)' - Returns negative on error, or >= buffer size on truncation",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check result: int ret = snprintf(buf, size, fmt, ...); if (ret < 0 || ret >= size) handle_error();"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 511,
+   "message": "Call to snprintf may inadvertently truncate string without proper length validation",
+   "rule_id": "STR03-C",
+   "severity": "Medium",
+   "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+  },
+  {
+   "column": 11,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 511,
+   "message": "Do not cast away const qualification: 'name'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 7,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 512,
+   "message": "fopen() with mode \"w\" does not guarantee exclusive file creation. Use \"wx\" or \"w+x\" mode for exclusive creation.",
+   "rule_id": "FIO03-C",
+   "severity": "Medium",
+   "suggestion": "Use fopen() with \"wx\" or \"w+x\" mode for C11, or use open() with O_CREAT|O_EXCL for POSIX"
+  },
+  {
+   "column": 7,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 512,
+   "message": "fopen() cannot explicitly specify file permissions; use open() for security-sensitive files",
+   "rule_id": "FIO06-C",
+   "severity": "Medium",
+   "suggestion": "Use open(filename, O_CREAT | O_WRONLY, mode) to explicitly specify file permissions"
+  },
+  {
+   "column": 7,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 512,
+   "message": "fopen() called without 'N' flag in mode string \"w\". On Windows, file handles are inheritable by default unless the 'N' flag is specified.",
+   "rule_id": "WIN03-C",
+   "severity": "High",
+   "suggestion": "Add 'N' flag to the mode string (e.g., \"rwN\") to disable handle inheritance on Windows."
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 515,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 516,
+   "message": "Function returns without releasing all resources. Leaked: f2. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 519,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'pos' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 33,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 519,
+   "message": "Do not cast away const qualification: 'f'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 8,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 531,
+   "message": "Potentially unsafe array access with variable index 'imsi_len': Buffer 'imsi' with size 20 (allocated at line 85)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 539,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 10,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 539,
+   "message": "Call to snprintf may inadvertently truncate string without proper length validation",
+   "rule_id": "STR03-C",
+   "severity": "Medium",
+   "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 540,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 541,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 542,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 543,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 544,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 545,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 546,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 547,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 550,
+   "message": "Output function 'fprintf' called after input function 'fgets' without intervening fseek/fflush/fsetpos/rewind",
+   "rule_id": "FIO39-C",
+   "severity": "Low",
+   "suggestion": "Add fseek(), fflush(), fsetpos(), or rewind() between input and output operations"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 550,
+   "message": "Type mismatch in fprintf(): format specifier '%s' expects Pointer but argument 1 ('buf') is Integer",
+   "rule_id": "FIO47-C",
+   "severity": "High",
+   "suggestion": "Ensure format specifiers match argument types"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 553,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 553,
+   "message": "Return value of 'fclose' ignored: 'fclose(f2)' - Returns non-zero on error",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (fclose(file) != 0) for close errors"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 554,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 554,
+   "message": "Return value of 'fclose' ignored: 'fclose(f)' - Returns non-zero on error",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (fclose(file) != 0) for close errors"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 554,
+   "message": "Resource 'f' is closed again after already being closed at line 515. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 556,
+   "message": "Return value of 'snprintf' ignored: 'snprintf(name, sizeof(name), \"%s.bak\", fname)' - Returns negative on error, or >= buffer size on truncation",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check result: int ret = snprintf(buf, size, fmt, ...); if (ret < 0 || ret >= size) handle_error();"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 556,
+   "message": "Call to snprintf may inadvertently truncate string without proper length validation",
+   "rule_id": "STR03-C",
+   "severity": "Medium",
+   "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+  },
+  {
+   "column": 11,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 556,
+   "message": "Do not cast away const qualification: 'name'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 6,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 557,
+   "message": "rename() called without handling destination file existence. Behavior is implementation-defined (POSIX removes dest, Windows fails).",
+   "rule_id": "FIO10-C",
+   "severity": "Medium",
+   "suggestion": "Either: (1) Call remove(dest) before rename(), OR (2) Check if dest exists with file_exists()/access()/stat() and handle accordingly"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 562,
+   "message": "Return value of 'snprintf' ignored: 'snprintf(name, sizeof(name), \"%s.new\", fname)' - Returns negative on error, or >= buffer size on truncation",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check result: int ret = snprintf(buf, size, fmt, ...); if (ret < 0 || ret >= size) handle_error();"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 562,
+   "message": "Call to snprintf may inadvertently truncate string without proper length validation",
+   "rule_id": "STR03-C",
+   "severity": "Medium",
+   "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+  },
+  {
+   "column": 11,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 562,
+   "message": "Do not cast away const qualification: 'name'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 6,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 563,
+   "message": "rename() called without handling destination file existence. Behavior is implementation-defined (POSIX removes dest, Windows fails).",
+   "rule_id": "FIO10-C",
+   "severity": "Medium",
+   "suggestion": "Either: (1) Call remove(dest) before rename(), OR (2) Check if dest exists with file_exists()/access()/stat() and handle accordingly"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 586,
+   "message": "Function returns pointer to local variable 'm' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 30,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 590,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 42,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 590,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 602,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 14,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 603,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 14,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 603,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 8,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 611,
+   "message": "Call to snprintf may inadvertently truncate string without proper length validation",
+   "rule_id": "STR03-C",
+   "severity": "Medium",
+   "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+  },
+  {
+   "column": 6,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 618,
+   "message": "File-scope identifier '_rand' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 4,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 623,
+   "message": "Pointer dereference '*rpos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 4,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 624,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 4,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 625,
+   "message": "Pointer dereference '*rpos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 4,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 626,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 4,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 627,
+   "message": "Pointer dereference '*rpos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 4,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 628,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 630,
+   "message": "Potential null pointer dereference of variable 'rpos'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'rpos' is not NULL before dereferencing"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 630,
+   "message": "Pointer dereference '*rpos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 30,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 635,
+   "message": "Assignment in while statement condition: 'g = get_gsm_triplet(imsi)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside while condition"
+  },
+  {
+   "column": 14,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 636,
+   "message": "Potential null pointer dereference in member access of variable 'g'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'g' is not NULL before member access"
+  },
+  {
+   "column": 4,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 640,
+   "message": "Pointer dereference '*rpos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 641,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 4,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 643,
+   "message": "Pointer dereference '*rpos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 644,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 4,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 646,
+   "message": "Pointer dereference '*rpos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 647,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 652,
+   "message": "Format specifier '%s' does not match variable type 'unsigned long long' - violates data model assumptions",
+   "rule_id": "INT00-C",
+   "severity": "Medium",
+   "suggestion": "Use correct format specifier or verify data model assumptions with static assertions"
+  },
+  {
+   "column": 44,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 652,
+   "message": "Type mismatch in variadic function call: format specifier '%s' expects char* but argument 1 is unsigned long long",
+   "rule_id": "DCL11-C",
+   "severity": "High",
+   "suggestion": "Use correct format specifier for unsigned long long or cast argument to char*"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 653,
+   "message": "Call to snprintf may inadvertently truncate string without proper length validation",
+   "rule_id": "STR03-C",
+   "severity": "Medium",
+   "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 656,
+   "message": "Value assigned to 'rpos' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 30,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 663,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 42,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 663,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 674,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 6,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 685,
+   "message": "File-scope identifier '_rand' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 4,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 690,
+   "message": "Pointer dereference '*rpos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 4,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 691,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 4,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 692,
+   "message": "Pointer dereference '*rpos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 4,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 693,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 699,
+   "message": "Potential null pointer dereference of variable 'rpos'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'rpos' is not NULL before dereferencing"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 699,
+   "message": "Pointer dereference '*rpos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 703,
+   "message": "Format specifier '%s' does not match variable type 'unsigned long long' - violates data model assumptions",
+   "rule_id": "INT00-C",
+   "severity": "Medium",
+   "suggestion": "Use correct format specifier or verify data model assumptions with static assertions"
+  },
+  {
+   "column": 43,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 703,
+   "message": "Type mismatch in variadic function call: format specifier '%s' expects char* but argument 1 is unsigned long long",
+   "rule_id": "DCL11-C",
+   "severity": "High",
+   "suggestion": "Use correct format specifier for unsigned long long or cast argument to char*"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 707,
+   "message": "Value assigned to 'rpos' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 8,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 726,
+   "message": "Variable 'sqn' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 8,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 727,
+   "message": "Variable 'ind_len' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 8,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 727,
+   "message": "Variable 'val' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 727,
+   "message": "Shift operation 'val >> ind_len' by 'ind_len' without validating shift amount is non-negative and within type width",
+   "rule_id": "INT34-C",
+   "severity": "Medium",
+   "suggestion": "Check that 'ind_len' is >= 0 and < the bit width of the operand before shifting"
+  },
+  {
+   "column": 22,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 728,
+   "message": "Shift operation '1 << ind_len' by 'ind_len' without validating shift amount is non-negative and within type width",
+   "rule_id": "INT34-C",
+   "severity": "Medium",
+   "suggestion": "Check that 'ind_len' is >= 0 and < the bit width of the operand before shifting"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 729,
+   "message": "Shift operation 'seq << ind_len' by 'ind_len' without validating shift amount is non-negative and within type width",
+   "rule_id": "INT34-C",
+   "severity": "Medium",
+   "suggestion": "Check that 'ind_len' is >= 0 and < the bit width of the operand before shifting"
+  },
+  {
+   "column": 30,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 735,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 42,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 735,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 42,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 735,
+   "message": "Pointer parameter 'resp' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *resp'"
+  },
+  {
+   "column": 5,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 739,
+   "message": "File-scope identifier '_rand' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 743,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 10,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 760,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 771,
+   "message": "Format specifier '%s' does not match variable type 'unsigned long long' - violates data model assumptions",
+   "rule_id": "INT00-C",
+   "severity": "Medium",
+   "suggestion": "Use correct format specifier or verify data model assumptions with static assertions"
+  },
+  {
+   "column": 32,
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 771,
+   "message": "Type mismatch in variadic function call: format specifier '%s' expects char* but argument 1 is unsigned long long",
+   "rule_id": "DCL11-C",
+   "severity": "High",
+   "suggestion": "Use correct format specifier for unsigned long long or cast argument to char*"
+  }
+ ]
+}

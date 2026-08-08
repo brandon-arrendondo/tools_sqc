@@ -1,0 +1,1354 @@
+{
+ "src/crypto/crypto_wolfssl.c#part1of2": [
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 67,
+   "message": "Function-like macro 'LOG_WOLF_ERROR_FUNC' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 67,
+   "message": "Macro parameter 'err' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'err' in parentheses: (err) instead of err"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 67,
+   "message": "Macro 'LOG_WOLF_ERROR_FUNC' uses stringification operator (#) which prevents parameter expansion - consider using two-level macro indirection for proper expansion",
+   "rule_id": "PRE05-C",
+   "severity": "Low",
+   "suggestion": "Use two-level indirection: define a wrapper macro that calls another macro with #, allowing parameters to expand first"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 67,
+   "message": "Macro evaluates parameter 'err' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 71,
+   "message": "Macro 'LOG_WOLF_ERROR_FUNC_NULL' uses stringification operator (#) which prevents parameter expansion - consider using two-level macro indirection for proper expansion",
+   "rule_id": "PRE05-C",
+   "severity": "Low",
+   "suggestion": "Use two-level indirection: define a wrapper macro that calls another macro with #, allowing parameters to expand first"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 99,
+   "message": "Function 'wc_rng_new' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 104,
+   "message": "Function returns pointer to local variable 'ret' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 112,
+   "message": "Double-free: 'rng' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 114,
+   "message": "Double free detected: 'rng' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wc_rng_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 142,
+   "message": "Function returns pointer to local variable 'ret' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 150,
+   "message": "Double-free: 'key' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 150,
+   "message": "Double free detected: 'key' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 152,
+   "message": "Double free detected: 'key' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wc_ecc_key_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 219,
+   "message": "Function 'sha1_vector' does not validate pointer parameter 'addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'addr' at the start of the function, e.g., 'if (!addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 219,
+   "message": "Function 'sha1_vector' does not validate pointer parameter 'len' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'len' at the start of the function, e.g., 'if (!len) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 219,
+   "message": "Function 'sha1_vector' does not validate pointer parameter 'mac' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'mac' at the start of the function, e.g., 'if (!mac) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 514,
+   "message": "Function 'pbkdf2_sha1' does not validate pointer parameter 'ssid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ssid' at the start of the function, e.g., 'if (!ssid) { return error_code; }'"
+  },
+  {
+   "column": 28,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 514,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 13,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 545,
+   "message": "Variable 'i' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 21,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 545,
+   "message": "Bitwise operator '>>' used on signed operand 'i' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'i' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 10,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 546,
+   "message": "Output operation on file stream 'tmp' follows input without intervening positioning call (fseek, fsetpos, or rewind)",
+   "rule_id": "FIO50-C",
+   "severity": "Low",
+   "suggestion": "Insert a positioning function (fseek, fsetpos, rewind) between input and output operations, unless input encountered EOF"
+  },
+  {
+   "column": 10,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 546,
+   "message": "Output operation on file stream 'tmp' follows input without intervening positioning call (fseek, fsetpos, or rewind)",
+   "rule_id": "FIO50-C",
+   "severity": "Low",
+   "suggestion": "Insert a positioning function (fseek, fsetpos, rewind) between input and output operations, unless input encountered EOF"
+  },
+  {
+   "column": 17,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 546,
+   "message": "Bitwise operator '<<' used on signed operand 'i' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'i' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 579,
+   "message": "Function returns pointer to local variable 'aes' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 628,
+   "message": "Function returns pointer to local variable 'aes' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 696,
+   "message": "Function 'aes_wrap' does not validate pointer parameter 'kek' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'kek' at the start of the function, e.g., 'if (!kek) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 696,
+   "message": "Function 'aes_wrap' does not validate integer parameter 'n' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'n' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 696,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 713,
+   "message": "Function 'aes_unwrap' does not validate pointer parameter 'kek' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'kek' at the start of the function, e.g., 'if (!kek) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 713,
+   "message": "Function 'aes_unwrap' does not validate pointer parameter 'cipher' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cipher' at the start of the function, e.g., 'if (!cipher) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 713,
+   "message": "Function 'aes_unwrap' does not validate integer parameter 'n' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'n' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 713,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 734,
+   "message": "Function 'rc4_skip' does not validate integer parameter 'skip' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'skip' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 734,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 25,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 782,
+   "message": "Dereference of uninitialized pointer 'ctx'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ctx' before dereferencing"
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 806,
+   "message": "Use-after-free: passing freed pointer 'ctx' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 20,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 806,
+   "message": "Use-after-free: dereferencing freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access memory after freeing it."
+  },
+  {
+   "column": 21,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 806,
+   "message": "Use-after-free: accessing member of freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 21,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 806,
+   "message": "Use-after-free: accessing member of freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 808,
+   "message": "Use-after-free: passing freed pointer 'ctx' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 20,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 808,
+   "message": "Use-after-free: dereferencing freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access memory after freeing it."
+  },
+  {
+   "column": 21,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 808,
+   "message": "Use-after-free: accessing member of freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 21,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 808,
+   "message": "Use-after-free: accessing member of freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 4,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 810,
+   "message": "Double-free: 'ctx' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 818,
+   "message": "Use-after-free: passing freed pointer 'ctx' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 22,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 818,
+   "message": "Use-after-free: dereferencing freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access memory after freeing it."
+  },
+  {
+   "column": 23,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 818,
+   "message": "Use-after-free: accessing member of freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 23,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 818,
+   "message": "Use-after-free: accessing member of freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 819,
+   "message": "Use-after-free: passing freed pointer 'ctx' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 22,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 819,
+   "message": "Use-after-free: dereferencing freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access memory after freeing it."
+  },
+  {
+   "column": 23,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 819,
+   "message": "Use-after-free: accessing member of freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 23,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 819,
+   "message": "Use-after-free: accessing member of freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 833,
+   "message": "Function returns pointer to local variable 'ctx' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 833,
+   "message": "Use-after-free: returning freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not return freed memory from functions."
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 837,
+   "message": "Function 'crypto_cipher_encrypt' does not validate pointer parameter 'plain' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'plain' at the start of the function, e.g., 'if (!plain) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 837,
+   "message": "Function 'crypto_cipher_encrypt' does not validate pointer parameter 'crypt' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'crypt' at the start of the function, e.g., 'if (!crypt) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 867,
+   "message": "Function 'crypto_cipher_decrypt' does not validate pointer parameter 'crypt' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'crypt' at the start of the function, e.g., 'if (!crypt) { return error_code; }'"
+  },
+  {
+   "column": 28,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 907,
+   "message": "Array declaration 'RFC3526_PRIME_1536[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 28,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 926,
+   "message": "Array declaration 'RFC3526_GENERATOR_1536[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 937,
+   "message": "Value assigned to 'dh' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 938,
+   "message": "Value assigned to 'privkey' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 939,
+   "message": "Value assigned to 'pubkey' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 12,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 956,
+   "message": "Memory allocated with 'wpabuf_alloc' for variable 'privkey@956:12' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(privkey@956:12)' before the variable goes out of scope"
+  },
+  {
+   "column": 11,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 957,
+   "message": "Memory allocated with 'wpabuf_alloc' for variable 'pubkey@957:11' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(pubkey@957:11)' before the variable goes out of scope"
+  },
+  {
+   "column": 42,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 961,
+   "message": "sizeof applied to pointer/array parameter 'RFC3526_PRIME_1536' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(RFC3526_PRIME_1536)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 28,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 962,
+   "message": "sizeof applied to pointer/array parameter 'RFC3526_GENERATOR_1536' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(RFC3526_GENERATOR_1536)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 967,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 975,
+   "message": "Local variable 'privkey' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 976,
+   "message": "Local variable 'pubkey' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 988,
+   "message": "Use-after-free: returning freed pointer 'ret'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not return freed memory from functions."
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 998,
+   "message": "Sensitive buffer 'secret' not cleared before function exit",
+   "rule_id": "MEM03-C",
+   "severity": "Medium",
+   "suggestion": "Call SecureZeroMemory(secret, size) or memset(secret, 0, size) before the buffer goes out of scope"
+  },
+  {
+   "column": 42,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1010,
+   "message": "sizeof applied to pointer/array parameter 'RFC3526_PRIME_1536' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(RFC3526_PRIME_1536)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 28,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1011,
+   "message": "sizeof applied to pointer/array parameter 'RFC3526_GENERATOR_1536' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(RFC3526_GENERATOR_1536)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1015,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 10,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1017,
+   "message": "sizeof applied to pointer/array parameter 'RFC3526_GENERATOR_1536' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(RFC3526_GENERATOR_1536)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1031,
+   "message": "Double-free: 'DYNAMIC_TYPE_TMP_BUFFER' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1032,
+   "message": "Use-after-free: returning freed pointer 'ret'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not return freed memory from functions."
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1042,
+   "message": "Sensitive buffer 'secret' not cleared before function exit",
+   "rule_id": "MEM03-C",
+   "severity": "Medium",
+   "suggestion": "Call SecureZeroMemory(secret, size) or memset(secret, 0, size) before the buffer goes out of scope"
+  },
+  {
+   "column": 11,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1045,
+   "message": "Memory allocated with 'wpabuf_alloc' for variable 'secret@1045:11' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(secret@1045:11)' before the variable goes out of scope"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1049,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1060,
+   "message": "Use-after-free: returning freed pointer 'ret'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not return freed memory from functions."
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1076,
+   "message": "Function 'crypto_dh_init' does not validate integer parameter 'prime_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'prime_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1081,
+   "message": "Value assigned to 'dh' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1121,
+   "message": "Double-free: 'dh' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1153,
+   "message": "Double-free: 'dh' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 28,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1159,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 26,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1188,
+   "message": "Dereference of uninitialized pointer 'hash'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'hash' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1225,
+   "message": "Use-after-free: returning freed pointer 'ret'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not return freed memory from functions."
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1237,
+   "message": "Function 'crypto_hash_finish' does not validate pointer parameter 'len' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'len' at the start of the function, e.g., 'if (!len) { return error_code; }'"
+  },
+  {
+   "column": 22,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1255,
+   "message": "sizeof applied to pointer/array parameter 'ctx' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*ctx)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1289,
+   "message": "Function 'omac1_aes_128_vector' does not validate pointer parameter 'key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1296,
+   "message": "Function 'omac1_aes_128' does not validate pointer parameter 'key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1302,
+   "message": "Function 'omac1_aes_256' does not validate pointer parameter 'key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+  },
+  {
+   "column": 23,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1315,
+   "message": "Dereference of uninitialized pointer 'a'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'a' before dereferencing"
+  },
+  {
+   "column": 11,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1317,
+   "message": "Passing null pointer 'a' to 'os_free' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'a' is not NULL before passing to 'os_free'"
+  },
+  {
+   "column": 29,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1388,
+   "message": "Do not cast away const qualification: '(mp_int *) a'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 21,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1397,
+   "message": "Do not cast away const qualification: '(mp_int *) a'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 35,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1397,
+   "message": "Scaled integer arithmetic with pointer: 'buf + offset'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 23,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1414,
+   "message": "Do not cast away const qualification: '(mp_int *) m'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 27,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1417,
+   "message": "Do not cast away const qualification: '(mp_int *) r'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1418,
+   "message": "Function 'mp_mod' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 13,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1418,
+   "message": "Do not cast away const qualification: '(mp_int *) r'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 27,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1418,
+   "message": "Do not cast away const qualification: '(mp_int *) m'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 41,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1418,
+   "message": "Do not cast away const qualification: '(mp_int *) r'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 16,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1430,
+   "message": "Do not cast away const qualification: '(mp_int *) a'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 30,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1430,
+   "message": "Do not cast away const qualification: '(mp_int *) b'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 9,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1431,
+   "message": "Do not cast away const qualification: '(mp_int *) r'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 16,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1439,
+   "message": "Do not cast away const qualification: '(mp_int *) a'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 30,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1439,
+   "message": "Do not cast away const qualification: '(mp_int *) m'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 9,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1440,
+   "message": "Do not cast away const qualification: '(mp_int *) r'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 20,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1452,
+   "message": "Do not cast away const qualification: '(mp_int *) b'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 34,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1452,
+   "message": "Do not cast away const qualification: '(mp_int *) e'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 48,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1452,
+   "message": "Do not cast away const qualification: '(mp_int *) m'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1453,
+   "message": "Do not cast away const qualification: '(mp_int *) r'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 19,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1464,
+   "message": "Do not cast away const qualification: '(mp_int *) a'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 33,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1464,
+   "message": "Do not cast away const qualification: '(mp_int *) m'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1465,
+   "message": "Do not cast away const qualification: '(mp_int *) r'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 16,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1476,
+   "message": "Do not cast away const qualification: '(mp_int *) a'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 30,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1476,
+   "message": "Do not cast away const qualification: '(mp_int *) b'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 9,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1477,
+   "message": "Do not cast away const qualification: '(mp_int *) r'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 16,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1488,
+   "message": "Do not cast away const qualification: '(mp_int *) a'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 30,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1488,
+   "message": "Do not cast away const qualification: '(mp_int *) b'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 19,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1501,
+   "message": "Do not cast away const qualification: '(mp_int *) a'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 33,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1501,
+   "message": "Do not cast away const qualification: '(mp_int *) b'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 47,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1501,
+   "message": "Do not cast away const qualification: '(mp_int *) c'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 19,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1514,
+   "message": "Do not cast away const qualification: '(mp_int *) a'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 33,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1514,
+   "message": "Do not cast away const qualification: '(mp_int *) b'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 47,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1514,
+   "message": "Do not cast away const qualification: '(mp_int *) m'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 19,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1526,
+   "message": "Do not cast away const qualification: '(mp_int *) a'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 33,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1526,
+   "message": "Do not cast away const qualification: '(mp_int *) b'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1527,
+   "message": "Do not cast away const qualification: '(mp_int *) c'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1531,
+   "message": "Function 'crypto_bignum_rshift' does not validate integer parameter 'n' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'n' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 14,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1534,
+   "message": "Do not cast away const qualification: '(mp_int *) a'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 28,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1534,
+   "message": "Do not cast away const qualification: '(mp_int *) r'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 10,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1536,
+   "message": "Do not cast away const qualification: '(mp_int *) r'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1541,
+   "message": "Function 'crypto_bignum_cmp' does not validate pointer parameter 'a' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'a' at the start of the function, e.g., 'if (!a) { return error_code; }'"
+  },
+  {
+   "column": 16,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1544,
+   "message": "Do not cast away const qualification: '(mp_int *) a'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 30,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1544,
+   "message": "Do not cast away const qualification: '(mp_int *) b'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1548,
+   "message": "Function 'crypto_bignum_is_zero' does not validate pointer parameter 'a' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'a' at the start of the function, e.g., 'if (!a) { return error_code; }'"
+  },
+  {
+   "column": 19,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1550,
+   "message": "Do not cast away const qualification: '(mp_int *) a'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1554,
+   "message": "Function 'crypto_bignum_is_one' does not validate pointer parameter 'a' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'a' at the start of the function, e.g., 'if (!a) { return error_code; }'"
+  },
+  {
+   "column": 18,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1561,
+   "message": "Do not cast away const qualification: '(mp_int *) a'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 17,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1579,
+   "message": "Do not cast away const qualification: '(mp_int *) p'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 20,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1583,
+   "message": "Do not cast away const qualification: '(mp_int *) a'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 38,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1583,
+   "message": "Do not cast away const qualification: '(mp_int *) p'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1611,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 23,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1661,
+   "message": "Dereference of uninitialized pointer 'e'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'e' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1752,
+   "message": "Function returns pointer to local variable 'e' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 64,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1774,
+   "message": "Pointer parameter 'e' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *e'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1784,
+   "message": "Function 'crypto_ec_prime_len' does not validate pointer parameter 'e' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'e' at the start of the function, e.g., 'if (!e) { return error_code; }'"
+  }
+ ]
+}

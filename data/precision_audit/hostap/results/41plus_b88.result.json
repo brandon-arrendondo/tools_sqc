@@ -1,0 +1,995 @@
+{
+ "labels": [
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1786,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'e' is an internal opaque crypto_ec handle, always valid post-crypto_ec_init(); never externally nullable (API00-C internal-only pattern extended to null-deref)."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1790,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only wrapper API; e is always a valid handle post-crypto_ec_init(), never externally nullable."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1796,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only wrapper API; e always valid."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1802,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only wrapper API; e always valid."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1802,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "e only read (&e->prime); genuine low-severity const opportunity, plain read-only-helper exception."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1808,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "e only read (&e->order); same plain read-only-helper exception."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1814,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only wrapper API; e always valid."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1814,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "e only read (&e->a); same plain read-only-helper exception."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1820,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only wrapper API; e always valid."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1820,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "e only read (&e->b); same plain read-only-helper exception."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1847,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "e only read (e->g); same plain read-only-helper exception."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1854,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "'e' is entirely unused in the function body; trivially const-eligible."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1857,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p is const struct crypto_ec_point*, cast only to read p->x as mp_copy's source operand; no write through p."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1864,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Cast bridges to ecc_map(p,...), which converts the point from projective to affine coordinates IN PLACE \u2014 genuinely mutates the nominally-const 'point' parameter."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1872,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same internal-handle-never-null pattern; 'e' only ever a valid crypto_ec* from crypto_ec_init()."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1906,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only wrapper API; e always valid post-init."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1906,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "e only read (e->key->dp->size); plain read-only-helper exception."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1909,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "`point = NULL` at declaration is unconditionally overwritten at :1915 before any read (and the TEST_FAIL() early-return never reads it either); dead-null-init genuine TP."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1919,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'e' always a valid handle from crypto_ec_init(); no caller ever passes NULL."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1942,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "a/b cast read-only: consumed only as mp_mulmod source operands / ecc_projective_add_point read-only inputs, never written."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1942,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "a/b cast read-only: consumed only as mp_mulmod source operands / ecc_projective_add_point read-only inputs, never written."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1943,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'e' always valid; &e->prime read via internal-only handle, never null in practice."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1985,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'c' is NOT const-qualified in this function's signature (struct crypto_ec_point *c, an output param) \u2014 no const is actually being cast away; tool misfire."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1992,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'c' is NOT const-qualified here either (same output param as :1985) \u2014 no const actually cast away; tool misfire."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2004,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only wrapper API; b always a valid crypto_bignum handle from callers."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2013,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "b/p cast read-only: wc_ecc_mulmod treats them as scalar/base-point inputs, writing only to 'res'."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2013,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "b/p cast read-only: wc_ecc_mulmod treats them as scalar/base-point inputs, writing only to 'res'."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2019,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'p' IS genuinely mutated: aliased via `ecc_point *point=(ecc_point*)p;` then `point->y` is written by mp_sub \u2014 DCL13 missed the mutation through the cast alias."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2026,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'e' always valid handle; internal-only API, never null at real call sites."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2033,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only wrapper API; e always valid."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2045,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "x cast read-only: consumed only as mp_sqrmod's source operand, output goes to y2."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2046,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mp_addmod's parameters are plain mp_int* with no restrict qualifier; EXP43-C UB only applies to restrict-qualified aliasing (established non-restrict FP precedent)."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2047,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "x cast read-only: consumed only as mp_mulmod's source operand, output goes to y2."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2048,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same non-restrict mp_addmod precedent."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2058,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "e only read (e->prime/a/b); plain read-only-helper exception."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2061,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p cast read-only: wc_ecc_point_is_at_infinity is a pure predicate check."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2065,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only wrapper API; e always valid."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2068,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p cast read-only: wc_ecc_is_point is a pure curve-membership predicate check."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2068,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'e' always valid handle; internal-only API, never null at real call sites."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2073,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only wrapper API; a/b always valid crypto_ec_point handles."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2073,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only wrapper API; a/b always valid crypto_ec_point handles."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2077,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "a/b cast read-only: wc_ecc_cmp_point is a pure comparison."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2077,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "a/b cast read-only: wc_ecc_cmp_point is a pure comparison."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2126,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'fail:' is a real jump target reached via goto earlier in the function, not fallen into after the preceding return; goto-blindness FP class."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2134,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "`ret = NULL` unconditionally overwritten at :2137 before any read; dead-null-init genuine TP."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2158,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "`ret = NULL` never read on the early-return branch, and unconditionally overwritten at :2165 otherwise; dead-null-init genuine TP."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2202,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only wrapper API; ecdh always valid post-crypto_ecdh_init()."
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2202,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Function always explicitly returns via the shared done:/fail: goto target (`return buf;`); goto-blindness variant of the MSC07 family."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2202,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ecdh only read (ecdh->ec->key->pubkey.x/y); plain read-only-helper exception."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2204,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "`buf = NULL` unconditionally overwritten at :2208 before any read; dead-null-init genuine TP."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2234,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'key' here is wire key-material passed by callers as offsets into already-validated buffers (owe_dh+2, peer_ie+2, wpabuf_head()); never NULL in practice."
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2234,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Function always explicitly returns via the shared done:/fail: goto target (`return secret;`); goto-blindness variant of the MSC07 family."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2234,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ecdh only read (ecdh->ec->key->dp->size, ->idx); plain read-only-helper exception."
+  },
+  {
+   "rule": "MEM03-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2239,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'secret' is the function's own heap-allocated return value (the ECDH shared secret handed to the caller); clearing it before return would destroy the value being returned."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2286,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'fail:' reached via goto from earlier branches, not fallen into after the preceding return."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2293,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only wrapper API; ecdh always valid."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2293,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ecdh only read (forwards ecdh->ec to crypto_ec_prime_len); plain read-only-helper exception."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2314,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'key' is a heap pointer from os_zalloc(), not the address of automatic storage; established DCL30-C FP pattern (local-variable-vs-local-storage confusion)."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2358,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'ret' is heap-allocated via crypto_ec_key_init(); same DCL30-C FP pattern."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2359,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'fail:' reached via goto at :2349/:2355, not fallen into after the preceding return."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2366,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "key only read (key->eckey->dp->id in a switch); plain read-only-helper exception."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2487,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'fail:' reached via goto from earlier branches."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2496,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "`ret = NULL` unconditionally overwritten before any read; dead-null-init genuine TP."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2512,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'fail:' reached via goto from earlier branches."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2518,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Factually wrong: the function's first statement is `if (!key || !key->eckey || !data || len == 0) { ...; goto fail; }` \u2014 it does validate 'key'."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2558,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'fail:' reached via goto from earlier branches."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2564,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "key only read (key->eckey passed to wc_ecc_verify_hash); no rng lazy-init call here (contrast with sign functions), genuinely read-only."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2595,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "dead NULL/0 initializer unconditionally overwritten before its only use; same established pattern."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2696,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'fail:' reached via goto from earlier branches."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2705,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "dead NULL/0 initializer unconditionally overwritten before its only use."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2722,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "x/y cast read-only import source data for wc_ecc_import_unsigned; code comment confirms 'Cast necessary for FIPS API'."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2722,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "x/y cast read-only import source data for wc_ecc_import_unsigned; code comment confirms 'Cast necessary for FIPS API'."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2772,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Cast bridges to crypto_ec_key_get_subject_public_key(), which can call crypto_ec_key_gen_public_key() -> wc_ecc_make_pub_ex(key->eckey,...) when type==PRIVATEKEY_ONLY, genuinely mutating the nominally-const 'key'."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2775,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Cast bridges to crypto_ec_key_get_ecprivate_key(), which similarly can trigger crypto_ec_key_gen_public_key() lazy pubkey generation, mutating the nominally-const 'key'."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2788,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() are pure read accessors with no side effects to unsequence; established EXP30-C pure-getter FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2802,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len()/wpabuf_mhead() are pure read accessors, no side effects."
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2824,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No getenv()/environment-variable code anywhere in this file; fixed local buffer with no env interaction \u2014 reconfirms the ENV01-C rule-logic-bug pattern (p2p_invitation.c precedent), now 3x+ confirmed."
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2825,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same rule-logic-bug pattern; no env code nearby."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2839,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "e cast read-only (e->prime/e->mont_b/e->curve_id consumed as read-only args to crypto_ec_point_to_bin); the point being mutated there is the separate 'p' argument, already non-const-relevant to this cast."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2854,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "dead NULL/0 initializer unconditionally overwritten before its only use."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2879,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'fail:' reached via goto from earlier branches."
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2891,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same rule-logic-bug pattern; no env code nearby."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2962,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'fail:' reached via goto from earlier branches."
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2963,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail:'s os_free(der) (:2963) is reached only via goto BEFORE the success-path os_free(der) (:2959) ever executes \u2014 mutually exclusive branches, not a real double free."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2963,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same mutually-exclusive-branch shape as the paired MEM30-C finding."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2970,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'key' IS genuinely modified: forwarded into crypto_ec_key_init_rng(key), which lazily writes key->rng \u2014 DCL13 missed the mutation through the forwarded call."
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2972,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same rule-logic-bug pattern; no env code nearby."
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2976,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same rule-logic-bug pattern; no env code nearby."
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2978,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same rule-logic-bug pattern; no env code nearby."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 2981,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "dead NULL/0 initializer unconditionally overwritten before its only use."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3044,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mp_unsigned_bin_size() is a pure read of an mp_int's size, no side effects."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3080,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "e only read (e->curve_id); plain read-only-helper exception."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3095,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pub cast read-only: wc_ecc_export_point_der serializes to DER, does not write back into pub."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3108,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pub cast read-only, second export call with same semantics."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3129,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'fail:' reached via goto from earlier branches."
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3130,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail:'s os_free(buf) (:3130) is reached only via goto BEFORE the success-path os_free(buf) (:3126) executes \u2014 mutually exclusive branches."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3130,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same mutually-exclusive-branch shape as the paired MEM30-C finding."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3138,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "`p7 = NULL` never read on the early-return branch, unconditionally overwritten otherwise; dead-null-init genuine TP."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3140,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "`err = 0` never read before being reassigned; dead initializer genuine TP."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3253,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "New sub-shape: 'case cert_type_none:' is a valid switch-dispatch jump target reached when csr->type==cert_type_none, not fallen into after the preceding case's break."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3304,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "`der = NULL` unconditionally overwritten before any read; dead-null-init genuine TP."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3323,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure getters, no side effects."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3335,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'csr' IS directly modified: os_memcpy(dest,...)/dest[name_len]='\\0' write into csr->req.c.subject.* fields through csr itself."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3412,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "csr only read (csr->type, csr->req.dc.cPwdLen/cPwd, csr->req.c.challengePw); genuinely read-only."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3414,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+out-param pair (size_t *len, int *type); established API05-C FP class (misfires on plain scalar out-params, not real arrays)."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3528,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "`csr = NULL` never read on the early-return branch, unconditionally overwritten otherwise; dead-null-init genuine TP."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3542,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure getters, no side effects."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3551,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'fail:' reached via goto from earlier branches."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3571,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`sizeof(*ret)` never evaluates 'ret'; classic sizeof(*ptr)-misidentified-as-dereference FP idiom."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3593,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'ret' is heap-allocated via os_zalloc(); same DCL30-C FP pattern."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3594,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'fail:' reached via goto from earlier branches (:3578/:3584/:3589)."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3614,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic T*+size_t companion pair (key_pem, key_pem_len); established API05-C FP class."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3629,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "wc_PemToDer() returning 0 guarantees cert_der is set per its documented contract; success-implies-non-null API contract not visible to sqc."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3669,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'file' is an internal config path string from parsed configuration, never NULL at call sites."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3672,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "`key_pem = NULL` unconditionally overwritten before any read; dead-null-init genuine TP."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3739,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "key_pem is set to NULL right after its early free (:3713-3714) on the success path, so any later os_free(key_pem) in fail: is a safe no-op, not a double free."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3756,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "`ret = NULL` never read on the early-return branch, unconditionally overwritten otherwise; dead-null-init genuine TP."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3769,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_len()/wc_RsaEncryptSize() are pure size-computation reads, no side effects."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3773,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head_u8()/wpabuf_len()/wpabuf_mhead_u8()/wpabuf_size() are pure getters, no side effects."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3800,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "`ret = NULL` never read on the early-return branch, unconditionally overwritten otherwise; dead-null-init genuine TP."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3813,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_len()/wc_RsaEncryptSize() pure reads, no side effects."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3817,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head_u8()/wpabuf_len()/wpabuf_mhead_u8()/wpabuf_size() pure getters, no side effects."
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3652,
+   "rule": "MEM31-C",
+   "desc": "read_rsa_key_from_x509(): wc_AllocDer() allocates *key_der at :3646, but if the subsequent wc_GetPubKeyDerFromCert() write-call at :3652 fails, execution goes to fail: (:3659) which frees only cert/cert_der, never *key_der -- the allocated DerBuffer leaks. Worse, the caller crypto_rsa_key_read() only checks `if (!key_der)` (:3700) to detect failure, so on this specific path key_der is non-NULL but was never actually filled by the failed GetPubKeyDerFromCert call, and the caller proceeds to RSA-decode its (unfilled/stale) contents as if valid.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 34,
+  "fp": 88,
+  "fn": 1
+ }
+}

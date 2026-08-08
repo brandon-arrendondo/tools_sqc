@@ -1,0 +1,957 @@
+{
+ "labels": [
+  {
+   "rule": "ARR39-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 25,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "(const u8*)buf is a 1-byte-element pointer; subtracting sizeof() is normal single-scaled byte offset, not double scaling"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 34,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "trace computed via pointer arithmetic from buf, which callers already null-checked/dereferenced in same fn; trace can't be NULL"
+  },
+  {
+   "rule": "ERR05-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 43,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpabuf is reusable/shared code across hostapd+wpa_supplicant; abort() on corruption is a literal ERR05-C violation (deliberate fail-fast, low severity)"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 61,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same as line 34: trace derived from buf already null-checked at line 54 in this function"
+  },
+  {
+   "rule": "ERR05-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 65,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same abort()-in-reusable-library-code violation as line 43"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 69,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "flags pointer var 'buf' itself though it's buf->flags (bitwise) vs buf->used (arithmetic) - different struct fields, not the same value used both ways"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 79,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "trace assigned unconditionally at line 60 within the same #ifdef WPA_TRACE block, always initialized before use at line 79"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 83,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nbuf is NULL on this realloc-failure return path; nothing was allocated to leak"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 86,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nbuf is unsigned char* (1-byte element); sizeof-based offset is normal single-scaled byte arithmetic, not double scaling"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 91,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is never freed in this function; likely conflates mutually-exclusive #ifdef WPA_TRACE / #else branches as sequential (extends documented preprocessor-branch-blind DCL40 pattern)"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 93,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nbuf is NULL on this realloc-failure path; nothing allocated to leak, same as line 83"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 99,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is a local pointer variable holding heap memory from os_realloc, not automatic-storage data; matches DCL30-C local-variable-vs-local-storage confusion pattern"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 104,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nbuf was stored into *_buf (caller-visible) on success path, not leaked; false MEM12 on a retained pointer"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 113,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "internal-only allocator; len values in practice come from small protocol-bounded sizes, matches 'mostly FP on internal-only APIs' pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 135,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "internal-only API00-C pointer-validation pedantry pattern; data always a real buffer from callers"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 160,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic 'const void *data, size_t len' pointer+size pair; matches confirmed API05-C conformant-array-syntax FP pattern"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 177,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head(src)/wpabuf_len(src) are pure read accessors with no side effects; extends confirmed EXP30-C side-effect-free-args FP pattern"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 178,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf holds heap pointer from wpabuf_alloc, not automatic storage; DCL30-C local-var-vs-storage FP pattern"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 190,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "matches confirmed MEM10-C ad-hoc-NULL-check stylistic FP pattern"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 193,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "trace derived from buf already null-checked at line 190 in this function; same FP as lines 34/61"
+  },
+  {
+   "rule": "ERR05-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 197,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same abort()-in-reusable-library-code violation as lines 43/65"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 203,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "matches confirmed MEM10-C ad-hoc-NULL-check pattern"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 215,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_mhead(buf)/wpabuf_len(buf) are pure accessors, no side effects; extends EXP30-C FP pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 221,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "internal-only API00-C pattern; buf never NULL by codebase convention (wpabuf_put is called pervasively without null issues)"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 224,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "buf already dereferenced one line above (line 223) without incident under the same internal-only-never-NULL convention; not independently riskier here"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 228,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tmp points into buf's own heap-allocated data buffer, not a stack address; DCL30-C local-var-vs-storage FP pattern"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 243,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "n = NULL initializer is genuinely dead - both paths that use n (early return a, or n=wpabuf_alloc(len)) overwrite it before any read"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 246,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "matches confirmed MEM10-C ad-hoc-NULL-check pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 279,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "internal-only API00-C overflow-pedantry pattern, same as line 113"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 284,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "matches confirmed MEM10-C ad-hoc-NULL-check pattern"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 298,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ret holds heap pointer from wpabuf_alloc, not automatic storage; DCL30-C FP pattern"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 302,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_printf is declared extern with external linkage in wpabuf.h:39 (PRINTF_FORMAT decl); it's part of the module's public API, not a static-candidate"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 309,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vsnprintf's return value res IS checked two lines later (line 311: 'if (res < 0 || (size_t) res >= ...)'); rule misses the very next statement"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 330,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "len & 0x01 is a standard parity test idiom followed by len /= 2; not a real readability/correctness defect, matches INT14-C stylistic-pedantry pattern (extends line 69)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 343,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ret holds heap pointer from wpabuf_alloc, not automatic storage; DCL30-C FP pattern"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 351,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*wa) is a compile-time type-size computation per C semantics - the sizeof operand is not evaluated/dereferenced at runtime, so an uninitialized wa is never actually read"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 352,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wa holds heap pointer from os_zalloc, not automatic storage; DCL30-C FP pattern"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 362,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idx is initialized to 0 in the very same for-loop init clause ('for (idx = 0; idx < wa->num; idx++)'); not uninitialized at all"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/wpabuf.c",
+   "line": 384,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idx is explicitly range-checked at function entry ('if (!wa || wa->num == 0 || idx >= wa->num) return;') before any use"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/wps/wps.c",
+   "line": 77,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head(cfg->wps->ap_nfc_dev_pw)/wpabuf_len(...) are pure accessors, no side effects; extends EXP30-C FP pattern"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/wps.c",
+   "line": 111,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reachable only when wps_parse_msg() returned >=0 (success), and wps_parse_msg unconditionally os_memset(attr,0,sizeof(*attr)) as its first statement - attr is always initialized (WPS attr-parse output-param pattern)"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/wps/wps.c",
+   "line": 127,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "message misidentifies 'data->dev_password_len' (a size_t length field) as something freed; and the actual dev_password pointer was reassigned to a fresh os_strdup at line 94 before this call, so no double free occurs"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/wps/wps.c",
+   "line": 159,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "internal-only API00-C pattern; wps_deinit always called with the wps_init()-returned data per API contract"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/wps/wps.c",
+   "line": 173,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "stylistic if/else-if-without-final-else heuristic; these are independent boolean conditions, not an exhaustive case set requiring a default handler"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/wps/wps.c",
+   "line": 184,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof is applied to *data->new_ap_settings (a dereferenced struct field), not to the 'data' parameter itself; rule misattributes the sizeof target to the outer pointer param"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/wps.c",
+   "line": 248,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "short-circuit '||': attr.selected_registrar is only evaluated when wps_parse_msg(...) < 0 is false (success), so attr is already memset+populated - WPS attr-parse output-param pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps.c",
+   "line": 264,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "is_selected_pin_registrar is a plain internal static helper (not an eloop/EAP dispatch-table callback); attr is only read, never modified - genuine const opportunity"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/wps.c",
+   "line": 301,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps_parse_msg only writes to attr (unconditional os_memset then field-fill) - it never reads attr's incoming value; WPS attr-parse output-param pattern"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/wps.c",
+   "line": 327,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reached only after wps_parse_msg(...) >= 0 success return; WPS attr-parse output-param pattern"
+  },
+  {
+   "rule": "FLP03-C",
+   "file": "src/wps/wps.c",
+   "line": 339,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "attr.authorized_macs_len / ETH_ALEN is plain integer division (both operands integers); no floating point involved at all"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/wps.c",
+   "line": 366,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reached only after wps_parse_msg(...) >= 0 success return; WPS attr-parse output-param pattern"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/wps.c",
+   "line": 395,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reached only after wps_parse_msg(...) >= 0 success return; WPS attr-parse output-param pattern"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/wps.c",
+   "line": 408,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reached only after wps_parse_msg(...) >= 0 success return; WPS attr-parse output-param pattern"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/wps/wps.c",
+   "line": 443,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ie holds heap pointer from wpabuf_alloc(100), not automatic storage; DCL30-C local-var-vs-storage FP pattern"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/wps/wps.c",
+   "line": 477,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ie holds heap pointer from wpabuf_alloc(100), not automatic storage; DCL30-C FP pattern"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/wps/wps.c",
+   "line": 505,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ie is passed to wps_ie_encapsulate() (wps_attr_build.c:464), which unconditionally frees its input 'data' param on every path (success at line 489, failure at line 471); ownership-transfer MEM31 FP pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/wps/wps.c",
+   "line": 535,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msgs==NULL is already safe by construction: 'while (p)' with p=msgs never executes its body when msgs is NULL"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps.c",
+   "line": 535,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "the function frees the memory msgs points to (via p=msgs then os_free(prev)); const-qualifying would require an extra cast to compile and misleadingly implies non-ownership of freed memory"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/wps/wps.c",
+   "line": 548,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "internal-only API00-C pattern; buf always a real caller buffer in practice"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps.c",
+   "line": 548,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "'end' is only ever used in pointer subtraction (end - pos) throughout the function, never modified - genuine const opportunity"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/wps.c",
+   "line": 557,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reached only after wps_parse_msg(...) >= 0 success return; WPS attr-parse output-param pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/wps/wps.c",
+   "line": 559,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf and end are the classic paired bounds-pointer parameters delimiting one caller-provided array ('pos' is seeded from buf, end is its limit); sqc treats separately-named parameters as provably-different arrays despite the established buf/end convention"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/wps/wps.c",
+   "line": 562,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf and end are the classic paired bounds-pointer parameters delimiting one caller-provided array ('pos' is seeded from buf, end is its limit); sqc treats separately-named parameters as provably-different arrays despite the established buf/end convention"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/wps/wps.c",
+   "line": 566,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf and end are the classic paired bounds-pointer parameters delimiting one caller-provided array ('pos' is seeded from buf, end is its limit); sqc treats separately-named parameters as provably-different arrays despite the established buf/end convention"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/wps/wps.c",
+   "line": 572,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf and end are the classic paired bounds-pointer parameters delimiting one caller-provided array ('pos' is seeded from buf, end is its limit); sqc treats separately-named parameters as provably-different arrays despite the established buf/end convention"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/wps/wps.c",
+   "line": 574,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf and end are the classic paired bounds-pointer parameters delimiting one caller-provided array ('pos' is seeded from buf, end is its limit); sqc treats separately-named parameters as provably-different arrays despite the established buf/end convention"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/wps/wps.c",
+   "line": 580,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf and end are the classic paired bounds-pointer parameters delimiting one caller-provided array ('pos' is seeded from buf, end is its limit); sqc treats separately-named parameters as provably-different arrays despite the established buf/end convention"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/wps/wps.c",
+   "line": 582,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf and end are the classic paired bounds-pointer parameters delimiting one caller-provided array ('pos' is seeded from buf, end is its limit); sqc treats separately-named parameters as provably-different arrays despite the established buf/end convention"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/wps/wps.c",
+   "line": 588,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf and end are the classic paired bounds-pointer parameters delimiting one caller-provided array ('pos' is seeded from buf, end is its limit); sqc treats separately-named parameters as provably-different arrays despite the established buf/end convention"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/wps/wps.c",
+   "line": 591,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf and end are the classic paired bounds-pointer parameters delimiting one caller-provided array ('pos' is seeded from buf, end is its limit); sqc treats separately-named parameters as provably-different arrays despite the established buf/end convention"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/wps/wps.c",
+   "line": 597,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf and end are the classic paired bounds-pointer parameters delimiting one caller-provided array ('pos' is seeded from buf, end is its limit); sqc treats separately-named parameters as provably-different arrays despite the established buf/end convention"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/wps/wps.c",
+   "line": 601,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf and end are the classic paired bounds-pointer parameters delimiting one caller-provided array ('pos' is seeded from buf, end is its limit); sqc treats separately-named parameters as provably-different arrays despite the established buf/end convention"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/wps/wps.c",
+   "line": 608,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf and end are the classic paired bounds-pointer parameters delimiting one caller-provided array ('pos' is seeded from buf, end is its limit); sqc treats separately-named parameters as provably-different arrays despite the established buf/end convention"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/wps/wps.c",
+   "line": 613,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf and end are the classic paired bounds-pointer parameters delimiting one caller-provided array ('pos' is seeded from buf, end is its limit); sqc treats separately-named parameters as provably-different arrays despite the established buf/end convention"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/wps/wps.c",
+   "line": 631,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf and end are the classic paired bounds-pointer parameters delimiting one caller-provided array ('pos' is seeded from buf, end is its limit); sqc treats separately-named parameters as provably-different arrays despite the established buf/end convention"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/wps/wps.c",
+   "line": 633,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf and end are the classic paired bounds-pointer parameters delimiting one caller-provided array ('pos' is seeded from buf, end is its limit); sqc treats separately-named parameters as provably-different arrays despite the established buf/end convention"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/wps/wps.c",
+   "line": 639,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf and end are the classic paired bounds-pointer parameters delimiting one caller-provided array ('pos' is seeded from buf, end is its limit); sqc treats separately-named parameters as provably-different arrays despite the established buf/end convention"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/wps/wps.c",
+   "line": 642,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf and end are the classic paired bounds-pointer parameters delimiting one caller-provided array ('pos' is seeded from buf, end is its limit); sqc treats separately-named parameters as provably-different arrays despite the established buf/end convention"
+  },
+  {
+   "rule": "API00-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 17,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "argv is guaranteed non-NULL by the C runtime for a standard-conforming main() invocation"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 28,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hash[SAE_MAX_HASH_LEN] is an ordinary fixed local array sized by a compile-time macro (SAE_MAX_HASH_LEN=64 in sae.h); no getenv()/environment-variable usage anywhere in this file"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 29,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hash_hex[...] fixed array sized by compile-time macros; no environment-variable usage in this file at all"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 29,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hash_hex size (2*SAE_MAX_HASH_LEN+1) is a compile-time constant expression (macro), not a VLA/runtime-sized allocation"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 30,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pw_base_bin[SAE_MAX_HASH_LEN] fixed array sized by compile-time macro; no environment-variable usage in this file"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 35,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "m_hex size (2*SAE_PK_M_LEN+1) is a compile-time constant expression (macro SAE_PK_M_LEN=16), not a VLA"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 43,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fprintf call contains a plain string literal with no preprocessor directives whatsoever"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 48,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "atoi(argv[2]) result is immediately range-checked against exactly {3,5} at line 49; any malformed/overflowed conversion fails this check and correctly errors out"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 48,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same mitigation as ERR07-C: the immediate 'sec != 3 && sec != 5' check bounds any atoi misparse to a safe error exit"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 50,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fprintf call contains no preprocessor directives; plain string literal"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 61,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fprintf call contains no preprocessor directives"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 62,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sae_pk_gen.c is a standalone single-threaded CLI main(); no pthread/thread usage anywhere in this file, so strerror thread-safety is not applicable"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 62,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same as CON33-C: no threading context exists in this standalone CLI tool"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 106,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'i + 1' and 'hash_hex' are a pure arithmetic expression and a plain variable reference - neither has side effects; extends EXP30-C FP pattern"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 115,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "hash[0]/hash[1]/hash[2] are array element accesses; only hash[2] is used bitwise (&0xf0) - not the same value used both arithmetically and bitwise; INT14-C stylistic-pedantry pattern"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 116,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fprintf call contains no preprocessor directives"
+  },
+  {
+   "rule": "DCL11-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 117,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "the expression '100.0 * (double) i / (double) expected' is explicitly double-typed via casts and a double literal; claim that argument is 'long' is incorrect"
+  },
+  {
+   "rule": "FLP03-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 117,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "division by 'expected' (provably >=256 via expected*=256 loop) for a progress-percentage display; no realistic div-by-zero/exception risk, feclearexcept overhead not warranted"
+  },
+  {
+   "rule": "FLP34-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 117,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "(double) i: i is bounded by the brute-force search count, and even at worst case is well within double's exact-integer range (2^53); no realistic precision loss"
+  },
+  {
+   "rule": "FLP34-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 117,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "(double) expected: expected is 256^sec with sec in {3,5}, max ~1.1e12, well within double's exact-integer range"
+  },
+  {
+   "rule": "INT00-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 131,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "%llu exactly matches the operand type 'unsigned long long' (i is declared unsigned long long); this is the fully portable, correct specifier, not a type-size assumption"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 131,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fprintf call contains no preprocessor directives"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 138,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "while (*src) scans a NUL-terminated string returned by base64_encode(); matches confirmed ARR30-C bounded-NUL-terminated-scan FP pattern"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 138,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "manual copy loop is bounded by the NUL terminator guaranteed by base64_encode()'s contract, same reasoning as the ARR30-C finding on this line"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 140,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'*pos++ = *src;' is a plain char-to-char dereference assignment; no struct/flexible-array-member instance is being assigned at all"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 140,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "assigning char to char (*pos++ = *src), not a widening conversion to a larger type; matches confirmed STR34-C plain-char-assignment FP pattern"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 140,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same plain char-to-char assignment, not a widening conversion; matches confirmed STR34-C FP pattern"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 140,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same plain char-to-char assignment, not a widening conversion; matches confirmed STR34-C FP pattern"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 143,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos is seeded from b64 (null-checked at line 135) and only ever incremented, never nulled; cannot be NULL here"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 143,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'*pos = 0;' is a plain char assignment, not a widening conversion; matches confirmed STR34-C FP pattern"
+  },
+  {
+   "rule": "EXP07-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 151,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sec_1b is declared u32 (fixed 32-bit width); shifting a defined-width unsigned type by 19 is the intended bit-packing operation per the SAE-PK spec, not an unspecified-representation assumption"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 154,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'j' used in ordinary loop arithmetic plus a parity test (j & 1); common idiom, not a real defect; INT14-C stylistic-pedantry pattern"
+  },
+  {
+   "rule": "EXP07-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 160,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "val20 is u32 (fixed 32-bit width); shifting by 12 is deliberate bit-packing, not an unspecified-representation assumption"
+  },
+  {
+   "rule": "FIO50-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 162,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "duplicate misfire of the same bogus file-stream-sequencing flag on a non-I/O arithmetic statement"
+  },
+  {
+   "rule": "FIO50-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 162,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "duplicate misfire of the same bogus file-stream-sequencing flag on a non-I/O arithmetic statement"
+  },
+  {
+   "rule": "DCL11-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 175,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "b64 was null-checked at line 135 ('if (!b64) goto fail;') before this printf; argument 3 cannot be NULL here"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 191,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pw is freed-then-reassigned each loop iteration (line 178 frees the previous iteration's buffer, line 179 assigns a fresh one) before this final free; not a double-free of the same allocation"
+  },
+  {
+   "rule": "FIO23-C",
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 195,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "matches confirmed FIO23-C FP pattern: return from main() is equivalent to exit(), which flushes all open streams including stdout"
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/wps/wps.c",
+   "line": 79,
+   "rule": "MEM31-C",
+   "desc": "wps_init(): in the CONFIG_WPS_NFC alt-password branch, data->alt_dev_password = data->dev_password (line 72) transfers the original PIN-derived buffer to alt_dev_password, then data->dev_password is reassigned via os_memdup (line 76-78). If that os_memdup fails (line 79), the function calls os_free(data) and returns NULL without ever freeing data->alt_dev_password - leaking the original PIN buffer since only the outer struct is freed, not its members.",
+   "upstream_present": "unknown"
+  },
+  {
+   "file": "src/wps/wps.c",
+   "line": 94,
+   "rule": "MEM31-C",
+   "desc": "Same root cause as the line-79 leak: if the NFC alt-password branch executed (setting data->alt_dev_password), a later os_strdup(\"00000000\") failure in the PBC branch (line 93-96) again calls os_free(data) without freeing data->alt_dev_password. Also applies to the new_ap_settings failure path at line 125-129 (bin_clear_free frees dev_password but never alt_dev_password).",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [
+  "src/utils/wpabuf.c",
+  "hostapd/sae_pk_gen.c"
+ ],
+ "summary": {
+  "tp": 6,
+  "fp": 110,
+  "fn": 2
+ }
+}

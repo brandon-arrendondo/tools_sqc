@@ -1,0 +1,1193 @@
+{
+ "labels": [
+  {
+   "rule": "DCL13-C",
+   "file": "src/radius/radius.c",
+   "line": 52,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal helper, msg never reassigned; real but low-value const opportunity (cf. wpa_auth.c dispatch-adjacent TP class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/radius/radius.c",
+   "line": 58,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API: msg always a valid pointer from internal callers, never externally nullable (established API00-C FP class)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/radius/radius.c",
+   "line": 58,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal helper, const opportunity"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/radius/radius.c",
+   "line": 60,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "msg param always valid from internal callers in practice, not actually nullable"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/radius/radius.c",
+   "line": 65,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "const opportunity, msg->hdr write is through a nested pointer member, not msg itself"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/radius/radius.c",
+   "line": 82,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*msg->attr_pos) sizes one size_t element correctly for calloc; not decayed-pointer sizeof"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/radius/radius.c",
+   "line": 106,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*msg) is a non-evaluating context, does not dereference msg (established sizeof(*uninitialized_ptr) class)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/radius/radius.c",
+   "line": 110,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "msg->buf is freed via radius_msg_free() on the failure path just below, or ownership-transferred to the caller on success"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/radius/radius.c",
+   "line": 119,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg points to heap memory from os_zalloc, not stack automatic storage (established heap-pointer DCL30-C FP class)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/radius/radius.c",
+   "line": 119,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "msg->buf ownership transfers to the caller via the returned msg; not a leak"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/radius/radius.c",
+   "line": 129,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "Ad-hoc NULL check is correct C; MEM10-C is a stylistic-only suggestion (established FP class)"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/radius/radius.c",
+   "line": 171,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "radius_attrs[] is sized by its own compile-time initializer list, and ARRAY_SIZE() is used correctly right after (established array-sized-by-initializer FP class)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/radius/radius.c",
+   "line": 316,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "const opportunity"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/radius/radius.c",
+   "line": 339,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Misattributes ext+1 pointer arithmetic plus bitwise ops on ext->type/ext_type members as mixed use of the pointer variable ext itself"
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "src/radius/radius.c",
+   "line": 363,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "case RADIUS_ATTR_IP already ends in its own break; no actual fallthrough at this line"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/radius/radius.c",
+   "line": 368,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "inet_ntoa() genuinely uses a shared static buffer; inet_ntop is the safer alternative regardless of current single-threaded usage"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/radius/radius.c",
+   "line": 411,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/radius/radius.c",
+   "line": 415,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Logging args (msg->hdr->code, radius_code_string(), be_to_host16()) are all pure reads with no side effects to unsequence"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/radius/radius.c",
+   "line": 416,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only msg param"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/radius/radius.c",
+   "line": 453,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos returned here points into msg->buf heap memory (via radius_msg_get_attr_ptr), not a stack object"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/radius/radius.c",
+   "line": 471,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/wpabuf_len are pure accessors with no side effects (established EXP30-C pure-accessor FP class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/radius/radius.c",
+   "line": 488,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/radius/radius.c",
+   "line": 500,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(msg->hdr->authenticator) sizes a fixed 16-byte struct-member array correctly, not a decayed pointer"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/radius/radius.c",
+   "line": 501,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/len pure accessors, established FP class"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/radius/radius.c",
+   "line": 514,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "addr[3] belongs to this function's own local addr[4]; sqc mis-attributes the bound to an unrelated addr[3]/tunnel-password array declared later at line 1788 in a different function"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/radius/radius.c",
+   "line": 530,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/radius/radius.c",
+   "line": 542,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only msg param"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/radius/radius.c",
+   "line": 544,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/len pure accessors"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/radius/radius.c",
+   "line": 569,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/radius/radius.c",
+   "line": 595,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API (secret)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/radius/radius.c",
+   "line": 595,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API (req_authenticator)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/radius/radius.c",
+   "line": 621,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/radius/radius.c",
+   "line": 621,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "const opportunity"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/radius/radius.c",
+   "line": 636,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same cross-function addr[3]/addr[4] buffer-identity confusion as line 514"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/radius/radius.c",
+   "line": 667,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same cross-function buffer-identity confusion"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/radius/radius.c",
+   "line": 678,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tmp comes from radius_get_attr_hdr(), which is pure pointer arithmetic and can never return NULL"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/radius/radius.c",
+   "line": 703,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(msg->hdr->authenticator) fixed-size struct member"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/radius/radius.c",
+   "line": 704,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/len pure accessors"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/radius/radius.c",
+   "line": 718,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "attr param never reassigned; const opportunity"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/radius/radius.c",
+   "line": 725,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*msg->attr_pos) sizes one size_t element"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/radius/radius.c",
+   "line": 725,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_realloc_array(msg->attr_pos, ...) legitimately takes the old pointer as its first argument -- that is realloc's normal contract, not a use-after-free"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/radius/radius.c",
+   "line": 734,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "attr parameter is not const-qualified in this scope; nothing is actually cast away"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/radius/radius.c",
+   "line": 760,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "The omitted else is the intended default path (ordinary <=255 non-extended type), handled correctly by the rest of the function"
+  },
+  {
+   "rule": "INT33-C",
+   "file": "src/radius/radius.c",
+   "line": 771,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plen = 255 - hdr_len is a fixed compile-time-derived positive constant (~250); it can never be zero"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/radius/radius.c",
+   "line": 856,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*hdr) non-evaluating context, no dereference occurs"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/radius/radius.c",
+   "line": 859,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Genuinely casts away const on wire data (data is const u8*), even though hdr is only read afterward"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "src/radius/radius.c",
+   "line": 859,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "data is an attacker-controlled wire buffer with no alignment guarantee; casting char* to struct radius_hdr* risks unaligned access on strict-alignment platforms"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/radius/radius.c",
+   "line": 872,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*msg) non-evaluating context"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/radius/radius.c",
+   "line": 887,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*attr) non-evaluating context"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/radius/radius.c",
+   "line": 903,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg points to heap (os_zalloc), not automatic storage"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/radius/radius.c",
+   "line": 905,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: is a goto target reached from earlier lines (888/893/898); not unreachable (established goto-target-reached class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/radius/radius.c",
+   "line": 911,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/radius/radius.c",
+   "line": 941,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "Ad-hoc NULL check, stylistic-only"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/radius/radius.c",
+   "line": 947,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "attr from radius_get_attr_hdr() can never be NULL"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/radius/radius.c",
+   "line": 968,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap points to heap (wpabuf_alloc), not automatic storage"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/radius/radius.c",
+   "line": 982,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tmp from radius_get_attr_hdr() can never be NULL"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/radius/radius.c",
+   "line": 1002,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(msg->hdr->authenticator) fixed-size struct member"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/radius/radius.c",
+   "line": 1004,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/len pure accessors"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/radius/radius.c",
+   "line": 1011,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "orig_authenticator is set and used under the identical `if (req_auth)` condition earlier in the same function; correlated-guard EXP33-C blind spot"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/radius/radius.c",
+   "line": 1025,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "const opportunity"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/radius/radius.c",
+   "line": 1031,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "Ad-hoc NULL check, stylistic-only"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/radius/radius.c",
+   "line": 1063,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cross-function addr[3]/[4] buffer-identity confusion"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/radius/radius.c",
+   "line": 1084,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "attr from radius_get_attr_hdr() can never be NULL"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/radius/radius.c",
+   "line": 1099,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "const opportunity"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/radius/radius.c",
+   "line": 1102,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(msg->hdr->authenticator) fixed-size struct member"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/radius/radius.c",
+   "line": 1118,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "Ad-hoc NULL check, stylistic-only"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/radius/radius.c",
+   "line": 1125,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vhdr is assigned at the top of the while loop before any use; the sizeof(*vhdr) reference elsewhere is non-evaluating"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/radius/radius.c",
+   "line": 1127,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "attr from radius_get_attr_hdr() can never be NULL"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/radius/radius.c",
+   "line": 1162,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data points to heap (os_memdup), not automatic storage"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/radius/radius.c",
+   "line": 1201,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "This return is the plain==NULL alloc-failure path; nothing was allocated yet, so nothing is leaked"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/radius/radius.c",
+   "line": 1216,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Misattributes pointer arithmetic on pos (pos-MD5_MAC_LEN) plus XOR on the dereferenced value *pos as mixed bitwise/arithmetic use of pos itself"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/radius/radius.c",
+   "line": 1219,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "addr[2]/elen[2] are only read when first==1 (count=3), exactly when they were just set two lines above; count-gated array element, not truly uninitialized"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/radius/radius.c",
+   "line": 1222,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain was already freed by the preceding os_free(plain) before this return"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/radius/radius.c",
+   "line": 1231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain has not been freed anywhere on this path yet; this is the first read of plain[0], not a use-after-free"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/radius/radius.c",
+   "line": 1231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same line/condition, plain not yet freed"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/radius/radius.c",
+   "line": 1234,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain already freed immediately above before this return"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/radius/radius.c",
+   "line": 1237,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain is not freed at this point; os_memdup(plain+1,...) runs before any free on this branch"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/radius/radius.c",
+   "line": 1240,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain already freed at the preceding line before this return"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/radius/radius.c",
+   "line": 1243,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "This line only executes when res != NULL, i.e. the os_free(plain) in the res==NULL branch above did NOT run; plain is freed only afterward at the final os_free(plain)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/radius/radius.c",
+   "line": 1245,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "res points to heap (os_memdup), not automatic storage"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/radius/radius.c",
+   "line": 1245,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain is freed properly just above; res is a fresh allocation whose ownership transfers to the caller, not a leak"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/radius/radius.c",
+   "line": 1257,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "_len is a block-scope local, not a file-scope identifier; underscore+lowercase is only reserved at file scope (established _ftie precedent)"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/radius/radius.c",
+   "line": 1262,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "len is a genuine plain int mixed with & and +/- in the same function (bit-align idiom); real but very low-severity style concern"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/radius/radius.c",
+   "line": 1286,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "count-gated array element, same pattern as line 1219"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/radius/radius.c",
+   "line": 1303,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "const opportunity"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/radius/radius.c",
+   "line": 1313,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*keys) non-evaluating context"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/radius/radius.c",
+   "line": 1344,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "key was reassigned to a fresh allocation at line 1332 before this second free; not a double free"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/radius/radius.c",
+   "line": 1347,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "keys points to heap (os_zalloc)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/radius/radius.c",
+   "line": 1352,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "const opportunity"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/radius/radius.c",
+   "line": 1362,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*keys) non-evaluating context"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/radius/radius.c",
+   "line": 1377,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "keys points to heap (os_zalloc)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/radius/radius.c",
+   "line": 1381,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "send_key_len derives from internal crypto key material (fixed small sizes), not attacker-controlled at this boundary; overflow is unrealistic"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/radius/radius.c",
+   "line": 1381,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same reasoning for recv_key_len"
+  },
+  {
+   "rule": "DCL22-C",
+   "file": "src/radius/radius.c",
+   "line": 1391,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No signal-handler/setjmp context; established DCL22-C no-signal-context FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/radius/radius.c",
+   "line": 1396,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*vhdr) non-evaluating context"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/radius/radius.c",
+   "line": 1413,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "salt is set via os_get_random((u8*)&salt,...) immediately above; output-parameter write not tracked interprocedurally"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/radius/radius.c",
+   "line": 1419,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vendor_length is a plain integer sum assigned to a struct field; no pointer arithmetic or scaling involved (established pure-integer-sum ARR39-C FP class)"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/radius/radius.c",
+   "line": 1431,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "This return is the buf==NULL alloc-failure branch for the recv-key buffer; nothing was allocated on this path, and the prior send-key buf was already freed at line 1423"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/radius/radius.c",
+   "line": 1444,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "Genuine leak: the recv-key buf (os_malloc at line 1429) is never freed on this encrypt_ms_key-failure return path"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/radius/radius.c",
+   "line": 1445,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same pure-integer-sum pattern as line 1419"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/radius/radius.c",
+   "line": 1449,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf was reassigned to a fresh allocation at line 1429 since the prior free at line 1423; not a double free"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/radius/radius.c",
+   "line": 1451,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf was already freed at the preceding line 1449"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/radius/radius.c",
+   "line": 1454,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf already freed at line 1449; this is the successful-return path"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/radius/radius.c",
+   "line": 1458,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "len is caller/config-derived at this boundary, not attacker-controlled; overflow is unrealistic"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/radius/radius.c",
+   "line": 1485,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/radius/radius.c",
+   "line": 1485,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "len is config-derived, overflow unrealistic"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/radius/radius.c",
+   "line": 1507,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/radius/radius.c",
+   "line": 1507,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "const opportunity"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/radius/radius.c",
+   "line": 1541,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf here is this function's own parameter, size-checked against buf_len at line 1517; sqc mis-attributes the bound to an unrelated local char buf[10] declared in a different function at line 1684"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/radius/radius.c",
+   "line": 1547,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos is size_t (unsigned), not signed, and the enclosing while(pos<buf_len) loop -- pos initialized to 16, incremented by 16 -- guarantees pos>=16 whenever this line runs, so pos-16 never underflows"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/radius/radius.c",
+   "line": 1557,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos here is a size_t loop index in this function, not a pointer; the bound is wrongly attributed to an unrelated buf[10] in a different function at line 1684"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/radius/radius.c",
+   "line": 1566,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API (data)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/radius/radius.c",
+   "line": 1566,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API (secret)"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/radius/radius.c",
+   "line": 1591,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tmp from radius_get_attr_hdr() can never be NULL"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/radius/radius.c",
+   "line": 1615,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tmp from radius_get_attr_hdr() can never be NULL"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/radius/radius.c",
+   "line": 1631,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API (msg)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/radius/radius.c",
+   "line": 1631,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "min_len is a small internal constant from call sites, no overflow risk"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/radius/radius.c",
+   "line": 1638,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "attr from radius_get_attr_hdr() can never be NULL"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/radius/radius.c",
+   "line": 1659,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "qsort comparator signature is fixed by contract, but the body could have cast to const int* instead of int* since it never writes through a; minor genuine const-cast-away"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/radius/radius.c",
+   "line": 1660,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "same reasoning for b"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/radius/radius.c",
+   "line": 1677,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/radius/radius.c",
+   "line": 1682,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "attr=NULL initializer is genuinely dead: attr is always reassigned in the loop before any read and is unused after the loop"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/radius/radius.c",
+   "line": 1695,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "attr from radius_get_attr_hdr() can never be NULL"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/radius/radius.c",
+   "line": 1702,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "&tunnel[0] takes an address, it does not read tunnel's contents; tunnel was also already os_memset to 0 before this loop"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/radius/radius.c",
+   "line": 1704,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "&tunnel[data[0]] is address-of, not a read; tunnel already zero-initialized"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/radius/radius.c",
+   "line": 1706,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Unhandled attribute types are intentionally ignored per RADIUS parsing convention, not an unanticipated-value error"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/radius/radius.c",
+   "line": 1728,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() provides no error detection; the downstream `vlan_id<=0` check is only a partial guard (rejects <=0, not non-numeric input), below the established full-range-guard FP threshold"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/radius/radius.c",
+   "line": 1728,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same reasoning as the paired ERR07-C finding"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/radius/radius.c",
+   "line": 1742,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Per RFC 4675 only tag values 0x31/0x32 are valid; other values are intentionally ignored, not an unhandled case"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/radius/radius.c",
+   "line": 1751,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "&tunnel[i] is address-of, not a read; tunnel already initialized via os_memset"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/radius/radius.c",
+   "line": 1780,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API (msg)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/radius/radius.c",
+   "line": 1780,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API (secret)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/radius/radius.c",
+   "line": 1780,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API (sent_msg)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/radius/radius.c",
+   "line": 1780,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "n is a small caller-controlled index (0,1,...), no realistic overflow"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/radius/radius.c",
+   "line": 1780,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size(n) parameter pairing (established API05-C categorical FP class)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/radius/radius.c",
+   "line": 1782,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "const opportunity"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/radius/radius.c",
+   "line": 1841,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "count-gated addr[]/len[] element (count=2 here), same reused-array pattern as lines 1219/1286"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/radius/radius.c",
+   "line": 1847,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos here is this function's own heap-derived pointer (into an os_memdup'd buffer); bound wrongly attributed to an unrelated buf[10] at line 1684 in a different function"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/radius/radius.c",
+   "line": 1867,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same cross-function buffer-identity confusion"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/radius/radius.c",
+   "line": 1883,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "str is a plain pointer into a heap buffer sized fdlen, not a 1-element array; the str+*keylen bound is explicitly checked at line 1871 before this use"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/radius/radius.c",
+   "line": 1895,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "Ad-hoc NULL check, stylistic-only"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/radius/radius.c",
+   "line": 1932,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/radius/radius.c",
+   "line": 1932,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "const opportunity"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/radius/radius.c",
+   "line": 1941,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "attr from radius_get_attr_hdr() can never be NULL"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/radius/radius.c",
+   "line": 1953,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API"
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/radius/radius.c",
+   "line": 699,
+   "rule": "ARR30-C",
+   "desc": "radius_msg_verify_das_req: os_memcpy(orig, attr+1, MD5_MAC_LEN) copies a fixed 16 bytes from the Message-Authenticator attribute payload without first checking attr->length is >= sizeof(*attr)+16. An attacker-controlled RADIUS message can supply a shorter Message-Authenticator attribute, causing an out-of-bounds read of adjacent buffer/heap memory.",
+   "upstream_present": "unknown"
+  },
+  {
+   "file": "src/radius/radius.c",
+   "line": 996,
+   "rule": "ARR30-C",
+   "desc": "radius_msg_verify_msg_auth: identical bug -- os_memcpy(orig, attr+1, MD5_MAC_LEN) reads 16 bytes from the Message-Authenticator attribute without validating attr->length first. Same attacker-controlled wire-data over-read as line 699.",
+   "upstream_present": "unknown"
+  },
+  {
+   "file": "src/radius/radius.c",
+   "line": 1418,
+   "rule": "MEM31-C",
+   "desc": "radius_msg_add_mppe_keys: the send-key buf (os_malloc at line 1399) is never freed on the `if (encrypt_ms_key(...) < 0) return 0;` error path. sqc caught the twin leak of the recv-key buf at line 1444 (MEM12-C) but missed this identical pattern for the send-key buf just above it.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 23,
+  "fp": 122,
+  "fn": 3
+ }
+}

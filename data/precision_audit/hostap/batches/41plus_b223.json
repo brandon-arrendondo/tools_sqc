@@ -1,0 +1,715 @@
+{
+ "src/utils/pcsc_funcs.c": [
+  {
+   "column": 1,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 130,
+   "message": "Shared variable 'dll' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 8,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 198,
+   "message": "Using LoadLibrary() without specifying search paths enables DLL hijacking attacks. An attacker could place a malicious DLL on the search path.",
+   "rule_id": "WIN00-C",
+   "severity": "High",
+   "suggestion": "Use LoadLibraryEx() with explicit search flags like LOAD_LIBRARY_SEARCH_APPLICATION_DIR or LOAD_LIBRARY_SEARCH_SYSTEM32 to control DLL search paths."
+  },
+  {
+   "column": 1,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 205,
+   "message": "Function-like macro 'LOADSYM' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 205,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (sym = #s; \\\n\tdll_ ## s = (void *) GetProcAddress(dll, sym); \\\n\tif (dll_ ## s == NULL) \\\n\t\tgoto fail;)"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 205,
+   "message": "Macro 'LOADSYM' uses token concatenation operator (##) which prevents parameter expansion - consider using two-level macro indirection for proper expansion",
+   "rule_id": "PRE05-C",
+   "severity": "Low",
+   "suggestion": "Use two-level indirection: define a wrapper macro that calls another macro with ##, allowing parameters to expand first"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 205,
+   "message": "Multistatement macro 'LOADSYM' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+   "rule_id": "PRE10-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 205,
+   "message": "Macro 'LOADSYM' definition ends with a semicolon. This can cause unexpected behavior when the macro is used.",
+   "rule_id": "PRE11-C",
+   "severity": "Medium",
+   "suggestion": "Remove the trailing semicolon from the macro definition. The semicolon should be added by the macro user, not in the definition."
+  },
+  {
+   "column": 1,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 205,
+   "message": "Macro evaluates parameter 's' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 226,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 230,
+   "message": "Value assigned to 'dll' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 241,
+   "message": "Value assigned to 'dll' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 252,
+   "message": "Function has pointer parameter without size argument: 'static int _scard_select_file(struct scard_data *scard, unsigned short file_id,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *buf_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 12,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 252,
+   "message": "File-scope identifier '_scard_select_file' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 24,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 253,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 44,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 254,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 256,
+   "message": "Function has pointer parameter without size argument: 'static int scard_select_file(struct scard_data *scard, unsigned short file_id,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *buf_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 23,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 257,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 23,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 262,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 48,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 266,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 48,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 266,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 10,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 267,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 22,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 267,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 47,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 376,
+   "message": "Pointer parameter 'scard' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *scard'"
+  },
+  {
+   "column": 22,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 377,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 21,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 392,
+   "message": "Bitwise operator '&' used on signed operand 'ps_do' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'ps_do' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 66,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 401,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 426,
+   "message": "Loop uses uninitialized variable 'rec' as bound for array access. This has indeterminate value and can cause out-of-bounds access.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize 'rec' to a valid value before using it in the loop"
+  },
+  {
+   "column": 27,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 535,
+   "message": "Dereference of uninitialized pointer 'scard'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'scard' before dereferencing"
+  },
+  {
+   "column": 19,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 585,
+   "message": "Reading from 'readers' which may contain uninitialized data",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize the contents of 'readers' before reading"
+  },
+  {
+   "column": 19,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 664,
+   "message": "string/character literal contains a non-ASCII byte (>= 0x80) -- not portable across locales/national ASCII variants",
+   "rule_id": "MSC09-C",
+   "severity": "Low",
+   "suggestion": "Restrict string and character literals to the portable ASCII subset (letters, digits, space, and basic punctuation)"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 701,
+   "message": "Function returns pointer to local variable 'scard' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 703,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 706,
+   "message": "Double free detected: 'readers' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 5,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 720,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 725,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 751,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 46,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 775,
+   "message": "Pointer parameter 'scard' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *scard'"
+  },
+  {
+   "column": 21,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 776,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 21,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 777,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 24,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 807,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 44,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 808,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 23,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 888,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 23,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 931,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 962,
+   "message": "Array/pointer 'buf' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'buf' after calling free(). Set pointer to NULL after freeing: free(buf); buf = NULL;"
+  },
+  {
+   "column": 26,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 962,
+   "message": "Array/pointer 'buf' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'buf' after calling free(). Set pointer to NULL after freeing: free(buf); buf = NULL;"
+  },
+  {
+   "column": 7,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 965,
+   "message": "Array/pointer 'buf' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'buf' after calling free(). Set pointer to NULL after freeing: free(buf); buf = NULL;"
+  },
+  {
+   "column": 17,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 965,
+   "message": "Array/pointer 'buf' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'buf' after calling free(). Set pointer to NULL after freeing: free(buf); buf = NULL;"
+  },
+  {
+   "column": 21,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 978,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 1006,
+   "message": "Array/pointer 'buf' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'buf' after calling free(). Set pointer to NULL after freeing: free(buf); buf = NULL;"
+  },
+  {
+   "column": 26,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 1006,
+   "message": "Array/pointer 'buf' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'buf' after calling free(). Set pointer to NULL after freeing: free(buf); buf = NULL;"
+  },
+  {
+   "column": 7,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 1009,
+   "message": "Array/pointer 'buf' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'buf' after calling free(). Set pointer to NULL after freeing: free(buf); buf = NULL;"
+  },
+  {
+   "column": 17,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 1009,
+   "message": "Array/pointer 'buf' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'buf' after calling free(). Set pointer to NULL after freeing: free(buf); buf = NULL;"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 1025,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 51,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 1107,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 51,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 1107,
+   "message": "Pointer parameter 'imsi' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *imsi'"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 1149,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 11,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 1149,
+   "message": "Variable 'buf' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 4,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 1155,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 13,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 1155,
+   "message": "Arithmetic expression involving 'digit' (narrow type 'unsigned char') without proper overflow protection",
+   "rule_id": "INT08-C",
+   "severity": "Medium",
+   "suggestion": "Use a wider type (e.g., 'long' instead of 'unsigned char') or add overflow checks before the operation"
+  },
+  {
+   "column": 4,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 1161,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 13,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 1161,
+   "message": "Arithmetic expression involving 'digit' (narrow type 'unsigned char') without proper overflow protection",
+   "rule_id": "INT08-C",
+   "severity": "Medium",
+   "suggestion": "Use a wider type (e.g., 'long' instead of 'unsigned char') or add overflow checks before the operation"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 1244,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 5,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 1251,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 19,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 1309,
+   "message": "Pointer arithmetic 'buf + 1' goes 1 elements past the end of array 'buf[0]'. This exceeds array bounds.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Ensure pointer arithmetic stays within array bounds (0 to 0)"
+  },
+  {
+   "column": 17,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 1310,
+   "message": "Pointer arithmetic 'buf + 6' goes 6 elements past the end of array 'buf[0]'. This exceeds array bounds.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Ensure pointer arithmetic stays within array bounds (0 to 0)"
+  },
+  {
+   "column": 67,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 1340,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 27,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 1341,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 21,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 1342,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 21,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 1343,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 40,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 1343,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 59,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 1343,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 1345,
+   "message": "Variable 'cmd' should be declared volatile - modified around function calls that may have external side effects",
+   "rule_id": "DCL22-C",
+   "severity": "Low",
+   "suggestion": "Declare as 'volatile' to prevent compiler optimizations that assume variable state is unchanged across function calls"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 1345,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 5,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 1352,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 1380,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 1400,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 1409,
+   "message": "Direct assignment of flexible array structure instances. Use memcpy() for dynamic copying.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Use memcpy() to copy the structure and its flexible array member"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 1448,
+   "message": "Function 'scard_supports_umts' does not validate pointer parameter 'scard' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'scard' at the start of the function, e.g., 'if (!scard) { return error_code; }'"
+  },
+  {
+   "column": 43,
+   "file": "src/utils/pcsc_funcs.c",
+   "line": 1448,
+   "message": "Pointer parameter 'scard' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *scard'"
+  }
+ ]
+}

@@ -1,0 +1,897 @@
+{
+ "src/l2_packet/l2_packet_privsep.c": [
+  {
+   "column": 15,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 30,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 19,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 37,
+   "message": "Do not cast away const qualification: '(u8 *) data'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 19,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 37,
+   "message": "Casting from char * (alignment 1) to u8 * (alignment 4) may cause alignment issues",
+   "rule_id": "EXP36-C",
+   "severity": "Low",
+   "suggestion": "Use memcpy or ensure proper alignment before casting"
+  },
+  {
+   "column": 20,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 44,
+   "message": "sizeof applied to pointer/array parameter 'l2' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(l2->priv_addr)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 6,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 46,
+   "message": "Structure 'msg' passed to trust boundary function 'sendmsg' may leak padding bytes. Use packed attributes, explicit padding fields, or serialize fields individually.",
+   "rule_id": "DCL39-C",
+   "severity": "Medium",
+   "suggestion": "Use __attribute__((__packed__)) or serialize fields: copy_to_user(buf, &msg.a, sizeof(msg.a)); ..."
+  },
+  {
+   "column": 49,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 47,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 49,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 47,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 55,
+   "message": "Function 'l2_packet_get_own_addr' does not validate pointer parameter 'l2' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'l2' at the start of the function, e.g., 'if (!l2) { return error_code; }'"
+  },
+  {
+   "column": 50,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 55,
+   "message": "Pointer parameter 'l2' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *l2'"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 62,
+   "message": "Function 'l2_packet_send' does not validate pointer parameter 'dst_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dst_addr' at the start of the function, e.g., 'if (!dst_addr) { return error_code; }'"
+  },
+  {
+   "column": 19,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 75,
+   "message": "Do not cast away const qualification: '(u8 *) buf'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 20,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 82,
+   "message": "sizeof applied to pointer/array parameter 'l2' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(l2->priv_addr)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 6,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 84,
+   "message": "Structure 'msg' passed to trust boundary function 'sendmsg' may leak padding bytes. Use packed attributes, explicit padding fields, or serialize fields individually.",
+   "rule_id": "DCL39-C",
+   "severity": "Medium",
+   "suggestion": "Use __attribute__((__packed__)) or serialize fields: copy_to_user(buf, &msg.a, sizeof(msg.a)); ..."
+  },
+  {
+   "column": 7,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 86,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 86,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 46,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 94,
+   "message": "Pointer parameter 'eloop_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *eloop_ctx'"
+  },
+  {
+   "column": 63,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 94,
+   "message": "Pointer parameter 'sock_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sock_ctx'"
+  },
+  {
+   "column": 7,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 107,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 107,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 128,
+   "message": "Function 'l2_packet_init' does not validate pointer parameter 'ifname' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ifname' at the start of the function, e.g., 'if (!ifname) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 135,
+   "message": "Variable 'own_dir' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const own_dir = ..."
+  },
+  {
+   "column": 7,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 135,
+   "message": "Pointer variable '(unknown)' is assigned a string literal without const qualification. String literals are immutable and should be declared as 'const char *' or 'const wchar_t *'.",
+   "rule_id": "STR05-C",
+   "severity": "Low",
+   "suggestion": "Add 'const' qualifier to the pointee type (e.g., change 'char *' to 'const char *')."
+  },
+  {
+   "column": 2,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 136,
+   "message": "Variable 'priv_dir' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const priv_dir = ..."
+  },
+  {
+   "column": 7,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 136,
+   "message": "Pointer variable '(unknown)' is assigned a string literal without const qualification. String literals are immutable and should be declared as 'const char *' or 'const wchar_t *'.",
+   "rule_id": "STR05-C",
+   "severity": "Low",
+   "suggestion": "Add 'const' qualifier to the pointee type (e.g., change 'char *' to 'const char *')."
+  },
+  {
+   "column": 2,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 138,
+   "message": "Shared variable 'counter' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 2,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 143,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 48,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 167,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 48,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 167,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 3,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 171,
+   "message": "Function returns without releasing all resources. Leaked: l2->own_socket_path, l2->fd. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 6,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 177,
+   "message": "Privileged operation 'bind' without subsequent privilege dropping",
+   "rule_id": "POS02-C",
+   "severity": "Medium",
+   "suggestion": "Call setuid/setgid to drop privileges after setup"
+  },
+  {
+   "column": 7,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 179,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 179,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 39,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 197,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 39,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 197,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 22,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 202,
+   "message": "Variable 'reply' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'reply' before use, e.g., at its declaration"
+  },
+  {
+   "column": 38,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 204,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 38,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 204,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 2,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 222,
+   "message": "Function returns pointer to local variable 'l2' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 222,
+   "message": "Function returns without releasing all resources. Leaked: l2->own_socket_path, l2->fd. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 224,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 231,
+   "message": "Function returns without releasing all resources. Leaked: l2->own_socket_path. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 235,
+   "message": "Function 'l2_packet_init_bridge' does not validate pointer parameter 'br_ifname' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'br_ifname' at the start of the function, e.g., 'if (!br_ifname) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 235,
+   "message": "Function 'l2_packet_init_bridge' does not validate pointer parameter 'own_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'own_addr' at the start of the function, e.g., 'if (!own_addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 235,
+   "message": "Function 'l2_packet_init_bridge' does not validate pointer parameter 'rx_callback' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'rx_callback' at the start of the function, e.g., 'if (!rx_callback) { return error_code; }'"
+  },
+  {
+   "column": 5,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 249,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 49,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 267,
+   "message": "Pointer parameter 'l2' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *l2'"
+  },
+  {
+   "column": 59,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 267,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 59,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 267,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 274,
+   "message": "Function 'l2_packet_notify_auth_start' does not validate pointer parameter 'l2' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'l2' at the start of the function, e.g., 'if (!l2) { return error_code; }'"
+  },
+  {
+   "column": 55,
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 280,
+   "message": "Pointer parameter 'l2' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *l2'"
+  }
+ ],
+ "src/ap/ieee802_11_he.c": [
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 14,
+   "message": "Header file 'ieee802_11_defs.h' has the same first 8 characters (case-insensitive) as 'ieee802_11_common.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_defs.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 14,
+   "message": "Header file 'ieee802_11_defs.h' has the same first 8 characters (case-insensitive) as 'ieee802_11.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_defs.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 15,
+   "message": "Header file 'ieee802_11_common.h' has the same first 8 characters (case-insensitive) as 'ieee802_11.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_common.h' -> unique name)"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 32,
+   "message": "Variable 'ppe_thres_hdr' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 43,
+   "message": "Variable 'HE_PPE_THRES_NSS_MASK' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 73,
+   "message": "Do not cast away const qualification: '(struct ieee80211_he_capabilities *) buf'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 91,
+   "message": "Function 'hostapd_eid_he_capab' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 47,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 91,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 57,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 91,
+   "message": "Pointer parameter 'eid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *eid'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 98,
+   "message": "Value assigned to 'ie_size' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 99,
+   "message": "Variable 'epos' should be declared volatile - modified around function calls that may have external side effects",
+   "rule_id": "DCL22-C",
+   "severity": "Low",
+   "suggestion": "Declare as 'volatile' to prevent compiler optimizations that assume variable state is unchanged across function calls"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 102,
+   "message": "Function returns pointer to local variable 'eid' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 110,
+   "message": "Scaled integer arithmetic with pointer: 'IEEE80211_HE_CAPAB_MIN_LEN + mcs_nss_size + ppet_size'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 125,
+   "message": "Compound assignment 'epos += mcs_nss_size' on struct member pointer 'epos'. Pointer arithmetic on struct members is undefined behavior",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Do not perform pointer arithmetic across struct members"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 153,
+   "message": "Function returns pointer to local variable 'pos' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 157,
+   "message": "Function 'hostapd_eid_he_operation' does not validate pointer parameter 'eid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'eid' at the start of the function, e.g., 'if (!eid) { return error_code; }'"
+  },
+  {
+   "column": 61,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 157,
+   "message": "Pointer parameter 'eid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *eid'"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 165,
+   "message": "Function returns pointer to local variable 'eid' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 275,
+   "message": "Function returns pointer to local variable 'pos' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 279,
+   "message": "Function 'hostapd_eid_he_mu_edca_parameter_set' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 279,
+   "message": "Function 'hostapd_eid_he_mu_edca_parameter_set' does not validate pointer parameter 'eid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'eid' at the start of the function, e.g., 'if (!eid) { return error_code; }'"
+  },
+  {
+   "column": 73,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 279,
+   "message": "Pointer parameter 'eid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *eid'"
+  },
+  {
+   "column": 25,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 286,
+   "message": "Dereference of uninitialized pointer 'edca'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'edca' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 306,
+   "message": "Function returns pointer to local variable 'pos' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 310,
+   "message": "Function 'hostapd_eid_spatial_reuse' does not validate pointer parameter 'eid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'eid' at the start of the function, e.g., 'if (!eid) { return error_code; }'"
+  },
+  {
+   "column": 62,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 310,
+   "message": "Pointer parameter 'eid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *eid'"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 317,
+   "message": "Function returns pointer to local variable 'eid' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 353,
+   "message": "Function returns pointer to local variable 'pos' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 357,
+   "message": "Function 'hostapd_eid_he_6ghz_band_cap' does not validate pointer parameter 'eid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'eid' at the start of the function, e.g., 'if (!eid) { return error_code; }'"
+  },
+  {
+   "column": 55,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 357,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 65,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 357,
+   "message": "Pointer parameter 'eid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *eid'"
+  },
+  {
+   "column": 22,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 386,
+   "message": "Dereference of uninitialized pointer 'cap'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'cap' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 393,
+   "message": "Function returns pointer to local variable 'pos' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 397,
+   "message": "Function 'hostapd_get_he_capab' does not validate pointer parameter 'neg_he_cap' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'neg_he_cap' at the start of the function, e.g., 'if (!neg_he_cap) { return error_code; }'"
+  },
+  {
+   "column": 47,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 397,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 21,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 405,
+   "message": "sizeof applied to pointer/array parameter 'neg_he_cap' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*neg_he_cap)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 18,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 406,
+   "message": "sizeof applied to pointer/array parameter 'neg_he_cap' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*neg_he_cap)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 51,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 413,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 417,
+   "message": "Value assigned to 'mcs_count' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 34,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 450,
+   "message": "Subscript operation 'sta_mcs_set[i * 4]' on struct member pointer 'sta_mcs_set'. Pointer arithmetic on struct members is undefined behavior",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Do not perform pointer arithmetic across struct members"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 455,
+   "message": "Variable 'j' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 27,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 455,
+   "message": "Bitwise operator '>>' used on signed operand 'j' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'j' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 28,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 458,
+   "message": "Bitwise operator '>>' used on signed operand 'j' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'j' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 478,
+   "message": "Implicit boolean test on 'check_valid_he_mcs(hapd, he_capab, opmode)'. May be unclear what constitutes success or failure.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Use explicit test: check_valid_he_mcs(hapd, he_capab, opmode) == 0 or check_valid_he_mcs(hapd, he_capab, opmode) != 0 depending on success convention"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 536,
+   "message": "Array subscript uses function parameter 'mode' without bounds checking. Caller could pass invalid index.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Add bounds checking for 'mode' before using it as an array index"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 540,
+   "message": "Array subscript uses function parameter 'mode' without bounds checking. Caller could pass invalid index.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Add bounds checking for 'mode' before using it as an array index"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 547,
+   "message": "Function 'hostapd_eid_cca' does not validate pointer parameter 'eid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'eid' at the start of the function, e.g., 'if (!eid) { return error_code; }'"
+  },
+  {
+   "column": 42,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 547,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 52,
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 547,
+   "message": "Pointer parameter 'eid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *eid'"
+  }
+ ]
+}

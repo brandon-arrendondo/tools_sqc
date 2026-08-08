@@ -1,0 +1,722 @@
+[
+ {
+  "rule": "FLP03-C",
+  "file": "src/ap/acs.c",
+  "line": 395,
+  "verdict": "FP",
+  "reason": "division is nf/10.0L, denominator is a hardcoded nonzero literal",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FLP03-C",
+  "file": "src/ap/acs.c",
+  "line": 396,
+  "verdict": "FP",
+  "reason": "division is min_nf/10.0L, denominator is a hardcoded nonzero literal",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FLP03-C",
+  "file": "src/ap/ctrl_iface_ap.c",
+  "line": 103,
+  "verdict": "FP",
+  "reason": "data.current_rx_rate is unsigned long (driver.h); '/100' is plain integer division, no floats involved.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FLP03-C",
+  "file": "src/ap/ctrl_iface_ap.c",
+  "line": 135,
+  "verdict": "FP",
+  "reason": "Same current_tx_rate unsigned-long integer-division misclassification.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FLP03-C",
+  "file": "src/ap/ctrl_iface_ap.c",
+  "line": 1059,
+  "verdict": "FP",
+  "reason": "hapd->current_rates[j].rate is an integer field (struct hostapd_rate_data); '/5' is plain integer division.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FLP03-C",
+  "file": "src/ap/dpp_hostapd.c",
+  "line": 622,
+  "verdict": "FP",
+  "reason": "os_time_t sec/usec are integer types; this is integer division, not floating point",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FLP03-C",
+  "file": "src/ap/dpp_hostapd.c",
+  "line": 766,
+  "verdict": "FP",
+  "reason": "os_time_t sec/usec are integer types; this is integer division, not floating point",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FLP03-C",
+  "file": "src/ap/gas_query_ap.c",
+  "line": 85,
+  "verdict": "FP",
+  "reason": "FLP03-C: res.sec*1000 + res.usec/1000 operates on plain int fields of struct os_reltime; no floating-point operation exists at this line",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FLP07-C",
+  "file": "src/ap/acs.c",
+  "line": 393,
+  "verdict": "FP",
+  "reason": "double result widened into long double factor via usual arithmetic conversions; widening never loses precision, no narrowing risk FLP07-C targets",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FLP07-C",
+  "file": "src/ap/acs.c",
+  "line": 427,
+  "verdict": "FP",
+  "reason": "acs_survey_interference_factor returns long double, assigned to long double int_factor; types already match exactly, no conversion at all",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FLP30-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 1411,
+  "verdict": "FP",
+  "reason": "'psk' is declared 'struct hostapd_wpa_psk *psk' - a pointer used in a standard linked-list for-loop (psk=psk->next), not a floating-point variable at all; factually wrong type claim",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FLP30-C",
+  "file": "src/ap/ap_config.c",
+  "line": 1147,
+  "verdict": "FP",
+  "reason": "factually wrong: psk is a struct pointer list cursor, not floating point",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FLP30-C",
+  "file": "src/ap/wpa_auth_ft.c",
+  "line": 1672,
+  "verdict": "FP",
+  "reason": "r0kh/r1kh is declared 'struct ft_remote_r0kh/r1kh *', not a floating-point type at all; rule's type detection is simply wrong",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FLP30-C",
+  "file": "src/ap/wpa_auth_ft.c",
+  "line": 1757,
+  "verdict": "FP",
+  "reason": "r0kh/r1kh is declared 'struct ft_remote_r0kh/r1kh *', not a floating-point type at all; rule's type detection is simply wrong",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FLP30-C",
+  "file": "src/ap/wpa_auth_ft.c",
+  "line": 4950,
+  "verdict": "FP",
+  "reason": "r1kh is declared 'struct ft_remote_r1kh *' (a pointer), not a floating-point type at all - rule-engine type misclassification, same family as the confirmed INT30-C pointer-mislabeled-as-integer and ARR01-C non-parameter-array bugs.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FLP30-C",
+  "file": "src/ap/wps_hostapd.c",
+  "line": 283,
+  "verdict": "FP",
+  "reason": "'wpa_psk' is `const struct hostapd_wpa_psk *`, a pointer - not floating point at all; clear misfire",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FLP34-C",
+  "file": "hostapd/sae_pk_gen.c",
+  "line": 117,
+  "verdict": "FP",
+  "reason": "(double) i: i is bounded by the brute-force search count, and even at worst case is well within double's exact-integer range (2^53); no realistic precision loss",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT00-C",
+  "file": "hostapd/hlr_auc_gw.c",
+  "line": 652,
+  "verdict": "FP",
+  "reason": "'imsi' here is the function's char* parameter; sqc appears to conflate it with the unrelated 'unsigned long long imsi' local in db_get_milenage() (different function/scope, same identifier name) \u2014 new cross-function name-conflation pattern.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT00-C",
+  "file": "hostapd/hlr_auc_gw.c",
+  "line": 703,
+  "verdict": "FP",
+  "reason": "'imsi' here is the function's char* parameter; sqc appears to conflate it with the unrelated 'unsigned long long imsi' local in db_get_milenage() (different function/scope, same identifier name) \u2014 new cross-function name-conflation pattern.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT00-C",
+  "file": "hostapd/hlr_auc_gw.c",
+  "line": 771,
+  "verdict": "FP",
+  "reason": "'imsi' here is the function's char* parameter; sqc appears to conflate it with the unrelated 'unsigned long long imsi' local in db_get_milenage() (different function/scope, same identifier name) \u2014 new cross-function name-conflation pattern.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT00-C",
+  "file": "hostapd/hlr_auc_gw.c",
+  "line": 833,
+  "verdict": "FP",
+  "reason": "sqc type-conflation: aka_auts's char*imsi param resolved by name to db_get_milenage's unrelated 'unsigned long long imsi' local",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT00-C",
+  "file": "hostapd/hlr_auc_gw.c",
+  "line": 844,
+  "verdict": "FP",
+  "reason": "same cross-function imsi-name type conflation as line 833",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT00-C",
+  "file": "hostapd/hostapd_cli.c",
+  "line": 1939,
+  "verdict": "FP",
+  "reason": "'c' is plain char, correctly matching %c after default promotion; engine conflates the loop variable's own char type with cmd->usage's char* field type",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT00-C",
+  "file": "hostapd/sae_pk_gen.c",
+  "line": 131,
+  "verdict": "FP",
+  "reason": "%llu exactly matches the operand type 'unsigned long long' (i is declared unsigned long long); this is the fully portable, correct specifier, not a type-size assumption",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT00-C",
+  "file": "src/ap/ctrl_iface_ap.c",
+  "line": 37,
+  "verdict": "FP",
+  "reason": "len<=buflen accumulator invariant maintained via checked os_snprintf/os_snprintf_error throughout; safe bounded-loop analog to documented INT30 wrap FP.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT00-C",
+  "file": "src/ap/ctrl_iface_ap.c",
+  "line": 39,
+  "verdict": "FP",
+  "reason": "Same len<=buflen accumulator invariant, safe.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT00-C",
+  "file": "src/ap/ctrl_iface_ap.c",
+  "line": 44,
+  "verdict": "FP",
+  "reason": "Same len<=buflen accumulator invariant, safe.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT04-C",
+  "file": "wpa_supplicant/ctrl_iface.c",
+  "line": 10767,
+  "verdict": "FP",
+  "reason": "frame already range-validated (0<=frame<NUM_VENDOR_ELEM_FRAMES) two lines above before use as array index",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT04-C",
+  "file": "wpa_supplicant/ctrl_iface.c",
+  "line": 10771,
+  "verdict": "FP",
+  "reason": "frame already range-validated before this array index use",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT04-C",
+  "file": "wpa_supplicant/ctrl_iface.c",
+  "line": 10772,
+  "verdict": "FP",
+  "reason": "frame already range-validated before this array index use",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT07-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 440,
+  "verdict": "FP",
+  "reason": "'ret' is declared 'int ret;' (line 384) in this function, not char - factually wrong type claim",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT07-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 1195,
+  "verdict": "FP",
+  "reason": "'ret' is declared 'int ret = 0;' (line 1181) in hostapd_ctrl_iface_set, not char - factually wrong type claim",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT07-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 2984,
+  "verdict": "FP",
+  "reason": "Rule misattributes 'char' type to a variable actually declared int; CONFIRMED new-pattern rule bug (see categorical_patterns.md new entry)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT07-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 3378,
+  "verdict": "FP",
+  "reason": "Rule misattributes 'char' type to a variable actually declared int; CONFIRMED new-pattern rule bug (see categorical_patterns.md new entry)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT07-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 3406,
+  "verdict": "FP",
+  "reason": "Rule misattributes 'char' type to a variable actually declared int; CONFIRMED new-pattern rule bug (see categorical_patterns.md new entry)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT07-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 3463,
+  "verdict": "FP",
+  "reason": "Rule misattributes 'char' type to a variable actually declared int; CONFIRMED new-pattern rule bug (see categorical_patterns.md new entry)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT07-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 3562,
+  "verdict": "FP",
+  "reason": "Rule misattributes 'char' type to a variable actually declared int; CONFIRMED new-pattern rule bug (see categorical_patterns.md new entry)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT07-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 3564,
+  "verdict": "FP",
+  "reason": "Rule misattributes 'char' type to a variable actually declared int; CONFIRMED new-pattern rule bug (see categorical_patterns.md new entry)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT07-C",
+  "file": "src/crypto/tls_openssl.c",
+  "line": 4023,
+  "verdict": "FP",
+  "reason": "INT07-C wrong-type-lookup FP class: 'params' is a local anonymous struct instance, not a char variable at all",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT07-C",
+  "file": "src/crypto/tls_openssl.c",
+  "line": 5741,
+  "verdict": "FP",
+  "reason": "Misattributes 'params' (a struct pointer parameter) as a char type; actual expr (params->openssl_ecdh_curves[0]) is a boolean non-empty-string test, not numeric arithmetic.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT08-C",
+  "file": "src/crypto/tls_wolfssl.c",
+  "line": 376,
+  "verdict": "FP",
+  "reason": "ecc_key_sz only ever assigned small compile-time literals (128/256/384); /8 cannot overflow short",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT08-C",
+  "file": "src/crypto/tls_wolfssl.c",
+  "line": 378,
+  "verdict": "FP",
+  "reason": "ecc_key_sz only ever assigned small compile-time literals (128/256/384); /8 cannot overflow short",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT08-C",
+  "file": "src/utils/pcsc_funcs.c",
+  "line": 1155,
+  "verdict": "FP",
+  "reason": "digit is guarded 0-9 by the preceding if (digit < 10); '0' + digit cannot overflow",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT08-C",
+  "file": "src/utils/pcsc_funcs.c",
+  "line": 1161,
+  "verdict": "FP",
+  "reason": "digit guarded 0-9 by if (digit < 10); no realistic overflow",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT09-C",
+  "file": "src/common/qca-vendor.h",
+  "line": 2736,
+  "verdict": "FP",
+  "reason": "kernel _INVALID/_MAX=_AFTER_LAST-1 sentinel idiom; INT09-C const-eval bug (see categorical_patterns.md nl80211_copy.h precedent)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT09-C",
+  "file": "src/common/qca-vendor.h",
+  "line": 2755,
+  "verdict": "FP",
+  "reason": "kernel _INVALID/_MAX=_AFTER_LAST-1 sentinel idiom; INT09-C const-eval bug (see categorical_patterns.md nl80211_copy.h precedent)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT09-C",
+  "file": "src/common/qca-vendor.h",
+  "line": 2760,
+  "verdict": "FP",
+  "reason": "kernel _INVALID/_MAX=_AFTER_LAST-1 sentinel idiom; INT09-C const-eval bug (see categorical_patterns.md nl80211_copy.h precedent)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT09-C",
+  "file": "src/common/qca-vendor.h",
+  "line": 2769,
+  "verdict": "FP",
+  "reason": "kernel _INVALID/_MAX=_AFTER_LAST-1 sentinel idiom; INT09-C const-eval bug (see categorical_patterns.md nl80211_copy.h precedent)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT09-C",
+  "file": "src/common/qca-vendor.h",
+  "line": 3070,
+  "verdict": "FP",
+  "reason": "kernel _INVALID/_MAX=_AFTER_LAST-1 sentinel idiom; INT09-C const-eval bug (see categorical_patterns.md nl80211_copy.h precedent)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT09-C",
+  "file": "src/common/qca-vendor.h",
+  "line": 3075,
+  "verdict": "FP",
+  "reason": "kernel _INVALID/_MAX=_AFTER_LAST-1 sentinel idiom; INT09-C const-eval bug (see categorical_patterns.md nl80211_copy.h precedent)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT09-C",
+  "file": "src/common/qca-vendor.h",
+  "line": 3085,
+  "verdict": "FP",
+  "reason": "kernel _INVALID/_MAX=_AFTER_LAST-1 sentinel idiom; INT09-C const-eval bug (see categorical_patterns.md nl80211_copy.h precedent)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT09-C",
+  "file": "src/common/qca-vendor.h",
+  "line": 3090,
+  "verdict": "FP",
+  "reason": "kernel _INVALID/_MAX=_AFTER_LAST-1 sentinel idiom; INT09-C const-eval bug (see categorical_patterns.md nl80211_copy.h precedent)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT09-C",
+  "file": "src/common/qca-vendor.h",
+  "line": 3100,
+  "verdict": "FP",
+  "reason": "kernel _INVALID/_MAX=_AFTER_LAST-1 sentinel idiom; INT09-C const-eval bug (see categorical_patterns.md nl80211_copy.h precedent)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT09-C",
+  "file": "src/common/qca-vendor.h",
+  "line": 3107,
+  "verdict": "FP",
+  "reason": "kernel _INVALID/_MAX=_AFTER_LAST-1 sentinel idiom; INT09-C const-eval bug (see categorical_patterns.md nl80211_copy.h precedent)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT12-C",
+  "file": "src/utils/eloop.c",
+  "line": 169,
+  "verdict": "FP",
+  "reason": "No bit-field named 'unknown' exists anywhere in file; line is a plain if-statement. Phantom finding.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT12-C",
+  "file": "src/utils/eloop.c",
+  "line": 177,
+  "verdict": "FP",
+  "reason": "Same phantom bit-field; line is plain if-statement, grepped whole file for 'unknown' bitfield, none exists.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT18-C",
+  "file": "src/drivers/driver_wired.c",
+  "line": 250,
+  "verdict": "FP",
+  "reason": "setsockopt() returns plain signed int; comparing to -1 is the ordinary error-check idiom, not an unsigned/negative-literal mismatch.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT18-C",
+  "file": "src/drivers/driver_wired.c",
+  "line": 256,
+  "verdict": "FP",
+  "reason": "setsockopt() returns signed int; == -1 is the ordinary idiom, same as line 250.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT18-C",
+  "file": "src/drivers/driver_wired.c",
+  "line": 273,
+  "verdict": "FP",
+  "reason": "bind() returns signed int; == -1 is the ordinary idiom.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT18-C",
+  "file": "src/wps/httpread.c",
+  "line": 497,
+  "verdict": "FP",
+  "reason": "body_alloc_nbytes/content_length and the added constants are all plain int; no smaller-type-then-widened arithmetic exists on this line at all",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT18-C",
+  "file": "src/wps/httpread.c",
+  "line": 505,
+  "verdict": "FP",
+  "reason": "body_alloc_nbytes/content_length and the added constants are all plain int; no smaller-type-then-widened arithmetic exists on this line at all",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT18-C",
+  "file": "src/wps/wps_upnp.c",
+  "line": 393,
+  "verdict": "FP",
+  "reason": "message direction backwards (size_t sum demoted to int, not smaller-type-then-widened); host/path length already capped at 700 upstream so no realistic overflow",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT18-C",
+  "file": "src/wps/wps_upnp_ssdp.c",
+  "line": 291,
+  "verdict": "FP",
+  "reason": "sendto() returns signed ssize_t; comparing == -1 is a completely ordinary signed comparison, not unsigned-vs-negative-literal; category error",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT18-C",
+  "file": "wpa_supplicant/p2p_supplicant.c",
+  "line": 8910,
+  "verdict": "FP",
+  "reason": "INT18-C claims smaller-type-before-larger-type overflow, but timeout and wpa_s->max_remain_on_chan are both unsigned int - no type-width mismatch exists as the message describes",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT31-C",
+  "file": "src/crypto/crypto_linux.c",
+  "line": 112,
+  "verdict": "FP",
+  "reason": "(int) mac_len cast used only for printf %d display in an error log, never in a later comparison/arithmetic",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT31-C",
+  "file": "src/crypto/crypto_linux.c",
+  "line": 970,
+  "verdict": "FP",
+  "reason": "(int) len cast used only for printf %d display in an error log, not in a later comparison/arithmetic",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT31-C",
+  "file": "src/tls/libtommath.c",
+  "line": 1003,
+  "verdict": "FP",
+  "reason": "Flagged code sits inside the #else branch of '#ifndef MP_8BIT', which is never compiled (MP_8BIT is never #define'd anywhere in this file; DIGIT_BIT is fixed to 28 or 60) - dead code, #ifdef-branch-blind misfire",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT31-C",
+  "file": "src/utils/utils_module_tests.c",
+  "line": 631,
+  "verdict": "FP",
+  "reason": "'res' is ssize_t (signed) from read(), explicitly cast (int)res; there is no unsigned value here for INT31-C's signed/unsigned conversion concern",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT31-C",
+  "file": "src/utils/utils_module_tests.c",
+  "line": 713,
+  "verdict": "FP",
+  "reason": "'res' is ssize_t (signed) from read(), explicitly cast (int)res; there is no unsigned value here for INT31-C's signed/unsigned conversion concern",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT31-C",
+  "file": "wpa_supplicant/dpp_supplicant.c",
+  "line": 4986,
+  "verdict": "FP",
+  "reason": "(unsigned int)peer used only in an equality comparison vs auth->peer_bi->id; negative peer just wraps to a non-matching value, no unsafe consequence.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT31-C",
+  "file": "wpa_supplicant/dpp_supplicant.c",
+  "line": 4999,
+  "verdict": "FP",
+  "reason": "Same equality-comparison-only cast as line 4986.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT31-C",
+  "file": "wpa_supplicant/dpp_supplicant.c",
+  "line": 5001,
+  "verdict": "FP",
+  "reason": "Same equality-comparison-only cast, tmp_peer_bi->id side.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT35-C",
+  "file": "src/tls/libtommath.c",
+  "line": 337,
+  "verdict": "FP",
+  "reason": "sizeof(...)*CHAR_BIT precision idiom is intentional in this vendored bignum code targeting its own known digit widths (DIGIT_BIT=28/60), no padding-bit platform in scope",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT35-C",
+  "file": "src/tls/libtommath.c",
+  "line": 349,
+  "verdict": "FP",
+  "reason": "sizeof(...)*CHAR_BIT precision idiom is intentional in this vendored bignum code targeting its own known digit widths (DIGIT_BIT=28/60), no padding-bit platform in scope",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT35-C",
+  "file": "src/tls/libtommath.c",
+  "line": 514,
+  "verdict": "FP",
+  "reason": "sizeof(...)*CHAR_BIT precision idiom is intentional in this vendored bignum code targeting its own known digit widths (DIGIT_BIT=28/60), no padding-bit platform in scope",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT35-C",
+  "file": "src/tls/libtommath.c",
+  "line": 2124,
+  "verdict": "FP",
+  "reason": "sizeof(mp_word)*CHAR_BIT used only as a conservative fast-path cutoff heuristic; literal rule match but low severity/harmless on all real mp_word typedefs (no padding bits).",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT35-C",
+  "file": "src/tls/libtommath.c",
+  "line": 2345,
+  "verdict": "FP",
+  "reason": "sizeof(mp_word)*CHAR_BIT used only as a conservative fast-path cutoff heuristic; literal rule match but low severity/harmless on all real mp_word typedefs (no padding bits).",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT35-C",
+  "file": "src/tls/libtommath.c",
+  "line": 2597,
+  "verdict": "FP",
+  "reason": "sizeof(mp_word)*CHAR_BIT used only as a conservative fast-path cutoff heuristic; literal rule match but low severity/harmless on all real mp_word typedefs (no padding bits).",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "INT35-C",
+  "file": "src/tls/libtommath.c",
+  "line": 3020,
+  "verdict": "FP",
+  "reason": "sizeof(mp_word)*CHAR_BIT used only as a conservative fast-path cutoff heuristic; literal rule match but low severity/harmless on all real mp_word typedefs (no padding bits).",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM02-C",
+  "file": "hostapd/hostapd_cli.c",
+  "line": 129,
+  "verdict": "FP",
+  "reason": "Casting the return of malloc() is not required and is discouraged in modern C; stylistic non-issue",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM02-C",
+  "file": "src/utils/os_unix.c",
+  "line": 726,
+  "verdict": "FP",
+  "reason": "implicit void* to struct* conversion is valid, idiomatic C; no cast required",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM02-C",
+  "file": "src/utils/os_win32.c",
+  "line": 206,
+  "verdict": "FP",
+  "reason": "C does not require (nor recommend) casting malloc()'s void* result; stylistic pedantry, not a defect",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM02-C",
+  "file": "src/utils/trace.c",
+  "line": 123,
+  "verdict": "FP",
+  "reason": "not casting malloc's return is correct, idiomatic C; established stylistic-pedantry FP",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM02-C",
+  "file": "src/utils/trace.c",
+  "line": 448,
+  "verdict": "FP",
+  "reason": "not casting malloc's return is correct, idiomatic C; established stylistic-pedantry FP",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM02-C",
+  "file": "wpa_supplicant/win_if_list.c",
+  "line": 84,
+  "verdict": "FP",
+  "reason": "Casting malloc's void* result is optional in C and often discouraged, not a real defect",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM04-C",
+  "file": "hostapd/hostapd_cli.c",
+  "line": 129,
+  "verdict": "FP",
+  "reason": "flen = strlen(ctrl_iface_dir)+strlen(ifname)+2 is provably >=2; can never be zero",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM04-C",
+  "file": "src/utils/os_internal.c",
+  "line": 269,
+  "verdict": "FP",
+  "reason": "os_malloc is a thin transparent wrapper mirroring malloc()'s own contract, including malloc(0) semantics; not a defect in the generic allocator itself",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM04-C",
+  "file": "src/utils/os_internal.c",
+  "line": 275,
+  "verdict": "FP",
+  "reason": "os_realloc mirrors realloc()'s own contract including realloc(ptr,0) semantics",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM04-C",
+  "file": "src/utils/os_unix.c",
+  "line": 486,
+  "verdict": "FP",
+  "reason": "num argument is the literal 1, never zero",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM04-C",
+  "file": "src/utils/os_win32.c",
+  "line": 206,
+  "verdict": "FP",
+  "reason": "Both malloc(0) outcomes (NULL or valid zero-size pointer) are already handled safely by the following NULL check and fread(...,0,...) no-op",
+  "set": "SAFE_FP"
+ }
+]

@@ -1,0 +1,355 @@
+{
+ "wpa_supplicant/dbus/dbus_new_handlers_p2p.c#part3of3": [
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 2905,
+   "message": "Double-free: 'service' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 2905,
+   "message": "Double free detected: 'service' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 2910,
+   "message": "Function 'wpas_dbus_handler_p2p_flush_service' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 63,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 2910,
+   "message": "Pointer parameter 'message' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *message'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 2918,
+   "message": "Function 'wpas_dbus_handler_p2p_service_sd_req' does not validate pointer parameter 'message' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'message' at the start of the function, e.g., 'if (!message) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 2918,
+   "message": "Function 'wpas_dbus_handler_p2p_service_sd_req' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 2918,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 2922,
+   "message": "Value assigned to 'reply' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 2930,
+   "message": "Value assigned to 'ref' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 2933,
+   "message": "Function 'dbus_message_iter_init' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 11,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 2991,
+   "message": "Function 'dbus_message_new_method_return' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 2999,
+   "message": "Double free detected: 'tlv' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 3003,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 3011,
+   "message": "Function 'wpas_dbus_handler_p2p_service_sd_res' does not validate pointer parameter 'message' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'message' at the start of the function, e.g., 'if (!message) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 3011,
+   "message": "Function 'wpas_dbus_handler_p2p_service_sd_res' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 3011,
+   "message": "Identifier 'wpas_dbus_handler_p2p_service_sd_res' agrees with 'wpas_dbus_handler_p2p_service_sd_req' in its first 31 significant characters; they may collide as the same external identifier on a conforming implementation",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Shorten one of the identifiers so they differ within the first 31 characters"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 3011,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 3024,
+   "message": "Function 'dbus_message_iter_init' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 3062,
+   "message": "Double free detected: 'tlv' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 3065,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 3073,
+   "message": "Function 'wpas_dbus_handler_p2p_service_sd_cancel_req' does not validate pointer parameter 'message' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'message' at the start of the function, e.g., 'if (!message) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 3073,
+   "message": "Identifier 'wpas_dbus_handler_p2p_service_sd_cancel_req' agrees with 'wpas_dbus_handler_p2p_service_sd_req' in its first 31 significant characters; they may collide as the same external identifier on a conforming implementation",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Shorten one of the identifiers so they differ within the first 31 characters"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 3073,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 3079,
+   "message": "Function 'dbus_message_iter_init' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 3089,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 3094,
+   "message": "Function 'wpas_dbus_handler_p2p_service_update' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 14,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 3095,
+   "message": "Pointer parameter 'message' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *message'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 3102,
+   "message": "Function 'wpas_dbus_handler_p2p_serv_disc_external' does not validate pointer parameter 'message' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'message' at the start of the function, e.g., 'if (!message) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 3102,
+   "message": "Function 'wpas_dbus_handler_p2p_serv_disc_external' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 3108,
+   "message": "Function 'dbus_message_iter_init' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 3120,
+   "message": "Function 'wpas_dbus_getter_global_wfd_ies' does not validate pointer parameter 'iter' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'iter' at the start of the function, e.g., 'if (!iter) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 3120,
+   "message": "Function 'wpas_dbus_getter_global_wfd_ies' does not validate pointer parameter 'error' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'error' at the start of the function, e.g., 'if (!error) { return error_code; }'"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 3134,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 3143,
+   "message": "Function 'wpas_dbus_setter_global_wfd_ies' does not validate pointer parameter 'iter' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'iter' at the start of the function, e.g., 'if (!iter) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 3143,
+   "message": "Function 'wpas_dbus_setter_global_wfd_ies' does not validate pointer parameter 'error' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'error' at the start of the function, e.g., 'if (!error) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 3183,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 3184,
+   "message": "Double-free: 'ie' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 3184,
+   "message": "Double free detected: 'ie' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.c",
+   "line": 3186,
+   "message": "Passing string literal to function 'dbus_set_error_const' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  }
+ ]
+}

@@ -1,0 +1,1057 @@
+{
+ "src/fst/fst_session.c": [
+  {
+   "column": 1,
+   "file": "src/fst/fst_session.c",
+   "line": 16,
+   "message": "Header file 'fst_ctrl_iface.h' has the same first 8 characters (case-insensitive) as 'fst_ctrl_defs.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'fst_ctrl_iface.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_session.c",
+   "line": 23,
+   "message": "Function-like macro 'fst_printf_session' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_session.c",
+   "line": 23,
+   "message": "Macro 'fst_printf_session' uses token concatenation operator (##) which prevents parameter expansion - consider using two-level macro indirection for proper expansion",
+   "rule_id": "PRE05-C",
+   "severity": "Low",
+   "suggestion": "Use two-level indirection: define a wrapper macro that calls another macro with ##, allowing parameters to expand first"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_session.c",
+   "line": 23,
+   "message": "Macro evaluates parameter 's' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_session.c",
+   "line": 30,
+   "message": "Function-like macro 'fst_printf_siface' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_session.c",
+   "line": 30,
+   "message": "Macro parameter 's' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 's' in parentheses: (s) instead of s"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_session.c",
+   "line": 30,
+   "message": "Macro 'fst_printf_siface' uses token concatenation operator (##) which prevents parameter expansion - consider using two-level macro indirection for proper expansion",
+   "rule_id": "PRE05-C",
+   "severity": "Low",
+   "suggestion": "Use two-level indirection: define a wrapper macro that calls another macro with ##, allowing parameters to expand first"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_session.c",
+   "line": 30,
+   "message": "Macro evaluates parameter 's' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_session.c",
+   "line": 34,
+   "message": "Function-like macro 'fst_printf_sframe' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_session.c",
+   "line": 34,
+   "message": "Macro 'fst_printf_sframe' uses token concatenation operator (##) which prevents parameter expansion - consider using two-level macro indirection for proper expansion",
+   "rule_id": "PRE05-C",
+   "severity": "Low",
+   "suggestion": "Use two-level indirection: define a wrapper macro that calls another macro with ##, allowing parameters to expand first"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_session.c",
+   "line": 34,
+   "message": "Macro evaluates parameter 's' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 27,
+   "file": "src/fst/fst_session.c",
+   "line": 42,
+   "message": "Array declaration 'fst_action_names[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_session.c",
+   "line": 73,
+   "message": "Shared variable 'global_session_id' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_session.c",
+   "line": 84,
+   "message": "Function 'fst_session_global_inc_id' performs compound operation on shared static variable 'global_session_id' without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 13,
+   "file": "src/fst/fst_session.c",
+   "line": 101,
+   "message": "Passing pointer to uninitialized variable 'global_sessions_list' to 'dl_list_empty' which reads the value",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'global_sessions_list' before passing its address to 'dl_list_empty'"
+  },
+  {
+   "column": 3,
+   "file": "src/fst/fst_session.c",
+   "line": 129,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_session.c",
+   "line": 140,
+   "message": "Variable 's' is declared but never used.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Use the variable or remove it"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_session.c",
+   "line": 143,
+   "message": "Value assigned to 'in_use' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 3,
+   "file": "src/fst/fst_session.c",
+   "line": 145,
+   "message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add a return statement on all execution paths of this function"
+  },
+  {
+   "column": 23,
+   "file": "src/fst/fst_session.c",
+   "line": 145,
+   "message": "Variable 's' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 's' before use, e.g., at its declaration"
+  },
+  {
+   "column": 8,
+   "file": "src/fst/fst_session.c",
+   "line": 146,
+   "message": "Potential null pointer dereference in member access of variable 's'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 's' is not NULL before member access"
+  },
+  {
+   "column": 46,
+   "file": "src/fst/fst_session.c",
+   "line": 163,
+   "message": "Pointer parameter 'eloop_data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *eloop_data'"
+  },
+  {
+   "column": 61,
+   "file": "src/fst/fst_session.c",
+   "line": 196,
+   "message": "Pointer parameter 's' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *s'"
+  },
+  {
+   "column": 58,
+   "file": "src/fst/fst_session.c",
+   "line": 203,
+   "message": "Pointer parameter 's' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *s'"
+  },
+  {
+   "column": 68,
+   "file": "src/fst/fst_session.c",
+   "line": 231,
+   "message": "Pointer parameter 'g' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *g'"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_session.c",
+   "line": 233,
+   "message": "Variable 's' is declared but never used.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Use the variable or remove it"
+  },
+  {
+   "column": 2,
+   "file": "src/fst/fst_session.c",
+   "line": 235,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 22,
+   "file": "src/fst/fst_session.c",
+   "line": 235,
+   "message": "Variable 's' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 's' before use, e.g., at its declaration"
+  },
+  {
+   "column": 7,
+   "file": "src/fst/fst_session.c",
+   "line": 236,
+   "message": "Potential null pointer dereference in member access of variable 's'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 's' is not NULL before member access"
+  },
+  {
+   "column": 25,
+   "file": "src/fst/fst_session.c",
+   "line": 259,
+   "message": "sizeof applied to pointer/array parameter 's' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(s->data)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 19,
+   "file": "src/fst/fst_session.c",
+   "line": 265,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_session.c",
+   "line": 358,
+   "message": "Value assigned to 'new_iface' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 18,
+   "file": "src/fst/fst_session.c",
+   "line": 363,
+   "message": "Scaled integer arithmetic with pointer: 'IEEE80211_HDRLEN + 1 + sizeof(*req)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 48,
+   "file": "src/fst/fst_session.c",
+   "line": 363,
+   "message": "Dereference of uninitialized pointer 'req'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'req' before dereferencing"
+  },
+  {
+   "column": 6,
+   "file": "src/fst/fst_session.c",
+   "line": 367,
+   "message": "Scaled integer arithmetic with pointer: 'IEEE80211_HDRLEN + 1 + sizeof(*req)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 2,
+   "file": "src/fst/fst_session.c",
+   "line": 404,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 6,
+   "file": "src/fst/fst_session.c",
+   "line": 469,
+   "message": "Memory allocated with 'fst_session_create' for variable 's' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(s)' before the variable goes out of scope"
+  },
+  {
+   "column": 3,
+   "file": "src/fst/fst_session.c",
+   "line": 471,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 20,
+   "file": "src/fst/fst_session.c",
+   "line": 523,
+   "message": "Dereference of uninitialized pointer 'res'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'res' before dereferencing"
+  },
+  {
+   "column": 3,
+   "file": "src/fst/fst_session.c",
+   "line": 564,
+   "message": "Accessing union 'evext' member 'to_initial' after writing to 'session_state' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 2,
+   "file": "src/fst/fst_session.c",
+   "line": 585,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 20,
+   "file": "src/fst/fst_session.c",
+   "line": 612,
+   "message": "Dereference of uninitialized pointer 'td'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'td' before dereferencing"
+  },
+  {
+   "column": 20,
+   "file": "src/fst/fst_session.c",
+   "line": 663,
+   "message": "Dereference of uninitialized pointer 'req'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'req' before dereferencing"
+  },
+  {
+   "column": 20,
+   "file": "src/fst/fst_session.c",
+   "line": 726,
+   "message": "Dereference of uninitialized pointer 'res'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'res' before dereferencing"
+  },
+  {
+   "column": 23,
+   "file": "src/fst/fst_session.c",
+   "line": 759,
+   "message": "Dereference of uninitialized pointer 's'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 's' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/fst/fst_session.c",
+   "line": 773,
+   "message": "Passing pointer to uninitialized variable 'global_sessions_list' to 'dl_list_add_tail' which reads the value",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'global_sessions_list' before passing its address to 'dl_list_add_tail'"
+  },
+  {
+   "column": 2,
+   "file": "src/fst/fst_session.c",
+   "line": 777,
+   "message": "Function returns pointer to local variable 's' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 51,
+   "file": "src/fst/fst_session.c",
+   "line": 798,
+   "message": "Pointer parameter 's' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *s'"
+  },
+  {
+   "column": 22,
+   "file": "src/fst/fst_session.c",
+   "line": 813,
+   "message": "File-scope identifier '_s' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 3,
+   "file": "src/fst/fst_session.c",
+   "line": 985,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/fst/fst_session.c",
+   "line": 1040,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_session.c",
+   "line": 1065,
+   "message": "Function 'fst_session_handle_action' does not validate pointer parameter 's' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 's' at the start of the function, e.g., 'if (!s) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_session.c",
+   "line": 1065,
+   "message": "Function 'fst_session_handle_action' does not validate pointer parameter 'iface' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'iface' at the start of the function, e.g., 'if (!iface) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_session.c",
+   "line": 1065,
+   "message": "Function 'fst_session_handle_action' does not validate pointer parameter 'mgmt' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'mgmt' at the start of the function, e.g., 'if (!mgmt) { return error_code; }'"
+  },
+  {
+   "column": 61,
+   "file": "src/fst/fst_session.c",
+   "line": 1128,
+   "message": "Pointer parameter 's' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *s'"
+  },
+  {
+   "column": 61,
+   "file": "src/fst/fst_session.c",
+   "line": 1134,
+   "message": "Pointer parameter 's' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *s'"
+  },
+  {
+   "column": 43,
+   "file": "src/fst/fst_session.c",
+   "line": 1140,
+   "message": "Pointer parameter 's' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *s'"
+  },
+  {
+   "column": 57,
+   "file": "src/fst/fst_session.c",
+   "line": 1146,
+   "message": "Pointer parameter 's' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *s'"
+  },
+  {
+   "column": 44,
+   "file": "src/fst/fst_session.c",
+   "line": 1152,
+   "message": "Pointer parameter 's' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *s'"
+  },
+  {
+   "column": 65,
+   "file": "src/fst/fst_session.c",
+   "line": 1158,
+   "message": "Pointer parameter 's' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *s'"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_session.c",
+   "line": 1166,
+   "message": "Variable 's' is declared but never used.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Use the variable or remove it"
+  },
+  {
+   "column": 2,
+   "file": "src/fst/fst_session.c",
+   "line": 1168,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 22,
+   "file": "src/fst/fst_session.c",
+   "line": 1168,
+   "message": "Variable 's' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 's' before use, e.g., at its declaration"
+  },
+  {
+   "column": 13,
+   "file": "src/fst/fst_session.c",
+   "line": 1169,
+   "message": "Potential null pointer dereference in member access of variable 's'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 's' is not NULL before member access"
+  },
+  {
+   "column": 40,
+   "file": "src/fst/fst_session.c",
+   "line": 1177,
+   "message": "Pointer parameter 'g' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *g'"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_session.c",
+   "line": 1179,
+   "message": "Variable 's' is declared but never used.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Use the variable or remove it"
+  },
+  {
+   "column": 2,
+   "file": "src/fst/fst_session.c",
+   "line": 1181,
+   "message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add a return statement on all execution paths of this function"
+  },
+  {
+   "column": 22,
+   "file": "src/fst/fst_session.c",
+   "line": 1181,
+   "message": "Variable 's' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 's' before use, e.g., at its declaration"
+  },
+  {
+   "column": 13,
+   "file": "src/fst/fst_session.c",
+   "line": 1182,
+   "message": "Potential null pointer dereference in member access of variable 's'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 's' is not NULL before member access"
+  },
+  {
+   "column": 4,
+   "file": "src/fst/fst_session.c",
+   "line": 1183,
+   "message": "Function 'clb' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_session.c",
+   "line": 1188,
+   "message": "Function 'fst_session_on_action_rx' does not validate pointer parameter 'iface' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'iface' at the start of the function, e.g., 'if (!iface) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_session.c",
+   "line": 1228,
+   "message": "Function 'fst_session_set_str_ifname' does not validate pointer parameter 'ifname' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ifname' at the start of the function, e.g., 'if (!ifname) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/fst/fst_session.c",
+   "line": 1231,
+   "message": "Variable 'g' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const g = ..."
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_session.c",
+   "line": 1248,
+   "message": "Function 'fst_session_set_str_peer_addr' does not validate pointer parameter 'mac' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'mac' at the start of the function, e.g., 'if (!mac) { return error_code; }'"
+  },
+  {
+   "column": 31,
+   "file": "src/fst/fst_session.c",
+   "line": 1252,
+   "message": "'mac' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_session.c",
+   "line": 1263,
+   "message": "Function 'fst_session_set_str_llt' does not validate pointer parameter 'llt_str' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'llt_str' at the start of the function, e.g., 'if (!llt_str) { return error_code; }'"
+  },
+  {
+   "column": 11,
+   "file": "src/fst/fst_session.c",
+   "line": 1266,
+   "message": "Return value of 'strtol' assigned to 'llt' but not checked for errors: 'strtol(llt_str, &endp, 0)' - Sets errno on overflow/underflow, uses endptr for parsing errors",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check errno and endptr: errno = 0; val = strtol(str, &endptr, base); if (errno != 0 || endptr == str) handle_error();"
+  },
+  {
+   "column": 17,
+   "file": "src/fst/fst_session.c",
+   "line": 1266,
+   "message": "Return value from strtol() should be checked for errors",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Check if strtol() returned an error value (NULL, -1, etc.)"
+  },
+  {
+   "column": 17,
+   "file": "src/fst/fst_session.c",
+   "line": 1266,
+   "message": "strtol() can set errno but errno is not checked after the call",
+   "rule_id": "ERR01-C",
+   "severity": "Low",
+   "suggestion": "Set errno to 0 before calling strtol() and check errno afterward to detect errors"
+  },
+  {
+   "column": 17,
+   "file": "src/fst/fst_session.c",
+   "line": 1266,
+   "message": "In-band function 'strtol' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+   "rule_id": "ERR30-C",
+   "severity": "Medium",
+   "suggestion": "Set errno before call: 'errno = 0; val = strtol(...); if (errno == ERANGE) { ... }'"
+  },
+  {
+   "column": 24,
+   "file": "src/fst/fst_session.c",
+   "line": 1266,
+   "message": "'llt_str' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 33,
+   "file": "src/fst/fst_session.c",
+   "line": 1266,
+   "message": "Pointer dereference '*endp' (char type) converted without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 34,
+   "file": "src/fst/fst_session.c",
+   "line": 1266,
+   "message": "'endp' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 6,
+   "file": "src/fst/fst_session.c",
+   "line": 1268,
+   "message": "Dereference of uninitialized pointer 'endp'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'endp' before dereferencing"
+  },
+  {
+   "column": 6,
+   "file": "src/fst/fst_session.c",
+   "line": 1268,
+   "message": "Potential null pointer dereference of variable 'endp'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'endp' is not NULL before dereferencing"
+  },
+  {
+   "column": 60,
+   "file": "src/fst/fst_session.c",
+   "line": 1280,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_session.c",
+   "line": 1282,
+   "message": "Variable 's' is declared but never used.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Use the variable or remove it"
+  },
+  {
+   "column": 2,
+   "file": "src/fst/fst_session.c",
+   "line": 1284,
+   "message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add a return statement on all execution paths of this function"
+  },
+  {
+   "column": 22,
+   "file": "src/fst/fst_session.c",
+   "line": 1284,
+   "message": "Variable 's' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 's' before use, e.g., at its declaration"
+  },
+  {
+   "column": 8,
+   "file": "src/fst/fst_session.c",
+   "line": 1286,
+   "message": "Potential null pointer dereference in member access of variable 's'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 's' is not NULL before member access"
+  },
+  {
+   "column": 77,
+   "file": "src/fst/fst_session.c",
+   "line": 1293,
+   "message": "Pointer parameter 'g' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *g'"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_session.c",
+   "line": 1295,
+   "message": "Variable 's' is declared but never used.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Use the variable or remove it"
+  },
+  {
+   "column": 2,
+   "file": "src/fst/fst_session.c",
+   "line": 1297,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 22,
+   "file": "src/fst/fst_session.c",
+   "line": 1297,
+   "message": "Variable 's' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 's' before use, e.g., at its declaration"
+  },
+  {
+   "column": 7,
+   "file": "src/fst/fst_session.c",
+   "line": 1298,
+   "message": "Potential null pointer dereference in member access of variable 's'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 's' is not NULL before member access"
+  },
+  {
+   "column": 52,
+   "file": "src/fst/fst_session.c",
+   "line": 1308,
+   "message": "Pointer parameter 'g' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *g'"
+  },
+  {
+   "column": 18,
+   "file": "src/fst/fst_session.c",
+   "line": 1313,
+   "message": "sizeof applied to pointer/array parameter 's' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*s)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 2,
+   "file": "src/fst/fst_session.c",
+   "line": 1314,
+   "message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add a return statement on all execution paths of this function"
+  },
+  {
+   "column": 2,
+   "file": "src/fst/fst_session.c",
+   "line": 1354,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 21,
+   "file": "src/fst/fst_session.c",
+   "line": 1367,
+   "message": "Variable 'g' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'g' before use, e.g., at its declaration"
+  },
+  {
+   "column": 21,
+   "file": "src/fst/fst_session.c",
+   "line": 1367,
+   "message": "Potential null pointer dereference in member access of variable 'g'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'g' is not NULL before member access"
+  },
+  {
+   "column": 2,
+   "file": "src/fst/fst_session.c",
+   "line": 1407,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 22,
+   "file": "src/fst/fst_session.c",
+   "line": 1408,
+   "message": "File-scope identifier '_s' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 8,
+   "file": "src/fst/fst_session.c",
+   "line": 1435,
+   "message": "Variable 'g' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'g' before use, e.g., at its declaration"
+  },
+  {
+   "column": 37,
+   "file": "src/fst/fst_session.c",
+   "line": 1437,
+   "message": "Potential null pointer dereference in member access of variable 'g'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'g' is not NULL before member access"
+  },
+  {
+   "column": 21,
+   "file": "src/fst/fst_session.c",
+   "line": 1492,
+   "message": "Variable 'g' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'g' before use, e.g., at its declaration"
+  },
+  {
+   "column": 21,
+   "file": "src/fst/fst_session.c",
+   "line": 1492,
+   "message": "Potential null pointer dereference in member access of variable 'g'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'g' is not NULL before member access"
+  },
+  {
+   "column": 21,
+   "file": "src/fst/fst_session.c",
+   "line": 1520,
+   "message": "Variable 'g' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'g' before use, e.g., at its declaration"
+  },
+  {
+   "column": 21,
+   "file": "src/fst/fst_session.c",
+   "line": 1520,
+   "message": "Potential null pointer dereference in member access of variable 'g'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'g' is not NULL before member access"
+  },
+  {
+   "column": 6,
+   "file": "src/fst/fst_session.c",
+   "line": 1543,
+   "message": "Passing pointer to uninitialized variable 'g' to 'get_group_fill_session' which reads the value",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'g' before passing its address to 'get_group_fill_session'"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_session.c",
+   "line": 1576,
+   "message": "Function 'fst_test_req_get_local_mbies' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_session.c",
+   "line": 1576,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 45,
+   "file": "src/fst/fst_session.c",
+   "line": 1576,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 60,
+   "file": "src/fst/fst_session.c",
+   "line": 1576,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/fst/fst_session.c",
+   "line": 1579,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 9,
+   "file": "src/fst/fst_session.c",
+   "line": 1596,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_session.c",
+   "line": 1599,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  }
+ ]
+}

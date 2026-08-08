@@ -1,0 +1,571 @@
+{
+ "src/eap_server/eap_server_teap.c": [
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 111,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 51,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 126,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 26,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 198,
+   "message": "Dereference of uninitialized pointer 'data'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'data' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 237,
+   "message": "Function returns pointer to local variable 'data' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 59,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 264,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 25,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 268,
+   "message": "Variable 'data' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 295,
+   "message": "Memory leak: 'req' allocated with 'eap_msg_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'req' before this return statement"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 300,
+   "message": "Function returns pointer to local variable 'req' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 346,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 371,
+   "message": "Bit-field 'basic_auth_not_done' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 9,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 372,
+   "message": "Memory allocated with 'wpabuf_alloc' for variable 'req' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(req)' before the variable goes out of scope"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 378,
+   "message": "Memory leak: 'req' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'req' before this return statement"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 382,
+   "message": "Bit-field 'inner_eap_not_done' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 387,
+   "message": "Memory leak: 'req' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'req' before this return statement"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 398,
+   "message": "Memory leak: 'req' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'req' before this return statement"
+  },
+  {
+   "column": 16,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 403,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 21,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 410,
+   "message": "Scaled integer arithmetic with pointer: '2 * sizeof(*result) + sizeof(*cb)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 32,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 410,
+   "message": "Dereference of uninitialized pointer 'result'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'result' before dereferencing"
+  },
+  {
+   "column": 50,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 410,
+   "message": "Dereference of uninitialized pointer 'cb'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'cb' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 495,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 42,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 647,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 52,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 647,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 49,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 690,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 75,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 690,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 731,
+   "message": "Casting from char * (alignment 1) to struct eap_hdr * (alignment 4) may cause alignment issues",
+   "rule_id": "EXP36-C",
+   "severity": "Low",
+   "suggestion": "Use memcpy or ensure proper alignment before casting"
+  },
+  {
+   "column": 4,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 823,
+   "message": "Bit-field 'inner_eap_not_done' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 837,
+   "message": "Unreachable code after unconditional 'break'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 9,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 851,
+   "message": "Pointer parameter 'in_data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *in_data'"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 857,
+   "message": "Casting from char * (alignment 1) to struct eap_hdr * (alignment 4) may cause alignment issues",
+   "rule_id": "EXP36-C",
+   "severity": "Low",
+   "suggestion": "Use memcpy or ensure proper alignment before casting"
+  },
+  {
+   "column": 14,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 893,
+   "message": "Pointer parameter 'in_data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *in_data'"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 986,
+   "message": "Bit-field 'basic_auth_not_done' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 20,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 1000,
+   "message": "sizeof applied to pointer/array parameter 'tlv' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*tlv)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 8,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 1003,
+   "message": "Variable 'pos' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 23,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 1045,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 18,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 1057,
+   "message": "sizeof applied to pointer/array parameter 'cb' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(cb->nonce)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 30,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 1059,
+   "message": "sizeof applied to pointer/array parameter 'cb' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(cb->emsk_compound_mac)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 29,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 1061,
+   "message": "sizeof applied to pointer/array parameter 'cb' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(cb->msk_compound_mac)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 8,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 1086,
+   "message": "Variable 'EAP_TEAP_NONCE_LEN' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 9,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 1149,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 6,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 1175,
+   "message": "Variable 'tlv' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tlv' before use, e.g., at its declaration"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 1182,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 1230,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 9,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 1268,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 51,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 1327,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 16,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 1476,
+   "message": "Pointer to const assigned to non-const pointer without cast: *resp = respData: '*resp = respData'",
+   "rule_id": "EXP40-C",
+   "severity": "Low",
+   "suggestion": "Either remove const qualifier if the object should be modifiable, or use explicit casts to show intentional const removal"
+  },
+  {
+   "column": 10,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 1545,
+   "message": "Memory allocated with 'wpabuf_alloc' for variable 'resp' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(resp)' before the variable goes out of scope"
+  },
+  {
+   "column": 43,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 1594,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 53,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 1594,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 43,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 1602,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 53,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 1602,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 53,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 1602,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 1621,
+   "message": "Function returns pointer to local variable 'eapKeyData' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 45,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 1625,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 55,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 1625,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 55,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 1625,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 1644,
+   "message": "Function returns pointer to local variable 'eapKeyData' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 46,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 1648,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 56,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 1648,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 51,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 1656,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 61,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 1656,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 61,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 1656,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 1680,
+   "message": "Function returns pointer to local variable 'id' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_server/eap_server_teap.c",
+   "line": 1688,
+   "message": "Memory allocated with 'eap_server_method_alloc' for variable 'eap' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(eap)' before the variable goes out of scope"
+  }
+ ]
+}

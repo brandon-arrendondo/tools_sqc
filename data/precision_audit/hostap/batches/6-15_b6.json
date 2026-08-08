@@ -1,0 +1,1041 @@
+{
+ "src/p2p/p2p_i.h": [
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_i.h",
+   "line": 108,
+   "message": "String buffer placed before pointer in struct 'p2p_device': 'char country[3];' before 'struct wpabuf *go_neg_conf;' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'char country' after the pointer field 'struct wpabuf *go_neg_conf;', or use a char* pointer instead of a char array"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_i.h",
+   "line": 191,
+   "message": "String buffer placed before pointer in struct 'p2p_device': 'char password[100];' before 'struct pasn_data *pasn;' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'char password' after the pointer field 'struct pasn_data *pasn;', or use a char* pointer instead of a char array"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_i.h",
+   "line": 767,
+   "message": "String buffer placed before pointer in struct 'p2p_message': 'char device_name[WPS_DEV_NAME_MAX_LEN + 1];' before 'const u8 *wps_pri_dev_type;' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'char device_name' after the pointer field 'const u8 *wps_pri_dev_type;', or use a char* pointer instead of a char array"
+  },
+  {
+   "column": 21,
+   "file": "src/p2p/p2p_i.h",
+   "line": 860,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_i.h",
+   "line": 876,
+   "message": "Function has pointer parameter without size argument: 'int p2p_channel_select(struct p2p_channels *chans, const int *classes,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'const int *classes' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 35,
+   "file": "src/p2p/p2p_i.h",
+   "line": 886,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 20,
+   "file": "src/p2p/p2p_i.h",
+   "line": 887,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_i.h",
+   "line": 894,
+   "message": "Function has pointer parameter without size argument: 'int p2p_attr_text(struct wpabuf *data, char *buf, char *end);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'char *buf' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_i.h",
+   "line": 894,
+   "message": "Function has pointer parameter without size argument: 'int p2p_attr_text(struct wpabuf *data, char *buf, char *end);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'char *end' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 55,
+   "file": "src/p2p/p2p_i.h",
+   "line": 1085,
+   "message": "Array declaration 'req_dev_type[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  }
+ ],
+ "src/tls/asn1.h": [
+  {
+   "column": 55,
+   "file": "src/tls/asn1.h",
+   "line": 68,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/asn1.h",
+   "line": 71,
+   "message": "Function has pointer parameter without size argument: 'int asn1_get_integer(const u8 *buf, size_t len, int *integer, const u8 **next);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'int *integer' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 53,
+   "file": "src/tls/asn1.h",
+   "line": 71,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/asn1.h",
+   "line": 74,
+   "message": "Function has pointer parameter without size argument: 'int asn1_get_alg_id(const u8 *buf, size_t len, struct asn1_oid *oid,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *params_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 30,
+   "file": "src/tls/asn1.h",
+   "line": 199,
+   "message": "Identifier 'asn1_aes_siv_cmac_aead_256_oid' differs from similar identifiers only in trailing characters",
+   "rule_id": "DCL23-C",
+   "severity": "Medium",
+   "suggestion": "Use more distinctive names that differ at the beginning"
+  },
+  {
+   "column": 30,
+   "file": "src/tls/asn1.h",
+   "line": 200,
+   "message": "Identifier 'asn1_aes_siv_cmac_aead_384_oid' differs from similar identifiers only in trailing characters",
+   "rule_id": "DCL23-C",
+   "severity": "Medium",
+   "suggestion": "Use more distinctive names that differ at the beginning"
+  },
+  {
+   "column": 30,
+   "file": "src/tls/asn1.h",
+   "line": 201,
+   "message": "Identifier 'asn1_aes_siv_cmac_aead_512_oid' differs from similar identifiers only in trailing characters",
+   "rule_id": "DCL23-C",
+   "severity": "Medium",
+   "suggestion": "Use more distinctive names that differ at the beginning"
+  },
+  {
+   "column": 30,
+   "file": "src/tls/asn1.h",
+   "line": 202,
+   "message": "Identifier 'asn1_aes_siv_cmac_aead_256_oid' differs from similar identifiers only in trailing characters",
+   "rule_id": "DCL23-C",
+   "severity": "Medium",
+   "suggestion": "Use more distinctive names that differ at the beginning"
+  },
+  {
+   "column": 30,
+   "file": "src/tls/asn1.h",
+   "line": 203,
+   "message": "Identifier 'asn1_aes_siv_cmac_aead_384_oid' differs from similar identifiers only in trailing characters",
+   "rule_id": "DCL23-C",
+   "severity": "Medium",
+   "suggestion": "Use more distinctive names that differ at the beginning"
+  },
+  {
+   "column": 30,
+   "file": "src/tls/asn1.h",
+   "line": 204,
+   "message": "Identifier 'asn1_aes_siv_cmac_aead_512_oid' differs from similar identifiers only in trailing characters",
+   "rule_id": "DCL23-C",
+   "severity": "Medium",
+   "suggestion": "Use more distinctive names that differ at the beginning"
+  }
+ ],
+ "src/utils/base64.h": [
+  {
+   "column": 1,
+   "file": "src/utils/base64.h",
+   "line": 12,
+   "message": "Function has pointer parameter without size argument: 'char * base64_encode(const void *src, size_t len, size_t *out_len);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *out_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 33,
+   "file": "src/utils/base64.h",
+   "line": 12,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/base64.h",
+   "line": 13,
+   "message": "Function has pointer parameter without size argument: 'char * base64_encode_no_lf(const void *src, size_t len, size_t *out_len);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *out_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 39,
+   "file": "src/utils/base64.h",
+   "line": 13,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/base64.h",
+   "line": 14,
+   "message": "Function has pointer parameter without size argument: 'unsigned char * base64_decode(const char *src, size_t len, size_t *out_len);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *out_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 42,
+   "file": "src/utils/base64.h",
+   "line": 14,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/base64.h",
+   "line": 15,
+   "message": "Function has pointer parameter without size argument: 'char * base64_url_encode(const void *src, size_t len, size_t *out_len);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *out_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 37,
+   "file": "src/utils/base64.h",
+   "line": 15,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/base64.h",
+   "line": 16,
+   "message": "Function has pointer parameter without size argument: 'unsigned char * base64_url_decode(const char *src, size_t len, size_t *out_len);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *out_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 46,
+   "file": "src/utils/base64.h",
+   "line": 16,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ],
+ "src/utils/http-utils.h": [
+  {
+   "column": 1,
+   "file": "src/utils/http-utils.h",
+   "line": 20,
+   "message": "Function has pointer parameter without size argument: 'char * http_post(struct http_ctx *ctx, const char *url, const char *data,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *resp_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 51,
+   "file": "src/utils/http-utils.h",
+   "line": 20,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 68,
+   "file": "src/utils/http-utils.h",
+   "line": 20,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 15,
+   "file": "src/utils/http-utils.h",
+   "line": 21,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 41,
+   "file": "src/utils/http-utils.h",
+   "line": 21,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 15,
+   "file": "src/utils/http-utils.h",
+   "line": 22,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 15,
+   "file": "src/utils/http-utils.h",
+   "line": 23,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 37,
+   "file": "src/utils/http-utils.h",
+   "line": 23,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 15,
+   "file": "src/utils/http-utils.h",
+   "line": 24,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 40,
+   "file": "src/utils/http-utils.h",
+   "line": 24,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ],
+ "src/utils/json.h": [
+  {
+   "column": 30,
+   "file": "src/utils/json.h",
+   "line": 34,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 62,
+   "file": "src/utils/json.h",
+   "line": 34,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 43,
+   "file": "src/utils/json.h",
+   "line": 35,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 52,
+   "file": "src/utils/json.h",
+   "line": 42,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 60,
+   "file": "src/utils/json.h",
+   "line": 45,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 18,
+   "file": "src/utils/json.h",
+   "line": 46,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 56,
+   "file": "src/utils/json.h",
+   "line": 47,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 74,
+   "file": "src/utils/json.h",
+   "line": 47,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 53,
+   "file": "src/utils/json.h",
+   "line": 49,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 71,
+   "file": "src/utils/json.h",
+   "line": 49,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ],
+ "src/utils/xml-utils.h": [
+  {
+   "column": 1,
+   "file": "src/utils/xml-utils.h",
+   "line": 42,
+   "message": "Function has pointer parameter without size argument: 'void xml_node_get_text_free(struct xml_node_ctx *ctx, char *val);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'char *val' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/xml-utils.h",
+   "line": 43,
+   "message": "Function has pointer parameter without size argument: 'char * xml_node_get_base64_text(struct xml_node_ctx *ctx, xml_node_t *node,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'int *ret_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/xml-utils.h",
+   "line": 46,
+   "message": "Function-like macro 'xml_node_for_each_child' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/utils/xml-utils.h",
+   "line": 46,
+   "message": "Macro parameter 'child' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'child' in parentheses: (child) instead of child"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/xml-utils.h",
+   "line": 46,
+   "message": "Multistatement macro 'xml_node_for_each_child' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+   "rule_id": "PRE10-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/xml-utils.h",
+   "line": 46,
+   "message": "Macro evaluates parameter 'ctx' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/xml-utils.h",
+   "line": 51,
+   "message": "Function-like macro 'xml_node_for_each_sibling' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/utils/xml-utils.h",
+   "line": 51,
+   "message": "Macro parameter 'node' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'node' in parentheses: (node) instead of node"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/xml-utils.h",
+   "line": 51,
+   "message": "Multistatement macro 'xml_node_for_each_sibling' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+   "rule_id": "PRE10-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/xml-utils.h",
+   "line": 51,
+   "message": "Macro evaluates parameter 'node' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  }
+ ],
+ "wpa_supplicant/bgscan.c": [
+  {
+   "column": 34,
+   "file": "wpa_supplicant/bgscan.c",
+   "line": 17,
+   "message": "Array declaration 'bgscan_modules[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/bgscan.c",
+   "line": 28,
+   "message": "Function 'bgscan_init' does not validate pointer parameter 'ssid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ssid' at the start of the function, e.g., 'if (!ssid) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/bgscan.c",
+   "line": 28,
+   "message": "Function 'bgscan_init' does not validate pointer parameter 'name' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'name' at the start of the function, e.g., 'if (!name) { return error_code; }'"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/bgscan.c",
+   "line": 43,
+   "message": "Pointer subtraction between pointers from different arrays: '\"\"@836' and 'param:name'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/bgscan.c",
+   "line": 71,
+   "message": "Function 'bgscan_deinit' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 46,
+   "file": "wpa_supplicant/bgscan.c",
+   "line": 83,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/bgscan.c",
+   "line": 93,
+   "message": "Function 'bgscan_notify_beacon_loss' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 54,
+   "file": "wpa_supplicant/bgscan.c",
+   "line": 93,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/bgscan.c",
+   "line": 100,
+   "message": "Function 'bgscan_notify_signal_change' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 56,
+   "file": "wpa_supplicant/bgscan.c",
+   "line": 100,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  }
+ ],
+ "wpa_supplicant/wpa_gui-qt4/networkconfig.h": [
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_gui-qt4/networkconfig.h",
+   "line": 22,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 48,
+   "file": "wpa_supplicant/wpa_gui-qt4/networkconfig.h",
+   "line": 22,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 14,
+   "file": "wpa_supplicant/wpa_gui-qt4/networkconfig.h",
+   "line": 23,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 45,
+   "file": "wpa_supplicant/wpa_gui-qt4/networkconfig.h",
+   "line": 23,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 25,
+   "file": "wpa_supplicant/wpa_gui-qt4/networkconfig.h",
+   "line": 31,
+   "message": "Function has empty parameter list () - should explicitly specify (void) to indicate no arguments",
+   "rule_id": "DCL20-C",
+   "severity": "Medium",
+   "suggestion": "Change () to (void) to explicitly indicate function takes no arguments"
+  },
+  {
+   "column": 25,
+   "file": "wpa_supplicant/wpa_gui-qt4/networkconfig.h",
+   "line": 35,
+   "message": "Function has empty parameter list () - should explicitly specify (void) to indicate no arguments",
+   "rule_id": "DCL20-C",
+   "severity": "Medium",
+   "suggestion": "Change () to (void) to explicitly indicate function takes no arguments"
+  },
+  {
+   "column": 28,
+   "file": "wpa_supplicant/wpa_gui-qt4/networkconfig.h",
+   "line": 38,
+   "message": "Function has empty parameter list () - should explicitly specify (void) to indicate no arguments",
+   "rule_id": "DCL20-C",
+   "severity": "Medium",
+   "suggestion": "Change () to (void) to explicitly indicate function takes no arguments"
+  },
+  {
+   "column": 21,
+   "file": "wpa_supplicant/wpa_gui-qt4/networkconfig.h",
+   "line": 40,
+   "message": "Function has empty parameter list () - should explicitly specify (void) to indicate no arguments",
+   "rule_id": "DCL20-C",
+   "severity": "Medium",
+   "suggestion": "Change () to (void) to explicitly indicate function takes no arguments"
+  },
+  {
+   "column": 29,
+   "file": "wpa_supplicant/wpa_gui-qt4/networkconfig.h",
+   "line": 43,
+   "message": "Function has empty parameter list () - should explicitly specify (void) to indicate no arguments",
+   "rule_id": "DCL20-C",
+   "severity": "Medium",
+   "suggestion": "Change () to (void) to explicitly indicate function takes no arguments"
+  },
+  {
+   "column": 25,
+   "file": "wpa_supplicant/wpa_gui-qt4/networkconfig.h",
+   "line": 52,
+   "message": "Function has empty parameter list () - should explicitly specify (void) to indicate no arguments",
+   "rule_id": "DCL20-C",
+   "severity": "Medium",
+   "suggestion": "Change () to (void) to explicitly indicate function takes no arguments"
+  }
+ ],
+ "src/ap/hs20.c": [
+  {
+   "column": 54,
+   "file": "src/ap/hs20.c",
+   "line": 22,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/hs20.c",
+   "line": 32,
+   "message": "Variable 'hapd' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hs20.c",
+   "line": 47,
+   "message": "Function 'hs20_send_wnm_notification_deauth_req' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hs20.c",
+   "line": 47,
+   "message": "Function 'hs20_send_wnm_notification_deauth_req' does not validate pointer parameter 'addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'addr' at the start of the function, e.g., 'if (!addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hs20.c",
+   "line": 47,
+   "message": "Function 'hs20_send_wnm_notification_deauth_req' does not validate pointer parameter 'payload' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'payload' at the start of the function, e.g., 'if (!payload) { return error_code; }'"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/hs20.c",
+   "line": 73,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hs20.c",
+   "line": 82,
+   "message": "Function 'hs20_send_wnm_notification_t_c' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hs20.c",
+   "line": 82,
+   "message": "Function 'hs20_send_wnm_notification_t_c' does not validate pointer parameter 'addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'addr' at the start of the function, e.g., 'if (!addr) { return error_code; }'"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/hs20.c",
+   "line": 119,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hs20.c",
+   "line": 128,
+   "message": "Function 'hs20_t_c_filtering' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 45,
+   "file": "src/ap/hs20.c",
+   "line": 128,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  }
+ ],
+ "src/ap/p2p_hostapd.c": [
+  {
+   "column": 1,
+   "file": "src/ap/p2p_hostapd.c",
+   "line": 23,
+   "message": "Function 'hostapd_p2p_get_mib_sta' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/p2p_hostapd.c",
+   "line": 23,
+   "message": "Function 'hostapd_p2p_get_mib_sta' does not validate integer parameter 'buflen' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'buflen' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 49,
+   "file": "src/ap/p2p_hostapd.c",
+   "line": 23,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 72,
+   "file": "src/ap/p2p_hostapd.c",
+   "line": 23,
+   "message": "Pointer parameter 'sta' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sta'"
+  },
+  {
+   "column": 13,
+   "file": "src/ap/p2p_hostapd.c",
+   "line": 24,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/p2p_hostapd.c",
+   "line": 68,
+   "message": "Function 'hostapd_p2p_non_p2p_sta_connected' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/p2p_hostapd.c",
+   "line": 79,
+   "message": "Function 'hostapd_p2p_non_p2p_sta_disconnected' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/p2p_hostapd.c",
+   "line": 83,
+   "message": "Potential null pointer dereference in member access of variable 'hapd'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'hapd' is not NULL before member access"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/p2p_hostapd.c",
+   "line": 94,
+   "message": "Function 'hostapd_eid_p2p_manage' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/p2p_hostapd.c",
+   "line": 94,
+   "message": "Function 'hostapd_eid_p2p_manage' does not validate pointer parameter 'eid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'eid' at the start of the function, e.g., 'if (!eid) { return error_code; }'"
+  },
+  {
+   "column": 49,
+   "file": "src/ap/p2p_hostapd.c",
+   "line": 94,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  }
+ ],
+ "src/common/dpp_i.h": [
+  {
+   "column": 22,
+   "file": "src/common/dpp_i.h",
+   "line": 46,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 18,
+   "file": "src/common/dpp_i.h",
+   "line": 93,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_i.h",
+   "line": 94,
+   "message": "Function has pointer parameter without size argument: 'int dpp_hmac_vector(size_t hash_len, const u8 *key, size_t key_len,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'const size_t *len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 34,
+   "file": "src/common/dpp_i.h",
+   "line": 95,
+   "message": "Array declaration 'addr[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_i.h",
+   "line": 97,
+   "message": "Function has pointer parameter without size argument: 'int dpp_ecdh(struct crypto_ec_key *own, struct crypto_ec_key *peer,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *secret_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 58,
+   "file": "src/common/dpp_i.h",
+   "line": 106,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 17,
+   "file": "src/common/dpp_i.h",
+   "line": 122,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 52,
+   "file": "src/common/dpp_i.h",
+   "line": 122,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 17,
+   "file": "src/common/dpp_i.h",
+   "line": 126,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 52,
+   "file": "src/common/dpp_i.h",
+   "line": 126,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 20,
+   "file": "src/common/dpp_i.h",
+   "line": 132,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ]
+}

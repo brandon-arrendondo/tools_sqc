@@ -1,0 +1,1219 @@
+{
+ "labels": [
+  {
+   "rule": "PRE08-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 31,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Shares first 8 chars 'ieee802_' with ieee802_11_common.h; literally true but low-value (established convention)."
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 70,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_temp_disabled is internal-only; wpa_s never NULL from any call site."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 126,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_timeout_handler fixed (void*,void*) signature; can't add const."
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 142,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "__wpa_supplicant_get_new_bss uses reserved leading-double-underscore identifier (C 7.1.3)."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 161,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bss is heap-backed via wpa_bss_get*(), not automatic storage."
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 174,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "drv_ssid is a plain stack array; no getenv() anywhere in the function -- factually wrong."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 206,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same heap-backed bss pointer pattern as :161."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 221,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "data is only ever read in this static helper (wpa_supplicant_select_config)."
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 225,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same as :174 -- no getenv() at all in the function."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 324,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop timeout callback (sock_ctx) fixed signature."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 358,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(wpa_s->links) sizes the fixed-size struct member array itself, not the decayed wpa_s pointer."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 429,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(wpa_s->last_tk) same member-array shape as :358."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 491,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "data is read-only in this static event handler (wpa_supplicant_event_pmkid_candidate)."
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 493,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic ad-hoc-NULL-check convention finding, not a real defect."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 510,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_s is read-only in wpa_supplicant_dynamic_keys."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 542,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ssid is read-only in wpa_supplicant_scard_init."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 562,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "else-if with no final else deliberately skips unmatched EAP methods (do-nothing case)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 605,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "has_wep_key's ssid is read-only."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 619,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_supplicant_match_privacy's bss is read-only."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 678,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Identifier-only-match: different ssid-> fields used with & vs indexing, not the same value mixed."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 942,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "freq_allowed's freqs is read-only."
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 946,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic ad-hoc-NULL-check convention finding."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 999,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "rate_ie used for bitwise flag extraction and separately for indexing; stylistic-pedantry mismatch, not a real signedness hazard."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 1000,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "j is a plain loop counter; finding conflates it with unrelated bitwise use of rate_ie[j]."
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 1001,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "r is a fresh per-iteration local, initialized once and never reassigned."
+  },
+  {
+   "rule": "INT10-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 1086,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "r = (u8 & 0x7f) * 5 is provably non-negative by construction despite the int type."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 1155,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_dbg/MAC2STR pure-accessor logging args, no side effects to unsequence."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 1197,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "disabled_freq's wpa_s is read-only."
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 1226,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sae_pk_acceptable_bss_with_pk<->wpa_scan_res_ok is a real, unmemoized mutual recursion bounded only by the scan BSS-list size; two same-ESS SAE-PK BSSes can re-enter each other."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 1227,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "orig_bss is read-only (only compared)."
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 1261,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Same mutual-recursion pair as :1226 (reverse direction)."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 1267,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "check_ssid=false is never read; unconditionally overwritten at :1290 before any use."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 1286,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Guard-clause chain; unmatched case intentionally does nothing further."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 1592,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "owe_ssid && guard is on the same short-circuited if-condition as the os_memcmp call."
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 1619,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_scan_res_match is internal-only; i is a bounded loop index and group is never NULL from any of its ~4 call sites."
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 1619,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_scan_res_match is internal-only; i is a bounded loop index and group is never NULL from any of its ~4 call sites."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 1621,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "group is read-only in wpa_scan_res_match."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 1639,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_dbg/MAC2STR logging args, pure accessors."
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 1655,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "== 1 here deliberately means 'exactly one enabled network' (special-case limit); != 0 would change behavior and break the intent."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 1713,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid walks the persistent wpa_s->conf ssid linked list (group/ssid->pnext), not local automatic storage."
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 1721,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_supplicant_select_bss's wpa_s/group are never actually NULL across its ~4 call sites (internal invariant)."
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 1721,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_supplicant_select_bss's wpa_s/group are never actually NULL across its ~4 call sites (internal invariant)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 1750,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "group is the same internal-invariant parameter as the API00-C finding at :1721 -- never NULL in practice."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 1764,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_dbg/MAC2STR logging args."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 1800,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "prio is initialized in its own for-loop init clause (for (prio = 0; ...))."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 1823,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "else-if selected==NULL break is a deliberate guard clause."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 1924,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "selected is already dereferenced earlier in this same static function without complaint; internal invariant, never NULL when it's called."
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 1977,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wnm_btm_resp_tx_status is only reachable under case EVENT_TX_STATUS, but wpa_supplicant_deauthenticate always calls wpa_supplicant_event with the fixed EVENT_DEAUTH -- this closing edge is statically unreachable."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 1982,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid is always a real network-profile pointer at every call site of wpa_supplicant_connect."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2006,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_msg/MAC2STR logging args, pure accessors."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2010,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "selected is the same internal-invariant parameter, never NULL in practice."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2054,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "prio initialized in its own for-loop init clause, same shape as :1800."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2073,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid walks wpa_s->conf->pssid[] persistent config list, not local storage."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2159,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "cur_snr=0 is unconditionally overwritten before its only read at :2268."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2160,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ret=0 is unconditionally overwritten by the if/else at :2316/2321 before the return."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2294,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cur_est/sel_est are plain unsigned int locals, not pointers; message conflates the source struct field with the actual comparison operands."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2302,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "else-if chain intentionally leaves min_diff unchanged outside the checked signal bands."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2302,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same integer-vs-pointer conflation as :2294."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2311,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "diff = sel_level - cur_level is plain int subtraction, not pointer subtraction."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2323,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_msg_ctrl/MAC2STR logging args."
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2337,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_supplicant_need_to_roam returns explicitly on every branch, including both #ifdef CONFIG_NO_ROAMING arms."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2339,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ssid is read-only in wpa_supplicant_need_to_roam."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2395,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data is null-guarded by its only caller (`data &&` at :2786) before wpas_trigger_6ghz_scan is invoked."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2412,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_s is read-only in wpas_short_ssid_match."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2413,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "scan_res is read-only."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2421,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ie_end is a declaration, unconditionally assigned a few lines later before its first use."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2422,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "info is a declaration with the same shape; assigned before any read."
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2467,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Closing edge requires case EVENT_SCAN_RESULTS, but wpa_supplicant_deauthenticate always passes EVENT_DEAUTH -- statically unreachable."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2471,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "scan_res=NULL is unconditionally overwritten by wpa_supplicant_get_scan_results() a few lines later, before any read."
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2501,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic ad-hoc-NULL-check convention finding."
+  },
+  {
+   "rule": "INT13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2533,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Message blames pointer 'res' for the bitwise op; the real operand is res->qual, a struct field, not res itself."
+  },
+  {
+   "rule": "INT13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2534,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same misattribution, res->noise."
+  },
+  {
+   "rule": "INT13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2535,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same misattribution, res->level."
+  },
+  {
+   "rule": "INT13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2536,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same misattribution, res->tsf."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2546,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idx is initialized in its own for-loop init clause."
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2635,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bgscan_simple_notify_scan's own source comment documents a genuine binary 0/1 return contract."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2685,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "scan_work_done: label is reached via multiple earlier goto statements, not dead/unreachable code."
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2686,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "The fallthrough free at :2653 and the goto-reached free at :2686 are on mutually exclusive control-flow paths -- every goto to the label happens before :2653, and every path after :2653 returns before reaching it."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2686,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same mutually-exclusive-branch root cause as the MEM30-C finding on this line."
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2706,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_supplicant_deauthenticate always triggers EVENT_DEAUTH, and wpas_event_deauth is exactly the EVENT_DEAUTH handler -- this closing edge is real, though bounded by the finite BSSID-ignore list."
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2713,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "time_to_reenable is set once from wpas_reenabled_network_time() and never reassigned."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2745,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid is set together with selected as an output-param pair from wpa_supplicant_pick_network; never NULL when selected is non-NULL."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2761,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same selected/ssid pairing invariant as :2745."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2784,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "else-if own_request guard clause, deliberate."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2876,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "self is read-only in equal_scan_freq_list."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2877,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "other is read-only, same function."
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2890,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same EVENT_SCAN_RESULTS/EVENT_DEAUTH event-type mismatch as :2467."
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2945,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Same real EVENT_DEAUTH-consistent chain as :2706, closing via the finite-BSSID-ignore-list-bounded wpas_connection_failed path."
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2945,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_supplicant_fast_associate returns explicitly on both #ifdef CONFIG_NO_SCAN_PROCESSING arms."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2962,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "else-if crossed_6ghz_dom guard clause, deliberate."
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2972,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_wps_supplicant_fast_associate is only ever called with a valid wpa_s interface object."
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2972,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Closing edge requires EVENT_SCAN_RESULTS, mismatched with the EVENT_DEAUTH-only wpa_supplicant_deauthenticate call, same root cause as :2467/:2890."
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2972,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Both #ifdef CONFIG_NO_SCAN_PROCESSING arms explicitly return."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 2984,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wnm_bss_keep_alive(void *eloop_ctx, void *sock_ctx) is a fixed eloop callback signature."
+  },
+  {
+   "rule": "INT10-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3008,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msec is declared unsigned int; % on it can never see a negative operand."
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3020,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic ad-hoc-NULL-check convention finding."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3027,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "elems is the output-param of ieee802_11_parse_elems(&elems), which os_memsets it before any read."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3037,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Base-identifier misattribution: bitwise & arithmetic hit different wpa_s-> member fields, not the same value."
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3084,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic ad-hoc-NULL-check convention finding."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3090,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same ieee802_11_parse_elems output-param shape as :3027."
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3097,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Closing edge requires case EVENT_ASSOC (wpa_supplicant_event_assoc), but the chain arrives via wpa_supplicant_deauthenticate's fixed EVENT_DEAUTH -- statically unreachable."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3112,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label reached by goto, not dead code."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3128,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "elems output-param shape, same as :3027."
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3144,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same EVENT_ASSOC/EVENT_DEAUTH mismatch as :3097 (mutual pair)."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3171,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label reached by goto."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3200,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ie[1] is just the IE length BYTE being read, not a size-1 array declaration; ie+2 correctly steps past the 2-byte type/length header."
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3220,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same EVENT_ASSOC/EVENT_DEAUTH mismatch pattern."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3221,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "data is read-only in wpa_supplicant_use_own_rsne_params."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3235,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data is null-guarded by its only caller (`data &&` at :4632)."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3240,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len>l is a plain int comparison of two locals derived from IE bytes, not a pointer comparison."
+  },
+  {
+   "rule": "MSC09-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3246,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "These are \\x-escaped raw OUI/vendor bytes compared via memcmp, not human-readable text -- no locale-portability concern applies."
+  },
+  {
+   "rule": "MSC09-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3248,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same binary-byte-sequence shape as :3246."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3257,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Short-circuit: !found is true whenever len was never set, so wpa_parse_wpa_ie(p,len,...) is never evaluated on that path."
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3302,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'NO_PSK_AVAILABLE' is a ctrl_iface status/reason-code tag, not an actual secret value."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3361,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "else-if chain over bss_rsn/bss_wpa alternatives; unmatched case intentionally leaves found=false."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3452,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "req_elems is read-only (only dereferenced to copy into a local struct)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3453,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "resp_elems read-only, same shape."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3488,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "get_max_nss_capability is a pure read function; MIN() evaluating both calls has no side effects to unsequence."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3494,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same pure-function MIN() shape as :3488."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3523,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "req_elems/resp_elems are ieee802_11_parse_elems output-params."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3524,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same output-param shape."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3573,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "for_each_link(wpa_s->valid_links, i) initializes i in the macro's own hidden loop clause."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3590,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_s is read-only in is_assisted_p2p_dfs_allowed."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3616,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_s is read-only in is_dfs_owner_ap."
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3642,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same EVENT_ASSOC/EVENT_DEAUTH mismatch pattern."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3666,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data is required by the EVENT_ASSOCINFO event contract; drivers always populate it for this event type (internal-API invariant)."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3710,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same len>l plain-int-comparison misattribution as :3240."
+  },
+  {
+   "rule": "MSC09-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3717,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same \\x-escaped binary OUI-bytes shape as :3246."
+  },
+  {
+   "rule": "MSC09-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3719,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same shape."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3748,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "switch's implicit default (rsn_override stays RSN_OVERRIDE_NOT_USED, already set before the switch) is intentional."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3812,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "elems output-param shape (ieee802_11_parse_elems)."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3872,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same len>l misattribution."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3929,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same len>l misattribution."
+  },
+  {
+   "rule": "MSC09-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 3936,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same \\x-escaped binary OUI-bytes shape."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4001,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bss is explicitly initialized to NULL at its declaration on this very line -- factually wrong, it is never uninitialized."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4015,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ieee802_11_parse_elems unconditionally os_memsets its output struct before ever reading it -- the 'reads the value' claim is factually wrong."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4027,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "else-if MLO-link-DFS guard clause, deliberate."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4070,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_s is read-only in wpa_supplicant_assoc_update_ie."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4072,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Each NULL initializer (bss_wpa/bss_rsn/bss_rsnx) is dead on every path: unreachable on the two early-return paths above it, and unconditionally overwritten a few lines later on the main path."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4072,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Each NULL initializer (bss_wpa/bss_rsn/bss_rsnx) is dead on every path: unreachable on the two early-return paths above it, and unconditionally overwritten a few lines later on the main path."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4072,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Each NULL initializer (bss_wpa/bss_rsn/bss_rsnx) is dead on every path: unreachable on the two early-return paths above it, and unconditionally overwritten a few lines later on the main path."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4111,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "data is read-only in wpas_fst_update_mb_assoc."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4143,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "else-if FST MB-IE guard clause, deliberate."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4149,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_s is read-only in wpas_ml_parse_assoc."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4150,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "elems is read-only, same function."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4178,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ml_info) is the textbook-correct per-element size for the os_memset(ptr,0,sizeof(*ptr)*N) idiom."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4254,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "pos+=2 here is dead: pos is unconditionally reset to a fresh computation a few lines later, before any read of the incremented value."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4269,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "end is a declaration; it is assigned before every read later in the same loop iteration."
+  },
+  {
+   "rule": "CON43-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4292,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Single-threaded, eloop-driven parser; no concurrent access exists for a double-fetch to matter."
+  },
+  {
+   "rule": "INT30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4309,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos+2+sub_elem_len is pointer arithmetic misidentified as integer addition, and sub_elem_len is already bounds-checked a few lines above."
+  }
+ ],
+ "fns": [
+  {
+   "file": "wpa_supplicant/events.c",
+   "line": 4264,
+   "rule": "INT30-C/ARR38-C",
+   "desc": "wpas_ml_parse_assoc(): common_info->len (attacker-controlled, from the EHT Basic Multi-Link element's Common Info field in an Association Response) is only lower-bound checked (:4218, common_info->len < expected_common_info_len -> goto out) -- there is no upper-bound check against the actual remaining ml_len. 'ml_len -= sizeof(*ml) + common_info->len;' (size_t) can underflow to a huge value if a malicious/corrupted AP sets common_info->len larger than ml_len - sizeof(*ml), and 'pos = ((u8*)common_info) + common_info->len' (:4263) already points past the parsed wpabuf. The subsequent 'while (ml_len > 2 ...)' loop then walks pos far out of the buffer -- an attacker-controlled heap over-read driven by a wire-parsed length field with no upper-bound validation.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 40,
+  "fp": 110,
+  "fn": 1
+ }
+}

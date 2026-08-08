@@ -1,0 +1,926 @@
+{
+ "labels": [
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p_dev_disc.c",
+   "line": 17,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "p2p param genuinely unused/unmodified in p2p_build_dev_disc_req; low-value but real DCL13-C"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p_dev_disc.c",
+   "line": 39,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is wpabuf_alloc'd heap storage, not automatic; DCL30-C heap-vs-automatic-storage confusion"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_dev_disc.c",
+   "line": 43,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only TX-status callback, p2p always non-NULL; API00-C internal-only-API FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p_dev_disc.c",
+   "line": 67,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "dev param only read (member accesses), never mutated; low-value but real DCL13-C"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/p2p/p2p_dev_disc.c",
+   "line": 83,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MACSTR/MAC2STR expands to side-effect-free array indexing, not real unsequenced calls; EXP30-C FP"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/p2p/p2p_dev_disc.c",
+   "line": 95,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/wpabuf_len are pure accessors; EXP30-C pure-accessor-args FP"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p_dev_disc.c",
+   "line": 125,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is wpabuf_alloc'd heap storage, not automatic; DCL30-C heap-vs-automatic-storage confusion"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_dev_disc.c",
+   "line": 129,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal TX-status callback, p2p always non-NULL; API00-C internal-only-API FP"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/p2p/p2p_dev_disc.c",
+   "line": 151,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/wpabuf_len pure accessors; EXP30-C FP"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_dev_disc.c",
+   "line": 161,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sa is caller-guaranteed non-NULL frame-header pointer from internal RX dispatch; API00-C internal-only-API FP"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/p2p/p2p_dev_disc.c",
+   "line": 189,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "g is initialized in the for-loop's own init clause (g=0); ARR00-C for-loop-init-clause miss"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_dev_disc.c",
+   "line": 309,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal frame dispatch guarantees p2p non-NULL; API00-C internal-only-API FP"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/pae/ieee802_1x_kay_i.h",
+   "line": 153,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL40-C misparses trailing STRUCT_PACKED attribute-macro token as a redeclared object across unrelated structs; confirmed categorical pattern"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/pae/ieee802_1x_kay_i.h",
+   "line": 190,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same STRUCT_PACKED DCL40-C misparse"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/pae/ieee802_1x_kay_i.h",
+   "line": 216,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "u8 ckn[0] is a flexible array member, not character/string data; STR31-C misapplied-to-non-char-FAM"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/pae/ieee802_1x_kay_i.h",
+   "line": 227,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same STRUCT_PACKED DCL40-C misparse"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/pae/ieee802_1x_kay_i.h",
+   "line": 244,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "u8 peer[0] flexible array member, not a string; STR31-C misapplied-to-non-char-FAM"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/pae/ieee802_1x_kay_i.h",
+   "line": 269,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same STRUCT_PACKED DCL40-C misparse"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/pae/ieee802_1x_kay_i.h",
+   "line": 337,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same STRUCT_PACKED DCL40-C misparse"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/pae/ieee802_1x_kay_i.h",
+   "line": 366,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "u8 sak[0] flexible array member, not a string; STR31-C misapplied-to-non-char-FAM"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/pae/ieee802_1x_kay_i.h",
+   "line": 382,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same STRUCT_PACKED DCL40-C misparse"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/pae/ieee802_1x_kay_i.h",
+   "line": 402,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "u8 ckn[0] flexible array member, not a string; STR31-C misapplied-to-non-char-FAM"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/pae/ieee802_1x_kay_i.h",
+   "line": 405,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same STRUCT_PACKED DCL40-C misparse"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/pae/ieee802_1x_kay_i.h",
+   "line": 422,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "u8 icv[0] flexible array member, not a string; STR31-C misapplied-to-non-char-FAM"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/wps/wps_upnp_event.c",
+   "line": 19,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wps_upnp.h and wps_upnp_i.h genuinely share first 8 chars; technically true, not practically actionable on modern toolchains"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/wps/wps_upnp_event.c",
+   "line": 95,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "e allocated via os_zalloc, heap not automatic storage; DCL30-C confusion"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/wps/wps_upnp_event.c",
+   "line": 100,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal API, s always valid caller-supplied subscription; API00-C internal-only-API FP"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/wps/wps_upnp_event.c",
+   "line": 105,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "s already dereferenced multiple times earlier in the same function (event_dequeue(s) at :103); not a new hazard, same internal-only-API convention"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_upnp_event.c",
+   "line": 145,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "e param only read (addr/data/s/subscriber_sequence), never mutated"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/wps/wps_upnp_event.c",
+   "line": 170,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is wpabuf_alloc'd heap storage, not automatic; DCL30-C confusion"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/wps/wps_upnp_event.c",
+   "line": 221,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "switch covers all 4 values of enum http_client_event (OK/FAILED/INVALID_REPLY/TIMEOUT); exhaustive enum switch, no default needed"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/wps/wps_upnp_event.c",
+   "line": 289,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "e is set from event_dequeue(s) immediately after verifying s->event_queue is non-empty (:280-283); single-threaded eloop guarantees e non-NULL here"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_upnp_event.c",
+   "line": 314,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_data matches the fixed eloop_timeout_handler(void*,void*) callback signature; DCL13-C dispatch-contract FP"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/wps_upnp_event.c",
+   "line": 405,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*e) is a compile-time size computation, not a dereference; EXP33-C sizeof(*ptr)-not-a-deref FP"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/wps/wps_upnp_event.c",
+   "line": 410,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "e is added to s->event_queue via dl_list_add_tail immediately after; ownership (and e->data) transferred to the queue, freed later by event_delete()"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/wps/wps_upnp_event.c",
+   "line": 422,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same ownership-transfer-to-queue as above; e->data is not leaked, freed later via event_delete() when the queued event is processed"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_introspect.c",
+   "line": 34,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "iface is os_zalloc'd/list-linked heap storage, not automatic; DCL30-C confusion"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_introspect.c",
+   "line": 41,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "on error, both dbus_interface and xml are freed before the return two lines later; not a leak"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_introspect.c",
+   "line": 46,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "iface->xml is wpabuf_free'd at :44, one line before this return; not a leak"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_introspect.c",
+   "line": 50,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "iface is heap storage (os_zalloc or pre-existing list node), not automatic; DCL30-C confusion"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_introspect.c",
+   "line": 50,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "iface (and its xml) is returned to the caller and linked into the interfaces list; ownership transferred, freed later by add_interfaces()"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_introspect.c",
+   "line": 151,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "obj_dsc is only read (methods/signals/properties) throughout the call chain, never mutated"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/dbus/dbus_new_introspect.c",
+   "line": 189,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "dbus_connection_list_registered()'s return value is never checked; on OOM failure children may be left unset/garbage, and the following for-loop dereferences it unconditionally"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_introspect.c",
+   "line": 191,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_free_string_array is a libdbus function declared via the transitively-included <dbus/dbus.h>; DCL31-C system-header FP"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_introspect.c",
+   "line": 253,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "message comes from internal D-Bus dispatch, always non-NULL; API00-C internal-only-API FP"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_introspect.c",
+   "line": 253,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "obj_dsc comes from internal D-Bus registration, always non-NULL; API00-C internal-only-API FP"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_introspect.c",
+   "line": 276,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_message_new_method_return is a libdbus function via <dbus/dbus.h>; DCL31-C system-header FP"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_introspect.c",
+   "line": 285,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reply is an opaque heap/refcounted DBusMessage* from a library allocator, not an automatic local; DCL30-C confusion extended to opaque library types"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/ap/dhcp_snoop.c",
+   "line": 28,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf in ipaddr_str is declared static, not automatic storage; no dangling pointer"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/dhcp_snoop.c",
+   "line": 32,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary const u8 *buf/size_t len pointer+length param; API05-C wholesale misfire"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/dhcp_snoop.c",
+   "line": 44,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "exten_len computation is a plain integer sizeof-difference, no pointer operand at all; ARR39-C pure-integer misfire"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/dhcp_snoop.c",
+   "line": 44,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*b) is a compile-time size computation before b is even assigned, not a dereference; EXP33-C FP"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/ap/dhcp_snoop.c",
+   "line": 48,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cited 'buffer size 17 allocated at line 23' is ipaddr_str's unrelated static local that merely shares the name 'buf'; the real buf here is handle_dhcp's const u8* wire-packet param; cross-function name-collision misattribution"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/dhcp_snoop.c",
+   "line": 60,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos walks the real, length-checked DHCP option buffer (b->exten..end); ARR37-C pointer-legitimately-walks-a-real-array FP"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/dhcp_snoop.c",
+   "line": 67,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same pos, same real-array-walk FP"
+  },
+  {
+   "rule": "CON43-C",
+   "file": "src/ap/dhcp_snoop.c",
+   "line": 71,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "single-threaded eloop processing a single packet once; no shared-memory double-fetch/TOCTOU hazard"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/ap/dhcp_snoop.c",
+   "line": 97,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "x_snoop_mcast_to_ucast_convert_send() genuinely writes into buf (dest-address swap and restore) despite buf being declared const in handle_dhcp; real (if transient/self-restoring) cast-away-const mutation"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/dhcp_snoop.c",
+   "line": 111,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR expands to side-effect-free array indexing, and ipaddr_str is called only once in this statement; EXP30-C MACSTR/MAC2STR FP"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/ap/dhcp_snoop.c",
+   "line": 148,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no pthread usage anywhere in this file; CON33-C strerror() no-pthread FP"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/ap/dhcp_snoop.c",
+   "line": 148,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no pthread usage anywhere in this file; CON34-C strerror() no-pthread FP"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/dhcp_snoop.c",
+   "line": 156,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal API, hapd always valid; API00-C internal-only-API FP"
+  },
+  {
+   "rule": "MEM03-C",
+   "file": "src/eap_peer/eap_vendor_test.c",
+   "line": 34,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "password is a borrowed alias into the sm's persistent config storage (returned by eap_get_config_password), not an owned local buffer to clear; MEM03-C misapplied-to-borrowed-alias"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/eap_vendor_test.c",
+   "line": 37,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*data) is compile-time, not a dereference; EXP33-C FP"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_vendor_test.c",
+   "line": 47,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data is os_zalloc'd heap storage, not automatic; DCL30-C confusion"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_vendor_test.c",
+   "line": 51,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sm matches struct eap_method's fixed init/deinit/process/... callback contract; DCL13-C dispatch-contract FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_vendor_test.c",
+   "line": 58,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "timeout_ctx matches the fixed eloop_timeout_handler signature; DCL13-C dispatch-contract FP"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_vendor_test.c",
+   "line": 137,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "resp is eap_msg_alloc'd heap storage, not automatic; DCL30-C confusion"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_vendor_test.c",
+   "line": 141,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sm matches struct eap_method's isKeyAvailable contract; DCL13-C dispatch-contract FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_vendor_test.c",
+   "line": 141,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv matches struct eap_method's isKeyAvailable contract; DCL13-C dispatch-contract FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_vendor_test.c",
+   "line": 148,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sm matches struct eap_method's getKey contract; DCL13-C dispatch-contract FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_peer/eap_vendor_test.c",
+   "line": 148,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv is an ordinary void* opaque context param, not an array; API05-C wholesale misfire"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_vendor_test.c",
+   "line": 148,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv matches struct eap_method's getKey contract; DCL13-C dispatch-contract FP"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_vendor_test.c",
+   "line": 165,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "key is os_malloc'd heap storage, not automatic; DCL30-C confusion"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/eap_peer/eap_vendor_test.c",
+   "line": 173,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap is passed to eap_peer_method_register(eap) which retains ownership; MEM31-C ownership-transfer-to-registration-API FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_gtc.c",
+   "line": 21,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sm matches struct eap_method's init contract; DCL13-C dispatch-contract FP"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_server/eap_server_gtc.c",
+   "line": 25,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*data) compile-time, not a dereference; EXP33-C FP"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_server/eap_server_gtc.c",
+   "line": 39,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data is os_zalloc'd heap storage, not automatic; DCL30-C confusion"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_gtc.c",
+   "line": 43,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sm matches struct eap_method's reset contract; DCL13-C dispatch-contract FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_gtc.c",
+   "line": 50,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sm matches struct eap_method's buildReq contract; DCL13-C dispatch-contract FP"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_server/eap_server_gtc.c",
+   "line": 73,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "req is eap_msg_alloc'd heap storage, not automatic; DCL30-C confusion"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_gtc.c",
+   "line": 77,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sm matches struct eap_method's check contract; DCL13-C dispatch-contract FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_gtc.c",
+   "line": 77,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv matches struct eap_method's check contract; DCL13-C dispatch-contract FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_gtc.c",
+   "line": 187,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sm matches struct eap_method's isDone contract; DCL13-C dispatch-contract FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_gtc.c",
+   "line": 187,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv matches struct eap_method's isDone contract; DCL13-C dispatch-contract FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_gtc.c",
+   "line": 194,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sm matches struct eap_method's isSuccess contract; DCL13-C dispatch-contract FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_gtc.c",
+   "line": 194,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv matches struct eap_method's isSuccess contract; DCL13-C dispatch-contract FP"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/eap_server/eap_server_gtc.c",
+   "line": 205,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap passed to eap_server_method_register(eap) which retains ownership; MEM31-C ownership-transfer-to-registration-API FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/rsn_supp/preauth.h",
+   "line": 26,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf/buflen is an ordinary paired pointer+size out-param on the real (#if) declaration; API05-C wholesale misfire"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/preauth.h",
+   "line": 32,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "genuinely unused/unmodified sm in the CONFIG_NO_WPA no-op stub body; low-value #ifdef-stub DCL13-C"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/preauth.h",
+   "line": 36,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "genuinely unused sm in the no-op stub"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/preauth.h",
+   "line": 40,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "genuinely unused sm in the no-op stub"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/preauth.h",
+   "line": 41,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "genuinely unused eap_conf in the no-op stub"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/preauth.h",
+   "line": 46,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "genuinely unused sm in the no-op stub"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/preauth.h",
+   "line": 50,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "genuinely unused sm in the no-op stub"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/preauth.h",
+   "line": 55,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "genuinely unused sm in the no-op stub"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/preauth.h",
+   "line": 60,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "genuinely unused sm in the no-op stub"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/preauth.h",
+   "line": 66,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "genuinely unused sm in the no-op stub"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/rsn_supp/preauth.h",
+   "line": 66,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is an ordinary pointer+size out-param, not an array-syntax opportunity; API05-C wholesale misfire"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/preauth.h",
+   "line": 66,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "genuinely unused buf in the no-op stub (returns 0 unconditionally)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/preauth.h",
+   "line": 72,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "genuinely unused sm in the no-op stub"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/wpa_ie.c",
+   "line": 28,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data is an internal out-param, always supplied by internal callers; API00-C internal-only-API FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/wpa_ie.c",
+   "line": 45,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_ie IS genuinely modified via the hdr=(struct wpa_ie_hdr*)wpa_ie alias (hdr->elem_id/hdr->len writes); DCL13-C misses aliased-cast mutation"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/rsn_supp/wpa_ie.c",
+   "line": 53,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*hdr) is compile-time, computed before hdr is even assigned; EXP33-C FP"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/rsn_supp/wpa_ie.c",
+   "line": 104,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos and wpa_ie are both bounded within the small fixed-size WPA IE buffer verified by the length check above; no realistic overflow"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/wpa_ie.c",
+   "line": 112,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sm is internal state, always valid; API00-C internal-only-API FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/wpa_ie.c",
+   "line": 112,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sm is only read (wmm_enabled/mfp/ocv/ext_key_id), never mutated"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/wpa_ie.c",
+   "line": 133,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "rsn_ie IS genuinely modified via the hdr=(struct rsn_ie_hdr*)rsn_ie alias; DCL13-C misses aliased-cast mutation"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/rsn_supp/wpa_ie.c",
+   "line": 142,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*hdr) compile-time, not a dereference; EXP33-C FP"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/rsn_supp/wpa_ie.c",
+   "line": 270,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/rsn_ie bounded within the small fixed-size RSN IE buffer verified above; no realistic overflow"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/wpa_ie.c",
+   "line": 301,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sm is internal state, always valid; API00-C internal-only-API FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/wpa_ie.c",
+   "line": 301,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sm is only read (key_mgmt/sae_pwe/sae_pk/... flags), never mutated"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/wpa_ie.c",
+   "line": 301,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "rsnxe IS genuinely modified via `u8 *pos = rsnxe;` then `*pos++ =`; DCL13-C misses aliased-pointer mutation"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/rsn_supp/wpa_ie.c",
+   "line": 351,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "loop iteration count is pre-computed (flen) and rsnxe_len is checked (>= 2+flen) before the loop; ARR30-C explicit-prior-clamp not recognized"
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/wps/wps_upnp_event.c",
+   "line": 133,
+   "rule": "EXP34-C",
+   "desc": "event_addr_failure() sets e->addr = NULL after deleting/freeing the failed address (:197) and, when other addresses remain, calls event_retry(e, 0). Inside event_retry(), do_next_address=0 means e->retry is NOT incremented, so if e->retry (unchanged) is already >= the now-shrunk dl_list_len(&s->addr_list), the 'giving up' branch dereferences e->addr->domain_and_port with e->addr == NULL -> NULL pointer dereference. Reachable e.g. with 2 addresses, e->retry==1, when the address at index 1 hits MAX_FAILURES and is deleted, leaving list len 1 == e->retry.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [
+  "src/pae/ieee802_1x_kay_i.h",
+  "src/rsn_supp/preauth.h"
+ ],
+ "summary": {
+  "tp": 20,
+  "fp": 93,
+  "fn": 1
+ }
+}

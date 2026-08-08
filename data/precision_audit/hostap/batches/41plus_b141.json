@@ -1,0 +1,1354 @@
+{
+ "src/common/sae.c#part1of2": [
+  {
+   "column": 36,
+   "file": "src/common/sae.c",
+   "line": 40,
+   "message": "Dereference of uninitialized pointer 'tmp'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'tmp' before dereferencing"
+  },
+  {
+   "column": 5,
+   "file": "src/common/sae.c",
+   "line": 128,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 20,
+   "file": "src/common/sae.c",
+   "line": 134,
+   "message": "sizeof applied to pointer/array parameter 'sae' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*sae)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 141,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 50,
+   "file": "src/common/sae.c",
+   "line": 153,
+   "message": "Pointer parameter 'sae' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sae'"
+  },
+  {
+   "column": 50,
+   "file": "src/common/sae.c",
+   "line": 202,
+   "message": "Pointer parameter 'sae' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sae'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 205,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 5,
+   "file": "src/common/sae.c",
+   "line": 207,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 7,
+   "file": "src/common/sae.c",
+   "line": 258,
+   "message": "Function 'crypto_bignum_div' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 294,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 297,
+   "message": "Sensitive buffer 'stub_password' not cleared before function exit",
+   "rule_id": "MEM03-C",
+   "severity": "Medium",
+   "suggestion": "Call SecureZeroMemory(stub_password, size) or memset(stub_password, 0, size) before the buffer goes out of scope"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 299,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 302,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 303,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 304,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 305,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 306,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 306,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 4,
+   "file": "src/common/sae.c",
+   "line": 382,
+   "message": "Variable 'SHA256_MAC_LEN' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 30,
+   "file": "src/common/sae.c",
+   "line": 425,
+   "message": "Variable 'x_y' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 38,
+   "file": "src/common/sae.c",
+   "line": 431,
+   "message": "Variable 'prime_len' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 454,
+   "message": "Function returns without releasing all resources. Leaked: stub_password, tmp_password. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 463,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 11,
+   "file": "src/common/sae.c",
+   "line": 529,
+   "message": "Function 'const_time_select_u8' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 21,
+   "file": "src/common/sae.c",
+   "line": 566,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 30,
+   "file": "src/common/sae.c",
+   "line": 568,
+   "message": "'info' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 43,
+   "file": "src/common/sae.c",
+   "line": 621,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 645,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 646,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 647,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 648,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 648,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 30,
+   "file": "src/common/sae.c",
+   "line": 662,
+   "message": "abs() may overflow when called with most negative value (e.g., INT_MIN): 'abs(z_int)'",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Check if argument equals INT_MIN/LONG_MIN/LLONG_MIN before calling abs/labs/llabs"
+  },
+  {
+   "column": 6,
+   "file": "src/common/sae.c",
+   "line": 690,
+   "message": "Function 'crypto_bignum_addmod' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 6,
+   "file": "src/common/sae.c",
+   "line": 707,
+   "message": "Function 'crypto_bignum_inverse' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 6,
+   "file": "src/common/sae.c",
+   "line": 715,
+   "message": "Function 'crypto_bignum_mulmod' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 6,
+   "file": "src/common/sae.c",
+   "line": 734,
+   "message": "Function 'crypto_bignum_addmod' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 6,
+   "file": "src/common/sae.c",
+   "line": 748,
+   "message": "Function 'crypto_bignum_addmod' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 6,
+   "file": "src/common/sae.c",
+   "line": 756,
+   "message": "Function 'crypto_bignum_rshift' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 24,
+   "file": "src/common/sae.c",
+   "line": 790,
+   "message": "Variable 'prime_len' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 881,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 881,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 6,
+   "file": "src/common/sae.c",
+   "line": 902,
+   "message": "Function 'hkdf_expand' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 13,
+   "file": "src/common/sae.c",
+   "line": 911,
+   "message": "Function 'crypto_bignum_mod' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 6,
+   "file": "src/common/sae.c",
+   "line": 924,
+   "message": "Function 'hkdf_expand' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 13,
+   "file": "src/common/sae.c",
+   "line": 934,
+   "message": "Function 'crypto_bignum_mod' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 985,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 985,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 6,
+   "file": "src/common/sae.c",
+   "line": 1006,
+   "message": "Function 'hkdf_expand' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 6,
+   "file": "src/common/sae.c",
+   "line": 1019,
+   "message": "Function 'crypto_bignum_mod' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 6,
+   "file": "src/common/sae.c",
+   "line": 1020,
+   "message": "Function 'crypto_bignum_add' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 6,
+   "file": "src/common/sae.c",
+   "line": 1031,
+   "message": "Function 'crypto_bignum_div' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 24,
+   "file": "src/common/sae.c",
+   "line": 1033,
+   "message": "Passing null pointer 'pt' to 'crypto_bignum_deinit' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'pt' is not NULL before passing to 'crypto_bignum_deinit'"
+  },
+  {
+   "column": 24,
+   "file": "src/common/sae.c",
+   "line": 1064,
+   "message": "Dereference of uninitialized pointer 'pt'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'pt' before dereferencing"
+  },
+  {
+   "column": 3,
+   "file": "src/common/sae.c",
+   "line": 1089,
+   "message": "Function returns pointer to local variable 'pt' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 1106,
+   "message": "Function returns pointer to local variable 'pt' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/common/sae.c",
+   "line": 1107,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "src/common/sae.c",
+   "line": 1113,
+   "message": "Function 'sae_derive_pt' does not validate pointer parameter 'groups' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'groups' at the start of the function, e.g., 'if (!groups) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/sae.c",
+   "line": 1113,
+   "message": "Function 'sae_derive_pt' does not validate pointer parameter 'ssid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ssid' at the start of the function, e.g., 'if (!ssid) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/sae.c",
+   "line": 1113,
+   "message": "Function 'sae_derive_pt' does not validate pointer parameter 'password' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'password' at the start of the function, e.g., 'if (!password) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/sae.c",
+   "line": 1113,
+   "message": "Function 'sae_derive_pt' does not validate pointer parameter 'identifier' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'identifier' at the start of the function, e.g., 'if (!identifier) { return error_code; }'"
+  },
+  {
+   "column": 41,
+   "file": "src/common/sae.c",
+   "line": 1113,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 12,
+   "file": "src/common/sae.c",
+   "line": 1119,
+   "message": "Array declaration 'default_groups[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 1,
+   "file": "src/common/sae.c",
+   "line": 1157,
+   "message": "Function 'sae_derive_pwe_from_pt_ecc' does not validate pointer parameter 'addr1' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'addr1' at the start of the function, e.g., 'if (!addr1) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/sae.c",
+   "line": 1157,
+   "message": "Function 'sae_derive_pwe_from_pt_ecc' does not validate pointer parameter 'addr2' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'addr2' at the start of the function, e.g., 'if (!addr2) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 1161,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 1161,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 13,
+   "file": "src/common/sae.c",
+   "line": 1174,
+   "message": "Variable 'bin' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'bin' before use, e.g., at its declaration"
+  },
+  {
+   "column": 19,
+   "file": "src/common/sae.c",
+   "line": 1179,
+   "message": "Variable 'addr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'addr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 6,
+   "file": "src/common/sae.c",
+   "line": 1186,
+   "message": "Function 'hkdf_extract' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 6,
+   "file": "src/common/sae.c",
+   "line": 1197,
+   "message": "Function 'crypto_bignum_mod' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 6,
+   "file": "src/common/sae.c",
+   "line": 1198,
+   "message": "Function 'crypto_bignum_add' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 26,
+   "file": "src/common/sae.c",
+   "line": 1207,
+   "message": "Passing null pointer 'pwe' to 'crypto_ec_point_deinit' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'pwe' is not NULL before passing to 'crypto_ec_point_deinit'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/sae.c",
+   "line": 1222,
+   "message": "Function 'sae_derive_pwe_from_pt_ffc' does not validate pointer parameter 'addr1' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'addr1' at the start of the function, e.g., 'if (!addr1) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/sae.c",
+   "line": 1222,
+   "message": "Function 'sae_derive_pwe_from_pt_ffc' does not validate pointer parameter 'addr2' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'addr2' at the start of the function, e.g., 'if (!addr2) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/sae.c",
+   "line": 1232,
+   "message": "Value assigned to 'order' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/common/sae.c",
+   "line": 1232,
+   "message": "Value assigned to 'prime' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 19,
+   "file": "src/common/sae.c",
+   "line": 1241,
+   "message": "Variable 'addr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'addr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 6,
+   "file": "src/common/sae.c",
+   "line": 1248,
+   "message": "Function 'hkdf_extract' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 6,
+   "file": "src/common/sae.c",
+   "line": 1258,
+   "message": "Function 'crypto_bignum_mod' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 6,
+   "file": "src/common/sae.c",
+   "line": 1259,
+   "message": "Function 'crypto_bignum_add' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 24,
+   "file": "src/common/sae.c",
+   "line": 1266,
+   "message": "Passing null pointer 'pwe' to 'crypto_bignum_deinit' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'pwe' is not NULL before passing to 'crypto_bignum_deinit'"
+  },
+  {
+   "column": 34,
+   "file": "src/common/sae.c",
+   "line": 1282,
+   "message": "Pointer parameter 'pt' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pt'"
+  },
+  {
+   "column": 6,
+   "file": "src/common/sae.c",
+   "line": 1333,
+   "message": "Function 'crypto_bignum_inverse' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 1,
+   "file": "src/common/sae.c",
+   "line": 1384,
+   "message": "Function 'sae_prepare_commit_pt' does not validate pointer parameter 'pk' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pk' at the start of the function, e.g., 'if (!pk) { return error_code; }'"
+  },
+  {
+   "column": 45,
+   "file": "src/common/sae.c",
+   "line": 1444,
+   "message": "Pointer parameter 'sae' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sae'"
+  },
+  {
+   "column": 45,
+   "file": "src/common/sae.c",
+   "line": 1480,
+   "message": "Pointer parameter 'sae' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sae'"
+  },
+  {
+   "column": 6,
+   "file": "src/common/sae.c",
+   "line": 1498,
+   "message": "Function 'crypto_bignum_mulmod' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 6,
+   "file": "src/common/sae.c",
+   "line": 1500,
+   "message": "Function 'crypto_bignum_exptmod' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 66,
+   "file": "src/common/sae.c",
+   "line": 1518,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 1541,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 1544,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 1545,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 1545,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 12,
+   "file": "src/common/sae.c",
+   "line": 1550,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 9,
+   "file": "src/common/sae.c",
+   "line": 1551,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 1575,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 4,
+   "file": "src/common/sae.c",
+   "line": 1587,
+   "message": "Unsigned integer compound addition 'salt_len += wpabuf_len(own)' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 4,
+   "file": "src/common/sae.c",
+   "line": 1589,
+   "message": "Unsigned integer compound addition 'salt_len += wpabuf_len(peer)' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 6,
+   "file": "src/common/sae.c",
+   "line": 1621,
+   "message": "Function 'crypto_bignum_mod' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 12,
+   "file": "src/common/sae.c",
+   "line": 1638,
+   "message": "Unsigned integer addition '2 * hash_len + pmk_len' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }"
+  },
+  {
+   "column": 12,
+   "file": "src/common/sae.c",
+   "line": 1638,
+   "message": "Unsigned integer multiplication '2 * hash_len' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (a > UINT_MAX / b) { /* handle error */ }"
+  },
+  {
+   "column": 12,
+   "file": "src/common/sae.c",
+   "line": 1643,
+   "message": "Unsigned integer addition 'hash_len + pmk_len' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }"
+  },
+  {
+   "column": 11,
+   "file": "src/common/sae.c",
+   "line": 1649,
+   "message": "Unsigned integer addition 'hash_len + pmk_len' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 1683,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 1,
+   "file": "src/common/sae.c",
+   "line": 1698,
+   "message": "Function 'sae_write_commit' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/sae.c",
+   "line": 1698,
+   "message": "Function 'sae_write_commit' does not validate integer parameter 'identifier_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'identifier_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 3,
+   "file": "src/common/sae.c",
+   "line": 1710,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 49,
+   "file": "src/common/sae.c",
+   "line": 1784,
+   "message": "Pointer parameter 'allowed_groups' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *allowed_groups'"
+  },
+  {
+   "column": 9,
+   "file": "src/common/sae.c",
+   "line": 1828,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 3,
+   "file": "src/common/sae.c",
+   "line": 1831,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 9,
+   "file": "src/common/sae.c",
+   "line": 1838,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 3,
+   "file": "src/common/sae.c",
+   "line": 1841,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 9,
+   "file": "src/common/sae.c",
+   "line": 1848,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 3,
+   "file": "src/common/sae.c",
+   "line": 1851,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 9,
+   "file": "src/common/sae.c",
+   "line": 1858,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 3,
+   "file": "src/common/sae.c",
+   "line": 1861,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 52,
+   "file": "src/common/sae.c",
+   "line": 1866,
+   "message": "Pointer parameter 'sae' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sae'"
+  },
+  {
+   "column": 35,
+   "file": "src/common/sae.c",
+   "line": 1881,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 3,
+   "file": "src/common/sae.c",
+   "line": 1895,
+   "message": "Direct assignment of flexible array structure instances. Use memcpy() for dynamic copying.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Use memcpy() to copy the structure and its flexible array member"
+  },
+  {
+   "column": 55,
+   "file": "src/common/sae.c",
+   "line": 1902,
+   "message": "Pointer parameter 'sae' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sae'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 1908,
+   "message": "Potential null pointer dereference of variable 'token'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'token' is not NULL before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 1909,
+   "message": "Potential null pointer dereference of variable 'token_len'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'token_len' is not NULL before dereferencing"
+  },
+  {
+   "column": 28,
+   "file": "src/common/sae.c",
+   "line": 1920,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 1967,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 32,
+   "file": "src/common/sae.c",
+   "line": 1969,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 11,
+   "file": "src/common/sae.c",
+   "line": 2017,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 28,
+   "file": "src/common/sae.c",
+   "line": 2019,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 24,
+   "file": "src/common/sae.c",
+   "line": 2040,
+   "message": "Passing null pointer 'res' to 'crypto_bignum_deinit' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'res' is not NULL before passing to 'crypto_bignum_deinit'"
+  },
+  {
+   "column": 24,
+   "file": "src/common/sae.c",
+   "line": 2041,
+   "message": "Passing null pointer 'one' to 'crypto_bignum_deinit' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'one' is not NULL before passing to 'crypto_bignum_deinit'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 2092,
+   "message": "Increment/decrement operation 'epos++' on non-array pointer 'epos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 9,
+   "file": "src/common/sae.c",
+   "line": 2093,
+   "message": "Increment/decrement operation 'epos++' on non-array pointer 'epos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 12,
+   "file": "src/common/sae.c",
+   "line": 2094,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 2096,
+   "message": "Increment/decrement operation 'epos++' on non-array pointer 'epos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 2149,
+   "message": "Increment/decrement operation 'epos++' on non-array pointer 'epos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 9,
+   "file": "src/common/sae.c",
+   "line": 2150,
+   "message": "Increment/decrement operation 'epos++' on non-array pointer 'epos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 12,
+   "file": "src/common/sae.c",
+   "line": 2151,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 2153,
+   "message": "Increment/decrement operation 'epos++' on non-array pointer 'epos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 6,
+   "file": "src/common/sae.c",
+   "line": 2155,
+   "message": "Variable 'len' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 2184,
+   "message": "Increment/decrement operation 'epos++' on non-array pointer 'epos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 9,
+   "file": "src/common/sae.c",
+   "line": 2185,
+   "message": "Increment/decrement operation 'epos++' on non-array pointer 'epos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 12,
+   "file": "src/common/sae.c",
+   "line": 2186,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 2,
+   "file": "src/common/sae.c",
+   "line": 2188,
+   "message": "Increment/decrement operation 'epos++' on non-array pointer 'epos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 1,
+   "file": "src/common/sae.c",
+   "line": 2201,
+   "message": "Function 'sae_parse_commit' does not validate pointer parameter 'data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'data' at the start of the function, e.g., 'if (!data) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/sae.c",
+   "line": 2201,
+   "message": "Function 'sae_parse_commit' does not validate pointer parameter 'token' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'token' at the start of the function, e.g., 'if (!token) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/sae.c",
+   "line": 2201,
+   "message": "Function 'sae_parse_commit' does not validate pointer parameter 'token_len' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'token_len' at the start of the function, e.g., 'if (!token_len) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/sae.c",
+   "line": 2201,
+   "message": "Function 'sae_parse_commit' does not validate integer parameter 'len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 49,
+   "file": "src/common/sae.c",
+   "line": 2202,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 21,
+   "file": "src/common/sae.c",
+   "line": 2203,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 8,
+   "file": "src/common/sae.c",
+   "line": 2274,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  }
+ ]
+}

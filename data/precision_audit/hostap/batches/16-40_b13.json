@@ -1,0 +1,890 @@
+{
+ "src/l2_packet/l2_packet_winpcap.c": [
+  {
+   "column": 2,
+   "file": "src/l2_packet/l2_packet_winpcap.c",
+   "line": 50,
+   "message": "String buffer placed before pointer in struct 'l2_packet_data': 'char ifname[100];' before 'void (*rx_callback)(void *ctx, const u8 *src_addr,' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'char ifname' after the pointer field 'void (*rx_callback)(void *ctx, const u8 *src_addr,\n\t\t\t    const u8 *buf, size_t len);', or use a char* pointer instead of a char array"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_winpcap.c",
+   "line": 65,
+   "message": "Function 'l2_packet_get_own_addr' does not validate pointer parameter 'l2' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'l2' at the start of the function, e.g., 'if (!l2) { return error_code; }'"
+  },
+  {
+   "column": 50,
+   "file": "src/l2_packet/l2_packet_winpcap.c",
+   "line": 65,
+   "message": "Pointer parameter 'l2' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *l2'"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_winpcap.c",
+   "line": 72,
+   "message": "Function 'l2_packet_send' does not validate integer parameter 'len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 42,
+   "file": "src/l2_packet/l2_packet_winpcap.c",
+   "line": 72,
+   "message": "Pointer parameter 'l2' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *l2'"
+  },
+  {
+   "column": 5,
+   "file": "src/l2_packet/l2_packet_winpcap.c",
+   "line": 78,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 24,
+   "file": "src/l2_packet/l2_packet_winpcap.c",
+   "line": 84,
+   "message": "Dereference of uninitialized pointer 'eth'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'eth' before dereferencing"
+  },
+  {
+   "column": 47,
+   "file": "src/l2_packet/l2_packet_winpcap.c",
+   "line": 108,
+   "message": "Dereference of uninitialized pointer 'ethhdr'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ethhdr' before dereferencing"
+  },
+  {
+   "column": 11,
+   "file": "src/l2_packet/l2_packet_winpcap.c",
+   "line": 111,
+   "message": "Do not cast away const qualification: '(struct l2_ethhdr *) pkt_data'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 11,
+   "file": "src/l2_packet/l2_packet_winpcap.c",
+   "line": 111,
+   "message": "Casting from char * (alignment 1) to struct l2_ethhdr * (alignment 4) may cause alignment issues",
+   "rule_id": "EXP36-C",
+   "severity": "Low",
+   "suggestion": "Use memcpy or ensure proper alignment before casting"
+  },
+  {
+   "column": 2,
+   "file": "src/l2_packet/l2_packet_winpcap.c",
+   "line": 146,
+   "message": "Unreachable code after unconditional 'noreturn function call'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 37,
+   "file": "src/l2_packet/l2_packet_winpcap.c",
+   "line": 151,
+   "message": "Pointer parameter 'eloop_data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *eloop_data'"
+  },
+  {
+   "column": 55,
+   "file": "src/l2_packet/l2_packet_winpcap.c",
+   "line": 151,
+   "message": "Pointer parameter 'user_data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *user_data'"
+  },
+  {
+   "column": 3,
+   "file": "src/l2_packet/l2_packet_winpcap.c",
+   "line": 171,
+   "message": "Type mismatch in fprintf(): format specifier '%s' expects Pointer but argument 1 ('pcap_err') is Integer",
+   "rule_id": "FIO47-C",
+   "severity": "High",
+   "suggestion": "Ensure format specifiers match argument types"
+  },
+  {
+   "column": 2,
+   "file": "src/l2_packet/l2_packet_winpcap.c",
+   "line": 175,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 3,
+   "file": "src/l2_packet/l2_packet_winpcap.c",
+   "line": 228,
+   "message": "Function returns pointer to local variable 'l2' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 17,
+   "file": "src/l2_packet/l2_packet_winpcap.c",
+   "line": 230,
+   "message": "Function 'CreateEvent' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 16,
+   "file": "src/l2_packet/l2_packet_winpcap.c",
+   "line": 231,
+   "message": "Function 'CreateEvent' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 18,
+   "file": "src/l2_packet/l2_packet_winpcap.c",
+   "line": 232,
+   "message": "Function 'CreateEvent' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 2,
+   "file": "src/l2_packet/l2_packet_winpcap.c",
+   "line": 250,
+   "message": "Function returns pointer to local variable 'l2' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_winpcap.c",
+   "line": 254,
+   "message": "Function 'l2_packet_init_bridge' does not validate pointer parameter 'br_ifname' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'br_ifname' at the start of the function, e.g., 'if (!br_ifname) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_winpcap.c",
+   "line": 254,
+   "message": "Function 'l2_packet_init_bridge' does not validate pointer parameter 'own_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'own_addr' at the start of the function, e.g., 'if (!own_addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_winpcap.c",
+   "line": 254,
+   "message": "Function 'l2_packet_init_bridge' does not validate pointer parameter 'rx_callback' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'rx_callback' at the start of the function, e.g., 'if (!rx_callback) { return error_code; }'"
+  },
+  {
+   "column": 60,
+   "file": "src/l2_packet/l2_packet_winpcap.c",
+   "line": 266,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 3,
+   "file": "src/l2_packet/l2_packet_winpcap.c",
+   "line": 274,
+   "message": "TerminateThread() called - forcibly terminates thread without cleanup",
+   "rule_id": "WIN01-C",
+   "severity": "High",
+   "suggestion": "Use cooperative signaling (e.g., InterlockedExchange) to request thread exit instead of forcing termination"
+  },
+  {
+   "column": 5,
+   "file": "src/l2_packet/l2_packet_winpcap.c",
+   "line": 290,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 23,
+   "file": "src/l2_packet/l2_packet_winpcap.c",
+   "line": 293,
+   "message": "Function 'CreateEvent' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_winpcap.c",
+   "line": 310,
+   "message": "Function 'l2_packet_get_ip_addr' does not validate pointer parameter 'l2' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'l2' at the start of the function, e.g., 'if (!l2) { return error_code; }'"
+  },
+  {
+   "column": 49,
+   "file": "src/l2_packet/l2_packet_winpcap.c",
+   "line": 310,
+   "message": "Pointer parameter 'l2' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *l2'"
+  },
+  {
+   "column": 59,
+   "file": "src/l2_packet/l2_packet_winpcap.c",
+   "line": 310,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/l2_packet/l2_packet_winpcap.c",
+   "line": 316,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 21,
+   "file": "src/l2_packet/l2_packet_winpcap.c",
+   "line": 331,
+   "message": "'inet_ntoa()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'inet_ntop' instead for thread safety"
+  },
+  {
+   "column": 56,
+   "file": "src/l2_packet/l2_packet_winpcap.c",
+   "line": 346,
+   "message": "Pointer parameter 'l2' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *l2'"
+  }
+ ],
+ "src/tls/tlsv1_server_read.c": [
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_server_read.c",
+   "line": 19,
+   "message": "Header file 'tlsv1_server.h' has the same first 8 characters (case-insensitive) as 'tlsv1_server_i.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'tlsv1_server.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_server_read.c",
+   "line": 23,
+   "message": "Function has pointer parameter without size argument: 'static int tls_process_client_key_exchange(struct tlsv1_server *conn, u8 ct,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *in_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 35,
+   "file": "src/tls/tlsv1_server_read.c",
+   "line": 24,
+   "message": "Pointer parameter 'in_len' should likely be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Consider declaring parameter as 'const <type> *in_len'"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_server_read.c",
+   "line": 25,
+   "message": "Function has pointer parameter without size argument: 'static int tls_process_change_cipher_spec(struct tlsv1_server *conn,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *in_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 15,
+   "file": "src/tls/tlsv1_server_read.c",
+   "line": 27,
+   "message": "Pointer parameter 'in_len' should likely be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Consider declaring parameter as 'const <type> *in_len'"
+  },
+  {
+   "column": 60,
+   "file": "src/tls/tlsv1_server_read.c",
+   "line": 30,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_read.c",
+   "line": 161,
+   "message": "Compound assignment 'left -= 4' on non-array pointer 'left'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 7,
+   "file": "src/tls/tlsv1_server_read.c",
+   "line": 197,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_server_read.c",
+   "line": 200,
+   "message": "Value assigned to 'if' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 7,
+   "file": "src/tls/tlsv1_server_read.c",
+   "line": 200,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_server_read.c",
+   "line": 203,
+   "message": "Value assigned to 'tls_version' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 6,
+   "file": "src/tls/tlsv1_server_read.c",
+   "line": 245,
+   "message": "Variable 'num_suites' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 11,
+   "file": "src/tls/tlsv1_server_read.c",
+   "line": 372,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_server_read.c",
+   "line": 388,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_read.c",
+   "line": 427,
+   "message": "Compound assignment 'left -= 4' on non-array pointer 'left'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 10,
+   "file": "src/tls/tlsv1_server_read.c",
+   "line": 518,
+   "message": "Use-after-free: accessing freed pointer 'conn->client_rsa_key'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 6,
+   "file": "src/tls/tlsv1_server_read.c",
+   "line": 607,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 32,
+   "file": "src/tls/tlsv1_server_read.c",
+   "line": 617,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 23,
+   "file": "src/tls/tlsv1_server_read.c",
+   "line": 623,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 12,
+   "file": "src/tls/tlsv1_server_read.c",
+   "line": 723,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 6,
+   "file": "src/tls/tlsv1_server_read.c",
+   "line": 733,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 18,
+   "file": "src/tls/tlsv1_server_read.c",
+   "line": 743,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_read.c",
+   "line": 838,
+   "message": "Compound assignment 'left -= 4' on non-array pointer 'left'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_read.c",
+   "line": 891,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_read.c",
+   "line": 928,
+   "message": "Compound assignment 'left -= 4' on non-array pointer 'left'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_read.c",
+   "line": 928,
+   "message": "Unsigned integer compound subtraction 'left -= 4' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check before compound assignment"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_read.c",
+   "line": 1101,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_read.c",
+   "line": 1172,
+   "message": "Compound assignment 'left -= 4' on non-array pointer 'left'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_read.c",
+   "line": 1172,
+   "message": "Unsigned integer compound subtraction 'left -= 4' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check before compound assignment"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_server_read.c",
+   "line": 1269,
+   "message": "Function 'tlsv1_server_process_handshake' does not validate pointer parameter 'conn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conn' at the start of the function, e.g., 'if (!conn) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_server_read.c",
+   "line": 1269,
+   "message": "Function 'tlsv1_server_process_handshake' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  },
+  {
+   "column": 7,
+   "file": "src/tls/tlsv1_server_read.c",
+   "line": 1299,
+   "message": "Function 'tls_process_certificate_verify' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 7,
+   "file": "src/tls/tlsv1_server_read.c",
+   "line": 1307,
+   "message": "Function 'tls_process_client_finished' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  }
+ ],
+ "src/drivers/driver_roboswitch.c": [
+  {
+   "column": 58,
+   "file": "src/drivers/driver_roboswitch.c",
+   "line": 67,
+   "message": "Pointer parameter 'rq' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *rq'"
+  },
+  {
+   "column": 54,
+   "file": "src/drivers/driver_roboswitch.c",
+   "line": 77,
+   "message": "Array parameter uses size variable 'ETH_ALEN' that is declared after the array parameter",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Declare size parameter 'ETH_ALEN' before the array parameter, or use K&R style with semicolon"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_roboswitch.c",
+   "line": 90,
+   "message": "Potential null pointer dereference in member access of variable 'mii'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'mii' is not NULL before member access"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_roboswitch.c",
+   "line": 95,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_roboswitch.c",
+   "line": 95,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_roboswitch.c",
+   "line": 107,
+   "message": "Potential null pointer dereference in member access of variable 'mii'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'mii' is not NULL before member access"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_roboswitch.c",
+   "line": 113,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_roboswitch.c",
+   "line": 113,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 33,
+   "file": "src/drivers/driver_roboswitch.c",
+   "line": 159,
+   "message": "Pointer parameter 'val' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *val'"
+  },
+  {
+   "column": 48,
+   "file": "src/drivers/driver_roboswitch.c",
+   "line": 172,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 48,
+   "file": "src/drivers/driver_roboswitch.c",
+   "line": 172,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 48,
+   "file": "src/drivers/driver_roboswitch.c",
+   "line": 183,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 49,
+   "file": "src/drivers/driver_roboswitch.c",
+   "line": 190,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 48,
+   "file": "src/drivers/driver_roboswitch.c",
+   "line": 198,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 21,
+   "file": "src/drivers/driver_roboswitch.c",
+   "line": 201,
+   "message": "sizeof applied to pointer/array parameter 'capa' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*capa)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_roboswitch.c",
+   "line": 214,
+   "message": "Pointer dereference '*sep' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_roboswitch.c",
+   "line": 223,
+   "message": "Pointer dereference '*sep' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 59,
+   "file": "src/drivers/driver_roboswitch.c",
+   "line": 233,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_roboswitch.c",
+   "line": 289,
+   "message": "File-scope identifier '_read' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 25,
+   "file": "src/drivers/driver_roboswitch.c",
+   "line": 363,
+   "message": "Dereference of uninitialized pointer 'drv'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'drv' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_roboswitch.c",
+   "line": 379,
+   "message": "Pointer dereference '*sep' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_roboswitch.c",
+   "line": 387,
+   "message": "Variable 'vlan' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_roboswitch.c",
+   "line": 408,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_roboswitch.c",
+   "line": 408,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_roboswitch.c",
+   "line": 426,
+   "message": "Variable '_read' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_roboswitch.c",
+   "line": 426,
+   "message": "Signed integer addition '_read + 1' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 10,
+   "file": "src/drivers/driver_roboswitch.c",
+   "line": 430,
+   "message": "Do not assume constant values in expressions: '1 << 13'",
+   "rule_id": "EXP07-C",
+   "severity": "Low",
+   "suggestion": "Use the constant identifier directly instead of assuming its numeric value"
+  },
+  {
+   "column": 57,
+   "file": "src/drivers/driver_roboswitch.c",
+   "line": 437,
+   "message": "Do not assume constant values in expressions: '1 << 14'",
+   "rule_id": "EXP07-C",
+   "severity": "Low",
+   "suggestion": "Use the constant identifier directly instead of assuming its numeric value"
+  },
+  {
+   "column": 40,
+   "file": "src/drivers/driver_roboswitch.c",
+   "line": 439,
+   "message": "Do not assume constant values in expressions: '1 << 13'",
+   "rule_id": "EXP07-C",
+   "severity": "Low",
+   "suggestion": "Use the constant identifier directly instead of assuming its numeric value"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_roboswitch.c",
+   "line": 455,
+   "message": "Function returns pointer to local variable 'drv' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_roboswitch.c",
+   "line": 477,
+   "message": "Variable 'wpa_driver_roboswitch_ops' should be declared static if it doesn't need external linkage",
+   "rule_id": "DCL15-C",
+   "severity": "Low",
+   "suggestion": "Add 'static' storage-class specifier"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_roboswitch.c",
+   "line": 477,
+   "message": "File-scope variable should have minimal scope. Consider making it static within a function or limiting its scope.",
+   "rule_id": "DCL19-C",
+   "severity": "Low",
+   "suggestion": "Move variable to the smallest scope where it's used, or make it static inside a function"
+  }
+ ]
+}

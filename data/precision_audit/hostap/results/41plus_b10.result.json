@@ -1,0 +1,1211 @@
+{
+ "labels": [
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12282,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ERR07/ERR34 atoi FP: immediately range-checked together with min_data_rate via BIT(24) guard 2 lines later (categorical_patterns.md ERR07/ERR34 range-checked-atoi FP class)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12282,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ERR07/ERR34 atoi FP: immediately range-checked together with min_data_rate via BIT(24) guard 2 lines later (categorical_patterns.md ERR07/ERR34 range-checked-atoi FP class)."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12293,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12293,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12299,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12299,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12299,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos2 is char*; 'pos2+N' is pointer arithmetic, not signed-int addition -- rule misclassifies pointer-typed var as an integer overflow candidate (extends confirmed INT30-C pointer-mistyped family, eap_sake_common.c precedent, to INT32-C)."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12305,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12305,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12305,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos2 is char*; 'pos2+N' is pointer arithmetic, not signed-int addition -- rule misclassifies pointer-typed var as an integer overflow candidate (extends confirmed INT30-C pointer-mistyped family, eap_sake_common.c precedent, to INT32-C)."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12311,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12311,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12311,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos2 is char*; 'pos2+N' is pointer arithmetic, not signed-int addition -- rule misclassifies pointer-typed var as an integer overflow candidate (extends confirmed INT30-C pointer-mistyped family, eap_sake_common.c precedent, to INT32-C)."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12317,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12317,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12317,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos2 is char*; 'pos2+N' is pointer arithmetic, not signed-int addition -- rule misclassifies pointer-typed var as an integer overflow candidate (extends confirmed INT30-C pointer-mistyped family, eap_sake_common.c precedent, to INT32-C)."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12324,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12324,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12324,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos2 is char*; 'pos2+N' is pointer arithmetic, not signed-int addition -- rule misclassifies pointer-typed var as an integer overflow candidate (extends confirmed INT30-C pointer-mistyped family, eap_sake_common.c precedent, to INT32-C)."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12330,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12330,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12330,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos2 is char*; 'pos2+N' is pointer arithmetic, not signed-int addition -- rule misclassifies pointer-typed var as an integer overflow candidate (extends confirmed INT30-C pointer-mistyped family, eap_sake_common.c precedent, to INT32-C)."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12336,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12336,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12336,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos2 is char*; 'pos2+N' is pointer arithmetic, not signed-int addition -- rule misclassifies pointer-typed var as an integer overflow candidate (extends confirmed INT30-C pointer-mistyped family, eap_sake_common.c precedent, to INT32-C)."
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12347,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "(u8*) ptr + count*sizeof(elem) is single-scaled byte-pointer arithmetic, not double scaling (confirmed ARR39-C byte-pointer+sizeof FP class)."
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12355,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "n/n1 are realloc-success-check temporaries immediately assigned into scs_data->scs_desc_elems/desc_elem.tclas_elems; not a separate allocation, already tracked/freed via free_up_scs_desc (extends confirmed MEM12-C false-leak family)."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12357,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free_scs_desc: is a goto target reached from many 'goto free_scs_desc;' statements earlier in the function -- reachable, not dead (confirmed goto-target-label MSC07-C FP family)."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12359,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free_up_scs_desc() (robust_av.c:816) nulls data->scs_desc_elems/num_scs_desc as its first, unconditional statements before checking/freeing -- calling it twice (once at line 12079, once at cleanup) is safe/idempotent, not a double free."
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12360,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "n/n1 are realloc-success-check temporaries immediately assigned into scs_data->scs_desc_elems/desc_elem.tclas_elems; not a separate allocation, already tracked/freed via free_up_scs_desc (extends confirmed MEM12-C false-leak family)."
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12391,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "policy is freed only once, at the very end (fail: os_free(policy)); line 12391 executes earlier in the same loop iteration, before any 'goto fail' -- free cannot have happened yet on any real execution path (mutually-exclusive/forward-label branch-blindness family)."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12397,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ERR07/ERR34 atoi FP: immediately checked == 0 and rejected (goto fail) right after conversion (categorical_patterns.md ERR07/ERR34 range-checked-atoi FP class)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12397,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ERR07/ERR34 atoi FP: immediately checked == 0 and rejected (goto fail) right after conversion (categorical_patterns.md ERR07/ERR34 range-checked-atoi FP class)."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12411,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12411,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12461,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "classic char *buf, size_t buflen paired-size parameter idiom -- confirmed categorical API05-C FP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12461,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf IS modified: 'pos = buf; ... os_snprintf(pos, end-pos, ...)' writes through the pos alias into buf's storage every iteration -- rule's 'not modified' premise is factually wrong (matches confirmed DCL13-C real-tool-bug class, aes-ccm.c dst precedent)."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12477,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "for_each_link(...) macro expands to 'for ((i)=0; (i)<MAX...; (i)++)' -- i IS initialized in the macro-hidden for-loop header; sqc's macro-blind CFG doesn't see it (extends confirmed macro-blind-loop-header FP family)."
+  },
+  {
+   "rule": "FLP03-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12482,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "current_tx_rate is 'unsigned long' (driver.h:2631); '/1000' is plain integer division, no floating point involved (confirmed FLP03-C integer-division-misclassified FP class)."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12565,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ERR07/ERR34 atoi FP: immediately range-checked (link_id<0 || >=MAX_NUM_MLD_LINKS) right after conversion (categorical_patterns.md ERR07/ERR34 range-checked-atoi FP class)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12565,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ERR07/ERR34 atoi FP: immediately range-checked (link_id<0 || >=MAX_NUM_MLD_LINKS) right after conversion (categorical_patterns.md ERR07/ERR34 range-checked-atoi FP class)."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12593,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ERR07/ERR34 atoi FP: immediately range-checked (link_id<0 || >=MAX_NUM_MLD_LINKS) right after conversion (categorical_patterns.md ERR07/ERR34 range-checked-atoi FP class)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12593,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ERR07/ERR34 atoi FP: immediately range-checked (link_id<0 || >=MAX_NUM_MLD_LINKS) right after conversion (categorical_patterns.md ERR07/ERR34 range-checked-atoi FP class)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12616,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_s is only read (wpa_s->valid_links, wpa_s->links[]) and never forwarded into a vtable/callback slot -- genuine (low-severity) const opportunity per the 'plain internal function' DCL13-C clarification, not the eloop/EAP dispatch-contract FP class."
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12617,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "classic char *buf, size_t buflen paired-size parameter idiom -- confirmed categorical API05-C FP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12617,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf IS modified: 'pos = buf; ... os_snprintf(pos, end-pos, ...)' writes through the pos alias into buf's storage every iteration -- rule's 'not modified' premise is factually wrong (matches confirmed DCL13-C real-tool-bug class, aes-ccm.c dst precedent)."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12628,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "for_each_link(...) macro expands to 'for ((i)=0; (i)<MAX...; (i)++)' -- i IS initialized in the macro-hidden for-loop header; sqc's macro-blind CFG doesn't see it (extends confirmed macro-blind-loop-header FP family)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12629,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR(...) expands to pure array-index reads with no side effects (confirmed EXP30-C side-effect-free macro-arg FP class)."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12675,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12675,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12676,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if/else-if chain over a command-token/dispatch parser where an unmatched case is a deliberate silent no-op/ignore, not a missing-case defect (confirmed MSC01-C guard-clause/dispatch FP class)."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12677,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12677,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12735,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "classic char *buf, size_t buflen paired-size parameter idiom -- confirmed categorical API05-C FP."
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12736,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "classic char *buf, size_t buflen paired-size parameter idiom -- confirmed categorical API05-C FP."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12763,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12763,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12768,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12768,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12783,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12783,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12794,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12794,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12863,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "freq_list is freed then immediately reassigned (line 12776/12998) before this final cleanup free -- classic reassign-then-free-later idiom, not a double free (confirmed MEM31-C reassign-in-loop FP class, sae_pk_gen.c:191 precedent)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12875,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf's return value IS checked (== 1) immediately -- proper error detection is present, contradicting the finding's own premise (new sscanf-single-specifier-checked FP sub-shape)."
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12875,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "call has exactly one '%i' conversion specifier and one output arg, so the return value can only be 0, 1, or EOF -- 'may return values > 1' is impossible here (new sscanf-single-specifier FP sub-shape)."
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12875,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "engine misparses which call argument binds to the format: reports the literal format-string argument itself as 'argument 1... is Pointer' rather than the actual &int output arg (extends confirmed FIO47-C argument-binding-misparse family)."
+  },
+  {
+   "rule": "INT05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12875,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf's %i does not reliably set errno/ERANGE the way strtol does, so the rule's own suggested remedy (check errno) would not actually detect overflow here -- rule misapplied to an API it doesn't fit."
+  },
+  {
+   "rule": "MSC24-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12875,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf_s (Annex K) is optional/non-portable and not used anywhere in this codebase or toolchain -- blanket-fires on every scanf-family call regardless of context."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12903,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf's return value IS checked (== 1) immediately -- proper error detection is present, contradicting the finding's own premise (new sscanf-single-specifier-checked FP sub-shape)."
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12903,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "call has exactly one '%i' conversion specifier and one output arg, so the return value can only be 0, 1, or EOF -- 'may return values > 1' is impossible here (new sscanf-single-specifier FP sub-shape)."
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12903,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "engine misparses which call argument binds to the format: reports the literal format-string argument itself as 'argument 1... is Pointer' rather than the actual &int output arg (extends confirmed FIO47-C argument-binding-misparse family)."
+  },
+  {
+   "rule": "INT05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12903,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf's %i does not reliably set errno/ERANGE the way strtol does, so the rule's own suggested remedy (check errno) would not actually detect overflow here -- rule misapplied to an API it doesn't fit."
+  },
+  {
+   "rule": "MSC24-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12903,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf_s (Annex K) is optional/non-portable and not used anywhere in this codebase or toolchain -- blanket-fires on every scanf-family call regardless of context."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12939,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf's return value IS checked (== 1) immediately -- proper error detection is present, contradicting the finding's own premise (new sscanf-single-specifier-checked FP sub-shape)."
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12939,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "call has exactly one '%i' conversion specifier and one output arg, so the return value can only be 0, 1, or EOF -- 'may return values > 1' is impossible here (new sscanf-single-specifier FP sub-shape)."
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12939,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "engine misparses which call argument binds to the format: reports the literal format-string argument itself as 'argument 1... is Pointer' rather than the actual &int output arg (extends confirmed FIO47-C argument-binding-misparse family)."
+  },
+  {
+   "rule": "INT05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12939,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf's %i does not reliably set errno/ERANGE the way strtol does, so the rule's own suggested remedy (check errno) would not actually detect overflow here -- rule misapplied to an API it doesn't fit."
+  },
+  {
+   "rule": "MSC24-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12939,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf_s (Annex K) is optional/non-portable and not used anywhere in this codebase or toolchain -- blanket-fires on every scanf-family call regardless of context."
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12957,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "classic char *buf, size_t buflen paired-size parameter idiom -- confirmed categorical API05-C FP."
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12958,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "classic char *buf, size_t buflen paired-size parameter idiom -- confirmed categorical API05-C FP."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12985,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12985,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12990,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 12990,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13005,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13005,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13016,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13016,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13055,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ERR07/ERR34 atoi FP: wrapped in !! to collapse to strict boolean; malformed input(0) is the safe default (categorical_patterns.md ERR07/ERR34 range-checked-atoi FP class)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13055,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ERR07/ERR34 atoi FP: wrapped in !! to collapse to strict boolean; malformed input(0) is the safe default (categorical_patterns.md ERR07/ERR34 range-checked-atoi FP class)."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13065,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13065,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13070,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13070,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13092,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "freq_list is freed then immediately reassigned (line 12776/12998) before this final cleanup free -- classic reassign-then-free-later idiom, not a double free (confirmed MEM31-C reassign-in-loop FP class, sae_pk_gen.c:191 precedent)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13104,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf's return value IS checked (== 1) immediately -- proper error detection is present, contradicting the finding's own premise (new sscanf-single-specifier-checked FP sub-shape)."
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13104,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "call has exactly one '%i' conversion specifier and one output arg, so the return value can only be 0, 1, or EOF -- 'may return values > 1' is impossible here (new sscanf-single-specifier FP sub-shape)."
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13104,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "engine misparses which call argument binds to the format: reports the literal format-string argument itself as 'argument 1... is Pointer' rather than the actual &int output arg (extends confirmed FIO47-C argument-binding-misparse family)."
+  },
+  {
+   "rule": "INT05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13104,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf's %i does not reliably set errno/ERANGE the way strtol does, so the rule's own suggested remedy (check errno) would not actually detect overflow here -- rule misapplied to an API it doesn't fit."
+  },
+  {
+   "rule": "MSC24-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13104,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf_s (Annex K) is optional/non-portable and not used anywhere in this codebase or toolchain -- blanket-fires on every scanf-family call regardless of context."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13130,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf's return value IS checked (== 1) immediately -- proper error detection is present, contradicting the finding's own premise (new sscanf-single-specifier-checked FP sub-shape)."
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13130,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "call has exactly one '%i' conversion specifier and one output arg, so the return value can only be 0, 1, or EOF -- 'may return values > 1' is impossible here (new sscanf-single-specifier FP sub-shape)."
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13130,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "engine misparses which call argument binds to the format: reports the literal format-string argument itself as 'argument 1... is Pointer' rather than the actual &int output arg (extends confirmed FIO47-C argument-binding-misparse family)."
+  },
+  {
+   "rule": "INT05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13130,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf's %i does not reliably set errno/ERANGE the way strtol does, so the rule's own suggested remedy (check errno) would not actually detect overflow here -- rule misapplied to an API it doesn't fit."
+  },
+  {
+   "rule": "MSC24-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13130,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf_s (Annex K) is optional/non-portable and not used anywhere in this codebase or toolchain -- blanket-fires on every scanf-family call regardless of context."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13160,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf's return value IS checked (== 1) immediately -- proper error detection is present, contradicting the finding's own premise (new sscanf-single-specifier-checked FP sub-shape)."
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13160,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "call has exactly one '%i' conversion specifier and one output arg, so the return value can only be 0, 1, or EOF -- 'may return values > 1' is impossible here (new sscanf-single-specifier FP sub-shape)."
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13160,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "engine misparses which call argument binds to the format: reports the literal format-string argument itself as 'argument 1... is Pointer' rather than the actual &int output arg (extends confirmed FIO47-C argument-binding-misparse family)."
+  },
+  {
+   "rule": "INT05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13160,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf's %i does not reliably set errno/ERANGE the way strtol does, so the rule's own suggested remedy (check errno) would not actually detect overflow here -- rule misapplied to an API it doesn't fit."
+  },
+  {
+   "rule": "MSC24-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13160,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf_s (Annex K) is optional/non-portable and not used anywhere in this codebase or toolchain -- blanket-fires on every scanf-family call regardless of context."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13163,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf's return value IS checked (== 1) immediately -- proper error detection is present, contradicting the finding's own premise (new sscanf-single-specifier-checked FP sub-shape)."
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13163,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "call has exactly one '%i' conversion specifier and one output arg, so the return value can only be 0, 1, or EOF -- 'may return values > 1' is impossible here (new sscanf-single-specifier FP sub-shape)."
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13163,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "engine misparses which call argument binds to the format: reports the literal format-string argument itself as 'argument 1... is Pointer' rather than the actual &int output arg (extends confirmed FIO47-C argument-binding-misparse family)."
+  },
+  {
+   "rule": "INT05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13163,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf's %i does not reliably set errno/ERANGE the way strtol does, so the rule's own suggested remedy (check errno) would not actually detect overflow here -- rule misapplied to an API it doesn't fit."
+  },
+  {
+   "rule": "MSC24-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13163,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf_s (Annex K) is optional/non-portable and not used anywhere in this codebase or toolchain -- blanket-fires on every scanf-family call regardless of context."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13218,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf's return value IS checked (== 1) immediately -- proper error detection is present, contradicting the finding's own premise (new sscanf-single-specifier-checked FP sub-shape)."
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13218,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "call has exactly one '%i' conversion specifier and one output arg, so the return value can only be 0, 1, or EOF -- 'may return values > 1' is impossible here (new sscanf-single-specifier FP sub-shape)."
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13218,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "engine misparses which call argument binds to the format: reports the literal format-string argument itself as 'argument 1... is Pointer' rather than the actual &int output arg (extends confirmed FIO47-C argument-binding-misparse family)."
+  },
+  {
+   "rule": "INT05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13218,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf's %i does not reliably set errno/ERANGE the way strtol does, so the rule's own suggested remedy (check errno) would not actually detect overflow here -- rule misapplied to an API it doesn't fit."
+  },
+  {
+   "rule": "MSC24-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13218,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf_s (Annex K) is optional/non-portable and not used anywhere in this codebase or toolchain -- blanket-fires on every scanf-family call regardless of context."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13221,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf's return value IS checked (== 1) immediately -- proper error detection is present, contradicting the finding's own premise (new sscanf-single-specifier-checked FP sub-shape)."
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13221,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "call has exactly one '%i' conversion specifier and one output arg, so the return value can only be 0, 1, or EOF -- 'may return values > 1' is impossible here (new sscanf-single-specifier FP sub-shape)."
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13221,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "engine misparses which call argument binds to the format: reports the literal format-string argument itself as 'argument 1... is Pointer' rather than the actual &int output arg (extends confirmed FIO47-C argument-binding-misparse family)."
+  },
+  {
+   "rule": "INT05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13221,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf's %i does not reliably set errno/ERANGE the way strtol does, so the rule's own suggested remedy (check errno) would not actually detect overflow here -- rule misapplied to an API it doesn't fit."
+  },
+  {
+   "rule": "MSC24-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13221,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf_s (Annex K) is optional/non-portable and not used anywhere in this codebase or toolchain -- blanket-fires on every scanf-family call regardless of context."
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13280,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'RX ctrl_iface' is a debug-log title/label string, not the secret itself; the actual data (buf) is a separate runtime argument (confirmed MSC41-C title-string FP class)."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13311,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "reply_len/reply_size are bounded by the fixed reply buffer allocated a few hundred lines earlier and each *_get_mib() callee is expected to respect reply_size -- realistic protocol/buffer-size bound the rule doesn't see (confirmed 'rule doesn't see realistic bounds' INT30/32/33 family)."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13313,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "reply_len/reply_size are bounded by the fixed reply buffer allocated a few hundred lines earlier and each *_get_mib() callee is expected to respect reply_size -- realistic protocol/buffer-size bound the rule doesn't see (confirmed 'rule doesn't see realistic bounds' INT30/32/33 family)."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13315,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "reply_len/reply_size are bounded by the fixed reply buffer allocated a few hundred lines earlier and each *_get_mib() callee is expected to respect reply_size -- realistic protocol/buffer-size bound the rule doesn't see (confirmed 'rule doesn't see realistic bounds' INT30/32/33 family)."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13317,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "reply_len/reply_size are bounded by the fixed reply buffer allocated a few hundred lines earlier and each *_get_mib() callee is expected to respect reply_size -- realistic protocol/buffer-size bound the rule doesn't see (confirmed 'rule doesn't see realistic bounds' INT30/32/33 family)."
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13321,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_supplicant_ctrl_iface_status (line 2276) is a static function defined unconditionally earlier in this same file, ~11000 lines before this call -- genuinely declared/defined, not implicit (new DCL31-C sub-shape: same-file lookup fails across very large distance)."
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13344,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_supplicant_ctrl_iface_set (line 497) is a static function defined unconditionally earlier in this same file, ~11000 lines before this call -- genuinely declared/defined, not implicit (new DCL31-C sub-shape: same-file lookup fails across very large distance)."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13372,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if/else-if chain over a command-token/dispatch parser where an unmatched case is a deliberate silent no-op/ignore, not a missing-case defect (confirmed MSC01-C guard-clause/dispatch FP class)."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13390,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if/else-if chain over a command-token/dispatch parser where an unmatched case is a deliberate silent no-op/ignore, not a missing-case defect (confirmed MSC01-C guard-clause/dispatch FP class)."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13397,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if/else-if chain over a command-token/dispatch parser where an unmatched case is a deliberate silent no-op/ignore, not a missing-case defect (confirmed MSC01-C guard-clause/dispatch FP class)."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13467,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if/else-if chain over a command-token/dispatch parser where an unmatched case is a deliberate silent no-op/ignore, not a missing-case defect (confirmed MSC01-C guard-clause/dispatch FP class)."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13764,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_s/dst_wpa_s params are plain (non-restrict) pointers -- EXP43-C's aliasing UB only applies to restrict-qualified params; passing the same wpa_s for both intentionally performs an intra-interface duplicate (confirmed EXP43-C no-restrict-qualifier FP class)."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13895,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ERR07/ERR34 atoi FP: result only ever compared ==0 to set a boolean flag; malformed input(0) maps to the safe default (categorical_patterns.md ERR07/ERR34 range-checked-atoi FP class)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 13895,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ERR07/ERR34 atoi FP: result only ever compared ==0 to set a boolean flag; malformed input(0) maps to the safe default (categorical_patterns.md ERR07/ERR34 range-checked-atoi FP class)."
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 14061,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_ctrl_iface_send_twt_setup's second parameter is declared 'const char *cmd' and the function body only reads it (os_strstr/atoi/sscanf) -- it cannot modify the passed string literal; rule's premise is factually wrong."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 14167,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ERR07/ERR34 atoi FP: downstream dpp_bootstrap_get_uri lookup on the id fails safely (NULL, caught by if(!uri)) for any bad id (categorical_patterns.md ERR07/ERR34 range-checked-atoi FP class)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 14167,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ERR07/ERR34 atoi FP: downstream dpp_bootstrap_get_uri lookup on the id fails safely (NULL, caught by if(!uri)) for any bad id (categorical_patterns.md ERR07/ERR34 range-checked-atoi FP class)."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 14176,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ERR07/ERR34 atoi FP: downstream dpp_bootstrap_set return value(<0) is checked immediately, covers bad id (categorical_patterns.md ERR07/ERR34 range-checked-atoi FP class)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 14176,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ERR07/ERR34 atoi FP: downstream dpp_bootstrap_set return value(<0) is checked immediately, covers bad id (categorical_patterns.md ERR07/ERR34 range-checked-atoi FP class)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 14179,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "atoi(buf+18) and os_strchr(buf+18,' ') are both pure reads of the same buffer, no side effects to unsequence (extends confirmed EXP30-C side-effect-free-accessor-args class beyond macros to plain library reads)."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 14179,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ERR07/ERR34 atoi FP: downstream dpp_bootstrap_set return value(<0) is checked immediately, covers bad id (categorical_patterns.md ERR07/ERR34 range-checked-atoi FP class)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 14179,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ERR07/ERR34 atoi FP: downstream dpp_bootstrap_set return value(<0) is checked immediately, covers bad id (categorical_patterns.md ERR07/ERR34 range-checked-atoi FP class)."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 14213,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 14213,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result stored/used with no range or sanity check anywhere afterward -- genuine unchecked conversion (categorical pattern: only FP when immediately range-checked, not the case here)."
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 45,
+  "fp": 105,
+  "fn": 0
+ }
+}

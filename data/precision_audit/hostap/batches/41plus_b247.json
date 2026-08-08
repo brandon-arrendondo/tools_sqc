@@ -1,0 +1,580 @@
+{
+ "src/p2p/p2p_go_neg.c": [
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 13,
+   "message": "Header file 'ieee802_11_defs.h' has the same first 8 characters (case-insensitive) as 'ieee802_11_common.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_defs.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 36,
+   "message": "Function 'p2p_peer_channels_check' does not validate pointer parameter 'channel_list' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'channel_list' at the start of the function, e.g., 'if (!channel_list) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 36,
+   "message": "Function 'p2p_peer_channels_check' does not validate integer parameter 'channel_list_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'channel_list_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 9,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 83,
+   "message": "Variable 'intersection' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'intersection' before use, e.g., at its declaration"
+  },
+  {
+   "column": 3,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 198,
+   "message": "Passing pointer to uninitialized variable 'pref_chanlist' to 'p2p_pref_channel_filter' which reads the value",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'pref_chanlist' before passing its address to 'p2p_pref_channel_filter'"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 236,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 240,
+   "message": "Function 'p2p_connect_send' does not validate pointer parameter 'p2p' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'p2p' at the start of the function, e.g., 'if (!p2p) { return error_code; }'"
+  },
+  {
+   "column": 9,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 263,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 6,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 287,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 58,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 354,
+   "message": "Bitwise operator '|' used on signed operand 'tie_breaker' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'tie_breaker' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 3,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 375,
+   "message": "Passing pointer to uninitialized variable 'pref_chanlist' to 'p2p_pref_channel_filter' which reads the value",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'pref_chanlist' before passing its address to 'p2p_pref_channel_filter'"
+  },
+  {
+   "column": 3,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 396,
+   "message": "Passing pointer to uninitialized variable 'res' to 'p2p_channels_intersect' which reads the value",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'res' before passing its address to 'p2p_channels_intersect'"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 428,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 12,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 450,
+   "message": "Array declaration 'op_classes_5ghz[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 12,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 451,
+   "message": "Array declaration 'op_classes_ht40[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 12,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 452,
+   "message": "Array declaration 'op_classes_vht[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 12,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 453,
+   "message": "Array declaration 'op_classes_edmg[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 574,
+   "message": "Function 'p2p_go_select_channel' does not validate pointer parameter 'dev' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dev' at the start of the function, e.g., 'if (!dev) { return error_code; }'"
+  },
+  {
+   "column": 43,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 580,
+   "message": "Potential null pointer dereference in member access of variable 'dev'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'dev' is not NULL before member access"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 581,
+   "message": "Passing pointer to uninitialized variable 'tmp' to 'p2p_channels_intersect' which reads the value",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tmp' before passing its address to 'p2p_channels_intersect'"
+  },
+  {
+   "column": 6,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 588,
+   "message": "Variable 'intersection' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'intersection' before use, e.g., at its declaration"
+  },
+  {
+   "column": 9,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 606,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 24,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 623,
+   "message": "Pointer parameter 'dev' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *dev'"
+  },
+  {
+   "column": 25,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 624,
+   "message": "Pointer parameter 'msg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *msg'"
+  },
+  {
+   "column": 28,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 672,
+   "message": "Pointer parameter 'dev' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *dev'"
+  },
+  {
+   "column": 29,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 673,
+   "message": "Pointer parameter 'msg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *msg'"
+  },
+  {
+   "column": 7,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 733,
+   "message": "Potential null pointer dereference in member access of variable 'dev'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'dev' is not NULL before member access"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 790,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 832,
+   "message": "Function 'p2p_process_go_neg_req' does not validate pointer parameter 'sa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sa' at the start of the function, e.g., 'if (!sa) { return error_code; }'"
+  },
+  {
+   "column": 3,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 893,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 7,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 931,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 1153,
+   "message": "Function returns pointer to local variable 'resp' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 1157,
+   "message": "Function 'p2p_handle_go_neg_req' does not validate pointer parameter 'p2p' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'p2p' at the start of the function, e.g., 'if (!p2p) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 1157,
+   "message": "Function 'p2p_handle_go_neg_req' does not validate pointer parameter 'sa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sa' at the start of the function, e.g., 'if (!sa) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 1157,
+   "message": "Function 'p2p_handle_go_neg_req' does not validate pointer parameter 'data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'data' at the start of the function, e.g., 'if (!data) { return error_code; }'"
+  },
+  {
+   "column": 6,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 1180,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 1249,
+   "message": "Passing pointer to uninitialized variable 'res' to 'p2p_channels_intersect' which reads the value",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'res' before passing its address to 'p2p_channels_intersect'"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 1269,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 1273,
+   "message": "Function 'p2p_process_go_neg_resp' does not validate pointer parameter 'sa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sa' at the start of the function, e.g., 'if (!sa) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 1273,
+   "message": "Function 'p2p_process_go_neg_resp' does not validate integer parameter 'len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 1282,
+   "message": "Value assigned to 'conf' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 7,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 1368,
+   "message": "Variable 'msg' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 9,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 1386,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 28,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 1406,
+   "message": "Memory allocated with 'wpabuf_dup' for variable 'dev->info.wfd_subelems' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(dev->info.wfd_subelems)' before the variable goes out of scope"
+  },
+  {
+   "column": 3,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 1416,
+   "message": "Potential memory leak: 'dev->info.wfd_subelems' allocated with 'wpabuf_dup' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'dev->info.wfd_subelems' is freed before this goto or at the target label"
+  },
+  {
+   "column": 3,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 1421,
+   "message": "Potential memory leak: 'dev->info.wfd_subelems' allocated with 'wpabuf_dup' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'dev->info.wfd_subelems' is freed before this goto or at the target label"
+  },
+  {
+   "column": 3,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 1428,
+   "message": "Potential memory leak: 'dev->info.wfd_subelems' allocated with 'wpabuf_dup' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'dev->info.wfd_subelems' is freed before this goto or at the target label"
+  },
+  {
+   "column": 4,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 1449,
+   "message": "Potential memory leak: 'dev->info.wfd_subelems' allocated with 'wpabuf_dup' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'dev->info.wfd_subelems' is freed before this goto or at the target label"
+  },
+  {
+   "column": 4,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 1458,
+   "message": "Potential memory leak: 'dev->info.wfd_subelems' allocated with 'wpabuf_dup' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'dev->info.wfd_subelems' is freed before this goto or at the target label"
+  },
+  {
+   "column": 4,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 1467,
+   "message": "Potential memory leak: 'dev->info.wfd_subelems' allocated with 'wpabuf_dup' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'dev->info.wfd_subelems' is freed before this goto or at the target label"
+  },
+  {
+   "column": 4,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 1476,
+   "message": "Potential memory leak: 'dev->info.wfd_subelems' allocated with 'wpabuf_dup' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'dev->info.wfd_subelems' is freed before this goto or at the target label"
+  },
+  {
+   "column": 5,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 1487,
+   "message": "Potential memory leak: 'dev->info.wfd_subelems' allocated with 'wpabuf_dup' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'dev->info.wfd_subelems' is freed before this goto or at the target label"
+  },
+  {
+   "column": 3,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 1494,
+   "message": "Potential memory leak: 'dev->info.wfd_subelems' allocated with 'wpabuf_dup' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'dev->info.wfd_subelems' is freed before this goto or at the target label"
+  },
+  {
+   "column": 6,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 1521,
+   "message": "Use-after-free: accessing freed pointer 'dev->go_neg_conf'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 20,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 1524,
+   "message": "Use-after-free: accessing freed pointer 'dev->go_neg_conf'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 1544,
+   "message": "Memory leak: 'dev->info.wfd_subelems' allocated with 'wpabuf_dup' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'dev->info.wfd_subelems' before this return statement"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 1548,
+   "message": "Function 'p2p_handle_go_neg_resp' does not validate pointer parameter 'p2p' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'p2p' at the start of the function, e.g., 'if (!p2p) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 1548,
+   "message": "Function 'p2p_handle_go_neg_resp' does not validate pointer parameter 'sa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sa' at the start of the function, e.g., 'if (!sa) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 1548,
+   "message": "Function 'p2p_handle_go_neg_resp' does not validate pointer parameter 'data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'data' at the start of the function, e.g., 'if (!data) { return error_code; }'"
+  },
+  {
+   "column": 6,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 1571,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 1585,
+   "message": "Function 'p2p_handle_go_neg_conf' does not validate pointer parameter 'sa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sa' at the start of the function, e.g., 'if (!sa) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 1585,
+   "message": "Function 'p2p_handle_go_neg_conf' does not validate integer parameter 'len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 9,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 1642,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 9,
+   "file": "src/p2p/p2p_go_neg.c",
+   "line": 1656,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  }
+ ]
+}

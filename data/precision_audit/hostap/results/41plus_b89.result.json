@@ -1,0 +1,1211 @@
+{
+ "labels": [
+  {
+   "rule": "PRE02-C",
+   "file": "src/tls/libtommath.c",
+   "line": 86,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Single-token negative-literal macro (MP_LT/MP_MEM/MP_VAL); no precedence hazard to guard against (categorical single-token-negative-literal PRE02-C FP class)"
+  },
+  {
+   "rule": "PRE02-C",
+   "file": "src/tls/libtommath.c",
+   "line": 94,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Single-token negative-literal macro (MP_LT/MP_MEM/MP_VAL); no precedence hazard to guard against (categorical single-token-negative-literal PRE02-C FP class)"
+  },
+  {
+   "rule": "PRE02-C",
+   "file": "src/tls/libtommath.c",
+   "line": 95,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Single-token negative-literal macro (MP_LT/MP_MEM/MP_VAL); no precedence hazard to guard against (categorical single-token-negative-literal PRE02-C FP class)"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "src/tls/libtommath.c",
+   "line": 126,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Macro genuinely references its parameter twice in the body (member access x2); real if low-severity macro-hygiene hazard (current call sites happen to be side-effect-free)"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "src/tls/libtommath.c",
+   "line": 126,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Macro genuinely references its parameter twice in the body (member access x2); real if low-severity macro-hygiene hazard (current call sites happen to be side-effect-free)"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "src/tls/libtommath.c",
+   "line": 127,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Macro genuinely references its parameter twice in the body (member access x2); real if low-severity macro-hygiene hazard (current call sites happen to be side-effect-free)"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "src/tls/libtommath.c",
+   "line": 127,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Macro genuinely references its parameter twice in the body (member access x2); real if low-severity macro-hygiene hazard (current call sites happen to be side-effect-free)"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "src/tls/libtommath.c",
+   "line": 131,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Macro genuinely references its parameter twice in the body (member access x2); real if low-severity macro-hygiene hazard (current call sites happen to be side-effect-free)"
+  },
+  {
+   "rule": "PRE02-C",
+   "file": "src/tls/libtommath.c",
+   "line": 131,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "s_mp_mul body is already one atomic function-call expression (s_mp_mul_digs(...)); wrapping in extra parens is a no-op, extends the function-call/array-subscript PRE02-C FP class"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "src/tls/libtommath.c",
+   "line": 131,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Macro genuinely references its parameter twice in the body (member access x2); real if low-severity macro-hygiene hazard (current call sites happen to be side-effect-free)"
+  },
+  {
+   "rule": "EXP37-C",
+   "file": "src/tls/libtommath.c",
+   "line": 142,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "stdarg.h is included transitively via includes.h before libtommath.c is #include'd into bignum.c's translation unit; va_list/va_start are properly declared"
+  },
+  {
+   "rule": "EXP37-C",
+   "file": "src/tls/libtommath.c",
+   "line": 145,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "stdarg.h is included transitively via includes.h before libtommath.c is #include'd into bignum.c's translation unit; va_list/va_start are properly declared"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/tls/libtommath.c",
+   "line": 212,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain static internal helper, not a vtable/eloop/dispatch-contract callback; param genuinely only read - real if low-severity const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/tls/libtommath.c",
+   "line": 212,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain static internal helper, not a vtable/eloop/dispatch-contract callback; param genuinely only read - real if low-severity const opportunity"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/tls/libtommath.c",
+   "line": 286,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Direction-inverted: *tmpc++ = u writes u's VALUE into caller-owned heap storage (c->dp); no address-of u escapes, u's own storage is never returned"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/tls/libtommath.c",
+   "line": 300,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain static internal helper, not a vtable/eloop/dispatch-contract callback; param genuinely only read - real if low-severity const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/tls/libtommath.c",
+   "line": 300,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain static internal helper, not a vtable/eloop/dispatch-contract callback; param genuinely only read - real if low-severity const opportunity"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 337,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CHAR_BIT/DIGIT_BIT/mp_digit/mp_word are macro constants or typedef names, not variables; category error misattributing a macro/type name as a mixed-use variable"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 337,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CHAR_BIT/DIGIT_BIT/mp_digit/mp_word are macro constants or typedef names, not variables; category error misattributing a macro/type name as a mixed-use variable"
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 337,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Shift amount is compile-time-bounded (DIGIT_BIT/CHAR_BIT-derived constant) or runtime-bounded by an earlier guard/'% DIGIT_BIT' computation/winsize range (2-8); provably within type width"
+  },
+  {
+   "rule": "INT35-C",
+   "file": "src/tls/libtommath.c",
+   "line": 337,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "sizeof(...)*CHAR_BIT precision idiom is intentional in this vendored bignum code targeting its own known digit widths (DIGIT_BIT=28/60), no padding-bit platform in scope"
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 349,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Shift amount is compile-time-bounded (DIGIT_BIT/CHAR_BIT-derived constant) or runtime-bounded by an earlier guard/'% DIGIT_BIT' computation/winsize range (2-8); provably within type width"
+  },
+  {
+   "rule": "INT35-C",
+   "file": "src/tls/libtommath.c",
+   "line": 349,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "sizeof(...)*CHAR_BIT precision idiom is intentional in this vendored bignum code targeting its own known digit widths (DIGIT_BIT=28/60), no padding-bit platform in scope"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/tls/libtommath.c",
+   "line": 493,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "res IS read via the shared 'return res;' at function end; sqc's CFG doesn't see the if/else-if/#ifdef chain as mutually exclusive, misreading each branch's assignment as immediately overwritten"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/tls/libtommath.c",
+   "line": 499,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "res IS read via the shared 'return res;' at function end; sqc's CFG doesn't see the if/else-if/#ifdef chain as mutually exclusive, misreading each branch's assignment as immediately overwritten"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 514,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CHAR_BIT/DIGIT_BIT/mp_digit/mp_word are macro constants or typedef names, not variables; category error misattributing a macro/type name as a mixed-use variable"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 514,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CHAR_BIT/DIGIT_BIT/mp_digit/mp_word are macro constants or typedef names, not variables; category error misattributing a macro/type name as a mixed-use variable"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 514,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CHAR_BIT/DIGIT_BIT/mp_digit/mp_word are macro constants or typedef names, not variables; category error misattributing a macro/type name as a mixed-use variable"
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 514,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Shift amount is compile-time-bounded (DIGIT_BIT/CHAR_BIT-derived constant) or runtime-bounded by an earlier guard/'% DIGIT_BIT' computation/winsize range (2-8); provably within type width"
+  },
+  {
+   "rule": "INT35-C",
+   "file": "src/tls/libtommath.c",
+   "line": 514,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "sizeof(...)*CHAR_BIT precision idiom is intentional in this vendored bignum code targeting its own known digit widths (DIGIT_BIT=28/60), no padding-bit platform in scope"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/tls/libtommath.c",
+   "line": 515,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "res IS read via the shared 'return res;' at function end; sqc's CFG doesn't see the if/else-if/#ifdef chain as mutually exclusive, misreading each branch's assignment as immediately overwritten"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/tls/libtommath.c",
+   "line": 656,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mp_iszero/mp_isodd/mp_iseven macros return exactly MP_YES(1) or MP_NO(0) by construction; ==1 test matches their exact two-value contract, extends the OpenSSL-exact-0/1-contract EXP20-C FP class to a local macro contract"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/tls/libtommath.c",
+   "line": 700,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain static internal helper, not a vtable/eloop/dispatch-contract callback; param genuinely only read - real if low-severity const opportunity"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/tls/libtommath.c",
+   "line": 728,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mp_iszero/mp_isodd/mp_iseven macros return exactly MP_YES(1) or MP_NO(0) by construction; ==1 test matches their exact two-value contract, extends the OpenSSL-exact-0/1-contract EXP20-C FP class to a local macro contract"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/tls/libtommath.c",
+   "line": 734,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mp_iszero/mp_isodd/mp_iseven macros return exactly MP_YES(1) or MP_NO(0) by construction; ==1 test matches their exact two-value contract, extends the OpenSSL-exact-0/1-contract EXP20-C FP class to a local macro contract"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 757,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Stylistic-pedantry mismatch with CERT INT14-C intent, or misattribution of a struct-field/unrelated bitwise op to the flagged identifier (established categorical FP class); idiomatic bignum digit-shift/mask code"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/tls/libtommath.c",
+   "line": 757,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "size is derived from mp_count_bits() (provably non-negative bit count); bitwise & on a provably-nonnegative signed int has well-defined correct semantics"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/tls/libtommath.c",
+   "line": 769,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mp_iszero/mp_isodd/mp_iseven macros return exactly MP_YES(1) or MP_NO(0) by construction; ==1 test matches their exact two-value contract, extends the OpenSSL-exact-0/1-contract EXP20-C FP class to a local macro contract"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/tls/libtommath.c",
+   "line": 788,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mp_iszero/mp_isodd/mp_iseven macros return exactly MP_YES(1) or MP_NO(0) by construction; ==1 test matches their exact two-value contract, extends the OpenSSL-exact-0/1-contract EXP20-C FP class to a local macro contract"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/tls/libtommath.c",
+   "line": 788,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mp_iszero/mp_isodd/mp_iseven macros return exactly MP_YES(1) or MP_NO(0) by construction; ==1 test matches their exact two-value contract, extends the OpenSSL-exact-0/1-contract EXP20-C FP class to a local macro contract"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/tls/libtommath.c",
+   "line": 805,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mp_iszero/mp_isodd/mp_iseven macros return exactly MP_YES(1) or MP_NO(0) by construction; ==1 test matches their exact two-value contract, extends the OpenSSL-exact-0/1-contract EXP20-C FP class to a local macro contract"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 807,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/tls/libtommath.c",
+   "line": 811,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mp_iszero/mp_isodd/mp_iseven macros return exactly MP_YES(1) or MP_NO(0) by construction; ==1 test matches their exact two-value contract, extends the OpenSSL-exact-0/1-contract EXP20-C FP class to a local macro contract"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/tls/libtommath.c",
+   "line": 811,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mp_iszero/mp_isodd/mp_iseven macros return exactly MP_YES(1) or MP_NO(0) by construction; ==1 test matches their exact two-value contract, extends the OpenSSL-exact-0/1-contract EXP20-C FP class to a local macro contract"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 813,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 816,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 821,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 824,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/tls/libtommath.c",
+   "line": 830,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mp_iszero/mp_isodd/mp_iseven macros return exactly MP_YES(1) or MP_NO(0) by construction; ==1 test matches their exact two-value contract, extends the OpenSSL-exact-0/1-contract EXP20-C FP class to a local macro contract"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 832,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/tls/libtommath.c",
+   "line": 836,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mp_iszero/mp_isodd/mp_iseven macros return exactly MP_YES(1) or MP_NO(0) by construction; ==1 test matches their exact two-value contract, extends the OpenSSL-exact-0/1-contract EXP20-C FP class to a local macro contract"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/tls/libtommath.c",
+   "line": 836,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mp_iszero/mp_isodd/mp_iseven macros return exactly MP_YES(1) or MP_NO(0) by construction; ==1 test matches their exact two-value contract, extends the OpenSSL-exact-0/1-contract EXP20-C FP class to a local macro contract"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 838,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 841,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 846,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 849,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 857,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 861,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 865,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 870,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 874,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 878,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 897,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 904,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/tls/libtommath.c",
+   "line": 919,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain static internal helper, not a vtable/eloop/dispatch-contract callback; param genuinely only read - real if low-severity const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/tls/libtommath.c",
+   "line": 919,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain static internal helper, not a vtable/eloop/dispatch-contract callback; param genuinely only read - real if low-severity const opportunity"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/tls/libtommath.c",
+   "line": 941,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Flagged expressions (*tmpa > *tmpb / *tmpa < *tmpb) compare DEREFERENCED VALUES, not the tmpa/tmpb pointers themselves - category error"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/tls/libtommath.c",
+   "line": 945,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Flagged expressions (*tmpa > *tmpb / *tmpa < *tmpb) compare DEREFERENCED VALUES, not the tmpa/tmpb pointers themselves - category error"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 970,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "INT31-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1003,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Flagged code sits inside the #else branch of '#ifndef MP_8BIT', which is never compiled (MP_8BIT is never #define'd anywhere in this file; DIGIT_BIT is fixed to 28 or 60) - dead code, #ifdef-branch-blind misfire"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1005,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1038,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Plain idiomatic optional-out-param NULL check (if (d != NULL)); established ad-hoc-NULL-check stylistic FP class"
+  },
+  {
+   "rule": "INT10-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1057,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Dividend/modulus operand is provably non-negative at this point: guarded by an earlier 'if (b<=0) return', derived from mp_count_bits(), or (mp_grow's size) always non-negative across all call sites"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1062,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Stylistic-pedantry mismatch with CERT INT14-C intent, or misattribution of a struct-field/unrelated bitwise op to the flagged identifier (established categorical FP class); idiomatic bignum digit-shift/mask code"
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1062,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Shift amount is compile-time-bounded (DIGIT_BIT/CHAR_BIT-derived constant) or runtime-bounded by an earlier guard/'% DIGIT_BIT' computation/winsize range (2-8); provably within type width"
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1077,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Shift amount is compile-time-bounded (DIGIT_BIT/CHAR_BIT-derived constant) or runtime-bounded by an earlier guard/'% DIGIT_BIT' computation/winsize range (2-8); provably within type width"
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1077,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Shift amount is compile-time-bounded (DIGIT_BIT/CHAR_BIT-derived constant) or runtime-bounded by an earlier guard/'% DIGIT_BIT' computation/winsize range (2-8); provably within type width"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1151,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mp_int has no flexible array member at all (int used/alloc/sign + mp_digit *dp pointer) - category error; 3 of 4 flagged lines are plain digit-array copy-loop statements (*tmpb++=*tmpa++), not struct assignments, and mp_exch's *a=*b is an intentional whole-struct swap idiom"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1205,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mp_int has no flexible array member at all (int used/alloc/sign + mp_digit *dp pointer) - category error; 3 of 4 flagged lines are plain digit-array copy-loop statements (*tmpb++=*tmpa++), not struct assignments, and mp_exch's *a=*b is an intentional whole-struct swap idiom"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1227,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mp_int has no flexible array member at all (int used/alloc/sign + mp_digit *dp pointer) - category error; 3 of 4 flagged lines are plain digit-array copy-loop statements (*tmpb++=*tmpa++), not struct assignments, and mp_exch's *a=*b is an intentional whole-struct swap idiom"
+  },
+  {
+   "rule": "INT10-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1264,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Dividend/modulus operand is provably non-negative at this point: guarded by an earlier 'if (b<=0) return', derived from mp_count_bits(), or (mp_grow's size) always non-negative across all call sites"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1356,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CHAR_BIT/DIGIT_BIT/mp_digit/mp_word are macro constants or typedef names, not variables; category error misattributing a macro/type name as a mixed-use variable"
+  },
+  {
+   "rule": "INT10-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1402,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Dividend/modulus operand is provably non-negative at this point: guarded by an earlier 'if (b<=0) return', derived from mp_count_bits(), or (mp_grow's size) always non-negative across all call sites"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1408,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Stylistic-pedantry mismatch with CERT INT14-C intent, or misattribution of a struct-field/unrelated bitwise op to the flagged identifier (established categorical FP class); idiomatic bignum digit-shift/mask code"
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1408,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Shift amount is compile-time-bounded (DIGIT_BIT/CHAR_BIT-derived constant) or runtime-bounded by an earlier guard/'% DIGIT_BIT' computation/winsize range (2-8); provably within type width"
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1420,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Shift amount is compile-time-bounded (DIGIT_BIT/CHAR_BIT-derived constant) or runtime-bounded by an earlier guard/'% DIGIT_BIT' computation/winsize range (2-8); provably within type width"
+  },
+  {
+   "rule": "FIO50-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1423,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*tmpc is a digit-array pointer being bit-shifted (<</>>) in mp_mul_2d's carry-propagation loop, not any FILE stream; category error mistaking C bit-shift operators for stream I/O"
+  },
+  {
+   "rule": "FIO50-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1423,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*tmpc is a digit-array pointer being bit-shifted (<</>>) in mp_mul_2d's carry-propagation loop, not any FILE stream; category error mistaking C bit-shift operators for stream I/O"
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1423,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Shift amount is compile-time-bounded (DIGIT_BIT/CHAR_BIT-derived constant) or runtime-bounded by an earlier guard/'% DIGIT_BIT' computation/winsize range (2-8); provably within type width"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1527,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mp_int has no flexible array member at all (int used/alloc/sign + mp_digit *dp pointer) - category error; 3 of 4 flagged lines are plain digit-array copy-loop statements (*tmpb++=*tmpa++), not struct assignments, and mp_exch's *a=*b is an intentional whole-struct swap idiom"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1541,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain static internal helper, not a vtable/eloop/dispatch-contract callback; param genuinely only read - real if low-severity const opportunity"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1576,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CHAR_BIT/DIGIT_BIT/mp_digit/mp_word are macro constants or typedef names, not variables; category error misattributing a macro/type name as a mixed-use variable"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1587,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "x is initialized in the very for-loop init clause being flagged (for (x = ...; x < c->used; x++)); category error claiming it's used uninitialized"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1587,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Stylistic-pedantry mismatch with CERT INT14-C intent, or misattribution of a struct-field/unrelated bitwise op to the flagged identifier (established categorical FP class); idiomatic bignum digit-shift/mask code"
+  },
+  {
+   "rule": "INT10-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1587,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Dividend/modulus operand is provably non-negative at this point: guarded by an earlier 'if (b<=0) return', derived from mp_count_bits(), or (mp_grow's size) always non-negative across all call sites"
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1592,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Shift amount is compile-time-bounded (DIGIT_BIT/CHAR_BIT-derived constant) or runtime-bounded by an earlier guard/'% DIGIT_BIT' computation/winsize range (2-8); provably within type width"
+  },
+  {
+   "rule": "INT10-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1592,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Dividend/modulus operand is provably non-negative at this point: guarded by an earlier 'if (b<=0) return', derived from mp_count_bits(), or (mp_grow's size) always non-negative across all call sites"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1607,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mp_iszero/mp_isodd/mp_iseven macros return exactly MP_YES(1) or MP_NO(0) by construction; ==1 test matches their exact two-value contract, extends the OpenSSL-exact-0/1-contract EXP20-C FP class to a local macro contract"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1632,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Classic '(res = f(...)) != MP_OKAY ||' chain: res IS read inline in the very same expression; established MSC13-C ||-chain-blindness FP class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1633,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Classic '(res = f(...)) != MP_OKAY ||' chain: res IS read inline in the very same expression; established MSC13-C ||-chain-blindness FP class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1634,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Classic '(res = f(...)) != MP_OKAY ||' chain: res IS read inline in the very same expression; established MSC13-C ||-chain-blindness FP class"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1634,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1635,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1641,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Classic '(res = f(...)) != MP_OKAY ||' chain: res IS read inline in the very same expression; established MSC13-C ||-chain-blindness FP class"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1641,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1642,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1646,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Classic '(res = f(...)) != MP_OKAY ||' chain: res IS read inline in the very same expression; established MSC13-C ||-chain-blindness FP class"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1646,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1647,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1689,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mp_iszero/mp_isodd/mp_iseven macros return exactly MP_YES(1) or MP_NO(0) by construction; ==1 test matches their exact two-value contract, extends the OpenSSL-exact-0/1-contract EXP20-C FP class to a local macro contract"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1732,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Stylistic-pedantry mismatch with CERT INT14-C intent, or misattribution of a struct-field/unrelated bitwise op to the flagged identifier (established categorical FP class); idiomatic bignum digit-shift/mask code"
+  },
+  {
+   "rule": "INT10-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1732,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Dividend/modulus operand is provably non-negative at this point: guarded by an earlier 'if (b<=0) return', derived from mp_count_bits(), or (mp_grow's size) always non-negative across all call sites"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1735,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1738,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1746,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Stylistic-pedantry mismatch with CERT INT14-C intent, or misattribution of a struct-field/unrelated bitwise op to the flagged identifier (established categorical FP class); idiomatic bignum digit-shift/mask code"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1750,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'n - t' is plain int arithmetic (n,t are int locals derived from x.used-1/y.used-1); x.used/y.used are int struct fields, not pointers at all - category error"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1750,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Stylistic-pedantry mismatch with CERT INT14-C intent, or misattribution of a struct-field/unrelated bitwise op to the flagged identifier (established categorical FP class); idiomatic bignum digit-shift/mask code"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1755,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'n - t' is plain int arithmetic (n,t are int locals derived from x.used-1/y.used-1); x.used/y.used are int struct fields, not pointers at all - category error"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1756,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1762,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'n - t' is plain int arithmetic (n,t are int locals derived from x.used-1/y.used-1); x.used/y.used are int struct fields, not pointers at all - category error"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1773,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Stylistic-pedantry mismatch with CERT INT14-C intent, or misattribution of a struct-field/unrelated bitwise op to the flagged identifier (established categorical FP class); idiomatic bignum digit-shift/mask code"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1773,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "All operands are mp_digit (unsigned long); this is unsigned arithmetic computing a large positive mask value, not a signed-integer-subtraction overflow - category error"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1776,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'x' is a mp_int struct local (mp_int x;), not an int; the actual shifted operand is (mp_word)x.dp[i], explicitly cast to the unsigned mp_word type - category error"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1777,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Stylistic-pedantry mismatch with CERT INT14-C intent, or misattribution of a struct-field/unrelated bitwise op to the flagged identifier (established categorical FP class); idiomatic bignum digit-shift/mask code"
+  },
+  {
+   "rule": "INT33-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1778,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "y.dp[t] (top digit of the normalized divisor) is provably non-zero by the classic Knuth Algorithm D normalization step performed a few lines earlier (lines 1732-1743, ensures the divisor's top digit has its MSB set)"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1789,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Stylistic-pedantry mismatch with CERT INT14-C intent, or misattribution of a struct-field/unrelated bitwise op to the flagged identifier (established categorical FP class); idiomatic bignum digit-shift/mask code"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1798,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1818,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1830,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1852,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1908,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "&M[1] is the address-of argument to mp_init(), which INITIALIZES M[1] - not a read of uninitialized data"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1913,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Stylistic-pedantry mismatch with CERT INT14-C intent, or misattribution of a struct-field/unrelated bitwise op to the flagged identifier (established categorical FP class); idiomatic bignum digit-shift/mask code"
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1915,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Shift amount is compile-time-bounded (DIGIT_BIT/CHAR_BIT-derived constant) or runtime-bounded by an earlier guard/'% DIGIT_BIT' computation/winsize range (2-8); provably within type width"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1918,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "M[idx] entries were already mp_init'd by the earlier for-loop (lines 1912-1921) plus M[1] at line 1908 before these reads/writes; sqc's per-index array-of-struct init tracking misses the earlier loop-based initialization"
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1955,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Shift amount is compile-time-bounded (DIGIT_BIT/CHAR_BIT-derived constant) or runtime-bounded by an earlier guard/'% DIGIT_BIT' computation/winsize range (2-8); provably within type width"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1961,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1961,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Shift amount is compile-time-bounded (DIGIT_BIT/CHAR_BIT-derived constant) or runtime-bounded by an earlier guard/'% DIGIT_BIT' computation/winsize range (2-8); provably within type width"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1962,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "M[idx] entries were already mp_init'd by the earlier for-loop (lines 1912-1921) plus M[1] at line 1908 before these reads/writes; sqc's per-index array-of-struct init tracking misses the earlier loop-based initialization"
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1962,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Shift amount is compile-time-bounded (DIGIT_BIT/CHAR_BIT-derived constant) or runtime-bounded by an earlier guard/'% DIGIT_BIT' computation/winsize range (2-8); provably within type width"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1967,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'redux' is a local function-pointer VARIABLE (int (*redux)(...)) assigned mp_reduce/mp_reduce_2k_l earlier, not an implicitly-declared bare function; established DCL31-C function-pointer-variable-call FP class"
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1967,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Shift amount is compile-time-bounded (DIGIT_BIT/CHAR_BIT-derived constant) or runtime-bounded by an earlier guard/'% DIGIT_BIT' computation/winsize range (2-8); provably within type width"
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1975,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Shift amount is compile-time-bounded (DIGIT_BIT/CHAR_BIT-derived constant) or runtime-bounded by an earlier guard/'% DIGIT_BIT' computation/winsize range (2-8); provably within type width"
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1975,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Shift amount is compile-time-bounded (DIGIT_BIT/CHAR_BIT-derived constant) or runtime-bounded by an earlier guard/'% DIGIT_BIT' computation/winsize range (2-8); provably within type width"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1976,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "M[idx] entries were already mp_init'd by the earlier for-loop (lines 1912-1921) plus M[1] at line 1908 before these reads/writes; sqc's per-index array-of-struct init tracking misses the earlier loop-based initialization"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1976,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "M[idx] entries were already mp_init'd by the earlier for-loop (lines 1912-1921) plus M[1] at line 1908 before these reads/writes; sqc's per-index array-of-struct init tracking misses the earlier loop-based initialization"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/tls/libtommath.c",
+   "line": 1979,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'redux' is a local function-pointer VARIABLE (int (*redux)(...)) assigned mp_reduce/mp_reduce_2k_l earlier, not an implicitly-declared bare function; established DCL31-C function-pointer-variable-call FP class"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2011,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CHAR_BIT/DIGIT_BIT/mp_digit/mp_word are macro constants or typedef names, not variables; category error misattributing a macro/type name as a mixed-use variable"
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2011,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Shift amount is compile-time-bounded (DIGIT_BIT/CHAR_BIT-derived constant) or runtime-bounded by an earlier guard/'% DIGIT_BIT' computation/winsize range (2-8); provably within type width"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2025,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "None of the mp_* functions in this file are restrict-qualified; libtommath's in-place idiom (e.g. mp_sub(&t,&t,&v)) is a designed-for, internally-safe aliasing case, extends the established no-restrict-qualifier EXP43-C FP class to this vendored bignum library"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2028,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'redux' is a local function-pointer VARIABLE (int (*redux)(...)) assigned mp_reduce/mp_reduce_2k_l earlier, not an implicitly-declared bare function; established DCL31-C function-pointer-variable-call FP class"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 14,
+  "fp": 136,
+  "fn": 0
+ }
+}

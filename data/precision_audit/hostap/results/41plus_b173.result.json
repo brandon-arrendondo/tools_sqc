@@ -1,0 +1,955 @@
+{
+  "labels": [
+    {
+      "rule": "PRE08-C",
+      "file": "src/fst/fst_session.c",
+      "line": 16,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "PRE08-C 8-char header-family convention (fst_ctrl_iface.h/fst_ctrl_defs.h); low-value TP"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "src/fst/fst_session.c",
+      "line": 23,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "fst_printf_session's s cascades into nested macros, genuinely re-evaluated 4x+"
+    },
+    {
+      "rule": "PRE05-C",
+      "file": "src/fst/fst_session.c",
+      "line": 23,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Standard GNU ',##__VA_ARGS__' comma-elision idiom, not a real param-expansion hazard"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "src/fst/fst_session.c",
+      "line": 23,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "Same real multi-eval as PRE00-C on this macro (s used repeatedly via nesting)"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "src/fst/fst_session.c",
+      "line": 30,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "fst_printf_siface cascades s into fst_printf_session, genuinely re-evaluated"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "src/fst/fst_session.c",
+      "line": 30,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Factually wrong: 's' IS parenthesized as '(s)' in the replacement text"
+    },
+    {
+      "rule": "PRE05-C",
+      "file": "src/fst/fst_session.c",
+      "line": 30,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Standard GNU ',##__VA_ARGS__' comma-elision idiom, not a real hazard"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "src/fst/fst_session.c",
+      "line": 30,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "Real multi-eval of s via nested macro cascade"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "src/fst/fst_session.c",
+      "line": 34,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "fst_printf_sframe uses (s) 3x directly (arg + ternary twice), genuine re-eval"
+    },
+    {
+      "rule": "PRE05-C",
+      "file": "src/fst/fst_session.c",
+      "line": 34,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Standard GNU ',##__VA_ARGS__' comma-elision idiom, not a real hazard"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "src/fst/fst_session.c",
+      "line": 34,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "Real multi-eval of s, same cascade as PRE00-C"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "src/fst/fst_session.c",
+      "line": 42,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "fst_action_names[] sized by its own designated initializers (ARR02-C sized-by-initializer FP class)"
+    },
+    {
+      "rule": "CON03-C",
+      "file": "src/fst/fst_session.c",
+      "line": 73,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "No pthread usage anywhere in hostap; established CON03-C no-thread FP theme"
+    },
+    {
+      "rule": "CON07-C",
+      "file": "src/fst/fst_session.c",
+      "line": 84,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Established no-thread FP theme extended to CON07-C compound-op-on-static"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/fst/fst_session.c",
+      "line": 101,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "global_sessions_list is a zero-initialized file-scope static, inited by dl_list_init() in fst_session_global_init(); write-only/callee-init blindness"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/fst/fst_session.c",
+      "line": 129,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "fst_session_state_name() is a pure lookup/switch accessor; established EXP30-C pure-accessor FP class"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "src/fst/fst_session.c",
+      "line": 140,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "foreach_fst_session(s){...} misparsed as K&R nested function def; established foreach_fst_group/foreach_fst_session macro-loop misparse class (41plus_b143)"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "src/fst/fst_session.c",
+      "line": 143,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "Collateral of the same misparse: in_use's read at line 152 is lost because the loop+following code is swallowed into the fake nested scope"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "src/fst/fst_session.c",
+      "line": 145,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Misparse cascade: foreach_fst_session(s){ becomes a fake K&R function def missing a return"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/fst/fst_session.c",
+      "line": 145,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Misparse cascade: 's' becomes a fresh, uninitialized K&R-style implicit parameter"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "src/fst/fst_session.c",
+      "line": 146,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Misparse cascade: s->id access flagged null-deref on the fake K&R parameter"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/fst/fst_session.c",
+      "line": 163,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "fst_session_timeout_handler matches eloop_timeout_handler typedef; established eloop-callback DCL13-C FP"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/fst/fst_session.c",
+      "line": 196,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "fst_session_stt_disarm's s is a plain internal helper, read-only param; genuine low-value TP"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/fst/fst_session.c",
+      "line": 203,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "fst_session_is_in_transition's s is a plain read-only helper param; genuine low-value TP"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/fst/fst_session.c",
+      "line": 231,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "fst_find_session_in_progress's g is read-only (s->group==g); plain helper, genuine low-value TP"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "src/fst/fst_session.c",
+      "line": 233,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Misparse cascade (foreach_fst_session(s) at line 235)"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "src/fst/fst_session.c",
+      "line": 235,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Misparse cascade"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/fst/fst_session.c",
+      "line": 235,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Misparse cascade"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "src/fst/fst_session.c",
+      "line": 236,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Misparse cascade"
+    },
+    {
+      "rule": "ARR01-C",
+      "file": "src/fst/fst_session.c",
+      "line": 259,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(s->data) is sizeof a struct member accessed via ->, not a decayed pointer; established ARR01-C correct-idiom FP"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/fst/fst_session.c",
+      "line": 265,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "payload+size idiom; established API05-C ptr+size_t FP class"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "src/fst/fst_session.c",
+      "line": 358,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "new_iface=NULL is unconditionally overwritten before any read (line 396); genuine dead-NULL-init, harmless"
+    },
+    {
+      "rule": "ARR39-C",
+      "file": "src/fst/fst_session.c",
+      "line": 363,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Pure integer size comparison (IEEE80211_HDRLEN+1+sizeof(*req)), no pointer arithmetic at all; established ARR39-C pure-integer-sum-no-pointer FP"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/fst/fst_session.c",
+      "line": 363,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*req) on a not-yet-assigned pointer is not a dereference; established EXP33-C sizeof(*ptr) FP class"
+    },
+    {
+      "rule": "ARR39-C",
+      "file": "src/fst/fst_session.c",
+      "line": 367,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same pure-integer-sum-no-pointer category error as :363"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/fst/fst_session.c",
+      "line": 404,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "fst_iface_get_name/MAC2STR pure accessors; established EXP30-C FP class"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/fst/fst_session.c",
+      "line": 469,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "fst_session_create()'s s is added to global_sessions_list (dl_list_add_tail) and freed later via fst_session_delete; ownership-transfer, not a leak (matches 41plus_b143 exact precedent)"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/fst/fst_session.c",
+      "line": 471,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "fst_iface_get_name pure accessor pair; established EXP30-C FP"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/fst/fst_session.c",
+      "line": 523,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*res) before res is assigned; established EXP33-C sizeof(*ptr) FP"
+    },
+    {
+      "rule": "EXP39-C",
+      "file": "src/fst/fst_session.c",
+      "line": 564,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Cross-function union-name conflation: 'session_state' belongs to the different union fst_event_extra used in fst_session_set_state's own local evext, not this function's fst_session_state_switch_extra evext"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/fst/fst_session.c",
+      "line": 585,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "fst_iface_get_name pure accessor pair; established EXP30-C FP"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/fst/fst_session.c",
+      "line": 612,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*td) before td is assigned; established EXP33-C sizeof(*ptr) FP"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/fst/fst_session.c",
+      "line": 663,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*req) before req is assigned; established EXP33-C sizeof(*ptr) FP"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/fst/fst_session.c",
+      "line": 726,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*res) before res is assigned; established EXP33-C sizeof(*ptr) FP"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/fst/fst_session.c",
+      "line": 759,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*s) used only to size the os_zalloc call, not a dereference; established EXP33-C sizeof(*ptr) FP"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/fst/fst_session.c",
+      "line": 773,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "global_sessions_list already dl_list_init()'d by fst_session_global_init(); write-only-outparam-adjacent blindness"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/fst/fst_session.c",
+      "line": 777,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "s = os_zalloc(...) is heap memory, not automatic storage; established DCL30-C local-var-vs-local-storage FP"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/fst/fst_session.c",
+      "line": 798,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "os_memcpy(a,addr,ETH_ALEN) writes through 'a', an alias into s->data.old/new_peer_addr; DCL13-C misses mutation through an aliased field pointer"
+    },
+    {
+      "rule": "DCL37-C",
+      "file": "src/fst/fst_session.c",
+      "line": 813,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "_s is a block-scope local inside fst_session_initiate_setup, not file-scope; established DCL37-C block-scope-misclassified FP"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/fst/fst_session.c",
+      "line": 985,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "fst_iface_get_name pure accessor pair; established EXP30-C FP"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1040,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "fst_iface_get_name pure accessor pair; established EXP30-C FP"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1065,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "fst_session_handle_action is only called with an already-non-NULL, checked 's' (caller guards 'if (s) {...}' at line 1218); internal-only-API convention"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1065,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "iface/mgmt always non-null at this internal FST dispatch call site; internal-only-API convention"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1065,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "iface/mgmt always non-null at this internal FST dispatch call site; internal-only-API convention"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1128,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "fst_session_get_group is a pure read-only getter on s; genuine low-value TP"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1134,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "fst_session_get_iface is a pure read-only getter on s; genuine low-value TP"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1140,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "fst_session_get_id is a pure read-only getter on s; genuine low-value TP"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1146,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "fst_session_get_peer_addr is a pure read-only getter on s; genuine low-value TP"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1152,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "fst_session_get_llt is a pure read-only getter on s; genuine low-value TP"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1158,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "fst_session_get_state is a pure read-only getter on s; genuine low-value TP"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1166,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Misparse cascade (foreach_fst_session(s) at line 1168)"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1168,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Misparse cascade"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1168,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Misparse cascade"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1169,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Misparse cascade"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1177,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "fst_session_enum's g is read-only (!g || s->group==g), plain helper not a vtable dispatch; genuine low-value TP"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1179,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Misparse cascade (foreach_fst_session(s) at line 1181)"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1181,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Misparse cascade; real fst_session_enum is void, claim of 'non-void function' itself is a further tell"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1181,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Misparse cascade"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1182,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Misparse cascade"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1183,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "clb is a fst_session_enum_clb function-pointer variable invoked as clb(...); established DCL31-C function-pointer-call-misfire FP"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1188,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "fst_session_on_action_rx's iface is the module's own frame-dispatch entry, never called with a null iface in practice; internal-only-API convention"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1228,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "ifname comes from ctrl_iface parsing, always non-null at call sites; internal-only-API convention"
+    },
+    {
+      "rule": "DCL00-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1231,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "g is initialized once and only read afterward; genuine const-qualification opportunity"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1248,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "mac comes from ctrl_iface parsing, always non-null at call sites; internal-only-API convention"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1252,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "'mac' is const char* passed as a pointer argument; no char-to-int widening occurs on this line at all -- category error"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1263,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "llt_str comes from ctrl_iface parsing, always non-null at call sites; internal-only-API convention"
+    },
+    {
+      "rule": "ERR33-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1266,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*endp||llt<0||(unsigned long)llt>FST_MAX_LLT_MS is a tight range check that also catches ERANGE overflow as a side effect; established endp+range-check strtol() FP sub-shape (41plus_b25 fst_priority/fst_llt precedent)"
+    },
+    {
+      "rule": "ERR00-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1266,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same tight-range-check FP sub-shape as ERR33-C above"
+    },
+    {
+      "rule": "ERR01-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1266,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same tight-range-check FP sub-shape as ERR33-C above"
+    },
+    {
+      "rule": "ERR30-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1266,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "errno is genuinely never reset before strtol(); range check doesn't substitute for the ERANGE guard, per established precedent"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1266,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "'llt_str' is const char* passed as a pointer argument to strtol(); no char widening on this line -- category error"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1266,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "No '*endp' dereference exists on this line at all (only '&endp' address-of); factually false claim"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1266,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "'endp' is char* whose address is taken (&endp); no char-to-int widening of endp itself occurs here -- category error"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1268,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "*endp is set via strtol()'s endptr out-param contract on the previous line; callee-sets-outparam blindness"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1268,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "strtol() always writes a valid pointer into *endptr; established endptr-never-null EXP34-C FP class"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1280,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "fst_session_global_on_iface_detached's iface is read-only (comparison only), plain helper; genuine low-value TP"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1282,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Misparse cascade (foreach_fst_session(s) at line 1284)"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1284,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Misparse cascade"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1284,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Misparse cascade"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1286,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Misparse cascade"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1293,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "fst_session_global_get_first_by_group's g is read-only (s->group==g), plain helper; genuine low-value TP"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1295,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Misparse cascade (foreach_fst_session(s) at line 1297)"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1297,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Misparse cascade"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1297,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Misparse cascade"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1298,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Misparse cascade"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1308,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "g is struct fst_group** written through via foreach_fst_group(*g) inside the function; const-qualifying it would break the write; genuine out-param mutation missed"
+    },
+    {
+      "rule": "ARR01-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1313,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*s) sizes the struct being memset, not a decayed-pointer sizeof; established ARR01-C correct-idiom FP"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1314,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "foreach_fst_group(*g){ misparsed as K&R nested function def; extends the established foreach_fst_group macro-loop misparse class (41plus_b143) to the *g dereference-argument shape"
+    },
+    {
+      "rule": "ENV01-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1354,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "No getenv/environment-variable code anywhere near additional_param; established ENV01-C wholesale misfire FP class"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1367,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "g is filled via get_group_fill_session(&g,&s)'s T** out-param write, not tracked by sqc; extends the callee-sets-outparam blindness family"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1367,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "Same out-param blindness as EXP33-C above"
+    },
+    {
+      "rule": "ENV01-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1407,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "No getenv/environment-variable code near 'response'; established ENV01-C wholesale misfire FP class"
+    },
+    {
+      "rule": "DCL37-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1408,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "_s is a block-scope local inside fst_test_req_send_fst_response, not file-scope; established DCL37-C FP"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1435,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "g filled via get_group_fill_session(&g,&s) T** out-param write, not tracked; out-param blindness"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1437,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "Same out-param blindness as above"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1492,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "g filled via get_group_fill_session(&g,&s) T** out-param write, not tracked; out-param blindness"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1492,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "Same out-param blindness as above"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1520,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "g filled via get_group_fill_session(&g,&s) T** out-param write, not tracked; out-param blindness"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1520,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "Same out-param blindness as above"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1543,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "get_group_fill_session is write-only through its T** param, never reads *g first; established EXP33-C write-only-outparam FP class"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1576,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "buf/buflen from internal ctrl_iface test dispatch, always non-null; internal-only-API convention"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1576,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "goto problem; targets a reachable label after the prior return; established MSC07-C/MSC37-C goto-target-label blindness class"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1576,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "request is a NUL-terminated string param; established API05-C idiom FP"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1576,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf+buflen idiom; established API05-C ptr+size_t FP"
+    },
+    {
+      "rule": "ENV01-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1579,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "No getenv/environment-variable code near 'ifname'; established ENV01-C wholesale misfire FP class"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1596,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpabuf_head/wpabuf_len pure-accessor pair; established EXP30-C FP class"
+    },
+    {
+      "rule": "MSC07-C",
+      "file": "src/fst/fst_session.c",
+      "line": 1599,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "'problem:' label is reached via goto at lines 1588/1592/1595; established MSC07-C goto-target-label-after-return blindness"
+    }
+  ],
+  "fns": [
+    {
+      "file": "src/fst/fst_session.c",
+      "line": 1322,
+      "rule": "EXP39-C",
+      "desc": "get_group_fill_session()'s old_iface = dl_list_entry(new_iface->group_lentry.next,...) yields a bogus non-NULL fst_iface* (pointing into the group's list-head sentinel, mistyped) when the group has exactly one iface; the following !old_iface NULL check doesn't catch it. CONFIG_FST_TEST-only, low severity.",
+      "upstream_present": "unknown"
+    }
+  ],
+  "files_clean_for_fn": [],
+  "summary": {
+    "tp": 22,
+    "fp": 95,
+    "fn": 1
+  }
+}

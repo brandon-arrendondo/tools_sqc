@@ -1,0 +1,1354 @@
+{
+ "wpa_supplicant/ctrl_iface.c#part1of11": [
+  {
+   "column": 1,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 78,
+   "message": "Function has pointer parameter without size argument: 'static int * freq_range_to_channel_list(struct wpa_supplicant *wpa_s,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'char *val' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 64,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 82,
+   "message": "Pointer parameter 'val' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *val'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 89,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'pos' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 64,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 119,
+   "message": "Pointer parameter 'val' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *val'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 134,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'end' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 139,
+   "message": "Variable 'pos' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 40,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 156,
+   "message": "Variable 'addr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'addr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 163,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'end' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 178,
+   "message": "Variable 'end' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 24,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 180,
+   "message": "Array/pointer 'ssid' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'ssid' after calling free(). Set pointer to NULL after freeing: free(ssid); ssid = NULL;"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 188,
+   "message": "Array/pointer 'ssid' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'ssid' after calling free(). Set pointer to NULL after freeing: free(ssid); ssid = NULL;"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 190,
+   "message": "Array/pointer 'ssid' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'ssid' after calling free(). Set pointer to NULL after freeing: free(ssid); ssid = NULL;"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 191,
+   "message": "Array/pointer 'ssid' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'ssid' after calling free(). Set pointer to NULL after freeing: free(ssid); ssid = NULL;"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 207,
+   "message": "Use-after-free: passing freed pointer 'bssid' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 217,
+   "message": "Use-after-free: accessing member of freed pointer 'wpa_s'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 30,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 217,
+   "message": "Use-after-free: accessing member of freed pointer 'wpa_s'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 220,
+   "message": "Use-after-free: accessing member of freed pointer 'wpa_s'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 224,
+   "message": "Use-after-free: passing freed pointer 'wpa_s' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 224,
+   "message": "Use-after-free: passing freed pointer 'wpa_s' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 31,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 224,
+   "message": "Use-after-free: accessing member of freed pointer 'wpa_s'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 225,
+   "message": "Use-after-free: passing freed pointer 'wpa_s' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 53,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 244,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 246,
+   "message": "Pointer to const assigned to non-const pointer without cast: *name = pos: '*name = pos'",
+   "rule_id": "EXP40-C",
+   "severity": "Low",
+   "suggestion": "Either remove const qualifier if the object should be modifiable, or use explicit casts to show intentional const removal"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 251,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 253,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 253,
+   "message": "Signed integer increment 'pos++' may overflow at INT_MAX",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking before increment/decrement"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 255,
+   "message": "Variable 'len' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 259,
+   "message": "Dereference of uninitialized pointer 'blob'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'blob' before dereferencing"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 290,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 290,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 18,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 380,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 18,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 380,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 16,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 400,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 16,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 400,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 454,
+   "message": "Value assigned to 'dso' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 471,
+   "message": "Use of 'sscanf()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace sscanf() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 471,
+   "message": "Type mismatch in sscanf(): format specifier '%d' expects Integer but argument 1 ('\"%d %d %d %d %d\"') is Pointer",
+   "rule_id": "FIO47-C",
+   "severity": "High",
+   "suggestion": "Ensure format specifiers match argument types"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 471,
+   "message": "Input function 'sscanf' used for integer conversion without errno check for ERANGE",
+   "rule_id": "INT05-C",
+   "severity": "Medium",
+   "suggestion": "Either use fgets() + strtol/strtoll() for safe conversion, or check errno for ERANGE after scanf"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 471,
+   "message": "'sscanf' is deprecated/obsolescent -- prefer sscanf_s()",
+   "rule_id": "MSC24-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'sscanf' with sscanf_s()"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 471,
+   "message": "Do not cast away const qualification: 'pos'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 511,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 511,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 514,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 514,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 16,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 517,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 16,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 517,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 20,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 520,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 20,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 520,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 536,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 536,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 539,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'value' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 546,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 546,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 549,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'value' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 555,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 555,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 558,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'value' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 30,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 563,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 30,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 563,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 567,
+   "message": "Return value of 'strtol' assigned to 'val' but not checked for errors: 'strtol(value, NULL, 0)' - Sets errno on overflow/underflow, uses endptr for parsing errors",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check errno and endptr: errno = 0; val = strtol(str, &endptr, base); if (errno != 0 || endptr == str) handle_error();"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 567,
+   "message": "Return value from strtol() should be checked for errors",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Check if strtol() returned an error value (NULL, -1, etc.)"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 567,
+   "message": "In-band function 'strtol' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+   "rule_id": "ERR30-C",
+   "severity": "Medium",
+   "suggestion": "Set errno before call: 'errno = 0; val = strtol(...); if (errno == ERANGE) { ... }'"
+  },
+  {
+   "column": 27,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 580,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 27,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 580,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 24,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 584,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 24,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 584,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 591,
+   "message": "Return value of 'strtol' assigned to 'wps_force_auth_types' but not checked for errors: 'strtol(value, NULL, 0)' - Sets errno on overflow/underflow, uses endptr for parsing errors",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check errno and endptr: errno = 0; val = strtol(str, &endptr, base); if (errno != 0 || endptr == str) handle_error();"
+  },
+  {
+   "column": 27,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 591,
+   "message": "Return value from strtol() should be checked for errors",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Check if strtol() returned an error value (NULL, -1, etc.)"
+  },
+  {
+   "column": 27,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 591,
+   "message": "In-band function 'strtol' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+   "rule_id": "ERR30-C",
+   "severity": "Medium",
+   "suggestion": "Set errno before call: 'errno = 0; val = strtol(...); if (errno == ERANGE) { ... }'"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 598,
+   "message": "Return value of 'strtol' assigned to 'wps_force_encr_types' but not checked for errors: 'strtol(value, NULL, 0)' - Sets errno on overflow/underflow, uses endptr for parsing errors",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check errno and endptr: errno = 0; val = strtol(str, &endptr, base); if (errno != 0 || endptr == str) handle_error();"
+  },
+  {
+   "column": 27,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 598,
+   "message": "Return value from strtol() should be checked for errors",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Check if strtol() returned an error value (NULL, -1, etc.)"
+  },
+  {
+   "column": 27,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 598,
+   "message": "In-band function 'strtol' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+   "rule_id": "ERR30-C",
+   "severity": "Medium",
+   "suggestion": "Set errno before call: 'errno = 0; val = strtol(...); if (errno == ERANGE) { ... }'"
+  },
+  {
+   "column": 28,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 603,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 28,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 603,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 608,
+   "message": "Return value of 'strtol' assigned to 'tdls_testing' but not checked for errors: 'strtol(value, NULL, 0)' - Sets errno on overflow/underflow, uses endptr for parsing errors",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check errno and endptr: errno = 0; val = strtol(str, &endptr, base); if (errno != 0 || endptr == str) handle_error();"
+  },
+  {
+   "column": 18,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 608,
+   "message": "Return value from strtol() should be checked for errors",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Check if strtol() returned an error value (NULL, -1, etc.)"
+  },
+  {
+   "column": 18,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 608,
+   "message": "In-band function 'strtol' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+   "rule_id": "ERR30-C",
+   "severity": "Medium",
+   "suggestion": "Set errno before call: 'errno = 0; val = strtol(...); if (errno == ERANGE) { ... }'"
+  },
+  {
+   "column": 18,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 612,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 18,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 612,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 617,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 18,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 624,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 18,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 624,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 627,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 636,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 636,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 641,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 641,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 646,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 646,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 651,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 651,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 42,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 666,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 42,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 666,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 669,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 669,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 28,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 680,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 28,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 680,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 31,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 689,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 31,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 689,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 32,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 691,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 32,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 691,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 31,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 693,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 31,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 693,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 31,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 695,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 31,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 695,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 32,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 697,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 32,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 697,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 709,
+   "message": "Unsigned integer multiplication '2 * sizeof(dpp_pkex_ephemeral_key_override)' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (a > UINT_MAX / b) { /* handle error */ }"
+  },
+  {
+   "column": 17,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 719,
+   "message": "Unsigned integer multiplication '2 * sizeof(dpp_protocol_key_override)' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (a > UINT_MAX / b) { /* handle error */ }"
+  },
+  {
+   "column": 17,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 729,
+   "message": "Unsigned integer multiplication '2 * sizeof(dpp_nonce_override)' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (a > UINT_MAX / b) { /* handle error */ }"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 736,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 736,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 38,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 741,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 38,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 741,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 33,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 743,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 33,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 743,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 752,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 752,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 755,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 755,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 757,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 757,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 25,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 759,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 25,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 759,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 32,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 761,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 32,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 761,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 31,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 763,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 31,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 763,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 36,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 765,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 36,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 765,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 31,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 769,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 31,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 769,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 34,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 771,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 34,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 771,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 781,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 781,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 795,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 795,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 36,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 797,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 36,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 797,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 42,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 799,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 42,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 799,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 43,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 801,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 43,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 801,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 39,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 803,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 39,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 803,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 39,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 808,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 39,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 808,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 41,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 813,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 41,
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 813,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  }
+ ]
+}

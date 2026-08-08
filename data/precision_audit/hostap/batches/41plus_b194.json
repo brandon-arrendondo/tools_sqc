@@ -1,0 +1,886 @@
+{
+ "src/drivers/driver_macsec_linux.c": [
+  {
+   "column": 3,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 114,
+   "message": "Potential memory leak: 'msg' allocated with 'nlmsg_alloc' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'msg' is freed before this goto or at the target label"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 119,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 121,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 127,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 140,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 149,
+   "message": "Memory allocated with 'nl_socket_alloc' for variable 'ctx->sk' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(ctx->sk)' before the variable goes out of scope"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 158,
+   "message": "Potential memory leak: 'ctx->sk' allocated with 'nl_socket_alloc' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'ctx->sk' is freed before this goto or at the target label"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 164,
+   "message": "Potential memory leak: 'ctx->sk' allocated with 'nl_socket_alloc' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'ctx->sk' is freed before this goto or at the target label"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 173,
+   "message": "Memory leak: 'ctx->sk' allocated with 'nl_socket_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'ctx->sk' before this return statement"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 175,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 178,
+   "message": "Memory leak: 'ctx->sk' allocated with 'nl_socket_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'ctx->sk' before this return statement"
+  },
+  {
+   "column": 30,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 193,
+   "message": "Memory allocated with 'rtnl_link_alloc' for variable 'change' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(change)' before the variable goes out of scope"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 266,
+   "message": "Memory leak: 'change' allocated with 'rtnl_link_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'change' before this return statement"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 293,
+   "message": "Potential memory leak: 'sk' allocated with 'nl_socket_alloc' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'sk' is freed before this goto or at the target label"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 299,
+   "message": "Potential memory leak: 'sk' allocated with 'nl_socket_alloc' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'sk' is freed before this goto or at the target label"
+  },
+  {
+   "column": 25,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 317,
+   "message": "Dereference of uninitialized pointer 'drv'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'drv' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 326,
+   "message": "Function returns pointer to local variable 'drv' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 73,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 330,
+   "message": "Pointer parameter 'params' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *params'"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 337,
+   "message": "Memory allocated with 'nl_socket_alloc' for variable 'drv->sk' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(drv->sk)' before the variable goes out of scope"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 372,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 43,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 403,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 486,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 547,
+   "message": "Shared variable 'sa_policy' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 547,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 554,
+   "message": "Shared variable 'sc_policy' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 554,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 560,
+   "message": "Shared variable 'main_policy' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 560,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 51,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 567,
+   "message": "Pointer parameter 'argp' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argp'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 570,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 578,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 18,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 578,
+   "message": "Variable 'tb_msg' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb_msg' before use, e.g., at its declaration"
+  },
+  {
+   "column": 9,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 591,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 596,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 27,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 598,
+   "message": "Variable 'tb' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb' before use, e.g., at its declaration"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 623,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 5,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 638,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 28,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 640,
+   "message": "Variable 'tb_sa' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb_sa' before use, e.g., at its declaration"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 713,
+   "message": "Potential memory leak: 'msg' allocated with 'nlmsg_alloc' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'msg' is freed before this goto or at the target label"
+  },
+  {
+   "column": 50,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 758,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 49,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 825,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 75,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 825,
+   "message": "Pointer parameter 'sa' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sa'"
+  },
+  {
+   "column": 46,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 875,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 46,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 915,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 46,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 951,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 967,
+   "message": "sizeof applied to pointer/array parameter 'sa' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(sa->pkey->key_identifier)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 40,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 968,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"SA key\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 37,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 985,
+   "message": "sizeof applied to pointer/array parameter 'sa' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(sa->pkey->key_identifier)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 46,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1010,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 46,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1091,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 47,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1111,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 11,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1131,
+   "message": "Memory allocated with 'rtnl_link_macsec_alloc' for variable 'needle' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(needle)' before the variable goes out of scope"
+  },
+  {
+   "column": 9,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1175,
+   "message": "Memory allocated with 'rtnl_link_macsec_alloc' for variable 'link' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(link)' before the variable goes out of scope"
+  },
+  {
+   "column": 9,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1199,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1203,
+   "message": "Memory leak: 'link' allocated with 'rtnl_link_macsec_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'link' before this return statement"
+  },
+  {
+   "column": 14,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1223,
+   "message": "Memory allocated with 'rtnl_link_macsec_alloc' for variable 'drv->link' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(drv->link)' before the variable goes out of scope"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1226,
+   "message": "Memory leak: 'link' allocated with 'rtnl_link_macsec_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'link' before this return statement"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1233,
+   "message": "Memory leak: 'drv->link' allocated with 'rtnl_link_macsec_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'drv->link' before this return statement"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1233,
+   "message": "Memory leak: 'link' allocated with 'rtnl_link_macsec_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'link' before this return statement"
+  },
+  {
+   "column": 73,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1243,
+   "message": "Pointer parameter 'sc' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sc'"
+  },
+  {
+   "column": 47,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1278,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1293,
+   "message": "sizeof applied to pointer/array parameter 'sa' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(sa->pkey->key_identifier)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 40,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1294,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"SA key\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 37,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1307,
+   "message": "sizeof applied to pointer/array parameter 'sa' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(sa->pkey->key_identifier)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 47,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1333,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 73,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1333,
+   "message": "Pointer parameter 'sa' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sa'"
+  },
+  {
+   "column": 48,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1438,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 74,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1438,
+   "message": "Pointer parameter 'sa' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sa'"
+  },
+  {
+   "column": 35,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1451,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 35,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1451,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 47,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1451,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 47,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1451,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 41,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1477,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 61,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1477,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 61,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1477,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 68,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1517,
+   "message": "Pointer parameter 'sock_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sock_ctx'"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1525,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1525,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1535,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1544,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1544,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1556,
+   "message": "Structure 'ifr' passed to trust boundary function 'ioctl' may leak padding bytes. Use packed attributes, explicit padding fields, or serialize fields individually.",
+   "rule_id": "DCL39-C",
+   "severity": "Medium",
+   "suggestion": "Use __attribute__((__packed__)) or serialize fields: copy_to_user(buf, &ifr.a, sizeof(ifr.a)); ..."
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1558,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1558,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1568,
+   "message": "Privileged operation 'bind' without subsequent privilege dropping",
+   "rule_id": "POS02-C",
+   "severity": "Medium",
+   "suggestion": "Call setuid/setgid to drop privileges after setup"
+  },
+  {
+   "column": 37,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1570,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 37,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1570,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1584,
+   "message": "Structure 'ifr' passed to trust boundary function 'ioctl' may leak padding bytes. Use packed attributes, explicit padding fields, or serialize fields individually.",
+   "rule_id": "DCL39-C",
+   "severity": "Medium",
+   "suggestion": "Use __attribute__((__packed__)) or serialize fields: copy_to_user(buf, &ifr.a, sizeof(ifr.a)); ..."
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1586,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1586,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1626,
+   "message": "Function returns pointer to local variable 'drv' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 39,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1643,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 39,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1643,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 15,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1653,
+   "message": "Dereference of uninitialized pointer 'hdr'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'hdr' before dereferencing"
+  },
+  {
+   "column": 38,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1676,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 38,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1676,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1683,
+   "message": "Variable 'wpa_driver_macsec_linux_ops' should be declared static if it doesn't need external linkage",
+   "rule_id": "DCL15-C",
+   "severity": "Low",
+   "suggestion": "Add 'static' storage-class specifier"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1683,
+   "message": "File-scope variable should have minimal scope. Consider making it static within a function or limiting its scope.",
+   "rule_id": "DCL19-C",
+   "severity": "Low",
+   "suggestion": "Move variable to the smallest scope where it's used, or make it static inside a function"
+  }
+ ]
+}

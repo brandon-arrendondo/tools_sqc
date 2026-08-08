@@ -1,0 +1,1354 @@
+{
+ "src/utils/edit.c": [
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 19,
+   "message": "Shared variable 'cmdbuf_pos' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 20,
+   "message": "Shared variable 'cmdbuf_len' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 22,
+   "message": "Shared variable 'currbuf_valid' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/edit.c",
+   "line": 29,
+   "message": "Flexible array member should use [] not [1]",
+   "rule_id": "DCL38-C",
+   "severity": "Medium",
+   "suggestion": "Use int data[]; syntax"
+  },
+  {
+   "column": 7,
+   "file": "src/utils/edit.c",
+   "line": 29,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 36,
+   "message": "Function has pointer parameter without size argument: 'static void (*edit_cmd_cb)(void *ctx, char *cmd);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'char *cmd' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 38,
+   "message": "Shared variable 'edit_completion_cb' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 13,
+   "file": "src/utils/edit.c",
+   "line": 38,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 47,
+   "message": "Function 'edit_clear_line' performs compound operation on shared static variables (cmdbuf_len, ps2) without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 58,
+   "file": "src/utils/edit.c",
+   "line": 51,
+   "message": "Passing null pointer 'ps2' to 'os_strlen' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'ps2' is not NULL before passing to 'os_strlen'"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 70,
+   "message": "Function 'move_left' performs compound operation on shared static variable 'cmdbuf_pos' without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 79,
+   "message": "Function 'move_right' performs compound operation on shared static variables (cmdbuf_len, cmdbuf_pos) without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 88,
+   "message": "Function 'move_word_left' performs compound operation on shared static variable 'cmdbuf_pos' without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 27,
+   "file": "src/utils/edit.c",
+   "line": 90,
+   "message": "Reading from 'cmdbuf' which may contain uninitialized data",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize the contents of 'cmdbuf' before reading"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 98,
+   "message": "Function 'move_word_right' performs compound operation on shared static variables (cmdbuf_len, cmdbuf_pos) without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 36,
+   "file": "src/utils/edit.c",
+   "line": 100,
+   "message": "Potentially unsafe array access with variable index 'cmdbuf_pos': Buffer 'cmdbuf' with size 4096 (allocated at line 18)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 36,
+   "file": "src/utils/edit.c",
+   "line": 100,
+   "message": "Reading from 'cmdbuf' which may contain uninitialized data",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize the contents of 'cmdbuf' before reading"
+  },
+  {
+   "column": 36,
+   "file": "src/utils/edit.c",
+   "line": 102,
+   "message": "Potentially unsafe array access with variable index 'cmdbuf_pos': Buffer 'cmdbuf' with size 4096 (allocated at line 18)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 108,
+   "message": "Function 'delete_left' performs compound operation on shared static variables (cmdbuf_len, cmdbuf_pos) without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 122,
+   "message": "Function 'delete_current' performs compound operation on shared static variables (cmdbuf_len, cmdbuf_pos) without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 135,
+   "message": "Function 'delete_word' performs compound operation on shared static variables (cmdbuf_len, cmdbuf_pos) without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 20,
+   "file": "src/utils/edit.c",
+   "line": 141,
+   "message": "Reading from 'cmdbuf' which may contain uninitialized data",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize the contents of 'cmdbuf' before reading"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/edit.c",
+   "line": 144,
+   "message": "Signed integer decrement 'pos--' may overflow at INT_MIN",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking before increment/decrement"
+  },
+  {
+   "column": 13,
+   "file": "src/utils/edit.c",
+   "line": 145,
+   "message": "Signed integer addition 'cmdbuf + pos' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 146,
+   "message": "Value assigned to 'cmdbuf_len' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 16,
+   "file": "src/utils/edit.c",
+   "line": 146,
+   "message": "Signed integer subtraction 'cmdbuf_pos - pos' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b < 0 && a > INT_MAX + b) || (b > 0 && a < INT_MIN + b)) { /* handle error */ }"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 147,
+   "message": "Value assigned to 'cmdbuf_pos' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 152,
+   "message": "Function 'clear_left' performs compound operation on shared static variables (cmdbuf_len, cmdbuf_pos) without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 159,
+   "message": "Value assigned to 'cmdbuf_len' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 160,
+   "message": "Value assigned to 'cmdbuf_pos' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 165,
+   "message": "Function 'clear_right' performs compound operation on shared static variables (cmdbuf_len, cmdbuf_pos) without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 171,
+   "message": "Value assigned to 'cmdbuf_len' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 178,
+   "message": "Value assigned to 'last' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 186,
+   "message": "Value assigned to 'match' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/edit.c",
+   "line": 196,
+   "message": "Local variable 'h' assigned to global/static variable 'history_curr' - creates dangling pointer",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage for local variable or copy data instead of assigning pointer"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/edit.c",
+   "line": 196,
+   "message": "Stack pointer escape: local array/VLA assigned to global 'history_curr'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not save pointers to stack-allocated memory in global variables."
+  },
+  {
+   "column": 2,
+   "file": "src/utils/edit.c",
+   "line": 211,
+   "message": "Local variable 'h' assigned to global/static variable 'history_curr' - creates dangling pointer",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage for local variable or copy data instead of assigning pointer"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/edit.c",
+   "line": 211,
+   "message": "Stack pointer escape: local array/VLA assigned to global 'history_curr'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not save pointers to stack-allocated memory in global variables."
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 215,
+   "message": "Function 'history_use' performs compound operation on shared static variables (cmdbuf_len, cmdbuf_pos) without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 38,
+   "file": "src/utils/edit.c",
+   "line": 218,
+   "message": "Static variable 'history_curr' used without explicit initialization",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'history_curr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 38,
+   "file": "src/utils/edit.c",
+   "line": 218,
+   "message": "Potential null pointer dereference in member access of variable 'history_curr'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'history_curr' is not NULL before member access"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/edit.c",
+   "line": 226,
+   "message": "Static variable 'history_curr' used without explicit initialization",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'history_curr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 4,
+   "file": "src/utils/edit.c",
+   "line": 232,
+   "message": "Potentially unsafe array access with variable index 'cmdbuf_len': Buffer 'cmdbuf' with size 4096 (allocated at line 18)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 234,
+   "message": "Value assigned to 'currbuf_valid' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 244,
+   "message": "Value assigned to 'history_curr' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 250,
+   "message": "Function 'history_next' performs compound operation on shared static variables (cmdbuf_len, cmdbuf_pos, currbuf_valid, history_list) without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/edit.c",
+   "line": 252,
+   "message": "Static variable 'history_curr' used without explicit initialization",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'history_curr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 256,
+   "message": "Value assigned to 'currbuf_valid' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 265,
+   "message": "Value assigned to 'history_curr' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/edit.c",
+   "line": 276,
+   "message": "File opened for reading using variable filename 'fname' without verifying file attributes (fstat + st_uid/st_gid check)",
+   "rule_id": "FIO05-C",
+   "severity": "Medium",
+   "suggestion": "Use fstat() to check file ownership (st_uid, st_gid) before reading untrusted files"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/edit.c",
+   "line": 276,
+   "message": "fopen() called without 'N' flag in mode string \"r\". On Windows, file handles are inheritable by default unless the 'N' flag is specified.",
+   "rule_id": "WIN03-C",
+   "severity": "High",
+   "suggestion": "Add 'N' flag to the mode string (e.g., \"rwN\") to disable handle inheritance on Windows."
+  },
+  {
+   "column": 2,
+   "file": "src/utils/edit.c",
+   "line": 280,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'pos' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/edit.c",
+   "line": 280,
+   "message": "fgets() without truncation check. Input may be silently truncated.",
+   "rule_id": "FIO20-C",
+   "severity": "Medium",
+   "suggestion": "Check for newline character to detect truncation: if (strchr(buf, '\\n') == NULL) { /* handle truncation */ }"
+  },
+  {
+   "column": 33,
+   "file": "src/utils/edit.c",
+   "line": 280,
+   "message": "Do not cast away const qualification: 'f'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 8,
+   "file": "src/utils/edit.c",
+   "line": 281,
+   "message": "Local variable 'buf' assigned to global/static variable 'pos' - creates dangling pointer",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage for local variable or copy data instead of assigning pointer"
+  },
+  {
+   "column": 5,
+   "file": "src/utils/edit.c",
+   "line": 283,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/edit.c",
+   "line": 290,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/edit.c",
+   "line": 290,
+   "message": "Return value of 'fclose' ignored: 'fclose(f)' - Returns non-zero on error",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (fclose(file) != 0) for close errors"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/edit.c",
+   "line": 300,
+   "message": "fopen() with mode \"w\" does not guarantee exclusive file creation. Use \"wx\" or \"w+x\" mode for exclusive creation.",
+   "rule_id": "FIO03-C",
+   "severity": "Medium",
+   "suggestion": "Use fopen() with \"wx\" or \"w+x\" mode for C11, or use open() with O_CREAT|O_EXCL for POSIX"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/edit.c",
+   "line": 300,
+   "message": "File reopened using filename 'fname' without verifying file attributes (st_dev, st_ino)",
+   "rule_id": "FIO05-C",
+   "severity": "Medium",
+   "suggestion": "Use fstat() to check st_dev and st_ino before and after reopening, or avoid closing and reopening the file"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/edit.c",
+   "line": 300,
+   "message": "fopen() cannot explicitly specify file permissions; use open() for security-sensitive files",
+   "rule_id": "FIO06-C",
+   "severity": "Medium",
+   "suggestion": "Use open(filename, O_CREAT | O_WRONLY, mode) to explicitly specify file permissions"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/edit.c",
+   "line": 300,
+   "message": "fopen() called without 'N' flag in mode string \"w\". On Windows, file handles are inheritable by default unless the 'N' flag is specified.",
+   "rule_id": "WIN03-C",
+   "severity": "High",
+   "suggestion": "Add 'N' flag to the mode string (e.g., \"rwN\") to disable handle inheritance on Windows."
+  },
+  {
+   "column": 20,
+   "file": "src/utils/edit.c",
+   "line": 305,
+   "message": "Function 'filter_cb' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 30,
+   "file": "src/utils/edit.c",
+   "line": 305,
+   "message": "Static variable 'edit_cb_ctx' used without explicit initialization",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'edit_cb_ctx' before use, e.g., at its declaration"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/edit.c",
+   "line": 310,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/edit.c",
+   "line": 310,
+   "message": "Return value of 'fclose' ignored: 'fclose(f)' - Returns non-zero on error",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (fclose(file) != 0) for close errors"
+  },
+  {
+   "column": 25,
+   "file": "src/utils/edit.c",
+   "line": 320,
+   "message": "Static variable 'history_curr' used without explicit initialization",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'history_curr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/edit.c",
+   "line": 322,
+   "message": "Type mismatch in printf(): format specifier '%s' expects Pointer but argument 1 ('currbuf') is Integer",
+   "rule_id": "FIO47-C",
+   "severity": "High",
+   "suggestion": "Ensure format specifiers match argument types"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 327,
+   "message": "Function 'insert_char' performs compound operation on shared static variables (cmdbuf_len, cmdbuf_pos) without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/edit.c",
+   "line": 335,
+   "message": "Return value of 'fflush' ignored: 'fflush(stdout)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 346,
+   "message": "Function 'process_cmd' performs compound operation on shared static variables (cmdbuf_len, cmdbuf_pos, currbuf_valid, ps2) without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/edit.c",
+   "line": 351,
+   "message": "Return value of 'fflush' ignored: 'fflush(stdout)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 358,
+   "message": "Value assigned to 'cmdbuf_len' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/edit.c",
+   "line": 359,
+   "message": "Function 'edit_cmd_cb' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/edit.c",
+   "line": 361,
+   "message": "Return value of 'fflush' ignored: 'fflush(stdout)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  },
+  {
+   "column": 5,
+   "file": "src/utils/edit.c",
+   "line": 368,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 32,
+   "file": "src/utils/edit.c",
+   "line": 376,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 42,
+   "file": "src/utils/edit.c",
+   "line": 376,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 35,
+   "file": "src/utils/edit.c",
+   "line": 406,
+   "message": "Pointer parameter 'c' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *c'"
+  },
+  {
+   "column": 25,
+   "file": "src/utils/edit.c",
+   "line": 412,
+   "message": "'c' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 31,
+   "file": "src/utils/edit.c",
+   "line": 412,
+   "message": "'c' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 426,
+   "message": "Function 'complete' performs compound operation on shared static variables (cmdbuf_len, cmdbuf_pos, edit_completion_cb) without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/edit.c",
+   "line": 436,
+   "message": "Potentially unsafe array access with variable index 'cmdbuf_len': Buffer 'cmdbuf' with size 4096 (allocated at line 18)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 6,
+   "file": "src/utils/edit.c",
+   "line": 437,
+   "message": "Function 'edit_completion_cb' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 25,
+   "file": "src/utils/edit.c",
+   "line": 437,
+   "message": "Static variable 'edit_cb_ctx' used without explicit initialization",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'edit_cb_ctx' before use, e.g., at its declaration"
+  },
+  {
+   "column": 29,
+   "file": "src/utils/edit.c",
+   "line": 447,
+   "message": "Potentially unsafe array access with variable index 'start': Buffer 'cmdbuf' with size 4096 (allocated at line 18)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 6,
+   "file": "src/utils/edit.c",
+   "line": 454,
+   "message": "Pointer comparison '<=' between pointers from different arrays: 'room' and 'cmdbuf_pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before comparison"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 480,
+   "message": "Value assigned to 'cmdbuf_pos' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 481,
+   "message": "Value assigned to 'cmdbuf_len' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/edit.c",
+   "line": 556,
+   "message": "Type mismatch in printf(): format specifier '%s' expects Pointer but argument 1 ('esc_buf') is Integer",
+   "rule_id": "FIO47-C",
+   "severity": "High",
+   "suggestion": "Ensure format specifiers match argument types"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/edit.c",
+   "line": 556,
+   "message": "Type mismatch in printf(): format specifier '%c' expects Integer but argument 2 ('c') is Pointer",
+   "rule_id": "FIO47-C",
+   "severity": "High",
+   "suggestion": "Ensure format specifiers match argument types"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/edit.c",
+   "line": 556,
+   "message": "Format specifier '%c' does not match variable type 'int' - violates data model assumptions",
+   "rule_id": "INT00-C",
+   "severity": "Medium",
+   "suggestion": "Use correct format specifier or verify data model assumptions with static assertions"
+  },
+  {
+   "column": 53,
+   "file": "src/utils/edit.c",
+   "line": 556,
+   "message": "Type mismatch in variadic function call: format specifier '%c' expects int but argument 2 is char*",
+   "rule_id": "DCL11-C",
+   "severity": "High",
+   "suggestion": "Use correct format specifier for char* or cast argument to int"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/edit.c",
+   "line": 668,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  },
+  {
+   "column": 10,
+   "file": "src/utils/edit.c",
+   "line": 734,
+   "message": "Pointer dereference '*pos' (char type) assigned to larger type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment: (unsigned char)*ptr"
+  },
+  {
+   "column": 10,
+   "file": "src/utils/edit.c",
+   "line": 734,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 12,
+   "file": "src/utils/edit.c",
+   "line": 737,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 12,
+   "file": "src/utils/edit.c",
+   "line": 737,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 13,
+   "file": "src/utils/edit.c",
+   "line": 740,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 13,
+   "file": "src/utils/edit.c",
+   "line": 740,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 7,
+   "file": "src/utils/edit.c",
+   "line": 745,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 758,
+   "message": "Function 'edit_read_key' performs compound operation on shared static variable 'esc' without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 16,
+   "file": "src/utils/edit.c",
+   "line": 761,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/edit.c",
+   "line": 763,
+   "message": "Shared variable 'esc' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 776,
+   "message": "Value assigned to 'esc' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 792,
+   "message": "Value assigned to 'esc' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 20,
+   "file": "src/utils/edit.c",
+   "line": 802,
+   "message": "Ordering comparison '>=' on character 'A' is non-portable; only digit characters have guaranteed ordering",
+   "rule_id": "STR09-C",
+   "severity": "Low",
+   "suggestion": "Use == and != for non-digit characters, or use <ctype.h> functions"
+  },
+  {
+   "column": 32,
+   "file": "src/utils/edit.c",
+   "line": 802,
+   "message": "Ordering comparison '<=' on character 'Z' is non-portable; only digit characters have guaranteed ordering",
+   "rule_id": "STR09-C",
+   "severity": "Low",
+   "suggestion": "Use == and != for non-digit characters, or use <ctype.h> functions"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 803,
+   "message": "Value assigned to 'esc' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 808,
+   "message": "Value assigned to 'esc' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 854,
+   "message": "Value assigned to 'esc' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/edit.c",
+   "line": 892,
+   "message": "Type mismatch in printf(): format specifier '%s' expects Pointer but argument 1 ('search_buf') is Integer",
+   "rule_id": "FIO47-C",
+   "severity": "High",
+   "suggestion": "Ensure format specifiers match argument types"
+  },
+  {
+   "column": 8,
+   "file": "src/utils/edit.c",
+   "line": 892,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/edit.c",
+   "line": 893,
+   "message": "Static variable 'search_buf' used without explicit initialization",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'search_buf' before use, e.g., at its declaration"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/edit.c",
+   "line": 894,
+   "message": "Type mismatch in printf(): format specifier '%s' expects Pointer but argument 1 ('search_buf') is Integer",
+   "rule_id": "FIO47-C",
+   "severity": "High",
+   "suggestion": "Ensure format specifiers match argument types"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/edit.c",
+   "line": 895,
+   "message": "Return value of 'fflush' ignored: 'fflush(stdout)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 915,
+   "message": "Function 'search_stop' performs compound operation on shared static variables (cmdbuf_len, cmdbuf_pos) without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 949,
+   "message": "Function 'search_next' performs compound operation on shared static variable 'search_skip' without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/edit.c",
+   "line": 963,
+   "message": "Potentially unsafe array access with variable index 'len': Buffer 'search_buf' with size 21 (allocated at line 864)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 1004,
+   "message": "Function 'edit_read_char' performs compound operation on shared static variables (cmdbuf_len, last_tab, search) without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 43,
+   "file": "src/utils/edit.c",
+   "line": 1004,
+   "message": "Pointer parameter 'eloop_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *eloop_ctx'"
+  },
+  {
+   "column": 60,
+   "file": "src/utils/edit.c",
+   "line": 1004,
+   "message": "Pointer parameter 'sock_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sock_ctx'"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/edit.c",
+   "line": 1006,
+   "message": "Shared variable 'last_tab' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/edit.c",
+   "line": 1007,
+   "message": "Shared variable 'search' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 1016,
+   "message": "Value assigned to 'search' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/edit.c",
+   "line": 1028,
+   "message": "Function 'edit_eof_cb' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 15,
+   "file": "src/utils/edit.c",
+   "line": 1028,
+   "message": "Static variable 'edit_cb_ctx' used without explicit initialization",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'edit_cb_ctx' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 1032,
+   "message": "Value assigned to 'last_tab' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/edit.c",
+   "line": 1075,
+   "message": "Function 'edit_eof_cb' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 1096,
+   "message": "Value assigned to 'search' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 1113,
+   "message": "Function 'edit_init' does not validate pointer parameter 'cmd_cb' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cmd_cb' at the start of the function, e.g., 'if (!cmd_cb) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 1113,
+   "message": "Function 'edit_init' does not validate pointer parameter 'eof_cb' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'eof_cb' at the start of the function, e.g., 'if (!eof_cb) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 1113,
+   "message": "Function 'edit_init' does not validate pointer parameter 'completion_cb' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'completion_cb' at the start of the function, e.g., 'if (!completion_cb) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 1113,
+   "message": "Function 'edit_init' does not validate pointer parameter 'ps' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ps' at the start of the function, e.g., 'if (!ps) { return error_code; }'"
+  },
+  {
+   "column": 13,
+   "file": "src/utils/edit.c",
+   "line": 1115,
+   "message": "Pointer parameter 'completion_cb' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *completion_cb'"
+  },
+  {
+   "column": 13,
+   "file": "src/utils/edit.c",
+   "line": 1116,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/edit.c",
+   "line": 1129,
+   "message": "Function 'tcgetattr' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/edit.c",
+   "line": 1132,
+   "message": "Function 'tcsetattr' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/edit.c",
+   "line": 1138,
+   "message": "Return value of 'fflush' ignored: 'fflush(stdout)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  },
+  {
+   "column": 16,
+   "file": "src/utils/edit.c",
+   "line": 1151,
+   "message": "Potential null pointer dereference in member access of variable 'h'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'h' is not NULL before member access"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/edit.c",
+   "line": 1156,
+   "message": "Return value of 'fflush' ignored: 'fflush(stdout)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/edit.c",
+   "line": 1158,
+   "message": "Function 'tcsetattr' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.c",
+   "line": 1162,
+   "message": "Function 'edit_redraw' performs compound operation on shared static variables (cmdbuf_len, cmdbuf_pos, ps2) without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/edit.c",
+   "line": 1165,
+   "message": "Potentially unsafe array access with variable index 'cmdbuf_len': Buffer 'cmdbuf' with size 4096 (allocated at line 18)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 2,
+   "file": "src/utils/edit.c",
+   "line": 1166,
+   "message": "Type mismatch in printf(): format specifier '%s' expects Pointer but argument 2 ('cmdbuf') is Integer",
+   "rule_id": "FIO47-C",
+   "severity": "High",
+   "suggestion": "Ensure format specifiers match argument types"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/edit.c",
+   "line": 1168,
+   "message": "Potentially unsafe array access with variable index 'cmdbuf_pos': Buffer 'cmdbuf' with size 4096 (allocated at line 18)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 3,
+   "file": "src/utils/edit.c",
+   "line": 1169,
+   "message": "Potentially unsafe array access with variable index 'cmdbuf_pos': Buffer 'cmdbuf' with size 4096 (allocated at line 18)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 3,
+   "file": "src/utils/edit.c",
+   "line": 1170,
+   "message": "Type mismatch in printf(): format specifier '%s' expects Pointer but argument 2 ('cmdbuf') is Integer",
+   "rule_id": "FIO47-C",
+   "severity": "High",
+   "suggestion": "Ensure format specifiers match argument types"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/edit.c",
+   "line": 1171,
+   "message": "Potentially unsafe array access with variable index 'cmdbuf_pos': Buffer 'cmdbuf' with size 4096 (allocated at line 18)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 2,
+   "file": "src/utils/edit.c",
+   "line": 1173,
+   "message": "Return value of 'fflush' ignored: 'fflush(stdout)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  }
+ ]
+}

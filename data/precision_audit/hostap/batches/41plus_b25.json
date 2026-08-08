@@ -1,0 +1,1354 @@
+{
+ "hostapd/config_file.c#part6of7": [
+  {
+   "column": 24,
+   "file": "hostapd/config_file.c",
+   "line": 4213,
+   "message": "Return value from strtol() should be checked for errors",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Check if strtol() returned an error value (NULL, -1, etc.)"
+  },
+  {
+   "column": 24,
+   "file": "hostapd/config_file.c",
+   "line": 4213,
+   "message": "In-band function 'strtol' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+   "rule_id": "ERR30-C",
+   "severity": "Medium",
+   "suggestion": "Set errno before call: 'errno = 0; val = strtol(...); if (errno == ERANGE) { ... }'"
+  },
+  {
+   "column": 22,
+   "file": "hostapd/config_file.c",
+   "line": 4220,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 22,
+   "file": "hostapd/config_file.c",
+   "line": 4220,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 34,
+   "file": "hostapd/config_file.c",
+   "line": 4222,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 34,
+   "file": "hostapd/config_file.c",
+   "line": 4222,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 14,
+   "file": "hostapd/config_file.c",
+   "line": 4224,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 14,
+   "file": "hostapd/config_file.c",
+   "line": 4224,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/config_file.c",
+   "line": 4227,
+   "message": "Function-like macro 'PARSE_TEST_PROBABILITY' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "hostapd/config_file.c",
+   "line": 4227,
+   "message": "Macro parameter '_val' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter '_val' in parentheses: (_val) instead of _val"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/config_file.c",
+   "line": 4227,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (} else if (os_strcmp(buf, #_val) == 0) {\t\t\\\n\t\tchar *end;\t\t\t\t\t\\\n\t\t\t\t\t\t\t\t\\\n\t\tconf->_val = strtod(pos, &end);\t\t\t\\\n\t\tif (*end || conf->_val < 0.0 ||\t\t\t\\\n\t\t    conf->_val > 1.0) {\t\t\t\t\\\n\t\t\twpa_printf(MSG_ERROR,\t\t\t\\\n\t\t\t\t   \"Line %d: Invalid value '%s'\", \\\n\t\t\t\t   line, pos);\t\t\t\\\n\t\t\treturn 1;\t\t\t\t\\\n\t\t})"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/config_file.c",
+   "line": 4227,
+   "message": "Macro 'PARSE_TEST_PROBABILITY' uses stringification operator (#) which prevents parameter expansion - consider using two-level macro indirection for proper expansion",
+   "rule_id": "PRE05-C",
+   "severity": "Low",
+   "suggestion": "Use two-level indirection: define a wrapper macro that calls another macro with #, allowing parameters to expand first"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/config_file.c",
+   "line": 4227,
+   "message": "Multistatement macro 'PARSE_TEST_PROBABILITY' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+   "rule_id": "PRE10-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/config_file.c",
+   "line": 4227,
+   "message": "Macro evaluates parameter '_val' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 24,
+   "file": "hostapd/config_file.c",
+   "line": 4245,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 36,
+   "file": "hostapd/config_file.c",
+   "line": 4249,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 36,
+   "file": "hostapd/config_file.c",
+   "line": 4249,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 27,
+   "file": "hostapd/config_file.c",
+   "line": 4252,
+   "message": "Division or modulo by 'bss_load_test' without checking for zero",
+   "rule_id": "INT33-C",
+   "severity": "High",
+   "suggestion": "Check if 'bss_load_test' is not zero before division"
+  },
+  {
+   "column": 32,
+   "file": "hostapd/config_file.c",
+   "line": 4252,
+   "message": "Modulo operator used with potentially signed operands. The result of % with negative operands is implementation-defined and can be negative. Use unsigned types (size_t, unsigned int) or explicitly handle negative remainders.",
+   "rule_id": "INT10-C",
+   "severity": "Medium",
+   "suggestion": "Convert operands to unsigned types (size_t, unsigned int) or add explicit checks for negative values"
+  },
+  {
+   "column": 27,
+   "file": "hostapd/config_file.c",
+   "line": 4260,
+   "message": "Division or modulo by 'bss_load_test' without checking for zero",
+   "rule_id": "INT33-C",
+   "severity": "High",
+   "suggestion": "Check if 'bss_load_test' is not zero before division"
+  },
+  {
+   "column": 32,
+   "file": "hostapd/config_file.c",
+   "line": 4260,
+   "message": "Modulo operator used with potentially signed operands. The result of % with negative operands is implementation-defined and can be negative. Use unsigned types (size_t, unsigned int) or explicitly handle negative remainders.",
+   "rule_id": "INT10-C",
+   "severity": "Medium",
+   "suggestion": "Convert operands to unsigned types (size_t, unsigned int) or add explicit checks for negative values"
+  },
+  {
+   "column": 32,
+   "file": "hostapd/config_file.c",
+   "line": 4302,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 32,
+   "file": "hostapd/config_file.c",
+   "line": 4302,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 28,
+   "file": "hostapd/config_file.c",
+   "line": 4304,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 28,
+   "file": "hostapd/config_file.c",
+   "line": 4304,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 22,
+   "file": "hostapd/config_file.c",
+   "line": 4306,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 22,
+   "file": "hostapd/config_file.c",
+   "line": 4306,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 37,
+   "file": "hostapd/config_file.c",
+   "line": 4308,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 37,
+   "file": "hostapd/config_file.c",
+   "line": 4308,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 26,
+   "file": "hostapd/config_file.c",
+   "line": 4331,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 26,
+   "file": "hostapd/config_file.c",
+   "line": 4331,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 27,
+   "file": "hostapd/config_file.c",
+   "line": 4333,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 27,
+   "file": "hostapd/config_file.c",
+   "line": 4333,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 24,
+   "file": "hostapd/config_file.c",
+   "line": 4335,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 24,
+   "file": "hostapd/config_file.c",
+   "line": 4335,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 37,
+   "file": "hostapd/config_file.c",
+   "line": 4337,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 37,
+   "file": "hostapd/config_file.c",
+   "line": 4337,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 37,
+   "file": "hostapd/config_file.c",
+   "line": 4339,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 37,
+   "file": "hostapd/config_file.c",
+   "line": 4339,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 40,
+   "file": "hostapd/config_file.c",
+   "line": 4341,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 40,
+   "file": "hostapd/config_file.c",
+   "line": 4341,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 41,
+   "file": "hostapd/config_file.c",
+   "line": 4343,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 41,
+   "file": "hostapd/config_file.c",
+   "line": 4343,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 37,
+   "file": "hostapd/config_file.c",
+   "line": 4345,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 37,
+   "file": "hostapd/config_file.c",
+   "line": 4345,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 39,
+   "file": "hostapd/config_file.c",
+   "line": 4347,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 39,
+   "file": "hostapd/config_file.c",
+   "line": 4347,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 38,
+   "file": "hostapd/config_file.c",
+   "line": 4349,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 38,
+   "file": "hostapd/config_file.c",
+   "line": 4349,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 32,
+   "file": "hostapd/config_file.c",
+   "line": 4351,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 32,
+   "file": "hostapd/config_file.c",
+   "line": 4351,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 26,
+   "file": "hostapd/config_file.c",
+   "line": 4353,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 26,
+   "file": "hostapd/config_file.c",
+   "line": 4353,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 30,
+   "file": "hostapd/config_file.c",
+   "line": 4361,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 30,
+   "file": "hostapd/config_file.c",
+   "line": 4361,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 36,
+   "file": "hostapd/config_file.c",
+   "line": 4363,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 36,
+   "file": "hostapd/config_file.c",
+   "line": 4363,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 35,
+   "file": "hostapd/config_file.c",
+   "line": 4365,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 35,
+   "file": "hostapd/config_file.c",
+   "line": 4365,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 7,
+   "file": "hostapd/config_file.c",
+   "line": 4372,
+   "message": "Function 'parse_sae_password' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 27,
+   "file": "hostapd/config_file.c",
+   "line": 4385,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 27,
+   "file": "hostapd/config_file.c",
+   "line": 4385,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 29,
+   "file": "hostapd/config_file.c",
+   "line": 4387,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 29,
+   "file": "hostapd/config_file.c",
+   "line": 4387,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 34,
+   "file": "hostapd/config_file.c",
+   "line": 4397,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 34,
+   "file": "hostapd/config_file.c",
+   "line": 4397,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 19,
+   "file": "hostapd/config_file.c",
+   "line": 4399,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 19,
+   "file": "hostapd/config_file.c",
+   "line": 4399,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 26,
+   "file": "hostapd/config_file.c",
+   "line": 4408,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 26,
+   "file": "hostapd/config_file.c",
+   "line": 4408,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 32,
+   "file": "hostapd/config_file.c",
+   "line": 4410,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 32,
+   "file": "hostapd/config_file.c",
+   "line": 4410,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 18,
+   "file": "hostapd/config_file.c",
+   "line": 4412,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 18,
+   "file": "hostapd/config_file.c",
+   "line": 4412,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 24,
+   "file": "hostapd/config_file.c",
+   "line": 4414,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 24,
+   "file": "hostapd/config_file.c",
+   "line": 4414,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 13,
+   "file": "hostapd/config_file.c",
+   "line": 4419,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 13,
+   "file": "hostapd/config_file.c",
+   "line": 4419,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 34,
+   "file": "hostapd/config_file.c",
+   "line": 4427,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 34,
+   "file": "hostapd/config_file.c",
+   "line": 4427,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/config_file.c",
+   "line": 4462,
+   "message": "Return value of 'strtol' assigned to 'val' but not checked for errors: 'strtol(pos, &endp, 0)' - Sets errno on overflow/underflow, uses endptr for parsing errors",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check errno and endptr: errno = 0; val = strtol(str, &endptr, base); if (errno != 0 || endptr == str) handle_error();"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/config_file.c",
+   "line": 4462,
+   "message": "Return value from strtol() should be checked for errors",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Check if strtol() returned an error value (NULL, -1, etc.)"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/config_file.c",
+   "line": 4462,
+   "message": "In-band function 'strtol' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+   "rule_id": "ERR30-C",
+   "severity": "Medium",
+   "suggestion": "Set errno before call: 'errno = 0; val = strtol(...); if (errno == ERANGE) { ... }'"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/config_file.c",
+   "line": 4480,
+   "message": "Return value of 'strtol' assigned to 'val' but not checked for errors: 'strtol(pos, &endp, 0)' - Sets errno on overflow/underflow, uses endptr for parsing errors",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check errno and endptr: errno = 0; val = strtol(str, &endptr, base); if (errno != 0 || endptr == str) handle_error();"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/config_file.c",
+   "line": 4480,
+   "message": "Return value from strtol() should be checked for errors",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Check if strtol() returned an error value (NULL, -1, etc.)"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/config_file.c",
+   "line": 4480,
+   "message": "In-band function 'strtol' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+   "rule_id": "ERR30-C",
+   "severity": "Medium",
+   "suggestion": "Set errno before call: 'errno = 0; val = strtol(...); if (errno == ERANGE) { ... }'"
+  },
+  {
+   "column": 29,
+   "file": "hostapd/config_file.c",
+   "line": 4491,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 29,
+   "file": "hostapd/config_file.c",
+   "line": 4491,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 29,
+   "file": "hostapd/config_file.c",
+   "line": 4493,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 29,
+   "file": "hostapd/config_file.c",
+   "line": 4493,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 7,
+   "file": "hostapd/config_file.c",
+   "line": 4533,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 7,
+   "file": "hostapd/config_file.c",
+   "line": 4533,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 7,
+   "file": "hostapd/config_file.c",
+   "line": 4537,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 7,
+   "file": "hostapd/config_file.c",
+   "line": 4537,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 7,
+   "file": "hostapd/config_file.c",
+   "line": 4543,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 7,
+   "file": "hostapd/config_file.c",
+   "line": 4543,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 23,
+   "file": "hostapd/config_file.c",
+   "line": 4547,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 23,
+   "file": "hostapd/config_file.c",
+   "line": 4547,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 25,
+   "file": "hostapd/config_file.c",
+   "line": 4549,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 25,
+   "file": "hostapd/config_file.c",
+   "line": 4549,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 24,
+   "file": "hostapd/config_file.c",
+   "line": 4551,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 24,
+   "file": "hostapd/config_file.c",
+   "line": 4551,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 24,
+   "file": "hostapd/config_file.c",
+   "line": 4553,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 24,
+   "file": "hostapd/config_file.c",
+   "line": 4553,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 24,
+   "file": "hostapd/config_file.c",
+   "line": 4567,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 24,
+   "file": "hostapd/config_file.c",
+   "line": 4567,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 34,
+   "file": "hostapd/config_file.c",
+   "line": 4576,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 34,
+   "file": "hostapd/config_file.c",
+   "line": 4576,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 29,
+   "file": "hostapd/config_file.c",
+   "line": 4578,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 29,
+   "file": "hostapd/config_file.c",
+   "line": 4578,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 27,
+   "file": "hostapd/config_file.c",
+   "line": 4580,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 27,
+   "file": "hostapd/config_file.c",
+   "line": 4580,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 26,
+   "file": "hostapd/config_file.c",
+   "line": 4582,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 26,
+   "file": "hostapd/config_file.c",
+   "line": 4582,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 33,
+   "file": "hostapd/config_file.c",
+   "line": 4584,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 33,
+   "file": "hostapd/config_file.c",
+   "line": 4584,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 33,
+   "file": "hostapd/config_file.c",
+   "line": 4586,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 33,
+   "file": "hostapd/config_file.c",
+   "line": 4586,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 31,
+   "file": "hostapd/config_file.c",
+   "line": 4589,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 31,
+   "file": "hostapd/config_file.c",
+   "line": 4589,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 38,
+   "file": "hostapd/config_file.c",
+   "line": 4591,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 38,
+   "file": "hostapd/config_file.c",
+   "line": 4591,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 27,
+   "file": "hostapd/config_file.c",
+   "line": 4593,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 27,
+   "file": "hostapd/config_file.c",
+   "line": 4593,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 29,
+   "file": "hostapd/config_file.c",
+   "line": 4595,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 29,
+   "file": "hostapd/config_file.c",
+   "line": 4595,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/config_file.c",
+   "line": 4616,
+   "message": "Return value of 'strtol' assigned to 'bss->dpp_netaccesskey_expiry' but not checked for errors: 'strtol(pos, NULL, 0)' - Sets errno on overflow/underflow, uses endptr for parsing errors",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check errno and endptr: errno = 0; val = strtol(str, &endptr, base); if (errno != 0 || endptr == str) handle_error();"
+  },
+  {
+   "column": 34,
+   "file": "hostapd/config_file.c",
+   "line": 4616,
+   "message": "Return value from strtol() should be checked for errors",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Check if strtol() returned an error value (NULL, -1, etc.)"
+  },
+  {
+   "column": 34,
+   "file": "hostapd/config_file.c",
+   "line": 4616,
+   "message": "In-band function 'strtol' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+   "rule_id": "ERR30-C",
+   "severity": "Medium",
+   "suggestion": "Set errno before call: 'errno = 0; val = strtol(...); if (errno == ERANGE) { ... }'"
+  },
+  {
+   "column": 25,
+   "file": "hostapd/config_file.c",
+   "line": 4625,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 25,
+   "file": "hostapd/config_file.c",
+   "line": 4625,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 40,
+   "file": "hostapd/config_file.c",
+   "line": 4627,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 40,
+   "file": "hostapd/config_file.c",
+   "line": 4627,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 13,
+   "file": "hostapd/config_file.c",
+   "line": 4629,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 13,
+   "file": "hostapd/config_file.c",
+   "line": 4629,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 29,
+   "file": "hostapd/config_file.c",
+   "line": 4672,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 29,
+   "file": "hostapd/config_file.c",
+   "line": 4672,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 31,
+   "file": "hostapd/config_file.c",
+   "line": 4675,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 31,
+   "file": "hostapd/config_file.c",
+   "line": 4675,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 13,
+   "file": "hostapd/config_file.c",
+   "line": 4677,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 13,
+   "file": "hostapd/config_file.c",
+   "line": 4677,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 13,
+   "file": "hostapd/config_file.c",
+   "line": 4687,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 13,
+   "file": "hostapd/config_file.c",
+   "line": 4687,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 13,
+   "file": "hostapd/config_file.c",
+   "line": 4697,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 13,
+   "file": "hostapd/config_file.c",
+   "line": 4697,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 13,
+   "file": "hostapd/config_file.c",
+   "line": 4707,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 13,
+   "file": "hostapd/config_file.c",
+   "line": 4707,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 34,
+   "file": "hostapd/config_file.c",
+   "line": 4717,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 34,
+   "file": "hostapd/config_file.c",
+   "line": 4717,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 37,
+   "file": "hostapd/config_file.c",
+   "line": 4719,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  }
+ ]
+}

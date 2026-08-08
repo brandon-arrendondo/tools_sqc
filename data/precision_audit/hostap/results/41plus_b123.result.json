@@ -1,0 +1,1213 @@
+{
+ "labels": [
+  {
+   "rule": "INT07-C",
+   "file": "src/utils/common.c",
+   "line": 19,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "c is bounds-checked ASCII digit/letter; subtraction safe regardless of char signedness (stylistic pedantry)"
+  },
+  {
+   "rule": "INT07-C",
+   "file": "src/utils/common.c",
+   "line": 21,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "c is bounds-checked ASCII digit/letter; subtraction safe regardless of char signedness (stylistic pedantry)"
+  },
+  {
+   "rule": "INT07-C",
+   "file": "src/utils/common.c",
+   "line": 21,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "c is bounds-checked ASCII digit/letter; subtraction safe regardless of char signedness (stylistic pedantry)"
+  },
+  {
+   "rule": "INT07-C",
+   "file": "src/utils/common.c",
+   "line": 23,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "c is bounds-checked ASCII digit/letter; subtraction safe regardless of char signedness (stylistic pedantry)"
+  },
+  {
+   "rule": "INT07-C",
+   "file": "src/utils/common.c",
+   "line": 23,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "c is bounds-checked ASCII digit/letter; subtraction safe regardless of char signedness (stylistic pedantry)"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/utils/common.c",
+   "line": 37,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "a,b genuinely declared int (signed); literal rule violation though values always 0-15, harmless in practice"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/common.c",
+   "line": 66,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/common.c",
+   "line": 66,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/common.c",
+   "line": 80,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/common.c",
+   "line": 114,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "addr IS modified in hwaddr_compact_aton via '*addr++ = ...' - rule missed the mutation (wrong claim)"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/utils/common.c",
+   "line": 127,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "same signed-int bitwise-or idiom as line 37, harmless value range but literal violation"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/common.c",
+   "line": 139,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "addr IS modified in hwaddr_aton2 via '*addr++ = ...' - rule missed the mutation (wrong claim)"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/utils/common.c",
+   "line": 156,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "same signed-int bitwise-or idiom, literal violation, harmless value range"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/common.c",
+   "line": 171,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/common.c",
+   "line": 171,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/common.c",
+   "line": 171,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic pointer-immediately-paired-with-its-own-size (or NUL-terminated string) parameter shape; not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/common.c",
+   "line": 171,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "buf is not modified directly, but *opos aliases buf and is written via 'u8 *opos = buf;' - missed-mutation-via-alias"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "src/utils/common.c",
+   "line": 176,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "opos and buf are both non-const u8*; no const qualifier is being removed - phantom finding"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/common.c",
+   "line": 189,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/common.c",
+   "line": 189,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic pointer-immediately-paired-with-its-own-size (or NUL-terminated string) parameter shape; not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/utils/common.c",
+   "line": 203,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR(addr)/MAC2STR(mask) expand to pure array-index reads with no side effects to unsequence"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/common.c",
+   "line": 222,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "src/utils/common.c",
+   "line": 226,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos is declared 'int pos = len - 1;' not char - factually wrong type claim"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "src/utils/common.c",
+   "line": 227,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos is declared 'int pos = len - 1;' not char - factually wrong type claim"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/utils/common.c",
+   "line": 229,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pos starts at len-1 for a small byte-array length (counter/key sizes), nowhere near INT_MIN; realistic-bound overflow FP"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/common.c",
+   "line": 234,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/common.c",
+   "line": 234,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/common.c",
+   "line": 234,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/utils/common.c",
+   "line": 239,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "buf is always a caller-owned fixed array from the two internal callers (eap_pwd_common.c, sae.c), never externally nullable"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/utils/common.c",
+   "line": 239,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary mixed bitwise/arithmetic use on i and bits in one expression - stylistic pedantry"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/utils/common.c",
+   "line": 239,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary mixed bitwise/arithmetic use on i and bits in one expression - stylistic pedantry"
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/utils/common.c",
+   "line": 239,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "bits is always in [1,8] at both call sites (eap_pwd_common.c:206, sae.c:171 pass '8 - x%8'), guaranteeing a safe 0-7 shift"
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/utils/common.c",
+   "line": 239,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same cross-function bound guarantee as the other INT34-C finding on this line"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/common.c",
+   "line": 244,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input"
+  },
+  {
+   "rule": "DCL22-C",
+   "file": "src/utils/common.c",
+   "line": 248,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tmp is an ordinary local be32 with no setjmp/longjmp or signal-handler context anywhere in the function"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/utils/common.c",
+   "line": 255,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "usec used in arithmetic mult/sub and bitwise shift in the same NTP-approximation expression - stylistic pedantry"
+  },
+  {
+   "rule": "EXP07-C",
+   "file": "src/utils/common.c",
+   "line": 255,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "usec >> 9 is a deliberate, well-known NTP-timestamp fixed-point approximation trick on a 32-bit value"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "src/utils/common.c",
+   "line": 272,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_scnprintf is declared in common.h and called from other files (wmm_ac.c, utils_module_tests.c) - needs external linkage"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/common.c",
+   "line": 272,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic pointer-immediately-paired-with-its-own-size (or NUL-terminated string) parameter shape; not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/common.c",
+   "line": 272,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic pointer-immediately-paired-with-its-own-size (or NUL-terminated string) parameter shape; not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/utils/common.c",
+   "line": 281,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ret is checked immediately after via 'if (ret < 0) return 0;' - literally checked, not unchecked"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/common.c",
+   "line": 293,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic pointer-immediately-paired-with-its-own-size (or NUL-terminated string) parameter shape; not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "src/utils/common.c",
+   "line": 297,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos and buf are both non-const char*; no const qualifier is being removed - phantom finding"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/common.c",
+   "line": 307,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "end = buf+buf_size with buf_size>=1 already guaranteed by the earlier 'if (buf_size==0) return 0;' guard"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/common.c",
+   "line": 312,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "if len==0 the for-loop never executes so pos still equals buf, and pos[-1] writes one byte before the buffer - a real (currently unreached by any caller) off-by-one underflow; contrast with the safe end[-1] variant in _wpa_snprintf_hex"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/common.c",
+   "line": 317,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic pointer-immediately-paired-with-its-own-size (or NUL-terminated string) parameter shape; not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "src/utils/common.c",
+   "line": 321,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos and buf are both non-const char*; no const qualifier is being removed - phantom finding"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/common.c",
+   "line": 329,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same buf_size>=1 guarantee as line 307; end[-1] always in-bounds"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/common.c",
+   "line": 334,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "this variant correctly uses end[-1] (not pos[-1]) unconditionally, always in-bounds since buf_size>=1"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/common.c",
+   "line": 346,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/common.c",
+   "line": 346,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic pointer-immediately-paired-with-its-own-size (or NUL-terminated string) parameter shape; not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/common.c",
+   "line": 360,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/common.c",
+   "line": 360,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic pointer-immediately-paired-with-its-own-size (or NUL-terminated string) parameter shape; not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "src/utils/common.c",
+   "line": 382,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "getopt() is invoked once during single-threaded CLI startup parsing; no pthread usage exists in this codebase's CLI tools"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/common.c",
+   "line": 382,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "argv matches the standard POSIX getopt(int,char*const[],const char*) prototype; fixed-signature reimplementation of the C library function"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "src/utils/common.c",
+   "line": 384,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "optchr is only touched by the single-threaded CLI argument-parsing call path; no concurrent access exists"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/utils/common.c",
+   "line": 409,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "optchr is 'static int' - the assignment is read on the *next* call to getopt() via 'if (optchr == 1)'; static cross-call-significance FP"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/common.c",
+   "line": 420,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "&argv[optind++][optchr+1] takes an address (yields char*), assigned to char *optarg - no char-to-int widening occurs"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/common.c",
+   "line": 420,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "&argv[optind++][optchr+1] takes an address (yields char*), assigned to char *optarg - no char-to-int widening occurs"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/utils/common.c",
+   "line": 431,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same static cross-call-significance shape as line 409"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/utils/common.c",
+   "line": 454,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "standard NUL-terminated wide-to-narrow string scan (terminates on wide NUL); also dead on this Linux build (#ifdef CONFIG_NATIVE_WINDOWS + #ifdef UNICODE)"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/utils/common.c",
+   "line": 454,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same provably-terminating NUL-based scan; also Windows/UNICODE-only dead code here"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/common.c",
+   "line": 455,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*dst++ = (char) *str++ is an explicitly-cast plain char-to-char assignment, no unwanted widening"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/common.c",
+   "line": 456,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*dst = '\\0' is a plain char literal assignment, not a widening conversion"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/utils/common.c",
+   "line": 461,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_unicode2ascii_inplace is declared 'void' - there is no return value to be missing; factually wrong claim"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/common.c",
+   "line": 477,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/common.c",
+   "line": 477,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/common.c",
+   "line": 477,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic pointer-immediately-paired-with-its-own-size (or NUL-terminated string) parameter shape; not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/common.c",
+   "line": 488,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*txt++ = '<literal char>' is a plain char-to-char assignment of an escape sequence, no widening involved"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/common.c",
+   "line": 489,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*txt++ = '<literal char>' is a plain char-to-char assignment of an escape sequence, no widening involved"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/common.c",
+   "line": 492,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*txt++ = '<literal char>' is a plain char-to-char assignment of an escape sequence, no widening involved"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/common.c",
+   "line": 493,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*txt++ = '<literal char>' is a plain char-to-char assignment of an escape sequence, no widening involved"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/common.c",
+   "line": 496,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*txt++ = '<literal char>' is a plain char-to-char assignment of an escape sequence, no widening involved"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/common.c",
+   "line": 497,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*txt++ = '<literal char>' is a plain char-to-char assignment of an escape sequence, no widening involved"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/common.c",
+   "line": 500,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*txt++ = '<literal char>' is a plain char-to-char assignment of an escape sequence, no widening involved"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/common.c",
+   "line": 501,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*txt++ = '<literal char>' is a plain char-to-char assignment of an escape sequence, no widening involved"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/common.c",
+   "line": 504,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*txt++ = '<literal char>' is a plain char-to-char assignment of an escape sequence, no widening involved"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/common.c",
+   "line": 505,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*txt++ = '<literal char>' is a plain char-to-char assignment of an escape sequence, no widening involved"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/common.c",
+   "line": 508,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*txt++ = '<literal char>' is a plain char-to-char assignment of an escape sequence, no widening involved"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/common.c",
+   "line": 509,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*txt++ = '<literal char>' is a plain char-to-char assignment of an escape sequence, no widening involved"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/common.c",
+   "line": 513,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*txt++ = '<literal char>' is a plain char-to-char assignment of an escape sequence, no widening involved"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/utils/common.c",
+   "line": 515,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "txt += os_snprintf(...) return value is used directly without checking os_snprintf_error(), unlike the rest of this file's convention; no reachable overflow given the loop's 4-byte headroom guard, but the check is genuinely absent"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/utils/common.c",
+   "line": 522,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "txt is always a caller-owned fixed/static buffer (e.g. wpa_ssid_txt's static ssid_txt[]), never externally nullable"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/common.c",
+   "line": 522,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*txt = '\\0' is a plain char literal assignment, not a widening conversion"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/common.c",
+   "line": 526,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic pointer-immediately-paired-with-its-own-size (or NUL-terminated string) parameter shape; not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/utils/common.c",
+   "line": 532,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "loop has an explicit 'if (len + 1 >= maxlen) break;' bound check each iteration; rule missed the internal (not while-condition) bound"
+  },
+  {
+   "rule": "CON43-C",
+   "file": "src/utils/common.c",
+   "line": 535,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "single-threaded parsing of a local buffer; no shared/volatile memory or concurrent modification exists"
+  },
+  {
+   "rule": "CON43-C",
+   "file": "src/utils/common.c",
+   "line": 538,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same single-threaded reasoning as line 535"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/common.c",
+   "line": 597,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf[len++] = *pos++ assigns char to u8 (same width, not wider) - implicit truncation preserves the bit pattern, not a widening/sign-extension hazard"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/common.c",
+   "line": 597,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf[len++] = *pos++ assigns char to u8 (same width, not wider) - implicit truncation preserves the bit pattern, not a widening/sign-extension hazard"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/utils/common.c",
+   "line": 624,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "static char ssid_txt[SSID_MAX_LEN*4+1] is a fixed compile-time-sized buffer; no getenv()/environment-variable code anywhere in this function"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/utils/common.c",
+   "line": 624,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "SSID_MAX_LEN*4+1 is a compile-time constant expression, not a VLA"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/utils/common.c",
+   "line": 626,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary 'if (ptr == NULL)' guard - the check is present, this is stylistic preference for a wrapper function, not a real validation gap"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/common.c",
+   "line": 628,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid_txt has *static* storage duration ('static char ssid_txt[...]') - persists after return, not a dangling pointer"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/common.c",
+   "line": 632,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same static-storage-duration buffer as line 628"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/utils/common.c",
+   "line": 636,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "'__hide_aliasing_typecast' begins with a double underscore, which C 7.1.3 reserves for any use at any scope - genuine literal violation"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/common.c",
+   "line": 636,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "foo is a generic aliasing type-pun passthrough used for both read and write aliasing via aliasing_hide_typecast(); non-const is intentional"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/common.c",
+   "line": 642,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic pointer-immediately-paired-with-its-own-size (or NUL-terminated string) parameter shape; not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/common.c",
+   "line": 655,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "str points to heap memory from dup_binstr()'s os_malloc(), not a local array; the pointer *variable* is local but its storage is not"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/common.c",
+   "line": 678,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "str points to heap memory from os_malloc(); local pointer variable, not local array storage"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/common.c",
+   "line": 681,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_strlen(value) passes a pointer argument; no char-to-int conversion of a scalar value is happening - rule misapplied to a pointer expression"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/utils/common.c",
+   "line": 682,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hlen & 1 parity check followed by unrelated hlen/2 arithmetic two lines later - stylistic pedantry"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/utils/common.c",
+   "line": 687,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "str is NULL at this return (os_malloc just failed) - nothing was ever allocated to leak"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/utils/common.c",
+   "line": 690,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "str was os_free()'d on the immediately preceding line before this return - not leaked"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/common.c",
+   "line": 692,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "str[tlen]='\\0' is only reached when hexstr2bin() succeeded, i.e. the sibling branch that frees str (and returns) did not execute - mutually exclusive branches"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/utils/common.c",
+   "line": 694,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "return (char *) str transfers ownership of the allocation to the caller - it is the function's entire purpose, not a leak"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/common.c",
+   "line": 723,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/utils/common.c",
+   "line": 725,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "standard NUL-terminated string scan ('while (*str)'), terminates on the string's own NUL byte"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/utils/common.c",
+   "line": 725,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "str is always a caller-owned non-NULL string at has_newline's call sites"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/common.c",
+   "line": 734,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/common.c",
+   "line": 734,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/common.c",
+   "line": 766,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/common.c",
+   "line": 766,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic pointer-immediately-paired-with-its-own-size (or NUL-terminated string) parameter shape; not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/utils/common.c",
+   "line": 770,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary 'if (ptr == NULL)' guard - the check is present, this is stylistic preference for a wrapper function, not a real validation gap"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/utils/common.c",
+   "line": 778,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "res is a local pointer *variable* (automatic storage) but points to heap memory from os_malloc(); pointer-variable-vs-local-storage confusion"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/common.c",
+   "line": 778,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "res points to heap memory, not a local array; same misapplication as the DCL30-C finding on this line"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/common.c",
+   "line": 782,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/common.c",
+   "line": 805,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "the only os_free(freq) calls are in sibling branches that return immediately (count==UINT_MAX check, realloc-failure check); freq is never freed on the path reaching this line, and count is guarded != UINT_MAX just above"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/common.c",
+   "line": 805,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "the only os_free(freq) calls are in sibling branches that return immediately (count==UINT_MAX check, realloc-failure check); freq is never freed on the path reaching this line, and count is guarded != UINT_MAX just above"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/utils/common.c",
+   "line": 805,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi(pos) result is stored directly with no range/format validation anywhere in this function - malformed config text silently becomes freq 0 instead of being rejected"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/utils/common.c",
+   "line": 805,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "same unchecked atoi() conversion as the ERR07-C finding on this line"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/common.c",
+   "line": 810,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "the only os_free(freq) calls are in sibling branches that return immediately (count==UINT_MAX check, realloc-failure check); freq is never freed on the path reaching this line, and count is guarded != UINT_MAX just above"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/common.c",
+   "line": 810,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "the only os_free(freq) calls are in sibling branches that return immediately (count==UINT_MAX check, realloc-failure check); freq is never freed on the path reaching this line, and count is guarded != UINT_MAX just above"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/utils/common.c",
+   "line": 810,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi(pos2) result (range max) is likewise stored with no validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/utils/common.c",
+   "line": 810,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "same unchecked atoi() conversion as the ERR07-C finding on this line"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/common.c",
+   "line": 812,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "the only os_free(freq) calls are in sibling branches that return immediately (count==UINT_MAX check, realloc-failure check); freq is never freed on the path reaching this line, and count is guarded != UINT_MAX just above"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/common.c",
+   "line": 812,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "the only os_free(freq) calls are in sibling branches that return immediately (count==UINT_MAX check, realloc-failure check); freq is never freed on the path reaching this line, and count is guarded != UINT_MAX just above"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/common.c",
+   "line": 812,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same mutually-exclusive-branch reasoning as the other ARR00-C finding on this line, applied to the RHS read"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/common.c",
+   "line": 812,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same mutually-exclusive-branch reasoning as the other ARR00-C finding on this line, applied to the RHS read"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/utils/common.c",
+   "line": 832,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary 'if (ptr == NULL)' guard - the check is present, this is stylistic preference for a wrapper function, not a real validation gap"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/utils/common.c",
+   "line": 878,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is a local pointer variable pointing to heap memory from os_malloc(), not local automatic storage"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/utils/common.c",
+   "line": 909,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "the os_free(*res) calls above are in sibling branches that return immediately; *res was never freed on the path reaching this realloc call"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/utils/common.c",
+   "line": 916,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "all real call sites (scan.c, rrm.c) guard the second argument with a non-NULL check before calling int_array_concat; note a latent inconsistency vs int_array_len()'s own NULL-safety, worth a defensive fix but not exercised by any current caller"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/utils/common.c",
+   "line": 917,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "n is a pointer *variable* holding a heap address from os_realloc_array(); writing that value through *res is the normal way to propagate a realloc'd buffer to the caller"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/utils/common.c",
+   "line": 917,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same mutually-exclusive-branch reasoning; *res is not the pointer freed by the sibling early-return branch"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/utils/common.c",
+   "line": 923,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "_a/_b are block-scope locals inside static function freq_cmp, not file-scope identifiers; the single-underscore restriction only applies at file scope"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/utils/common.c",
+   "line": 923,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "(int *) a/b casts a const void* purely to read its value via dereference; no write occurs through the cast pointer"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/utils/common.c",
+   "line": 924,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "_a/_b are block-scope locals inside static function freq_cmp, not file-scope identifiers; the single-underscore restriction only applies at file scope"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/utils/common.c",
+   "line": 924,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "(int *) a/b casts a const void* purely to read its value via dereference; no write occurs through the cast pointer"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/utils/common.c",
+   "line": 938,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary 'if (ptr == NULL)' guard - the check is present, this is stylistic preference for a wrapper function, not a real validation gap"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/utils/common.c",
+   "line": 979,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "the os_free(*res) calls above are in sibling branches that return immediately; *res was never freed on the path reaching this realloc call"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/utils/common.c",
+   "line": 989,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "n is a pointer *variable* holding a heap address from os_realloc_array(); writing that value through *res is the normal way to propagate a realloc'd buffer to the caller"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/utils/common.c",
+   "line": 989,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same mutually-exclusive-branch reasoning; *res is not the pointer freed by the sibling early-return branch"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/common.c",
+   "line": 1039,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_strlen(str) passes a pointer argument; no char-to-int conversion of a scalar value occurs - rule misapplied to a pointer expression"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/common.c",
+   "line": 1046,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic pointer-immediately-paired-with-its-own-size (or NUL-terminated string) parameter shape; not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/common.c",
+   "line": 1099,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "token = *last assigns a pointer value (const char*) to another pointer variable; no char scalar is being widened"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/common.c",
+   "line": 1099,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "token = *last assigns a pointer value (const char*) to another pointer variable; no char scalar is being widened"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/utils/common.c",
+   "line": 1101,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "token is either str (already NULL-checked) or a prior valid *last set by this same function's own contract - never NULL by construction"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/utils/common.c",
+   "line": 1102,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "token points into a string buffer being traversed char-by-char; token++ is standard, safe pointer arithmetic on a string-scan pointer"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/utils/common.c",
+   "line": 1107,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "token + 1 is the same standard string-traversal pointer arithmetic"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "src/utils/common.c"
+ ],
+ "summary": {
+  "tp": 10,
+  "fp": 140,
+  "fn": 0
+ }
+}

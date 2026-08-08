@@ -1,0 +1,1039 @@
+{
+ "src/wps/httpread.c": [
+  {
+   "column": 2,
+   "file": "src/wps/httpread.c",
+   "line": 62,
+   "message": "String buffer placed before pointer in struct 'httpread': 'char hdr[HTTPREAD_HEADER_MAX_SIZE+1];' before 'char *uri;' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'char hdr' after the pointer field 'char *uri;', or use a char* pointer instead of a char array"
+  },
+  {
+   "column": 25,
+   "file": "src/wps/httpread.c",
+   "line": 98,
+   "message": "Pointer parameter 's1' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *s1'"
+  },
+  {
+   "column": 35,
+   "file": "src/wps/httpread.c",
+   "line": 98,
+   "message": "Pointer parameter 's2' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *s2'"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/httpread.c",
+   "line": 102,
+   "message": "Value assigned to 'end1' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/httpread.c",
+   "line": 103,
+   "message": "Value assigned to 'end2' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 8,
+   "file": "src/wps/httpread.c",
+   "line": 105,
+   "message": "Pointer dereference '*s1' (char type) assigned to larger type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment: (unsigned char)*ptr"
+  },
+  {
+   "column": 8,
+   "file": "src/wps/httpread.c",
+   "line": 105,
+   "message": "Pointer dereference '*s1++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 8,
+   "file": "src/wps/httpread.c",
+   "line": 106,
+   "message": "Pointer dereference '*s2' (char type) assigned to larger type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment: (unsigned char)*ptr"
+  },
+  {
+   "column": 8,
+   "file": "src/wps/httpread.c",
+   "line": 106,
+   "message": "Pointer dereference '*s2++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 15,
+   "file": "src/wps/httpread.c",
+   "line": 107,
+   "message": "Argument to 'isalpha()' is not cast to unsigned char. This can cause undefined behavior if the argument has a negative value.",
+   "rule_id": "STR37-C",
+   "severity": "Medium",
+   "suggestion": "Cast the argument to unsigned char: 'isalpha((unsigned char)...)'"
+  },
+  {
+   "column": 30,
+   "file": "src/wps/httpread.c",
+   "line": 107,
+   "message": "Argument to 'isupper()' is not cast to unsigned char. This can cause undefined behavior if the argument has a negative value.",
+   "rule_id": "STR37-C",
+   "severity": "Medium",
+   "suggestion": "Cast the argument to unsigned char: 'isupper((unsigned char)...)'"
+  },
+  {
+   "column": 17,
+   "file": "src/wps/httpread.c",
+   "line": 108,
+   "message": "Argument to 'tolower()' is not cast to unsigned char. This can cause undefined behavior if the argument has a negative value.",
+   "rule_id": "STR37-C",
+   "severity": "Medium",
+   "suggestion": "Cast the argument to unsigned char: 'tolower((unsigned char)...)'"
+  },
+  {
+   "column": 15,
+   "file": "src/wps/httpread.c",
+   "line": 109,
+   "message": "Argument to 'isalpha()' is not cast to unsigned char. This can cause undefined behavior if the argument has a negative value.",
+   "rule_id": "STR37-C",
+   "severity": "Medium",
+   "suggestion": "Cast the argument to unsigned char: 'isalpha((unsigned char)...)'"
+  },
+  {
+   "column": 30,
+   "file": "src/wps/httpread.c",
+   "line": 109,
+   "message": "Argument to 'isupper()' is not cast to unsigned char. This can cause undefined behavior if the argument has a negative value.",
+   "rule_id": "STR37-C",
+   "severity": "Medium",
+   "suggestion": "Cast the argument to unsigned char: 'isupper((unsigned char)...)'"
+  },
+  {
+   "column": 17,
+   "file": "src/wps/httpread.c",
+   "line": 110,
+   "message": "Argument to 'tolower()' is not cast to unsigned char. This can cause undefined behavior if the argument has a negative value.",
+   "rule_id": "STR37-C",
+   "severity": "Medium",
+   "suggestion": "Cast the argument to unsigned char: 'tolower((unsigned char)...)'"
+  },
+  {
+   "column": 19,
+   "file": "src/wps/httpread.c",
+   "line": 111,
+   "message": "Argument to 'isgraph()' is not cast to unsigned char. This can cause undefined behavior if the argument has a negative value.",
+   "rule_id": "STR37-C",
+   "severity": "Medium",
+   "suggestion": "Cast the argument to unsigned char: 'isgraph((unsigned char)...)'"
+  },
+  {
+   "column": 19,
+   "file": "src/wps/httpread.c",
+   "line": 112,
+   "message": "Argument to 'isgraph()' is not cast to unsigned char. This can cause undefined behavior if the argument has a negative value.",
+   "rule_id": "STR37-C",
+   "severity": "Medium",
+   "suggestion": "Cast the argument to unsigned char: 'isgraph((unsigned char)...)'"
+  },
+  {
+   "column": 18,
+   "file": "src/wps/httpread.c",
+   "line": 137,
+   "message": "sizeof applied to pointer/array parameter 'h' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*h)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 43,
+   "file": "src/wps/httpread.c",
+   "line": 145,
+   "message": "Pointer parameter 'eloop_data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *eloop_data'"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/httpread.c",
+   "line": 147,
+   "message": "Variable 'h' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const h = ..."
+  },
+  {
+   "column": 10,
+   "file": "src/wps/httpread.c",
+   "line": 162,
+   "message": "Plain 'char' passed to 'isgraph()' without cast to 'unsigned char'",
+   "rule_id": "STR00-C",
+   "severity": "Medium",
+   "suggestion": "Cast to '(unsigned char)' before passing to 'isgraph()': isgraph((unsigned char)*hbp)"
+  },
+  {
+   "column": 18,
+   "file": "src/wps/httpread.c",
+   "line": 162,
+   "message": "Argument to 'isgraph()' is not cast to unsigned char. This can cause undefined behavior if the argument has a negative value.",
+   "rule_id": "STR37-C",
+   "severity": "Medium",
+   "suggestion": "Cast the argument to unsigned char: 'isgraph((unsigned char)...)'"
+  },
+  {
+   "column": 8,
+   "file": "src/wps/httpread.c",
+   "line": 166,
+   "message": "Plain 'char' passed to 'isdigit()' without cast to 'unsigned char'",
+   "rule_id": "STR00-C",
+   "severity": "Medium",
+   "suggestion": "Cast to '(unsigned char)' before passing to 'isdigit()': isdigit((unsigned char)*hbp)"
+  },
+  {
+   "column": 16,
+   "file": "src/wps/httpread.c",
+   "line": 166,
+   "message": "Argument to 'isdigit()' is not cast to unsigned char. This can cause undefined behavior if the argument has a negative value.",
+   "rule_id": "STR37-C",
+   "severity": "Medium",
+   "suggestion": "Cast the argument to unsigned char: 'isdigit((unsigned char)...)'"
+  },
+  {
+   "column": 23,
+   "file": "src/wps/httpread.c",
+   "line": 168,
+   "message": "Use of 'atol' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atol' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 23,
+   "file": "src/wps/httpread.c",
+   "line": 168,
+   "message": "Use of 'atol()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atol() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 10,
+   "file": "src/wps/httpread.c",
+   "line": 180,
+   "message": "Plain 'char' passed to 'isgraph()' without cast to 'unsigned char'",
+   "rule_id": "STR00-C",
+   "severity": "Medium",
+   "suggestion": "Cast to '(unsigned char)' before passing to 'isgraph()': isgraph((unsigned char)*hbp)"
+  },
+  {
+   "column": 18,
+   "file": "src/wps/httpread.c",
+   "line": 180,
+   "message": "Argument to 'isgraph()' is not cast to unsigned char. This can cause undefined behavior if the argument has a negative value.",
+   "rule_id": "STR37-C",
+   "severity": "Medium",
+   "suggestion": "Cast the argument to unsigned char: 'isgraph((unsigned char)...)'"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/httpread.c",
+   "line": 199,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 7,
+   "file": "src/wps/httpread.c",
+   "line": 206,
+   "message": "Plain 'char' passed to 'isgraph()' without cast to 'unsigned char'",
+   "rule_id": "STR00-C",
+   "severity": "Medium",
+   "suggestion": "Cast to '(unsigned char)' before passing to 'isgraph()': isgraph((unsigned char)*hbp)"
+  },
+  {
+   "column": 15,
+   "file": "src/wps/httpread.c",
+   "line": 206,
+   "message": "Argument to 'isgraph()' is not cast to unsigned char. This can cause undefined behavior if the argument has a negative value.",
+   "rule_id": "STR37-C",
+   "severity": "Medium",
+   "suggestion": "Cast the argument to unsigned char: 'isgraph((unsigned char)...)'"
+  },
+  {
+   "column": 7,
+   "file": "src/wps/httpread.c",
+   "line": 213,
+   "message": "Plain 'char' passed to 'isdigit()' without cast to 'unsigned char'",
+   "rule_id": "STR00-C",
+   "severity": "Medium",
+   "suggestion": "Cast to '(unsigned char)' before passing to 'isdigit()': isdigit((unsigned char)hbp[2])"
+  },
+  {
+   "column": 15,
+   "file": "src/wps/httpread.c",
+   "line": 213,
+   "message": "Argument to 'isdigit()' is not cast to unsigned char. This can cause undefined behavior if the argument has a negative value.",
+   "rule_id": "STR37-C",
+   "severity": "Medium",
+   "suggestion": "Cast the argument to unsigned char: 'isdigit((unsigned char)...)'"
+  },
+  {
+   "column": 10,
+   "file": "src/wps/httpread.c",
+   "line": 215,
+   "message": "Plain 'char' passed to 'isgraph()' without cast to 'unsigned char'",
+   "rule_id": "STR00-C",
+   "severity": "Medium",
+   "suggestion": "Cast to '(unsigned char)' before passing to 'isgraph()': isgraph((unsigned char)*hbp)"
+  },
+  {
+   "column": 18,
+   "file": "src/wps/httpread.c",
+   "line": 215,
+   "message": "Argument to 'isgraph()' is not cast to unsigned char. This can cause undefined behavior if the argument has a negative value.",
+   "rule_id": "STR37-C",
+   "severity": "Medium",
+   "suggestion": "Cast the argument to unsigned char: 'isgraph((unsigned char)...)'"
+  },
+  {
+   "column": 8,
+   "file": "src/wps/httpread.c",
+   "line": 219,
+   "message": "Plain 'char' passed to 'isdigit()' without cast to 'unsigned char'",
+   "rule_id": "STR00-C",
+   "severity": "Medium",
+   "suggestion": "Cast to '(unsigned char)' before passing to 'isdigit()': isdigit((unsigned char)*hbp)"
+  },
+  {
+   "column": 16,
+   "file": "src/wps/httpread.c",
+   "line": 219,
+   "message": "Argument to 'isdigit()' is not cast to unsigned char. This can cause undefined behavior if the argument has a negative value.",
+   "rule_id": "STR37-C",
+   "severity": "Medium",
+   "suggestion": "Cast the argument to unsigned char: 'isdigit((unsigned char)...)'"
+  },
+  {
+   "column": 19,
+   "file": "src/wps/httpread.c",
+   "line": 221,
+   "message": "Use of 'atol' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atol' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 19,
+   "file": "src/wps/httpread.c",
+   "line": 221,
+   "message": "Use of 'atol()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atol() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 10,
+   "file": "src/wps/httpread.c",
+   "line": 253,
+   "message": "Plain 'char' passed to 'isgraph()' without cast to 'unsigned char'",
+   "rule_id": "STR00-C",
+   "severity": "Medium",
+   "suggestion": "Cast to '(unsigned char)' before passing to 'isgraph()': isgraph((unsigned char)*hbp)"
+  },
+  {
+   "column": 18,
+   "file": "src/wps/httpread.c",
+   "line": 253,
+   "message": "Argument to 'isgraph()' is not cast to unsigned char. This can cause undefined behavior if the argument has a negative value.",
+   "rule_id": "STR37-C",
+   "severity": "Medium",
+   "suggestion": "Cast the argument to unsigned char: 'isgraph((unsigned char)...)'"
+  },
+  {
+   "column": 10,
+   "file": "src/wps/httpread.c",
+   "line": 263,
+   "message": "Plain 'char' passed to 'isgraph()' without cast to 'unsigned char'",
+   "rule_id": "STR00-C",
+   "severity": "Medium",
+   "suggestion": "Cast to '(unsigned char)' before passing to 'isgraph()': isgraph((unsigned char)*hbp)"
+  },
+  {
+   "column": 18,
+   "file": "src/wps/httpread.c",
+   "line": 263,
+   "message": "Argument to 'isgraph()' is not cast to unsigned char. This can cause undefined behavior if the argument has a negative value.",
+   "rule_id": "STR37-C",
+   "severity": "Medium",
+   "suggestion": "Cast the argument to unsigned char: 'isgraph((unsigned char)...)'"
+  },
+  {
+   "column": 4,
+   "file": "src/wps/httpread.c",
+   "line": 270,
+   "message": "Variable 'c' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const c = ..."
+  },
+  {
+   "column": 12,
+   "file": "src/wps/httpread.c",
+   "line": 270,
+   "message": "Pointer dereference '*rawuri' (char type) converted without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 12,
+   "file": "src/wps/httpread.c",
+   "line": 270,
+   "message": "Pointer dereference '*rawuri' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 13,
+   "file": "src/wps/httpread.c",
+   "line": 270,
+   "message": "'rawuri' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 8,
+   "file": "src/wps/httpread.c",
+   "line": 272,
+   "message": "Plain 'char' passed to 'isxdigit()' without cast to 'unsigned char'",
+   "rule_id": "STR00-C",
+   "severity": "Medium",
+   "suggestion": "Cast to '(unsigned char)' before passing to 'isxdigit()': isxdigit((unsigned char)rawuri[1])"
+  },
+  {
+   "column": 17,
+   "file": "src/wps/httpread.c",
+   "line": 272,
+   "message": "Argument to 'isxdigit()' is not cast to unsigned char. This can cause undefined behavior if the argument has a negative value.",
+   "rule_id": "STR37-C",
+   "severity": "Medium",
+   "suggestion": "Cast the argument to unsigned char: 'isxdigit((unsigned char)...)'"
+  },
+  {
+   "column": 31,
+   "file": "src/wps/httpread.c",
+   "line": 272,
+   "message": "Plain 'char' passed to 'isxdigit()' without cast to 'unsigned char'",
+   "rule_id": "STR00-C",
+   "severity": "Medium",
+   "suggestion": "Cast to '(unsigned char)' before passing to 'isxdigit()': isxdigit((unsigned char)rawuri[2])"
+  },
+  {
+   "column": 40,
+   "file": "src/wps/httpread.c",
+   "line": 272,
+   "message": "Argument to 'isxdigit()' is not cast to unsigned char. This can cause undefined behavior if the argument has a negative value.",
+   "rule_id": "STR37-C",
+   "severity": "Medium",
+   "suggestion": "Cast the argument to unsigned char: 'isxdigit((unsigned char)...)'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/httpread.c",
+   "line": 273,
+   "message": "Pointer dereference '*uri++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/httpread.c",
+   "line": 276,
+   "message": "Pointer dereference '*uri++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "src/wps/httpread.c",
+   "line": 280,
+   "message": "Pointer dereference '*uri' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 8,
+   "file": "src/wps/httpread.c",
+   "line": 287,
+   "message": "Plain 'char' passed to 'isdigit()' without cast to 'unsigned char'",
+   "rule_id": "STR00-C",
+   "severity": "Medium",
+   "suggestion": "Cast to '(unsigned char)' before passing to 'isdigit()': isdigit((unsigned char)hbp[2])"
+  },
+  {
+   "column": 16,
+   "file": "src/wps/httpread.c",
+   "line": 287,
+   "message": "Argument to 'isdigit()' is not cast to unsigned char. This can cause undefined behavior if the argument has a negative value.",
+   "rule_id": "STR37-C",
+   "severity": "Medium",
+   "suggestion": "Cast the argument to unsigned char: 'isdigit((unsigned char)...)'"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/httpread.c",
+   "line": 292,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'hbp' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 8,
+   "file": "src/wps/httpread.c",
+   "line": 304,
+   "message": "Plain 'char' passed to 'isgraph()' without cast to 'unsigned char'",
+   "rule_id": "STR00-C",
+   "severity": "Medium",
+   "suggestion": "Cast to '(unsigned char)' before passing to 'isgraph()': isgraph((unsigned char)*hbp)"
+  },
+  {
+   "column": 16,
+   "file": "src/wps/httpread.c",
+   "line": 304,
+   "message": "Argument to 'isgraph()' is not cast to unsigned char. This can cause undefined behavior if the argument has a negative value.",
+   "rule_id": "STR37-C",
+   "severity": "Medium",
+   "suggestion": "Cast the argument to unsigned char: 'isgraph((unsigned char)...)'"
+  },
+  {
+   "column": 3,
+   "file": "src/wps/httpread.c",
+   "line": 309,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'hbp' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/httpread.c",
+   "line": 355,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 48,
+   "file": "src/wps/httpread.c",
+   "line": 367,
+   "message": "Pointer parameter 'eloop_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *eloop_ctx'"
+  },
+  {
+   "column": 22,
+   "file": "src/wps/httpread.c",
+   "line": 380,
+   "message": "Variable 'readbuf' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'readbuf' before use, e.g., at its declaration"
+  },
+  {
+   "column": 48,
+   "file": "src/wps/httpread.c",
+   "line": 382,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 48,
+   "file": "src/wps/httpread.c",
+   "line": 382,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 48,
+   "file": "src/wps/httpread.c",
+   "line": 382,
+   "message": "strerror() should not be called in signal handlers (uses errno)",
+   "rule_id": "ERR32-C",
+   "severity": "High",
+   "suggestion": "Avoid error reporting functions in signal handlers"
+  },
+  {
+   "column": 57,
+   "file": "src/wps/httpread.c",
+   "line": 382,
+   "message": "errno should not be used in signal handlers",
+   "rule_id": "ERR32-C",
+   "severity": "High",
+   "suggestion": "Save and restore errno in signal handler if needed"
+  },
+  {
+   "column": 4,
+   "file": "src/wps/httpread.c",
+   "line": 432,
+   "message": "Direct assignment of flexible array structure instances. Use memcpy() for dynamic copying.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Use memcpy() to copy the structure and its flexible array member"
+  },
+  {
+   "column": 4,
+   "file": "src/wps/httpread.c",
+   "line": 432,
+   "message": "Pointer dereference '*hbp++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 13,
+   "file": "src/wps/httpread.c",
+   "line": 432,
+   "message": "Pointer dereference '*rbp' (char type) assigned to larger type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment: (unsigned char)*ptr"
+  },
+  {
+   "column": 13,
+   "file": "src/wps/httpread.c",
+   "line": 432,
+   "message": "Pointer dereference '*rbp++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 8,
+   "file": "src/wps/httpread.c",
+   "line": 436,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'hbp' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 8,
+   "file": "src/wps/httpread.c",
+   "line": 437,
+   "message": "Array subscript -2 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'hbp' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 8,
+   "file": "src/wps/httpread.c",
+   "line": 438,
+   "message": "Array subscript -3 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'hbp' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 8,
+   "file": "src/wps/httpread.c",
+   "line": 439,
+   "message": "Array subscript -4 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'hbp' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 5,
+   "file": "src/wps/httpread.c",
+   "line": 441,
+   "message": "Pointer dereference '*hbp' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 23,
+   "file": "src/wps/httpread.c",
+   "line": 497,
+   "message": "Integer arithmetic 'h->body_alloc_nbytes +\n\t\t\t\tHTTPREAD_BODYBUF_DELTA' evaluated in smaller type before comparison/assignment to larger type - may overflow before comparison",
+   "rule_id": "INT18-C",
+   "severity": "High",
+   "suggestion": "Cast at least one operand to the larger type before performing arithmetic. Example: (unsigned long long)x + y"
+  },
+  {
+   "column": 24,
+   "file": "src/wps/httpread.c",
+   "line": 505,
+   "message": "Integer arithmetic 'h->content_length + 1' evaluated in smaller type before comparison/assignment to larger type - may overflow before comparison",
+   "rule_id": "INT18-C",
+   "severity": "High",
+   "suggestion": "Cast at least one operand to the larger type before performing arithmetic. Example: (unsigned long long)x + y"
+  },
+  {
+   "column": 25,
+   "file": "src/wps/httpread.c",
+   "line": 535,
+   "message": "Array subscript -2 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'bbp' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 9,
+   "file": "src/wps/httpread.c",
+   "line": 536,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'bbp' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 11,
+   "file": "src/wps/httpread.c",
+   "line": 541,
+   "message": "Plain 'char' passed to 'isxdigit()' without cast to 'unsigned char'",
+   "rule_id": "STR00-C",
+   "severity": "Medium",
+   "suggestion": "Cast to '(unsigned char)' before passing to 'isxdigit()': isxdigit((unsigned char)*cbp)"
+  },
+  {
+   "column": 20,
+   "file": "src/wps/httpread.c",
+   "line": 541,
+   "message": "Argument to 'isxdigit()' is not cast to unsigned char. This can cause undefined behavior if the argument has a negative value.",
+   "rule_id": "STR37-C",
+   "severity": "Medium",
+   "suggestion": "Cast the argument to unsigned char: 'isxdigit((unsigned char)...)'"
+  },
+  {
+   "column": 6,
+   "file": "src/wps/httpread.c",
+   "line": 546,
+   "message": "Return value of 'strtoul' assigned to 'h->chunk_size' but not checked for errors: 'strtoul(cbp, NULL, 16)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  },
+  {
+   "column": 22,
+   "file": "src/wps/httpread.c",
+   "line": 546,
+   "message": "Return value from strtoul() should be checked for errors",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Check if strtoul() returned an error value (NULL, -1, etc.)"
+  },
+  {
+   "column": 22,
+   "file": "src/wps/httpread.c",
+   "line": 546,
+   "message": "In-band function 'strtoul' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+   "rule_id": "ERR30-C",
+   "severity": "Medium",
+   "suggestion": "Set errno before call: 'errno = 0; val = strtoul(...); if (errno == ERANGE) { ... }'"
+  },
+  {
+   "column": 10,
+   "file": "src/wps/httpread.c",
+   "line": 581,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'bbp' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 10,
+   "file": "src/wps/httpread.c",
+   "line": 582,
+   "message": "Array subscript -2 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'bbp' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 11,
+   "file": "src/wps/httpread.c",
+   "line": 594,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/httpread.c",
+   "line": 612,
+   "message": "Direct assignment of flexible array structure instances. Use memcpy() for dynamic copying.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Use memcpy() to copy the structure and its flexible array member"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/httpread.c",
+   "line": 612,
+   "message": "Pointer dereference '*bbp++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 14,
+   "file": "src/wps/httpread.c",
+   "line": 612,
+   "message": "Pointer dereference '*rbp' (char type) assigned to larger type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment: (unsigned char)*ptr"
+  },
+  {
+   "column": 14,
+   "file": "src/wps/httpread.c",
+   "line": 612,
+   "message": "Pointer dereference '*rbp++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 4,
+   "file": "src/wps/httpread.c",
+   "line": 633,
+   "message": "Signed integer compound subtraction 'nread -= ncopy' may overflow without checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 8,
+   "file": "src/wps/httpread.c",
+   "line": 647,
+   "message": "Pointer dereference '*rbp' (char type) assigned to larger type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment: (unsigned char)*ptr"
+  },
+  {
+   "column": 8,
+   "file": "src/wps/httpread.c",
+   "line": 647,
+   "message": "Pointer dereference '*rbp++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 4,
+   "file": "src/wps/httpread.c",
+   "line": 649,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/httpread.c",
+   "line": 684,
+   "message": "Unreachable code after unconditional 'goto'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/httpread.c",
+   "line": 729,
+   "message": "Function 'httpread_create' does not validate pointer parameter 'cb' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cb' at the start of the function, e.g., 'if (!cb) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/httpread.c",
+   "line": 762,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/httpread.c",
+   "line": 771,
+   "message": "Function 'httpread_hdr_type_get' does not validate pointer parameter 'h' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'h' at the start of the function, e.g., 'if (!h) { return error_code; }'"
+  },
+  {
+   "column": 62,
+   "file": "src/wps/httpread.c",
+   "line": 771,
+   "message": "Pointer parameter 'h' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *h'"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/httpread.c",
+   "line": 780,
+   "message": "Function 'httpread_uri_get' does not validate pointer parameter 'h' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'h' at the start of the function, e.g., 'if (!h) { return error_code; }'"
+  },
+  {
+   "column": 41,
+   "file": "src/wps/httpread.c",
+   "line": 780,
+   "message": "Pointer parameter 'h' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *h'"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/httpread.c",
+   "line": 787,
+   "message": "Function 'httpread_reply_code_get' does not validate pointer parameter 'h' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'h' at the start of the function, e.g., 'if (!h) { return error_code; }'"
+  },
+  {
+   "column": 45,
+   "file": "src/wps/httpread.c",
+   "line": 787,
+   "message": "Pointer parameter 'h' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *h'"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/httpread.c",
+   "line": 794,
+   "message": "Function 'httpread_length_get' does not validate pointer parameter 'h' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'h' at the start of the function, e.g., 'if (!h) { return error_code; }'"
+  },
+  {
+   "column": 41,
+   "file": "src/wps/httpread.c",
+   "line": 794,
+   "message": "Pointer parameter 'h' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *h'"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/httpread.c",
+   "line": 804,
+   "message": "Function 'httpread_data_get' does not validate pointer parameter 'h' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'h' at the start of the function, e.g., 'if (!h) { return error_code; }'"
+  },
+  {
+   "column": 42,
+   "file": "src/wps/httpread.c",
+   "line": 804,
+   "message": "Pointer parameter 'h' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *h'"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/httpread.c",
+   "line": 814,
+   "message": "Function 'httpread_hdr_get' does not validate pointer parameter 'h' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'h' at the start of the function, e.g., 'if (!h) { return error_code; }'"
+  },
+  {
+   "column": 41,
+   "file": "src/wps/httpread.c",
+   "line": 814,
+   "message": "Pointer parameter 'h' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *h'"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/httpread.c",
+   "line": 828,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 46,
+   "file": "src/wps/httpread.c",
+   "line": 828,
+   "message": "Pointer parameter 'h' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *h'"
+  },
+  {
+   "column": 26,
+   "file": "src/wps/httpread.c",
+   "line": 830,
+   "message": "'tag' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 4,
+   "file": "src/wps/httpread.c",
+   "line": 841,
+   "message": "Function returns pointer to local variable 'hdr' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  }
+ ]
+}

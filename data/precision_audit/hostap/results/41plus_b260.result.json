@@ -1,0 +1,926 @@
+{
+  "labels": [
+    {
+      "rule": "EXP33-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 52,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*ptr)-not-a-deref on os_zalloc(sizeof(*data)) target; established EXP33 sizeof(*ptr) class"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 67,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "if/else-if both lead to same return NULL after; no-final-else guard-clause pedantry, established class"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 78,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "data is heap (os_zalloc), not automatic storage; heap-vs-automatic-storage confusion class"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 88,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*ptr)-not-a-deref, same class as line 52"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 104,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "data is heap-allocated (os_zalloc); heap-vs-automatic-storage confusion"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 127,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "os_free(data) here is the single free of this instance; sm->m set NULL on init_for_reauth failure elsewhere so deinit never revisits a freed priv; no real double free"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 131,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "eap_tls_failure is a plain internal helper (not vtable-bound); sm read-only, genuine if low-value TP per plain-helper convention"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 132,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "same as above; plain internal helper param, read-only"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 134,
+      "verdict": "FP",
+      "confidence": "low",
+      "reason": "resp is returned by the same non-const wpabuf* return type; const-qualifying would create a type mismatch on return"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 157,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_tls13_context[] is a local array sized purely by its own 1-element initializer; established ARR02 array-sized-by-own-initializer class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 185,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_tls_free_key(data) only frees/NULLs the data->key_data member, not data itself; established \"free\"-named-helper-frees-a-sub-field misattribution class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 185,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_tls_free_key(data) only frees/NULLs the data->key_data member, not data itself; established \"free\"-named-helper-frees-a-sub-field misattribution class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 185,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_tls_free_key(data) only frees/NULLs the data->key_data member, not data itself; established \"free\"-named-helper-frees-a-sub-field misattribution class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 189,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same \"free\"-named-helper-frees-sub-field class; data itself never freed"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 190,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 191,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 193,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 193,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 200,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "os_free(data->session_id) frees only the session_id member, not data; same sub-field-free misattribution class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 200,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "os_free(data->session_id) frees only the session_id member, not data; same sub-field-free misattribution class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 200,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "os_free(data->session_id) frees only the session_id member, not data; same sub-field-free misattribution class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 200,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "os_free(data->session_id) frees only the session_id member, not data; same sub-field-free misattribution class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 202,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 202,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 203,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 204,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 204,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 205,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 205,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same class"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 227,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "eap_get_config(sm) result treated as internal invariant never-null; established pervasive FP class across eap peer method files"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 233,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "resp is heap wpabuf (data->pending_resp), not automatic storage"
+    },
+    {
+      "rule": "EXP20-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 280,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpabuf_len(resp)==1 checks an exact RFC 9190 protected-success-indication length, not a boolean truthiness test; != 0 would be wrong here"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 300,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "resp traces to heap-allocated wpabuf (from eap_peer_tls_process_helper/pending_resp), not automatic storage"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 304,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_tls_has_reauth_data is bound via eap->has_reauth_data in eap_peer_tls_register; DCL13 EAP-method vtable dispatch-contract FP"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 304,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_tls_has_reauth_data is bound via eap->has_reauth_data in eap_peer_tls_register; DCL13 EAP-method vtable dispatch-contract FP"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 311,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_tls_deinit_for_reauth is bound via eap->deinit_for_reauth; vtable dispatch-contract FP"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 328,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "os_free(data) here is the only free on this path (reauth_init failure); returns NULL immediately after, no later use"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 331,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "\"return priv\" is only reached on the branch where reauth_init succeeded and no free happened (the free is inside the if-block that returns NULL instead); sqc CFG conflates the two mutually exclusive return paths"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 331,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same branch-blindness: the os_free(data) at line 328 and \"return priv\" at 331 are on mutually exclusive paths"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 335,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf/buflen is the idiomatic T*,size_t companion-pair; established API05 ptr+size_t idiom FP class"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 335,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf/buflen is the idiomatic T*,size_t companion-pair; established API05 ptr+size_t idiom FP class"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 343,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_tls_isKeyAvailable bound via eap->isKeyAvailable; vtable dispatch-contract FP"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 343,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_tls_isKeyAvailable bound via eap->isKeyAvailable; vtable dispatch-contract FP"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 350,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_tls_getKey bound via eap->getKey; vtable dispatch-contract FP"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 350,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "size_t *len output-param companion to returned key buffer; ptr+size_t idiom FP"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 350,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_tls_getKey bound via eap->getKey; vtable dispatch-contract FP"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 364,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "key is os_memdup() heap memory, not automatic storage"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 368,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_tls_get_emsk bound via eap->get_emsk; vtable dispatch-contract FP"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 368,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "size_t *len companion out-param; ptr+size_t idiom FP"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 368,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_tls_get_emsk bound via eap->get_emsk; vtable dispatch-contract FP"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 382,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "key is os_memdup() heap memory, not automatic storage"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 386,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_tls_get_session_id bound via eap->getSessionId; vtable dispatch-contract FP"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 386,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "size_t *len companion out-param; ptr+size_t idiom FP"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 386,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_tls_get_session_id bound via eap->getSessionId; vtable dispatch-contract FP"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 400,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "id is os_memdup() heap memory, not automatic storage"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 408,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peer_method_register(eap) docstring: \"caller must not free the allocated method data regardless of return value\"; ownership-transfer-to-registration-API FP"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/eap_peer/eap_tls.c",
+      "line": 434,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same ownership-transfer-to-registration-API FP, EAP_UNAUTH_TLS variant"
+    },
+    {
+      "rule": "API02-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 19,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "edit_cmd_cb is a function-pointer variable type; cmd is a NUL-terminated string param, not an array needing a size argument"
+    },
+    {
+      "rule": "CON03-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 21,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no pthreads anywhere in this single-threaded CLI edit-line front end; no-pthread CON03 FP class"
+    },
+    {
+      "rule": "WIN04-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 21,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "WIN04-C EncodePointer/DecodePointer is a Windows-only mitigation; this file is a POSIX readline wrapper with zero Windows API usage"
+    },
+    {
+      "rule": "CON03-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 24,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread FP class"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 35,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "pending_completions=NULL is read on the next completion request in readline_completion_func, invoked indirectly by the external rl_completion_matches() library call sqc does not trace into"
+    },
+    {
+      "rule": "CON07-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 39,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread FP class"
+    },
+    {
+      "rule": "CON03-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 41,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread FP class"
+    },
+    {
+      "rule": "CON03-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 42,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread FP class"
+    },
+    {
+      "rule": "STR00-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 53,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "pos is declared static int pos, not char; wrong-type-claim STR00 FP class"
+    },
+    {
+      "rule": "STR00-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 54,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "pos is int, not char; wrong-type-claim"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 67,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "edit_completion_cb is a static function-pointer variable (declared line 21) invoked via call syntax; DCL31 function-pointer-variable-call misfire class"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 67,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "edit_cb_ctx is a static-storage-duration pointer with no initializer, implicitly NULL per C 6.7.9p10; EXP33 static-variable-zero-init FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 69,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "rl_completion_matches is declared in <readline/readline.h>, included at top of file; DCL31 system-header FP class"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 73,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "edit_read_char is registered via eloop_register_read_sock as an eloop_sock_handler callback; fixed-signature dispatch-contract FP"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 73,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "edit_read_char is registered via eloop_register_read_sock as an eloop_sock_handler callback; fixed-signature dispatch-contract FP"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 75,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "rl_callback_read_char declared in <readline/readline.h>; DCL31 system-header FP class"
+    },
+    {
+      "rule": "CON07-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 79,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no-pthread FP class"
+    },
+    {
+      "rule": "ARR30-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 82,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "loop bounded by the NUL terminator of a proper C string; ARR30 NUL-terminated-string-traversal FP class"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 84,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*pos = '\\0' is a plain char-to-char literal assignment, no widening; STR34 char-to-char FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 96,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "next_history declared in <readline/history.h>; DCL31 system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 98,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "previous_history declared in <readline/history.h>; system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 100,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "add_history declared in <readline/history.h>; system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 101,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "next_history; system-header FP class"
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 103,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ad-hoc-NULL-check stylistic pedantry, established MEM10 FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 104,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "edit_eof_cb is a static function-pointer variable invoked via call syntax; DCL31 function-pointer-variable-call misfire"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 104,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "edit_cb_ctx static pointer implicitly NULL-initialized per C 6.7.9p10; EXP33 static-variable FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 108,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "edit_cmd_cb is a static function-pointer variable invoked via call syntax; DCL31 function-pointer-variable-call misfire"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 112,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "edit_init is only called from wpa_cli.c/hostapd_cli.c/wlantest_cli.c main() with fixed, always-valid callback pointers; internal-only-API FP class"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 112,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "edit_init is only called from wpa_cli.c/hostapd_cli.c/wlantest_cli.c main() with fixed, always-valid callback pointers; internal-only-API FP class"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 112,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "edit_init is only called from wpa_cli.c/hostapd_cli.c/wlantest_cli.c main() with fixed, always-valid callback pointers; internal-only-API FP class"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 114,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "completion_cb is a plain param of a directly-named (non-vtable) function, genuinely never modified; low-value plain-helper TP"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 115,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "ctx is a plain param, never modified, stored into a global; low-value plain-helper TP"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 124,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "read_history declared in <readline/history.h>; system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 125,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "stifle_history declared in <readline/history.h>; system-header FP class"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 131,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ps is a const char *ps parameter (a string), not a plain char being widened; wrong-type-claim STR34 misfire"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 135,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "rl_callback_handler_install declared in <readline/readline.h>; system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 141,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "rl_callback_handler_install; system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 150,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "rl_set_prompt declared in <readline/readline.h>; system-header FP class"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 150,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "rl_set_prompt(const char *prompt) takes a const char*; passing a literal into a const param cannot be modified, sqc cannot see the unresolved system-header prototype"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 151,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "rl_replace_line; system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 152,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "rl_redisplay; system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 153,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "rl_callback_handler_remove; system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 162,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "history_set_pos declared in <readline/history.h>; system-header FP class"
+    },
+    {
+      "rule": "ARR30-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 163,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "misattributed to the outer while((h=current_history())) line; the real pointer walk (p++ at line 166) is bounded by the NUL terminator of the readline HIST_ENTRY line string"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 163,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "current_history declared in <readline/history.h>; system-header FP class"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 164,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "h is dereferenced only inside the while((h=current_history())) loop body, which the loop condition already guarantees non-NULL before entry"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 165,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "p is assigned from h->line, which readline guarantees is always a valid non-NULL string pointer on a HIST_ENTRY"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 167,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "filter_cb is a function-pointer parameter invoked via call syntax; DCL31 function-pointer-variable-call misfire"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 167,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "edit_cb_ctx static pointer implicitly NULL-initialized; EXP33 static-variable FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 168,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "remove_history/where_history declared in <readline/history.h>; system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 168,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "remove_history/where_history declared in <readline/history.h>; system-header FP class"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 172,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "h (assigned at line 168) is read at the if(h) check, h->line, h->data, and passed to free(h) itself; sqc's dead-store detector does not count passing a pointer as the sole argument to free() as a read"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 174,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "next_history; system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 176,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "next_history; system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 178,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "write_history declared in <readline/history.h>; system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 190,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "rl_on_new_line declared in <readline/readline.h>; system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/edit_readline.c",
+      "line": 191,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "rl_redisplay; system-header FP class"
+    }
+  ],
+  "fns": [],
+  "files_clean_for_fn": [
+    "src/eap_peer/eap_tls.c",
+    "src/utils/edit_readline.c"
+  ],
+  "summary": {
+    "tp": 4,
+    "fp": 110,
+    "fn": 0
+  }
+}

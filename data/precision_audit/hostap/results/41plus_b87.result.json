@@ -1,0 +1,1219 @@
+{
+ "labels": [
+  {
+   "rule": "PRE00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 67,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "LOG_WOLF_ERROR_FUNC only used with plain literal/scalar args at every call site; no observed double-eval side effect"
+  },
+  {
+   "rule": "PRE01-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 67,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'err' always passed as a plain int expr at call sites; unparenthesized use causes no precedence issue in practice"
+  },
+  {
+   "rule": "PRE05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 67,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "stringification of 'func' is the intended effect (logs the wolfSSL API name), not a parameter-expansion bug"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 67,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'err' is only ever passed as a plain variable at call sites; no actual double side-effect observed"
+  },
+  {
+   "rule": "PRE05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 71,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "LOG_WOLF_ERROR_FUNC_NULL stringifies 'func' intentionally to log the API name; not an expansion bug"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 99,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wc_rng_new(NULL,0,NULL) - literal NULL,NULL,NULL default-arg call, no real aliasing (categorical_patterns.md EXP43-C NULL,NULL FP class)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 104,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'ret' in wc_rng_init points to heap memory (os_zalloc/wc_rng_new), not automatic storage; DCL30-C local-var-vs-storage confusion"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 112,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wc_FreeRng(rng) frees WC_RNG's internal state, os_free(rng) frees the container struct - two distinct memory regions, not a double free"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 114,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wc_rng_free() in the #else CONFIG_FIPS branch is mutually exclusive with the #ifdef branch's wc_FreeRng+os_free; sqc treats both #ifdef/#else branches as sequential"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 142,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'ret' in ecc_key_init points to heap memory (os_zalloc/wc_ecc_key_new), not automatic storage; same DCL30-C confusion as line 104"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 150,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wc_ecc_free(key) frees internal ecc_key state, os_free(key) frees the container - distinct regions, not a double free"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 150,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same wc_ecc_free+os_free container misidentification as line 150 MEM30-C finding"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 152,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wc_ecc_key_free() in #else branch is mutually exclusive with #ifdef CONFIG_FIPS branch's frees; #ifdef/#else blindness"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 219,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sha1_vector is an internal-only crypto primitive called from fixed internal call sites, never externally-nullable (established API00-C internal-API FP class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 219,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sha1_vector is an internal-only crypto primitive called from fixed internal call sites, never externally-nullable (established API00-C internal-API FP class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 219,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sha1_vector is an internal-only crypto primitive called from fixed internal call sites, never externally-nullable (established API00-C internal-API FP class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 514,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pbkdf2_sha1 'ssid' - internal-only API FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 514,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid+ssid_len is the idiomatic T*,size_t companion-pointer pattern (confirmed categorical API05-C FP)"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 545,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'i' used as array index and shift count in a standard parity-bit computation loop; not a real bitwise/arithmetic readability hazard"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 545,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'i' is the shift-count operand (0-6, non-negative) of '>>' on unsigned 'tmp'; INT13-C's signed-shift concern applies to the value shifted, not the shift count"
+  },
+  {
+   "rule": "FIO50-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 546,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no FILE stream anywhere in des_encrypt(); 'tmp' is a plain u8 byte variable, not a stream - likely cross-function name conflation bug (cf. EXP39-C union-conflation precedent)"
+  },
+  {
+   "rule": "FIO50-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 546,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no FILE stream anywhere in des_encrypt(); 'tmp' is a plain u8 byte variable, not a stream - likely cross-function name conflation bug (cf. EXP39-C union-conflation precedent)"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 546,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same shift-count-vs-shifted-value confusion as line 545; 'i' is the non-negative shift count for '<<' on tmp"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 579,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "aes_encrypt_init returns 'aes' which is os_malloc'd heap memory, not automatic storage"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 628,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "aes_decrypt_init returns 'aes' which is os_malloc'd heap memory, not automatic storage"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 696,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "aes_wrap - internal-only API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 696,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "aes_wrap - internal-only API FP class"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 696,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "both #ifdef HAVE_AES_KEYWRAP and #else branches return a value; preprocessor-branch-blind MSC37-C misfire"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 713,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "aes_unwrap - internal-only API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 713,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "aes_unwrap - internal-only API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 713,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "aes_unwrap - internal-only API FP class"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 713,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "both #ifdef HAVE_AES_KEYWRAP and #else branches return a value; preprocessor-branch-blind MSC37-C misfire"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 734,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "rc4_skip 'skip' - internal-only API FP class"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 734,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "both #ifndef NO_RC4 and #else branches return a value; preprocessor-branch-blind MSC37-C misfire"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 782,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx = os_zalloc(sizeof(*ctx)) - sizeof(*ptr) idiom never evaluates/dereferences its operand (confirmed categorical FP)"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 806,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "prior os_free(ctx) at line 803 is in the mutually-exclusive inner-switch default case; if that path ran the function already returned, so ctx here is never actually freed"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 806,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "prior os_free(ctx) at line 803 is in the mutually-exclusive inner-switch default case; if that path ran the function already returned, so ctx here is never actually freed"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 806,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "prior os_free(ctx) at line 803 is in the mutually-exclusive inner-switch default case; if that path ran the function already returned, so ctx here is never actually freed"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 806,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "prior os_free(ctx) at line 803 is in the mutually-exclusive inner-switch default case; if that path ran the function already returned, so ctx here is never actually freed"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 808,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same mutually-exclusive-branch free tracking bug as line 806"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 808,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same mutually-exclusive-branch free tracking bug as line 806"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 808,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same mutually-exclusive-branch free tracking bug as line 806"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 808,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same mutually-exclusive-branch free tracking bug as line 806"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 810,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "the only prior free (line 803) is on a mutually-exclusive inner-switch branch that already returned; line 810 is not a real double free"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 818,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "freed at line 803/810 only on the sibling CRYPTO_CIPHER_ALG_AES switch-case, mutually exclusive with this CRYPTO_CIPHER_ALG_3DES case; cross-switch-case free conflation"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 818,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "freed at line 803/810 only on the sibling CRYPTO_CIPHER_ALG_AES switch-case, mutually exclusive with this CRYPTO_CIPHER_ALG_3DES case; cross-switch-case free conflation"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 818,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "freed at line 803/810 only on the sibling CRYPTO_CIPHER_ALG_AES switch-case, mutually exclusive with this CRYPTO_CIPHER_ALG_3DES case; cross-switch-case free conflation"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 818,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "freed at line 803/810 only on the sibling CRYPTO_CIPHER_ALG_AES switch-case, mutually exclusive with this CRYPTO_CIPHER_ALG_3DES case; cross-switch-case free conflation"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 819,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same cross-switch-case free conflation as line 818"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 819,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same cross-switch-case free conflation as line 818"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 819,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same cross-switch-case free conflation as line 818"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 819,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same cross-switch-case free conflation as line 818"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 833,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'ctx' is os_zalloc'd heap memory, not automatic storage"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 833,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same mutually-exclusive-switch-case free-tracking bug feeding the false 'ctx already freed' state"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 837,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_cipher_encrypt - internal-only API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 837,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_cipher_encrypt - internal-only API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 867,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_cipher_decrypt - internal-only API FP class"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 907,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "file-scope const array sized purely by its own initializer (not a parameter/#ifdef-size-variant) - genuine if trivial ARR02-C opportunity per established literal-target sub-shape"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 926,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "same literal-target ARR02-C sub-shape as line 907"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 937,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'dh = NULL' at declaration is unconditionally overwritten by 'dh = XMALLOC(...)' a few lines later with no intervening read - genuine dead store"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 938,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'privkey = NULL' unconditionally overwritten by wpabuf_alloc() shortly after, no intervening read"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 939,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'pubkey = NULL' unconditionally overwritten by wpabuf_alloc() shortly after, no intervening read"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 956,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "privkey is freed via wpabuf_clear_free(privkey) at the done: label on every path (ownership transferred out via *priv only on success, local set NULL first) - goto/label-frees-at-exit FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 957,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pubkey is freed via wpabuf_clear_free(pubkey) at the done: label on every path, same as line 956"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 961,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "RFC3526_PRIME_1536 is a file-scope array referenced directly, not a decayed pointer/array parameter in this scope"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 962,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "RFC3526_GENERATOR_1536 is a file-scope array referenced directly, not a decayed pointer/array parameter in this scope"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 967,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_mhead() calls as arguments are pure accessors with no side effects; unsequenced-evaluation concern is moot (established EXP30-C pure-accessor-args FP class)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 975,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "privkey is a wpabuf_alloc() heap pointer copied through *priv, not the address of a local automatic object"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 976,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pubkey is a wpabuf_alloc() heap pointer copied through *publ, not the address of a local automatic object"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 988,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ret=dh is aliased then dh is set NULL precisely to hand off ownership to ret without the done: label's conditional free(dh) touching it; sqc doesn't track the dh=NULL ownership-transfer idiom"
+  },
+  {
+   "rule": "MEM03-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 998,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'secret' here is dh5_derive_shared's wpabuf which is handed to the caller (or freed via wpabuf_clear_free on failure, which zeroizes) - not left uncleared"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1010,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same file-scope-array-not-a-parameter misfire as line 961"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1011,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same file-scope-array-not-a-parameter misfire as line 962"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1015,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wc_DhAgree args include pure accessors (wpabuf_head/len); pure-accessor-args FP class"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1017,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same file-scope-array-not-a-parameter misfire as line 961/1010"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1031,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "XFREE(secret,...) then later access is on the mutually-exclusive dh!=NULL cleanup path vs the success path; 'DYNAMIC_TYPE_TMP_BUFFER' is a wolfSSL alloc-type tag, not a tracked double free"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1032,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dh5_init_fixed's ret=dh/dh=NULL ownership-transfer idiom misread as UAF, same root cause as line 988"
+  },
+  {
+   "rule": "MEM03-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1042,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "dh5_derive_shared's 'secret' wpabuf is freed via wpabuf_clear_free on every failure path (which zeroizes) and handed to caller on success"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1045,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "secret freed via wpabuf_clear_free(secret) at the done: label on every path (goto/label-frees-at-exit FP class)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1049,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wc_DhAgree args include pure accessors (wpabuf_head/wpabuf_mhead/wpabuf_len); pure-accessor-args FP class"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1060,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dh5_derive_shared's ret=secret/secret=NULL ownership-transfer idiom, same root cause as line 988/1032"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1076,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_dh_init 'prime_len' - internal-only API, priv_sz/pub_sz<=prime_len is checked before the only subtraction; no real overflow path"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1081,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'dh = NULL' at declaration unconditionally overwritten by 'dh = os_malloc(...)' a few lines later, no intervening read"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1121,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wc_FreeDhKey(dh) frees DhKey's internal buffers, os_free(dh) frees the container struct - distinct memory, not a double free"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1153,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same wc_FreeDhKey+os_free container misidentification as line 1121"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1159,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic T*,size_t companion-pointer pattern (privkey/order/pubkey each paired with their own _len)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1188,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hash = os_zalloc(sizeof(*hash)) - sizeof(*ptr) non-evaluated-context idiom"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1225,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_hash_init's ret=hash/hash=NULL ownership-transfer idiom at done:, same root cause as line 988"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1237,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_hash_finish 'len' - internal-only API FP class"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1255,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ctx) sizing idiom for os_zalloc-style allocation, not a decayed array/pointer parameter access"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1289,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "omac1_aes_128_vector 'key' - internal-only API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1296,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "omac1_aes_128 'key' - internal-only API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1302,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "omac1_aes_256 'key' - internal-only API FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1315,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "a = os_malloc(sizeof(*a)) - sizeof(*ptr) non-evaluated-context idiom in crypto_bignum_init"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1317,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free(NULL) is a well-defined no-op per the C standard; the preceding 'if (!a || mp_init(a) != MP_OKAY)' already covers a==NULL"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1388,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mp_count_bits((mp_int*)a) is read-only; 'a' is never mutated through the cast pointer (established read-only cast-away-const FP class)"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1397,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mp_to_unsigned_bin((mp_int*)a, ...) serializes a read-only; no mutation through the cast pointer"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1397,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'buf + offset' is plain u8* + int pointer arithmetic with no sizeof() term at all present; not a scaled-arithmetic double-scaling case"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1414,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mp_count_bits((mp_int*)m) is read-only"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1417,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'r' is crypto_bignum_rand's non-const struct crypto_bignum *r parameter - there is no const to cast away (never-const-to-begin-with EXP05-C rule-bug class)"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1418,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "wolfSSL's mp_mod() params are not restrict-qualified; mp_mod(r,m,r) in-place reduction is a standard, safe bignum-library idiom (established EXP43-C non-restrict FP class)"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1418,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'r' is non-const to begin with (never-const-to-begin-with class); 'm' cast is read-only (mp_mod's modulus input is not mutated)"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1418,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'r' is non-const to begin with (never-const-to-begin-with class); 'm' cast is read-only (mp_mod's modulus input is not mutated)"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1418,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'r' is non-const to begin with (never-const-to-begin-with class); 'm' cast is read-only (mp_mod's modulus input is not mutated)"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1430,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_add's 'a'/'b' are const inputs to mp_add, only read; output goes to the separate 'r' param"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1430,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_add's 'a'/'b' are const inputs to mp_add, only read; output goes to the separate 'r' param"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1431,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'r' is crypto_bignum_add's non-const output param - never-const-to-begin-with"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1439,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_mod's 'a'/'m' are const read-only inputs to mp_mod"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1439,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_mod's 'a'/'m' are const read-only inputs to mp_mod"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1440,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'r' is crypto_bignum_mod's non-const output param - never-const-to-begin-with"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1452,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_exptmod's 'b'/'e'/'m' are const read-only inputs to mp_exptmod"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1452,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_exptmod's 'b'/'e'/'m' are const read-only inputs to mp_exptmod"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1452,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_exptmod's 'b'/'e'/'m' are const read-only inputs to mp_exptmod"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1453,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'r' is crypto_bignum_exptmod's non-const output param - never-const-to-begin-with"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1464,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_inverse's 'a'/'m' are const read-only inputs to mp_invmod"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1464,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_inverse's 'a'/'m' are const read-only inputs to mp_invmod"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1465,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'r' is crypto_bignum_inverse's non-const output param - never-const-to-begin-with"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1476,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_sub's 'a'/'b' are const read-only inputs to mp_sub"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1476,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_sub's 'a'/'b' are const read-only inputs to mp_sub"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1477,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'r' is crypto_bignum_sub's non-const output param - never-const-to-begin-with"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1488,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_div's 'a'/'b' are const read-only inputs to mp_div"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1488,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_div's 'a'/'b' are const read-only inputs to mp_div"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1501,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_addmod's 'a'/'b'/'c' are const read-only inputs to mp_addmod"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1501,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_addmod's 'a'/'b'/'c' are const read-only inputs to mp_addmod"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1501,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_addmod's 'a'/'b'/'c' are const read-only inputs to mp_addmod"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1514,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_mulmod's 'a'/'b'/'m' are const read-only inputs to mp_mulmod"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1514,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_mulmod's 'a'/'b'/'m' are const read-only inputs to mp_mulmod"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1514,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_mulmod's 'a'/'b'/'m' are const read-only inputs to mp_mulmod"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1526,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_sqrmod's 'a'/'b' are const read-only inputs to mp_sqrmod"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1526,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_sqrmod's 'a'/'b' are const read-only inputs to mp_sqrmod"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1527,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'c' is crypto_bignum_sqrmod's non-const output param - never-const-to-begin-with"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1531,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_rshift 'n' - internal-only API FP class"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1534,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'a' is const read-only input to mp_copy; 'r' is the non-const output param (never-const-to-begin-with)"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1534,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'a' is const read-only input to mp_copy; 'r' is the non-const output param (never-const-to-begin-with)"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1536,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'r' is crypto_bignum_rshift's non-const parameter mutated in-place by mp_rshb - never-const-to-begin-with"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1541,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_cmp 'a' - internal-only API FP class"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1544,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_cmp's 'a'/'b' are const read-only inputs to mp_cmp"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1544,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_cmp's 'a'/'b' are const read-only inputs to mp_cmp"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1548,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_is_zero 'a' - internal-only API FP class"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1550,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_is_zero's 'a' is const read-only input to mp_iszero"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1554,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_is_one 'a' - internal-only API FP class"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1561,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_is_odd's 'a' is const read-only input to mp_isodd"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1579,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_legendre's 'p' is const, mp_sub_d writes only to local 't', not to p - read-only"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1583,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_legendre's 'a'/'p' are const read-only inputs to mp_exptmod (result goes to local 't')"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1583,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_legendre's 'a'/'p' are const read-only inputs to mp_exptmod (result goes to local 't')"
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1611,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "case 26 ends with 'return ECC_SECP224R1;' before the #ifdef HAVE_ECC_BRAINPOOL block; #ifdef intervening between the return and the next case label confuses sqc's fallthrough check (established MSC17-C #ifdef-intervening FP class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1661,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "e = os_zalloc(sizeof(*e)) - sizeof(*ptr) non-evaluated-context idiom in crypto_ec_init"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1752,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_ec_init returns 'e' which is os_zalloc'd heap memory, not automatic storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1774,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "crypto_ec_point_init(struct crypto_ec *e) is part of the fixed multi-backend crypto.h interface shared across openssl/mbedtls/wolfssl backends; const-qualifying only this backend risks a signature mismatch (established cross-backend-API DCL13-C FP class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 1784,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_ec_prime_len 'e' - internal-only API; all callers pass an already-validated crypto_ec/group object (verified via grep across eap_pwd/sae/dragonfly/dpp_pkex call sites)"
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/crypto/crypto_wolfssl.c",
+   "line": 3652,
+   "rule": "ERR00-C",
+   "desc": "read_rsa_key_from_x509(): when the second wc_GetPubKeyDerFromCert() call (fills *key_der after wc_AllocDer) fails, the fail: label only frees cert/cert_der - it never frees or NULLs the just-allocated *key_der. Caller crypto_rsa_key_read() only treats extraction as failed when key_der is NULL (line 3700), so on this specific failure it silently proceeds to RSA-decode a garbage/partially-filled DER buffer instead of erroring out immediately; relies on the downstream decode call to fail gracefully.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 6,
+  "fp": 144,
+  "fn": 1
+ }
+}

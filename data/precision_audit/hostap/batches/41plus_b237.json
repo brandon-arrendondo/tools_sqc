@@ -1,0 +1,634 @@
+{
+ "src/eap_peer/eap_aka.c": [
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 87,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 26,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 100,
+   "message": "Dereference of uninitialized pointer 'data'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'data' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 128,
+   "message": "Use-after-free: passing freed pointer 'data' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 46,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 134,
+   "message": "Use-after-free: accessing member of freed pointer 'data'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 150,
+   "message": "Function returns pointer to local variable 'data' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 150,
+   "message": "Use-after-free: returning freed pointer 'data'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not return freed memory from functions."
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 161,
+   "message": "Function returns pointer to local variable 'data' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 52,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 166,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 42,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 181,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 71,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 199,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 206,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 207,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 208,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 209,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 49,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 217,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 275,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 277,
+   "message": "Double-free: 'resp' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 277,
+   "message": "Double free detected: 'resp' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 282,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 408,
+   "message": "Value assigned to 'identity' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 9,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 484,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 55,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 496,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 57,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 531,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 5,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 539,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 57,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 617,
+   "message": "Pointer parameter 'attr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *attr'"
+  },
+  {
+   "column": 16,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 648,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 665,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 685,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 688,
+   "message": "Function returns pointer to local variable 'enc' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 9,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 717,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 10,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 778,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 74,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 858,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 28,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 895,
+   "message": "Pointer parameter 'attr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *attr'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 942,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 51,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 946,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 56,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 997,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 29,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 998,
+   "message": "Pointer parameter 'attr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *attr'"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1104,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 9,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1153,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 68,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1238,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 34,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1239,
+   "message": "Pointer parameter 'attr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *attr'"
+  },
+  {
+   "column": 16,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1300,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 7,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1318,
+   "message": "Plain 'char' variable 'attr' used in bit operation (signedness issues)",
+   "rule_id": "STR00-C",
+   "severity": "Medium",
+   "suggestion": "Declare 'attr' as 'unsigned char' for bit operations"
+  },
+  {
+   "column": 9,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1328,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 53,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1337,
+   "message": "Pointer parameter 'attr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *attr'"
+  },
+  {
+   "column": 9,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1552,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1559,
+   "message": "Function returns pointer to local variable 'res' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 51,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1563,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 61,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1563,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 53,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1570,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1601,
+   "message": "Function returns pointer to local variable 'priv' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 54,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1605,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 64,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1605,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 64,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1605,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 50,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1624,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 60,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1624,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 42,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1631,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 52,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1631,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 52,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1631,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1645,
+   "message": "Function returns pointer to local variable 'key' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 50,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1649,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 60,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1649,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 60,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1649,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1677,
+   "message": "Function returns pointer to local variable 'id' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 44,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1681,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 54,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1681,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 54,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1681,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1695,
+   "message": "Function returns pointer to local variable 'key' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1720,
+   "message": "Memory allocated with 'eap_peer_method_alloc' for variable 'eap' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(eap)' before the variable goes out of scope"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1747,
+   "message": "Memory allocated with 'eap_peer_method_alloc' for variable 'eap' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(eap)' before the variable goes out of scope"
+  }
+ ]
+}

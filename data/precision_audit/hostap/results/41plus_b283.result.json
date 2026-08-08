@@ -1,0 +1,702 @@
+{
+  "labels": [
+    {
+      "rule": "INT14-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 58,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parity-bit idiom; i is shift-amount+loop counter, matches crypto_nettle.c:39 precedent"
+    },
+    {
+      "rule": "FIO50-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 59,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "tmp is plain u8 scalar, zero FILE*/stdio nearby; name-heuristic misfire"
+    },
+    {
+      "rule": "FIO50-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 59,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Duplicate of above"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 64,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "gcry_err_code declared in external <gcrypt.h>, header not parsed by sqc"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 77,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sha1_vector internal-only crypto API, called only with valid internal buffers"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 77,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same internal-only-API FP as above (len)"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 77,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same internal-only-API FP as above (mac)"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 286,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "crypto_dh_init internal-only API, prime_len fixed by DH group config"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 312,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "crypto_dh_derive_secret internal-only API, always valid internal privkey"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 312,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "Same internal-only-API FP (prime_len)"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 361,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "crypto_mod_exp internal-only API, modulus_len fixed by caller"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 411,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*ctx) is a non-evaluating context, not a real dereference"
+    },
+    {
+      "rule": "MEM12-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 444,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "res is gcry_error_t scalar, not a resource; also mutually-exclusive branch"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 448,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "default: branch returns immediately; mutually exclusive with later frees"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 448,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same mutually-exclusive-branch double-free misfire"
+    },
+    {
+      "rule": "MEM12-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 449,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same scalar-non-resource + branch-blind MEM12 FP"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 452,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "gcry_cipher_setkey-fail branch mutually exclusive with earlier default: free"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 452,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same mutually-exclusive-branch UAF misfire"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 453,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same mutually-exclusive-branch UAF misfire"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 453,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same mutually-exclusive-branch UAF misfire"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 454,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same mutually-exclusive-branch UAF misfire"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 454,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same mutually-exclusive-branch UAF misfire"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 455,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same mutually-exclusive-branch UAF misfire"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 455,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same mutually-exclusive-branch UAF misfire"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 456,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "setkey-fail branch return, mutually exclusive with other branches"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 456,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same mutually-exclusive-branch double-free misfire"
+    },
+    {
+      "rule": "MEM12-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 457,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same scalar-non-resource + branch-blind MEM12 FP"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 461,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "setiv-fail branch mutually exclusive with earlier returns"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 461,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same mutually-exclusive-branch UAF misfire"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 462,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same mutually-exclusive-branch UAF misfire"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 462,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same mutually-exclusive-branch UAF misfire"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 463,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same mutually-exclusive-branch UAF misfire"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 463,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same mutually-exclusive-branch UAF misfire"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 464,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same mutually-exclusive-branch UAF misfire"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 464,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same mutually-exclusive-branch UAF misfire"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 465,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "setiv-fail free, mutually exclusive with other return branches"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 465,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same mutually-exclusive-branch double-free misfire"
+    },
+    {
+      "rule": "MEM12-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 466,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same scalar-non-resource + branch-blind MEM12 FP"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 469,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ctx is os_zalloc heap memory, not automatic/local storage"
+    },
+    {
+      "rule": "MEM12-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 469,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Success return is intended ownership transfer, not a leak"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 469,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ctx only freed on disjoint error branches; success path never frees it"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 473,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "ctx genuinely read-only in crypto_cipher_encrypt, not a vtable contract"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/crypto/crypto_gnutls.c",
+      "line": 483,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "ctx genuinely read-only in crypto_cipher_decrypt, not a vtable contract"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 38,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "ROLc genuinely evaluates x/y multiple times, real macro hazard (low severity)"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 38,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "Same genuine multi-eval macro hazard as PRE00-C"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 42,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "RORc genuinely evaluates x/y multiple times, real macro hazard (low severity)"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 42,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "Same genuine multi-eval macro hazard as PRE00-C"
+    },
+    {
+      "rule": "DCL18-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 51,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "0200 is a genuine leading-zero octal literal (intentional but literal rule match)"
+    },
+    {
+      "rule": "DCL18-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 51,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "0100 genuine leading-zero octal literal"
+    },
+    {
+      "rule": "DCL18-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 51,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "040 genuine leading-zero octal literal"
+    },
+    {
+      "rule": "DCL18-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 51,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "020 genuine leading-zero octal literal"
+    },
+    {
+      "rule": "DCL18-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 51,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "010 genuine leading-zero octal literal"
+    },
+    {
+      "rule": "DCL18-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 51,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "04 genuine leading-zero octal literal"
+    },
+    {
+      "rule": "DCL18-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 51,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "02 genuine leading-zero octal literal"
+    },
+    {
+      "rule": "DCL18-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 51,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "01 genuine leading-zero octal literal"
+    },
+    {
+      "rule": "EXP07-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 260,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "Fixed-width DES key-schedule bit-repacking shift, not an assumed-value hazard"
+    },
+    {
+      "rule": "EXP07-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 261,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "Same fixed-width bit-repacking shift, not assumed-value hazard"
+    },
+    {
+      "rule": "EXP07-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 263,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "Same fixed-width bit-repacking shift, not assumed-value hazard"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 269,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "dough[32] fully written (32 assignments via 2 ptr-advances x16 iters) before read"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 280,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Mechanical DES permutation-table code; stylistic-pedantry mismatch w/ real intent"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 282,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "m assigned from bitwise expr but never itself an operand of a bitwise op"
+    },
+    {
+      "rule": "ARR30-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 282,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "m = l & 7 guarantees index in [0,7], exactly bytebit[8]'s valid range"
+    },
+    {
+      "rule": "ARR30-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 282,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same bitmask-bounded index, duplicate finding"
+    },
+    {
+      "rule": "INT13-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 287,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "i is declared u32 (unsigned) in deskey; 'signed operand int' claim is factually wrong"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 287,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Mechanical DES permutation code; stylistic-pedantry mismatch"
+    },
+    {
+      "rule": "INT13-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 289,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "i is declared u32 (unsigned) in deskey; wrong-type-detection"
+    },
+    {
+      "rule": "CON07-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 318,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "SP1..SP8 are static const lookup tables, never mutated; no-pthread misfire"
+    },
+    {
+      "rule": "ARR00-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 349,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "cur_round is initialized in the for-loop's own init clause (cur_round=0)"
+    },
+    {
+      "rule": "FIO50-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 352,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "work is a plain u32 local, zero FILE*/stdio anywhere in the function"
+    },
+    {
+      "rule": "FIO50-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 352,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Duplicate of above"
+    },
+    {
+      "rule": "FIO50-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 380,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "work is a plain u32 local, no file stream involved"
+    },
+    {
+      "rule": "FIO50-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 380,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Duplicate of above"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 409,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Parity-bit idiom (tmp>>i, i++), matches established stylistic-pedantry class"
+    },
+    {
+      "rule": "INT13-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 409,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "i is the loop-bounded [0,6] shift-count operand, not the shifted value (tmp)"
+    },
+    {
+      "rule": "FIO50-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 410,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "tmp is a plain u8 local, no file stream involved"
+    },
+    {
+      "rule": "FIO50-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 410,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Duplicate of above"
+    },
+    {
+      "rule": "INT13-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 410,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "i is the loop-bounded shift-count operand, not the shifted value"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 428,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "des_key_setup internal-only crypto primitive, fixed internal callers"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 428,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same internal-only-API FP (dk)"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 435,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "des_block_encrypt internal-only crypto primitive"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 435,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same internal-only-API FP (ek)"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 435,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same internal-only-API FP (crypt)"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 446,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "des_block_decrypt internal-only crypto primitive"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 457,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "dkey mutated through pointee via deskey(key,0,dkey->ek[0]) writes"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 469,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "des3_encrypt internal-only crypto primitive"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/des-internal.c",
+      "line": 469,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same internal-only-API FP (crypt)"
+    }
+  ],
+  "fns": [],
+  "files_clean_for_fn": [
+    "src/crypto/crypto_gnutls.c",
+    "src/crypto/des-internal.c"
+  ],
+  "summary": {
+    "tp": 14,
+    "fp": 72,
+    "fn": 0
+  }
+}

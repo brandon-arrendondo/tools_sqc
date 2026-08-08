@@ -1,0 +1,1211 @@
+{
+ "labels": [
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1803,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() are side-effect-free accessor calls \u2014 confirmed EXP30-C pure-accessor-args FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1816,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer param is a NUL-terminated C string or already paired with a size_t companion in this signature \u2014 confirmed API05-C ptr+len/plain-C-string categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1816,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer param is a NUL-terminated C string or already paired with a size_t companion in this signature \u2014 confirmed API05-C ptr+len/plain-C-string categorical FP"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1825,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = literal char), no widening conversion \u2014 confirmed categorical FP (STR34-C char-to-char pattern)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1836,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = literal char), no widening conversion \u2014 confirmed categorical FP (STR34-C char-to-char pattern)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1862,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "cmd's pointee IS modified (role/pos alias into the same cmd buffer, *pos++='\\0') \u2014 DCL13-C misses the mutation through an aliased local pointer variable"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1874,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "freq points into the caller-supplied cmd buffer (via strstr), not a string literal \u2014 STR30-C misfire"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1874,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = literal char), no widening conversion \u2014 confirmed categorical FP (STR34-C char-to-char pattern)"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1876,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() used on ctrl_iface command text with no strtol/range/error checking on the parsed value \u2014 genuine ERR07-C/ERR34-C violation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1876,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() used on ctrl_iface command text with no strtol/range/error checking on the parsed value \u2014 genuine ERR07-C/ERR34-C violation"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1886,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = literal char), no widening conversion \u2014 confirmed categorical FP (STR34-C char-to-char pattern)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1894,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = literal char), no widening conversion \u2014 confirmed categorical FP (STR34-C char-to-char pattern)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1901,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = literal char), no widening conversion \u2014 confirmed categorical FP (STR34-C char-to-char pattern)"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1904,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "len used in a parity bitmask test (len & 0x01) then arithmetic elsewhere \u2014 confirmed INT14-C stylistic-pedantry FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1994,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = literal char), no widening conversion \u2014 confirmed categorical FP (STR34-C char-to-char pattern)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2005,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = literal char), no widening conversion \u2014 confirmed categorical FP (STR34-C char-to-char pattern)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2010,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = literal char), no widening conversion \u2014 confirmed categorical FP (STR34-C char-to-char pattern)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2015,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = literal char), no widening conversion \u2014 confirmed categorical FP (STR34-C char-to-char pattern)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2020,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = literal char), no widening conversion \u2014 confirmed categorical FP (STR34-C char-to-char pattern)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2033,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer param is a NUL-terminated C string or already paired with a size_t companion in this signature \u2014 confirmed API05-C ptr+len/plain-C-string categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2033,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer param is a NUL-terminated C string or already paired with a size_t companion in this signature \u2014 confirmed API05-C ptr+len/plain-C-string categorical FP"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2045,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = literal char), no widening conversion \u2014 confirmed categorical FP (STR34-C char-to-char pattern)"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2054,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() used on ctrl_iface command text with no strtol/range/error checking on the parsed value \u2014 genuine ERR07-C/ERR34-C violation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2054,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() used on ctrl_iface command text with no strtol/range/error checking on the parsed value \u2014 genuine ERR07-C/ERR34-C violation"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2075,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = literal char), no widening conversion \u2014 confirmed categorical FP (STR34-C char-to-char pattern)"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2076,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() used on ctrl_iface command text with no strtol/range/error checking on the parsed value \u2014 genuine ERR07-C/ERR34-C violation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2076,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() used on ctrl_iface command text with no strtol/range/error checking on the parsed value \u2014 genuine ERR07-C/ERR34-C violation"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2094,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "neither side of the assignment is const-qualified in this signature \u2014 EXP40-C fires despite no const pointer being present (confirmed rule-bug pattern)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2099,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = literal char), no widening conversion \u2014 confirmed categorical FP (STR34-C char-to-char pattern)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2102,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = literal char), no widening conversion \u2014 confirmed categorical FP (STR34-C char-to-char pattern)"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2113,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "neither side of the assignment is const-qualified in this signature \u2014 EXP40-C fires despite no const pointer being present (confirmed rule-bug pattern)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2117,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = literal char), no widening conversion \u2014 confirmed categorical FP (STR34-C char-to-char pattern)"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2125,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "neither side of the assignment is const-qualified in this signature \u2014 EXP40-C fires despite no const pointer being present (confirmed rule-bug pattern)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2129,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = literal char), no widening conversion \u2014 confirmed categorical FP (STR34-C char-to-char pattern)"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2129,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'id' here is a char* (os_strchr result), not a signed integer \u2014 INT32-C misclassifies a pointer increment as integer overflow"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2130,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() used on ctrl_iface command text with no strtol/range/error checking on the parsed value \u2014 genuine ERR07-C/ERR34-C violation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2130,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() used on ctrl_iface command text with no strtol/range/error checking on the parsed value \u2014 genuine ERR07-C/ERR34-C violation"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2147,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = literal char), no widening conversion \u2014 confirmed categorical FP (STR34-C char-to-char pattern)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2152,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = literal char), no widening conversion \u2014 confirmed categorical FP (STR34-C char-to-char pattern)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2157,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = literal char), no widening conversion \u2014 confirmed categorical FP (STR34-C char-to-char pattern)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2162,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = literal char), no widening conversion \u2014 confirmed categorical FP (STR34-C char-to-char pattern)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2167,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = literal char), no widening conversion \u2014 confirmed categorical FP (STR34-C char-to-char pattern)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2180,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer param is a NUL-terminated C string or already paired with a size_t companion in this signature \u2014 confirmed API05-C ptr+len/plain-C-string categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2180,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer param is a NUL-terminated C string or already paired with a size_t companion in this signature \u2014 confirmed API05-C ptr+len/plain-C-string categorical FP"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2190,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = literal char), no widening conversion \u2014 confirmed categorical FP (STR34-C char-to-char pattern)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2203,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() are side-effect-free accessor calls \u2014 confirmed EXP30-C pure-accessor-args FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2220,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_s genuinely read-only here; only wpa_s->ibss_rsn (a field) is forwarded into ibss_rsn_start, not wpa_s itself \u2014 real (if low-severity) TP per the field-vs-pointer-forwarding distinction"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2238,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "every branch (including the #ifdef/#else alternative) explicitly returns; preprocessor-branch-blind MSC37-C misfire (extends confirmed dbus_common.c:341 pattern)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2249,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = literal char), no widening conversion \u2014 confirmed categorical FP (STR34-C char-to-char pattern)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2254,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = literal char), no widening conversion \u2014 confirmed categorical FP (STR34-C char-to-char pattern)"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2255,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() used on ctrl_iface command text with no strtol/range/error checking on the parsed value \u2014 genuine ERR07-C/ERR34-C violation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2255,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() used on ctrl_iface command text with no strtol/range/error checking on the parsed value \u2014 genuine ERR07-C/ERR34-C violation"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2307,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "block-scope local variable inside a function, not file-scope \u2014 confirmed DCL37-C block-scope misapplication pattern"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2309,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain fixed-size local buffer (SSID_MAX_LEN); no getenv/putenv anywhere in the function \u2014 confirmed ENV01-C wholesale-misfire pattern"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2311,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "block-scope local variable inside a function, not file-scope \u2014 confirmed DCL37-C block-scope misapplication pattern"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2419,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no strstr (or any macro-eligible) call at this line at all \u2014 the #ifdef is inside an if-condition several lines above; finding is misattributed"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2475,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "assignment is already wrapped in its own parens (hs20 = ...) \u2014 the exact CERT-recommended mitigation to signal deliberate assignment, so this is compliant, not a violation"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2482,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "rel_num is (hs20[6]&0xf0)>>4, bounded 0-15; rel_num+1 maxes at 16, no realistic signed overflow \u2014 rule doesn't see the bounded protocol-derived range"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2572,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "neither side of the assignment is const-qualified in this signature \u2014 EXP40-C fires despite no const pointer being present (confirmed rule-bug pattern)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2674,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_s is read-only in this function (only wpa_s->conf/wpa_config_get_network reads) \u2014 genuine, if trivial, const-eligible TP"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2686,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = literal char), no widening conversion \u2014 confirmed categorical FP (STR34-C char-to-char pattern)"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2687,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() used on ctrl_iface command text with no strtol/range/error checking on the parsed value \u2014 genuine ERR07-C/ERR34-C violation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2687,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() used on ctrl_iface command text with no strtol/range/error checking on the parsed value \u2014 genuine ERR07-C/ERR34-C violation"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2708,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'cmd' is an ordinary function parameter (local pointer), not a shared static variable \u2014 CON07-C misclassifies the variable's storage class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2709,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer param is a NUL-terminated C string or already paired with a size_t companion in this signature \u2014 confirmed API05-C ptr+len/plain-C-string categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2709,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer param is a NUL-terminated C string or already paired with a size_t companion in this signature \u2014 confirmed API05-C ptr+len/plain-C-string categorical FP"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2761,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'cmd' is an ordinary function parameter (local pointer), not a shared static variable \u2014 CON07-C misclassifies the variable's storage class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2761,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_s is entirely unused in this function body (only cmd/buf/buflen and globals are used) \u2014 trivially const-eligible, real TP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2762,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer param is a NUL-terminated C string or already paired with a size_t companion in this signature \u2014 confirmed API05-C ptr+len/plain-C-string categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2762,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer param is a NUL-terminated C string or already paired with a size_t companion in this signature \u2014 confirmed API05-C ptr+len/plain-C-string categorical FP"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2787,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = literal char), no widening conversion \u2014 confirmed categorical FP (STR34-C char-to-char pattern)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2794,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = literal char), no widening conversion \u2014 confirmed categorical FP (STR34-C char-to-char pattern)"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2801,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() used on ctrl_iface command text with no strtol/range/error checking on the parsed value \u2014 genuine ERR07-C/ERR34-C violation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2801,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() used on ctrl_iface command text with no strtol/range/error checking on the parsed value \u2014 genuine ERR07-C/ERR34-C violation"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2809,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_s used read-only (wpa_s->conf->ssid, wpa_s->current_ssid) \u2014 genuine, if low-severity, TP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2809,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer param is a NUL-terminated C string or already paired with a size_t companion in this signature \u2014 confirmed API05-C ptr+len/plain-C-string categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2809,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer param is a NUL-terminated C string or already paired with a size_t companion in this signature \u2014 confirmed API05-C ptr+len/plain-C-string categorical FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2809,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "buf's pointee IS modified (pos=buf; os_snprintf(pos,...); pos+=ret writes through the aliased pos) \u2014 DCL13-C misses the mutation via an aliased local pointer"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2827,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() used on ctrl_iface command text with no strtol/range/error checking on the parsed value \u2014 genuine ERR07-C/ERR34-C violation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2827,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() used on ctrl_iface command text with no strtol/range/error checking on the parsed value \u2014 genuine ERR07-C/ERR34-C violation"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2827,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = literal char), no widening conversion \u2014 confirmed categorical FP (STR34-C char-to-char pattern)"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2878,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2879,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2890,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer param is a NUL-terminated C string or already paired with a size_t companion in this signature \u2014 confirmed API05-C ptr+len/plain-C-string categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2890,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer param is a NUL-terminated C string or already paired with a size_t companion in this signature \u2014 confirmed API05-C ptr+len/plain-C-string categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2890,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer param is a NUL-terminated C string or already paired with a size_t companion in this signature \u2014 confirmed API05-C ptr+len/plain-C-string categorical FP"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2897,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2898,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2903,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2904,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2912,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2914,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2919,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2921,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2926,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2928,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2933,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2935,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2940,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2942,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2948,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2950,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2955,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2957,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2962,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2964,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2969,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2971,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2977,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2979,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2984,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2986,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2993,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 2995,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3003,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3005,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3013,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3015,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3020,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3022,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3028,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3030,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3035,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3037,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3046,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3048,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3056,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3058,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3066,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3068,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3077,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3078,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3083,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3084,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3093,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_s used read-only (wpa_s->own_addr) \u2014 genuine, if trivial, TP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3094,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "end is never modified or reassigned, only used for end-pos distance \u2014 genuine, if trivial, TP"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3100,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain if (ptr == NULL) guard \u2014 confirmed MEM10-C stylistic-pedantry FP (check is present, just not via a dedicated helper)"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3111,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3112,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end paired bounds-parameter idiom threaded through this parser helper; both derive from the same caller buffer \u2014 confirmed ARR36-C paired-bounds FP pattern"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3120,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "every branch (including the #ifdef/#else alternative) explicitly returns; preprocessor-branch-blind MSC37-C misfire (extends confirmed dbus_common.c:341 pattern)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3137,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer param is a NUL-terminated C string or already paired with a size_t companion in this signature \u2014 confirmed API05-C ptr+len/plain-C-string categorical FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3137,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "buf's pointee IS modified (pos=buf; os_snprintf writes through pos) \u2014 DCL13-C misses the aliased-pointer mutation"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3301,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer param is a NUL-terminated C string or already paired with a size_t companion in this signature \u2014 confirmed API05-C ptr+len/plain-C-string categorical FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3301,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "buf's pointee IS modified (pos=buf; os_snprintf writes through pos) \u2014 DCL13-C misses the aliased-pointer mutation"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3330,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer param is a NUL-terminated C string or already paired with a size_t companion in this signature \u2014 confirmed API05-C ptr+len/plain-C-string categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3330,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer param is a NUL-terminated C string or already paired with a size_t companion in this signature \u2014 confirmed API05-C ptr+len/plain-C-string categorical FP"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3332,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ifname[IFNAMSIZ + 1] is a fixed-size array sized by a compile-time macro constant, not a VLA \u2014 confirmed ENV01/MEM05 misfire pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3351,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "cmd used strictly read-only (only atoi(cmd)) \u2014 genuine, if trivial, TP"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3356,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() used on ctrl_iface command text with no strtol/range/error checking on the parsed value \u2014 genuine ERR07-C/ERR34-C violation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3356,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() used on ctrl_iface command text with no strtol/range/error checking on the parsed value \u2014 genuine ERR07-C/ERR34-C violation"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 25,
+  "fp": 125,
+  "fn": 0
+ }
+}

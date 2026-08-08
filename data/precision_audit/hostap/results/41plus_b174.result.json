@@ -1,0 +1,962 @@
+{
+ "labels": [
+  {
+   "rule": "FIO23-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 89,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "main() equiv exit() flushes stdout (categorical); also line isn't even in main()"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 121,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "from param never modified, plain internal helper not a callback contract"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 136,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom categorical FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 136,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "iface never modified in wpa_priv_cmd_scan, plain internal helper"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 137,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom categorical FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 137,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "buf only read via scan=buf, plain internal helper"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 142,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no getenv() anywhere in file; categorical ENV01-C misfire on fixed array"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 142,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "freqs[] sized by macro constant, not a VLA; categorical MEM05-C misfire"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 147,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*scan) is a type-size op, not a dereference; scan uninitialized only in the sizeof"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 181,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "iface never modified in wpa_priv_get_scan_results2"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 207,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "r never reassigned within loop iteration, real if trivial const opportunity"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 223,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: is a goto-target label reached from goto fail; not unreachable"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 224,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail label reached via goto on separate mutually-exclusive path from success return; not a double free"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 224,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same mutually-exclusive-branch reasoning as MEM30-C sibling"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 224,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free(NULL) is a documented safe no-op (categorical FP)"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 225,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "res freed exactly once on the fail path when buf==NULL causes the goto; success path returns before reaching label"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 225,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same mutually-exclusive-branch reasoning as MEM30-C sibling"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 244,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom categorical FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 244,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "iface never modified in wpa_priv_cmd_authenticate"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 245,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom categorical FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 245,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "buf only read via auth=buf, plain internal helper"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 254,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*auth) is a type-size op computed before auth=buf; not a dereference"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 296,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom categorical FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 296,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "iface never modified in wpa_priv_cmd_associate"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 297,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom categorical FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 297,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "buf only read via assoc=buf, plain internal helper"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 307,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*assoc) is a type-size op computed before assoc=buf; not a dereference"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 344,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "iface never modified in wpa_priv_cmd_get_bssid"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 360,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: goto-target label reached via goto fail; not unreachable"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 365,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "iface never modified in wpa_priv_cmd_get_ssid"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 368,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid[] sized by macro constants; no getenv anywhere in file"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 368,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid[] fixed compile-time size, not a VLA"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 387,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: goto-target label reached via goto fail; not unreachable"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 392,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 393,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom categorical FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 393,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "buf only read via params=buf, plain internal helper"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 402,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*params) is a type-size op computed before params=buf; not a dereference"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 427,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "iface never modified in wpa_priv_cmd_get_capa"
+  },
+  {
+   "rule": "DCL39-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 443,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "capa is never os_memset-zeroed (unlike the msg/msghdr sendmsg cases in this file which are); struct populated only via field assignments, so compiler padding bytes can leak uninitialized stack data over sendto()"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 447,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: goto-target label reached via goto fail; not unreachable"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 452,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx is l2_packet rx_callback's fixed void(*)(void*,const u8*,const u8*,size_t) dispatch-contract param, plus API05-C ptr categorical FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 452,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx matches l2_packet_init's fixed rx_callback typedef; dispatch-contract param"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 460,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "src_addr cast-away-const only used read-only in iovec.iov_base for sendmsg"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 462,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf cast-away-const only used read-only in iovec.iov_base for sendmsg"
+  },
+  {
+   "rule": "DCL39-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 471,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg is os_memset-zeroed immediately before use (categorical DCL39-C FP)"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 472,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread anywhere in file (categorical CON33-C FP)"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 472,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread anywhere in file (categorical CON34-C FP)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 484,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr categorical FP; single-object ctx pointer, not even array-shaped"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 487,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom categorical FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 487,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "buf only read via reg_cmd=buf and index reads, plain internal helper"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 489,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reg_cmd assigned from plain void *buf, which was never const-qualified; phantom cast-away-const"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 569,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "iface never modified in wpa_priv_cmd_l2_unregister"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 570,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "from never modified in wpa_priv_cmd_l2_unregister"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 581,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 583,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom categorical FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 583,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "buf only read (dst_addr=buf, proto memcpy) in wpa_priv_cmd_l2_send"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 626,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "iface never modified in wpa_priv_cmd_set_country"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 637,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sock_ctx is eloop_register_read_sock's fixed callback-context param; dispatch contract"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 650,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread anywhere in file (categorical CON33-C FP)"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 650,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread anywhere in file (categorical CON34-C FP)"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 662,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "index is sizeof(int), a compile-time constant (4), well inside the 2000-byte buf; not a variable index"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 665,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "unrecognized privsep command silently ignored is an intentional no-op default, not a missing branch"
+  },
+  {
+   "rule": "EXP08-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 708,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is char[2000]; sizeof(array)==element count for a char array, no sizeof/count mismatch exists"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 710,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "explicit bounds check `pos+cmd_len >= buf+sizeof(buf)` immediately precedes the write; guarded"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 710,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos is array-backed via cmd_buf=&buf[sizeof(int)] into buf[2000]; not a non-array pointer"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 762,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*iface) is a type-size op inside os_zalloc's argument, computed before iface is assigned; not a dereference"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 804,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(addr.sun_path) is a type-size op on a struct member array; not a read of addr's uninitialized value"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 811,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread anywhere in file (categorical CON33-C FP)"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 811,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread anywhere in file (categorical CON34-C FP)"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 813,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_priv_interface_deinit() is called on the immediately preceding line and already frees sock_name and (would) close fd; cleanup-helper misattribution"
+  },
+  {
+   "rule": "POS02-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 820,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_priv is a privsep helper that deliberately retains privileges for its whole lifetime; no setuid/setgid anywhere in file (categorical POS02-C FP)"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 822,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread anywhere in file (categorical CON33-C FP)"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 822,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread anywhere in file (categorical CON34-C FP)"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 831,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread anywhere in file (categorical CON33-C FP)"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 831,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread anywhere in file (categorical CON34-C FP)"
+  },
+  {
+   "rule": "POS02-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 834,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "categorical POS02-C FP, same bind() retry path, no privilege drop anywhere in file"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 838,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread anywhere in file (categorical CON33-C FP)"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 838,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread anywhere in file (categorical CON34-C FP)"
+  },
+  {
+   "rule": "POS02-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 852,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "categorical POS02-C FP, chmod on the ctrl socket, no privilege drop anywhere in file"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 853,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread anywhere in file (categorical CON33-C FP)"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 853,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread anywhere in file (categorical CON34-C FP)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 859,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "iface is a local pointer VARIABLE whose pointee is os_zalloc'd heap memory, not automatic storage"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 859,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "success return transfers ownership of iface (with sock_name/fd) to the caller, which stores it in the interface list; not a leak"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 861,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: goto-target label reached via multiple earlier goto fail; not unreachable"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 863,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_priv_interface_deinit() called on the preceding line already frees sock_name/closes fd; cleanup-helper misattribution"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 867,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr categorical FP; iface is a single-object struct pointer, not array-shaped"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 868,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size (data,data_len) idiom categorical FP"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 875,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data cast-away-const only used read-only in iovec.iov_base for sendmsg"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 875,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "u8 is a 1-byte typedef (uint8_t); claimed target alignment of 4 is factually wrong, and source is const void*, not char*"
+  },
+  {
+   "rule": "DCL39-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 884,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg is os_memset-zeroed immediately before use (categorical DCL39-C FP)"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 886,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread anywhere in file (categorical CON33-C FP)"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 886,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread anywhere in file (categorical CON34-C FP)"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 897,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "EVENT_AUTH's data param is dereferenced with no NULL guard, unlike sibling EVENT_ASSOCINFO/MICHAEL_MIC_FAILURE/PMKID_CANDIDATE cases in the same switch which explicitly check data==NULL first"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 925,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "data never modified in wpa_priv_send_interface_status"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 972,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "final pos+=len write in the if-branch is never read afterward before the function calls wpa_priv_send_event/os_free"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 976,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "final pos+=sizeof(int) write in the else-branch is never read afterward before the function calls wpa_priv_send_event/os_free"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 986,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "data never modified in wpa_priv_send_ft_response"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 993,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "categorical MEM10-C stylistic pedantry"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 997,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(data->interface_status.ifname) is sizeof of a fixed struct-member array, not a decayed pointer parameter"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1045,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data validity is checked per-case (EVENT_ASSOCINFO/MICHAEL_MIC_FAILURE/PMKID_CANDIDATE explicitly guard) rather than once at function entry; not a real gap"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1066,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "categorical MEM10-C stylistic pedantry"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1071,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "categorical MEM10-C stylistic pedantry"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1089,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "categorical MEM10-C stylistic pedantry"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1109,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx is wpa_supplicant_event_global's public driver-callback API param (driver.h), a fixed cross-driver contract signature"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1140,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom categorical FP"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1152,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "src_addr cast-away-const only used read-only in iovec.iov_base for sendmsg"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1154,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf cast-away-const only used read-only in iovec.iov_base for sendmsg"
+  },
+  {
+   "rule": "DCL39-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1163,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg is os_memset-zeroed immediately before use (categorical DCL39-C FP)"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1165,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread anywhere in file (categorical CON33-C FP)"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1165,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread anywhere in file (categorical CON34-C FP)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1169,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "signal_ctx is eloop_register_signal_terminate's fixed eloop_signal_handler dispatch-contract param"
+  },
+  {
+   "rule": "POS01-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1186,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hardcoded /dev/null path, not attacker-writable (categorical POS01-C FP)"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1198,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain multi-line printf() string-literal concatenation, zero actual preprocessor directives (categorical PRE32-C phantom-directive FP)"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1198,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same phantom-directive misfire, quotes the plain string literal as 'the directive'"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1210,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "main()'s argv is guaranteed valid by the C standard; categorical API00-C FP"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1210,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "main()'s argc/argv are guaranteed valid by the C standard; categorical STR31-C FP"
+  },
+  {
+   "rule": "STR05-C",
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1216,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ctrl_dir is assigned a string literal without const; later reassigned from optarg (compatible), genuine if low-value TP"
+  }
+ ],
+ "fns": [
+  {
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 260,
+   "rule": "INT30-C",
+   "desc": "wpa_priv_cmd_authenticate's bounds check `sizeof(*auth) + auth->ie_len + auth->auth_data_len > len` can integer-overflow: ie_len/auth_data_len are size_t fields read directly from the (world-writable, 0777-permissioned per chmod at line 852) privsep datagram, fully controlled by whatever local peer sends to the socket. A crafted sum near SIZE_MAX wraps below len, passing the check, after which params.ie_len/params.auth_data_len are set to the huge attacker-controlled values while params.ie/params.auth_data point into the small 2000-byte stack buffer, causing a large out-of-bounds read when passed to iface->driver->authenticate(). Local-privesc-adjacent since the socket is world-writable.",
+   "upstream_present": "unknown"
+  },
+  {
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 313,
+   "rule": "INT30-C",
+   "desc": "wpa_priv_cmd_associate's bounds check `sizeof(*assoc) + assoc->wpa_ie_len > len` has the same integer-overflow shape as wpa_priv_cmd_authenticate (line 260): wpa_ie_len is an attacker/peer-controlled size_t that can wrap the sum below len, then params.wpa_ie_len is set to the oversized value while params.wpa_ie points into the small stack buffer.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 25,
+  "fp": 92,
+  "fn": 2
+ }
+}

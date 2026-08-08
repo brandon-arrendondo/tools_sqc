@@ -1,0 +1,1072 @@
+{
+ "src/tls/tlsv1_common.c": [
+  {
+   "column": 38,
+   "file": "src/tls/tlsv1_common.c",
+   "line": 26,
+   "message": "Array declaration 'tls_cipher_suites[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 37,
+   "file": "src/tls/tlsv1_common.c",
+   "line": 76,
+   "message": "Array declaration 'tls_ciphers[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 6,
+   "file": "src/tls/tlsv1_common.c",
+   "line": 207,
+   "message": "Use-after-free: accessing member of freed pointer 'verify'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 36,
+   "file": "src/tls/tlsv1_common.c",
+   "line": 207,
+   "message": "Use-after-free: accessing member of freed pointer 'verify'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 6,
+   "file": "src/tls/tlsv1_common.c",
+   "line": 208,
+   "message": "Use-after-free: accessing member of freed pointer 'verify'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 34,
+   "file": "src/tls/tlsv1_common.c",
+   "line": 208,
+   "message": "Use-after-free: accessing member of freed pointer 'verify'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 6,
+   "file": "src/tls/tlsv1_common.c",
+   "line": 209,
+   "message": "Use-after-free: accessing member of freed pointer 'verify'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 37,
+   "file": "src/tls/tlsv1_common.c",
+   "line": 209,
+   "message": "Use-after-free: accessing member of freed pointer 'verify'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_common.c",
+   "line": 210,
+   "message": "Double-free: 'verify' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_common.c",
+   "line": 210,
+   "message": "Double free detected: 'verify' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate tls_verify_hash_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 6,
+   "file": "src/tls/tlsv1_common.c",
+   "line": 220,
+   "message": "Use-after-free: accessing member of freed pointer 'verify'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 39,
+   "file": "src/tls/tlsv1_common.c",
+   "line": 220,
+   "message": "Use-after-free: accessing member of freed pointer 'verify'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 6,
+   "file": "src/tls/tlsv1_common.c",
+   "line": 221,
+   "message": "Use-after-free: accessing member of freed pointer 'verify'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_common.c",
+   "line": 222,
+   "message": "Double free detected: 'verify' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate tls_verify_hash_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 49,
+   "file": "src/tls/tlsv1_common.c",
+   "line": 230,
+   "message": "Pointer parameter 'verify' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *verify'"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_common.c",
+   "line": 313,
+   "message": "Function 'tls_prf' does not validate pointer parameter 'secret' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'secret' at the start of the function, e.g., 'if (!secret) { return error_code; }'"
+  },
+  {
+   "column": 70,
+   "file": "src/tls/tlsv1_common.c",
+   "line": 313,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_common.c",
+   "line": 330,
+   "message": "Function 'tlsv12_key_x_server_params_hash' does not validate pointer parameter 'client_random' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'client_random' at the start of the function, e.g., 'if (!client_random) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_common.c",
+   "line": 330,
+   "message": "Function 'tlsv12_key_x_server_params_hash' does not validate pointer parameter 'server_random' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'server_random' at the start of the function, e.g., 'if (!server_random) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_common.c",
+   "line": 330,
+   "message": "Function 'tlsv12_key_x_server_params_hash' does not validate pointer parameter 'server_params' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'server_params' at the start of the function, e.g., 'if (!server_params) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_common.c",
+   "line": 370,
+   "message": "Function 'tls_key_x_server_params_hash' does not validate pointer parameter 'client_random' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'client_random' at the start of the function, e.g., 'if (!client_random) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_common.c",
+   "line": 370,
+   "message": "Function 'tls_key_x_server_params_hash' does not validate pointer parameter 'server_random' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'server_random' at the start of the function, e.g., 'if (!server_random) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_common.c",
+   "line": 370,
+   "message": "Function 'tls_key_x_server_params_hash' does not validate pointer parameter 'server_params' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'server_params' at the start of the function, e.g., 'if (!server_params) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_common.c",
+   "line": 408,
+   "message": "Function 'tls_verify_signature' does not validate integer parameter 'len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 5,
+   "file": "src/tls/tlsv1_common.c",
+   "line": 435,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 22,
+   "file": "src/tls/tlsv1_common.c",
+   "line": 476,
+   "message": "string/character literal contains a non-ASCII byte (>= 0x80) -- not portable across locales/national ASCII variants",
+   "rule_id": "MSC09-C",
+   "severity": "Low",
+   "suggestion": "Restrict string and character literals to the portable ASCII subset (letters, digits, space, and basic punctuation)"
+  },
+  {
+   "column": 22,
+   "file": "src/tls/tlsv1_common.c",
+   "line": 483,
+   "message": "string/character literal contains a non-ASCII byte (>= 0x80) -- not portable across locales/national ASCII variants",
+   "rule_id": "MSC09-C",
+   "severity": "Low",
+   "suggestion": "Restrict string and character literals to the portable ASCII subset (letters, digits, space, and basic punctuation)"
+  },
+  {
+   "column": 22,
+   "file": "src/tls/tlsv1_common.c",
+   "line": 490,
+   "message": "string/character literal contains a non-ASCII byte (>= 0x80) -- not portable across locales/national ASCII variants",
+   "rule_id": "MSC09-C",
+   "severity": "Low",
+   "suggestion": "Restrict string and character literals to the portable ASCII subset (letters, digits, space, and basic punctuation)"
+  },
+  {
+   "column": 6,
+   "file": "src/tls/tlsv1_common.c",
+   "line": 507,
+   "message": "Use-after-free: passing freed pointer 'decrypted' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_common.c",
+   "line": 514,
+   "message": "Double-free: 'buf' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  }
+ ],
+ "src/wps/wps_dev_attr.c": [
+  {
+   "column": 51,
+   "file": "src/wps/wps_dev_attr.c",
+   "line": 16,
+   "message": "Pointer parameter 'dev' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *dev'"
+  },
+  {
+   "column": 49,
+   "file": "src/wps/wps_dev_attr.c",
+   "line": 40,
+   "message": "Pointer parameter 'dev' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *dev'"
+  },
+  {
+   "column": 51,
+   "file": "src/wps/wps_dev_attr.c",
+   "line": 64,
+   "message": "Pointer parameter 'dev' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *dev'"
+  },
+  {
+   "column": 52,
+   "file": "src/wps/wps_dev_attr.c",
+   "line": 88,
+   "message": "Pointer parameter 'dev' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *dev'"
+  },
+  {
+   "column": 55,
+   "file": "src/wps/wps_dev_attr.c",
+   "line": 112,
+   "message": "Pointer parameter 'dev' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *dev'"
+  },
+  {
+   "column": 57,
+   "file": "src/wps/wps_dev_attr.c",
+   "line": 122,
+   "message": "Pointer parameter 'dev' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *dev'"
+  },
+  {
+   "column": 51,
+   "file": "src/wps/wps_dev_attr.c",
+   "line": 138,
+   "message": "Pointer parameter 'dev' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *dev'"
+  },
+  {
+   "column": 47,
+   "file": "src/wps/wps_dev_attr.c",
+   "line": 158,
+   "message": "Pointer parameter 'dev' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *dev'"
+  },
+  {
+   "column": 49,
+   "file": "src/wps/wps_dev_attr.c",
+   "line": 195,
+   "message": "Pointer parameter 'dev' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *dev'"
+  },
+  {
+   "column": 52,
+   "file": "src/wps/wps_dev_attr.c",
+   "line": 205,
+   "message": "Pointer parameter 'dev' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *dev'"
+  },
+  {
+   "column": 3,
+   "file": "src/wps/wps_dev_attr.c",
+   "line": 208,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 47,
+   "file": "src/wps/wps_dev_attr.c",
+   "line": 219,
+   "message": "Pointer parameter 'dev' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *dev'"
+  },
+  {
+   "column": 49,
+   "file": "src/wps/wps_dev_attr.c",
+   "line": 226,
+   "message": "Pointer parameter 'dev' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *dev'"
+  },
+  {
+   "column": 3,
+   "file": "src/wps/wps_dev_attr.c",
+   "line": 233,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 54,
+   "file": "src/wps/wps_dev_attr.c",
+   "line": 245,
+   "message": "Pointer parameter 'dev' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *dev'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_dev_attr.c",
+   "line": 263,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 6,
+   "file": "src/wps/wps_dev_attr.c",
+   "line": 272,
+   "message": "Use-after-free: accessing freed pointer 'dev->manufacturer'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_dev_attr.c",
+   "line": 282,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 6,
+   "file": "src/wps/wps_dev_attr.c",
+   "line": 291,
+   "message": "Use-after-free: accessing freed pointer 'dev->model_name'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_dev_attr.c",
+   "line": 301,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 6,
+   "file": "src/wps/wps_dev_attr.c",
+   "line": 310,
+   "message": "Use-after-free: accessing freed pointer 'dev->model_number'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_dev_attr.c",
+   "line": 320,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 6,
+   "file": "src/wps/wps_dev_attr.c",
+   "line": 329,
+   "message": "Use-after-free: accessing freed pointer 'dev->serial_number'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_dev_attr.c",
+   "line": 339,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 6,
+   "file": "src/wps/wps_dev_attr.c",
+   "line": 348,
+   "message": "Use-after-free: accessing freed pointer 'dev->device_name'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 64,
+   "file": "src/wps/wps_dev_attr.c",
+   "line": 355,
+   "message": "Pointer parameter 'dev' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *dev'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_dev_attr.c",
+   "line": 362,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 31,
+   "file": "src/wps/wps_dev_attr.c",
+   "line": 377,
+   "message": "Pointer parameter 'attr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *attr'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_dev_attr.c",
+   "line": 396,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_dev_attr.c",
+   "line": 418,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  }
+ ],
+ "src/ap/taxonomy.c": [
+  {
+   "column": 38,
+   "file": "src/ap/taxonomy.c",
+   "line": 28,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 55,
+   "file": "src/ap/taxonomy.c",
+   "line": 28,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 30,
+   "file": "src/ap/taxonomy.c",
+   "line": 53,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 30,
+   "file": "src/ap/taxonomy.c",
+   "line": 73,
+   "message": "Casting from char * (alignment 1) to const char * (alignment 4) may cause alignment issues",
+   "rule_id": "EXP36-C",
+   "severity": "Low",
+   "suggestion": "Use memcpy or ensure proper alignment before casting"
+  },
+  {
+   "column": 31,
+   "file": "src/ap/taxonomy.c",
+   "line": 85,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/taxonomy.c",
+   "line": 89,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/taxonomy.c",
+   "line": 90,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/taxonomy.c",
+   "line": 91,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/taxonomy.c",
+   "line": 92,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/taxonomy.c",
+   "line": 93,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/taxonomy.c",
+   "line": 94,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/taxonomy.c",
+   "line": 96,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/taxonomy.c",
+   "line": 96,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/taxonomy.c",
+   "line": 98,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/taxonomy.c",
+   "line": 100,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/taxonomy.c",
+   "line": 116,
+   "message": "Pointer dereference '*fpos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 5,
+   "file": "src/ap/taxonomy.c",
+   "line": 138,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 5,
+   "file": "src/ap/taxonomy.c",
+   "line": 199,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/taxonomy.c",
+   "line": 208,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/taxonomy.c",
+   "line": 239,
+   "message": "Function 'retrieve_sta_taxonomy' does not validate integer parameter 'buflen' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'buflen' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 22,
+   "file": "src/ap/taxonomy.c",
+   "line": 240,
+   "message": "Pointer parameter 'sta' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sta'"
+  },
+  {
+   "column": 33,
+   "file": "src/ap/taxonomy.c",
+   "line": 240,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/taxonomy.c",
+   "line": 243,
+   "message": "Variable 'pos' should be declared volatile - modified around function calls that may have external side effects",
+   "rule_id": "DCL22-C",
+   "severity": "Low",
+   "suggestion": "Declare as 'volatile' to prevent compiler optimizations that assume variable state is unchanged across function calls"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/taxonomy.c",
+   "line": 268,
+   "message": "Function 'taxonomy_sta_info_probe_req' does not validate pointer parameter 'sta' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sta' at the start of the function, e.g., 'if (!sta) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/taxonomy.c",
+   "line": 268,
+   "message": "Function 'taxonomy_sta_info_probe_req' does not validate pointer parameter 'ie' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ie' at the start of the function, e.g., 'if (!ie) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/taxonomy.c",
+   "line": 277,
+   "message": "Function 'taxonomy_hostapd_sta_info_probe_req' does not validate pointer parameter 'info' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'info' at the start of the function, e.g., 'if (!info) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/taxonomy.c",
+   "line": 277,
+   "message": "Function 'taxonomy_hostapd_sta_info_probe_req' does not validate pointer parameter 'ie' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ie' at the start of the function, e.g., 'if (!ie) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/taxonomy.c",
+   "line": 286,
+   "message": "Function 'taxonomy_sta_info_assoc_req' does not validate pointer parameter 'sta' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sta' at the start of the function, e.g., 'if (!sta) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/taxonomy.c",
+   "line": 286,
+   "message": "Function 'taxonomy_sta_info_assoc_req' does not validate pointer parameter 'ie' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ie' at the start of the function, e.g., 'if (!ie) { return error_code; }'"
+  }
+ ],
+ "src/crypto/dh_groups.c": [
+  {
+   "column": 17,
+   "file": "src/crypto/dh_groups.c",
+   "line": 23,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 17,
+   "file": "src/crypto/dh_groups.c",
+   "line": 57,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 17,
+   "file": "src/crypto/dh_groups.c",
+   "line": 101,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 17,
+   "file": "src/crypto/dh_groups.c",
+   "line": 161,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 17,
+   "file": "src/crypto/dh_groups.c",
+   "line": 235,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 17,
+   "file": "src/crypto/dh_groups.c",
+   "line": 341,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 17,
+   "file": "src/crypto/dh_groups.c",
+   "line": 479,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 17,
+   "file": "src/crypto/dh_groups.c",
+   "line": 681,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 17,
+   "file": "src/crypto/dh_groups.c",
+   "line": 947,
+   "message": "Array declaration 'dh_group22_generator[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 17,
+   "file": "src/crypto/dh_groups.c",
+   "line": 965,
+   "message": "Array declaration 'dh_group22_prime[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 17,
+   "file": "src/crypto/dh_groups.c",
+   "line": 983,
+   "message": "Array declaration 'dh_group22_order[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 17,
+   "file": "src/crypto/dh_groups.c",
+   "line": 993,
+   "message": "Array declaration 'dh_group23_generator[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 17,
+   "file": "src/crypto/dh_groups.c",
+   "line": 1027,
+   "message": "Array declaration 'dh_group23_prime[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 17,
+   "file": "src/crypto/dh_groups.c",
+   "line": 1061,
+   "message": "Array declaration 'dh_group23_order[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 17,
+   "file": "src/crypto/dh_groups.c",
+   "line": 1072,
+   "message": "Array declaration 'dh_group24_generator[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 17,
+   "file": "src/crypto/dh_groups.c",
+   "line": 1106,
+   "message": "Array declaration 'dh_group24_prime[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 17,
+   "file": "src/crypto/dh_groups.c",
+   "line": 1140,
+   "message": "Array declaration 'dh_group24_order[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/dh_groups.c",
+   "line": 1150,
+   "message": "Function-like macro 'DH_GROUP' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/dh_groups.c",
+   "line": 1150,
+   "message": "Macro parameter 'id' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'id' in parentheses: (id) instead of id"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/dh_groups.c",
+   "line": 1150,
+   "message": "Macro parameter 'safe' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'safe' in parentheses: (safe) instead of safe"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/dh_groups.c",
+   "line": 1150,
+   "message": "Macro evaluates parameter 'id' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 30,
+   "file": "src/crypto/dh_groups.c",
+   "line": 1156,
+   "message": "Array declaration 'dh_groups[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/dh_groups.c",
+   "line": 1198,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/dh_groups.c",
+   "line": 1209,
+   "message": "Double free detected: 'priv' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_clear_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/dh_groups.c",
+   "line": 1213,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/dh_groups.c",
+   "line": 1217,
+   "message": "Double free detected: 'priv' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_clear_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/dh_groups.c",
+   "line": 1226,
+   "message": "Function returns pointer to local variable 'pv' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/dh_groups.c",
+   "line": 1251,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/dh_groups.c",
+   "line": 1265,
+   "message": "Function returns pointer to local variable 'shared' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  }
+ ]
+}

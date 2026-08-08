@@ -1,0 +1,988 @@
+{
+ "labels": [
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 20,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "while(key) loop itself is the NULL-safe traversal guard"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 35,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "static helper, conf only read; genuine low-value const opportunity"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 37,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "priv_key=NULL unconditionally overwritten at line46 before any read"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 55,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf freed inside asn1_encaps() at line73 (wpabuf_clear_free on buf)"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 74,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label reached via goto at line57, not actually unreachable"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 75,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "success path returns at line73 before fail:, so free at 75 not on same path as line72's free"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 75,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same goto/label CFG blindness; mutually exclusive paths, no double free"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 98,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "attr freed inside asn1_encaps() at line108"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 108,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "attr passed to and freed by asn1_encaps(), not leaked"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 147,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "res comes from asn1_build_alg_id()->asn1_encaps(), heap not automatic storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 151,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "static helper, auth only read via auth->conf; low-value const opportunity"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 153,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "priv_key=NULL unconditionally overwritten at line155 before any read"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 179,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "key ultimately freed via nested asn1_encaps() calls at lines208-210"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 264,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "static helper, auth only read (auth->bk, auth->curve); low-value const opportunity"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 269,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "kek is a fixed local key buffer; no getenv() anywhere in file"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 270,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "key is a fixed local key buffer; no getenv() anywhere in file"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 281,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "secret=auth->bk and out=key are distinct pointers, not aliased"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 287,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "password=key and buf=kek are distinct local arrays, not aliased"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 290,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "salt always freed at fail: label (line341), reached on every path"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 297,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "only wpabuf_put mutates enc_key; wpabuf_head/len on cont_enc_key are pure reads"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 318,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pwri passed to and freed by asn1_encaps() at line343"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 405,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "only wpabuf_put mutates enc_cont; wpabuf_head/len on other buffers are pure reads"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 446,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "key returned is heap memory from wpabuf_alloc(), not automatic storage"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 450,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "out: label immediately precedes return env; at line516, goto out; from fail: still returns"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 454,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "cont_enc_key=NULL unconditionally overwritten at line472 before any read"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 517,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label reached via earlier goto (lines474/478/484), not unreachable"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 560,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr.payload derived from same underlying ASN.1 buffer as pos/next/end via asn1_get_*; not distinct arrays"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 581,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr.payload derived from same underlying ASN.1 buffer as pos/next/end via asn1_get_*; not distinct arrays"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 585,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr.payload derived from same underlying ASN.1 buffer as pos/next/end via asn1_get_*; not distinct arrays"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 593,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr.payload derived from same underlying ASN.1 buffer as pos/next/end via asn1_get_*; not distinct arrays"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 595,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr.payload derived from same underlying ASN.1 buffer as pos/next/end via asn1_get_*; not distinct arrays"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 605,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr.payload derived from same underlying ASN.1 buffer as pos/next/end via asn1_get_*; not distinct arrays"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 636,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr.payload derived from same underlying ASN.1 buffer as pos/next/end via asn1_get_*; not distinct arrays"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 652,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr.payload derived from same underlying ASN.1 buffer as pos/next/end via asn1_get_*; not distinct arrays"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 659,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr.payload derived from same underlying ASN.1 buffer as pos/next/end via asn1_get_*; not distinct arrays"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 667,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr.payload derived from same underlying ASN.1 buffer as pos/next/end via asn1_get_*; not distinct arrays"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 695,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/next/end all derived from the same ASN.1 parse buffer, not separate arrays"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 695,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr.payload derived from same underlying ASN.1 buffer as pos/next/end via asn1_get_*; not distinct arrays"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 714,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/next/end all derived from the same ASN.1 parse buffer, not separate arrays"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 714,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr.payload derived from same underlying ASN.1 buffer as pos/next/end via asn1_get_*; not distinct arrays"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 741,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr.payload derived from same underlying ASN.1 buffer as pos/next/end via asn1_get_*; not distinct arrays"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 744,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr populated by asn1_get_sequence() output param at line741 just before use"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 745,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr.payload derived from same underlying ASN.1 buffer as pos/next/end via asn1_get_*; not distinct arrays"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 748,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr.payload derived from same underlying ASN.1 buffer as pos/next/end via asn1_get_*; not distinct arrays"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 756,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr.payload derived from same underlying ASN.1 buffer as pos/next/end via asn1_get_*; not distinct arrays"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 769,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr.payload derived from same underlying ASN.1 buffer as pos/next/end via asn1_get_*; not distinct arrays"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 786,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr.payload derived from same underlying ASN.1 buffer as pos/next/end via asn1_get_*; not distinct arrays"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 807,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*data) is the correct idiom to get struct size from a pointer param"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 829,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr populated by asn1_get_sequence() output param at line827 just before use"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 871,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*key) is a non-evaluating context, not a dereference"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 888,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr populated by asn1_get_sequence() output param at line886 just before use"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 1091,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "key is heap memory from os_zalloc() at line871, not automatic storage"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 1092,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label reached via earlier goto statements, not unreachable"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 1116,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "already-parenthesized !(key = ...) alloc/parse-result idiom, not an accidental =="
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 1116,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr populated by asn1_get_sequence() in the same || chain's first operand"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 1136,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed local key buffer; no getenv() anywhere in file"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 1138,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed local key buffer; no getenv() anywhere in file"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 1139,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed local key buffer; no getenv() anywhere in file"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 1154,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "secret=auth->bk and out=key are distinct pointers, not aliased"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp_backup.c",
+   "line": 1160,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data populated by dpp_parse_enveloped_data() output param at line1149"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 27,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "static helper, ibss_rsn only read (ibss_rsn->peers); low-value const opportunity"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 35,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "peer points into ibss_rsn->peers linked list (heap nodes via os_zalloc), not automatic storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 55,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx matches fixed wpa_sm_ctx.get_state dispatch-contract signature"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 62,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic T*,size_t pointer+length parameter pair"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 62,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx matches fixed wpa_sm_ctx.ether_send dispatch-contract signature"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 85,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic pointer+length parameter shape"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 85,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx matches fixed wpa_sm_ctx.alloc_eapol dispatch-contract signature"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 85,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic data+data_len pointer+length pair"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 86,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic pointer+size_t* out-param pair"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 93,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*hdr) is a non-evaluating context, not a dereference"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 114,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx matches fixed wpa_sm_ctx.get_beacon_ie dispatch-contract signature"
+  },
+  {
+   "rule": "MSC09-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 123,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "raw hex-byte RSN IE test constant, not text"
+  },
+  {
+   "rule": "MSC09-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 124,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "raw hex-byte RSN IE test constant, not text"
+  },
+  {
+   "rule": "MSC09-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 125,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "raw hex-byte RSN IE test constant, not text"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 146,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic seq/key + length parameter pairs"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 187,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx matches fixed wpa_sm_ctx.get_network_ctx dispatch-contract signature"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 194,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx matches fixed wpa_sm_ctx.mlme_setprotection dispatch-contract signature"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 204,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx matches fixed wpa_sm_ctx.cancel_auth_timeout dispatch-contract signature"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 210,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx matches fixed wpa_sm_ctx.deauthenticate dispatch-contract signature"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 216,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx matches fixed wpa_sm_ctx.reconnect dispatch-contract signature"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 257,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(peer->supp_ie) is the correct idiom for a fixed array struct field"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 271,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx unused; matches fixed wpa_auth_callbacks.logger dispatch-contract signature"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 282,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic pointer + size_t* out-param shapes in auth_get_psk"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 282,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx matches fixed wpa_auth_callbacks.get_psk dispatch-contract signature"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 284,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic psk_len/vlan_id out-param pointer shapes"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 300,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic data+data_len pointer+length pair"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 300,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx matches fixed wpa_auth_callbacks.send_eapol dispatch-contract signature"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 322,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic key+key_len pointer+length pair"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 373,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx matches fixed wpa_auth_callbacks.disconnect dispatch-contract signature"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 380,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx matches fixed wpa_auth_callbacks.for_each_sta dispatch-contract signature"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 390,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cb is a function-pointer parameter call, not an undeclared-function call"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 398,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "static helper, ibss_rsn only read (ibss_rsn->wpa_s); low-value const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 399,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "static helper, peer only read (peer->addr); low-value const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 446,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "static helper, ssid only read (ssid->group_rekey); low-value const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 484,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "static helper, ibss_rsn only read (ibss_rsn->auth_group); low-value const opportunity"
+  },
+  {
+   "rule": "MSC09-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 496,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "raw hex-byte RSN IE test constant, not text"
+  },
+  {
+   "rule": "MSC09-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 497,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "raw hex-byte RSN IE test constant, not text"
+  },
+  {
+   "rule": "MSC09-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 498,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "raw hex-byte RSN IE test constant, not text"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 515,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "static helper, ibss_rsn only read (ibss_rsn->wpa_s); low-value const opportunity"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 518,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(auth.u.auth) is a non-evaluating context, not a use of auth"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 540,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "static helper, peer only read (peer->authentication_status)"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 551,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL-check stylistic pedantry, not a real defect"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 558,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "peer returned from ibss_rsn_get_peer() points into heap list nodes, not automatic storage"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 583,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "peer is heap memory from os_zalloc() at line564, not automatic storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 587,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "timeout_ctx matches fixed eloop_timeout_handler dispatch-contract signature"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 667,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL-check stylistic pedantry, not a real defect"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 670,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "peermac==NULL is deliberate remove-all-vs-specific control flow, not a defensive guard"
+  },
+  {
+   "rule": "MSC21-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 685,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer/cursor loop (peer!=NULL, step peer=peer->next), not an arithmetic counter that can skip"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 708,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ibss_rsn) is a non-evaluating context, not a dereference"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 718,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ibss_rsn is heap memory from os_zalloc() at line708, not automatic storage"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 726,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL-check stylistic pedantry, not a real defect"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 752,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*hdr) is a non-evaluating context, not a dereference"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 752,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*key) is a non-evaluating context, not a dereference"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 786,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "static helper, ibss_rsn only read (ibss_rsn->auth_group)"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 831,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL-check stylistic pedantry, not a real defect"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 861,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "single call site (events.c:4827) always passes a fixed valid psk array"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 861,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_memcpy(ibss_rsn->psk, psk, ...) mutates through ibss_rsn; const would break the write"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 863,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL-check stylistic pedantry, not a real defect"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 930,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "single call site (events.c:5346) always passes the received frame buffer, never NULL"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/ibss_rsn.c",
+   "line": 949,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "missing default is deliberate: unknown auth_transaction values are silently ignored by design"
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/common/dpp_backup.c",
+   "line": 281,
+   "rule": "MEM03-C",
+   "desc": "password derived in dpp_build_pw_recipient_info's local 'key' array is never forced_memzero'd before return (kek is cleared, key is not)",
+   "upstream_present": "unknown"
+  },
+  {
+   "file": "src/common/dpp_backup.c",
+   "line": 1154,
+   "rule": "MEM03-C",
+   "desc": "dpp_conf_resp_env_data's local 'key'/password buffer is never forced_memzero'd before return; kek/cont_encr_key are only partially cleared (data.pbkdf2_key_len / cont_encr_key_len bytes, not full sizeof)",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [
+  "wpa_supplicant/ibss_rsn.c"
+ ],
+ "summary": {
+  "tp": 14,
+  "fp": 106,
+  "fn": 2
+ }
+}

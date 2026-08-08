@@ -1,0 +1,845 @@
+{
+ "src/crypto/aes-ccm.c": [
+  {
+   "column": 30,
+   "file": "src/crypto/aes-ccm.c",
+   "line": 17,
+   "message": "Pointer parameter 'dst' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *dst'"
+  },
+  {
+   "column": 11,
+   "file": "src/crypto/aes-ccm.c",
+   "line": 20,
+   "message": "Do not cast away const qualification: '(u32 *) src'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/aes-ccm.c",
+   "line": 21,
+   "message": "Direct assignment of flexible array structure instances. Use memcpy() for dynamic copying.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Use memcpy() to copy the structure and its flexible array member"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/aes-ccm.c",
+   "line": 22,
+   "message": "Direct assignment of flexible array structure instances. Use memcpy() for dynamic copying.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Use memcpy() to copy the structure and its flexible array member"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/aes-ccm.c",
+   "line": 23,
+   "message": "Direct assignment of flexible array structure instances. Use memcpy() for dynamic copying.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Use memcpy() to copy the structure and its flexible array member"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/aes-ccm.c",
+   "line": 24,
+   "message": "Direct assignment of flexible array structure instances. Use memcpy() for dynamic copying.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Use memcpy() to copy the structure and its flexible array member"
+  },
+  {
+   "column": 37,
+   "file": "src/crypto/aes-ccm.c",
+   "line": 28,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/aes-ccm.c",
+   "line": 32,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 11,
+   "file": "src/crypto/aes-ccm.c",
+   "line": 38,
+   "message": "Variable 'M' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 33,
+   "file": "src/crypto/aes-ccm.c",
+   "line": 43,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"CCM B_0\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 12,
+   "file": "src/crypto/aes-ccm.c",
+   "line": 51,
+   "message": "Unsigned integer addition 'aad_buf + 2 + aad_len' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }"
+  },
+  {
+   "column": 31,
+   "file": "src/crypto/aes-ccm.c",
+   "line": 64,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/aes-ccm.c",
+   "line": 72,
+   "message": "Scaled integer assignment to pointer: 'data += AES_BLOCK_SIZE'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Use unscaled integer increment without sizeof()"
+  },
+  {
+   "column": 31,
+   "file": "src/crypto/aes-ccm.c",
+   "line": 92,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 4,
+   "file": "src/crypto/aes-ccm.c",
+   "line": 112,
+   "message": "Direct assignment of flexible array structure instances. Use memcpy() for dynamic copying.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Use memcpy() to copy the structure and its flexible array member"
+  },
+  {
+   "column": 36,
+   "file": "src/crypto/aes-ccm.c",
+   "line": 117,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 33,
+   "file": "src/crypto/aes-ccm.c",
+   "line": 122,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"CCM T\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 33,
+   "file": "src/crypto/aes-ccm.c",
+   "line": 128,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"CCM U\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 36,
+   "file": "src/crypto/aes-ccm.c",
+   "line": 132,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 33,
+   "file": "src/crypto/aes-ccm.c",
+   "line": 137,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"CCM U\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 33,
+   "file": "src/crypto/aes-ccm.c",
+   "line": 143,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"CCM T\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-ccm.c",
+   "line": 148,
+   "message": "Function 'aes_ccm_ae' does not validate pointer parameter 'key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-ccm.c",
+   "line": 148,
+   "message": "Function 'aes_ccm_ae' does not validate pointer parameter 'nonce' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'nonce' at the start of the function, e.g., 'if (!nonce) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-ccm.c",
+   "line": 148,
+   "message": "Function 'aes_ccm_ae' does not validate pointer parameter 'plain' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'plain' at the start of the function, e.g., 'if (!plain) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-ccm.c",
+   "line": 148,
+   "message": "Function 'aes_ccm_ae' does not validate pointer parameter 'crypt' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'crypt' at the start of the function, e.g., 'if (!crypt) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-ccm.c",
+   "line": 148,
+   "message": "Function 'aes_ccm_ae' does not validate pointer parameter 'auth' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'auth' at the start of the function, e.g., 'if (!auth) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-ccm.c",
+   "line": 178,
+   "message": "Function 'aes_ccm_ad' does not validate pointer parameter 'key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-ccm.c",
+   "line": 178,
+   "message": "Function 'aes_ccm_ad' does not validate pointer parameter 'nonce' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'nonce' at the start of the function, e.g., 'if (!nonce) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-ccm.c",
+   "line": 178,
+   "message": "Function 'aes_ccm_ad' does not validate pointer parameter 'crypt' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'crypt' at the start of the function, e.g., 'if (!crypt) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-ccm.c",
+   "line": 178,
+   "message": "Function 'aes_ccm_ad' does not validate pointer parameter 'auth' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'auth' at the start of the function, e.g., 'if (!auth) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-ccm.c",
+   "line": 178,
+   "message": "Function 'aes_ccm_ad' does not validate pointer parameter 'plain' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'plain' at the start of the function, e.g., 'if (!plain) { return error_code; }'"
+  }
+ ],
+ "src/crypto/aes-gcm.c": [
+  {
+   "column": 22,
+   "file": "src/crypto/aes-gcm.c",
+   "line": 16,
+   "message": "Pointer parameter 'block' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *block'"
+  },
+  {
+   "column": 26,
+   "file": "src/crypto/aes-gcm.c",
+   "line": 25,
+   "message": "Pointer parameter 'dst' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *dst'"
+  },
+  {
+   "column": 11,
+   "file": "src/crypto/aes-gcm.c",
+   "line": 28,
+   "message": "Do not cast away const qualification: '(u32 *) src'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/aes-gcm.c",
+   "line": 29,
+   "message": "Direct assignment of flexible array structure instances. Use memcpy() for dynamic copying.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Use memcpy() to copy the structure and its flexible array member"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/aes-gcm.c",
+   "line": 30,
+   "message": "Direct assignment of flexible array structure instances. Use memcpy() for dynamic copying.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Use memcpy() to copy the structure and its flexible array member"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/aes-gcm.c",
+   "line": 31,
+   "message": "Direct assignment of flexible array structure instances. Use memcpy() for dynamic copying.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Use memcpy() to copy the structure and its flexible array member"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/aes-gcm.c",
+   "line": 32,
+   "message": "Direct assignment of flexible array structure instances. Use memcpy() for dynamic copying.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Use memcpy() to copy the structure and its flexible array member"
+  },
+  {
+   "column": 21,
+   "file": "src/crypto/aes-gcm.c",
+   "line": 40,
+   "message": "Variable 'v' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/aes-gcm.c",
+   "line": 75,
+   "message": "Variable 'j' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 27,
+   "file": "src/crypto/aes-gcm.c",
+   "line": 143,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/aes-gcm.c",
+   "line": 148,
+   "message": "Pointer to const assigned to non-const pointer without cast: *ypos = y: '*ypos = y'",
+   "rule_id": "EXP40-C",
+   "severity": "Low",
+   "suggestion": "Either remove const qualifier if the object should be modifiable, or use explicit casts to show intentional const removal"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/aes-gcm.c",
+   "line": 160,
+   "message": "Variable 'xpos' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 33,
+   "file": "src/crypto/aes-gcm.c",
+   "line": 186,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Hash subkey H for GHASH\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/aes-gcm.c",
+   "line": 188,
+   "message": "Function returns pointer to local variable 'aes' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 31,
+   "file": "src/crypto/aes-gcm.c",
+   "line": 215,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 33,
+   "file": "src/crypto/aes-gcm.c",
+   "line": 247,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"S = GHASH_H(...)\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-gcm.c",
+   "line": 254,
+   "message": "Function 'aes_gcm_ae' does not validate pointer parameter 'key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-gcm.c",
+   "line": 254,
+   "message": "Function 'aes_gcm_ae' does not validate pointer parameter 'iv' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'iv' at the start of the function, e.g., 'if (!iv) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-gcm.c",
+   "line": 254,
+   "message": "Function 'aes_gcm_ae' does not validate pointer parameter 'plain' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'plain' at the start of the function, e.g., 'if (!plain) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-gcm.c",
+   "line": 254,
+   "message": "Function 'aes_gcm_ae' does not validate pointer parameter 'aad' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'aad' at the start of the function, e.g., 'if (!aad) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-gcm.c",
+   "line": 254,
+   "message": "Function 'aes_gcm_ae' does not validate pointer parameter 'crypt' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'crypt' at the start of the function, e.g., 'if (!crypt) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-gcm.c",
+   "line": 254,
+   "message": "Function 'aes_gcm_ae' does not validate pointer parameter 'tag' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'tag' at the start of the function, e.g., 'if (!tag) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-gcm.c",
+   "line": 288,
+   "message": "Function 'aes_gcm_ad' does not validate pointer parameter 'key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-gcm.c",
+   "line": 288,
+   "message": "Function 'aes_gcm_ad' does not validate pointer parameter 'iv' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'iv' at the start of the function, e.g., 'if (!iv) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-gcm.c",
+   "line": 288,
+   "message": "Function 'aes_gcm_ad' does not validate pointer parameter 'crypt' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'crypt' at the start of the function, e.g., 'if (!crypt) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-gcm.c",
+   "line": 288,
+   "message": "Function 'aes_gcm_ad' does not validate pointer parameter 'aad' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'aad' at the start of the function, e.g., 'if (!aad) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-gcm.c",
+   "line": 288,
+   "message": "Function 'aes_gcm_ad' does not validate pointer parameter 'plain' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'plain' at the start of the function, e.g., 'if (!plain) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-gcm.c",
+   "line": 322,
+   "message": "Function 'aes_gmac' does not validate pointer parameter 'key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-gcm.c",
+   "line": 322,
+   "message": "Function 'aes_gmac' does not validate pointer parameter 'iv' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'iv' at the start of the function, e.g., 'if (!iv) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-gcm.c",
+   "line": 322,
+   "message": "Function 'aes_gmac' does not validate pointer parameter 'aad' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'aad' at the start of the function, e.g., 'if (!aad) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-gcm.c",
+   "line": 322,
+   "message": "Function 'aes_gmac' does not validate pointer parameter 'tag' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'tag' at the start of the function, e.g., 'if (!tag) { return error_code; }'"
+  }
+ ],
+ "src/eap_server/eap_server_ikev2.c": [
+  {
+   "column": 52,
+   "file": "src/eap_server/eap_server_ikev2.c",
+   "line": 30,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 5,
+   "file": "src/eap_server/eap_server_ikev2.c",
+   "line": 36,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_ikev2.c",
+   "line": 75,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 26,
+   "file": "src/eap_server/eap_server_ikev2.c",
+   "line": 86,
+   "message": "Dereference of uninitialized pointer 'data'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'data' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_ikev2.c",
+   "line": 114,
+   "message": "Function returns pointer to local variable 'data' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_server_ikev2.c",
+   "line": 116,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 43,
+   "file": "src/eap_server/eap_server_ikev2.c",
+   "line": 123,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_ikev2.c",
+   "line": 207,
+   "message": "Function returns pointer to local variable 'req' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 57,
+   "file": "src/eap_server/eap_server_ikev2.c",
+   "line": 211,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 43,
+   "file": "src/eap_server/eap_server_ikev2.c",
+   "line": 239,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 53,
+   "file": "src/eap_server/eap_server_ikev2.c",
+   "line": 239,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 9,
+   "file": "src/eap_server/eap_server_ikev2.c",
+   "line": 269,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 45,
+   "file": "src/eap_server/eap_server_ikev2.c",
+   "line": 350,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 9,
+   "file": "src/eap_server/eap_server_ikev2.c",
+   "line": 425,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 44,
+   "file": "src/eap_server/eap_server_ikev2.c",
+   "line": 468,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 54,
+   "file": "src/eap_server/eap_server_ikev2.c",
+   "line": 468,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 47,
+   "file": "src/eap_server/eap_server_ikev2.c",
+   "line": 475,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 57,
+   "file": "src/eap_server/eap_server_ikev2.c",
+   "line": 475,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 44,
+   "file": "src/eap_server/eap_server_ikev2.c",
+   "line": 483,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 54,
+   "file": "src/eap_server/eap_server_ikev2.c",
+   "line": 483,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 54,
+   "file": "src/eap_server/eap_server_ikev2.c",
+   "line": 483,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_ikev2.c",
+   "line": 497,
+   "message": "Function returns pointer to local variable 'key' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 46,
+   "file": "src/eap_server/eap_server_ikev2.c",
+   "line": 501,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 56,
+   "file": "src/eap_server/eap_server_ikev2.c",
+   "line": 501,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 56,
+   "file": "src/eap_server/eap_server_ikev2.c",
+   "line": 501,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_ikev2.c",
+   "line": 515,
+   "message": "Function returns pointer to local variable 'key' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 52,
+   "file": "src/eap_server/eap_server_ikev2.c",
+   "line": 519,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 62,
+   "file": "src/eap_server/eap_server_ikev2.c",
+   "line": 519,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 62,
+   "file": "src/eap_server/eap_server_ikev2.c",
+   "line": 519,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_ikev2.c",
+   "line": 545,
+   "message": "Function returns pointer to local variable 'sid' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_server/eap_server_ikev2.c",
+   "line": 553,
+   "message": "Memory allocated with 'eap_server_method_alloc' for variable 'eap' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(eap)' before the variable goes out of scope"
+  }
+ ]
+}

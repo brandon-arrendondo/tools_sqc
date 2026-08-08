@@ -1,0 +1,771 @@
+{
+ "labels": [
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 24,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal helper, robust_av never mutated; not a dispatch-contract callback"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 87,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal helper, type10_param never mutated"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 121,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "control_info=0 init never read: goto end/skip_tclas_elem skip the only overwrite+use, else overwritten at :212 before use at :222"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 268,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dst is mutated via aliased t10_param=&dst->frame_classifier.type10_param; filter_value/filter_mask writes go through dst"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 364,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/wpabuf_len are pure read accessors, no side effects to unsequence"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 469,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "buf_len=0 unconditionally overwritten by buf_len=3 on the very next statement, never read"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 475,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tclas_elem always assigned (:494) before its first use; no path reads it uninitialized"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 523,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is a local pointer *variable* to heap memory from wpabuf_alloc, not automatic-storage object"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 537,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "scs_request_timer matches eloop_timeout_handler dispatch-contract signature"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 577,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "buf=NULL never read on any early-return path; overwritten at :613 before any use on the fallthrough path"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 632,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/wpabuf_len pure accessors, same as :364"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 723,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "only one os_free(desc_elems) call in the function; free_up_tclas_elem frees a different, nested per-element pointer"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 730,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API, wpa_s always valid at all call sites"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 732,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "desc_elem=NULL never read before being reassigned at :740 (goto end path doesn't touch desc_elem either)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 744,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "active_scs_elem always assigned (:751) before first use"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 745,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tclas_elem only used inside the num_tclas_elem-guarded block, always assigned first at :759"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 773,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cites two mutually-exclusive branches (:763 goto end vs :772-773) as a double free; only one executes per call"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 837,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "only one os_free(desc_elems) call; free_up_tclas_elem frees a nested per-element pointer, not desc_elems"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 868,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos walks a real, length-checked buffer (&mscs_desc_ie[3]), standard array-pointer arithmetic"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 876,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same pos, same buffer"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 877,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same pos, same buffer"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 905,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API, src/buf always non-NULL from frame-dispatch callers"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 905,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API, src/buf always non-NULL from frame-dispatch callers"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 934,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR macro args are pure reads, no side effects"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 978,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_wait_for_dscp_req_timer matches eloop_timeout_handler dispatch contract"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 1003,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wfa_capa[1]/[6]/[7] all short-circuit-guarded by the same `!wfa_capa ||` condition"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 1020,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API, src/buf always non-NULL from frame-dispatch callers"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 1020,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API, src/buf always non-NULL from frame-dispatch callers"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 1037,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR macro args, pure reads"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 1079,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "scs_desc_found is read at :1084 right after the dl_list_for_each loop it's set in; loop-boundary blindness"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 1198,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "last pos+=res in write_ipv4_info; function returns based on rem_len only, pos never read again"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 1269,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "last pos+=res in write_ipv6_info; function returns based on rem_len only, pos never read again"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 1293,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "policy mutated via aliased type4_param=&policy->type4_param writes"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 1360,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "policy mutated via aliased type4_param=&policy->type4_param writes"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 1486,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "while(*str) str++ NUL-terminated string traversal, not unbounded"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 1584,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: is a goto target reached from earlier in the function, not unreachable"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 1696,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR macro args, pure reads"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 1717,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise op is on buf[2] (array element); arithmetic use is buf+3 (pointer offset); neither implicates buf itself"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 1742,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "qos_ie is a plain const u8* walking a length-checked wire buffer, not a declared 1-element array"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 1782,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal helper, resp_data never mutated"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 1784,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "buf=NULL never read on any early-return path (:1792,1797,1803 return -1 directly); overwritten at :1815"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 1786,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "ret=-1 never read; every early return uses literal -1, ret unconditionally reassigned at :1843"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 1843,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/wpabuf_len pure accessors"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 1848,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto fail leads straight to wpabuf_free(buf) at :1857, no leak"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 1863,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "domain_name/domain_name_length is the idiomatic ptr+size_t pair"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 1866,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "buf=NULL never read; every early return (:1869,1872,1878,1885) is a literal -1, buf reassigned at :1899"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 1924,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/wpabuf_len pure accessors"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 19,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "API02-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 21,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 26,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 29,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 31,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "API02-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 55,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 55,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 55,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 56,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 64,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 68,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 69,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 70,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 71,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 72,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 73,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 74,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 75,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 76,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 77,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 78,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "API02-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 79,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 81,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 82,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 84,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 85,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 86,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 87,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 88,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 89,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 90,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 91,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 92,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 94,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 99,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 104,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 105,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 107,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 108,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 110,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 112,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 113,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 115,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 118,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "API02-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 147,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "EXP37-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 168,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  },
+  {
+   "rule": "DCL20-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+   "line": 168,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C"
+  }
+ ],
+ "fns": [
+  {
+   "file": "wpa_supplicant/robust_av.c",
+   "line": 267,
+   "rule": "MEM30-C",
+   "desc": "populate_type10_classifier_data(): dst array starts as a shallow os_memdup() of src, so filter_value/filter_mask on not-yet-processed elements alias the SOURCE's own allocations. If a later element's os_memdup() fails (:293,299) and the function returns -1, both callers (wpas_scs_reconfigure:695, wpas_send_scs_req:772) call free_up_tclas_elem() on the whole destination array, freeing the aliased source pointers -> double-free/UAF against the original scs_desc_elem/active_scs_elem list entry. Narrow (requires OOM mid-loop with num_tclas_elem>1) but real.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 12,
+  "fp": 82,
+  "fn": 1
+ }
+}

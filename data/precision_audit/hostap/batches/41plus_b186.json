@@ -1,0 +1,931 @@
+{
+ "src/common/proximity_ranging.c": [
+  {
+   "column": 1,
+   "file": "src/common/proximity_ranging.c",
+   "line": 12,
+   "message": "Header file 'ieee802_11_defs.h' has the same first 8 characters (case-insensitive) as 'ieee802_11_common.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_defs.h' -> unique name)"
+  },
+  {
+   "column": 43,
+   "file": "src/common/proximity_ranging.c",
+   "line": 25,
+   "message": "Pointer parameter 'pr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pr'"
+  },
+  {
+   "column": 14,
+   "file": "src/common/proximity_ranging.c",
+   "line": 27,
+   "message": "Potential null pointer dereference in member access of variable 'dev'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'dev' is not NULL before member access"
+  },
+  {
+   "column": 4,
+   "file": "src/common/proximity_ranging.c",
+   "line": 44,
+   "message": "Function returns pointer to local variable 'dev' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 24,
+   "file": "src/common/proximity_ranging.c",
+   "line": 90,
+   "message": "Dereference of uninitialized pointer 'pr'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'pr' before dereferencing"
+  },
+  {
+   "column": 31,
+   "file": "src/common/proximity_ranging.c",
+   "line": 90,
+   "message": "sizeof applied to pointer/array parameter 'cfg' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*cfg)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 26,
+   "file": "src/common/proximity_ranging.c",
+   "line": 95,
+   "message": "sizeof applied to pointer/array parameter 'cfg' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*cfg)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 2,
+   "file": "src/common/proximity_ranging.c",
+   "line": 109,
+   "message": "Function returns pointer to local variable 'pr' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/common/proximity_ranging.c",
+   "line": 125,
+   "message": "Function 'pr_flush' does not validate pointer parameter 'pr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pr' at the start of the function, e.g., 'if (!pr) { return error_code; }'"
+  },
+  {
+   "column": 30,
+   "file": "src/common/proximity_ranging.c",
+   "line": 125,
+   "message": "Pointer parameter 'pr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pr'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/proximity_ranging.c",
+   "line": 156,
+   "message": "Double free detected: 'pr' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 37,
+   "file": "src/common/proximity_ranging.c",
+   "line": 161,
+   "message": "Pointer parameter 'pr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pr'"
+  },
+  {
+   "column": 5,
+   "file": "src/common/proximity_ranging.c",
+   "line": 176,
+   "message": "sizeof applied to pointer/array parameter 'pr' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(pr->cfg->global_password)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 66,
+   "file": "src/common/proximity_ranging.c",
+   "line": 187,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 8,
+   "file": "src/common/proximity_ranging.c",
+   "line": 197,
+   "message": "sizeof applied to pointer/array parameter 'pr' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(pr->cfg->global_password)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 1,
+   "file": "src/common/proximity_ranging.c",
+   "line": 240,
+   "message": "Value assigned to 'ie' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/common/proximity_ranging.c",
+   "line": 242,
+   "message": "Value assigned to 'len' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 7,
+   "file": "src/common/proximity_ranging.c",
+   "line": 277,
+   "message": "sizeof applied to pointer/array parameter 'capab' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(capab->device_name)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 18,
+   "file": "src/common/proximity_ranging.c",
+   "line": 301,
+   "message": "Shift operation '(pr->cfg->edca_format_and_bw & EDCA_FORMAT_AND_BW_MASK)\n\t\t<< EDCA_FORMAT_AND_BW' by 'EDCA_FORMAT_AND_BW' without validating shift amount is non-negative and within type width",
+   "rule_id": "INT34-C",
+   "severity": "Medium",
+   "suggestion": "Check that 'EDCA_FORMAT_AND_BW' is >= 0 and < the bit width of the operand before shifting"
+  },
+  {
+   "column": 18,
+   "file": "src/common/proximity_ranging.c",
+   "line": 303,
+   "message": "Shift operation '(pr->cfg->max_tx_antenna & EDCA_MAX_TX_ANTENNA_MASK) <<\n\t\tEDCA_MAX_TX_ANTENNA' by 'EDCA_MAX_TX_ANTENNA' without validating shift amount is non-negative and within type width",
+   "rule_id": "INT34-C",
+   "severity": "Medium",
+   "suggestion": "Check that 'EDCA_MAX_TX_ANTENNA' is >= 0 and < the bit width of the operand before shifting"
+  },
+  {
+   "column": 18,
+   "file": "src/common/proximity_ranging.c",
+   "line": 305,
+   "message": "Shift operation '(pr->cfg->max_rx_antenna & EDCA_MAX_RX_ANTENNA_MASK) <<\n\t\tEDCA_MAX_RX_ANTENNA' by 'EDCA_MAX_RX_ANTENNA' without validating shift amount is non-negative and within type width",
+   "rule_id": "INT34-C",
+   "severity": "Medium",
+   "suggestion": "Check that 'EDCA_MAX_RX_ANTENNA' is >= 0 and < the bit width of the operand before shifting"
+  },
+  {
+   "column": 17,
+   "file": "src/common/proximity_ranging.c",
+   "line": 325,
+   "message": "Shift operation '(pr->cfg->ntb_format_and_bw & NTB_FORMAT_AND_BW_MASK) <<\n\t\tNTB_FORMAT_AND_BW' by 'NTB_FORMAT_AND_BW' without validating shift amount is non-negative and within type width",
+   "rule_id": "INT34-C",
+   "severity": "Medium",
+   "suggestion": "Check that 'NTB_FORMAT_AND_BW' is >= 0 and < the bit width of the operand before shifting"
+  },
+  {
+   "column": 17,
+   "file": "src/common/proximity_ranging.c",
+   "line": 327,
+   "message": "Shift operation '(pr->cfg->max_tx_ltf_repetations &\n\t\t\tMAX_TX_LTF_REPETATIONS_MASK) << MAX_TX_LTF_REPETATIONS' by 'MAX_TX_LTF_REPETATIONS' without validating shift amount is non-negative and within type width",
+   "rule_id": "INT34-C",
+   "severity": "Medium",
+   "suggestion": "Check that 'MAX_TX_LTF_REPETATIONS' is >= 0 and < the bit width of the operand before shifting"
+  },
+  {
+   "column": 17,
+   "file": "src/common/proximity_ranging.c",
+   "line": 329,
+   "message": "Shift operation '(pr->cfg->max_rx_ltf_repetations &\n\t\t\tMAX_RX_LTF_REPETATIONS_MASK) << MAX_RX_LTF_REPETATIONS' by 'MAX_RX_LTF_REPETATIONS' without validating shift amount is non-negative and within type width",
+   "rule_id": "INT34-C",
+   "severity": "Medium",
+   "suggestion": "Check that 'MAX_RX_LTF_REPETATIONS' is >= 0 and < the bit width of the operand before shifting"
+  },
+  {
+   "column": 17,
+   "file": "src/common/proximity_ranging.c",
+   "line": 332,
+   "message": "Shift operation '(pr->cfg->max_rx_ltf_total & MAX_RX_LTF_TOTAL_MASK) <<\n\t\tMAX_RX_LTF_TOTAL' by 'MAX_RX_LTF_TOTAL' without validating shift amount is non-negative and within type width",
+   "rule_id": "INT34-C",
+   "severity": "Medium",
+   "suggestion": "Check that 'MAX_RX_LTF_TOTAL' is >= 0 and < the bit width of the operand before shifting"
+  },
+  {
+   "column": 17,
+   "file": "src/common/proximity_ranging.c",
+   "line": 334,
+   "message": "Shift operation '(pr->cfg->max_tx_ltf_total & MAX_TX_LTF_TOTAL_MASK) <<\n\t\tMAX_TX_LTF_TOTAL' by 'MAX_TX_LTF_TOTAL' without validating shift amount is non-negative and within type width",
+   "rule_id": "INT34-C",
+   "severity": "Medium",
+   "suggestion": "Check that 'MAX_TX_LTF_TOTAL' is >= 0 and < the bit width of the operand before shifting"
+  },
+  {
+   "column": 17,
+   "file": "src/common/proximity_ranging.c",
+   "line": 337,
+   "message": "Shift operation '(pr->cfg->max_rx_sts_le_80 & MAX_RX_STS_LE_80_MASK) <<\n\t\tMAX_RX_STS_LE_80' by 'MAX_RX_STS_LE_80' without validating shift amount is non-negative and within type width",
+   "rule_id": "INT34-C",
+   "severity": "Medium",
+   "suggestion": "Check that 'MAX_RX_STS_LE_80' is >= 0 and < the bit width of the operand before shifting"
+  },
+  {
+   "column": 17,
+   "file": "src/common/proximity_ranging.c",
+   "line": 339,
+   "message": "Shift operation '(pr->cfg->max_rx_sts_gt_80 & MAX_RX_STS_GT_80_MASK) <<\n\t\tMAX_RX_STS_GT_80' by 'MAX_RX_STS_GT_80' without validating shift amount is non-negative and within type width",
+   "rule_id": "INT34-C",
+   "severity": "Medium",
+   "suggestion": "Check that 'MAX_RX_STS_GT_80' is >= 0 and < the bit width of the operand before shifting"
+  },
+  {
+   "column": 17,
+   "file": "src/common/proximity_ranging.c",
+   "line": 342,
+   "message": "Shift operation '(pr->cfg->max_tx_sts_le_80 & MAX_TX_STS_LE_80_MASK) <<\n\t\tMAX_TX_STS_LE_80' by 'MAX_TX_STS_LE_80' without validating shift amount is non-negative and within type width",
+   "rule_id": "INT34-C",
+   "severity": "Medium",
+   "suggestion": "Check that 'MAX_TX_STS_LE_80' is >= 0 and < the bit width of the operand before shifting"
+  },
+  {
+   "column": 17,
+   "file": "src/common/proximity_ranging.c",
+   "line": 344,
+   "message": "Shift operation '(pr->cfg->max_tx_sts_gt_80 & MAX_TX_STS_GT_80_MASK) <<\n\t\tMAX_TX_STS_GT_80' by 'MAX_TX_STS_GT_80' without validating shift amount is non-negative and within type width",
+   "rule_id": "INT34-C",
+   "severity": "Medium",
+   "suggestion": "Check that 'MAX_TX_STS_GT_80' is >= 0 and < the bit width of the operand before shifting"
+  },
+  {
+   "column": 2,
+   "file": "src/common/proximity_ranging.c",
+   "line": 356,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/common/proximity_ranging.c",
+   "line": 357,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/common/proximity_ranging.c",
+   "line": 415,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 9,
+   "file": "src/common/proximity_ranging.c",
+   "line": 461,
+   "message": "sizeof applied to pointer/array parameter 'dev' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(dev->password)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 20,
+   "file": "src/common/proximity_ranging.c",
+   "line": 541,
+   "message": "sizeof applied to pointer/array parameter 'res' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*res)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 9,
+   "file": "src/common/proximity_ranging.c",
+   "line": 588,
+   "message": "File-scope identifier '_len' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 9,
+   "file": "src/common/proximity_ranging.c",
+   "line": 627,
+   "message": "File-scope identifier '_len' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 9,
+   "file": "src/common/proximity_ranging.c",
+   "line": 657,
+   "message": "File-scope identifier '_len' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 9,
+   "file": "src/common/proximity_ranging.c",
+   "line": 684,
+   "message": "File-scope identifier '_len' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 1,
+   "file": "src/common/proximity_ranging.c",
+   "line": 704,
+   "message": "Function 'pr_prepare_usd_elems' does not validate pointer parameter 'pr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pr' at the start of the function, e.g., 'if (!pr) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/proximity_ranging.c",
+   "line": 739,
+   "message": "Function returns pointer to local variable 'buf2' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 29,
+   "file": "src/common/proximity_ranging.c",
+   "line": 782,
+   "message": "Pointer arithmetic 'data + 1' goes 1 elements past the end of array 'data[0]'. This exceeds array bounds.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Ensure pointer arithmetic stays within array bounds (0 to 0)"
+  },
+  {
+   "column": 29,
+   "file": "src/common/proximity_ranging.c",
+   "line": 795,
+   "message": "Pointer arithmetic 'data + 1' goes 1 elements past the end of array 'data[0]'. This exceeds array bounds.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Ensure pointer arithmetic stays within array bounds (0 to 0)"
+  },
+  {
+   "column": 6,
+   "file": "src/common/proximity_ranging.c",
+   "line": 899,
+   "message": "Passing pointer to uninitialized variable 'elems' to 'ieee802_11_parse_elems' which reads the value",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'elems' before passing its address to 'ieee802_11_parse_elems'"
+  },
+  {
+   "column": 6,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1028,
+   "message": "Variable 'pos' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 6,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1068,
+   "message": "Variable 'pos' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 1,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1098,
+   "message": "Function 'pr_process_usd_elems' does not validate pointer parameter 'peer_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'peer_addr' at the start of the function, e.g., 'if (!peer_addr) { return error_code; }'"
+  },
+  {
+   "column": 9,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1199,
+   "message": "File-scope identifier '_len' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 55,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1267,
+   "message": "Pointer parameter 'common_channel' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *common_channel'"
+  },
+  {
+   "column": 51,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1303,
+   "message": "Pointer parameter 'pr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pr'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1307,
+   "message": "Value assigned to 'ranging_type' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1309,
+   "message": "Value assigned to 'own_channels' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1312,
+   "message": "Value assigned to 'own_ista_support' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1312,
+   "message": "Value assigned to 'own_rsta_support' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 7,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1360,
+   "message": "Variable 'common_chan' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'common_chan' before use, e.g., at its declaration"
+  },
+  {
+   "column": 10,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1400,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 52,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1446,
+   "message": "Pointer parameter 'pr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pr'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1450,
+   "message": "Value assigned to 'ranging_type' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1452,
+   "message": "Value assigned to 'own_channels' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1453,
+   "message": "Value assigned to 'status' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1455,
+   "message": "Value assigned to 'own_ista_support' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1455,
+   "message": "Value assigned to 'own_rsta_support' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 7,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1512,
+   "message": "Variable 'common_chan' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'common_chan' before use, e.g., at its declaration"
+  },
+  {
+   "column": 4,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1587,
+   "message": "Double-free: 'buf' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1599,
+   "message": "Use-after-free: passing freed pointer 'buf' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 3,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1603,
+   "message": "Use-after-free: passing freed pointer 'buf' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 9,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1606,
+   "message": "Use-after-free: passing freed pointer 'buf' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 2,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1607,
+   "message": "Double-free: 'buf' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 62,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1622,
+   "message": "Pointer parameter 'pr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pr'"
+  },
+  {
+   "column": 9,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1635,
+   "message": "Variable 'flen' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 9,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1635,
+   "message": "Shift operation 'capab >> flen * 8' by 'flen * 8' without validating shift amount is non-negative and within type width",
+   "rule_id": "INT34-C",
+   "severity": "Medium",
+   "suggestion": "Check that 'flen * 8' is >= 0 and < the bit width of the operand before shifting"
+  },
+  {
+   "column": 2,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1652,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 20,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1790,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 52,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1804,
+   "message": "Pointer parameter 'pr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pr'"
+  },
+  {
+   "column": 74,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1804,
+   "message": "Pointer parameter 'dev' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *dev'"
+  },
+  {
+   "column": 9,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1820,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 9,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1869,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1909,
+   "message": "Value assigned to 'ret' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1961,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1984,
+   "message": "Function 'pr_pasn_auth_tx_status' does not validate pointer parameter 'data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'data' at the start of the function, e.g., 'if (!data) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1987,
+   "message": "Value assigned to 'ret' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 3,
+   "file": "src/common/proximity_ranging.c",
+   "line": 1991,
+   "message": "Casting from char * (alignment 1) to const struct ieee80211_mgmt * (alignment 4) may cause alignment issues",
+   "rule_id": "EXP36-C",
+   "severity": "Low",
+   "suggestion": "Use memcpy or ensure proper alignment before casting"
+  },
+  {
+   "column": 12,
+   "file": "src/common/proximity_ranging.c",
+   "line": 2076,
+   "message": "Pointer arithmetic on struct pointer with byte offset. Cast to char* before adding offset.",
+   "rule_id": "EXP08-C",
+   "severity": "Medium",
+   "suggestion": null
+  },
+  {
+   "column": 3,
+   "file": "src/common/proximity_ranging.c",
+   "line": 2081,
+   "message": "Potential memory leak: 'buf' allocated with 'wpabuf_alloc' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'buf' is freed before this goto or at the target label"
+  },
+  {
+   "column": 3,
+   "file": "src/common/proximity_ranging.c",
+   "line": 2112,
+   "message": "Potential memory leak: 'buf' allocated with 'wpabuf_alloc' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'buf' is freed before this goto or at the target label"
+  },
+  {
+   "column": 3,
+   "file": "src/common/proximity_ranging.c",
+   "line": 2120,
+   "message": "Potential memory leak: 'buf' allocated with 'wpabuf_alloc' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'buf' is freed before this goto or at the target label"
+  },
+  {
+   "column": 4,
+   "file": "src/common/proximity_ranging.c",
+   "line": 2144,
+   "message": "Potential memory leak: 'buf' allocated with 'wpabuf_alloc' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'buf' is freed before this goto or at the target label"
+  },
+  {
+   "column": 9,
+   "file": "src/common/proximity_ranging.c",
+   "line": 2154,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 4,
+   "file": "src/common/proximity_ranging.c",
+   "line": 2160,
+   "message": "Potential memory leak: 'buf' allocated with 'wpabuf_alloc' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'buf' is freed before this goto or at the target label"
+  },
+  {
+   "column": 7,
+   "file": "src/common/proximity_ranging.c",
+   "line": 2175,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 3,
+   "file": "src/common/proximity_ranging.c",
+   "line": 2183,
+   "message": "Potential memory leak: 'buf' allocated with 'wpabuf_alloc' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'buf' is freed before this goto or at the target label"
+  },
+  {
+   "column": 4,
+   "file": "src/common/proximity_ranging.c",
+   "line": 2189,
+   "message": "Passing pointer to uninitialized variable 'edca' to 'pr_buf_add_edca_capa_info' which reads the value",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'edca' before passing its address to 'pr_buf_add_edca_capa_info'"
+  },
+  {
+   "column": 4,
+   "file": "src/common/proximity_ranging.c",
+   "line": 2191,
+   "message": "Passing pointer to uninitialized variable 'ntb' to 'pr_buf_add_ntb_capa_info' which reads the value",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'ntb' before passing its address to 'pr_buf_add_ntb_capa_info'"
+  },
+  {
+   "column": 22,
+   "file": "src/common/proximity_ranging.c",
+   "line": 2197,
+   "message": "Variable 'res_op_mode' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'res_op_mode' before use, e.g., at its declaration"
+  },
+  {
+   "column": 12,
+   "file": "src/common/proximity_ranging.c",
+   "line": 2238,
+   "message": "Pointer arithmetic on struct pointer with byte offset. Cast to char* before adding offset.",
+   "rule_id": "EXP08-C",
+   "severity": "Medium",
+   "suggestion": null
+  },
+  {
+   "column": 7,
+   "file": "src/common/proximity_ranging.c",
+   "line": 2288,
+   "message": "Variable 'common_chan' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'common_chan' before use, e.g., at its declaration"
+  },
+  {
+   "column": 9,
+   "file": "src/common/proximity_ranging.c",
+   "line": 2292,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 8,
+   "file": "src/common/proximity_ranging.c",
+   "line": 2351,
+   "message": "Pointer arithmetic on struct pointer with byte offset. Cast to char* before adding offset.",
+   "rule_id": "EXP08-C",
+   "severity": "Medium",
+   "suggestion": null
+  },
+  {
+   "column": 27,
+   "file": "src/common/proximity_ranging.c",
+   "line": 2359,
+   "message": "Variable 'elems' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'elems' before use, e.g., at its declaration"
+  },
+  {
+   "column": 2,
+   "file": "src/common/proximity_ranging.c",
+   "line": 2376,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/common/proximity_ranging.c",
+   "line": 2419,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 6,
+   "file": "src/common/proximity_ranging.c",
+   "line": 2422,
+   "message": "Passing pointer to uninitialized variable 'pasn_data' to 'wpa_pasn_auth_rx' which reads the value",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'pasn_data' before passing its address to 'wpa_pasn_auth_rx'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/proximity_ranging.c",
+   "line": 2500,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  }
+ ]
+}

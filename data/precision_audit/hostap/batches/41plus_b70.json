@@ -1,0 +1,562 @@
+{
+ "src/p2p/p2p.c#part3of3": [
+  {
+   "column": 38,
+   "file": "src/p2p/p2p.c",
+   "line": 6267,
+   "message": "sizeof applied to pointer/array parameter 'p2p' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(p2p->dev_sae_password)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 23,
+   "file": "src/p2p/p2p.c",
+   "line": 6268,
+   "message": "sizeof applied to pointer/array parameter 'p2p' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(p2p->dev_sae_password)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 40,
+   "file": "src/p2p/p2p.c",
+   "line": 6271,
+   "message": "sizeof applied to pointer/array parameter 'p2p' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(p2p->dev_sae_password)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 6324,
+   "message": "Value assigned to 'ie_len' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 8,
+   "file": "src/p2p/p2p.c",
+   "line": 6330,
+   "message": "Memory allocated with 'wpabuf_alloc' for variable 'buf' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(buf)' before the variable goes out of scope"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p.c",
+   "line": 6340,
+   "message": "Memory leak: 'buf' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'buf' before this return statement"
+  },
+  {
+   "column": 9,
+   "file": "src/p2p/p2p.c",
+   "line": 6356,
+   "message": "Variable 'flen' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 9,
+   "file": "src/p2p/p2p.c",
+   "line": 6356,
+   "message": "Shift operation 'capab >> flen * 8' by 'flen * 8' without validating shift amount is non-negative and within type width",
+   "rule_id": "INT34-C",
+   "severity": "Medium",
+   "suggestion": "Check that 'flen * 8' is >= 0 and < the bit width of the operand before shifting"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p.c",
+   "line": 6377,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 20,
+   "file": "src/p2p/p2p.c",
+   "line": 6477,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 6501,
+   "message": "Function 'p2p_get_listen_freq' does not validate pointer parameter 'p2p' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'p2p' at the start of the function, e.g., 'if (!p2p) { return error_code; }'"
+  },
+  {
+   "column": 3,
+   "file": "src/p2p/p2p.c",
+   "line": 6592,
+   "message": "Potential memory leak: 'extra_ies' allocated with 'wpabuf_alloc' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'extra_ies' is freed before this goto or at the target label"
+  },
+  {
+   "column": 19,
+   "file": "src/p2p/p2p.c",
+   "line": 6599,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 6629,
+   "message": "Function 'p2p_initiate_pasn_auth' does not validate pointer parameter 'p2p' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'p2p' at the start of the function, e.g., 'if (!p2p) { return error_code; }'"
+  },
+  {
+   "column": 49,
+   "file": "src/p2p/p2p.c",
+   "line": 6656,
+   "message": "Do not cast away const qualification: '(u8 *)addr'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 3,
+   "file": "src/p2p/p2p.c",
+   "line": 6674,
+   "message": "Potential memory leak: 'extra_ies' allocated with 'wpabuf_alloc' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'extra_ies' is freed before this goto or at the target label"
+  },
+  {
+   "column": 12,
+   "file": "src/p2p/p2p.c",
+   "line": 6722,
+   "message": "Pointer arithmetic on struct pointer with byte offset. Cast to char* before adding offset.",
+   "rule_id": "EXP08-C",
+   "severity": "Medium",
+   "suggestion": null
+  },
+  {
+   "column": 9,
+   "file": "src/p2p/p2p.c",
+   "line": 6758,
+   "message": "Pointer arithmetic on struct pointer with byte offset. Cast to char* before adding offset.",
+   "rule_id": "EXP08-C",
+   "severity": "Medium",
+   "suggestion": null
+  },
+  {
+   "column": 4,
+   "file": "src/p2p/p2p.c",
+   "line": 6766,
+   "message": "Variable 'elems' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'elems' before use, e.g., at its declaration"
+  },
+  {
+   "column": 13,
+   "file": "src/p2p/p2p.c",
+   "line": 6809,
+   "message": "Unsigned integer subtraction 'data_len - 1' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 14,
+   "file": "src/p2p/p2p.c",
+   "line": 6829,
+   "message": "Unsigned integer subtraction 'data_len - 1' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 9,
+   "file": "src/p2p/p2p.c",
+   "line": 6838,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 30,
+   "file": "src/p2p/p2p.c",
+   "line": 6852,
+   "message": "Pointer parameter 'dev' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *dev'"
+  },
+  {
+   "column": 36,
+   "file": "src/p2p/p2p.c",
+   "line": 6896,
+   "message": "Modulo operator used with potentially signed operands. The result of % with negative operands is implementation-defined and can be negative. Use unsigned types (size_t, unsigned int) or explicitly handle negative remainders.",
+   "rule_id": "INT10-C",
+   "severity": "Medium",
+   "suggestion": "Convert operands to unsigned types (size_t, unsigned int) or add explicit checks for negative values"
+  },
+  {
+   "column": 8,
+   "file": "src/p2p/p2p.c",
+   "line": 6912,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 6919,
+   "message": "Function 'p2p_prepare_data_element' does not validate pointer parameter 'peer_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'peer_addr' at the start of the function, e.g., 'if (!peer_addr) { return error_code; }'"
+  },
+  {
+   "column": 3,
+   "file": "src/p2p/p2p.c",
+   "line": 6942,
+   "message": "Potential memory leak: 'extra_ies' allocated with 'wpabuf_alloc' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'extra_ies' is freed before this goto or at the target label"
+  },
+  {
+   "column": 8,
+   "file": "src/p2p/p2p.c",
+   "line": 6948,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 19,
+   "file": "src/p2p/p2p.c",
+   "line": 7033,
+   "message": "sizeof applied to pointer/array parameter 'p2p' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(p2p->peer_sae_password)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 7,
+   "file": "src/p2p/p2p.c",
+   "line": 7040,
+   "message": "sizeof applied to pointer/array parameter 'p2p' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(p2p->peer_sae_password)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 28,
+   "file": "src/p2p/p2p.c",
+   "line": 7057,
+   "message": "Pointer parameter 'dev' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *dev'"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p.c",
+   "line": 7095,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 7122,
+   "message": "Function 'p2p_pasn_auth_tx_status' does not validate pointer parameter 'data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'data' at the start of the function, e.g., 'if (!data) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 7125,
+   "message": "Value assigned to 'ret' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 3,
+   "file": "src/p2p/p2p.c",
+   "line": 7129,
+   "message": "Casting from char * (alignment 1) to const struct ieee80211_mgmt * (alignment 4) may cause alignment issues",
+   "rule_id": "EXP36-C",
+   "severity": "Low",
+   "suggestion": "Use memcpy or ensure proper alignment before casting"
+  },
+  {
+   "column": 10,
+   "file": "src/p2p/p2p.c",
+   "line": 7145,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 7,
+   "file": "src/p2p/p2p.c",
+   "line": 7157,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 23,
+   "file": "src/p2p/p2p.c",
+   "line": 7215,
+   "message": "Memory allocated with 'int_array_dup' for variable 'pasn->pasn_groups' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(pasn->pasn_groups)' before the variable goes out of scope"
+  },
+  {
+   "column": 4,
+   "file": "src/p2p/p2p.c",
+   "line": 7221,
+   "message": "Memory leak: 'pasn->pasn_groups' allocated with 'int_array_dup' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'pasn->pasn_groups' before this return statement"
+  },
+  {
+   "column": 4,
+   "file": "src/p2p/p2p.c",
+   "line": 7227,
+   "message": "Memory leak: 'pasn->pasn_groups' allocated with 'int_array_dup' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'pasn->pasn_groups' before this return statement"
+  },
+  {
+   "column": 9,
+   "file": "src/p2p/p2p.c",
+   "line": 7229,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 4,
+   "file": "src/p2p/p2p.c",
+   "line": 7234,
+   "message": "Memory leak: 'pasn->pasn_groups' allocated with 'int_array_dup' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'pasn->pasn_groups' before this return statement"
+  },
+  {
+   "column": 7,
+   "file": "src/p2p/p2p.c",
+   "line": 7245,
+   "message": "sizeof applied to pointer/array parameter 'p2p' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(p2p->peer_dik_data)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 7,
+   "file": "src/p2p/p2p.c",
+   "line": 7247,
+   "message": "sizeof applied to pointer/array parameter 'p2p' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(p2p->peer_sae_password)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 4,
+   "file": "src/p2p/p2p.c",
+   "line": 7248,
+   "message": "Memory leak: 'pasn->pasn_groups' allocated with 'int_array_dup' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'pasn->pasn_groups' before this return statement"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p.c",
+   "line": 7252,
+   "message": "Memory leak: 'pasn->pasn_groups' allocated with 'int_array_dup' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'pasn->pasn_groups' before this return statement"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 7256,
+   "message": "Function 'p2p_pasn_auth_rx' does not validate pointer parameter 'mgmt' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'mgmt' at the start of the function, e.g., 'if (!mgmt) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 7259,
+   "message": "Value assigned to 'ret' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 9,
+   "file": "src/p2p/p2p.c",
+   "line": 7299,
+   "message": "Passing pointer to uninitialized variable 'pasn_data' to 'wpa_pasn_auth_rx' which reads the value",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'pasn_data' before passing its address to 'wpa_pasn_auth_rx'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 7316,
+   "message": "Function 'p2p_pasn_pmksa_set_pmk' does not validate pointer parameter 'src' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'src' at the start of the function, e.g., 'if (!src) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 7316,
+   "message": "Function 'p2p_pasn_pmksa_set_pmk' does not validate pointer parameter 'dst' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dst' at the start of the function, e.g., 'if (!dst) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 7316,
+   "message": "Function 'p2p_pasn_pmksa_set_pmk' does not validate pointer parameter 'pmkid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pmkid' at the start of the function, e.g., 'if (!pmkid) { return error_code; }'"
+  },
+  {
+   "column": 45,
+   "file": "src/p2p/p2p.c",
+   "line": 7316,
+   "message": "Pointer parameter 'p2p' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *p2p'"
+  },
+  {
+   "column": 21,
+   "file": "src/p2p/p2p.c",
+   "line": 7332,
+   "message": "sizeof applied to pointer/array parameter 'p2p' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(p2p->pasn_ptk)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 7353,
+   "message": "Value assigned to 'pos' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 38,
+   "file": "src/p2p/p2p.c",
+   "line": 7358,
+   "message": "Pointer parameter 'p2p' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *p2p'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 7373,
+   "message": "Function 'p2p_get_dira_info' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 7373,
+   "message": "Function 'p2p_get_dira_info' does not validate integer parameter 'buflen' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'buflen' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 50,
+   "file": "src/p2p/p2p.c",
+   "line": 7373,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 50,
+   "file": "src/p2p/p2p.c",
+   "line": 7373,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p.c",
+   "line": 7402,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p.c",
+   "line": 7410,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  }
+ ]
+}

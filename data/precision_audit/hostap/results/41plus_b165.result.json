@@ -1,0 +1,1129 @@
+{
+ "labels": [
+  {
+   "rule": "CON03-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 24,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON03-C no-pthread FP class: single-threaded ref-count, no mutex needed anywhere in file"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 86,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR30-C misfire: NUL-terminated string traversal (while(*pos) pos++) is bounded, not unbounded"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 88,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR34-C char-to-char misfire: *pos='\\0' is char-to-char, no widening/sign-extension conversion"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 109,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C sizeof(*ptr)-not-a-deref misfire: sizeof(*global) never dereferences global"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 129,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C local-vs-heap-storage confusion: global is os_zalloc'd heap memory, not automatic storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 150,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_get_errors(void *ssl_ctx) is the shared multi-backend tls.h interface"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 156,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C companion-pointer+size idiom FP; also pinned by GnuTLS transport pull/push callback typedef"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 185,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C companion-pointer+size idiom FP; also pinned by GnuTLS transport pull/push callback typedef"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 200,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C static/internal function (tls_gnutls_init_session), global param read-only, not part of tls.h contract - real if low-value opportunity"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 235,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC07-C goto-label misfire: 'fail:' is a goto target (reached from goto fail at :216,:226), not unreachable"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 249,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C sizeof(*ptr)-not-a-deref misfire: sizeof(*conn) never dereferences conn"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 276,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C local-vs-heap-storage confusion: conn is os_zalloc'd heap memory"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 280,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_connection_deinit(void *ssl_ctx, struct tls_connection *conn)"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 282,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C ad-hoc-NULL-check stylistic pedantry"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 297,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C factually wrong: body is 'return conn ? conn->established : 0;' - conn IS validated via ternary guard"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 297,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_connection_established(void *ssl_ctx, struct tls_connection *conn)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 297,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_connection_established(void *ssl_ctx, struct tls_connection *conn)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 303,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_connection_peer_serial_num(void *tls_ctx, struct tls_connection *conn)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 304,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_connection_peer_serial_num(void *tls_ctx, struct tls_connection *conn)"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 316,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C ad-hoc-NULL-check stylistic pedantry"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 358,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_connection_set_params(void *tls_ctx, ...)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 457,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C no-final-else guard-clause FP: missing branch leaves prio==NULL, handled later by if(prio)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 532,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C no-final-else guard-clause FP: no-CA-configured is a valid fallthrough (TLS without CA)"
+  },
+  {
+   "rule": "CON32-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 537,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON32-C/POS49-C no-pthread bitfield-mutex FP class: single-threaded code, no concurrent access"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 537,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON32-C/POS49-C no-pthread bitfield-mutex FP class: single-threaded code, no concurrent access"
+  },
+  {
+   "rule": "CON32-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 549,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON32-C/POS49-C no-pthread bitfield-mutex FP class: single-threaded code, no concurrent access"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 549,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON32-C/POS49-C no-pthread bitfield-mutex FP class: single-threaded code, no concurrent access"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 655,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C no-final-else guard-clause FP: optional client-cert/private-key config, no-match is valid"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 709,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C callback-contract FP: server_ocsp_status_req's 'ptr' is pinned by GnuTLS OCSP status-request callback typedef"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 764,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW pattern: MEM30-C false UAF - global->xcred is freed (:760) then immediately re-allocated via gnutls_certificate_allocate_credentials(&global->xcred) (:764), an output-param realloc the tool doesn't recognize as clearing freed-state, so every subsequent legitimate use of global->xcred for the rest of tls_global_set_params is misflagged as UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 773,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW pattern: MEM30-C false UAF - global->xcred is freed (:760) then immediately re-allocated via gnutls_certificate_allocate_credentials(&global->xcred) (:764), an output-param realloc the tool doesn't recognize as clearing freed-state, so every subsequent legitimate use of global->xcred for the rest of tls_global_set_params is misflagged as UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 779,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW pattern: MEM30-C false UAF - global->xcred is freed (:760) then immediately re-allocated via gnutls_certificate_allocate_credentials(&global->xcred) (:764), an output-param realloc the tool doesn't recognize as clearing freed-state, so every subsequent legitimate use of global->xcred for the rest of tls_global_set_params is misflagged as UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 792,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW pattern: MEM30-C false UAF - global->xcred is freed (:760) then immediately re-allocated via gnutls_certificate_allocate_credentials(&global->xcred) (:764), an output-param realloc the tool doesn't recognize as clearing freed-state, so every subsequent legitimate use of global->xcred for the rest of tls_global_set_params is misflagged as UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 798,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW pattern: MEM30-C false UAF - global->xcred is freed (:760) then immediately re-allocated via gnutls_certificate_allocate_credentials(&global->xcred) (:764), an output-param realloc the tool doesn't recognize as clearing freed-state, so every subsequent legitimate use of global->xcred for the rest of tls_global_set_params is misflagged as UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 806,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW pattern: MEM30-C false UAF - global->xcred is freed (:760) then immediately re-allocated via gnutls_certificate_allocate_credentials(&global->xcred) (:764), an output-param realloc the tool doesn't recognize as clearing freed-state, so every subsequent legitimate use of global->xcred for the rest of tls_global_set_params is misflagged as UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 812,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW pattern: MEM30-C false UAF - global->xcred is freed (:760) then immediately re-allocated via gnutls_certificate_allocate_credentials(&global->xcred) (:764), an output-param realloc the tool doesn't recognize as clearing freed-state, so every subsequent legitimate use of global->xcred for the rest of tls_global_set_params is misflagged as UAF"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 821,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C no-final-else guard-clause FP: optional client-cert/private-key/PKCS12 config chain"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 826,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW pattern: MEM30-C false UAF - global->xcred is freed (:760) then immediately re-allocated via gnutls_certificate_allocate_credentials(&global->xcred) (:764), an output-param realloc the tool doesn't recognize as clearing freed-state, so every subsequent legitimate use of global->xcred for the rest of tls_global_set_params is misflagged as UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 851,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW pattern: MEM30-C false UAF - global->xcred is freed (:760) then immediately re-allocated via gnutls_certificate_allocate_credentials(&global->xcred) (:764), an output-param realloc the tool doesn't recognize as clearing freed-state, so every subsequent legitimate use of global->xcred for the rest of tls_global_set_params is misflagged as UAF"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 858,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC07-C goto-label misfire: 'fail:' is a goto target, not unreachable"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 864,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_global_set_verify(void *ssl_ctx, ...)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 871,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C companion-pointer+size idiom FP: session_ctx+session_ctx_len"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 871,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_connection_set_verify(void *ssl_ctx, ...)"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 887,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC37-C preprocessor-branch-blind FP: both #if and #else branches return a value"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 887,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_connection_get_random(void *ssl_ctx, struct tls_connection *conn, ...)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 887,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_connection_get_random(void *ssl_ctx, struct tls_connection *conn, ...)"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 896,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR01-C sizeof(*ptr)-correct-idiom FP: sizeof(*keys) is the correct struct-size idiom, not a decayed-array sizeof"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 910,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC37-C preprocessor-branch-blind FP: both #if and #else branches return a value"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 910,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C companion-pointer+size idiom FP: context+context_len / out+out_len"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 910,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_connection_export_key(void *tls_ctx, struct tls_connection *conn, ...)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 910,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_connection_export_key(void *tls_ctx, struct tls_connection *conn, ...)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 911,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C companion-pointer+size idiom FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 931,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C companion-pointer+size idiom FP: out+out_len"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 931,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_connection_get_eap_fast_key(void *tls_ctx, struct tls_connection *conn, ...)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 931,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_connection_get_eap_fast_key(void *tls_ctx, struct tls_connection *conn, ...)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 932,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "DCL13-C tls.h contract FP: 'out' is the shared output-buffer param across TLS backends, semantically meant to be written by working implementations even though this stub never uses it"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 938,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C static function (gnutls_tls_fail_event), 'conn' genuinely read-only single-use accessor in this file - graded FP unlike the tls_gnutls_init_session case"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1000,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC37-C preprocessor-branch-blind FP: both #if and #else branches of check_ocsp return"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1012,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP20-C implicit-boolean-test FP: gnutls_ocsp_status_request_is_checked() is an exact 0/1 boolean predicate; '!fn(...)' is an explicit, idiomatic negation"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1166,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR31-C misapplied-to-non-char-array FP: gnutls_typed_vdata_st data[1] is a struct array, not a character array"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1312,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C output-buffer-confused-with-uninitialized-use FP: hash[32] is filled by sha256_vector() as an output param before any read"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1313,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL37-C block-scope-local misclassified as file-scope FP: _addr/_len are declared inside a for-loop's if-block, not at file scope"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1313,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C misfire: _addr[0]/_len[0] are assigned immediately before use in the same #ifdef block, always executed together"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1313,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR31-C misapplied-to-non-char-array FP: const u8 *_addr[1] / size_t _len[1] are not character arrays"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1314,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL37-C block-scope-local misclassified as file-scope FP: _addr/_len are declared inside a for-loop's if-block, not at file scope"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1314,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C misfire: _addr[0]/_len[0] are assigned immediately before use in the same #ifdef block, always executed together"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1314,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR31-C misapplied-to-non-char-array FP: const u8 *_addr[1] / size_t _len[1] are not character arrays"
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1321,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP39-C cross-function union tls_event_data conflation FP: no cert_fail member is ever written to 'ev' in this function (that write happens in the unrelated gnutls_tls_fail_event())"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1366,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C mutually-exclusive-branch double-free FP: each os_free(buf) is immediately followed by 'goto out'/loop-exit; buf is also freshly redeclared each loop iteration"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1390,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C mutually-exclusive-branch double-free FP: each os_free(buf) is immediately followed by 'goto out'/loop-exit; buf is also freshly redeclared each loop iteration"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1407,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C mutually-exclusive-branch double-free FP: each os_free(buf) is immediately followed by 'goto out'/loop-exit; buf is also freshly redeclared each loop iteration"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1412,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C mutually-exclusive-branch double-free FP: each os_free(buf) is immediately followed by 'goto out'/loop-exit; buf is also freshly redeclared each loop iteration"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1423,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC07-C goto-label misfire: 'out:' is a goto target, not unreachable"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1430,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "DCL13-C static function (gnutls_get_appl_data), 'conn' only read - low-value real opportunity per internal-function contrast rule"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1439,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor-args FP: wpabuf_mhead()/wpabuf_size() are side-effect-free accessors"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1453,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C local-vs-heap-storage confusion FP: 'ad' is wpabuf_alloc()'d heap memory, not automatic storage"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1477,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW pattern: MEM30-C false UAF on struct-field reassignment - conn->pull_buf is freed (:1474) then immediately reassigned via wpabuf_dup() (:1476); the field write clears the freed-state but sqc doesn't track it, so the subsequent NULL-check and pull_buf_offset assignment are misflagged as UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1479,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW pattern: MEM30-C false UAF on struct-field reassignment - conn->pull_buf is freed (:1474) then immediately reassigned via wpabuf_dup() (:1476); the field write clears the freed-state but sqc doesn't track it, so the subsequent NULL-check and pull_buf_offset assignment are misflagged as UAF"
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1500,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP39-C cross-function union tls_event_data conflation FP: no cert_fail member write anywhere in tls_connection_handshake, only alert.* writes"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1568,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same struct-field-reassignment MEM30-C false-UAF class as :1477/:1479 - conn->pull_buf was reassigned earlier in this same function, not freed-and-unused"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1574,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C local-vs-heap-storage confusion FP: 'out_data' aliases conn->push_buf (heap-allocated), not automatic storage"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1578,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP: tls_connection_server_handshake merely forwards params to tls_connection_handshake, no externally-nullable caller path"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1578,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP: tls_connection_server_handshake merely forwards params to tls_connection_handshake, no externally-nullable caller path"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1578,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP: tls_connection_server_handshake merely forwards params to tls_connection_handshake, no externally-nullable caller path"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1578,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP: tls_connection_server_handshake merely forwards params to tls_connection_handshake, no externally-nullable caller path"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1587,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP: 'conn' unchecked but always non-NULL from internal callers (same class documented for openssl/wolfssl backends)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1587,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_connection_encrypt(void *tls_ctx, ...)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1594,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor-args FP: wpabuf_head()/wpabuf_len() are side-effect-free accessors"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1594,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "EXP34-C internal-only-API-caller-invariant FP: 'conn' unchecked but always non-NULL from internal callers in this codebase"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1604,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C local-vs-heap-storage confusion FP: 'buf' aliases conn->push_buf (heap-allocated)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1608,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_connection_decrypt(void *tls_ctx, ...)"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1615,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "EXP34-C internal-only-API-caller-invariant FP: same as :1594, 'conn' always non-NULL from internal callers"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1622,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Struct-field-reassignment MEM30-C false-UAF class: conn->pull_buf freed (:1619) then reassigned via wpabuf_dup() (:1621) before the flagged NULL-check/use"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1624,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Struct-field-reassignment MEM30-C false-UAF class: conn->pull_buf freed (:1619) then reassigned via wpabuf_dup() (:1621) before the flagged NULL-check/use"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1636,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor-args FP: wpabuf_mhead()/wpabuf_size() are side-effect-free accessors"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1646,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C local-vs-heap-storage confusion FP: 'out' is wpabuf_alloc()'d heap memory"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1650,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_connection_resumed(void *ssl_ctx, struct tls_connection *conn)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1650,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_connection_resumed(void *ssl_ctx, struct tls_connection *conn)"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1652,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C ad-hoc-NULL-check stylistic pedantry"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1658,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_connection_set_cipher_list(void *tls_ctx, struct tls_connection *conn, ...)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1658,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_connection_set_cipher_list(void *tls_ctx, struct tls_connection *conn, ...)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1659,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: 'ciphers' param type pinned by shared tls.h signature across backends"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1666,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-only-API FP: 'conn' unchecked but always non-NULL from internal callers"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1666,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C companion-pointer+size idiom (buf+buflen) FP; DCL13-C tls.h contract FP: tls_get_version"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1666,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C companion-pointer+size idiom (buf+buflen) FP; DCL13-C tls.h contract FP: tls_get_version"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1666,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C companion-pointer+size idiom (buf+buflen) FP; DCL13-C tls.h contract FP: tls_get_version"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1667,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C companion-pointer+size idiom FP: buf+buflen"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1684,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-only-API FP: 'conn' unchecked but always non-NULL from internal callers"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1684,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C companion-pointer+size idiom FP; DCL13-C tls.h contract FP: tls_get_cipher"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1684,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C companion-pointer+size idiom FP; DCL13-C tls.h contract FP: tls_get_cipher"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1684,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C companion-pointer+size idiom FP; DCL13-C tls.h contract FP: tls_get_cipher"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1685,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C companion-pointer+size idiom FP: buf+buflen"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1720,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-only-API FP: 'conn' unchecked but always non-NULL from internal callers"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1720,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_connection_enable_workaround(void *ssl_ctx, ...)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1721,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1728,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C companion-pointer+size idiom FP (data+data_len); DCL13-C tls.h contract FP: tls_connection_client_hello_ext"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1728,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C companion-pointer+size idiom FP (data+data_len); DCL13-C tls.h contract FP: tls_connection_client_hello_ext"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1728,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1737,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_connection_get_failed(void *ssl_ctx, struct tls_connection *conn)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1737,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_connection_get_failed(void *ssl_ctx, struct tls_connection *conn)"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1739,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C ad-hoc-NULL-check stylistic pedantry"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1745,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_connection_get_read_alerts"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1745,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_connection_get_read_alerts"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1747,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C ad-hoc-NULL-check stylistic pedantry"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1753,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_connection_get_write_alerts"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1753,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_connection_get_write_alerts"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1755,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C ad-hoc-NULL-check stylistic pedantry"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1761,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_connection_set_session_ticket_cb(void *tls_ctx, struct tls_connection *conn, tls_session_ticket_cb cb, void *ctx)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1762,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_connection_set_session_ticket_cb(void *tls_ctx, struct tls_connection *conn, tls_session_ticket_cb cb, void *ctx)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1763,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_connection_set_session_ticket_cb(void *tls_ctx, struct tls_connection *conn, tls_session_ticket_cb cb, void *ctx)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1769,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-only-API FP: 'buf' unchecked but always a fixed caller-provided array"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1769,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C companion-pointer+size idiom FP: buf+buf_len"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1776,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_connection_set_success_data(struct tls_connection *conn, ...), unused stub param but pinned signature"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1783,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Genuine 31-significant-character collision: 'tls_connection_set_success_data' is exactly 31 chars, 'tls_connection_set_success_data_resumed' shares that prefix - literally true per rule text, though virtually no modern linker enforces this limit"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1783,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_connection_set_success_data_resumed"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1789,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_connection_get_success_data"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1795,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C tls.h contract FP: tls_connection_remove_session"
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 263,
+   "rule": "MEM31-C",
+   "desc": "tls_connection_init(): if gnutls_credentials_set() fails (:263) or gnutls_certificate_allocate_credentials() fails (:271), the function os_free(conn) and returns NULL without calling gnutls_deinit(conn->session) - conn->session was already successfully initialized by tls_gnutls_init_session() and is leaked on both error paths.",
+   "upstream_present": "unknown"
+  },
+  {
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 1300,
+   "rule": "EXP34-C",
+   "desc": "tls_connection_verify_peer(): if os_malloc(len+1) fails, 'buf' stays NULL but the code still calls wpa_printf(MSG_DEBUG, \"...: %s\", ..., buf) unconditionally with a %s conversion on the NULL buf - real UB on most libcs, same genuine bug class as the eap_sim_db.c %s-NULL findings (rare OOM-only trigger).",
+   "upstream_present": "unknown"
+  },
+  {
+   "file": "src/crypto/tls_gnutls.c",
+   "line": 733,
+   "rule": "MEM34-C",
+   "desc": "server_ocsp_status_req(): on gnutls_malloc(len) failure, the code calls os_free(resp) - but 'resp' is a gnutls_datum_t* output parameter owned by the GnuTLS library caller (not allocated by this function), so freeing it is an invalid free of memory this function does not own. Low-probability (OOM-only) trigger.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 2,
+  "fp": 135,
+  "fn": 3
+ }
+}

@@ -1,0 +1,1163 @@
+{
+ "labels": [
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8761,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C confirmed FP: idiomatic buf/end pointer-pair convention conveys bound via subtraction, not a real conformant-array gap"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8762,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same buf/end pair idiom, companion to prior finding"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8776,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM30-C conflates 'wpas_p2p_free_send_action_work' freeing a nested awork/work struct with freeing wpa_s itself (verified: function only os_free()s awork and NULLs wpa_s->p2p_send_action_work); matches confirmed 'helper frees sub-fields of *ptr' MEM30-C pattern"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8778,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_cancel_timeout(...) does not free wpa_s; same name-heuristic conflation as prior"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8781,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "offchannel_send_action_done(wpa_s) does not free wpa_s; same conflation"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8785,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "offchannel_clear_pending_action_tx(wpa_s) does not free wpa_s; same conflation"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8789,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C mostly-FP-on-internal-API pattern: dev_id only used internally, never NULL at real call sites"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8819,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C dispatch-contract FP: wpas_p2p_scan_res_ignore_search is assigned to wpa_s->scan_res_handler (line 8853), pinned by that vtable typedef"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8866,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C eloop_timeout_handler dispatch-contract FP: timeout_ctx is the fixed void* param of the eloop callback typedef"
+  },
+  {
+   "rule": "INT18-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8910,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "INT18-C claims smaller-type-before-larger-type overflow, but timeout and wpa_s->max_remain_on_chan are both unsigned int - no type-width mismatch exists as the message describes"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8920,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern: buf always supplied by internal callers building association req IEs, never NULL in practice"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8920,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_s is read-only throughout wpas_p2p_assoc_req_ie (only field reads, no field writes, not forwarded to any vtable slot) - genuine low-severity const opportunity"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8936,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic pattern: fires on any plain if(ptr==NULL) guard"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8948,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern: wpas_p2p_probe_req_rx params always supplied by driver RX dispatch, not NULL-checked anywhere in codebase"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8948,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern: wpas_p2p_probe_req_rx params always supplied by driver RX dispatch, not NULL-checked anywhere in codebase"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8948,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern: wpas_p2p_probe_req_rx params always supplied by driver RX dispatch, not NULL-checked anywhere in codebase"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8948,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern: wpas_p2p_probe_req_rx params always supplied by driver RX dispatch, not NULL-checked anywhere in codebase"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8975,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern: wpas_p2p_rx_action params supplied by driver RX dispatch"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8975,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern: wpas_p2p_rx_action params supplied by driver RX dispatch"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8975,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern: wpas_p2p_rx_action params supplied by driver RX dispatch"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8975,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_s only read in wpas_p2p_rx_action (wpa_s->global->p2p_disabled/p2p checks); wpa_s itself never forwarded to p2p_rx_action, genuine const opportunity"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8989,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern: ies param of wpas_p2p_scan_ie always internally supplied"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9027,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern: go_dev_addr optional/internal, not checked anywhere else in this call family either"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9037,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ENV01-C wholesale misfire: pref_freq_list is 'struct weighted_pcl pref_freq_list[P2P_MAX_PREF_CHANNELS]', a fixed macro-sized array; no getenv() anywhere in file - matches confirmed ENV01-C fixed-array misfire class"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9075,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9149,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern: go_dev_addr optional param"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9155,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "MSC13-C genuine dead default: bssid=NULL is unconditionally overwritten on both if/else branches (lines 9193/9204) before any use - matches confirmed 'dead NULL/default init always reassigned' TP class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9158,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Same shape: freq=0 unconditionally overwritten on both branches before use"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9160,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ENV01-C wholesale misfire on fixed macro-sized pref_freq_list array, same as finding 23"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9174,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic pattern"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9194,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic pattern"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9239,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM05-C misfire: 'u8 ip[3*4]' is a fixed compile-time-constant-sized array, not a VLA - matches confirmed ENV01-C/MEM05-C fixed-array misfire class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9334,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_s read-only in wpas_p2p_ext_listen (only field reads, forwards wpa_s->global->p2p not wpa_s itself)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9344,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_s read-only in wpas_p2p_is_client"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9359,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C eloop_timeout_handler dispatch-contract FP: timeout_ctx of wpas_p2p_group_idle_timeout"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9432,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "MSC04-C: genuine deep indirect-recursion cycle exists in the call graph (wpas_p2p_deauth_notif -> ... -> wpas_p2p_disconnect_safely, which has a direct non-deferred call path back into wpas_p2p_disconnect at p2p_supplicant.c:618); real structural complexity risk even though per-hop guard conditions make an actual stack blowup unlikely in practice"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9459,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_s read-only in wpas_p2p_disassoc_notif"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9557,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT32-C signed-overflow claim is wrong: 'r' is declared 'unsigned int r' (line 9540), and (r%3)*5+1 is bounded to [1,11] regardless - matches the confirmed 'rule mis-detects declared-unsigned variable as signed' type-detection-bug class"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9557,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same: r is unsigned int, (r%3)*5 bounded to [0,10], no overflow possible"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9557,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C false uninitialized-use: 'r' is written through the pointer by os_get_random((u8*)&r, sizeof(r)) on the preceding line, and channel=1+(r%3)*5 only executes in the else-branch taken when that call succeeded - rule doesn't track writes-through-address-of-pointer-arg as initializing r, same class as the wps_parse_msg/os_get_random output-param family"
+  },
+  {
+   "rule": "INT10-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9557,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT10-C modulo-signed-operand claim is wrong: r is unsigned int, % on unsigned is fully defined, no negative-remainder concern"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9568,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "MSC13-C genuine dead default: int ret=0 (line 9568) is unconditionally overwritten by ret=p2p_set_oper_channel(...) before any read - matches confirmed dead-init TP class"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9584,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same r-is-unsigned INT32-C false-overflow class as finding 37/38, 2nd instance (op_channel branch)"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9584,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same"
+  },
+  {
+   "rule": "INT10-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9584,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same r-is-unsigned INT10-C false-signed-modulo class as finding 40, 2nd instance"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9612,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_s read-only in wpas_p2p_set_noa (only wpa_s->ap_iface read)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9651,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "uplink read-only in wpas_p2p_enable_cross_connect (only uplink->global/->ifname read; mutations are on the iterated 'iface' variable, not uplink)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9677,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "uplink read-only in wpas_p2p_disable_cross_connect, same shape"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9698,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern: wpas_p2p_notif_connected always called with a valid wpa_s from the supplicant core event path"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9712,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern: wpas_p2p_notif_disconnected same shape"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9741,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR01-C misclassification: sizeof(wpa_s->cross_connect_uplink) is sizeof of a genuine fixed-size struct MEMBER array reached via '->' - member arrays retain full array type through pointer-member access, nothing decayed; matches confirmed ARR01-C member-array misclassification family"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9776,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C eloop_timeout_handler dispatch-contract FP: timeout_ctx of wpas_p2p_pbc_overlap_cb"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9787,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "MSC13-C genuine dead default: 'freqs = NULL' (line 9787) is unconditionally overwritten by os_calloc() on the very next executed statement with no intervening read"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9824,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C dispatch-contract FP: wpas_p2p_scan_res_ignore is assigned to wpa_s->scan_res_handler (line 9856), pinned by the scan_res_handler vtable typedef"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9825,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same dispatch-contract FP, scan_res param of the same vtable-pinned function"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9831,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern: wpas_p2p_cancel always called with the owning wpa_s"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9887,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C deliberate guard-clause FP: if/else-if inside the for-loop body correctly does nothing (continues loop) when neither branch's condition holds - matches confirmed no-final-else stylistic-pedantry class"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9905,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "MSC04-C structural indirect recursion, same call-graph family as finding 35"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9916,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9916,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_s read-only in wpas_p2p_update_best_channels (only wpa_s->global->p2p read)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9926,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9926,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_s read-only in wpas_p2p_unauthorize (only wpa_s->global->p2p read)"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9952,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "MSC04-C structural indirect recursion; wpas_p2p_disconnect is itself the re-entry point of the cycle documented at finding 35/57, and wpas_p2p_disconnect_safely (p2p_supplicant.c:601-619) has a genuine direct (non-deferred) call path back into it"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9955,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic pattern"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 9984,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C deliberate guard-clause FP: if/else-if leaves 'ret' at its already-correct default (from p2p_in_progress()) when neither condition holds"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10008,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10008,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern: ssid always supplied by the config-removal callsite"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10008,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_s read-only in wpas_p2p_network_removed"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10009,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ssid read-only in wpas_p2p_network_removed (only ssid->p2p_group read)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10030,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10030,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_s read-only in wpas_p2p_get_persistent (only wpa_s->conf->ssid read)"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10044,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic pattern"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10046,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C confuses local pointer *variable* 's' with local *storage*: 's' walks wpa_s->conf->ssid, a persistent config linked list, not stack/automatic storage - matches confirmed DCL30-C variable-vs-storage-duration confusion class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10050,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same DCL30-C confusion, 2nd return of the same 's'"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10056,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same DCL30-C confusion, 3rd return of the same 's'"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10065,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_s read-only in wpas_p2p_store_client_identity (only field reads, e.g. wpa_s->ap_iface, wpa_s->p2p2)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10111,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10152,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic pattern"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10160,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "MSC04-C structural indirect recursion, same call-graph family as findings 35/57/62"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10190,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "MSC04-C structural indirect recursion, same call-graph family"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10265,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10265,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern: mac_addr always supplied by the driver new-PSK callback"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10273,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C non-evaluated-context misfire: 'psk_len != sizeof(p->psk)' only computes sizeof of p's pointee type, never evaluates/dereferences the still-uninitialized pointer p - matches the confirmed sizeof(*ptr)/sizeof(ptr->member) non-evaluated-context FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10277,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C side-effect-free macro-arg misfire: MAC2STR(mac_addr)/MAC2STR(p2p_dev_addr) are pure array-index reads with no side effects to unsequence - matches confirmed EXP30-C logging-macro-arg FP class"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10332,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP45-C misfire despite the code already applying the standard double-parenthesization mitigation: '(last = dl_list_last(...))' is wrapped in its own parens inside the && chain, the literal CERT-recommended signal that the assignment is deliberate - matches confirmed EXP45-C already-parenthesized FP class"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10336,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP34-C misfire: 'last' is only dereferenced inside the if-block whose && condition already proved '(last = dl_list_last(...))' truthy (non-NULL) via short-circuit evaluation before entering the block"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10424,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10448,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C eloop_timeout_handler dispatch-contract FP: timeout_ctx of wpas_p2p_psk_failure_removal"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10455,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C eloop_timeout_handler dispatch-contract FP: timeout_ctx of wpas_p2p_group_freq_conflict"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10464,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10464,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_s read-only in wpas_p2p_handle_frequency_conflicts (only compared via == with iface, never assigned)"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10568,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic pattern"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10604,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C confuses local pointer variable 'ret' (struct wpabuf *) with local storage: ret is heap-allocated via wpabuf_alloc()/returned from wps_build_nfc_handover_req_p2p, not stack storage - same confirmed DCL30-C class as findings 72-74"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10608,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_s read-only in wpas_p2p_cli_freq (only wpa_s->global->ifaces read)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10661,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C false uninitialized-use: 'ssid' is passed as '&ssid' to wpas_p2p_cli_freq, which unconditionally writes through it (either *ssid=NULL default, or *ssid=iface->current_ssid on match) before this use - rule doesn't track writes-through-pointer-out-param as initializing the caller's local"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10696,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same output-param write-through-pointer FP, wpas_p2p_nfc_handover_sel"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10704,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "params read-only in wpas_p2p_nfc_join_group (only params->go_freq/go_ssid* read)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10733,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "params read-only in wpas_p2p_nfc_auth_join (only params->peer fields read)"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10750,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic pattern"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10782,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C 'may be used uninitialized' misfire: the post-loop use of ssid at line 10782 is only reached when the preceding for-loop exited via 'break' (guarded by 'if (wpa_s==NULL) return -1;'), and ssid is always assigned in the very same iteration that breaks - rule doesn't correlate the break-exit path with the loop-body assignment that always precedes it"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10797,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "params read-only in wpas_p2p_nfc_init_go_neg"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10813,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "params read-only in wpas_p2p_nfc_resp_go_neg"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 10914,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C side-effect-free-args misfire: two MAC2STR() pure-read macro expansions plus one wpa_ssid_txt() pure accessor call as sibling wpa_msg() arguments - no shared-state side effects to unsequence"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11007,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11029,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor-args misfire: wpabuf_head(req)/wpabuf_len(req) are read-only accessors with zero side effects - matches confirmed EXP30-C pure-accessor FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11031,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same pure-accessor-args misfire, wpabuf_head(sel)/wpabuf_len(sel)"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11091,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM30-C reassign-then-check misfire: wpa_s->p2p_oob_dev_pw is freed at line 11089 then unconditionally REASSIGNED via wpabuf_dup() at line 11090 before the NULL-check at 11091 reads it - matches confirmed MEM30-C reassign-doesn't-clear-freed-state class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11127,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C misfire: 'hapd' (declared line 11127) is unconditionally assigned at line 11130 as the very next statement after the loop's only guard, with no read in between - not actually reachable uninitialized on any path"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11133,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C false leak on a struct-field allocation whose lifetime is tied to hapd->conf (freed by the wpabuf_free() immediately preceding the reassignment on the next NFC-enable call, or by hapd->conf's own destructor) - matches confirmed 'struct-field allocation lifetime tied to enclosing heap object' MEM31-C FP sub-pattern"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11136,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same struct-field long-lived-storage FP, hapd->conf->wps_nfc_dh_privkey"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11139,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same struct-field long-lived-storage FP, hapd->conf->wps_nfc_dev_pw"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11151,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same: 'not freed before return' at the loop's end is not a leak - ownership was transferred into the persistent hapd->conf struct field"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11151,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same reasoning, dh_pubkey field"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11151,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same reasoning, dev_pw field"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11158,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "freqs read-only param in wpas_p2p_optimize_listen_channel (only freqs[i] indexed/read)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11375,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C eloop_timeout_handler dispatch-contract FP: timeout_ctx of wpas_p2p_move_go"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11400,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C eloop_timeout_handler dispatch-contract FP: timeout_ctx of wpas_p2p_reconsider_moving_go"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11403,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "MSC13-C genuine dead default: 'freqs = NULL' (line 11403) unconditionally overwritten by os_calloc() on the next statement before any read"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11432,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "freqs read-only param in wpas_p2p_consider_moving_one_go"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11435,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "MSC13-C genuine dead default: 'invalid_freq = 0' at declaration (line 11435) is immediately re-initialized to 0 again at the for-loop header (line 11445) with no intervening read"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11471,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C deliberate guard-clause FP: leaves policy_move at its already-correct default of 0 when neither condition holds"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11476,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C deliberate guard-clause FP: same inner if/else-if, no-op default is correct"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11597,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "MSC04-C structural indirect recursion, same call-graph family as findings 35/57/62/78/79"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11607,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11632,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT14-C conflates the base identifier 'wpa_s' with a bitwise op on the derived field wpa_s->drv_flags and an unrelated arithmetic op elsewhere in the function (e.g. wpa_s->conf->num_sec_device_types+1) - matches confirmed INT14-C struct-pointer/field conflation class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11660,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor-args misfire: wpabuf_mhead_u8(buf)/wpabuf_len(buf) are read-only accessors, matches confirmed pure-accessor FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11698,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_s read-only in wpas_p2p_usd_elems (only wpa_s->global->p2p read)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11710,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11710,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11710,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_s read-only in wpas_p2p_process_usd_elems"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11724,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11740,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11740,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_s read-only in wpas_p2p_pasn_auth_tx_status"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11756,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern: ptk is an out-param always supplied by the caller"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11756,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern: ptk_len likewise"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11756,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_s read-only in wpas_p2p_get_pasn_ptk"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11770,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11770,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_s read-only in wpas_p2p_get_dira"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11770,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C misfire on the standard pointer+size idiom: 'char *buf, size_t buf_len' - matches confirmed API05-C companion-size-param FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11780,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11793,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11793,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "DCL13-C real opportunity: wpa_s's own fields are never assigned; writes go through wpa_s->global->p2p_dev_addr, a non-const pointer field reachable even from a const wpa_s"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11800,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_s read-only in wpas_p2p_set_disabled (only field reads plus wpa_s->global forwarded, wpa_s's own fields never written)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 11844,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API pattern"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 41,
+  "fp": 103,
+  "fn": 0
+ }
+}

@@ -1,0 +1,952 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+API00-C,hostap,src/radius/radius_server.c,266,FP,"internal-only API, all callers pass live non-NULL sess (categorical: internal-only-API FP class)",hostap_full_audit_0.4.169,high
+DCL15-C,hostap,src/radius/radius_server.c,266,TP,srv_log has external linkage but is used only within this file; no other file references it,hostap_full_audit_0.4.169,med
+DCL19-C,hostap,src/radius/radius_server.c,266,TP,"same as DCL15-C: file-local-only usage, should be static",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/radius/radius_server.c,266,TP,"plain internal helper, sess only read (categorical: plain-internal-helper-read-only TP)",hostap_full_audit_0.4.169,low
+ERR33-C,hostap,src/radius/radius_server.c,280,TP,"2nd vsnprintf's return value truly never checked (1st call's return IS used for buflen, but this one isn't)",hostap_full_audit_0.4.169,low
+EXP34-C,hostap,src/radius/radius_server.c,283,FP,"sess is srv_log's param, always passed a live session by every call site; internal invariant",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/radius/radius_server.c,311,TP,"plain internal helper, data/addr only read, not forwarded to non-const call",hostap_full_audit_0.4.169,low
+DCL13-C,hostap,src/radius/radius_server.c,311,TP,"plain internal helper, data/addr only read, not forwarded to non-const call",hostap_full_audit_0.4.169,low
+DCL30-C,hostap,src/radius/radius_server.c,345,FP,"client points into data->clients heap list (heap/list-owned), not local automatic storage",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/radius/radius_server.c,350,TP,"plain internal helper, client only read",hostap_full_audit_0.4.169,low
+DCL30-C,hostap,src/radius/radius_server.c,361,FP,"sess points into client->sessions heap list, not local automatic storage",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/radius/radius_server.c,440,FP,"sizeof(*sess) is compile-time only, not a dereference (categorical sizeof(*ptr) class)",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/radius/radius_server.c,452,FP,"sess is os_zalloc'd heap memory, not automatic storage",hostap_full_audit_0.4.169,high
+ERR07-C,hostap,src/radius/radius_server.c,461,FP,atoi result dispatched via switch with safe default case; CONFIG_TESTING_OPTIONS debug-only,hostap_full_audit_0.4.169,med
+ERR34-C,hostap,src/radius/radius_server.c,461,FP,same as ERR07-C: switch default handles any bad/garbage value safely,hostap_full_audit_0.4.169,med
+STR34-C,hostap,src/radius/radius_server.c,461,FP,"tls is a string pointer (const char*), not a char being widened; wrong-type-claim",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/radius/radius_server.c,530,FP,"erp points into dl_list_for_each's heap-owned list node, not local storage",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/radius/radius_server.c,559,FP,"sizeof(*tmp) is compile-time only, not a dereference",hostap_full_audit_0.4.169,high
+POS49-C,hostap,src/radius/radius_server.c,591,FP,hostapd/wpa_supplicant core has no pthread usage anywhere (categorical no-pthread class),hostap_full_audit_0.4.169,high
+POS49-C,hostap,src/radius/radius_server.c,591,FP,hostapd/wpa_supplicant core has no pthread usage anywhere (categorical no-pthread class),hostap_full_audit_0.4.169,high
+MEM05-C,hostap,src/radius/radius_server.c,609,FP,"char buf[3*ETH_ALEN] is a fixed compile-time-constant-size array, not a VLA",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/radius/radius_server.c,640,FP,"sess returned is heap-allocated via os_zalloc in radius_server_new_session, not local storage",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/radius/radius_server.c,645,TP,"plain internal helper, sess only read",hostap_full_audit_0.4.169,low
+MEM05-C,hostap,src/radius/radius_server.c,649,FP,"char addr[3*ETH_ALEN] fixed-size array, not a VLA",hostap_full_audit_0.4.169,high
+EXP34-C,hostap,src/radius/radius_server.c,653,FP,sess->server checked at same guard; called only with a live session,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/radius/radius_server.c,685,TP,"plain internal helper, sess only read",hostap_full_audit_0.4.169,low
+MEM05-C,hostap,src/radius/radius_server.c,689,FP,"char addr_txt[ETH_ALEN*3] fixed-size array, not a VLA",hostap_full_audit_0.4.169,high
+EXP34-C,hostap,src/radius/radius_server.c,692,FP,sess is a live session by construction of this call site,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/radius/radius_server.c,715,TP,"plain internal helper, sess only read",hostap_full_audit_0.4.169,low
+MSC13-C,hostap,src/radius/radius_server.c,719,TP,sql=NULL never read before being unconditionally overwritten by sqlite3_mprintf() later,hostap_full_audit_0.4.169,med
+MSC13-C,hostap,src/radius/radius_server.c,720,TP,id_str=NULL never read before either branch unconditionally assigns it via os_malloc,hostap_full_audit_0.4.169,med
+EXP34-C,hostap,src/radius/radius_server.c,725,FP,sess is a live session by construction,hostap_full_audit_0.4.169,high
+MEM12-C,hostap,src/radius/radius_server.c,741,FP,return is inside the id_str==NULL (alloc-failure) branch; nothing allocated to leak (categorical NULL-resource-leak-in-its-own-failure-branch),hostap_full_audit_0.4.169,high
+MEM12-C,hostap,src/radius/radius_server.c,750,FP,id_str was already os_free()'d two lines earlier (line 747) before this return,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/radius/radius_server.c,764,TP,"plain internal helper, data only read",hostap_full_audit_0.4.169,low
+DCL13-C,hostap,src/radius/radius_server.c,765,TP,"plain internal helper, client only read",hostap_full_audit_0.4.169,low
+EXP34-C,hostap,src/radius/radius_server.c,775,FP,sess is a live session by construction,hostap_full_audit_0.4.169,high
+EXP34-C,hostap,src/radius/radius_server.c,786,FP,"hdr=radius_msg_get_hdr(request) returns msg->hdr, unconditionally set in radius_msg_new/parse and dereferenced everywhere in radius.c without null checks; internal invariant",hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/radius/radius_server.c,805,FP,"wpabuf_head()/wpabuf_len() are pure read-only accessors, no real unsequenced side effects (categorical pure-accessor-args class)",hostap_full_audit_0.4.169,high
+MEM05-C,hostap,src/radius/radius_server.c,813,FP,"char buf[2*64+1] fixed-size array, not a VLA",hostap_full_audit_0.4.169,high
+ARR30-C,hostap,src/radius/radius_server.c,820,FP,"sqc cites the unrelated u8 buf[4] at line 865 as the allocation site; the actual buf in scope here is the 129-byte char buf[2*64+1] at line 813, and len is capped to <=64 just above (cross-scope buffer-name conflation)",hostap_full_audit_0.4.169,high
+ERR33-C,hostap,src/radius/radius_server.c,825,FP,f is checked via 'if (f)' on the very next line,hostap_full_audit_0.4.169,high
+ERR00-C,hostap,src/radius/radius_server.c,825,FP,same: checked on the next line,hostap_full_audit_0.4.169,high
+WIN03-C,hostap,src/radius/radius_server.c,825,TP,mode string literally lacks 'N'; radius_server.o has no Windows exclusion evidence in hostapd's Makefile,hostap_full_audit_0.4.169,low
+ARR30-C,hostap,src/radius/radius_server.c,833,FP,same cross-scope buf conflation as line 820,hostap_full_audit_0.4.169,high
+ERR00-C,hostap,src/radius/radius_server.c,835,TP,"fclose on a write-mode ('a') dump file stream, close-time flush failure is unreported (write-stream distinct from read-stream FP class)",hostap_full_audit_0.4.169,low
+ERR33-C,hostap,src/radius/radius_server.c,835,TP,same as ERR00-C at 835,hostap_full_audit_0.4.169,low
+EXP34-C,hostap,src/radius/radius_server.c,895,FP,os_free() explicitly checks for NULL (src/utils/os_unix.c:770); categorical os_free(NULL)-is-safe class,hostap_full_audit_0.4.169,high
+MEM12-C,hostap,src/radius/radius_server.c,897,FP,"this return is inside the !url2 (alloc-failure) branch; url2 is NULL, nothing to leak",hostap_full_audit_0.4.169,high
+MEM12-C,hostap,src/radius/radius_server.c,912,FP,url2 was os_free()'d immediately above (line 910) before this return,hostap_full_audit_0.4.169,high
+MEM12-C,hostap,src/radius/radius_server.c,923,FP,url2 was already freed at line 914 earlier in the same straight-line function body,hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/radius/radius_server.c,929,FP,wpabuf_head()/wpabuf_len() pure accessor pair,hostap_full_audit_0.4.169,high
+MEM12-C,hostap,src/radius/radius_server.c,934,FP,url2 already freed at line 914,hostap_full_audit_0.4.169,high
+MEM12-C,hostap,src/radius/radius_server.c,944,FP,url2 already freed at line 914,hostap_full_audit_0.4.169,high
+MEM12-C,hostap,src/radius/radius_server.c,953,FP,url2 already freed at line 914,hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/radius/radius_server.c,959,FP,"msg returned is heap memory from radius_msg_new(), not local automatic storage",hostap_full_audit_0.4.169,high
+MEM12-C,hostap,src/radius/radius_server.c,959,FP,url2 already freed at line 914; flow-insensitive false leak repeated at every return (categorical MEM12-C flow-insensitive class),hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/radius/radius_server.c,964,TP,"plain internal helper, data only read",hostap_full_audit_0.4.169,low
+DCL13-C,hostap,src/radius/radius_server.c,965,TP,"plain internal helper, client only read",hostap_full_audit_0.4.169,low
+DCL13-C,hostap,src/radius/radius_server.c,966,TP,"plain internal helper, sess only read",hostap_full_audit_0.4.169,low
+EXP34-C,hostap,src/radius/radius_server.c,986,FP,sess is a live session by construction of this call site,hostap_full_audit_0.4.169,high
+EXP34-C,hostap,src/radius/radius_server.c,1009,FP,"hdr internal invariant, same as line 786",hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/radius/radius_server.c,1029,FP,wpabuf_head()/wpabuf_len() pure accessor pair,hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/radius/radius_server.c,1047,FP,"msg is heap memory from radius_msg_new(), not local storage",hostap_full_audit_0.4.169,high
+EXP34-C,hostap,src/radius/radius_server.c,1066,FP,"hdr internal invariant, same as line 786",hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/radius/radius_server.c,1107,FP,wpabuf_head()/wpabuf_len() pure accessor pair,hostap_full_audit_0.4.169,high
+EXP05-C,hostap,src/radius/radius_server.c,1108,FP,"from is declared 'struct sockaddr *from' (non-const already); cast is a no-op, nothing is being cast away",hostap_full_audit_0.4.169,high
+ARR01-C,hostap,src/radius/radius_server.c,1108,FP,"sizeof(*from) is the correct dereference-to-get-pointee-size idiom, not a decayed-array misuse (categorical sizeof(*ptr)-correct-idiom)",hostap_full_audit_0.4.169,high
+CON33-C,hostap,src/radius/radius_server.c,1109,FP,no pthread usage anywhere in hostapd/radius server code (categorical no-pthread class),hostap_full_audit_0.4.169,high
+CON34-C,hostap,src/radius/radius_server.c,1109,FP,same no-pthread class,hostap_full_audit_0.4.169,high
+EXP34-C,hostap,src/radius/radius_server.c,1156,FP,sess is a live session by construction (radius_server_hs20_t_c_check always called with valid sess),hostap_full_audit_0.4.169,high
+POS49-C,hostap,src/radius/radius_server.c,1158,FP,"no-pthread class, same as line 591",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/radius/radius_server.c,1169,TP,"plain internal helper, force_sess only read",hostap_full_audit_0.4.169,low
+MSC13-C,hostap,src/radius/radius_server.c,1171,TP,eap=NULL is unconditionally overwritten by radius_msg_get_eap() at line 1237 with no read in between,hostap_full_audit_0.4.169,med
+EXP30-C,hostap,src/radius/radius_server.c,1222,FP,wpabuf_head()/wpabuf_len() pure accessor pair,hostap_full_audit_0.4.169,high
+EXP05-C,hostap,src/radius/radius_server.c,1224,FP,from param is non-const already; no-op cast,hostap_full_audit_0.4.169,high
+CON33-C,hostap,src/radius/radius_server.c,1227,FP,no-pthread class,hostap_full_audit_0.4.169,high
+CON34-C,hostap,src/radius/radius_server.c,1227,FP,no-pthread class,hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/radius/radius_server.c,1252,FP,wpabuf_head()/wpabuf_len() pure accessor pair (RADIUS_DUMP macro args),hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/radius/radius_server.c,1268,FP,wpabuf_head()/wpabuf_len() pure accessor pair (RADIUS_DUMP macro args),hostap_full_audit_0.4.169,high
+STR30-C,hostap,src/radius/radius_server.c,1296,FP,db_update_last_msk's msk parameter is already 'const char *'; literal-to-const-param is always safe,hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/radius/radius_server.c,1297,FP,missing else is an intentional no-op for the access-challenge-still-in-progress case (categorical no-final-else guard-clause class),hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/radius/radius_server.c,1333,FP,wpabuf_head()/wpabuf_len() pure accessor pair,hostap_full_audit_0.4.169,high
+EXP05-C,hostap,src/radius/radius_server.c,1335,FP,from param is non-const already; no-op cast,hostap_full_audit_0.4.169,high
+CON33-C,hostap,src/radius/radius_server.c,1338,FP,no-pthread class,hostap_full_audit_0.4.169,high
+CON34-C,hostap,src/radius/radius_server.c,1338,FP,no-pthread class,hostap_full_audit_0.4.169,high
+EXP34-C,hostap,src/radius/radius_server.c,1344,FP,"hdr internal invariant, same as line 786",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/radius/radius_server.c,1366,TP,"data param is entirely unused in this function body, trivially const-eligible",hostap_full_audit_0.4.169,low
+EXP34-C,hostap,src/radius/radius_server.c,1379,FP,"hdr internal invariant, same as line 786",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/radius/radius_server.c,1405,TP,data param only read (under CONFIG_SQLITE) / unused otherwise,hostap_full_audit_0.4.169,low
+MEM05-C,hostap,src/radius/radius_server.c,1411,FP,"char addrtxt[3*ETH_ALEN] fixed-size array, not a VLA",hostap_full_audit_0.4.169,high
+EXP34-C,hostap,src/radius/radius_server.c,1423,FP,"hdr internal invariant, same as line 786",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/radius/radius_server.c,1476,FP,"sock_ctx is bound to the fixed eloop_sock_handler typedef (int,void*,void*) dispatch contract, cannot be freely re-typed",hostap_full_audit_0.4.169,high
+MSC13-C,hostap,src/radius/radius_server.c,1479,TP,buf=NULL never read before being unconditionally overwritten by os_malloc at line 1494,hostap_full_audit_0.4.169,med
+EXP33-C,hostap,src/radius/radius_server.c,1501,FP,"&from.ss is passed as recvfrom's write-destination out-parameter, not read; not a use of an uninitialized value",hostap_full_audit_0.4.169,high
+CON33-C,hostap,src/radius/radius_server.c,1504,FP,no-pthread class,hostap_full_audit_0.4.169,high
+CON34-C,hostap,src/radius/radius_server.c,1504,FP,no-pthread class,hostap_full_audit_0.4.169,high
+EXP39-C,hostap,src/radius/radius_server.c,1510,FP,"classic sockaddr_storage/sockaddr_in6 BSD-sockets idiom (categorical precedent radius_das.c:421), unavoidable given POSIX sockets API",hostap_full_audit_0.4.169,high
+CON34-C,hostap,src/radius/radius_server.c,1524,FP,no-pthread class extended to inet_ntoa,hostap_full_audit_0.4.169,high
+EXP39-C,hostap,src/radius/radius_server.c,1524,FP,same sockaddr_storage/sockaddr_in idiom as line 1510,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/radius/radius_server.c,1601,FP,"buf is os_free()'d and set to NULL at lines 1548-1549 on the success path; fail: is unreached from that path, so this is a safe os_free(NULL), not a double free (categorical free-then-NULL-reset-then-goto-fail class)",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/radius/radius_server.c,1606,FP,sock_ctx bound to eloop_sock_handler dispatch contract,hostap_full_audit_0.4.169,high
+MSC13-C,hostap,src/radius/radius_server.c,1609,TP,buf=NULL never read before being unconditionally overwritten by os_malloc at line 1627,hostap_full_audit_0.4.169,med
+EXP33-C,hostap,src/radius/radius_server.c,1634,FP,"&from.ss is recvfrom's write-destination out-parameter, not read",hostap_full_audit_0.4.169,high
+CON33-C,hostap,src/radius/radius_server.c,1637,FP,no-pthread class,hostap_full_audit_0.4.169,high
+CON34-C,hostap,src/radius/radius_server.c,1637,FP,no-pthread class,hostap_full_audit_0.4.169,high
+CON34-C,hostap,src/radius/radius_server.c,1657,FP,no-pthread class extended to inet_ntoa,hostap_full_audit_0.4.169,high
+EXP34-C,hostap,src/radius/radius_server.c,1724,FP,"hdr internal invariant, same as line 786",hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/radius/radius_server.c,1742,FP,wpabuf_head()/wpabuf_len() pure accessor pair,hostap_full_audit_0.4.169,high
+CON33-C,hostap,src/radius/radius_server.c,1746,FP,no-pthread class,hostap_full_audit_0.4.169,high
+CON34-C,hostap,src/radius/radius_server.c,1746,FP,no-pthread class,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/radius/radius_server.c,1752,FP,buf is os_free()'d and NULL'd at lines 1681-1682 on the success path; same free-then-NULL-reset-then-goto-fail shape as line 1601,hostap_full_audit_0.4.169,high
+CON33-C,hostap,src/radius/radius_server.c,1766,FP,no-pthread class,hostap_full_audit_0.4.169,high
+CON34-C,hostap,src/radius/radius_server.c,1766,FP,no-pthread class,hostap_full_audit_0.4.169,high
+CON33-C,hostap,src/radius/radius_server.c,1779,FP,no-pthread class,hostap_full_audit_0.4.169,high
+CON34-C,hostap,src/radius/radius_server.c,1779,FP,no-pthread class,hostap_full_audit_0.4.169,high
+POS02-C,hostap,src/radius/radius_server.c,1788,FP,codebase-wide no-privilege-separation design (categorical class); root for daemon lifetime by design,hostap_full_audit_0.4.169,high
+CON33-C,hostap,src/radius/radius_server.c,1789,FP,no-pthread class,hostap_full_audit_0.4.169,high
+CON34-C,hostap,src/radius/radius_server.c,1789,FP,no-pthread class,hostap_full_audit_0.4.169,high
+CON33-C,hostap,src/radius/radius_server.c,1807,FP,no-pthread class,hostap_full_audit_0.4.169,high
+CON34-C,hostap,src/radius/radius_server.c,1807,FP,no-pthread class,hostap_full_audit_0.4.169,high
+POS02-C,hostap,src/radius/radius_server.c,1815,FP,codebase-wide no-privilege-separation class,hostap_full_audit_0.4.169,high
+CON33-C,hostap,src/radius/radius_server.c,1816,FP,no-pthread class,hostap_full_audit_0.4.169,high
+CON34-C,hostap,src/radius/radius_server.c,1816,FP,no-pthread class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/radius/radius_server.c,1827,FP,"sessions is a traversal-head param whose pointed-to nodes are freed via radius_server_session_free inside the loop; const would misleadingly imply non-consumption (categorical traversal-then-frees FP, wps.c:535 precedent)",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/radius/radius_server.c,1841,FP,clients is a traversal-head param whose pointed-to nodes are freed inside the loop; same traversal-then-frees class,hostap_full_audit_0.4.169,high
+FIO05-C,hostap,src/radius/radius_server.c,1873,FP,"client_file is an admin-configured local RADIUS client-list path, not attacker-controlled (categorical admin-config-path FP class)",hostap_full_audit_0.4.169,high
+WIN03-C,hostap,src/radius/radius_server.c,1873,TP,mode string literally lacks 'N'; no Windows-build exclusion evidence for this file,hostap_full_audit_0.4.169,low
+ERR00-C,hostap,src/radius/radius_server.c,1881,FP,fclose on a read-mode stream; no data-loss risk from an unflushed read (categorical read-only-stream low-value class),hostap_full_audit_0.4.169,high
+MEM12-C,hostap,src/radius/radius_server.c,1882,FP,this return is inside the buf==NULL (alloc-failure) branch; nothing allocated to leak,hostap_full_audit_0.4.169,high
+EXP05-C,hostap,src/radius/radius_server.c,1886,FP,no cast of any kind exists on 'buf' anywhere in this function (grep confirms); apparent misattribution/hallucinated finding,hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/radius/radius_server.c,1898,FP,"*pos='\0' is a plain char-to-char literal assignment, no widening conversion (categorical plain-char-literal class)",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/radius/radius_server.c,1916,FP,*pos++='\0' plain char-literal assignment,hostap_full_audit_0.4.169,high
+ERR33-C,hostap,src/radius/radius_server.c,1917,FP,strtol's result is checked via the pos==end no-conversion guard plus an explicit range check immediately after,hostap_full_audit_0.4.169,med
+ERR00-C,hostap,src/radius/radius_server.c,1917,FP,same: checked via endptr+range immediately after,hostap_full_audit_0.4.169,med
+ERR01-C,hostap,src/radius/radius_server.c,1917,TP,"errno is genuinely never checked after strtol, so an overflowed value's implementation-defined long->int truncation could in theory slip past the range check; low real-world severity, config file is admin-supplied",hostap_full_audit_0.4.169,low
+ERR30-C,hostap,src/radius/radius_server.c,1917,TP,errno is genuinely never reset to 0 before this strtol call,hostap_full_audit_0.4.169,low
+STR34-C,hostap,src/radius/radius_server.c,1926,FP,*pos++='\0' plain char-literal assignment,hostap_full_audit_0.4.169,high
+DCL31-C,hostap,src/radius/radius_server.c,1929,FP,"inet_aton is declared in <arpa/inet.h>, included transitively via includes.h (categorical DCL31-C system-header class)",hostap_full_audit_0.4.169,high
+EXP34-C,hostap,src/radius/radius_server.c,1950,FP,"pos is a running pointer walking within the NUL-terminated buf; never NULL, not a nullable pointer",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/radius/radius_server.c,1959,FP,"sizeof(*entry) is compile-time only, not a dereference",hostap_full_audit_0.4.169,high
+INT14-C,hostap,src/radius/radius_server.c,1975,FP,"'i' itself is only ever used arithmetically (31-i); the actual '<<' operand is the literal 1U, not i (misattribution)",hostap_full_audit_0.4.169,high
+INT34-C,hostap,src/radius/radius_server.c,1975,FP,"i is loop-bounded 0<=i<mask<=32 (checked at line 1918-1919), so 31-i is always in [0,31]; shift amount already validated upstream",hostap_full_audit_0.4.169,high
+INT13-C,hostap,src/radius/radius_server.c,1975,FP,"the '<<' operand is the unsigned literal 1U, not the signed 'i'; misattribution",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/radius/radius_server.c,1982,FP,"addr6 is written inside the same 'if (ipv6 && ...)' branch that gates this read; correlated-conditional-assignment, both paths of that inner if populate addr6 before use",hostap_full_audit_0.4.169,high
+INT10-C,hostap,src/radius/radius_server.c,1985,FP,mask is validated non-negative at lines 1918-1919 before this modulo; already-guarded upstream,hostap_full_audit_0.4.169,high
+INT34-C,hostap,src/radius/radius_server.c,1986,FP,"i is loop-bounded 0<=i<(mask%8)<=7, so 7-i is always in [1,7]; shift amount already validated upstream",hostap_full_audit_0.4.169,high
+INT13-C,hostap,src/radius/radius_server.c,1986,FP,"the '<<' operand is the literal 1, not the signed 'i'; misattribution",hostap_full_audit_0.4.169,high
+ERR00-C,hostap,src/radius/radius_server.c,2007,FP,fclose on a read-mode stream; no data-loss risk (read-only-stream low-value class),hostap_full_audit_0.4.169,high
+FIO24-C,hostap,src/radius/radius_server.c,2007,FP,"line 1881's fclose is in the mutually-exclusive buf-allocation-failure branch that returns immediately; this fclose is only reached via the main path, not a real double close (categorical branch-blind double-close class)",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/radius/radius_server.c,2009,FP,"clients is a heap linked list (os_zalloc'd entries), not automatic storage; DCL30 heap-vs-stack FP class.",hostap_full_audit_0.4.169,high
+MEM12-C,hostap,src/radius/radius_server.c,2009,FP,buf already os_free'd two lines earlier (:2006); already-freed-earlier MEM12 FP class.,hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/radius/radius_server.c,2034,FP,"sizeof(*data) is compile-time, not a runtime dereference; confirmed sizeof(*ptr) EXP33 FP class.",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/radius/radius_server.c,2123,FP,"data is os_zalloc'd heap memory returned via pointer var, not automatic storage.",hostap_full_audit_0.4.169,high
+MEM12-C,hostap,src/radius/radius_server.c,2123,FP,"successful return hands ownership of data (and its fields) to caller; not a leak, new successful-return MEM12 sub-shape.",hostap_full_audit_0.4.169,high
+MSC07-C,hostap,src/radius/radius_server.c,2124,FP,fail: label is reached via goto fail from earlier error branches; confirmed goto-label-blindness MSC07 class.,hostap_full_audit_0.4.169,high
+MEM12-C,hostap,src/radius/radius_server.c,2126,FP,radius_server_deinit(data) just above already frees eap_req_id_text and closes both sockets; interprocedural-cleanup-blindness MEM12 sub-shape.,hostap_full_audit_0.4.169,high
+MEM10-C,hostap,src/radius/radius_server.c,2138,FP,stylistic ad-hoc-NULL-check MEM10 FP class; the check is present and correct.,hostap_full_audit_0.4.169,high
+EXP34-C,hostap,src/radius/radius_server.c,2142,FP,erp is non-NULL by the enclosing while ((erp = dl_list_first(...)) != NULL) condition.,hostap_full_audit_0.4.169,high
+MEM10-C,hostap,src/radius/radius_server.c,2154,FP,stylistic ad-hoc-NULL-check MEM10 FP class.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/radius/radius_server.c,2193,TP,"data is only read in radius_server_get_mib, never forwarded to a non-const callee; plain-helper read-only-param TP exception.",hostap_full_audit_0.4.169,low
+API05-C,hostap,src/radius/radius_server.c,2193,FP,"char *buf, size_t buflen is the idiomatic ptr+len pair; confirmed API05 FP class.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/radius/radius_server.c,2193,FP,"buf is the output buffer, written through the aliased pos pointer via os_snprintf; output-buffer-write-through-alias DCL13 FP class.",hostap_full_audit_0.4.169,high
+FLP03-C,hostap,src/radius/radius_server.c,2212,FP,uptime computation is pure integer arithmetic on os_reltime sec/usec fields; no floats involved.,hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/radius/radius_server.c,2221,FP,"*pos = '\0' is a plain char-to-char assignment, not a widening conversion; confirmed STR34 FP class.",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/radius/radius_server.c,2260,FP,same plain *pos = '\0' char assignment FP class.,hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/radius/radius_server.c,2266,FP,abuf is initialized in either the #ifdef-guarded if (data->ipv6) branch or the sibling if (!data->ipv6) branch; the two together are exhaustive; preprocessor-fragmented correlated-conditional EXP33 blind spot.,hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/radius/radius_server.c,2266,FP,mbuf has the same exhaustive if(ipv6)/if(!ipv6) initialization as abuf.,hostap_full_audit_0.4.169,high
+CON34-C,hostap,src/radius/radius_server.c,2278,FP,no pthread usage in hostapd core; confirmed no-pthread CON34/inet_ntoa FP class.,hostap_full_audit_0.4.169,high
+CON34-C,hostap,src/radius/radius_server.c,2279,FP,same no-pthread inet_ntoa FP class.,hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/radius/radius_server.c,2318,FP,same plain *pos = '\0' char assignment FP class.,hostap_full_audit_0.4.169,high
+API05-C,hostap,src/radius/radius_server.c,2328,FP,identity + identity_len is the idiomatic ptr+len pair on an eapol callback; confirmed API05 FP class.,hostap_full_audit_0.4.169,high
+CON32-C,hostap,src/radius/radius_server.c,2340,FP,no pthread usage anywhere in hostapd core; confirmed no-pthread CON32/POS49 bit-field FP class.,hostap_full_audit_0.4.169,high
+CON32-C,hostap,src/radius/radius_server.c,2340,FP,duplicate of the same no-pthread bit-field finding.,hostap_full_audit_0.4.169,high
+POS49-C,hostap,src/radius/radius_server.c,2340,FP,no pthread usage in hostapd core; confirmed no-pthread FP class.,hostap_full_audit_0.4.169,high
+POS49-C,hostap,src/radius/radius_server.c,2340,FP,duplicate of the same no-pthread bit-field finding.,hostap_full_audit_0.4.169,high
+API05-C,hostap,src/radius/radius_server.c,2353,FP,"ctx is an opaque void* callback handle, not an array; confirmed opaque-handle API05 FP class.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/radius/radius_server.c,2353,FP,ctx is the fixed-signature eapol_callbacks.get_eap_req_id_text slot; dispatch-contract DCL13 FP class.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/radius/radius_server.c,2371,FP,ctx is the fixed-signature eapol_callbacks.get_erp_domain slot; dispatch-contract DCL13 FP class.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/radius/radius_server.c,2381,FP,ctx is the fixed-signature eapol_callbacks.erp_get_key slot; dispatch-contract DCL13 FP class.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/radius/radius_server.c,2390,FP,ctx is the fixed-signature eapol_callbacks.erp_add_key slot; dispatch-contract DCL13 FP class.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/radius/radius_server.c,2424,FP,"data is forwarded to radius_server_request(), which takes a non-const struct radius_server_data * and mutates it; forwarding-to-non-const-callee DCL13 FP class.",hostap_full_audit_0.4.169,high
+MEM10-C,hostap,src/radius/radius_server.c,2430,FP,stylistic ad-hoc-NULL-check MEM10 FP class.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/radius/radius_server.c,2474,FP,"argv is sqlite3_exec's fixed callback signature int(*)(void*,int,char**,char**); dispatch-contract FP class extended to a 3rd-party library callback.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/radius/radius_server.c,2474,FP,col is part of the same sqlite3_exec fixed callback signature; dispatch-contract FP class.,hostap_full_audit_0.4.169,high
+ERR07-C,hostap,src/radius/radius_server.c,2492,TP,atoi(argv[i]) for hs20_t_c_filtering has no subsequent range check; default TP per ERR07 disposition.,hostap_full_audit_0.4.169,low
+ERR34-C,hostap,src/radius/radius_server.c,2492,TP,"same unrange-checked atoi conversion, no error detection on overflow/garbage.",hostap_full_audit_0.4.169,low
+ERR07-C,hostap,src/radius/radius_server.c,2494,TP,atoi(argv[i]) for waiting_coa_ack has no subsequent range check.,hostap_full_audit_0.4.169,low
+ERR34-C,hostap,src/radius/radius_server.c,2494,TP,same unrange-checked atoi conversion for waiting_coa_ack.,hostap_full_audit_0.4.169,low
+MSC01-C,hostap,src/radius/radius_server.c,2495,FP,"column-name dispatch chain; unmatched columns are intentionally ignored, no final else needed. Stylistic MSC01 FP class.",hostap_full_audit_0.4.169,high
+ERR07-C,hostap,src/radius/radius_server.c,2496,TP,atoi(argv[i]) for coa_ack_received has no subsequent range check.,hostap_full_audit_0.4.169,low
+ERR34-C,hostap,src/radius/radius_server.c,2496,TP,same unrange-checked atoi conversion for coa_ack_received.,hostap_full_audit_0.4.169,low
+API00-C,hostap,src/radius/radius_server.c,2515,FP,"req dereferenced via pos=req; only caller (ctrl_iface.c:4532) passes buf+12, never NULL. Internal-only-API API00 FP class.",hostap_full_audit_0.4.169,med
+MSC37-C,hostap,src/radius/radius_server.c,2515,FP,every path in both the #ifdef CONFIG_SQLITE branch and the #else branch has an explicit return; whole-function-body #ifdef/#else MSC37 blind spot.,hostap_full_audit_0.4.169,high
+MEM05-C,hostap,src/radius/radius_server.c,2523,FP,"addrtxt[3 * ETH_ALEN] is a compile-time-constant-sized fixed array, not a VLA; confirmed MEM05 FP class.",hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/radius/radius_server.c,2649,FP,wpabuf_head(buf)/wpabuf_len(buf) are pure read-only accessors with no side effects to unsequence; confirmed EXP30 accessor FP class.,hostap_full_audit_0.4.169,high
+CON33-C,hostap,src/radius/radius_server.c,2652,FP,no pthread usage in hostapd core; confirmed no-pthread strerror FP class.,hostap_full_audit_0.4.169,high
+CON34-C,hostap,src/radius/radius_server.c,2652,FP,same no-pthread strerror FP class.,hostap_full_audit_0.4.169,high
+PRE08-C,hostap,wpa_supplicant/ap.c,15,TP,ieee802_* headers share 8-char prefix; literally true but low-value convention,hostap_full_audit_0.4.169,med
+PRE08-C,hostap,wpa_supplicant/ap.c,15,TP,ieee802_* headers share 8-char prefix; literally true but low-value convention,hostap_full_audit_0.4.169,med
+PRE08-C,hostap,wpa_supplicant/ap.c,23,TP,ieee802_* headers share 8-char prefix; literally true but low-value convention,hostap_full_audit_0.4.169,med
+PRE08-C,hostap,wpa_supplicant/ap.c,23,TP,ieee802_* headers share 8-char prefix; literally true but low-value convention,hostap_full_audit_0.4.169,med
+PRE08-C,hostap,wpa_supplicant/ap.c,26,TP,ieee802_* headers share 8-char prefix; literally true but low-value convention,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,wpa_supplicant/ap.c,48,TP,"plain static helper, mode read-only, no dispatch typedef",hostap_full_audit_0.4.169,low
+DCL13-C,hostap,wpa_supplicant/ap.c,49,TP,"plain static helper, conf read-only, no dispatch typedef",hostap_full_audit_0.4.169,low
+EXP34-C,hostap,wpa_supplicant/ap.c,55,FP,mode guaranteed non-null: caller chain guards !mode before this call path,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/ap.c,71,TP,"plain static helper, ssid read-only throughout function",hostap_full_audit_0.4.169,low
+MSC13-C,hostap,wpa_supplicant/ap.c,76,TP,center_chan=0 unconditionally overwritten by every switch case before use,hostap_full_audit_0.4.169,med
+EXP30-C,hostap,wpa_supplicant/ap.c,106,FP,"hostapd_get_oper_centr_freq_seg{0,1}_idx are pure getters, no side effects",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/ap.c,185,TP,"plain static helper, wpa_s read-only (only wpa_s->hw fields)",hostap_full_audit_0.4.169,low
+DCL30-C,hostap,wpa_supplicant/ap.c,198,FP,"mode points into wpa_s->hw.modes[] array, not automatic-storage local",hostap_full_audit_0.4.169,high
+EXP34-C,hostap,wpa_supplicant/ap.c,231,FP,mode guaranteed non-null: caller guards !mode before wpas_conf_ap_he_6ghz call,hostap_full_audit_0.4.169,high
+INT13-C,hostap,wpa_supplicant/ap.c,233,TP,"he_chanwidth genuinely declared int (signed); literal rule violation, low severity",hostap_full_audit_0.4.169,low
+INT13-C,hostap,wpa_supplicant/ap.c,235,TP,"he_chanwidth genuinely declared int (signed); literal rule violation, low severity",hostap_full_audit_0.4.169,low
+MSC13-C,hostap,wpa_supplicant/ap.c,288,TP,mode=NULL at decl unconditionally overwritten by get_mode() before any read,hostap_full_audit_0.4.169,med
+MSC01-C,hostap,wpa_supplicant/ap.c,354,TP,"if/else-if with no final else; stylistic pedantry, established low-value convention",hostap_full_audit_0.4.169,low
+MSC01-C,hostap,wpa_supplicant/ap.c,383,TP,"if/else-if with no final else; stylistic pedantry, established low-value convention",hostap_full_audit_0.4.169,low
+MEM12-C,hostap,wpa_supplicant/ap.c,561,FP,list ownership transferred to bss->basic_rates/supported_rates before every flagged return,hostap_full_audit_0.4.169,high
+MEM12-C,hostap,wpa_supplicant/ap.c,598,FP,list ownership transferred to bss->basic_rates/supported_rates before every flagged return,hostap_full_audit_0.4.169,high
+MSC01-C,hostap,wpa_supplicant/ap.c,605,TP,"if/else-if with no final else; stylistic pedantry, established low-value convention",hostap_full_audit_0.4.169,low
+MEM12-C,hostap,wpa_supplicant/ap.c,615,FP,list ownership transferred to bss->basic_rates/supported_rates before every flagged return,hostap_full_audit_0.4.169,high
+EXP33-C,hostap,wpa_supplicant/ap.c,626,FP,sizeof(*pw) is not a dereference; pw written via os_zalloc(sizeof(*pw)) right after,hostap_full_audit_0.4.169,high
+MEM12-C,hostap,wpa_supplicant/ap.c,628,FP,list ownership transferred to bss->basic_rates/supported_rates before every flagged return,hostap_full_audit_0.4.169,high
+MEM12-C,hostap,wpa_supplicant/ap.c,633,FP,list ownership transferred to bss->basic_rates/supported_rates before every flagged return,hostap_full_audit_0.4.169,high
+MEM12-C,hostap,wpa_supplicant/ap.c,640,FP,list ownership transferred to bss->basic_rates/supported_rates before every flagged return,hostap_full_audit_0.4.169,high
+MSC01-C,hostap,wpa_supplicant/ap.c,674,TP,"if/else-if with no final else; stylistic pedantry, established low-value convention",hostap_full_audit_0.4.169,low
+MSC01-C,hostap,wpa_supplicant/ap.c,679,TP,"if/else-if with no final else; stylistic pedantry, established low-value convention",hostap_full_audit_0.4.169,low
+MSC01-C,hostap,wpa_supplicant/ap.c,747,TP,"if/else-if with no final else; stylistic pedantry, established low-value convention",hostap_full_audit_0.4.169,low
+MEM31-C,hostap,wpa_supplicant/ap.c,818,FP,bss->vendor_elements freed later via wpabuf_free(conf->vendor_elements) in ap_config.c:949,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,wpa_supplicant/ap.c,822,FP,"bss->assocresp_elements is a struct field freed elsewhere (ap_config.c), ownership transfer",hostap_full_audit_0.4.169,high
+MEM12-C,hostap,wpa_supplicant/ap.c,830,FP,"list ownership already transferred to bss->basic_rates/supported_rates, not leaked",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,wpa_supplicant/ap.c,830,FP,"bss->vendor_elements ownership transferred to struct field, freed in ap_config.c:949",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,wpa_supplicant/ap.c,830,FP,"bss->assocresp_elements ownership transferred to struct field, freed elsewhere",hostap_full_audit_0.4.169,high
+API05-C,hostap,wpa_supplicant/ap.c,834,FP,"idiomatic T*ptr,size_t len pair; not a real conformant-array-syntax gap",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/ap.c,854,FP,ap_wps_event_cb assigned to wps_event_cb field (wps.h); fixed dispatch-contract signature,hostap_full_audit_0.4.169,high
+API05-C,hostap,wpa_supplicant/ap.c,888,FP,"idiomatic T*ptr,size_t len pair; not a real conformant-array-syntax gap",hostap_full_audit_0.4.169,high
+API05-C,hostap,wpa_supplicant/ap.c,900,FP,"idiomatic T*ptr,size_t len pair; not a real conformant-array-syntax gap",hostap_full_audit_0.4.169,high
+API05-C,hostap,wpa_supplicant/ap.c,918,FP,"idiomatic T*ptr,size_t len pair; not a real conformant-array-syntax gap",hostap_full_audit_0.4.169,high
+EXP34-C,hostap,wpa_supplicant/ap.c,981,FP,ssid guaranteed non-null: sole caller already dereferences ssid->mode before this call,hostap_full_audit_0.4.169,high
+ARR01-C,hostap,wpa_supplicant/ap.c,1091,FP,"sizeof(wpa_s->conf->wmm_ac_params) sizes a true fixed array struct member, not decayed wpa_s",hostap_full_audit_0.4.169,high
+ARR01-C,hostap,wpa_supplicant/ap.c,1094,FP,"sizeof(wpa_s->conf->tx_queue) sizes a true fixed array struct member, not decayed wpa_s",hostap_full_audit_0.4.169,high
+MSC01-C,hostap,wpa_supplicant/ap.c,1110,TP,"if/else-if with no final else; stylistic pedantry, established low-value convention",hostap_full_audit_0.4.169,low
+API00-C,hostap,wpa_supplicant/ap.c,1221,FP,ap_tx_status is an internal driver-event handler called only from events.c with driver-supplied data,hostap_full_audit_0.4.169,med
+API00-C,hostap,wpa_supplicant/ap.c,1221,FP,ap_tx_status is an internal driver-event handler called only from events.c with driver-supplied data,hostap_full_audit_0.4.169,med
+API05-C,hostap,wpa_supplicant/ap.c,1221,FP,"idiomatic T*ptr,size_t len pair; not a real conformant-array-syntax gap",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/ap.c,1221,TP,plain helper called directly by name (not a stored callback field); ctx only read,hostap_full_audit_0.4.169,low
+API00-C,hostap,wpa_supplicant/ap.c,1231,FP,"ap_eapol_tx_status internal-only, called only from events.c with driver-supplied data",hostap_full_audit_0.4.169,med
+API00-C,hostap,wpa_supplicant/ap.c,1231,FP,"ap_eapol_tx_status internal-only, called only from events.c with driver-supplied data",hostap_full_audit_0.4.169,med
+API05-C,hostap,wpa_supplicant/ap.c,1231,FP,"idiomatic T*ptr,size_t len pair; not a real conformant-array-syntax gap",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/ap.c,1231,TP,plain helper called directly by name (not a stored callback field); ctx only read,hostap_full_audit_0.4.169,low
+DCL13-C,hostap,wpa_supplicant/ap.c,1243,TP,plain helper called directly by name (not a stored callback field); ctx only read,hostap_full_audit_0.4.169,low
+API00-C,hostap,wpa_supplicant/ap.c,1253,FP,"ap_rx_from_unknown_sta internal-only driver-event handler, addr never externally nullable",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,wpa_supplicant/ap.c,1253,TP,plain helper called directly by name (not a stored callback field); ctx only read,hostap_full_audit_0.4.169,low
+DCL13-C,hostap,wpa_supplicant/ap.c,1262,TP,plain helper called directly by name (not a stored callback field); ctx only read,hostap_full_audit_0.4.169,low
+API00-C,hostap,wpa_supplicant/ap.c,1277,FP,"ap_mgmt_tx_cb internal-only driver-event handler, buf never externally nullable",hostap_full_audit_0.4.169,med
+API05-C,hostap,wpa_supplicant/ap.c,1277,FP,"idiomatic T*ptr,size_t len pair; not a real conformant-array-syntax gap",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/ap.c,1277,TP,plain helper called directly by name (not a stored callback field); ctx only read,hostap_full_audit_0.4.169,low
+API00-C,hostap,wpa_supplicant/ap.c,1286,FP,"internal-only, single caller (wpa_supplicant.c) with already-non-null wpa_s",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,wpa_supplicant/ap.c,1286,TP,"plain function, wpa_s read-only, not bound to any callback typedef",hostap_full_audit_0.4.169,low
+API00-C,hostap,wpa_supplicant/ap.c,1297,FP,"wpa_supplicant_ap_wps_pbc internal-only API, wpa_s always valid from its single caller",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,wpa_supplicant/ap.c,1297,TP,"plain function, wpa_s read-only",hostap_full_audit_0.4.169,low
+DCL13-C,hostap,wpa_supplicant/ap.c,1307,TP,"plain function, wpa_s read-only",hostap_full_audit_0.4.169,low
+MSC13-C,hostap,wpa_supplicant/ap.c,1310,TP,reg_sel=0 unconditionally overwritten by wps_registrar_wps_cancel() before any read,hostap_full_audit_0.4.169,med
+MSC13-C,hostap,wpa_supplicant/ap.c,1310,TP,wps_sta=0 unconditionally overwritten by ap_for_each_sta() before any read,hostap_full_audit_0.4.169,med
+API00-C,hostap,wpa_supplicant/ap.c,1337,FP,"wpa_supplicant_ap_wps_pin internal-only API, wpa_s always valid",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,wpa_supplicant/ap.c,1337,TP,"plain function, wpa_s read-only",hostap_full_audit_0.4.169,low
+API05-C,hostap,wpa_supplicant/ap.c,1338,FP,"idiomatic T*ptr,size_t len pair; not a real conformant-array-syntax gap",hostap_full_audit_0.4.169,high
+API05-C,hostap,wpa_supplicant/ap.c,1338,FP,"idiomatic T*ptr,size_t len pair; not a real conformant-array-syntax gap",hostap_full_audit_0.4.169,high
+MEM10-C,hostap,wpa_supplicant/ap.c,1346,FP,"MEM10-C stylistic ad-hoc-NULL-check suggestion, not a real defect",hostap_full_audit_0.4.169,high
+MSC01-C,hostap,wpa_supplicant/ap.c,1355,TP,"if/else-if with no final else; stylistic pedantry, established low-value convention",hostap_full_audit_0.4.169,low
+DCL13-C,hostap,wpa_supplicant/ap.c,1369,FP,wpas_wps_ap_pin_timeout matches eloop_timeout_handler typedef; dispatch-contract FP,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/ap.c,1429,TP,"plain function, wpa_s read-only, not a dispatch-bound callback",hostap_full_audit_0.4.169,low
+DCL13-C,hostap,wpa_supplicant/ap.c,1462,TP,"plain function, wpa_s read-only, not a dispatch-bound callback",hostap_full_audit_0.4.169,low
+DCL13-C,hostap,wpa_supplicant/ap.c,1489,TP,"plain function, wpa_s read-only, not a dispatch-bound callback",hostap_full_audit_0.4.169,low
+DCL13-C,hostap,wpa_supplicant/ap.c,1501,TP,"plain function, wpa_s read-only, not a dispatch-bound callback",hostap_full_audit_0.4.169,low
+DCL13-C,hostap,wpa_supplicant/ap.c,1513,TP,"plain function, wpa_s read-only, not a dispatch-bound callback",hostap_full_audit_0.4.169,low
+API00-C,hostap,wpa_supplicant/ap.c,1532,FP,"ap_ctrl_iface_sta_first internal ctrl_iface handler, dispatched only with valid wpa_s/buf",hostap_full_audit_0.4.169,med
+API00-C,hostap,wpa_supplicant/ap.c,1532,FP,"ap_ctrl_iface_sta_first internal ctrl_iface handler, dispatched only with valid wpa_s/buf",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,wpa_supplicant/ap.c,1532,TP,"plain ctrl_iface handler, wpa_s read-only",hostap_full_audit_0.4.169,low
+API05-C,hostap,wpa_supplicant/ap.c,1533,FP,"idiomatic T*ptr,size_t len pair; not a real conformant-array-syntax gap",hostap_full_audit_0.4.169,high
+API00-C,hostap,wpa_supplicant/ap.c,1547,FP,"ap_ctrl_iface_sta internal ctrl_iface handler, always invoked with valid wpa_s/txtaddr/buf",hostap_full_audit_0.4.169,med
+API00-C,hostap,wpa_supplicant/ap.c,1547,FP,"ap_ctrl_iface_sta internal ctrl_iface handler, always invoked with valid wpa_s/txtaddr/buf",hostap_full_audit_0.4.169,med
+API00-C,hostap,wpa_supplicant/ap.c,1547,FP,"ap_ctrl_iface_sta internal ctrl_iface handler, always invoked with valid wpa_s/txtaddr/buf",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,wpa_supplicant/ap.c,1547,TP,"plain ctrl_iface handler, wpa_s read-only",hostap_full_audit_0.4.169,low
+API05-C,hostap,wpa_supplicant/ap.c,1547,FP,"idiomatic T*ptr,size_t len pair; not a real conformant-array-syntax gap",hostap_full_audit_0.4.169,high
+API05-C,hostap,wpa_supplicant/ap.c,1548,FP,"idiomatic T*ptr,size_t len pair; not a real conformant-array-syntax gap",hostap_full_audit_0.4.169,high
+API00-C,hostap,wpa_supplicant/ap.c,1562,FP,"ap_ctrl_iface_sta_next internal ctrl_iface handler, always invoked with valid pointers",hostap_full_audit_0.4.169,med
+API00-C,hostap,wpa_supplicant/ap.c,1562,FP,"ap_ctrl_iface_sta_next internal ctrl_iface handler, always invoked with valid pointers",hostap_full_audit_0.4.169,med
+API00-C,hostap,wpa_supplicant/ap.c,1562,FP,"ap_ctrl_iface_sta_next internal ctrl_iface handler, always invoked with valid pointers",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,wpa_supplicant/ap.c,1562,TP,"plain ctrl_iface handler, wpa_s read-only",hostap_full_audit_0.4.169,low
+API05-C,hostap,wpa_supplicant/ap.c,1562,FP,"idiomatic T*ptr,size_t len pair; not a real conformant-array-syntax gap",hostap_full_audit_0.4.169,high
+API05-C,hostap,wpa_supplicant/ap.c,1563,FP,"idiomatic T*ptr,size_t len pair; not a real conformant-array-syntax gap",hostap_full_audit_0.4.169,high
+API00-C,hostap,wpa_supplicant/ap.c,1577,FP,"ap_ctrl_iface_sta_disassociate internal ctrl_iface handler, txtaddr always supplied",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,wpa_supplicant/ap.c,1577,TP,"plain ctrl_iface handler, wpa_s read-only",hostap_full_audit_0.4.169,low
+API00-C,hostap,wpa_supplicant/ap.c,1587,FP,"ap_ctrl_iface_sta_deauthenticate internal ctrl_iface handler, txtaddr always supplied",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,wpa_supplicant/ap.c,1587,TP,"plain ctrl_iface handler, wpa_s read-only",hostap_full_audit_0.4.169,low
+API00-C,hostap,wpa_supplicant/ap.c,1597,FP,"ap_ctrl_iface_wpa_get_status internal-only, buf/buflen supplied by ctrl_iface dispatch, always valid",hostap_full_audit_0.4.169,med
+API00-C,hostap,wpa_supplicant/ap.c,1597,FP,"ap_ctrl_iface_wpa_get_status internal-only, buf/buflen supplied by ctrl_iface dispatch, always valid",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,wpa_supplicant/ap.c,1597,TP,"plain ctrl_iface handler, wpa_s read-only",hostap_full_audit_0.4.169,low
+API05-C,hostap,wpa_supplicant/ap.c,1597,FP,"idiomatic T*ptr,size_t len pair; not a real conformant-array-syntax gap",hostap_full_audit_0.4.169,high
+EXP40-C,hostap,wpa_supplicant/ap.c,1600,FP,neither buf nor pos is const-qualified; EXP40-C premise (cast-away-const) doesn't apply,hostap_full_audit_0.4.169,high
+EXP30-C,hostap,wpa_supplicant/ap.c,1611,FP,"wpa_cipher_txt/wpa_key_mgmt_txt are pure switch-return accessors, no side effects",hostap_full_audit_0.4.169,high
+API00-C,hostap,wpa_supplicant/ap.c,1628,FP,"ap_ctrl_iface_disassoc_imminent internal-only ctrl_iface handler, always valid pointers",hostap_full_audit_0.4.169,med
+API00-C,hostap,wpa_supplicant/ap.c,1628,FP,"ap_ctrl_iface_disassoc_imminent internal-only ctrl_iface handler, always valid pointers",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,wpa_supplicant/ap.c,1628,TP,"plain ctrl_iface handler, wpa_s read-only",hostap_full_audit_0.4.169,low
+API00-C,hostap,wpa_supplicant/ap.c,1641,FP,ap_ctrl_iface_ess_disassoc internal-only ctrl_iface handler,hostap_full_audit_0.4.169,med
+API00-C,hostap,wpa_supplicant/ap.c,1641,FP,ap_ctrl_iface_ess_disassoc internal-only ctrl_iface handler,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,wpa_supplicant/ap.c,1641,TP,"plain ctrl_iface handler, wpa_s read-only",hostap_full_audit_0.4.169,low
+API00-C,hostap,wpa_supplicant/ap.c,1653,FP,ap_ctrl_iface_bss_tm_req internal-only ctrl_iface handler,hostap_full_audit_0.4.169,med
+API00-C,hostap,wpa_supplicant/ap.c,1653,FP,ap_ctrl_iface_bss_tm_req internal-only ctrl_iface handler,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,wpa_supplicant/ap.c,1653,TP,"plain ctrl_iface handler, wpa_s read-only",hostap_full_audit_0.4.169,low
+API00-C,hostap,wpa_supplicant/ap.c,1667,FP,ap_ctrl_iface_acl_add_mac internal-only ctrl_iface handler,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,wpa_supplicant/ap.c,1667,TP,"plain ctrl_iface handler, wpa_s read-only",hostap_full_audit_0.4.169,low
+API00-C,hostap,wpa_supplicant/ap.c,1693,FP,ap_ctrl_iface_acl_del_mac internal-only ctrl_iface handler,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,wpa_supplicant/ap.c,1693,TP,"plain ctrl_iface handler, wpa_s read-only",hostap_full_audit_0.4.169,low
+API00-C,hostap,wpa_supplicant/ap.c,1719,FP,ap_ctrl_iface_acl_show_mac internal-only ctrl_iface handler,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,wpa_supplicant/ap.c,1719,TP,"plain ctrl_iface handler, wpa_s read-only",hostap_full_audit_0.4.169,low
+API05-C,hostap,wpa_supplicant/ap.c,1720,FP,"idiomatic T*ptr,size_t len pair; not a real conformant-array-syntax gap",hostap_full_audit_0.4.169,high
+API00-C,hostap,wpa_supplicant/ap.c,1743,FP,ap_ctrl_iface_acl_clear_list internal-only ctrl_iface handler,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,wpa_supplicant/ap.c,1743,TP,"plain ctrl_iface handler, wpa_s read-only",hostap_full_audit_0.4.169,low
+MSC01-C,hostap,wpa_supplicant/ap.c,1758,TP,"if/else-if with no final else; stylistic pedantry, established low-value convention",hostap_full_audit_0.4.169,low
+API00-C,hostap,wpa_supplicant/ap.c,1764,FP,ap_ctrl_iface_disassoc_deny_mac internal-only ctrl_iface handler,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,wpa_supplicant/ap.c,1764,TP,"plain ctrl_iface handler, wpa_s read-only",hostap_full_audit_0.4.169,low
+API00-C,hostap,wpa_supplicant/ap.c,1777,FP,ap_ctrl_iface_disassoc_accept_mac internal-only ctrl_iface handler,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,wpa_supplicant/ap.c,1777,TP,"plain ctrl_iface handler, wpa_s read-only",hostap_full_audit_0.4.169,low
+API00-C,hostap,wpa_supplicant/ap.c,1790,FP,ap_ctrl_iface_set_acl internal-only ctrl_iface handler,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,wpa_supplicant/ap.c,1790,TP,"plain ctrl_iface handler, wpa_s read-only",hostap_full_audit_0.4.169,low
+DCL13-C,hostap,wpa_supplicant/ap.c,1805,TP,"plain function, wpa_s read-only",hostap_full_audit_0.4.169,low
+MSC01-C,hostap,wpa_supplicant/ap.c,1819,TP,"if/else-if with no final else; stylistic pedantry, established low-value convention",hostap_full_audit_0.4.169,low
+API00-C,hostap,wpa_supplicant/ap.c,1834,FP,"ap_switch_channel internal-only, always called with valid wpa_s from its two callers",hostap_full_audit_0.4.169,med
+MSC37-C,hostap,wpa_supplicant/ap.c,1834,FP,both #ifdef NEED_AP_MLME and #else branches return; preprocessor-branch-blind misfire,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/ap.c,1834,TP,"plain function, wpa_s read-only",hostap_full_audit_0.4.169,low
+MSC01-C,hostap,wpa_supplicant/ap.c,1842,TP,"if/else-if with no final else; stylistic pedantry, established low-value convention",hostap_full_audit_0.4.169,low
+API00-C,hostap,wpa_supplicant/ap.c,1858,FP,ap_ctrl_iface_chanswitch internal-only ctrl_iface handler,hostap_full_audit_0.4.169,med
+API00-C,hostap,wpa_supplicant/ap.c,1858,FP,ap_ctrl_iface_chanswitch internal-only ctrl_iface handler,hostap_full_audit_0.4.169,med
+API00-C,hostap,wpa_supplicant/ap.c,1887,FP,"wpas_ap_ch_switch internal-only, single caller (events.c) with always-valid wpa_s",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,wpa_supplicant/ap.c,1906,TP,"plain function, wpa_s read-only",hostap_full_audit_0.4.169,low
+MEM10-C,hostap,wpa_supplicant/ap.c,1931,FP,"MEM10-C stylistic ad-hoc-NULL-check suggestion, not a real defect",hostap_full_audit_0.4.169,high
+API00-C,hostap,wpa_supplicant/ap.c,1948,FP,body ternary-guards pw (pw ? wpabuf_head(pw) : NULL) -- factually already validated inline,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/ap.c,1948,TP,"plain function, wpa_s read-only",hostap_full_audit_0.4.169,low
+MEM31-C,hostap,wpa_supplicant/ap.c,1968,FP,"wps->dh_privkey ownership retained in wps_context, freed later via wps_hostapd.c:1077",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,wpa_supplicant/ap.c,1970,FP,"wps->dh_pubkey ownership retained in wps_context, freed later via wps_hostapd.c:1076",hostap_full_audit_0.4.169,high
+MEM30-C,hostap,wpa_supplicant/ap.c,1972,FP,wps->dh_privkey freshly reassigned via wpabuf_dup at :1968 before this NULL check; not freed-then-used,hostap_full_audit_0.4.169,high
+MEM30-C,hostap,wpa_supplicant/ap.c,1972,FP,wps->dh_pubkey freshly reassigned via wpabuf_dup at :1970 before this NULL check; not freed-then-used,hostap_full_audit_0.4.169,high
+MEM30-C,hostap,wpa_supplicant/ap.c,1974,FP,"frees the fresh (possibly-NULL) dup from :1970, not the earlier value freed at :1966",hostap_full_audit_0.4.169,high
+MEM30-C,hostap,wpa_supplicant/ap.c,1976,FP,"frees the fresh (possibly-NULL) dup from :1968, not the earlier value freed at :1967",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,wpa_supplicant/ap.c,1978,FP,already freed+NULLed at :1974-1977 on this path; free-then-NULL-reset-before-return misfire,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,wpa_supplicant/ap.c,1978,FP,already freed+NULLed at :1974-1977 on this path; free-then-NULL-reset-before-return misfire,hostap_full_audit_0.4.169,high
+MEM30-C,hostap,wpa_supplicant/ap.c,1980,FP,"wps->dh_privkey reassigned to fresh wpabuf_dup at 1968 before this read; old value freed earlier, not this one.",hostap_full_audit_0.4.169,high
+MEM30-C,hostap,wpa_supplicant/ap.c,1980,FP,wps->dh_pubkey reassigned to fresh wpabuf_dup at 1970 before this read; matches MEM30 fresh-reassignment-clears-freed-state fix.,hostap_full_audit_0.4.169,high
+MEM30-C,hostap,wpa_supplicant/ap.c,1981,FP,"wps->dh_ctx assigned on the same line (dh5_init_fixed result) immediately before this NULL check; reads the new value, not the freed one.",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,wpa_supplicant/ap.c,1984,FP,"wps->dh_pubkey is a persistent struct field kept alive for NFC token use; freed+replaced at top of every call (1965-1967), not a local leak.",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,wpa_supplicant/ap.c,1984,FP,"wps->dh_privkey same ownership-in-persistent-struct-field pattern as dh_pubkey; freed+replaced next call, not leaked.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/ap.c,1993,TP,wpas_ap_stop_ap is a plain internal helper (not a callback typedef); wpa_s only read. Genuine low-severity const opportunity.,hostap_full_audit_0.4.169,med
+API00-C,hostap,wpa_supplicant/ap.c,2004,FP,Internal-only API; sole caller (ctrl_iface.c:11055) always passes a valid wpa_s from the ctrl_iface dispatcher.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/ap.c,2004,TP,"wpas_ap_pmksa_cache_list is a plain helper called directly by name (ctrl_iface.c:11055), not a vtable/callback; wpa_s never modified.",hostap_full_audit_0.4.169,med
+API05-C,hostap,wpa_supplicant/ap.c,2004,FP,"Idiomatic ptr+len pair (buf, size_t len); confirmed categorical API05-C FP.",hostap_full_audit_0.4.169,high
+DCL00-C,hostap,wpa_supplicant/ap.c,2008,TP,"ap_delimiter is only read (os_strlen/os_memcpy) throughout the function, never mutated; const is a real, correct improvement.",hostap_full_audit_0.4.169,high
+DCL00-C,hostap,wpa_supplicant/ap.c,2009,TP,"mesh_delimiter is only read, never mutated; same as ap_delimiter.",hostap_full_audit_0.4.169,high
+INT00-C,hostap,wpa_supplicant/ap.c,2022,FP,"reply_len<=len is a maintained loop invariant (callee return values are bounded by the len passed in, verified via wpa_auth_pmksa_list/pmksa_cache_auth_list's own os_snprintf_error bound checks); extends the proven-safe-bounded-loop FP pattern to INT00-C.",hostap_full_audit_0.4.169,high
+INT00-C,hostap,wpa_supplicant/ap.c,2035,FP,Same invariant as line 2022 continues to hold entering the ifmsh block; reply_len never exceeds len.,hostap_full_audit_0.4.169,high
+API00-C,hostap,wpa_supplicant/ap.c,2042,FP,Internal-only API; sole caller (ctrl_iface.c:11067) always passes a valid wpa_s.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/ap.c,2042,TP,"Plain helper called by name, not a dispatch typedef; wpa_s only read.",hostap_full_audit_0.4.169,med
+API00-C,hostap,wpa_supplicant/ap.c,2059,FP,"wpa_s: internal-only, callers (ctrl_iface.c:11279,11284) always pass valid wpa_s guarded by !wpa_s->ifmsh check upstream.",hostap_full_audit_0.4.169,high
+API00-C,hostap,wpa_supplicant/ap.c,2059,FP,"addr is deliberately NULL for the ""any"" case (ctrl_iface.c:11279) and forwarded to hostapd_ctrl_iface_pmksa_list_mesh which is designed to accept NULL as a wildcard filter; not a validation gap.",hostap_full_audit_0.4.169,high
+API00-C,hostap,wpa_supplicant/ap.c,2059,FP,buf is always a valid stack buffer supplied by the ctrl_iface command dispatcher; internal-only API pedantry.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/ap.c,2059,TP,"Plain helper called directly by name (ctrl_iface.c), not a callback typedef; wpa_s only read.",hostap_full_audit_0.4.169,med
+API05-C,hostap,wpa_supplicant/ap.c,2060,FP,"Idiomatic ptr+len pair (buf, size_t len); confirmed categorical FP.",hostap_full_audit_0.4.169,high
+API00-C,hostap,wpa_supplicant/ap.c,2067,FP,"wpa_s: internal-only API, sole caller (ctrl_iface.c mesh_pmksa_add) always passes a valid wpa_s.",hostap_full_audit_0.4.169,high
+API00-C,hostap,wpa_supplicant/ap.c,2067,FP,cmd is always a non-NULL ctrl_iface command-argument string from the dispatcher; internal-only pedantry.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/ap.c,2092,TP,"wpas_ap_update_beacon is a plain helper; wpa_s only read (hapd derived from wpa_s->ap_iface), never modified.",hostap_full_audit_0.4.169,med
+MEM31-C,hostap,wpa_supplicant/ap.c,2104,FP,"hapd->conf->assocresp_elements is a persistent config struct field: old value freed at 2100 before this assignment, and the field itself is freed in hostapd_config_free (ap_config.c:950). Ownership-in-persistent-struct-field FP, not an immediate leak.",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,wpa_supplicant/ap.c,2111,FP,hapd->conf->vendor_elements same persistent-field pattern; freed at 2107 before reassignment and in hostapd_config_free (ap_config.c:949).,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,wpa_supplicant/ap.c,2114,FP,Same ownership-in-persistent-struct-field reasoning as line 2104; assocresp_elements is not leaked by this return.,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,wpa_supplicant/ap.c,2114,FP,Same ownership-in-persistent-struct-field reasoning as line 2111; vendor_elements is not leaked by this return.,hostap_full_audit_0.4.169,high
+API00-C,hostap,wpa_supplicant/ap.c,2121,FP,"wpa_s: internal-only, sole caller events.c:6953 passes the driver-event's own wpa_s, never NULL.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/ap.c,2121,TP,"Plain event handler called directly by name from events.c, not a fixed-signature callback typedef; wpa_s only read.",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,wpa_supplicant/ap.c,2122,TP,"radar param only read (radar->freq etc.), never modified; genuine low-severity const opportunity.",hostap_full_audit_0.4.169,med
+API00-C,hostap,wpa_supplicant/ap.c,2138,FP,"wpa_s: internal-only, sole caller events.c:5957 always passes a valid wpa_s.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/ap.c,2138,TP,"Plain event handler, not a callback typedef; wpa_s only read.",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,wpa_supplicant/ap.c,2139,TP,"radar only read, never modified.",hostap_full_audit_0.4.169,med
+API00-C,hostap,wpa_supplicant/ap.c,2154,FP,"wpa_s: internal-only, sole caller events.c:5978 always passes a valid wpa_s.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/ap.c,2154,TP,"Plain event handler, not a callback typedef; wpa_s only read.",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,wpa_supplicant/ap.c,2155,TP,"radar only read, never modified.",hostap_full_audit_0.4.169,med
+API00-C,hostap,wpa_supplicant/ap.c,2170,FP,"wpa_s: internal-only, sole caller events.c:5994 always passes a valid wpa_s.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/ap.c,2170,TP,"Plain event handler, not a callback typedef; wpa_s only read.",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,wpa_supplicant/ap.c,2171,TP,"radar only read, never modified.",hostap_full_audit_0.4.169,med
+API00-C,hostap,wpa_supplicant/ap.c,2186,FP,"wpa_s: internal-only, sole caller events.c:6958 always passes a valid wpa_s.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/ap.c,2186,TP,"Plain event handler, not a callback typedef; wpa_s only read.",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,wpa_supplicant/ap.c,2187,TP,"radar only read, never modified.",hostap_full_audit_0.4.169,med
+API00-C,hostap,wpa_supplicant/ap.c,2203,FP,"wpa_s: internal-only, sole caller wpa_supplicant.c:8511 iterates already-valid interface list.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/ap.c,2203,TP,"ap_periodic is a plain periodic-tick helper, not a callback typedef; wpa_s only read (wpa_s->ap_iface).",hostap_full_audit_0.4.169,med
+PRE08-C,hostap,src/wps/wps_registrar.c,23,TP,PRE08-C literal match wps_upnp.h/wps_upnp_i.h share first 8 chars; low-value but technically-correct per categorical convention,hostap_full_audit_0.4.169,high
+ARR01-C,hostap,src/wps/wps_registrar.c,46,FP,"sizeof(*token) sizes the alloc for bin_clear_free, correct idiom not a decayed-pointer sizeof",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/wps/wps_registrar.c,67,FP,"token points into heap dl_list nodes, not automatic storage; DCL30-C conflates local pointer var with heap storage it references",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/wps/wps_registrar.c,123,TP,pbc genuinely never modified through the pointer in this function body (only os_free(prev) on an aliased copy); low-value const opportunity,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/wps/wps_registrar.c,234,FP,"reg->authorized_macs is genuinely memcpy-written in this function, so the const claim is factually wrong",hostap_full_audit_0.4.169,high
+ARR01-C,hostap,src/wps/wps_registrar.c,251,FP,"sizeof(reg->authorized_macs) sizes a fixed array struct member for hexdump, correct idiom not decayed-pointer sizeof",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/wps/wps_registrar.c,255,FP,"reg->authorized_macs is memcpy/memset-written in this function, const claim factually wrong",hostap_full_audit_0.4.169,high
+ARR01-C,hostap,src/wps/wps_registrar.c,276,FP,"sizeof(reg->authorized_macs) fixed-array-member correct idiom, same as #5",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/wps/wps_registrar.c,280,FP,dev's pointee is freed via aliased local 'prev' in the loop; const would conflict with the free semantics even though not textually mutated through 'dev' itself,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/wps/wps_registrar.c,293,TP,"reg is read only in wps_device_get (reg->devices), never mutated; genuine low-value const opportunity",hostap_full_audit_0.4.169,med
+DCL30-C,hostap,src/wps/wps_registrar.c,300,FP,"dev iterates reg->devices, heap-allocated nodes via os_zalloc; DCL30-C conflates local pointer variable with the heap storage it points to",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/wps/wps_registrar.c,306,FP,"dst is genuinely memcpy/WPS_STRDUP-written in this function, const claim factually wrong",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/wps/wps_registrar.c,307,TP,"src is only ever read in this function body, genuine (low-value) const opportunity",hostap_full_audit_0.4.169,med
+PRE00-C,hostap,src/wps/wps_registrar.c,312,FP,"WPS_STRDUP's 'n' parameter is used only as a -> field designator (dst->n), never a runtime expression; category error, matches dl_list-macro PRE00/01/12 field-designator FP class",hostap_full_audit_0.4.169,high
+PRE01-C,hostap,src/wps/wps_registrar.c,312,FP,same field-designator misapplication as #13,hostap_full_audit_0.4.169,high
+PRE12-C,hostap,src/wps/wps_registrar.c,312,FP,same field-designator misapplication as #13,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/wps/wps_registrar.c,325,FP,wps_device_store is an internal-only API always called with valid reg/dev from trusted call sites; matches API00-C internal-API FP convention,hostap_full_audit_0.4.169,med
+API00-C,hostap,src/wps/wps_registrar.c,325,FP,"same as #16, for the 'uuid' param",hostap_full_audit_0.4.169,med
+API00-C,hostap,src/wps/wps_registrar.c,428,FP,wps_registrar_pbc_overlap is hostap-internal despite lacking 'static'; matches API00-C internal-API FP convention,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/wps/wps_registrar.c,428,TP,"reg is only read in this function body (reg->pbc_sessions), genuine low-value const opportunity",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/wps/wps_registrar.c,477,TP,"wps only read (wps->wps_state) in wps_build_wps_state, genuine low-value const opportunity",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/wps/wps_registrar.c,513,TP,wps only read (wps->ap_setup_locked) in wps_build_ap_setup_locked,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/wps/wps_registrar.c,526,TP,reg only read (reg->sel_reg_union) in wps_build_selected_registrar,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/wps/wps_registrar.c,539,TP,reg only read in wps_build_sel_reg_dev_password_id,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/wps/wps_registrar.c,555,TP,reg only read in wps_build_sel_pbc_reg_uuid_e,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/wps/wps_registrar.c,592,TP,reg only read in wps_build_sel_reg_config_methods,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/wps/wps_registrar.c,615,TP,reg only read (reg->wps->config_methods) in wps_build_probe_config_methods,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/wps/wps_registrar.c,634,TP,reg only read (reg->wps->config_methods) in wps_build_config_methods_r,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/wps/wps_registrar.c,641,TP,reg only read (reg->authorized_macs_union) in wps_authorized_macs,hostap_full_audit_0.4.169,med
+MEM10-C,hostap,src/wps/wps_registrar.c,728,FP,"stylistic MEM10-C misfire on a plain 'if (X==NULL)' guard, matches established ad-hoc-NULL-check FP class",hostap_full_audit_0.4.169,high
+MEM10-C,hostap,src/wps/wps_registrar.c,748,FP,same MEM10-C stylistic class as #29,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/wps/wps_registrar.c,785,FP,"wps_registrar_add_pin internal API, matches API00-C internal-API FP convention",hostap_full_audit_0.4.169,med
+EXP33-C,hostap,src/wps/wps_registrar.c,791,FP,"p = os_zalloc(sizeof(*p)); sizeof(*p) never evaluates p, classic sizeof(*ptr) misidentified-as-deref FP",hostap_full_audit_0.4.169,high
+MEM10-C,hostap,src/wps/wps_registrar.c,796,FP,MEM10-C stylistic class,hostap_full_audit_0.4.169,high
+MSC09-C,hostap,src/wps/wps_registrar.c,828,FP,"\xff\xff\xff\xff\xff\xff is a broadcast MAC address byte pattern, not human-readable text; matches MSC09-C raw-byte-pattern FP class",hostap_full_audit_0.4.169,high
+MSC41-C,hostap,src/wps/wps_registrar.c,828,FP,broadcast MAC address (0xff x6) is not sensitive information (no password/key/token); MSC41-C misfire on a public constant,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/wps/wps_registrar.c,910,FP,wps_registrar_invalidate_pin internal API FP convention,hostap_full_audit_0.4.169,med
+MSC13-C,hostap,src/wps/wps_registrar.c,939,FP,found=pin is read immediately after loop break at 'if (!found)' a few lines later; matches dl_list_for_each dead-store-misses-post-loop-read FP class,hostap_full_audit_0.4.169,high
+MSC13-C,hostap,src/wps/wps_registrar.c,952,FP,wildcard=1 is read later at 'if (wildcard) found->wildcard_uuid++;'; same post-loop-read FP class,hostap_full_audit_0.4.169,high
+MSC13-C,hostap,src/wps/wps_registrar.c,954,FP,found=pin (2nd wildcard loop) is read at 'if (!found) return NULL;' immediately after break; same FP class,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/wps/wps_registrar.c,990,FP,wps_registrar_unlock_pin internal API FP convention,hostap_full_audit_0.4.169,med
+MSC09-C,hostap,src/wps/wps_registrar.c,1016,FP,"broadcast MAC literal, same MSC09-C byte-pattern FP class as #34",hostap_full_audit_0.4.169,high
+MSC41-C,hostap,src/wps/wps_registrar.c,1016,FP,"broadcast MAC literal, same MSC41-C FP class as #35",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/wps/wps_registrar.c,1021,FP,"wps_registrar_set_selected_timeout matches eloop_timeout_handler's fixed void(*)(void*,void*) dispatch-contract signature; established DCL13-C eloop-callback FP class",hostap_full_audit_0.4.169,high
+MSC09-C,hostap,src/wps/wps_registrar.c,1064,FP,"broadcast MAC literal, same MSC09-C class",hostap_full_audit_0.4.169,high
+MSC41-C,hostap,src/wps/wps_registrar.c,1064,FP,"broadcast MAC literal, same MSC41-C class",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/wps/wps_registrar.c,1094,FP,wps_registrar_complete internal API FP convention,hostap_full_audit_0.4.169,med
+MSC01-C,hostap,src/wps/wps_registrar.c,1125,FP,"if/else-if in wps_registrar_wps_cancel is a deliberate exhaustive guard-clause pair, MSC01-C stylistic pedantry",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/wps/wps_registrar.c,1146,FP,wps_registrar_probe_req_rx internal API FP convention,hostap_full_audit_0.4.169,med
+EXP33-C,hostap,src/wps/wps_registrar.c,1160,FP,"struct wps_parse_attr attr is written by wps_parse_msg(wps_data, &attr) via pointer before any field is read; write-only-output-param FP class",hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/wps/wps_registrar.c,1182,FP,WPA_GET_BE16 calls on config_methods/dev_password_id are pure byte-extraction reads with no side effects; matches EXP30-C pure-accessor-macro-arg FP class,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/wps/wps_registrar.c,1229,FP,wps_cb_new_psk internal API FP convention (mac_addr),hostap_full_audit_0.4.169,med
+API00-C,hostap,src/wps/wps_registrar.c,1229,FP,wps_cb_new_psk internal API FP convention (p2p_dev_addr),hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/wps/wps_registrar.c,1229,TP,"reg only read (reg->new_psk_cb, reg->cb_ctx) in wps_cb_new_psk",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/wps/wps_registrar.c,1240,TP,reg only read in wps_cb_pin_needed,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/wps/wps_registrar.c,1250,TP,reg only read in wps_cb_reg_success,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/wps/wps_registrar.c,1261,TP,"reg only read (reg->set_ie_cb, reg->cb_ctx) in wps_cb_set_ie",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/wps/wps_registrar.c,1268,TP,reg only read in wps_cb_set_sel_reg,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/wps/wps_registrar.c,1293,TP,"reg only read (reg->lookup_pskfile_cb, reg->cb_ctx) in wps_cp_lookup_pskfile",hostap_full_audit_0.4.169,med
+MEM31-C,hostap,src/wps/wps_registrar.c,1374,FP,"beacon is handed to wps_cb_set_ie->hostapd_wps_set_ie_cb, which assigns it to hapd->wps_beacon_ie (ownership transfer), not leaked; ownership-transfer-to-callback FP class",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/wps/wps_registrar.c,1374,FP,"probe likewise transferred to hapd->wps_probe_resp_ie in hostapd_wps_set_ie_cb, not leaked",hostap_full_audit_0.4.169,high
+MSC07-C,hostap,src/wps/wps_registrar.c,1375,FP,"'fail:' is a goto target reached from earlier failure branches, not dead code after the preceding return; goto-label-blindness FP class",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/wps/wps_registrar.c,1444,TP,wps only read in wps_build_r_snonce1-style accessor (wps->snonce read-only),hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/wps/wps_registrar.c,1454,TP,wps only read in wps_build_r_snonce2,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/wps/wps_registrar.c,1502,TP,wps only read in the corresponding wps_build_cred_* accessor at line 1502,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/wps/wps_registrar.c,1512,TP,wps only read in the corresponding accessor at line 1512,hostap_full_audit_0.4.169,med
+API00-C,hostap,src/wps/wps_registrar.c,1599,FP,wps_build_credential_wrap internal API FP convention,hostap_full_audit_0.4.169,med
+ARR01-C,hostap,src/wps/wps_registrar.c,1630,FP,"sizeof(wps->cred) sizes a fixed struct member for memcpy, correct idiom not decayed-pointer sizeof",hostap_full_audit_0.4.169,high
+ARR01-C,hostap,src/wps/wps_registrar.c,1633,FP,sizeof(wps->cred) same correct-idiom class as #67 (os_memset),hostap_full_audit_0.4.169,high
+INT14-C,hostap,src/wps/wps_registrar.c,1665,FP,'wps' itself is never used both ways; the bitwise op is on wps->auth_type and the arithmetic op is on the unrelated wps->new_psk_len -- INT14-C conflates a struct pointer with its distinct dereferenced members,hostap_full_audit_0.4.169,high
+WIN04-C,hostap,src/wps/wps_registrar.c,1668,FP,"'else if (wps->auth_type & WPS_AUTH_WPAPSK)' contains no function pointer at all; WIN04-C factually-wrong-claim class, likely triggered by the adjacent #ifndef CONFIG_NO_TKIP directive",hostap_full_audit_0.4.169,high
+MSC13-C,hostap,src/wps/wps_registrar.c,1671,FP,MSC13-C misparses the 'if' keyword of 'else if' as an lvalue identifier right at a preprocessor-branch boundary (#endif above); established #ifdef-adjacent MSC13-C/WIN04-C parser-confusion FP class,hostap_full_audit_0.4.169,high
+WIN04-C,hostap,src/wps/wps_registrar.c,1671,FP,"same line, no function pointer present; WIN04-C factually-wrong-claim FP class",hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/wps/wps_registrar.c,1686,FP,if/else-if chain here is a deliberate mutually exclusive selection with no need for a catch-all else; MSC01-C pedantry,hostap_full_audit_0.4.169,high
+MSC13-C,hostap,src/wps/wps_registrar.c,1693,FP,same #ifdef-adjacent 'if'-token misparse as #71 (near #ifndef CONFIG_NO_TKIP at line 1692),hostap_full_audit_0.4.169,high
+WIN04-C,hostap,src/wps/wps_registrar.c,1693,FP,no function pointer on this line; WIN04-C factually-wrong-claim class,hostap_full_audit_0.4.169,high
+MSC13-C,hostap,src/wps/wps_registrar.c,1705,FP,same #ifdef-adjacent 'if'-token misparse (near #ifdef CONFIG_TESTING_OPTIONS at 1704),hostap_full_audit_0.4.169,high
+WIN04-C,hostap,src/wps/wps_registrar.c,1705,FP,no function pointer on this line; WIN04-C factually-wrong-claim class,hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/wps/wps_registrar.c,1733,FP,"wps->new_psk is os_free()'d then immediately reassigned via base64_encode() at the very next line before this check reads it; the read targets the fresh pointer, not the freed one -- struct-field extension of the MEM30 reassign/fresh-binding fix gap",hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/wps/wps_registrar.c,1737,FP,"reads the freshly-assigned wps->new_psk (post-reassignment), same reasoning as #78",hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/wps/wps_registrar.c,1740,FP,"same reasoning as #78, reads freshly-assigned pointer",hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/wps/wps_registrar.c,1741,FP,"same reasoning as #78, os_memcpy from the freshly-assigned wps->new_psk",hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/wps/wps_registrar.c,1762,FP,deliberate if/else-if chain in wps_build_cred falls through to 'use_provided' regardless of match; MSC01-C pedantry,hostap_full_audit_0.4.169,high
+MSC13-C,hostap,src/wps/wps_registrar.c,1787,FP,'if (wps_testing_stub_cred)' sits directly after '#ifdef CONFIG_WPS_TESTING'; same #ifdef-adjacent 'if'-token misparse FP class as #71/#74/#76,hostap_full_audit_0.4.169,high
+WIN04-C,hostap,src/wps/wps_registrar.c,1787,FP,no function pointer present on this line; WIN04-C factually-wrong-claim class,hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/wps/wps_registrar.c,1788,FP,"cred = wpabuf_alloc(200) is an assignment, not a read of an uninitialized variable; part of the same #ifdef-boundary parser confusion",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/wps/wps_registrar.c,1788,FP,cred (the #ifdef CONFIG_WPS_TESTING stub) is freed at line 1809 wpabuf_free(cred) within the very same block; preprocessor-branch-blind false leak,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/wps/wps_registrar.c,1819,FP,"cred is freed via wpabuf_clear_free(cred) at line 1818, the line immediately before this return -1; false leak, off-by-one on the free/return adjacency",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/wps/wps_registrar.c,1833,FP,cred was already freed via wpabuf_clear_free(cred) at line 1825 before reaching this return 0; false leak,hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/wps/wps_registrar.c,1873,FP,"msg is heap memory from wpabuf_alloc(1000), not automatic storage; DCL30-C heap-vs-stack FP class",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/wps/wps_registrar.c,1925,FP,'plain' (#ifdef CONFIG_WPS_NFC local) is freed on both the failure branch (line 1931 wpabuf_clear_free) and the success path (line 1934); not leaked,hostap_full_audit_0.4.169,high
+EXP34-C,hostap,src/wps/wps_registrar.c,1931,FP,"wpabuf_clear_free() is NULL-safe (checks 'if (buf)' before dereferencing, src/utils/wpabuf.c:212-218); os_free(NULL)-is-safe FP class extended to wpabuf_clear_free",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/wps/wps_registrar.c,1941,FP,"'plain' is block-scoped to the #ifdef CONFIG_WPS_NFC if-body and already freed within that block; by this later return NULL it is out of scope entirely, not a real leak",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/wps/wps_registrar.c,1946,FP,"msg heap memory from wpabuf_alloc, DCL30-C heap-vs-stack FP class",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/wps/wps_registrar.c,1946,FP,same out-of-scope/already-freed 'plain' confusion as #92,hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/wps/wps_registrar.c,1985,FP,"msg heap memory, DCL30-C heap-vs-stack FP class (wps_build_m2d)",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/wps/wps_registrar.c,2024,FP,"msg heap memory, DCL30-C heap-vs-stack FP class (wps_build_m4)",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/wps/wps_registrar.c,2060,FP,"msg heap memory, DCL30-C heap-vs-stack FP class (wps_build_m6)",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/wps/wps_registrar.c,2096,FP,"msg heap memory, DCL30-C heap-vs-stack FP class (wps_build_m8)",hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/wps/wps_registrar.c,2110,FP,"wps_registrar_free_pending_m2(wps->wps) frees pending-M2 list nodes (p2/p2->msg) inside the wps_context, it does not free the wps_context ('wps->wps') itself; MEM30-C misattributes the freed object",hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/wps/wps_registrar.c,2122,FP,same misattribution as #99; wps->wps (the wps_context) is never freed here,hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/wps/wps_registrar.c,2138,FP,"msg here is either a UPnP-pending p->msg or a wps_build_* heap buffer, never automatic storage; DCL30-C heap-vs-stack FP class",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/wps/wps_registrar.c,2194,FP,same DCL30-C heap-vs-stack FP class at the function's final return msg,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/wps/wps_registrar.c,2198,FP,"wps->nonce_e is memcpy-written in wps_process_enrollee_nonce, const claim factually wrong",hostap_full_audit_0.4.169,high
+MEM10-C,hostap,src/wps/wps_registrar.c,2200,FP,MEM10-C stylistic ad-hoc-NULL-check class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/wps/wps_registrar.c,2213,TP,"wps only read (wps->nonce_r via os_memcmp) in wps_process_registrar_nonce, genuine low-value const opportunity",hostap_full_audit_0.4.169,med
+MEM10-C,hostap,src/wps/wps_registrar.c,2215,FP,MEM10-C stylistic class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/wps/wps_registrar.c,2229,FP,"wps->uuid_e is memcpy-written in wps_process_uuid_e, const claim factually wrong",hostap_full_audit_0.4.169,high
+MEM10-C,hostap,src/wps/wps_registrar.c,2231,FP,MEM10-C stylistic class,hostap_full_audit_0.4.169,high
+MEM10-C,hostap,src/wps/wps_registrar.c,2245,FP,MEM10-C stylistic class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/wps/wps_registrar.c,2257,FP,"wps->peer_hash1 is memcpy-written in wps_process_e_hash1, const claim factually wrong",hostap_full_audit_0.4.169,high
+MEM10-C,hostap,src/wps/wps_registrar.c,2259,FP,MEM10-C stylistic class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/wps/wps_registrar.c,2271,FP,"wps->peer_hash2 is memcpy-written in wps_process_e_hash2, const claim factually wrong",hostap_full_audit_0.4.169,high
+MEM10-C,hostap,src/wps/wps_registrar.c,2273,FP,MEM10-C stylistic class,hostap_full_audit_0.4.169,high
+MEM10-C,hostap,src/wps/wps_registrar.c,2291,FP,MEM10-C stylistic class,hostap_full_audit_0.4.169,high
+MEM10-C,hostap,src/wps/wps_registrar.c,2331,FP,MEM10-C stylistic class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/wps/wps_registrar.c,2375,FP,"wps->mac_addr_e/wps->peer_dev.mac_addr are memcpy-written in wps_process_mac_addr, const claim factually wrong",hostap_full_audit_0.4.169,high
+MEM10-C,hostap,src/wps/wps_registrar.c,2377,FP,MEM10-C stylistic class,hostap_full_audit_0.4.169,high
+MEM10-C,hostap,src/wps/wps_registrar.c,2412,FP,MEM10-C stylistic class,hostap_full_audit_0.4.169,high
+MEM10-C,hostap,src/wps/wps_registrar.c,2469,FP,MEM10-C stylistic class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/wps/wps_registrar.c,2505,TP,"wps param is entirely unread in wps_process_conn_type_flags beyond being passed through, genuine const opportunity",hostap_full_audit_0.4.169,med
+MEM10-C,hostap,src/wps/wps_registrar.c,2507,FP,MEM10-C stylistic class,hostap_full_audit_0.4.169,high
+MEM10-C,hostap,src/wps/wps_registrar.c,2524,FP,MEM10-C stylistic class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/wps/wps_registrar.c,2558,TP,"wps param is unused in wps_process_wps_state, genuine const opportunity",hostap_full_audit_0.4.169,med
+MEM10-C,hostap,src/wps/wps_registrar.c,2560,FP,MEM10-C stylistic class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/wps/wps_registrar.c,2573,TP,"wps param is unused in wps_process_assoc_state, genuine const opportunity",hostap_full_audit_0.4.169,med
+MEM10-C,hostap,src/wps/wps_registrar.c,2577,FP,MEM10-C stylistic class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/wps/wps_registrar.c,2589,TP,"wps param is unused in wps_process_config_error, genuine const opportunity",hostap_full_audit_0.4.169,med
+MEM10-C,hostap,src/wps/wps_registrar.c,2593,FP,MEM10-C stylistic class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/wps/wps_registrar.c,2605,TP,"wps only read via wps->wps->registrar/wps->p2p_dev_addr in wps_registrar_p2p_dev_addr_match, genuine const opportunity",hostap_full_audit_0.4.169,med
+EXP30-C,hostap,src/wps/wps_registrar.c,2614,FP,two separate MAC2STR(...) macro invocations are pure array-index reads with no side effects; EXP30-C pure-accessor-macro-arg FP class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/wps/wps_registrar.c,2626,TP,"wps only read in wps_registrar_skip_overlap, genuine const opportunity",hostap_full_audit_0.4.169,med
+STR31-C,hostap,src/wps/wps_registrar.c,2693,FP,"addr[1] is a const u8* array (pointer array), not a character array; STR31-C misapplied-to-non-char-array FP class",hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/wps/wps_registrar.c,2725,FP,deliberate else-if chain inside #ifdef CONFIG_WPS_NFC with no need for a catch-all else; MSC01-C pedantry,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/wps/wps_registrar.c,2780,TP,"attr (struct wps_parse_attr*) is only read in wps_process_m3, genuine low-value const opportunity",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/wps/wps_registrar.c,2815,TP,"attr is only read in wps_process_m5, genuine low-value const opportunity",hostap_full_audit_0.4.169,med
+EXP33-C,hostap,src/wps/wps_registrar.c,2862,FP,"eattr is written by wps_parse_msg(decrypted,&eattr) via pointer immediately before any field read; write-only-output-param FP class",hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/wps/wps_registrar.c,2884,FP,auth_type if/else-if in wps_sta_cred_cb intentionally leaves the value untouched when no bit matches; MSC01-C pedantry,hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/wps/wps_registrar.c,2888,FP,"encr_type if/else-if, same deliberate no-op-on-no-match pattern; MSC01-C pedantry",hostap_full_audit_0.4.169,high
+ARR01-C,hostap,src/wps/wps_registrar.c,2900,FP,"sizeof(dst->ssid) sizes a fixed array struct member for memcpy, correct idiom not decayed-pointer sizeof",hostap_full_audit_0.4.169,high
+ARR01-C,hostap,src/wps/wps_registrar.c,2905,FP,sizeof(dst->key) same correct-idiom class as #139,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/wps/wps_registrar.c,2966,TP,"attr is only read in wps_process_m7, genuine low-value const opportunity",hostap_full_audit_0.4.169,med
+EXP33-C,hostap,src/wps/wps_registrar.c,3014,FP,"eattr written via wps_parse_msg(decrypted,&eattr) pointer-write before read; write-only-output-param FP class",hostap_full_audit_0.4.169,high
+MSC13-C,hostap,src/wps/wps_registrar.c,3033,TP,ret's initial '= WPS_CONTINUE' is genuinely dead: every switch case either reassigns ret or the default case returns immediately without reading it,hostap_full_audit_0.4.169,med
+EXP33-C,hostap,src/wps/wps_registrar.c,3040,FP,"attr is written by wps_parse_msg(msg,&attr) via pointer at the line immediately above before attr.msg_type is read; write-only-output-param FP class",hostap_full_audit_0.4.169,high
+CON43-C,hostap,src/wps/wps_registrar.c,3054,FP,hostap's eloop is single-threaded/cooperative with zero pthread usage in this codebase; switch(*attr.msg_type) on a local non-shared struct cannot double-fetch; single-threaded-eloop CON43-C FP class,hostap_full_audit_0.4.169,high
+MSC07-C,hostap,src/wps/wps_registrar.c,3071,FP,"'case WPS_M3:' is a normal, reachable switch case label, not unreachable straight-line code after the preceding case's break; MSC07-C misidentifies a case label as dead code",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/wps/wps_registrar.c,3122,FP,"attr written via wps_parse_msg(msg,&attr) pointer-write before read; write-only-output-param FP class",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/wps/wps_registrar.c,3194,FP,"attr written via wps_parse_msg(msg,&attr) pointer-write before read; write-only-output-param FP class",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/wps/wps_registrar.c,3278,FP,"attr written via wps_parse_msg(msg,&attr) pointer-write before read; write-only-output-param FP class",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/wps/wps_registrar.c,3399,FP,"attr is zeroed+filled by wps_parse_msg(msg,&attr) (os_memset then parse) before any read; write-through-pointer-param not tracked.",hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/wps/wps_registrar.c,3405,FP,"wps_registrar_free_pending_m2() only frees pending-message list nodes, never the wps_context arg; free-named-helper misattribution pattern.",hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/wps/wps_registrar.c,3406,FP,Same free-named-helper misattribution; wps->wps never freed.,hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/wps/wps_registrar.c,3417,FP,Same free-named-helper misattribution; wps->wps never freed.,hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/wps/wps_registrar.c,3423,FP,No-final-else guard-clause pedantry; established categorical FP class.,hostap_full_audit_0.4.169,med
+MEM30-C,hostap,src/wps/wps_registrar.c,3423,FP,Same free-named-helper misattribution; wps->wps never freed.,hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/wps/wps_registrar.c,3447,FP,Same free-named-helper misattribution; wps->wps never freed.,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/wps/wps_registrar.c,3459,FP,Internal-only-API FP class; reg always valid from wps_set_ie caller chain.,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/wps/wps_registrar.c,3466,FP,"eloop_timeout_handler dispatch-contract callback signature (void*,void*); confirmed FP class.",hostap_full_audit_0.4.169,high
+ARR01-C,hostap,src/wps/wps_registrar.c,3508,FP,"sizeof(reg->authorized_macs_union) is a fixed struct-member array, not sizeof of the decayed param itself; correct idiom FP class.",hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/wps/wps_registrar.c,3526,FP,"inet_ntoa/ntohs are single, non-interacting calls in printf args; no observable hazard from evaluation order.",hostap_full_audit_0.4.169,med
+CON34-C,hostap,src/wps/wps_registrar.c,3527,FP,No pthread usage anywhere in wpa_supplicant/hostapd core (grep confirmed); established CON33/34-C no-thread FP class.,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/wps/wps_registrar.c,3547,FP,Internal-only-API FP class; reg always valid (public setter called only from internal UPnP/config code).,hostap_full_audit_0.4.169,med
+ARR01-C,hostap,src/wps/wps_registrar.c,3559,FP,Same sizeof(reg->authorized_macs_union) fixed-member idiom as line 3508; FP.,hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/wps/wps_registrar.c,3570,FP,No-final-else guard-clause pedantry; established categorical FP class.,hostap_full_audit_0.4.169,med
+API00-C,hostap,src/wps/wps_registrar.c,3585,FP,"Internal-only-API FP class; reg not externally nullable, sole caller wps_hostapd.c always passes valid registrar.",hostap_full_audit_0.4.169,med
+API00-C,hostap,src/wps/wps_registrar.c,3585,FP,"addr comes from a validated STA MAC lookup at the sole call site, never externally nullable; internal-API FP class.",hostap_full_audit_0.4.169,med
+API00-C,hostap,src/wps/wps_registrar.c,3585,FP,"buflen is a fixed local stack-buffer size at the sole call site, not attacker-controlled; no arithmetic that can overflow (single os_snprintf, len starts at 0).",hostap_full_audit_0.4.169,med
+API05-C,hostap,src/wps/wps_registrar.c,3586,FP,"Idiomatic T*ptr,size_t len parameter pair; confirmed categorical FP class.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/wps/wps_registrar.c,3586,FP,"buf is the destination of os_snprintf(buf+len,...) -- it is written to, so the const suggestion is factually wrong.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/wps/wps_registrar.c,3623,TP,reg only read (reg->wps->cred_cb/cb_ctx) in a plain (non-callback) internal helper; genuine low-value TP per established class.,hostap_full_audit_0.4.169,med
+API00-C,hostap,src/wps/wps_registrar.c,3661,FP,Internal-only-API FP class; sole caller wps_hostapd.c always passes hapd->wps->registrar.,hostap_full_audit_0.4.169,med
+API00-C,hostap,src/wps/wps_registrar.c,3692,FP,Internal-only-API FP class; all 3 callers pass a live registrar handle from hapd/wpa_s state.,hostap_full_audit_0.4.169,med
+EXP33-C,hostap,src/wps/wps_registrar.c,3711,FP,sizeof(*token) never evaluates its operand; confirmed sizeof(*ptr)-not-a-deref FP class.,hostap_full_audit_0.4.169,high
+POS49-C,hostap,src/wps/wps_registrar.c,3715,FP,No pthread usage anywhere in wpa_supplicant/hostapd core; established CON32-C/POS49-C no-thread FP class.,hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/wps/wps_registrar.c,3722,FP,"wps_free_nfc_pw_tokens(&reg->nfc_pw_tokens,pw_id) at 3709 operates on the dl_list, not the not-yet-allocated local 'token'; name-conflation misattribution (tokens list vs. singular token var).",hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/wps/wps_registrar.c,3722,FP,"Same name-conflation misattribution; token freshly os_zalloc'd at 3711, never freed in this function.",hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/wps/wps_registrar.c,3723,FP,Same name-conflation misattribution as 3722.,hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/wps/wps_registrar.c,3728,FP,"Same name-conflation misattribution; token is dl_list_add'd here (added, not freed).",hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/wps/wps_registrar.c,3728,FP,Same name-conflation misattribution as above.,hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/wps/wps_registrar.c,3728,FP,Same name-conflation misattribution as above.,hostap_full_audit_0.4.169,high
+MSC09-C,hostap,src/wps/wps_registrar.c,3733,FP,"\xff\xff\xff\xff\xff\xff is the broadcast MAC constant, a raw byte pattern not text; confirmed MSC09-C byte-pattern FP class.",hostap_full_audit_0.4.169,high
+MSC41-C,hostap,src/wps/wps_registrar.c,3733,FP,"The all-FF broadcast MAC address is a well-known public constant, not sensitive/secret data.",hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/wps/wps_registrar.c,3734,FP,"pw_id is declared 'u16 pw_id' (an integer parameter), not a pointer at all -- type-confusion misfire, nothing was ever freed.",hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/wps/wps_registrar.c,3740,FP,"pw_id is a u16 value printed via wpa_printf(%u,...), not a pointer; same type-confusion misfire as line 3734.",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/wps/wps_registrar.c,3747,FP,Internal-only-API FP class; both callers pass a live registrar handle.,hostap_full_audit_0.4.169,med
+API00-C,hostap,src/wps/wps_registrar.c,3778,FP,Internal-only-API FP class; sole caller wps.c:163 guards data->registrar before the call.,hostap_full_audit_0.4.169,med
+API00-C,hostap,src/wps/wps_registrar.c,3778,FP,Sole caller wps.c:163 checks data->nfc_pw_token non-NULL before passing it as token; never externally nullable.,hostap_full_audit_0.4.169,med
+MSC09-C,hostap,src/wps/wps_registrar.c,3782,FP,Same broadcast-MAC byte-pattern literal as line 3733; confirmed MSC09-C FP class.,hostap_full_audit_0.4.169,high
+MSC41-C,hostap,src/wps/wps_registrar.c,3782,FP,Same all-FF broadcast MAC constant as line 3733; not sensitive data.,hostap_full_audit_0.4.169,high
+DCL37-C,hostap,src/drivers/nl80211_copy.h,2,FP,__LINUX_NL80211_H header guard intentionally mirrors the real Linux kernel uapi header it is vendored from,hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,1369,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,1631,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,2985,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,3553,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+PRE02-C,hostap,src/drivers/nl80211_copy.h,3616,FP,"single-token negative-literal macro body; already atomic, wrapping in parens is a no-op (confirmed PRE02-C class)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,3650,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,3666,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,3695,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,3707,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,3904,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,3937,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,3958,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,3967,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,4054,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,4101,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,4124,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,4134,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,4157,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,4172,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,4214,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,4227,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,4260,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,4276,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,4310,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,4331,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,4348,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,4356,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,4465,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,4507,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,4532,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,4538,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,4615,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,4631,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,4663,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,4674,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,4728,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,4729,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,4730,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,4731,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,4732,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,4734,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,4735,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,4736,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,4737,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,4738,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,4739,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,4740,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,4742,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,4826,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,4842,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,4873,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,4884,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,4906,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,4912,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,5039,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,5074,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,5127,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,5139,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,5157,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,5166,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,5377,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,5405,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,5445,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,5446,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,5457,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,5458,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,5538,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,5552,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,5579,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,5593,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,5697,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,5710,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,5806,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,5823,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,5848,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,5854,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+DCL37-C,hostap,src/drivers/nl80211_copy.h,5878,FP,"__NL80211_WOWLAN_PKTPAT_INVALID is verbatim-copied kernel enum naming from vendored nl80211_copy.h, not hostap-authored",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,5978,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,6002,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,6097,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,6112,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,6142,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,6149,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,6175,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,6181,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,6234,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,6245,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,6268,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,6278,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,6316,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,6324,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,6353,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,6359,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,6375,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,6382,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,6514,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,6515,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,6516,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,6517,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,6519,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,6520,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,6522,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,6523,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,6524,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,6525,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,6526,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,6527,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,6528,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,6530,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,6531,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,6532,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,6533,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,6534,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,6535,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,6536,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,6771,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,6848,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,6980,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,6981,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,6982,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,6983,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,6984,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/nl80211_copy.h,6985,FP,"bit-flag shift literal in vendored kernel ABI enum; deliberate protocol bit-packing, not a representation assumption",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7019,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7024,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7175,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7181,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7220,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7227,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7242,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7248,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7326,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7346,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7365,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7373,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7390,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7396,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7437,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7447,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7485,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7497,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7526,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7534,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7566,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7580,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7610,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7615,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7647,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7654,FP,"sqc enum const-eval mis-resolves '__X_AFTER_LAST - 1' chains to 0, producing phantom duplicate vs the real 0-valued sentinel (extends b12 pattern, now 3x+ confirmed)",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7683,FP,"FP: INT09-C rule-logic bug — '__NL80211_PMSR_RESP_ATTR_INVALID' is the enum's leading sentinel (=0), not a duplicate; no other member is 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7694,FP,"FP: INT09-C rule-logic bug — 'NL80211_PMSR_RESP_ATTR_MAX' is computed as N-1 (kernel keep-last idiom), analyzer misreads it as literal 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7715,FP,"FP: INT09-C rule-logic bug — '__NL80211_PMSR_PEER_ATTR_INVALID' is the enum's leading sentinel (=0), not a duplicate; no other member is 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7724,FP,"FP: INT09-C rule-logic bug — 'NL80211_PMSR_PEER_ATTR_MAX' is computed as N-1 (kernel keep-last idiom), analyzer misreads it as literal 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7752,FP,"FP: INT09-C rule-logic bug — '__NL80211_PMSR_ATTR_INVALID' is the enum's leading sentinel (=0), not a duplicate; no other member is 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7762,FP,"FP: INT09-C rule-logic bug — 'NL80211_PMSR_ATTR_MAX' is computed as N-1 (kernel keep-last idiom), analyzer misreads it as literal 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7798,FP,"FP: INT09-C rule-logic bug — '__NL80211_PMSR_FTM_CAPA_ATTR_INVALID' is the enum's leading sentinel (=0), not a duplicate; no other member is 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7813,FP,"FP: INT09-C rule-logic bug — 'NL80211_PMSR_FTM_CAPA_ATTR_MAX' is computed as N-1 (kernel keep-last idiom), analyzer misreads it as literal 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7864,FP,"FP: INT09-C rule-logic bug — '__NL80211_PMSR_FTM_REQ_ATTR_INVALID' is the enum's leading sentinel (=0), not a duplicate; no other member is 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7882,FP,"FP: INT09-C rule-logic bug — 'NL80211_PMSR_FTM_REQ_ATTR_MAX' is computed as N-1 (kernel keep-last idiom), analyzer misreads it as literal 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7968,FP,"FP: INT09-C rule-logic bug — '__NL80211_PMSR_FTM_RESP_ATTR_INVALID' is the enum's leading sentinel (=0), not a duplicate; no other member is 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,7994,FP,"FP: INT09-C rule-logic bug — 'NL80211_PMSR_FTM_RESP_ATTR_MAX' is computed as N-1 (kernel keep-last idiom), analyzer misreads it as literal 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,8015,FP,"FP: INT09-C rule-logic bug — '__NL80211_HE_OBSS_PD_ATTR_INVALID' is the enum's leading sentinel (=0), not a duplicate; no other member is 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,8026,FP,"FP: INT09-C rule-logic bug — 'NL80211_HE_OBSS_PD_ATTR_MAX' is computed as N-1 (kernel keep-last idiom), analyzer misreads it as literal 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,8041,FP,"FP: INT09-C rule-logic bug — '__NL80211_HE_BSS_COLOR_ATTR_INVALID' is the enum's leading sentinel (=0), not a duplicate; no other member is 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,8049,FP,"FP: INT09-C rule-logic bug — 'NL80211_HE_BSS_COLOR_ATTR_MAX' is computed as N-1 (kernel keep-last idiom), analyzer misreads it as literal 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,8066,FP,"FP: INT09-C rule-logic bug — '__NL80211_IFTYPE_AKM_ATTR_INVALID' is the enum's leading sentinel (=0), not a duplicate; no other member is 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,8073,FP,"FP: INT09-C rule-logic bug — 'NL80211_IFTYPE_AKM_ATTR_MAX' is computed as N-1 (kernel keep-last idiom), analyzer misreads it as literal 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,8093,FP,"FP: INT09-C rule-logic bug — '__NL80211_FILS_DISCOVERY_ATTR_INVALID' is the enum's leading sentinel (=0), not a duplicate; no other member is 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,8101,FP,"FP: INT09-C rule-logic bug — 'NL80211_FILS_DISCOVERY_ATTR_MAX' is computed as N-1 (kernel keep-last idiom), analyzer misreads it as literal 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,8127,FP,"FP: INT09-C rule-logic bug — '__NL80211_UNSOL_BCAST_PROBE_RESP_ATTR_INVALID' is the enum's leading sentinel (=0), not a duplicate; no other member is 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,8134,FP,"FP: INT09-C rule-logic bug — 'NL80211_UNSOL_BCAST_PROBE_RESP_ATTR_MAX' is computed as N-1 (kernel keep-last idiom), analyzer misreads it as literal 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,8197,FP,"FP: INT09-C rule-logic bug — '__NL80211_SAR_ATTR_INVALID' is the enum's leading sentinel (=0), not a duplicate; no other member is 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,8203,FP,"FP: INT09-C rule-logic bug — 'NL80211_SAR_ATTR_MAX' is computed as N-1 (kernel keep-last idiom), analyzer misreads it as literal 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,8242,FP,"FP: INT09-C rule-logic bug — '__NL80211_SAR_ATTR_SPECS_INVALID' is the enum's leading sentinel (=0), not a duplicate; no other member is 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,8250,FP,"FP: INT09-C rule-logic bug — 'NL80211_SAR_ATTR_SPECS_MAX' is computed as N-1 (kernel keep-last idiom), analyzer misreads it as literal 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,8301,FP,"FP: INT09-C rule-logic bug — '__NL80211_MBSSID_CONFIG_ATTR_INVALID' is the enum's leading sentinel (=0), not a duplicate; no other member is 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,8312,FP,"FP: INT09-C rule-logic bug — 'NL80211_MBSSID_CONFIG_ATTR_MAX' is computed as N-1 (kernel keep-last idiom), analyzer misreads it as literal 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,8350,FP,"FP: INT09-C rule-logic bug — '__NL80211_WIPHY_RADIO_ATTR_INVALID' is the enum's leading sentinel (=0), not a duplicate; no other member is 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,8360,FP,"FP: INT09-C rule-logic bug — 'NL80211_WIPHY_RADIO_ATTR_MAX' is computed as N-1 (kernel keep-last idiom), analyzer misreads it as literal 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,8377,FP,"FP: INT09-C rule-logic bug — '__NL80211_WIPHY_RADIO_FREQ_ATTR_INVALID' is the enum's leading sentinel (=0), not a duplicate; no other member is 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,8383,FP,"FP: INT09-C rule-logic bug — 'NL80211_WIPHY_RADIO_FREQ_ATTR_MAX' is computed as N-1 (kernel keep-last idiom), analyzer misreads it as literal 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,8398,FP,"FP: INT09-C rule-logic bug — '__NL80211_S1G_SHORT_BEACON_ATTR_INVALID' is the enum's leading sentinel (=0), not a duplicate; no other member is 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,8405,FP,"FP: INT09-C rule-logic bug — 'NL80211_S1G_SHORT_BEACON_ATTR_MAX' is computed as N-1 (kernel keep-last idiom), analyzer misreads it as literal 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,8446,FP,"FP: INT09-C rule-logic bug — '__NL80211_NAN_CAPABILITIES_INVALID' is the enum's leading sentinel (=0), not a duplicate; no other member is 0.",hostap_full_audit_0.4.169,high
+INT09-C,hostap,src/drivers/nl80211_copy.h,8456,FP,"FP: INT09-C rule-logic bug — 'NL80211_NAN_CAPABILITIES_MAX' is computed as N-1 (kernel keep-last idiom), analyzer misreads it as literal 0.",hostap_full_audit_0.4.169,high
+INT07-C,hostap,src/utils/common.c,19,FP,c is bounds-checked ASCII digit/letter; subtraction safe regardless of char signedness (stylistic pedantry),hostap_full_audit_0.4.169,med
+INT07-C,hostap,src/utils/common.c,21,FP,c is bounds-checked ASCII digit/letter; subtraction safe regardless of char signedness (stylistic pedantry),hostap_full_audit_0.4.169,med
+INT07-C,hostap,src/utils/common.c,21,FP,c is bounds-checked ASCII digit/letter; subtraction safe regardless of char signedness (stylistic pedantry),hostap_full_audit_0.4.169,med
+INT07-C,hostap,src/utils/common.c,23,FP,c is bounds-checked ASCII digit/letter; subtraction safe regardless of char signedness (stylistic pedantry),hostap_full_audit_0.4.169,med
+INT07-C,hostap,src/utils/common.c,23,FP,c is bounds-checked ASCII digit/letter; subtraction safe regardless of char signedness (stylistic pedantry),hostap_full_audit_0.4.169,med
+INT13-C,hostap,src/utils/common.c,37,TP,"a,b genuinely declared int (signed); literal rule violation though values always 0-15, harmless in practice",hostap_full_audit_0.4.169,low
+API00-C,hostap,src/utils/common.c,66,FP,"internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input",hostap_full_audit_0.4.169,med
+API00-C,hostap,src/utils/common.c,66,FP,"internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input",hostap_full_audit_0.4.169,med
+API00-C,hostap,src/utils/common.c,80,FP,"internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/utils/common.c,114,FP,addr IS modified in hwaddr_compact_aton via '*addr++ = ...' - rule missed the mutation (wrong claim),hostap_full_audit_0.4.169,high
+INT13-C,hostap,src/utils/common.c,127,TP,"same signed-int bitwise-or idiom as line 37, harmless value range but literal violation",hostap_full_audit_0.4.169,low
+DCL13-C,hostap,src/utils/common.c,139,FP,addr IS modified in hwaddr_aton2 via '*addr++ = ...' - rule missed the mutation (wrong claim),hostap_full_audit_0.4.169,high
+INT13-C,hostap,src/utils/common.c,156,TP,"same signed-int bitwise-or idiom, literal violation, harmless value range",hostap_full_audit_0.4.169,low
+API00-C,hostap,src/utils/common.c,171,FP,"internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input",hostap_full_audit_0.4.169,med
+API00-C,hostap,src/utils/common.c,171,FP,"internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input",hostap_full_audit_0.4.169,med
+API05-C,hostap,src/utils/common.c,171,FP,idiomatic pointer-immediately-paired-with-its-own-size (or NUL-terminated string) parameter shape; not a real conformant-array-syntax gap,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/utils/common.c,171,FP,"buf is not modified directly, but *opos aliases buf and is written via 'u8 *opos = buf;' - missed-mutation-via-alias",hostap_full_audit_0.4.169,med
+EXP40-C,hostap,src/utils/common.c,176,FP,opos and buf are both non-const u8*; no const qualifier is being removed - phantom finding,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/utils/common.c,189,FP,"internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input",hostap_full_audit_0.4.169,med
+API05-C,hostap,src/utils/common.c,189,FP,idiomatic pointer-immediately-paired-with-its-own-size (or NUL-terminated string) parameter shape; not a real conformant-array-syntax gap,hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/utils/common.c,203,FP,MAC2STR(addr)/MAC2STR(mask) expand to pure array-index reads with no side effects to unsequence,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/utils/common.c,222,FP,"internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input",hostap_full_audit_0.4.169,med
+STR00-C,hostap,src/utils/common.c,226,FP,pos is declared 'int pos = len - 1;' not char - factually wrong type claim,hostap_full_audit_0.4.169,high
+STR00-C,hostap,src/utils/common.c,227,FP,pos is declared 'int pos = len - 1;' not char - factually wrong type claim,hostap_full_audit_0.4.169,high
+INT32-C,hostap,src/utils/common.c,229,FP,"pos starts at len-1 for a small byte-array length (counter/key sizes), nowhere near INT_MIN; realistic-bound overflow FP",hostap_full_audit_0.4.169,med
+API00-C,hostap,src/utils/common.c,234,FP,"internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input",hostap_full_audit_0.4.169,med
+API00-C,hostap,src/utils/common.c,234,FP,"internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input",hostap_full_audit_0.4.169,med
+API00-C,hostap,src/utils/common.c,234,FP,"internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input",hostap_full_audit_0.4.169,med
+EXP34-C,hostap,src/utils/common.c,239,FP,"buf is always a caller-owned fixed array from the two internal callers (eap_pwd_common.c, sae.c), never externally nullable",hostap_full_audit_0.4.169,med
+INT14-C,hostap,src/utils/common.c,239,FP,ordinary mixed bitwise/arithmetic use on i and bits in one expression - stylistic pedantry,hostap_full_audit_0.4.169,high
+INT14-C,hostap,src/utils/common.c,239,FP,ordinary mixed bitwise/arithmetic use on i and bits in one expression - stylistic pedantry,hostap_full_audit_0.4.169,high
+INT34-C,hostap,src/utils/common.c,239,FP,"bits is always in [1,8] at both call sites (eap_pwd_common.c:206, sae.c:171 pass '8 - x%8'), guaranteeing a safe 0-7 shift",hostap_full_audit_0.4.169,med
+INT34-C,hostap,src/utils/common.c,239,FP,same cross-function bound guarantee as the other INT34-C finding on this line,hostap_full_audit_0.4.169,med
+API00-C,hostap,src/utils/common.c,244,FP,"internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input",hostap_full_audit_0.4.169,med
+DCL22-C,hostap,src/utils/common.c,248,FP,tmp is an ordinary local be32 with no setjmp/longjmp or signal-handler context anywhere in the function,hostap_full_audit_0.4.169,high
+INT14-C,hostap,src/utils/common.c,255,FP,usec used in arithmetic mult/sub and bitwise shift in the same NTP-approximation expression - stylistic pedantry,hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/utils/common.c,255,FP,"usec >> 9 is a deliberate, well-known NTP-timestamp fixed-point approximation trick on a 32-bit value",hostap_full_audit_0.4.169,high
+DCL15-C,hostap,src/utils/common.c,272,FP,"wpa_scnprintf is declared in common.h and called from other files (wmm_ac.c, utils_module_tests.c) - needs external linkage",hostap_full_audit_0.4.169,high
+API05-C,hostap,src/utils/common.c,272,FP,idiomatic pointer-immediately-paired-with-its-own-size (or NUL-terminated string) parameter shape; not a real conformant-array-syntax gap,hostap_full_audit_0.4.169,high
+API05-C,hostap,src/utils/common.c,272,FP,idiomatic pointer-immediately-paired-with-its-own-size (or NUL-terminated string) parameter shape; not a real conformant-array-syntax gap,hostap_full_audit_0.4.169,high
+ERR33-C,hostap,src/utils/common.c,281,FP,"ret is checked immediately after via 'if (ret < 0) return 0;' - literally checked, not unchecked",hostap_full_audit_0.4.169,high
+API05-C,hostap,src/utils/common.c,293,FP,idiomatic pointer-immediately-paired-with-its-own-size (or NUL-terminated string) parameter shape; not a real conformant-array-syntax gap,hostap_full_audit_0.4.169,high
+EXP40-C,hostap,src/utils/common.c,297,FP,pos and buf are both non-const char*; no const qualifier is being removed - phantom finding,hostap_full_audit_0.4.169,high
+ARR00-C,hostap,src/utils/common.c,307,FP,end = buf+buf_size with buf_size>=1 already guaranteed by the earlier 'if (buf_size==0) return 0;' guard,hostap_full_audit_0.4.169,med
+ARR00-C,hostap,src/utils/common.c,312,TP,"if len==0 the for-loop never executes so pos still equals buf, and pos[-1] writes one byte before the buffer - a real (currently unreached by any caller) off-by-one underflow; contrast with the safe end[-1] variant in _wpa_snprintf_hex",hostap_full_audit_0.4.169,med
+API05-C,hostap,src/utils/common.c,317,FP,idiomatic pointer-immediately-paired-with-its-own-size (or NUL-terminated string) parameter shape; not a real conformant-array-syntax gap,hostap_full_audit_0.4.169,high
+EXP40-C,hostap,src/utils/common.c,321,FP,pos and buf are both non-const char*; no const qualifier is being removed - phantom finding,hostap_full_audit_0.4.169,high
+ARR00-C,hostap,src/utils/common.c,329,FP,same buf_size>=1 guarantee as line 307; end[-1] always in-bounds,hostap_full_audit_0.4.169,med
+ARR00-C,hostap,src/utils/common.c,334,FP,"this variant correctly uses end[-1] (not pos[-1]) unconditionally, always in-bounds since buf_size>=1",hostap_full_audit_0.4.169,med
+API00-C,hostap,src/utils/common.c,346,FP,"internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input",hostap_full_audit_0.4.169,med
+API05-C,hostap,src/utils/common.c,346,FP,idiomatic pointer-immediately-paired-with-its-own-size (or NUL-terminated string) parameter shape; not a real conformant-array-syntax gap,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/utils/common.c,360,FP,"internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input",hostap_full_audit_0.4.169,med
+API05-C,hostap,src/utils/common.c,360,FP,idiomatic pointer-immediately-paired-with-its-own-size (or NUL-terminated string) parameter shape; not a real conformant-array-syntax gap,hostap_full_audit_0.4.169,high
+CON07-C,hostap,src/utils/common.c,382,FP,getopt() is invoked once during single-threaded CLI startup parsing; no pthread usage exists in this codebase's CLI tools,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/utils/common.c,382,FP,"argv matches the standard POSIX getopt(int,char*const[],const char*) prototype; fixed-signature reimplementation of the C library function",hostap_full_audit_0.4.169,high
+CON03-C,hostap,src/utils/common.c,384,FP,optchr is only touched by the single-threaded CLI argument-parsing call path; no concurrent access exists,hostap_full_audit_0.4.169,high
+MSC13-C,hostap,src/utils/common.c,409,FP,optchr is 'static int' - the assignment is read on the *next* call to getopt() via 'if (optchr == 1)'; static cross-call-significance FP,hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,420,FP,"&argv[optind++][optchr+1] takes an address (yields char*), assigned to char *optarg - no char-to-int widening occurs",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,420,FP,"&argv[optind++][optchr+1] takes an address (yields char*), assigned to char *optarg - no char-to-int widening occurs",hostap_full_audit_0.4.169,high
+MSC13-C,hostap,src/utils/common.c,431,FP,same static cross-call-significance shape as line 409,hostap_full_audit_0.4.169,high
+ARR30-C,hostap,src/utils/common.c,454,FP,standard NUL-terminated wide-to-narrow string scan (terminates on wide NUL); also dead on this Linux build (#ifdef CONFIG_NATIVE_WINDOWS + #ifdef UNICODE),hostap_full_audit_0.4.169,med
+STR31-C,hostap,src/utils/common.c,454,FP,same provably-terminating NUL-based scan; also Windows/UNICODE-only dead code here,hostap_full_audit_0.4.169,med
+STR34-C,hostap,src/utils/common.c,455,FP,"*dst++ = (char) *str++ is an explicitly-cast plain char-to-char assignment, no unwanted widening",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,456,FP,"*dst = '\0' is a plain char literal assignment, not a widening conversion",hostap_full_audit_0.4.169,high
+MSC37-C,hostap,src/utils/common.c,461,FP,wpa_unicode2ascii_inplace is declared 'void' - there is no return value to be missing; factually wrong claim,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/utils/common.c,477,FP,"internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input",hostap_full_audit_0.4.169,med
+API00-C,hostap,src/utils/common.c,477,FP,"internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input",hostap_full_audit_0.4.169,med
+API05-C,hostap,src/utils/common.c,477,FP,idiomatic pointer-immediately-paired-with-its-own-size (or NUL-terminated string) parameter shape; not a real conformant-array-syntax gap,hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,488,FP,"*txt++ = '<literal char>' is a plain char-to-char assignment of an escape sequence, no widening involved",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,489,FP,"*txt++ = '<literal char>' is a plain char-to-char assignment of an escape sequence, no widening involved",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,492,FP,"*txt++ = '<literal char>' is a plain char-to-char assignment of an escape sequence, no widening involved",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,493,FP,"*txt++ = '<literal char>' is a plain char-to-char assignment of an escape sequence, no widening involved",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,496,FP,"*txt++ = '<literal char>' is a plain char-to-char assignment of an escape sequence, no widening involved",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,497,FP,"*txt++ = '<literal char>' is a plain char-to-char assignment of an escape sequence, no widening involved",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,500,FP,"*txt++ = '<literal char>' is a plain char-to-char assignment of an escape sequence, no widening involved",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,501,FP,"*txt++ = '<literal char>' is a plain char-to-char assignment of an escape sequence, no widening involved",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,504,FP,"*txt++ = '<literal char>' is a plain char-to-char assignment of an escape sequence, no widening involved",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,505,FP,"*txt++ = '<literal char>' is a plain char-to-char assignment of an escape sequence, no widening involved",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,508,FP,"*txt++ = '<literal char>' is a plain char-to-char assignment of an escape sequence, no widening involved",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,509,FP,"*txt++ = '<literal char>' is a plain char-to-char assignment of an escape sequence, no widening involved",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,513,FP,"*txt++ = '<literal char>' is a plain char-to-char assignment of an escape sequence, no widening involved",hostap_full_audit_0.4.169,high
+ERR02-C,hostap,src/utils/common.c,515,TP,"txt += os_snprintf(...) return value is used directly without checking os_snprintf_error(), unlike the rest of this file's convention; no reachable overflow given the loop's 4-byte headroom guard, but the check is genuinely absent",hostap_full_audit_0.4.169,low
+EXP34-C,hostap,src/utils/common.c,522,FP,"txt is always a caller-owned fixed/static buffer (e.g. wpa_ssid_txt's static ssid_txt[]), never externally nullable",hostap_full_audit_0.4.169,med
+STR34-C,hostap,src/utils/common.c,522,FP,"*txt = '\0' is a plain char literal assignment, not a widening conversion",hostap_full_audit_0.4.169,high
+API05-C,hostap,src/utils/common.c,526,FP,idiomatic pointer-immediately-paired-with-its-own-size (or NUL-terminated string) parameter shape; not a real conformant-array-syntax gap,hostap_full_audit_0.4.169,high
+ARR30-C,hostap,src/utils/common.c,532,FP,loop has an explicit 'if (len + 1 >= maxlen) break;' bound check each iteration; rule missed the internal (not while-condition) bound,hostap_full_audit_0.4.169,med
+CON43-C,hostap,src/utils/common.c,535,FP,single-threaded parsing of a local buffer; no shared/volatile memory or concurrent modification exists,hostap_full_audit_0.4.169,high
+CON43-C,hostap,src/utils/common.c,538,FP,same single-threaded reasoning as line 535,hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,597,FP,"buf[len++] = *pos++ assigns char to u8 (same width, not wider) - implicit truncation preserves the bit pattern, not a widening/sign-extension hazard",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,597,FP,"buf[len++] = *pos++ assigns char to u8 (same width, not wider) - implicit truncation preserves the bit pattern, not a widening/sign-extension hazard",hostap_full_audit_0.4.169,high
+ENV01-C,hostap,src/utils/common.c,624,FP,static char ssid_txt[SSID_MAX_LEN*4+1] is a fixed compile-time-sized buffer; no getenv()/environment-variable code anywhere in this function,hostap_full_audit_0.4.169,high
+MEM05-C,hostap,src/utils/common.c,624,FP,"SSID_MAX_LEN*4+1 is a compile-time constant expression, not a VLA",hostap_full_audit_0.4.169,high
+MEM10-C,hostap,src/utils/common.c,626,FP,"ordinary 'if (ptr == NULL)' guard - the check is present, this is stylistic preference for a wrapper function, not a real validation gap",hostap_full_audit_0.4.169,high
+ARR00-C,hostap,src/utils/common.c,628,FP,"ssid_txt has *static* storage duration ('static char ssid_txt[...]') - persists after return, not a dangling pointer",hostap_full_audit_0.4.169,high
+ARR00-C,hostap,src/utils/common.c,632,FP,same static-storage-duration buffer as line 628,hostap_full_audit_0.4.169,high
+DCL37-C,hostap,src/utils/common.c,636,TP,"'__hide_aliasing_typecast' begins with a double underscore, which C 7.1.3 reserves for any use at any scope - genuine literal violation",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/utils/common.c,636,FP,foo is a generic aliasing type-pun passthrough used for both read and write aliasing via aliasing_hide_typecast(); non-const is intentional,hostap_full_audit_0.4.169,med
+API05-C,hostap,src/utils/common.c,642,FP,idiomatic pointer-immediately-paired-with-its-own-size (or NUL-terminated string) parameter shape; not a real conformant-array-syntax gap,hostap_full_audit_0.4.169,high
+ARR00-C,hostap,src/utils/common.c,655,FP,"str points to heap memory from dup_binstr()'s os_malloc(), not a local array; the pointer *variable* is local but its storage is not",hostap_full_audit_0.4.169,high
+ARR00-C,hostap,src/utils/common.c,678,FP,"str points to heap memory from os_malloc(); local pointer variable, not local array storage",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,681,FP,os_strlen(value) passes a pointer argument; no char-to-int conversion of a scalar value is happening - rule misapplied to a pointer expression,hostap_full_audit_0.4.169,high
+INT14-C,hostap,src/utils/common.c,682,FP,hlen & 1 parity check followed by unrelated hlen/2 arithmetic two lines later - stylistic pedantry,hostap_full_audit_0.4.169,high
+MEM12-C,hostap,src/utils/common.c,687,FP,str is NULL at this return (os_malloc just failed) - nothing was ever allocated to leak,hostap_full_audit_0.4.169,high
+MEM12-C,hostap,src/utils/common.c,690,FP,str was os_free()'d on the immediately preceding line before this return - not leaked,hostap_full_audit_0.4.169,high
+ARR00-C,hostap,src/utils/common.c,692,FP,"str[tlen]='\0' is only reached when hexstr2bin() succeeded, i.e. the sibling branch that frees str (and returns) did not execute - mutually exclusive branches",hostap_full_audit_0.4.169,high
+MEM12-C,hostap,src/utils/common.c,694,FP,"return (char *) str transfers ownership of the allocation to the caller - it is the function's entire purpose, not a leak",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/utils/common.c,723,FP,"internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input",hostap_full_audit_0.4.169,med
+ARR30-C,hostap,src/utils/common.c,725,FP,"standard NUL-terminated string scan ('while (*str)'), terminates on the string's own NUL byte",hostap_full_audit_0.4.169,med
+EXP34-C,hostap,src/utils/common.c,725,FP,str is always a caller-owned non-NULL string at has_newline's call sites,hostap_full_audit_0.4.169,med
+API00-C,hostap,src/utils/common.c,734,FP,"internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input",hostap_full_audit_0.4.169,med
+API00-C,hostap,src/utils/common.c,734,FP,"internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input",hostap_full_audit_0.4.169,med
+API00-C,hostap,src/utils/common.c,766,FP,"internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input",hostap_full_audit_0.4.169,med
+API05-C,hostap,src/utils/common.c,766,FP,idiomatic pointer-immediately-paired-with-its-own-size (or NUL-terminated string) parameter shape; not a real conformant-array-syntax gap,hostap_full_audit_0.4.169,high
+MEM10-C,hostap,src/utils/common.c,770,FP,"ordinary 'if (ptr == NULL)' guard - the check is present, this is stylistic preference for a wrapper function, not a real validation gap",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/utils/common.c,778,FP,res is a local pointer *variable* (automatic storage) but points to heap memory from os_malloc(); pointer-variable-vs-local-storage confusion,hostap_full_audit_0.4.169,high
+ARR00-C,hostap,src/utils/common.c,778,FP,"res points to heap memory, not a local array; same misapplication as the DCL30-C finding on this line",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/utils/common.c,782,FP,"internal utility helper; called only with fixed local buffers/already-valid pointers across the codebase, never raw externally-nullable input",hostap_full_audit_0.4.169,med
+ARR00-C,hostap,src/utils/common.c,805,FP,"the only os_free(freq) calls are in sibling branches that return immediately (count==UINT_MAX check, realloc-failure check); freq is never freed on the path reaching this line, and count is guarded != UINT_MAX just above",hostap_full_audit_0.4.169,high
+ARR00-C,hostap,src/utils/common.c,805,FP,"the only os_free(freq) calls are in sibling branches that return immediately (count==UINT_MAX check, realloc-failure check); freq is never freed on the path reaching this line, and count is guarded != UINT_MAX just above",hostap_full_audit_0.4.169,high
+ERR07-C,hostap,src/utils/common.c,805,TP,atoi(pos) result is stored directly with no range/format validation anywhere in this function - malformed config text silently becomes freq 0 instead of being rejected,hostap_full_audit_0.4.169,low
+ERR34-C,hostap,src/utils/common.c,805,TP,same unchecked atoi() conversion as the ERR07-C finding on this line,hostap_full_audit_0.4.169,low
+ARR00-C,hostap,src/utils/common.c,810,FP,"the only os_free(freq) calls are in sibling branches that return immediately (count==UINT_MAX check, realloc-failure check); freq is never freed on the path reaching this line, and count is guarded != UINT_MAX just above",hostap_full_audit_0.4.169,high
+ARR00-C,hostap,src/utils/common.c,810,FP,"the only os_free(freq) calls are in sibling branches that return immediately (count==UINT_MAX check, realloc-failure check); freq is never freed on the path reaching this line, and count is guarded != UINT_MAX just above",hostap_full_audit_0.4.169,high
+ERR07-C,hostap,src/utils/common.c,810,TP,atoi(pos2) result (range max) is likewise stored with no validation,hostap_full_audit_0.4.169,low
+ERR34-C,hostap,src/utils/common.c,810,TP,same unchecked atoi() conversion as the ERR07-C finding on this line,hostap_full_audit_0.4.169,low
+ARR00-C,hostap,src/utils/common.c,812,FP,"the only os_free(freq) calls are in sibling branches that return immediately (count==UINT_MAX check, realloc-failure check); freq is never freed on the path reaching this line, and count is guarded != UINT_MAX just above",hostap_full_audit_0.4.169,high
+ARR00-C,hostap,src/utils/common.c,812,FP,"the only os_free(freq) calls are in sibling branches that return immediately (count==UINT_MAX check, realloc-failure check); freq is never freed on the path reaching this line, and count is guarded != UINT_MAX just above",hostap_full_audit_0.4.169,high
+ARR00-C,hostap,src/utils/common.c,812,FP,"same mutually-exclusive-branch reasoning as the other ARR00-C finding on this line, applied to the RHS read",hostap_full_audit_0.4.169,high
+ARR00-C,hostap,src/utils/common.c,812,FP,"same mutually-exclusive-branch reasoning as the other ARR00-C finding on this line, applied to the RHS read",hostap_full_audit_0.4.169,high
+MEM10-C,hostap,src/utils/common.c,832,FP,"ordinary 'if (ptr == NULL)' guard - the check is present, this is stylistic preference for a wrapper function, not a real validation gap",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/utils/common.c,878,FP,"buf is a local pointer variable pointing to heap memory from os_malloc(), not local automatic storage",hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/utils/common.c,909,FP,the os_free(*res) calls above are in sibling branches that return immediately; *res was never freed on the path reaching this realloc call,hostap_full_audit_0.4.169,high
+EXP34-C,hostap,src/utils/common.c,916,FP,"all real call sites (scan.c, rrm.c) guard the second argument with a non-NULL check before calling int_array_concat; note a latent inconsistency vs int_array_len()'s own NULL-safety, worth a defensive fix but not exercised by any current caller",hostap_full_audit_0.4.169,med
+DCL30-C,hostap,src/utils/common.c,917,FP,n is a pointer *variable* holding a heap address from os_realloc_array(); writing that value through *res is the normal way to propagate a realloc'd buffer to the caller,hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/utils/common.c,917,FP,same mutually-exclusive-branch reasoning; *res is not the pointer freed by the sibling early-return branch,hostap_full_audit_0.4.169,high
+DCL37-C,hostap,src/utils/common.c,923,FP,"_a/_b are block-scope locals inside static function freq_cmp, not file-scope identifiers; the single-underscore restriction only applies at file scope",hostap_full_audit_0.4.169,high
+EXP05-C,hostap,src/utils/common.c,923,FP,(int *) a/b casts a const void* purely to read its value via dereference; no write occurs through the cast pointer,hostap_full_audit_0.4.169,high
+DCL37-C,hostap,src/utils/common.c,924,FP,"_a/_b are block-scope locals inside static function freq_cmp, not file-scope identifiers; the single-underscore restriction only applies at file scope",hostap_full_audit_0.4.169,high
+EXP05-C,hostap,src/utils/common.c,924,FP,(int *) a/b casts a const void* purely to read its value via dereference; no write occurs through the cast pointer,hostap_full_audit_0.4.169,high
+MEM10-C,hostap,src/utils/common.c,938,FP,"ordinary 'if (ptr == NULL)' guard - the check is present, this is stylistic preference for a wrapper function, not a real validation gap",hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/utils/common.c,979,FP,the os_free(*res) calls above are in sibling branches that return immediately; *res was never freed on the path reaching this realloc call,hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/utils/common.c,989,FP,n is a pointer *variable* holding a heap address from os_realloc_array(); writing that value through *res is the normal way to propagate a realloc'd buffer to the caller,hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/utils/common.c,989,FP,same mutually-exclusive-branch reasoning; *res is not the pointer freed by the sibling early-return branch,hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,1039,FP,os_strlen(str) passes a pointer argument; no char-to-int conversion of a scalar value occurs - rule misapplied to a pointer expression,hostap_full_audit_0.4.169,high
+API05-C,hostap,src/utils/common.c,1046,FP,idiomatic pointer-immediately-paired-with-its-own-size (or NUL-terminated string) parameter shape; not a real conformant-array-syntax gap,hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,1099,FP,token = *last assigns a pointer value (const char*) to another pointer variable; no char scalar is being widened,hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,1099,FP,token = *last assigns a pointer value (const char*) to another pointer variable; no char scalar is being widened,hostap_full_audit_0.4.169,high
+EXP34-C,hostap,src/utils/common.c,1101,FP,token is either str (already NULL-checked) or a prior valid *last set by this same function's own contract - never NULL by construction,hostap_full_audit_0.4.169,high
+ARR37-C,hostap,src/utils/common.c,1102,FP,"token points into a string buffer being traversed char-by-char; token++ is standard, safe pointer arithmetic on a string-scan pointer",hostap_full_audit_0.4.169,high
+ARR37-C,hostap,src/utils/common.c,1107,FP,token + 1 is the same standard string-traversal pointer arithmetic,hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/utils/common.c,1112,FP,"cstr_token's 'end' aliases the caller's str buffer, not local automatic storage",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,1112,FP,"*last is a const char* (pointer), not a char value; no widening conversion",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/utils/common.c,1113,FP,"'token' aliases caller's str buffer, not local automatic storage",hostap_full_audit_0.4.169,high
+EXP40-C,hostap,src/utils/common.c,1127,FP,explicit (char *) cast already present in the cited expression,hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,1130,FP,"plain char literal '\0' assignment, no widening",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/utils/common.c,1132,FP,"str_token's token forwards cstr_token's caller-aliased pointer, not automatic storage",hostap_full_audit_0.4.169,high
+API05-C,hostap,src/utils/common.c,1136,FP,"idiomatic ptr+size_t param pair, confirmed categorical API05-C FP class",hostap_full_audit_0.4.169,high
+API05-C,hostap,src/utils/common.c,1137,FP,idiomatic ptr+size_t param pair,hostap_full_audit_0.4.169,high
+CON43-C,hostap,src/utils/common.c,1158,FP,"switch(*inp) on a non-shared local buffer, zero threads in codebase; matches known CON43-C no-thread FP",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,1161,FP,plain char literal '\0' assignment,hostap_full_audit_0.4.169,high
+MEM33-C,hostap,src/utils/common.c,1172,FP,no struct/flexible array involved; plain char-pointer copy loop *outp++=*inp++,hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,1172,FP,"char-to-char assignment (*outp++), no widening",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,1172,FP,both operands are char; no widening conversion occurs,hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,1172,FP,"char-to-char assignment (*inp++), no widening",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,1179,FP,plain char literal '\0' assignment,hostap_full_audit_0.4.169,high
+API05-C,hostap,src/utils/common.c,1185,FP,idiomatic ptr+size_t param pair,hostap_full_audit_0.4.169,high
+API05-C,hostap,src/utils/common.c,1186,FP,idiomatic ptr+size_t param pair,hostap_full_audit_0.4.169,high
+CON43-C,hostap,src/utils/common.c,1203,FP,"switch(*inp) on non-shared local buffer, no threads",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,1208,FP,plain char literal '\\' assignment,hostap_full_audit_0.4.169,high
+MEM33-C,hostap,src/utils/common.c,1212,FP,no struct/flexible array involved; plain char-pointer copy loop,hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,1212,FP,"char-to-char assignment, no widening",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,1212,FP,"both operands char, no widening conversion",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,1212,FP,"char-to-char assignment, no widening",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/utils/common.c,1219,FP,plain char literal '\0' assignment,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/utils/common.c,1241,FP,internal-only API; all 3 call sites already NULL-check or offset a matched non-NULL string,hostap_full_audit_0.4.169,med
+STR34-C,hostap,src/utils/common.c,1255,FP,*end = '\0' plain char literal assignment,hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/utils/common.c,1327,FP,"get_param's val is os_malloc'd heap memory, not automatic storage",hostap_full_audit_0.4.169,high
+ARR00-C,hostap,src/utils/common.c,1327,FP,"val is heap-allocated, not a local array with automatic storage",hostap_full_audit_0.4.169,high
+CON43-C,hostap,src/utils/common.c,1339,FP,"const volatile fn pointer set once at init, never mutated; no concurrent-write hazard",hostap_full_audit_0.4.169,high
+CON03-C,hostap,src/utils/common.c,1339,FP,variable literally is declared volatile; finding's premise is factually wrong,hostap_full_audit_0.4.169,high
+WIN04-C,hostap,src/utils/common.c,1339,FP,"const, non-attacker-controlled fn ptr defeating dead-store elim; EncodePointer defense inapplicable",hostap_full_audit_0.4.169,med
+API05-C,hostap,src/utils/common.c,1342,FP,idiomatic void*+size_t param pair,hostap_full_audit_0.4.169,high
+DCL31-C,hostap,src/utils/common.c,1344,FP,"memset_func is a declared function-pointer variable being called, not an implicitly-declared bare function",hostap_full_audit_0.4.169,high

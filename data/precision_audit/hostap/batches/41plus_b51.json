@@ -1,0 +1,76 @@
+{
+ "wpa_supplicant/wpa_cli.c#part4of4": [
+  {
+   "column": 11,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5285,
+   "message": "Function 'fprintf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 20,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5285,
+   "message": "Argument to 'fprintf' contains preprocessor directive: '\"Failed to connect to non-global \"\n\t\t\t\t\"ctrl_ifname: %s  error: %s\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5288,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5288,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 11,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5296,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5296,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Warning: Failed to attach to \"\n\t\t\t\t       \"wpa_supplicant.\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5309,
+   "message": "Potentially unsafe array access with variable index 'optind': Buffer 'argv' with size 10 (allocated at line 4810)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5320,
+   "message": "Program arguments (argv) used without validating argc or checking for null pointers",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Validate argc and argv[0] before use: const char *prog = (argc && argv[0]) ? argv[0] : \"\""
+  }
+ ]
+}

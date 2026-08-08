@@ -1,0 +1,933 @@
+{
+ "labels": [
+  {
+   "rule": "PRE08-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 18,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "dbus_new*.h 8-char header family, low-value TP per established convention"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 18,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "dbus_new*.h 8-char header family, low-value TP per established convention"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 19,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "dbus_new*.h 8-char header family, low-value TP per established convention"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 195,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "trailing unconditional code (:204-206) after chain already handles unmatched key"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 221,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_dbus_handler_wps_start is WPADBusMethodHandler-dispatched, message/wpa_s never externally-nullable"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 221,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_dbus_handler_wps_start is WPADBusMethodHandler-dispatched, message/wpa_s never externally-nullable"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 232,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus <dbus/dbus.h> transitively-included, unresolved-header FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 240,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus <dbus/dbus.h> transitively-included, unresolved-header FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 247,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus <dbus/dbus.h> transitively-included, unresolved-header FP class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 258,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ret read at :299 if(ret<0); sqc's CFG misreads the #ifdef-spliced if/else-if as ret being overwritten"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 262,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "chain has a final else (:295) after preprocessor splice; CFG/#ifdef blindness misfire"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 263,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ret read at :299 if(ret<0); same #ifdef-splice CFG blindness as :258"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 309,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus unresolved-header FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 356,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "WPADBusPropertyAccessor iter param, internal dispatcher always supplies live pointer"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 356,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "WPADBusPropertyAccessor error param, internal dispatcher always supplies live pointer"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 356,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_dbus_getter_* declared via DECLARE_ACCESSOR, extern linkage required for property-desc table"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 358,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data pinned by WPADBusPropertyAccessor typedef, cannot be const-qualified"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 378,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_dbus_setter_* accessor, extern linkage required"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 395,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_dbus_mark_property_changed's property param is already const char*, rule-logic bug"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 414,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only accessor dispatch, never externally nullable"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 414,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only accessor dispatch, never externally nullable"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 414,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "accessor extern linkage required"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 416,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data pinned by accessor typedef"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 436,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "accessor extern linkage required"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 470,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only accessor dispatch"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 470,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only accessor dispatch"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 470,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "accessor extern linkage required"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 472,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data pinned by accessor typedef"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 490,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "accessor extern linkage required"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 526,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only accessor dispatch"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 526,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only accessor dispatch"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 526,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "accessor extern linkage required"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 528,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data pinned by accessor typedef"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 546,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "accessor extern linkage required"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 582,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only accessor dispatch"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 582,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only accessor dispatch"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 582,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "accessor extern linkage required"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 584,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data pinned by accessor typedef"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 602,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "accessor extern linkage required"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 637,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only accessor dispatch"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 637,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only accessor dispatch"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 637,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "accessor extern linkage required"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 637,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "wps_device_model_number/_name share 34+ significant chars; graded FP per established 31-char judgment-call convention"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 639,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data pinned by accessor typedef"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 657,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "accessor extern linkage required"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 657,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "setter pair, same 31-char judgment-call convention"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 693,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only accessor dispatch"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 693,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only accessor dispatch"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 693,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "accessor extern linkage required"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 695,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data pinned by accessor typedef"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 714,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "accessor extern linkage required"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 749,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "accessor extern linkage required"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 751,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data pinned by accessor typedef"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 759,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus unresolved-header FP class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 759,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error's format param is const char*, literal is fine; rule-logic bug"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 777,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "accessor extern linkage required"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_wps.c",
+   "line": 779,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "error param pinned by WPADBusPropertyAccessor typedef"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 13,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ieee802_11_defs.h/ieee802_11.h share 8-char prefix, low-value TP per convention"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 48,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "designated-initializer-sized array, indexed only by bounded enum, never sizeof/ARRAY_SIZE-consumed"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 59,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "designated-initializer-sized array, indexed only by bounded enum"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 75,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*mpm_ie) dereferences the struct pointer param, not a decayed-array sizeof"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 114,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain static helper, hapd only read (max_plinks/num_plinks), not vtable-bound"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 124,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain static helper, elems only read"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 133,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(sta->supported_rates) is a fixed struct-member array, correct idiom"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 142,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(sta->supported_rates) correct idiom"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 151,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain static helper, wpa_s only read"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 152,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain static helper, elems only read"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 171,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain static helper, wpa_s only read"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 194,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "llid written via os_get_random() output pointer on every loop iteration, or explicitly set 0 on failure"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 217,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "supp_rates[2+2+32] is a fixed compile-time-constant-sized array, not runtime-sized/VLA"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 249,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf_len is a plain size_t byte-count accumulator, not a pointer; no scaling/pointer arithmetic involved"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 254,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf_len plain size_t accumulator, not a pointer"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 256,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf_len plain size_t accumulator, not a pointer"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 256,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pure integer sizeof-sum expression, no pointer involved"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 271,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf_len plain size_t accumulator, not a pointer"
+  },
+  {
+   "rule": "EXP00-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 314,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "expression is already parenthesized exactly as suggested"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 368,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ht_capa_oper[2+26+2+22] fixed compile-time-constant array, not runtime-sized"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 376,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vht_capa_oper[2+12+2+5] fixed compile-time-constant array"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 385,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "zero getenv() calls in this file/function; wholesale ENV01-C misfire"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 385,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "he_capa_oper[...] size expression is all macros/sizeof() of fixed struct types, compile-time constant"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 385,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pure integer sizeof-sum array-size expression, no pointer"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 385,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pure integer sizeof-sum array-size expression, no pointer"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 385,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pure integer sizeof-sum array-size expression, no pointer"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 419,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eht_capa_oper[...] compile-time-constant size expression (macros + sizeof)"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 419,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pure integer sizeof-sum array-size expression, no pointer"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 441,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head(buf)/wpabuf_len(buf) are pure side-effect-free accessors"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 454,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_mesh_set_plink_state internal-only API, wpa_s never externally nullable"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 463,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "state is enum mesh_plink_state (1-7), mplstate[] sized [0..PLINK_BLOCKED]; all internal callers pass fixed enum literals"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 605,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_ctx pinned by eloop_timeout_handler typedef dispatch contract"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 605,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data pinned by eloop_timeout_handler typedef dispatch contract"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 663,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ifmsh only read in mesh_mpm_deinit, not a dispatch-bound param"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 678,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mesh_mpm_auth_peer internal-only API, wpa_s never externally nullable"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 678,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mesh_mpm_auth_peer internal-only API, addr never externally nullable"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 839,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta is heap-allocated via ap_sta_add(), not automatic/stack storage"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 843,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_mesh_new_mesh_peer internal-only API, wpa_s never externally nullable"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 874,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/wpabuf_len pure side-effect-free accessors, same class as :441"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 896,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mesh_mpm_mgmt_rx internal-only API, wpa_s never externally nullable"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 896,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mesh_mpm_mgmt_rx internal-only API, rx_mgmt never externally nullable"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 896,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_s only read (wpa_s->ifmsh->bss[0]), not dispatch-bound"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 927,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(sta->mgtk_rsc) struct-member array, correct idiom"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 933,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(sta->mgtk_rsc) correct idiom"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 939,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(sta->igtk_rsc) correct idiom"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 946,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(sta->igtk_rsc) correct idiom"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 1007,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise op is on conf->security, arithmetic is on conf->dot11MeshHoldingTimeout - different members, container/member misattribution"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 1154,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mesh_mpm_action_rx internal-only API, wpa_s never externally nullable"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 1161,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plid=0 initializer unconditionally overwritten at :1239 before its first read; genuine dead-initial-assignment"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 1210,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "elems fully populated by ieee802_11_parse_elems(ies,ie_len,&elems,0) callee before any read"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 1356,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hapd is never freed anywhere in mesh_mpm_action_rx; likely confuses ap_free_sta(hapd,sta) elsewhere as freeing its 1st arg when it actually frees sta"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 1358,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hapd never freed in this function; same misattribution"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 1370,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hapd never freed; false double-free"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 1373,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hapd never freed in this function"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 1375,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hapd never freed in this function"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 1428,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mesh_mpm_free_sta internal-only API (called only from ap_free_sta), hapd never externally nullable"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 1428,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mesh_mpm_free_sta internal-only API, sta never externally nullable"
+  }
+ ],
+ "fns": [
+  {
+   "file": "wpa_supplicant/mesh_mpm.c",
+   "line": 1180,
+   "rule": "ARR30-C",
+   "desc": "ie_len computed as (u8*)mgmt+len - variable pointer; for PLINK_CONFIRM frames two 2-byte subtractions (capability+aid) can drive ie_len as low as 0 with no re-validation before ieee802_11_parse_elems, though downstream elems.peer_mgmt/mesh_id null-checks ultimately catch a too-short frame before use. Low-confidence, not a confirmed exploitable OOB.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [
+  "wpa_supplicant/dbus/dbus_new_handlers_wps.c"
+ ],
+ "summary": {
+  "tp": 12,
+  "fp": 102,
+  "fn": 1
+ }
+}

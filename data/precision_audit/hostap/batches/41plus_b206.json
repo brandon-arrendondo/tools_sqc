@@ -1,0 +1,805 @@
+{
+ "src/wps/wps_upnp.c": [
+  {
+   "column": 1,
+   "file": "src/wps/wps_upnp.c",
+   "line": 185,
+   "message": "Header file 'wps_upnp.h' has the same first 8 characters (case-insensitive) as 'wps_upnp_i.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'wps_upnp.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_upnp.c",
+   "line": 216,
+   "message": "Shared variable 'shared_upnp_device' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_upnp.c",
+   "line": 228,
+   "message": "Return value of 'time' assigned to 't' but not checked for errors: 'time(NULL)' - Returns (time_t)(-1) on failure",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (result == (time_t)(-1)) for time errors"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_upnp.c",
+   "line": 229,
+   "message": "Storing pointer returned by 'gmtime' is prohibited. The data referenced may be overwritten by subsequent calls. Use strdup(), malloc()/strcpy(), or consume the value immediately.",
+   "rule_id": "ENV34-C",
+   "severity": "Medium",
+   "suggestion": "Instead of 'ptr = gmtime()', use 'ptr = strdup(gmtime())' and remember to free() later, or use 'const char *ptr' for immediate use only"
+  },
+  {
+   "column": 9,
+   "file": "src/wps/wps_upnp.c",
+   "line": 229,
+   "message": "Call to non-thread-safe function 'gmtime'. Use strftime() with localtime_r()/gmtime_r() (POSIX), or use thread-safe time conversion functions",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strftime() with localtime_r()/gmtime_r() (POSIX), or use thread-safe time conversion functions"
+  },
+  {
+   "column": 9,
+   "file": "src/wps/wps_upnp.c",
+   "line": 229,
+   "message": "'gmtime()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'gmtime_r' instead for thread safety"
+  },
+  {
+   "column": 25,
+   "file": "src/wps/wps_upnp.c",
+   "line": 254,
+   "message": "Array parameter uses size variable 'UUID_LEN' that is declared after the array parameter",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Declare size parameter 'UUID_LEN' before the array parameter, or use K&R style with semicolon"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_upnp.c",
+   "line": 284,
+   "message": "Function 'subscr_addr_delete' does not validate pointer parameter 'a' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'a' at the start of the function, e.g., 'if (!a) { return error_code; }'"
+  },
+  {
+   "column": 33,
+   "file": "src/wps/wps_upnp.c",
+   "line": 298,
+   "message": "Potential null pointer dereference in member access of variable 's'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 's' is not NULL before member access"
+  },
+  {
+   "column": 57,
+   "file": "src/wps/wps_upnp.c",
+   "line": 306,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 29,
+   "file": "src/wps/wps_upnp.c",
+   "line": 307,
+   "message": "Pointer parameter 'addr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *addr'"
+  },
+  {
+   "column": 68,
+   "file": "src/wps/wps_upnp.c",
+   "line": 315,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 3,
+   "file": "src/wps/wps_upnp.c",
+   "line": 350,
+   "message": "Pointer dereference '*path++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "src/wps/wps_upnp.c",
+   "line": 355,
+   "message": "Pointer dereference '*delim' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 7,
+   "file": "src/wps/wps_upnp.c",
+   "line": 356,
+   "message": "Plain 'char' passed to 'isdigit()' without cast to 'unsigned char'",
+   "rule_id": "STR00-C",
+   "severity": "Medium",
+   "suggestion": "Cast to '(unsigned char)' before passing to 'isdigit()': isdigit((unsigned char)delim[1])"
+  },
+  {
+   "column": 15,
+   "file": "src/wps/wps_upnp.c",
+   "line": 356,
+   "message": "Argument to 'isdigit()' is not cast to unsigned char. This can cause undefined behavior if the argument has a negative value.",
+   "rule_id": "STR37-C",
+   "severity": "Medium",
+   "suggestion": "Cast the argument to unsigned char: 'isdigit((unsigned char)...)'"
+  },
+  {
+   "column": 11,
+   "file": "src/wps/wps_upnp.c",
+   "line": 357,
+   "message": "Use of 'atol' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atol' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 11,
+   "file": "src/wps/wps_upnp.c",
+   "line": 357,
+   "message": "Use of 'atol()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atol() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 3,
+   "file": "src/wps/wps_upnp.c",
+   "line": 389,
+   "message": "Pointer dereference '*delim' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 14,
+   "file": "src/wps/wps_upnp.c",
+   "line": 393,
+   "message": "Integer arithmetic 'host_len + 1 + 1 + path_len + 1' evaluated in smaller type before comparison/assignment to larger type - may overflow before comparison",
+   "rule_id": "INT18-C",
+   "severity": "High",
+   "suggestion": "Cast at least one operand to the larger type before performing arithmetic. Example: (unsigned long long)x + y"
+  },
+  {
+   "column": 23,
+   "file": "src/wps/wps_upnp.c",
+   "line": 396,
+   "message": "Variable 'a' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'a' before use, e.g., at its declaration"
+  },
+  {
+   "column": 8,
+   "file": "src/wps/wps_upnp.c",
+   "line": 409,
+   "message": "'inet_ntoa()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'inet_ntop' instead for thread safety"
+  },
+  {
+   "column": 4,
+   "file": "src/wps/wps_upnp.c",
+   "line": 422,
+   "message": "Pointer dereference '*mem++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 10,
+   "file": "src/wps/wps_upnp.c",
+   "line": 447,
+   "message": "Potential null pointer dereference of variable 'url_list'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'url_list' is not NULL before dereferencing"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_upnp.c",
+   "line": 561,
+   "message": "Function 'subscription_destroy' does not validate pointer parameter 's' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 's' at the start of the function, e.g., 'if (!s) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_upnp.c",
+   "line": 566,
+   "message": "Use-after-free: passing freed pointer 's' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_upnp.c",
+   "line": 567,
+   "message": "Use-after-free: passing freed pointer 's' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 26,
+   "file": "src/wps/wps_upnp.c",
+   "line": 567,
+   "message": "Use-after-free: dereferencing freed pointer 's'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access memory after freeing it."
+  },
+  {
+   "column": 27,
+   "file": "src/wps/wps_upnp.c",
+   "line": 567,
+   "message": "Use-after-free: accessing member of freed pointer 's'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 27,
+   "file": "src/wps/wps_upnp.c",
+   "line": 567,
+   "message": "Use-after-free: accessing member of freed pointer 's'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 3,
+   "file": "src/wps/wps_upnp.c",
+   "line": 569,
+   "message": "Use-after-free: passing freed pointer 's' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_upnp.c",
+   "line": 570,
+   "message": "Double-free: 's' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_upnp.c",
+   "line": 592,
+   "message": "Function 'subscription_find' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 15,
+   "file": "src/wps/wps_upnp.c",
+   "line": 593,
+   "message": "Array parameter uses size variable 'UUID_LEN' that is declared after the array parameter",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Declare size parameter 'UUID_LEN' before the array parameter, or use K&R style with semicolon"
+  },
+  {
+   "column": 4,
+   "file": "src/wps/wps_upnp.c",
+   "line": 598,
+   "message": "Function returns pointer to local variable 's' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_upnp.c",
+   "line": 673,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_upnp.c",
+   "line": 714,
+   "message": "Function 'subscription_start' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_upnp.c",
+   "line": 714,
+   "message": "Function 'subscription_start' does not validate pointer parameter 'callback_urls' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'callback_urls' at the start of the function, e.g., 'if (!callback_urls) { return error_code; }'"
+  },
+  {
+   "column": 9,
+   "file": "src/wps/wps_upnp.c",
+   "line": 718,
+   "message": "Return value of 'time' assigned to 'now' but not checked for errors: 'time(NULL)' - Returns (time_t)(-1) on failure",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (result == (time_t)(-1)) for time errors"
+  },
+  {
+   "column": 18,
+   "file": "src/wps/wps_upnp.c",
+   "line": 719,
+   "message": "arithmetic operator '+' applied directly to time_t-typed 'now' -- the encoding of time_t is unspecified",
+   "rule_id": "MSC05-C",
+   "severity": "Low",
+   "suggestion": "Use difftime() to compute a duration between two time_t values instead of subtracting/adding them directly"
+  },
+  {
+   "column": 23,
+   "file": "src/wps/wps_upnp.c",
+   "line": 737,
+   "message": "Dereference of uninitialized pointer 's'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 's' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_upnp.c",
+   "line": 775,
+   "message": "Function returns pointer to local variable 's' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_upnp.c",
+   "line": 780,
+   "message": "Function 'subscription_renew' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 16,
+   "file": "src/wps/wps_upnp.c",
+   "line": 781,
+   "message": "Array parameter uses size variable 'UUID_LEN' that is declared after the array parameter",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Declare size parameter 'UUID_LEN' before the array parameter, or use K&R style with semicolon"
+  },
+  {
+   "column": 9,
+   "file": "src/wps/wps_upnp.c",
+   "line": 783,
+   "message": "Return value of 'time' assigned to 'now' but not checked for errors: 'time(NULL)' - Returns (time_t)(-1) on failure",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (result == (time_t)(-1)) for time errors"
+  },
+  {
+   "column": 18,
+   "file": "src/wps/wps_upnp.c",
+   "line": 784,
+   "message": "arithmetic operator '+' applied directly to time_t-typed 'now' -- the encoding of time_t is unspecified",
+   "rule_id": "MSC05-C",
+   "severity": "Low",
+   "suggestion": "Use difftime() to compute a duration between two time_t values instead of subtracting/adding them directly"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_upnp.c",
+   "line": 793,
+   "message": "Function returns pointer to local variable 's' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_upnp.c",
+   "line": 809,
+   "message": "Function 'upnp_wps_device_send_wlan_event' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 18,
+   "file": "src/wps/wps_upnp.c",
+   "line": 810,
+   "message": "Array parameter uses size variable 'ETH_ALEN' that is declared after the array parameter",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Declare size parameter 'ETH_ALEN' before the array parameter, or use K&R style with semicolon"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_upnp.c",
+   "line": 835,
+   "message": "Signed integer compound addition 'pos += 1' may overflow without checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_upnp.c",
+   "line": 840,
+   "message": "Signed integer compound addition 'pos += 17' may overflow without checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 3,
+   "file": "src/wps/wps_upnp.c",
+   "line": 842,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 3,
+   "file": "src/wps/wps_upnp.c",
+   "line": 843,
+   "message": "Signed integer compound addition 'pos += wpabuf_len(msg)' may overflow without checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 43,
+   "file": "src/wps/wps_upnp.c",
+   "line": 870,
+   "message": "Array parameter uses size variable 'ETH_ALEN' that is declared after the array parameter",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Declare size parameter 'ETH_ALEN' before the array parameter, or use K&R style with semicolon"
+  },
+  {
+   "column": 6,
+   "file": "src/wps/wps_upnp.c",
+   "line": 876,
+   "message": "Array declaration 'mib[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 32,
+   "file": "src/wps/wps_upnp.c",
+   "line": 888,
+   "message": "Variable 'ifm' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 11,
+   "file": "src/wps/wps_upnp.c",
+   "line": 900,
+   "message": "Use-after-free: pointer arithmetic on freed pointer 'buf'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not use freed pointers in arithmetic."
+  },
+  {
+   "column": 34,
+   "file": "src/wps/wps_upnp.c",
+   "line": 919,
+   "message": "Array parameter uses size variable 'ETH_ALEN' that is declared after the array parameter",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Declare size parameter 'ETH_ALEN' before the array parameter, or use K&R style with semicolon"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_upnp.c",
+   "line": 926,
+   "message": "Pointer dereference '*ip_addr_text' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 13,
+   "file": "src/wps/wps_upnp.c",
+   "line": 934,
+   "message": "Variable 'req' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'req' before use, e.g., at its declaration"
+  },
+  {
+   "column": 6,
+   "file": "src/wps/wps_upnp.c",
+   "line": 935,
+   "message": "Structure 'req' passed to trust boundary function 'ioctl' may leak padding bytes. Use packed attributes, explicit padding fields, or serialize fields individually.",
+   "rule_id": "DCL39-C",
+   "severity": "Medium",
+   "suggestion": "Use __attribute__((__packed__)) or serialize fields: copy_to_user(buf, &req.a, sizeof(req.a)); ..."
+  },
+  {
+   "column": 14,
+   "file": "src/wps/wps_upnp.c",
+   "line": 937,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 14,
+   "file": "src/wps/wps_upnp.c",
+   "line": 937,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 39,
+   "file": "src/wps/wps_upnp.c",
+   "line": 943,
+   "message": "'inet_ntoa()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'inet_ntop' instead for thread safety"
+  },
+  {
+   "column": 7,
+   "file": "src/wps/wps_upnp.c",
+   "line": 948,
+   "message": "Structure 'req' passed to trust boundary function 'ioctl' may leak padding bytes. Use packed attributes, explicit padding fields, or serialize fields individually.",
+   "rule_id": "DCL39-C",
+   "severity": "Medium",
+   "suggestion": "Use __attribute__((__packed__)) or serialize fields: copy_to_user(buf, &req.a, sizeof(req.a)); ..."
+  },
+  {
+   "column": 15,
+   "file": "src/wps/wps_upnp.c",
+   "line": 951,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 15,
+   "file": "src/wps/wps_upnp.c",
+   "line": 951,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 6,
+   "file": "src/wps/wps_upnp.c",
+   "line": 960,
+   "message": "Structure 'req' passed to trust boundary function 'ioctl' may leak padding bytes. Use packed attributes, explicit padding fields, or serialize fields individually.",
+   "rule_id": "DCL39-C",
+   "severity": "Medium",
+   "suggestion": "Use __attribute__((__packed__)) or serialize fields: copy_to_user(buf, &req.a, sizeof(req.a)); ..."
+  },
+  {
+   "column": 25,
+   "file": "src/wps/wps_upnp.c",
+   "line": 962,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 25,
+   "file": "src/wps/wps_upnp.c",
+   "line": 962,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_upnp.c",
+   "line": 978,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 3,
+   "file": "src/wps/wps_upnp.c",
+   "line": 980,
+   "message": "Resource 'sock' is closed again after already being closed at line 975. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_upnp.c",
+   "line": 982,
+   "message": "Pointer dereference '*ip_addr_text' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 27,
+   "file": "src/wps/wps_upnp.c",
+   "line": 997,
+   "message": "Pointer parameter 'reg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *reg'"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_upnp.c",
+   "line": 1069,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 24,
+   "file": "src/wps/wps_upnp.c",
+   "line": 1071,
+   "message": "'inet_ntoa()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'inet_ntop' instead for thread safety"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_upnp.c",
+   "line": 1098,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 56,
+   "file": "src/wps/wps_upnp.c",
+   "line": 1105,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 4,
+   "file": "src/wps/wps_upnp.c",
+   "line": 1111,
+   "message": "Function returns pointer to local variable 'iface' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 6,
+   "file": "src/wps/wps_upnp.c",
+   "line": 1137,
+   "message": "Testing 'dl_list_len(&sm->interfaces)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: dl_list_len(&sm->interfaces) != 0"
+  },
+  {
+   "column": 7,
+   "file": "src/wps/wps_upnp.c",
+   "line": 1148,
+   "message": "Potential null pointer dereference in member access of variable 'peer'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'peer' is not NULL before member access"
+  },
+  {
+   "column": 27,
+   "file": "src/wps/wps_upnp.c",
+   "line": 1182,
+   "message": "Dereference of uninitialized pointer 'iface'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'iface' before dereferencing"
+  },
+  {
+   "column": 25,
+   "file": "src/wps/wps_upnp.c",
+   "line": 1201,
+   "message": "Dereference of uninitialized pointer 'sm'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'sm' before dereferencing"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_upnp.c",
+   "line": 1210,
+   "message": "Value assigned to 'shared_upnp_device' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 3,
+   "file": "src/wps/wps_upnp.c",
+   "line": 1210,
+   "message": "Local variable 'sm' assigned to global/static variable 'shared_upnp_device' - creates dangling pointer",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage for local variable or copy data instead of assigning pointer"
+  },
+  {
+   "column": 3,
+   "file": "src/wps/wps_upnp.c",
+   "line": 1210,
+   "message": "Stack pointer escape: local array/VLA assigned to global 'shared_upnp_device'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not save pointers to stack-allocated memory in global variables."
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_upnp.c",
+   "line": 1226,
+   "message": "Function returns pointer to local variable 'sm' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_upnp.c",
+   "line": 1235,
+   "message": "Function 'upnp_wps_subscribers' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_upnp.c",
+   "line": 1244,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  }
+ ]
+}

@@ -1,0 +1,1162 @@
+{
+ "labels": [
+  {
+   "rule": "PRE08-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 26,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "matches confirmed PRE08-C 8.3-legacy-filesystem FP class; not actionable on modern POSIX build"
+  },
+  {
+   "rule": "API01-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 38,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "imsi[20] before pointer only ever written via os_strlcpy bounded to sizeof(imsi); matches confirmed API01-C FP pattern"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 106,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "err (sqlite3_exec pzErrmsg) can remain NULL on sqlite's own OOM allocating the error string, then passed to wpa_printf %s; rare edge case"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 132,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "err (sqlite3_exec pzErrmsg) can remain NULL on sqlite's own OOM allocating the error string, then passed to wpa_printf %s; rare edge case"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 164,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "returned pointer (db/data/id/r) is heap-allocated (os_zalloc/os_malloc/sqlite3_open/list node), not local automatic storage; matches confirmed DCL30-C heap-vs-local FP class"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 171,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "NUL-terminated string traversal (while(*pos) pos++), standard bounded-by-terminator idiom, not unbounded"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 175,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer arithmetic (char*/const char* increment/addition/subtraction) miscategorized as unsigned-integer wraparound; category error, matches confirmed pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 181,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal-helper param genuinely never modified; low-value but real per confirmed DCL13-C plain-helper class"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 198,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "err (sqlite3_exec pzErrmsg) can remain NULL on sqlite's own OOM allocating the error string, then passed to wpa_printf %s; rare edge case"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 207,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx/argv/col are fixed by the sqlite3_exec() callback signature int(*)(void*,int,char**,char**); dispatch-contract FP like the eloop-callback class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 207,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx/argv/col are fixed by the sqlite3_exec() callback signature int(*)(void*,int,char**,char**); dispatch-contract FP like the eloop-callback class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 207,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx/argv/col are fixed by the sqlite3_exec() callback signature int(*)(void*,int,char**,char**); dispatch-contract FP like the eloop-callback class"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 230,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof applied to ptr->fixed_array_or_struct_member (db_tmp_identity/db_tmp_reauth/db_tmp_pseudonym_str), correct idiom not pointer decay"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 243,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal-helper param genuinely never modified; low-value but real per confirmed DCL13-C plain-helper class"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 256,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer arithmetic (char*/const char* increment/addition/subtraction) miscategorized as unsigned-integer wraparound; category error, matches confirmed pattern"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 257,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "os_snprintf() return consumed via pos+=... with zero os_snprintf_error() checks anywhere in db_add_reauth; real (low-severity, buffer generously sized) gap"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 257,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer arithmetic (char*/const char* increment/addition/subtraction) miscategorized as unsigned-integer wraparound; category error, matches confirmed pattern"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 257,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer arithmetic (char*/const char* increment/addition/subtraction) miscategorized as unsigned-integer wraparound; category error, matches confirmed pattern"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 268,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "os_snprintf() return consumed via pos+=... with zero os_snprintf_error() checks anywhere in db_add_reauth; real (low-severity, buffer generously sized) gap"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 268,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer arithmetic (char*/const char* increment/addition/subtraction) miscategorized as unsigned-integer wraparound; category error, matches confirmed pattern"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 268,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer arithmetic (char*/const char* increment/addition/subtraction) miscategorized as unsigned-integer wraparound; category error, matches confirmed pattern"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 269,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_snprintf_hex() never returns a negative/error value (self-bounded), nothing to check; matches confirmed ERR02-C misidentification FP class"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 269,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer arithmetic (char*/const char* increment/addition/subtraction) miscategorized as unsigned-integer wraparound; category error, matches confirmed pattern"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 269,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer arithmetic (char*/const char* increment/addition/subtraction) miscategorized as unsigned-integer wraparound; category error, matches confirmed pattern"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 270,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "os_snprintf() return consumed via pos+=... with zero os_snprintf_error() checks anywhere in db_add_reauth; real (low-severity, buffer generously sized) gap"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 270,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer arithmetic (char*/const char* increment/addition/subtraction) miscategorized as unsigned-integer wraparound; category error, matches confirmed pattern"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 270,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer arithmetic (char*/const char* increment/addition/subtraction) miscategorized as unsigned-integer wraparound; category error, matches confirmed pattern"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 274,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "os_snprintf() return consumed via pos+=... with zero os_snprintf_error() checks anywhere in db_add_reauth; real (low-severity, buffer generously sized) gap"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 274,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer arithmetic (char*/const char* increment/addition/subtraction) miscategorized as unsigned-integer wraparound; category error, matches confirmed pattern"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 274,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer arithmetic (char*/const char* increment/addition/subtraction) miscategorized as unsigned-integer wraparound; category error, matches confirmed pattern"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 275,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_snprintf_hex() never returns a negative/error value (self-bounded), nothing to check; matches confirmed ERR02-C misidentification FP class"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 275,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer arithmetic (char*/const char* increment/addition/subtraction) miscategorized as unsigned-integer wraparound; category error, matches confirmed pattern"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 275,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer arithmetic (char*/const char* increment/addition/subtraction) miscategorized as unsigned-integer wraparound; category error, matches confirmed pattern"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 277,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "os_snprintf() return consumed via pos+=... with zero os_snprintf_error() checks anywhere in db_add_reauth; real (low-severity, buffer generously sized) gap"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 277,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer arithmetic (char*/const char* increment/addition/subtraction) miscategorized as unsigned-integer wraparound; category error, matches confirmed pattern"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 277,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer arithmetic (char*/const char* increment/addition/subtraction) miscategorized as unsigned-integer wraparound; category error, matches confirmed pattern"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 281,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "os_snprintf() return consumed via pos+=... with zero os_snprintf_error() checks anywhere in db_add_reauth; real (low-severity, buffer generously sized) gap"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 281,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer arithmetic (char*/const char* increment/addition/subtraction) miscategorized as unsigned-integer wraparound; category error, matches confirmed pattern"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 281,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer arithmetic (char*/const char* increment/addition/subtraction) miscategorized as unsigned-integer wraparound; category error, matches confirmed pattern"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 282,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_snprintf_hex() never returns a negative/error value (self-bounded), nothing to check; matches confirmed ERR02-C misidentification FP class"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 282,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer arithmetic (char*/const char* increment/addition/subtraction) miscategorized as unsigned-integer wraparound; category error, matches confirmed pattern"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 282,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer arithmetic (char*/const char* increment/addition/subtraction) miscategorized as unsigned-integer wraparound; category error, matches confirmed pattern"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 284,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "os_snprintf() return consumed via pos+=... with zero os_snprintf_error() checks anywhere in db_add_reauth; real (low-severity, buffer generously sized) gap"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 284,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer arithmetic (char*/const char* increment/addition/subtraction) miscategorized as unsigned-integer wraparound; category error, matches confirmed pattern"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 284,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer arithmetic (char*/const char* increment/addition/subtraction) miscategorized as unsigned-integer wraparound; category error, matches confirmed pattern"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 288,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "os_snprintf() return consumed via pos+=... with zero os_snprintf_error() checks anywhere in db_add_reauth; real (low-severity, buffer generously sized) gap"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 288,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer arithmetic (char*/const char* increment/addition/subtraction) miscategorized as unsigned-integer wraparound; category error, matches confirmed pattern"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 288,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer arithmetic (char*/const char* increment/addition/subtraction) miscategorized as unsigned-integer wraparound; category error, matches confirmed pattern"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 289,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_snprintf_hex() never returns a negative/error value (self-bounded), nothing to check; matches confirmed ERR02-C misidentification FP class"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 289,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer arithmetic (char*/const char* increment/addition/subtraction) miscategorized as unsigned-integer wraparound; category error, matches confirmed pattern"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 289,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer arithmetic (char*/const char* increment/addition/subtraction) miscategorized as unsigned-integer wraparound; category error, matches confirmed pattern"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 291,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "os_snprintf() return consumed via pos+=... with zero os_snprintf_error() checks anywhere in db_add_reauth; real (low-severity, buffer generously sized) gap"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 291,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer arithmetic (char*/const char* increment/addition/subtraction) miscategorized as unsigned-integer wraparound; category error, matches confirmed pattern"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 291,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer arithmetic (char*/const char* increment/addition/subtraction) miscategorized as unsigned-integer wraparound; category error, matches confirmed pattern"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 294,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer arithmetic (char*/const char* increment/addition/subtraction) miscategorized as unsigned-integer wraparound; category error, matches confirmed pattern"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 298,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "err (sqlite3_exec pzErrmsg) can remain NULL on sqlite's own OOM allocating the error string, then passed to wpa_printf %s; rare edge case"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 307,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx/argv/col are fixed by the sqlite3_exec() callback signature int(*)(void*,int,char**,char**); dispatch-contract FP like the eloop-callback class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 307,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx/argv/col are fixed by the sqlite3_exec() callback signature int(*)(void*,int,char**,char**); dispatch-contract FP like the eloop-callback class"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 319,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi(argv[i]) on SQLite column value with no range/error check at all; graded on literal rule text per audit default"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 319,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi(argv[i]) on SQLite column value with no range/error check at all; graded on literal rule text per audit default"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 328,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "if/else-if chain deliberately skips unrecognized SQL column names in a dispatch callback; guard-clause pedantry, matches confirmed MSC01-C FP class"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 345,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof applied to ptr->fixed_array_or_struct_member (db_tmp_identity/db_tmp_reauth/db_tmp_pseudonym_str), correct idiom not pointer decay"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 347,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof applied to ptr->fixed_array_or_struct_member (db_tmp_identity/db_tmp_reauth/db_tmp_pseudonym_str), correct idiom not pointer decay"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 360,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal-helper param genuinely never modified; low-value but real per confirmed DCL13-C plain-helper class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 361,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal-helper param genuinely never modified; low-value but real per confirmed DCL13-C plain-helper class"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 417,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "neither side of '**pp = &data->pending' involves any const qualifier at all; matches confirmed EXP40-C phantom-const FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 457,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf's pointee IS mutated, just through an aliased local (start/pos/end), not through buf directly; matches 'misses a mutation via aliased local pointer' class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 490,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char assignment ('\\0' literal or char parameter), no widening conversion occurs; matches massively confirmed STR34-C char-to-char FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 495,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char assignment ('\\0' literal or char parameter), no widening conversion occurs; matches massively confirmed STR34-C char-to-char FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 504,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char assignment ('\\0' literal or char parameter), no widening conversion occurs; matches massively confirmed STR34-C char-to-char FP class"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 529,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label (parse_fail:/fail:) physically follows an unrelated return; matches confirmed MSC07-C goto-label-after-return FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 536,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf's pointee IS mutated, just through an aliased local (start/pos/end), not through buf directly; matches 'misses a mutation via aliased local pointer' class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 567,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char assignment ('\\0' literal or char parameter), no widening conversion occurs; matches massively confirmed STR34-C char-to-char FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 575,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char assignment ('\\0' literal or char parameter), no widening conversion occurs; matches massively confirmed STR34-C char-to-char FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 583,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char assignment ('\\0' literal or char parameter), no widening conversion occurs; matches massively confirmed STR34-C char-to-char FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 591,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char assignment ('\\0' literal or char parameter), no widening conversion occurs; matches massively confirmed STR34-C char-to-char FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 598,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char assignment ('\\0' literal or char parameter), no widening conversion occurs; matches massively confirmed STR34-C char-to-char FP class"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 620,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label (parse_fail:/fail:) physically follows an unrelated return; matches confirmed MSC07-C goto-label-after-return FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 626,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sock_ctx is fixed by the eloop_sock_handler read-socket callback signature; dispatch-contract FP"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 632,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr) / sizeof(ptr->member) does not evaluate ptr at runtime; matches confirmed EXP33-C sizeof-not-a-deref FP class"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 635,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "recv() capped to sizeof(buf)-1 and res<0 checked first; buf[res] always in bounds; matches confirmed recv-length-cap FP class"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 637,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'external source' is the wpa_hexdump_ascii_key log title/label, not the secret buffer argument; matches confirmed MSC41-C hexdump-title FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 653,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char assignment ('\\0' literal or char parameter), no widening conversion occurs; matches massively confirmed STR34-C char-to-char FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 658,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char assignment ('\\0' literal or char parameter), no widening conversion occurs; matches massively confirmed STR34-C char-to-char FP class"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 671,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label (parse_fail:/fail:) physically follows an unrelated return; matches confirmed MSC07-C goto-label-after-return FP class"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 676,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd/wpa_supplicant core is single-threaded (eloop-based), no pthread usage anywhere in the tree; matches confirmed no-thread FP class"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 679,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same no-thread FP class as CON07-C; static counter never accessed concurrently in this single-threaded core"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 686,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() thread-safety flagged in a single-threaded eloop-based codebase with zero pthread usage; matches confirmed no-thread FP class"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 686,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() thread-safety flagged in a single-threaded eloop-based codebase with zero pthread usage; matches confirmed no-thread FP class"
+  },
+  {
+   "rule": "POS02-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 701,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd runs as root for its entire lifetime by design (no privilege-separation model anywhere in the tree); matches confirmed POS02-C categorical FP"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 702,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() thread-safety flagged in a single-threaded eloop-based codebase with zero pthread usage; matches confirmed no-thread FP class"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 702,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() thread-safety flagged in a single-threaded eloop-based codebase with zero pthread usage; matches confirmed no-thread FP class"
+  },
+  {
+   "rule": "FIO24-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 703,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "the two close() calls are on mutually-exclusive failure branches (local_sock alloc fail vs bind() fail vs connect() fail); matches confirmed FIO24-C mutually-exclusive-branch FP class"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 713,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() thread-safety flagged in a single-threaded eloop-based codebase with zero pthread usage; matches confirmed no-thread FP class"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 713,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() thread-safety flagged in a single-threaded eloop-based codebase with zero pthread usage; matches confirmed no-thread FP class"
+  },
+  {
+   "rule": "FIO24-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 717,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "the two close() calls are on mutually-exclusive failure branches (local_sock alloc fail vs bind() fail vs connect() fail); matches confirmed FIO24-C mutually-exclusive-branch FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 754,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API: params are compile-time-fixed function pointers, always array-backed struct fields, or caller-guarded from the only real call sites; matches confirmed API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 754,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API: params are compile-time-fixed function pointers, always array-backed struct fields, or caller-guarded from the only real call sites; matches confirmed API00-C internal-API FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 762,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr) / sizeof(ptr->member) does not evaluate ptr at runtime; matches confirmed EXP33-C sizeof-not-a-deref FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 775,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char assignment ('\\0' literal or char parameter), no widening conversion occurs; matches massively confirmed STR34-C char-to-char FP class"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 777,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer arithmetic (char*/const char* increment/addition/subtraction) miscategorized as unsigned-integer wraparound; category error, matches confirmed pattern"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 792,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "returned pointer (db/data/id/r) is heap-allocated (os_zalloc/os_malloc/sqlite3_open/list node), not local automatic storage; matches confirmed DCL30-C heap-vs-local FP class"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 794,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label (parse_fail:/fail:) physically follows an unrelated return; matches confirmed MSC07-C goto-label-after-return FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 864,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic pointer+size_t param pair, or fixed-protocol-constant-sized output buffer with no runtime bound needed; matches confirmed API05-C FP class"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 867,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "_errno is a block-scope local inside eap_sim_db_send, not a file-scope identifier; matches confirmed block-scope-misclassified-as-file-scope FP class"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 872,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() thread-safety flagged in a single-threaded eloop-based codebase with zero pthread usage; matches confirmed no-thread FP class"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 872,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() thread-safety flagged in a single-threaded eloop-based codebase with zero pthread usage; matches confirmed no-thread FP class"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 885,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() thread-safety flagged in a single-threaded eloop-based codebase with zero pthread usage; matches confirmed no-thread FP class"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 885,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() thread-safety flagged in a single-threaded eloop-based codebase with zero pthread usage; matches confirmed no-thread FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 937,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr) / sizeof(ptr->member) does not evaluate ptr at runtime; matches confirmed EXP33-C sizeof-not-a-deref FP class"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 939,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "username==NULL short-circuits the guarding || but the same branch then logs username via %s, a real (if currently unreachable-by-caller) own-logic defect"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 942,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "username is a plain pointer parameter (const char *), never declared as any array; rule treats it as an implicit 1-element array. NEW pattern, logged in categorical_patterns.md"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1013,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal-helper param genuinely never modified; low-value but real per confirmed DCL13-C plain-helper class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1026,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char assignment ('\\0' literal or char parameter), no widening conversion occurs; matches massively confirmed STR34-C char-to-char FP class"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1026,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer arithmetic (char*/const char* increment/addition/subtraction) miscategorized as unsigned-integer wraparound; category error, matches confirmed pattern"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1027,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer arithmetic (char*/const char* increment/addition/subtraction) miscategorized as unsigned-integer wraparound; category error, matches confirmed pattern"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1029,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "returned pointer (db/data/id/r) is heap-allocated (os_zalloc/os_malloc/sqlite3_open/list node), not local automatic storage; matches confirmed DCL30-C heap-vs-local FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1044,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API: params are compile-time-fixed function pointers, always array-backed struct fields, or caller-guarded from the only real call sites; matches confirmed API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1077,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API: params are compile-time-fixed function pointers, always array-backed struct fields, or caller-guarded from the only real call sites; matches confirmed API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1110,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API: params are compile-time-fixed function pointers, always array-backed struct fields, or caller-guarded from the only real call sites; matches confirmed API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1193,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "returned pointer (db/data/id/r) is heap-allocated (os_zalloc/os_malloc/sqlite3_open/list node), not local automatic storage; matches confirmed DCL30-C heap-vs-local FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1213,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API: params are compile-time-fixed function pointers, always array-backed struct fields, or caller-guarded from the only real call sites; matches confirmed API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1213,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API: params are compile-time-fixed function pointers, always array-backed struct fields, or caller-guarded from the only real call sites; matches confirmed API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1213,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "doc comment explicitly documents mk as possibly %NULL, but the non-CONFIG_SQLITE branch os_memcpy(r->mk, mk, ...) has no NULL guard, unlike the SQLite branch's mk? conditional"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1254,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API: params are compile-time-fixed function pointers, always array-backed struct fields, or caller-guarded from the only real call sites; matches confirmed API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1254,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API: params are compile-time-fixed function pointers, always array-backed struct fields, or caller-guarded from the only real call sites; matches confirmed API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1254,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API: params are compile-time-fixed function pointers, always array-backed struct fields, or caller-guarded from the only real call sites; matches confirmed API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1254,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API: params are compile-time-fixed function pointers, always array-backed struct fields, or caller-guarded from the only real call sites; matches confirmed API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1254,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API: params are compile-time-fixed function pointers, always array-backed struct fields, or caller-guarded from the only real call sites; matches confirmed API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1333,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "returned pointer (db/data/id/r) is heap-allocated (os_zalloc/os_malloc/sqlite3_open/list node), not local automatic storage; matches confirmed DCL30-C heap-vs-local FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1393,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic pointer+size_t param pair, or fixed-protocol-constant-sized output buffer with no runtime bound needed; matches confirmed API05-C FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1395,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic pointer+size_t param pair, or fixed-protocol-constant-sized output buffer with no runtime bound needed; matches confirmed API05-C FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1406,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr) / sizeof(ptr->member) does not evaluate ptr at runtime; matches confirmed EXP33-C sizeof-not-a-deref FP class"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1408,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "username==NULL short-circuits the guarding || but the same branch then logs username via %s, a real (if currently unreachable-by-caller) own-logic defect"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1411,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "username is a plain pointer parameter (const char *), never declared as any array; rule treats it as an implicit 1-element array. NEW pattern, logged in categorical_patterns.md"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1489,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API: params are compile-time-fixed function pointers, always array-backed struct fields, or caller-guarded from the only real call sites; matches confirmed API00-C internal-API FP class"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1501,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "username==NULL short-circuits the guarding || but the same branch then logs username via %s, a real (if currently unreachable-by-caller) own-logic defect"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1504,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "username is a plain pointer parameter (const char *), never declared as any array; rule treats it as an implicit 1-element array. NEW pattern, logged in categorical_patterns.md"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1524,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_snprintf_hex() never returns a negative/error value (self-bounded), nothing to check; matches confirmed ERR02-C misidentification FP class"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1530,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_snprintf_hex() never returns a negative/error value (self-bounded), nothing to check; matches confirmed ERR02-C misidentification FP class"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1554,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "stylistic ad-hoc-NULL-check suggestion, not a real defect; matches confirmed MEM10-C pedantry FP class"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1558,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos is declared size_t, not char; rule's premise is factually wrong; matches confirmed STR00-C wrong-type-claim FP class"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1558,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos is declared size_t, not char; rule's premise is factually wrong; matches confirmed STR00-C wrong-type-claim FP class"
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 321,
+   "rule": "EXP12-C",
+   "desc": "get_reauth_cb() ignores hexstr2bin()'s return value when populating reauth->mk/k_encr/k_aut/k_re from SQLite column strings (lines 321,323,326,329); malformed/short hex in the DB silently leaves partial/zeroed key material in use instead of failing the lookup.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "summary": {
+  "tp": 24,
+  "fp": 119,
+  "fn": 1
+ }
+}

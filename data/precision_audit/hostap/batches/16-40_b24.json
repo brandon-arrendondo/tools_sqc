@@ -1,0 +1,1092 @@
+{
+ "src/crypto/aes-internal-dec.c": [
+  {
+   "column": 2,
+   "file": "src/crypto/aes-internal-dec.c",
+   "line": 38,
+   "message": "Loop uses uninitialized variable 'j' as bound for array access. This has indeterminate value and can cause out-of-bounds access.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize 'j' to a valid value before using it in the loop"
+  },
+  {
+   "column": 39,
+   "file": "src/crypto/aes-internal-dec.c",
+   "line": 38,
+   "message": "Variable 'j' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-internal-dec.c",
+   "line": 59,
+   "message": "Function 'aes_decrypt_init' does not validate integer parameter 'len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/aes-internal-dec.c",
+   "line": 71,
+   "message": "Array/pointer 'rk' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'rk' after calling free(). Set pointer to NULL after freeing: free(rk); rk = NULL;"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/aes-internal-dec.c",
+   "line": 72,
+   "message": "Function returns pointer to local variable 'rk' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-internal-dec.c",
+   "line": 87,
+   "message": "Value assigned to 's0' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-internal-dec.c",
+   "line": 88,
+   "message": "Value assigned to 's1' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-internal-dec.c",
+   "line": 89,
+   "message": "Value assigned to 's2' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-internal-dec.c",
+   "line": 90,
+   "message": "Value assigned to 's3' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-internal-dec.c",
+   "line": 92,
+   "message": "Function-like macro 'ROUND' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-internal-dec.c",
+   "line": 92,
+   "message": "Macro parameter 'i' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'i' in parentheses: (i) instead of i"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-internal-dec.c",
+   "line": 92,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (d##0 = TD0(s##0) ^ TD1(s##3) ^ TD2(s##2) ^ TD3(s##1) ^ rk[4 * i]; \\\nd##1 = TD0(s##1) ^ TD1(s##0) ^ TD2(s##3) ^ TD3(s##2) ^ rk[4 * i + 1]; \\\nd##2 = TD0(s##2) ^ TD1(s##1) ^ TD2(s##0) ^ TD3(s##3) ^ rk[4 * i + 2]; \\\nd##3 = TD0(s##3) ^ TD1(s##2) ^ TD2(s##1) ^ TD3(s##0) ^ rk[4 * i + 3])"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-internal-dec.c",
+   "line": 92,
+   "message": "Macro 'ROUND' uses token concatenation operator (##) which prevents parameter expansion - consider using two-level macro indirection for proper expansion",
+   "rule_id": "PRE05-C",
+   "severity": "Low",
+   "suggestion": "Use two-level indirection: define a wrapper macro that calls another macro with ##, allowing parameters to expand first"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-internal-dec.c",
+   "line": 92,
+   "message": "Multistatement macro 'ROUND' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+   "rule_id": "PRE10-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-internal-dec.c",
+   "line": 92,
+   "message": "Macro evaluates parameter 'i' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/aes-internal-dec.c",
+   "line": 118,
+   "message": "Bitwise operator '<<' used on signed operand 'Nr' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'Nr' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/aes-internal-dec.c",
+   "line": 118,
+   "message": "Shift operation on signed integer 'Nr' may be used for arithmetic optimization (use explicit arithmetic instead)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use explicit arithmetic operations like * or / instead of shift operations on signed integers"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/aes-internal-dec.c",
+   "line": 123,
+   "message": "Input operation on file stream 'Nr' follows output without intervening positioning call (fflush, fseek, fsetpos, or rewind)",
+   "rule_id": "FIO50-C",
+   "severity": "Low",
+   "suggestion": "Insert fflush() or a positioning function (fseek, fsetpos, rewind) between output and input operations"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/aes-internal-dec.c",
+   "line": 123,
+   "message": "Input operation on file stream 'Nr' follows output without intervening positioning call (fflush, fseek, fsetpos, or rewind)",
+   "rule_id": "FIO50-C",
+   "severity": "Low",
+   "suggestion": "Insert fflush() or a positioning function (fseek, fsetpos, rewind) between output and input operations"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/aes-internal-dec.c",
+   "line": 123,
+   "message": "Bitwise operator '>>' used on signed operand 'Nr' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'Nr' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 12,
+   "file": "src/crypto/aes-internal-dec.c",
+   "line": 140,
+   "message": "Variable 't0' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 't0' before use, e.g., at its declaration"
+  },
+  {
+   "column": 23,
+   "file": "src/crypto/aes-internal-dec.c",
+   "line": 140,
+   "message": "Variable 't3' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 't3' before use, e.g., at its declaration"
+  },
+  {
+   "column": 34,
+   "file": "src/crypto/aes-internal-dec.c",
+   "line": 140,
+   "message": "Variable 't2' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 't2' before use, e.g., at its declaration"
+  },
+  {
+   "column": 45,
+   "file": "src/crypto/aes-internal-dec.c",
+   "line": 140,
+   "message": "Variable 't1' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 't1' before use, e.g., at its declaration"
+  }
+ ],
+ "src/eap_peer/eap_ikev2.c": [
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_ikev2.c",
+   "line": 51,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 26,
+   "file": "src/eap_peer/eap_ikev2.c",
+   "line": 71,
+   "message": "Dereference of uninitialized pointer 'data'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'data' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_ikev2.c",
+   "line": 99,
+   "message": "Function returns pointer to local variable 'data' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap_ikev2.c",
+   "line": 101,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 44,
+   "file": "src/eap_peer/eap_ikev2.c",
+   "line": 108,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_ikev2.c",
+   "line": 240,
+   "message": "Function returns pointer to local variable 'resp' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 9,
+   "file": "src/eap_peer/eap_ikev2.c",
+   "line": 257,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/eap_ikev2.c",
+   "line": 296,
+   "message": "Potential null pointer dereference in member access of variable 'ret'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'ret' is not NULL before member access"
+  },
+  {
+   "column": 56,
+   "file": "src/eap_peer/eap_ikev2.c",
+   "line": 328,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 52,
+   "file": "src/eap_peer/eap_ikev2.c",
+   "line": 438,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 62,
+   "file": "src/eap_peer/eap_ikev2.c",
+   "line": 438,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 44,
+   "file": "src/eap_peer/eap_ikev2.c",
+   "line": 445,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 54,
+   "file": "src/eap_peer/eap_ikev2.c",
+   "line": 445,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 54,
+   "file": "src/eap_peer/eap_ikev2.c",
+   "line": 445,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_ikev2.c",
+   "line": 459,
+   "message": "Function returns pointer to local variable 'key' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 46,
+   "file": "src/eap_peer/eap_ikev2.c",
+   "line": 463,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 56,
+   "file": "src/eap_peer/eap_ikev2.c",
+   "line": 463,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 56,
+   "file": "src/eap_peer/eap_ikev2.c",
+   "line": 463,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_ikev2.c",
+   "line": 477,
+   "message": "Function returns pointer to local variable 'key' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 52,
+   "file": "src/eap_peer/eap_ikev2.c",
+   "line": 481,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 62,
+   "file": "src/eap_peer/eap_ikev2.c",
+   "line": 481,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 62,
+   "file": "src/eap_peer/eap_ikev2.c",
+   "line": 481,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_ikev2.c",
+   "line": 507,
+   "message": "Function returns pointer to local variable 'sid' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_peer/eap_ikev2.c",
+   "line": 515,
+   "message": "Memory allocated with 'eap_peer_method_alloc' for variable 'eap' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(eap)' before the variable goes out of scope"
+  }
+ ],
+ "src/p2p/p2p.h": [
+  {
+   "column": 7,
+   "file": "src/p2p/p2p.h",
+   "line": 298,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 7,
+   "file": "src/p2p/p2p.h",
+   "line": 354,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p.h",
+   "line": 425,
+   "message": "String buffer placed before pointer in struct 'p2p_peer_info': 'char device_name[WPS_DEV_NAME_MAX_LEN + 1];' before 'struct wpabuf *wps_vendor_ext[P2P_MAX_WPS_VENDOR_EXT];' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'char device_name' after the pointer field 'struct wpabuf *wps_vendor_ext[P2P_MAX_WPS_VENDOR_EXT];', or use a char* pointer instead of a char array"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p.h",
+   "line": 430,
+   "message": "String buffer placed before pointer in struct 'p2p_peer_info': 'char manufacturer[WPS_MANUFACTURER_MAX_LEN + 1];' before 'struct wpabuf *wps_vendor_ext[P2P_MAX_WPS_VENDOR_EXT];' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'char manufacturer' after the pointer field 'struct wpabuf *wps_vendor_ext[P2P_MAX_WPS_VENDOR_EXT];', or use a char* pointer instead of a char array"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p.h",
+   "line": 435,
+   "message": "String buffer placed before pointer in struct 'p2p_peer_info': 'char model_name[WPS_MODEL_NAME_MAX_LEN + 1];' before 'struct wpabuf *wps_vendor_ext[P2P_MAX_WPS_VENDOR_EXT];' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'char model_name' after the pointer field 'struct wpabuf *wps_vendor_ext[P2P_MAX_WPS_VENDOR_EXT];', or use a char* pointer instead of a char array"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p.h",
+   "line": 440,
+   "message": "String buffer placed before pointer in struct 'p2p_peer_info': 'char model_number[WPS_MODEL_NUMBER_MAX_LEN + 1];' before 'struct wpabuf *wps_vendor_ext[P2P_MAX_WPS_VENDOR_EXT];' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'char model_number' after the pointer field 'struct wpabuf *wps_vendor_ext[P2P_MAX_WPS_VENDOR_EXT];', or use a char* pointer instead of a char array"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p.h",
+   "line": 445,
+   "message": "String buffer placed before pointer in struct 'p2p_peer_info': 'char serial_number[WPS_SERIAL_NUMBER_MAX_LEN + 1];' before 'struct wpabuf *wps_vendor_ext[P2P_MAX_WPS_VENDOR_EXT];' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'char serial_number' after the pointer field 'struct wpabuf *wps_vendor_ext[P2P_MAX_WPS_VENDOR_EXT];', or use a char* pointer instead of a char array"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p.h",
+   "line": 559,
+   "message": "String buffer placed before pointer in struct 'p2p_config': 'char country[3];' before 'struct p2p_channel *pref_chan;' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'char country' after the pointer field 'struct p2p_channel *pref_chan;', or use a char* pointer instead of a char array"
+  },
+  {
+   "column": 58,
+   "file": "src/p2p/p2p.h",
+   "line": 1527,
+   "message": "Array declaration 'dev_types[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 58,
+   "file": "src/p2p/p2p.h",
+   "line": 1527,
+   "message": "Array declaration 'dev_types[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 40,
+   "file": "src/p2p/p2p.h",
+   "line": 1641,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 16,
+   "file": "src/p2p/p2p.h",
+   "line": 1673,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.h",
+   "line": 2219,
+   "message": "Function has pointer parameter without size argument: 'int p2p_ie_text(struct wpabuf *p2p_ie, char *buf, char *end);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'char *buf' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.h",
+   "line": 2219,
+   "message": "Function has pointer parameter without size argument: 'int p2p_ie_text(struct wpabuf *p2p_ie, char *buf, char *end);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'char *end' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.h",
+   "line": 2232,
+   "message": "Function has pointer parameter without size argument: 'int p2p_scan_result_text(const u8 *ies, size_t ies_len, char *buf, char *end);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'char *buf' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.h",
+   "line": 2232,
+   "message": "Function has pointer parameter without size argument: 'int p2p_scan_result_text(const u8 *ies, size_t ies_len, char *buf, char *end);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'char *end' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 62,
+   "file": "src/p2p/p2p.h",
+   "line": 2232,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 73,
+   "file": "src/p2p/p2p.h",
+   "line": 2232,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.h",
+   "line": 2288,
+   "message": "Function has pointer parameter without size argument: 'void p2p_build_ssid(struct p2p_data *p2p, u8 *ssid, size_t *ssid_len);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *ssid_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 11,
+   "file": "src/p2p/p2p.h",
+   "line": 2353,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.h",
+   "line": 2410,
+   "message": "Function has pointer parameter without size argument: 'int p2p_get_dev_identity_key(struct p2p_data *p2p, const u8 *dev_addr,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *dik_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.h",
+   "line": 2564,
+   "message": "Function has pointer parameter without size argument: 'void p2p_loop_on_all_groups(struct p2p_data *p2p,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'int (*group_callback)(struct p2p_group *group,\n\t\t\t\t\t\t  void *user_data)' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.h",
+   "line": 2824,
+   "message": "Function has pointer parameter without size argument: 'int p2p_pasn_get_ptk(struct p2p_data *p2p, const u8 **buf, size_t *buf_len);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *buf_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 50,
+   "file": "src/p2p/p2p.h",
+   "line": 2826,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ],
+ "src/utils/state_machine.h": [
+  {
+   "column": 1,
+   "file": "src/utils/state_machine.h",
+   "line": 32,
+   "message": "Macro 'SM_STATE' uses token concatenation operator (##) which prevents parameter expansion - consider using two-level macro indirection for proper expansion",
+   "rule_id": "PRE05-C",
+   "severity": "Low",
+   "suggestion": "Use two-level indirection: define a wrapper macro that calls another macro with ##, allowing parameters to expand first"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/state_machine.h",
+   "line": 46,
+   "message": "Function-like macro 'SM_ENTRY' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/utils/state_machine.h",
+   "line": 46,
+   "message": "Macro parameter 'state' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'state' in parentheses: (state) instead of state"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/state_machine.h",
+   "line": 46,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (if (!global || sm->machine ## _state != machine ## _ ## state) { \\\n\tsm->changed = true; \\\n\twpa_printf(MSG_DEBUG, STATE_MACHINE_DEBUG_PREFIX \": \" #machine \\\n\t\t   \" entering state \" #state); \\\n} \\\nsm->machine ## _state = machine ## _ ## state;)"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/state_machine.h",
+   "line": 46,
+   "message": "Macro 'SM_ENTRY' uses token concatenation operator (##) which prevents parameter expansion - consider using two-level macro indirection for proper expansion",
+   "rule_id": "PRE05-C",
+   "severity": "Low",
+   "suggestion": "Use two-level indirection: define a wrapper macro that calls another macro with ##, allowing parameters to expand first"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/state_machine.h",
+   "line": 46,
+   "message": "Multistatement macro 'SM_ENTRY' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+   "rule_id": "PRE10-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/state_machine.h",
+   "line": 46,
+   "message": "Macro 'SM_ENTRY' definition ends with a semicolon. This can cause unexpected behavior when the macro is used.",
+   "rule_id": "PRE11-C",
+   "severity": "Medium",
+   "suggestion": "Remove the trailing semicolon from the macro definition. The semicolon should be added by the macro user, not in the definition."
+  },
+  {
+   "column": 1,
+   "file": "src/utils/state_machine.h",
+   "line": 46,
+   "message": "Macro evaluates parameter 'machine' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/state_machine.h",
+   "line": 65,
+   "message": "Function-like macro 'SM_ENTRY_M' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/utils/state_machine.h",
+   "line": 65,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (if (!global || sm->data ## _ ## state != machine ## _ ## _state) { \\\n\tsm->changed = true; \\\n\twpa_printf(MSG_DEBUG, STATE_MACHINE_DEBUG_PREFIX \": \" \\\n\t\t   #machine \" entering state \" #_state); \\\n} \\\nsm->data ## _ ## state = machine ## _ ## _state;)"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/state_machine.h",
+   "line": 65,
+   "message": "Macro 'SM_ENTRY_M' uses token concatenation operator (##) which prevents parameter expansion - consider using two-level macro indirection for proper expansion",
+   "rule_id": "PRE05-C",
+   "severity": "Low",
+   "suggestion": "Use two-level indirection: define a wrapper macro that calls another macro with ##, allowing parameters to expand first"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/state_machine.h",
+   "line": 65,
+   "message": "Multistatement macro 'SM_ENTRY_M' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+   "rule_id": "PRE10-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/state_machine.h",
+   "line": 65,
+   "message": "Macro 'SM_ENTRY_M' definition ends with a semicolon. This can cause unexpected behavior when the macro is used.",
+   "rule_id": "PRE11-C",
+   "severity": "Medium",
+   "suggestion": "Remove the trailing semicolon from the macro definition. The semicolon should be added by the macro user, not in the definition."
+  },
+  {
+   "column": 1,
+   "file": "src/utils/state_machine.h",
+   "line": 65,
+   "message": "Macro evaluates parameter 'machine' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/state_machine.h",
+   "line": 83,
+   "message": "Function-like macro 'SM_ENTRY_MA' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/utils/state_machine.h",
+   "line": 83,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (if (!global || sm->data ## _ ## state != machine ## _ ## _state) { \\\n\tsm->changed = true; \\\n\twpa_printf(MSG_DEBUG, STATE_MACHINE_DEBUG_PREFIX \": \" MACSTR \" \" \\\n\t\t   #machine \" entering state \" #_state, \\\n\t\t   MAC2STR(STATE_MACHINE_ADDR)); \\\n} \\\nsm->data ## _ ## state = machine ## _ ## _state;)"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/state_machine.h",
+   "line": 83,
+   "message": "Macro 'SM_ENTRY_MA' uses token concatenation operator (##) which prevents parameter expansion - consider using two-level macro indirection for proper expansion",
+   "rule_id": "PRE05-C",
+   "severity": "Low",
+   "suggestion": "Use two-level indirection: define a wrapper macro that calls another macro with ##, allowing parameters to expand first"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/state_machine.h",
+   "line": 83,
+   "message": "Multistatement macro 'SM_ENTRY_MA' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+   "rule_id": "PRE10-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/state_machine.h",
+   "line": 83,
+   "message": "Macro 'SM_ENTRY_MA' definition ends with a semicolon. This can cause unexpected behavior when the macro is used.",
+   "rule_id": "PRE11-C",
+   "severity": "Medium",
+   "suggestion": "Remove the trailing semicolon from the macro definition. The semicolon should be added by the macro user, not in the definition."
+  },
+  {
+   "column": 1,
+   "file": "src/utils/state_machine.h",
+   "line": 83,
+   "message": "Macro evaluates parameter 'machine' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/state_machine.h",
+   "line": 101,
+   "message": "Macro 'SM_ENTER' uses token concatenation operator (##) which prevents parameter expansion - consider using two-level macro indirection for proper expansion",
+   "rule_id": "PRE05-C",
+   "severity": "Low",
+   "suggestion": "Use two-level indirection: define a wrapper macro that calls another macro with ##, allowing parameters to expand first"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/state_machine.h",
+   "line": 114,
+   "message": "Macro 'SM_ENTER_GLOBAL' uses token concatenation operator (##) which prevents parameter expansion - consider using two-level macro indirection for proper expansion",
+   "rule_id": "PRE05-C",
+   "severity": "Low",
+   "suggestion": "Use two-level indirection: define a wrapper macro that calls another macro with ##, allowing parameters to expand first"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/state_machine.h",
+   "line": 126,
+   "message": "Macro 'SM_STEP' uses token concatenation operator (##) which prevents parameter expansion - consider using two-level macro indirection for proper expansion",
+   "rule_id": "PRE05-C",
+   "severity": "Low",
+   "suggestion": "Use two-level indirection: define a wrapper macro that calls another macro with ##, allowing parameters to expand first"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/state_machine.h",
+   "line": 136,
+   "message": "Macro 'SM_STEP_RUN' uses token concatenation operator (##) which prevents parameter expansion - consider using two-level macro indirection for proper expansion",
+   "rule_id": "PRE05-C",
+   "severity": "Low",
+   "suggestion": "Use two-level indirection: define a wrapper macro that calls another macro with ##, allowing parameters to expand first"
+  }
+ ],
+ "wpa_supplicant/dbus/dbus_common.c": [
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_common.c",
+   "line": 16,
+   "message": "Header file 'dbus_common.h' has the same first 8 characters (case-insensitive) as 'dbus_common_i.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'dbus_common.h' -> unique name)"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/dbus/dbus_common.c",
+   "line": 35,
+   "message": "Function 'dbus_connection_get_dispatch_status' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/dbus/dbus_common.c",
+   "line": 37,
+   "message": "Function 'dbus_connection_dispatch' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 66,
+   "file": "wpa_supplicant/dbus/dbus_common.c",
+   "line": 51,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_common.c",
+   "line": 61,
+   "message": "Function 'dbus_connection_ref' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/dbus/dbus_common.c",
+   "line": 69,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/dbus/dbus_common.c",
+   "line": 105,
+   "message": "Function 'dbus_watch_get_enabled' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 49,
+   "file": "wpa_supplicant/dbus/dbus_common.c",
+   "line": 130,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/dbus/dbus_common.c",
+   "line": 151,
+   "message": "Function 'dbus_watch_get_enabled' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 34,
+   "file": "wpa_supplicant/dbus/dbus_common.c",
+   "line": 158,
+   "message": "Pointer parameter 'eloop_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *eloop_ctx'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_common.c",
+   "line": 161,
+   "message": "Function 'dbus_timeout_handle' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/dbus/dbus_common.c",
+   "line": 169,
+   "message": "Function 'dbus_timeout_get_enabled' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/dbus/dbus_common.c",
+   "line": 192,
+   "message": "Function 'dbus_timeout_get_enabled' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 47,
+   "file": "wpa_supplicant/dbus/dbus_common.c",
+   "line": 199,
+   "message": "Pointer parameter 'signal_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *signal_ctx'"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/dbus/dbus_common.c",
+   "line": 206,
+   "message": "Function 'dbus_connection_get_dispatch_status' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_common.c",
+   "line": 211,
+   "message": "Function 'dbus_connection_ref' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_common.c",
+   "line": 212,
+   "message": "Function 'dbus_connection_dispatch' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_common.c",
+   "line": 229,
+   "message": "Return value of 'raise' ignored: 'raise(SIGPOLL)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_common.c",
+   "line": 229,
+   "message": "Use of raise() with signal for normal control flow instead of abnormal events.",
+   "rule_id": "SIG02-C",
+   "severity": "High",
+   "suggestion": "Avoid using signals for normal program flow. Use function calls, return values, or proper control structures instead."
+  },
+  {
+   "column": 36,
+   "file": "wpa_supplicant/dbus/dbus_common.c",
+   "line": 263,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_common.c",
+   "line": 341,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/dbus/dbus_common.c",
+   "line": 345,
+   "message": "Dereference of uninitialized pointer 'priv'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'priv' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_common.c",
+   "line": 359,
+   "message": "Function returns pointer to local variable 'priv' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/dbus/dbus_common.c",
+   "line": 365,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  }
+ ]
+}

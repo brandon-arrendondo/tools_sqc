@@ -1,0 +1,634 @@
+{
+ "src/utils/os_win32.c": [
+  {
+   "column": 3,
+   "file": "src/utils/os_win32.c",
+   "line": 20,
+   "message": "Function 'Sleep' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_win32.c",
+   "line": 20,
+   "message": "arithmetic operator '*' applied directly to time_t-typed 'sec' -- the encoding of time_t is unspecified",
+   "rule_id": "MSC05-C",
+   "severity": "Low",
+   "suggestion": "Use difftime() to compute a duration between two time_t values instead of subtracting/adding them directly"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_win32.c",
+   "line": 22,
+   "message": "Function 'Sleep' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_win32.c",
+   "line": 22,
+   "message": "arithmetic operator '/' applied directly to time_t-typed 'usec' -- the encoding of time_t is unspecified",
+   "rule_id": "MSC05-C",
+   "severity": "Low",
+   "suggestion": "Use difftime() to compute a duration between two time_t values instead of subtracting/adding them directly"
+  },
+  {
+   "column": 7,
+   "file": "src/utils/os_win32.c",
+   "line": 43,
+   "message": "Floating-point division without error checking (consider using feclearexcept/fetestexcept)",
+   "rule_id": "FLP03-C",
+   "severity": "Low",
+   "suggestion": "Use feclearexcept(FE_ALL_EXCEPT) before and fetestexcept(FE_ALL_EXCEPT) after floating-point operations"
+  },
+  {
+   "column": 28,
+   "file": "src/utils/os_win32.c",
+   "line": 45,
+   "message": "Modulo operator used with potentially signed operands. The result of % with negative operands is implementation-defined and can be negative. Use unsigned types (size_t, unsigned int) or explicitly handle negative remainders.",
+   "rule_id": "INT10-C",
+   "severity": "Medium",
+   "suggestion": "Convert operands to unsigned types (size_t, unsigned int) or add explicit checks for negative values"
+  },
+  {
+   "column": 11,
+   "file": "src/utils/os_win32.c",
+   "line": 56,
+   "message": "Variable 'now' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'now' before use, e.g., at its declaration"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_win32.c",
+   "line": 82,
+   "message": "Return value of 'mktime' assigned to 't_local' but not checked for errors: 'mktime(&tm)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_win32.c",
+   "line": 85,
+   "message": "Storing pointer returned by 'localtime' is prohibited. The data referenced may be overwritten by subsequent calls. Use strdup(), malloc()/strcpy(), or consume the value immediately.",
+   "rule_id": "ENV34-C",
+   "severity": "Medium",
+   "suggestion": "Instead of 'ptr = localtime()', use 'ptr = strdup(localtime())' and remember to free() later, or use 'const char *ptr' for immediate use only"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_win32.c",
+   "line": 85,
+   "message": "Return value of 'localtime' assigned to 'tm1' but not checked for errors: 'localtime(&t_local)' - Returns NULL on error",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (result == NULL) before using time structure"
+  },
+  {
+   "column": 8,
+   "file": "src/utils/os_win32.c",
+   "line": 85,
+   "message": "Call to non-thread-safe function 'localtime'. Use strftime() with localtime_r()/gmtime_r() (POSIX), or use thread-safe time conversion functions",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strftime() with localtime_r()/gmtime_r() (POSIX), or use thread-safe time conversion functions"
+  },
+  {
+   "column": 8,
+   "file": "src/utils/os_win32.c",
+   "line": 85,
+   "message": "'localtime()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'localtime_r' instead for thread safety"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_win32.c",
+   "line": 87,
+   "message": "Return value of 'mktime' assigned to 't1' but not checked for errors: 'mktime(tm1)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  },
+  {
+   "column": 8,
+   "file": "src/utils/os_win32.c",
+   "line": 87,
+   "message": "Passing variable 'tm1' (from 'gmtime()') to function 'mktime()' which may modify it.",
+   "rule_id": "ENV30-C",
+   "severity": "Medium",
+   "suggestion": "Copy the return value to a local buffer before passing to functions that may modify it"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_win32.c",
+   "line": 88,
+   "message": "Storing pointer returned by 'gmtime' is prohibited. The data referenced may be overwritten by subsequent calls. Use strdup(), malloc()/strcpy(), or consume the value immediately.",
+   "rule_id": "ENV34-C",
+   "severity": "Medium",
+   "suggestion": "Instead of 'ptr = gmtime()', use 'ptr = strdup(gmtime())' and remember to free() later, or use 'const char *ptr' for immediate use only"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_win32.c",
+   "line": 88,
+   "message": "Return value of 'gmtime' assigned to 'tm1' but not checked for errors: 'gmtime(&t_local)' - Returns NULL on error",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (result == NULL) before using time structure"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_win32.c",
+   "line": 88,
+   "message": "Call to non-thread-safe function 'gmtime'. Use strftime() with localtime_r()/gmtime_r() (POSIX), or use thread-safe time conversion functions",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strftime() with localtime_r()/gmtime_r() (POSIX), or use thread-safe time conversion functions"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_win32.c",
+   "line": 88,
+   "message": "'gmtime()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'gmtime_r' instead for thread safety"
+  },
+  {
+   "column": 4,
+   "file": "src/utils/os_win32.c",
+   "line": 90,
+   "message": "Return value of 'mktime' assigned to 't2' but not checked for errors: 'mktime(tm1)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_win32.c",
+   "line": 90,
+   "message": "Passing variable 'tm1' (from 'gmtime()') to function 'mktime()' which may modify it.",
+   "rule_id": "ENV30-C",
+   "severity": "Medium",
+   "suggestion": "Copy the return value to a local buffer before passing to functions that may modify it"
+  },
+  {
+   "column": 16,
+   "file": "src/utils/os_win32.c",
+   "line": 91,
+   "message": "arithmetic operator '-' applied directly to time_t-typed 't2' -- the encoding of time_t is unspecified",
+   "rule_id": "MSC05-C",
+   "severity": "Low",
+   "suggestion": "Use difftime() to compute a duration between two time_t values instead of subtracting/adding them directly"
+  },
+  {
+   "column": 7,
+   "file": "src/utils/os_win32.c",
+   "line": 97,
+   "message": "arithmetic operator '-' applied directly to time_t-typed 'tz_offset' -- the encoding of time_t is unspecified",
+   "rule_id": "MSC05-C",
+   "severity": "Low",
+   "suggestion": "Use difftime() to compute a duration between two time_t values instead of subtracting/adding them directly"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_win32.c",
+   "line": 107,
+   "message": "Storing pointer returned by 'gmtime' is prohibited. The data referenced may be overwritten by subsequent calls. Use strdup(), malloc()/strcpy(), or consume the value immediately.",
+   "rule_id": "ENV34-C",
+   "severity": "Medium",
+   "suggestion": "Instead of 'ptr = gmtime()', use 'ptr = strdup(gmtime())' and remember to free() later, or use 'const char *ptr' for immediate use only"
+  },
+  {
+   "column": 8,
+   "file": "src/utils/os_win32.c",
+   "line": 107,
+   "message": "Call to non-thread-safe function 'gmtime'. Use strftime() with localtime_r()/gmtime_r() (POSIX), or use thread-safe time conversion functions",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strftime() with localtime_r()/gmtime_r() (POSIX), or use thread-safe time conversion functions"
+  },
+  {
+   "column": 8,
+   "file": "src/utils/os_win32.c",
+   "line": 107,
+   "message": "'gmtime()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'gmtime_r' instead for thread safety"
+  },
+  {
+   "column": 33,
+   "file": "src/utils/os_win32.c",
+   "line": 132,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_win32.c",
+   "line": 150,
+   "message": "'rand()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'rand_r or a thread-local PRNG' instead for thread safety"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_win32.c",
+   "line": 150,
+   "message": "Use of rand() function for pseudorandom number generation detected. rand() produces poor quality random numbers that may be predictable.",
+   "rule_id": "MSC30-C",
+   "severity": "Medium",
+   "suggestion": "Replace rand() with a better alternative: random() (POSIX), drand48() (POSIX), arc4random() (cryptographic), or BCryptGenRandom() (Windows)"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_win32.c",
+   "line": 150,
+   "message": "Pseudorandom number generator 'rand()' called without proper seeding - will produce predictable sequences",
+   "rule_id": "MSC32-C",
+   "severity": "Medium",
+   "suggestion": "Call srand() or srandom() with a non-deterministic seed (e.g., from time() or /dev/urandom) before calling rand()"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os_win32.c",
+   "line": 154,
+   "message": "Function 'os_rel2abs_path' does not validate pointer parameter 'rel_path' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'rel_path' at the start of the function, e.g., 'if (!rel_path) { return error_code; }'"
+  },
+  {
+   "column": 31,
+   "file": "src/utils/os_win32.c",
+   "line": 193,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/os_win32.c",
+   "line": 198,
+   "message": "File opened for reading using variable filename 'name' without verifying file attributes (fstat + st_uid/st_gid check)",
+   "rule_id": "FIO05-C",
+   "severity": "Medium",
+   "suggestion": "Use fstat() to check file ownership (st_uid, st_gid) before reading untrusted files"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/os_win32.c",
+   "line": 198,
+   "message": "fopen() called without 'N' flag in mode string \"rb\". On Windows, file handles are inheritable by default unless the 'N' flag is specified.",
+   "rule_id": "WIN03-C",
+   "severity": "High",
+   "suggestion": "Add 'N' flag to the mode string (e.g., \"rwN\") to disable handle inheritance on Windows."
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_win32.c",
+   "line": 202,
+   "message": "Return value from fseek() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fseek()"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_win32.c",
+   "line": 202,
+   "message": "Return value of 'fseek' ignored: 'fseek(f, 0, SEEK_END)' - Returns non-zero on failure",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (fseek(file, offset, whence) != 0) for seek errors"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_win32.c",
+   "line": 202,
+   "message": "fseek() with SEEK_END should not be used on binary streams (undefined behavior with null padding)",
+   "rule_id": "FIO14-C",
+   "severity": "Medium",
+   "suggestion": "Use SEEK_SET or SEEK_CUR instead, or ensure stream is in text mode"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_win32.c",
+   "line": 202,
+   "message": "Using fseek()/ftell() to compute file size - use fstat() or platform-specific APIs instead",
+   "rule_id": "FIO19-C",
+   "severity": "Medium",
+   "suggestion": "Use fstat() with fileno() to get file size reliably"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_win32.c",
+   "line": 204,
+   "message": "Return value from fseek() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fseek()"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_win32.c",
+   "line": 204,
+   "message": "Return value of 'fseek' ignored: 'fseek(f, 0, SEEK_SET)' - Returns non-zero on failure",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (fseek(file, offset, whence) != 0) for seek errors"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_win32.c",
+   "line": 206,
+   "message": "Memory allocation result not cast; assign to 'buf' without explicit cast",
+   "rule_id": "MEM02-C",
+   "severity": "Low",
+   "suggestion": "Cast the result: (char *)malloc(...)"
+  },
+  {
+   "column": 8,
+   "file": "src/utils/os_win32.c",
+   "line": 206,
+   "message": "malloc() argument 1 contains arithmetic that may overflow: '*len'",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Validate arithmetic operations before passing to allocation functions"
+  },
+  {
+   "column": 8,
+   "file": "src/utils/os_win32.c",
+   "line": 206,
+   "message": "malloc() called with potentially zero size argument: '*len' without prior zero check. Zero-length allocations have implementation-defined behavior.",
+   "rule_id": "MEM04-C",
+   "severity": "Low",
+   "suggestion": "Check that size argument is non-zero before calling malloc()"
+  },
+  {
+   "column": 8,
+   "file": "src/utils/os_win32.c",
+   "line": 206,
+   "message": "Sensitive data allocated with malloc may be written to disk. Use mlock() (POSIX) or VirtualLock() (Windows) to lock memory pages, or use setrlimit(RLIMIT_CORE, 0) to disable core dumps.",
+   "rule_id": "MEM06-C",
+   "severity": "Medium",
+   "suggestion": "Consider using mlock()/munlock() to prevent memory from being swapped to disk, or use setrlimit() to disable core dumps."
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_win32.c",
+   "line": 208,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_win32.c",
+   "line": 209,
+   "message": "Function returns without releasing all resources. Leaked: buf. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_win32.c",
+   "line": 212,
+   "message": "Return value from fread() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fread()"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_win32.c",
+   "line": 212,
+   "message": "Return value of 'fread' ignored: 'fread(buf, 1, *len, f)' - Returns number of items read, may be less than requested",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (items_read == expected_items) or handle partial reads"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_win32.c",
+   "line": 212,
+   "message": "fread() used without explicitly accounting for null terminator in character buffer",
+   "rule_id": "FIO17-C",
+   "severity": "Medium",
+   "suggestion": "Ensure buffer size accounts for null terminator, or explicitly add null terminator after fread()"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_win32.c",
+   "line": 213,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_win32.c",
+   "line": 213,
+   "message": "Resource 'f' is closed again after already being closed at line 208. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_win32.c",
+   "line": 215,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_win32.c",
+   "line": 215,
+   "message": "Function returns without releasing all resources. Leaked: buf. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 5,
+   "file": "src/utils/os_win32.c",
+   "line": 223,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_win32.c",
+   "line": 239,
+   "message": "calloc(1, size) may cause integer overflow in size calculation",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Check for overflow: if (count > SIZE_MAX / size) { /* handle error */ }"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_win32.c",
+   "line": 239,
+   "message": "calloc() called with potentially zero argument(s) without prior check: num='1', size='size'. Zero-length allocations have implementation-defined behavior.",
+   "rule_id": "MEM04-C",
+   "severity": "Low",
+   "suggestion": "Check that both arguments are non-zero before calling calloc()"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_win32.c",
+   "line": 239,
+   "message": "Sensitive data allocated with calloc may be written to disk. Use mlock() (POSIX) or VirtualLock() (Windows) to lock memory pages, or use setrlimit(RLIMIT_CORE, 0) to disable core dumps.",
+   "rule_id": "MEM06-C",
+   "severity": "Medium",
+   "suggestion": "Consider using mlock()/munlock() to prevent memory from being swapped to disk, or use setrlimit() to disable core dumps."
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_win32.c",
+   "line": 239,
+   "message": "calloc() arguments may wrap when multiplied; check for overflow before allocation",
+   "rule_id": "MEM07-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (num_elements > SIZE_MAX/element_size) { /* handle error */ }"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os_win32.c",
+   "line": 243,
+   "message": "Function 'os_strlcpy' does not validate pointer parameter 'src' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'src' at the start of the function, e.g., 'if (!src) { return error_code; }'"
+  },
+  {
+   "column": 24,
+   "file": "src/utils/os_win32.c",
+   "line": 243,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 42,
+   "file": "src/utils/os_win32.c",
+   "line": 243,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_win32.c",
+   "line": 250,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'dest' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_win32.c",
+   "line": 251,
+   "message": "Direct assignment of flexible array structure instances. Use memcpy() for dynamic copying.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Use memcpy() to copy the structure and its flexible array member"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_win32.c",
+   "line": 251,
+   "message": "Pointer dereference '*dest++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 19,
+   "file": "src/utils/os_win32.c",
+   "line": 251,
+   "message": "Pointer dereference '*s' (char type) assigned to larger type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment: (unsigned char)*ptr"
+  },
+  {
+   "column": 19,
+   "file": "src/utils/os_win32.c",
+   "line": 251,
+   "message": "Pointer dereference '*s++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 4,
+   "file": "src/utils/os_win32.c",
+   "line": 259,
+   "message": "Pointer dereference '*dest' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 32,
+   "file": "src/utils/os_win32.c",
+   "line": 268,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 47,
+   "file": "src/utils/os_win32.c",
+   "line": 268,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 29,
+   "file": "src/utils/os_win32.c",
+   "line": 288,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_win32.c",
+   "line": 290,
+   "message": "Variable 'r' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const r = ..."
+  }
+ ]
+}

@@ -1,0 +1,906 @@
+{
+ "src/eap_peer/eap_tls_common.c": [
+  {
+   "column": 61,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 31,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 46,
+   "message": "Pointer dereference '*name' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 5,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 57,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 23,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 165,
+   "message": "sizeof applied to pointer/array parameter 'params' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*params)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 9,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 277,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 5,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 309,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 44,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 352,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 44,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 378,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 69,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 378,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 20,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 379,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 394,
+   "message": "Function returns pointer to local variable 'out' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 12,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 420,
+   "message": "Array declaration 'context[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 14,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 431,
+   "message": "Hard-coded sensitive information detected passed to `eap_peer_tls_derive_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"EXPORTER_EAP_TLS_Method-Id\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 436,
+   "message": "Array/pointer 'id' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'id' after calling free(). Set pointer to NULL after freeing: free(id); id = NULL;"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 449,
+   "message": "Function returns without releasing all resources. Leaked: id, out. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 457,
+   "message": "Function returns pointer to local variable 'out' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 457,
+   "message": "Function returns without releasing all resources. Leaked: id, out. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 13,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 546,
+   "message": "Potential alignment violation: passing char * (alignment 1) through function to int (alignment 4)",
+   "rule_id": "EXP36-C",
+   "severity": "Low",
+   "suggestion": "Ensure function maintains proper pointer alignment or use properly aligned intermediate objects"
+  },
+  {
+   "column": 13,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 546,
+   "message": "Potential alignment violation: passing char * (alignment 1) through function to int (alignment 4)",
+   "rule_id": "EXP36-C",
+   "severity": "Low",
+   "suggestion": "Ensure function maintains proper pointer alignment or use properly aligned intermediate objects"
+  },
+  {
+   "column": 48,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 575,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 14,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 593,
+   "message": "Use-after-free: accessing freed pointer 'data->tls_out'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 606,
+   "message": "Local variable 'appl_data' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 13,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 745,
+   "message": "Potential alignment violation: passing char * (alignment 1) through function to int (alignment 4)",
+   "rule_id": "EXP36-C",
+   "severity": "Low",
+   "suggestion": "Ensure function maintains proper pointer alignment or use properly aligned intermediate objects"
+  },
+  {
+   "column": 13,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 745,
+   "message": "Potential alignment violation: passing char * (alignment 1) through function to int (alignment 4)",
+   "rule_id": "EXP36-C",
+   "severity": "Low",
+   "suggestion": "Ensure function maintains proper pointer alignment or use properly aligned intermediate objects"
+  },
+  {
+   "column": 13,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 745,
+   "message": "Potential alignment violation: passing char * (alignment 1) through function to int (alignment 4)",
+   "rule_id": "EXP36-C",
+   "severity": "Low",
+   "suggestion": "Ensure function maintains proper pointer alignment or use properly aligned intermediate objects"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 828,
+   "message": "Function returns pointer to local variable 'resp' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 44,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 838,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 855,
+   "message": "Function 'eap_peer_tls_status' does not validate integer parameter 'buflen' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'buflen' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 39,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 855,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 64,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 855,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 9,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 856,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 9,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 856,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 905,
+   "message": "Function 'eap_peer_tls_process_init' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 905,
+   "message": "Function 'eap_peer_tls_process_init' does not validate pointer parameter 'ret' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ret' at the start of the function, e.g., 'if (!ret) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 905,
+   "message": "Function 'eap_peer_tls_process_init' does not validate pointer parameter 'reqData' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'reqData' at the start of the function, e.g., 'if (!reqData) { return error_code; }'"
+  },
+  {
+   "column": 52,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 905,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 945,
+   "message": "Direct assignment of flexible array structure instances. Use memcpy() for dynamic copying.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Use memcpy() to copy the structure and its flexible array member"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 985,
+   "message": "Function returns pointer to local variable 'pos' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 40,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 1027,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 40,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 1059,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 19,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 1094,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 1116,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'pos' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 4,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 1129,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 18,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 1140,
+   "message": "Use-after-free: dereferencing freed pointer 'methods'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access memory after freeing it."
+  },
+  {
+   "column": 4,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 1147,
+   "message": "Array/pointer 'methods' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'methods' after calling free(). Set pointer to NULL after freeing: free(methods); methods = NULL;"
+  },
+  {
+   "column": 4,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 1148,
+   "message": "Array/pointer 'methods' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'methods' after calling free(). Set pointer to NULL after freeing: free(methods); methods = NULL;"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 1168,
+   "message": "Local variable 'methods' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 1183,
+   "message": "Function 'eap_peer_tls_phase2_nak' does not validate pointer parameter 'types' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'types' at the start of the function, e.g., 'if (!types) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 1183,
+   "message": "Function 'eap_peer_tls_phase2_nak' does not validate integer parameter 'num_types' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'num_types' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 23,
+   "file": "src/eap_peer/eap_tls_common.c",
+   "line": 1184,
+   "message": "Pointer parameter 'hdr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hdr'"
+  }
+ ],
+ "src/eap_server/eap_server_peap.c": [
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 98,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 50,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 107,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 29,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 108,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 48,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 136,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 48,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 153,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 26,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 175,
+   "message": "Dereference of uninitialized pointer 'data'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'data' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 195,
+   "message": "Function returns pointer to local variable 'data' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 59,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 214,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 232,
+   "message": "Function returns pointer to local variable 'req' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 267,
+   "message": "Function returns pointer to local variable 'encr_req' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 306,
+   "message": "Function returns pointer to local variable 'encr_req' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 51,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 311,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 11,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 333,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 491,
+   "message": "Function returns pointer to local variable 'encr_req' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 19,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 503,
+   "message": "Dereference of uninitialized pointer 'hdr'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'hdr' before dereferencing"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 523,
+   "message": "Function returns pointer to local variable 'encr_req' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 581,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 604,
+   "message": "Double-free: 'data->ssl.tls_out' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 42,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 620,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 52,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 620,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 57,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 655,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 29,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 656,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 18,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 726,
+   "message": "Variable 'pos' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 14,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 728,
+   "message": "Bitwise operator '|' used on signed operand 'tlv_type' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'tlv_type' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 9,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 780,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 18,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 849,
+   "message": "Variable 'pos' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 14,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 851,
+   "message": "Bitwise operator '|' used on signed operand 'tlv_type' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'tlv_type' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 11,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 881,
+   "message": "Pointer arithmetic 'pos + 4' goes 2 elements past the end of array 'pos[2]'. This exceeds array bounds.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Ensure pointer arithmetic stays within array bounds (0 to 2)"
+  },
+  {
+   "column": 19,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 882,
+   "message": "Variable 'vpos' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 15,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 884,
+   "message": "Bitwise operator '|' used on signed operand 'tlv_type' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'tlv_type' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 7,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 1046,
+   "message": "Use-after-free: accessing freed pointer 'data->phase2_key'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 1090,
+   "message": "Unreachable code after unconditional 'break'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 4,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 1145,
+   "message": "Memory allocated with 'wpabuf_alloc' for variable 'nbuf' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(nbuf)' before the variable goes out of scope"
+  },
+  {
+   "column": 34,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 1153,
+   "message": "Dereference of uninitialized pointer 'nhdr'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'nhdr' before dereferencing"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 1171,
+   "message": "Memory leak: 'nbuf' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'nbuf' before this return statement"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 1181,
+   "message": "Memory leak: 'nbuf' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'nbuf' before this return statement"
+  },
+  {
+   "column": 51,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 1211,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 43,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 1340,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 53,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 1340,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 53,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 1347,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 11,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 1352,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 1384,
+   "message": "Function returns pointer to local variable 'eapKeyData' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 1408,
+   "message": "Function returns pointer to local variable 'eapKeyData' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 55,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 1412,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 11,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 1417,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 1454,
+   "message": "Function returns pointer to local variable 'emsk' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 46,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 1458,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 56,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 1458,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 61,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 1465,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_server/eap_server_peap.c",
+   "line": 1481,
+   "message": "Memory allocated with 'eap_server_method_alloc' for variable 'eap' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(eap)' before the variable goes out of scope"
+  }
+ ]
+}

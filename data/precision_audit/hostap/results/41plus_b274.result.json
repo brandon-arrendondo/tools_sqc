@@ -1,0 +1,818 @@
+{
+ "labels": [
+  {
+   "rule": "API05-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 30,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ptr+size_t idiom (data,data_len); established API05-C FP class"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 37,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cast-away-const on data only used read-only for iov_base; never mutated downstream"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 37,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "u8=uint8_t has alignment 1, same as char; alignment-4 claim is factually wrong"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 44,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(l2->priv_addr) is sizeof of a struct member, unaffected by l2's pointer decay; correct idiom"
+  },
+  {
+   "rule": "DCL39-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 46,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg is os_memset(&msg,0,sizeof(msg)) at :40 before sendmsg; no padding leak, matches ifr-zeroed precedent"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 47,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "single-threaded eloop code, no pthread anywhere; strerror() safe (established hostap driver-code FP class)"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 47,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same as CON33-C: no-pthread FP"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 55,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "l2_packet_get_own_addr internal-only API, all callers pass a live l2 handle"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 55,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "l2 pinned by shared l2_packet.h backend-interface signature (tls_none.c precedent); other backends mutate via l2"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 62,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "dst_addr genuinely nullable by design (broadcast callers pass NULL) but never dereferenced here (see FN: address-of-pointer bug), so no NULL-deref risk from this line"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 75,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cast-away-const on buf only used read-only for iov_base; never mutated downstream"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 82,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(l2->priv_addr) correct idiom, not affected by pointer decay"
+  },
+  {
+   "rule": "DCL39-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 84,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg os_memset at :78 before sendmsg; zeroed struct, no padding leak"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 86,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread FP"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 86,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 94,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_ctx pinned by eloop_sock_handler typedef dispatch contract (eloop_register_read_sock)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 94,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sock_ctx pinned by eloop_sock_handler typedef dispatch contract"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 107,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread FP"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 107,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread FP"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 128,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "l2_packet_init internal-only API; ifname always a fixed interface-name string from internal callers"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 135,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "own_dir=\"/tmp\" never modified afterward, genuinely const-qualifiable"
+  },
+  {
+   "rule": "STR05-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 135,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "string literal assigned to non-const char*; established low-severity STR05-C class"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 136,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "priv_dir=\"/var/run/wpa_priv\" never modified, genuinely const-qualifiable"
+  },
+  {
+   "rule": "STR05-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 136,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "string literal assigned to non-const char*; established low-severity STR05-C class"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 138,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "static counter only touched from single-threaded eloop-driven l2_packet_init; no-pthread FP"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 143,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "u8 reply[ETH_ALEN+1] is a fixed compile-time-constant-sized array, not a VLA"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 167,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread FP"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 167,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread FP"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 171,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "false leak: own_socket_path already os_free'd + NULLed at :168-169 before this return"
+  },
+  {
+   "rule": "POS02-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 177,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bind() is on a local AF_UNIX privsep IPC socket, not a privileged network bind; matches driver_privsep.c precedent (41plus_b208)"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 179,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread FP"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 179,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread FP"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 197,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread FP"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 197,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread FP"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 202,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reply is the output buffer passed to recv(), which fills it; not read uninitialized"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 204,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread FP"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 204,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread FP"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 222,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "l2 = os_zalloc(...); heap storage, not automatic/local storage"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 222,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "success path returns l2, which legitimately owns own_socket_path/fd (ownership transfer to caller), not a leak"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 224,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: is a goto target reached from earlier error branches, not unreachable"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "false leak: own_socket_path already os_free'd + NULLed at :228-229 before this return"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 235,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "l2_packet_init_bridge thin wrapper forwarding to l2_packet_init; internal-only API"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 235,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same wrapper, own_addr forwarded unchecked to l2_packet_init"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 235,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same wrapper, rx_callback forwarded unchecked to l2_packet_init"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 249,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if (l2==NULL) return; is the standard idiomatic NULL check (established MEM10-C FP class)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 267,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "l2 pinned by shared l2_packet.h backend-interface signature"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 267,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf+len idiom, established API05-C FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 267,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "buf unused in this stub (/* TODO */ return -1) but pinned by shared multi-backend l2_packet_get_ip_addr signature; other backends (linux/freebsd/pcap) write through buf"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 274,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "l2_packet_notify_auth_start internal-only API, always called with a live l2 handle"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 280,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "l2 pinned by shared l2_packet.h backend-interface signature"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 14,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ieee802_11_defs.h/ieee802_11_common.h genuinely share 'ieee802_' first 8 chars; low-value literal-rule-text TP"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 14,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ieee802_11_defs.h/ieee802_11.h genuinely share first 8 chars; low-value TP"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 15,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ieee802_11_common.h/ieee802_11.h genuinely share first 8 chars; low-value TP"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 32,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ppe_thres_hdr itself only ever appears with bitwise >>/&; the arithmetic (+1,*) is on the AND's result, not on the variable directly"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 43,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "HE_PPE_THRES_NSS_MASK is a #define macro constant, not a variable at all"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 73,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cap cast from const buf is read-only (used only to size mcs/ppet fields), never mutated downstream"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 91,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd_eid_he_capab internal-only API; called from beacon-building code with always-valid hapd"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 91,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hapd used read-only in this function (mode/conf fields only read); genuinely const-qualifiable, low value"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 91,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eid aliased to local pos which is written through (*pos++=...); const-ing eid would break the assignment"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 98,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ie_size=0 initializer is always overwritten at :110 before any read; genuine trivial dead store"
+  },
+  {
+   "rule": "DCL22-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 99,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "epos is a plain local pointer walked across ordinary (non-signal, non-async) os_memcpy calls; not a volatile candidate"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 102,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eid is the function PARAMETER returned unchanged, not a local automatic-storage object"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 110,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "IEEE80211_HE_CAPAB_MIN_LEN + mcs_nss_size + ppet_size is a pure integer sum with no pointer operand at all"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 125,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "epos is a plain local u8* variable (declared :99), not a struct member; not accessed via '->' at all"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 153,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos derives from parameter eid (caller's buffer), not from any local automatic-storage array"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 157,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd_eid_he_operation internal-only API, closed call sites always pass valid eid buffer"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 157,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eid aliased to local pos which is written through (*pos++=...)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 165,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eid is the parameter returned unchanged on an early exit, not local storage"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 275,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos derives from parameter eid, not local automatic storage"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 279,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd_eid_he_mu_edca_parameter_set internal-only API, hapd always valid"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 279,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eid internal-only API, closed call sites"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 279,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eid aliased to pos, written through via *pos++ and the edca overlay"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 286,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*edca) is a compile-time type-size expression, not a runtime dereference of the still-uninitialized edca"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 306,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos derives from parameter eid, not local automatic storage"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 310,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd_eid_spatial_reuse internal-only API, eid always valid"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 310,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eid aliased to local pos which is written through"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 317,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eid is the parameter returned unchanged on an early exit, not local storage"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 353,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos derives from parameter eid, not local automatic storage"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 357,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd_eid_he_6ghz_band_cap internal-only API, eid always valid"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 357,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hapd used read-only (mode/conf/iconf fields only read); genuinely const-qualifiable, low value"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 357,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eid aliased to local pos which is written through"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 386,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*cap) is compile-time type-size, not a real dereference of the still-uninitialized cap"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 393,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos derives from parameter eid, not local automatic storage"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 397,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd_get_he_capab has exactly one call site (ieee802_11.c:5463), always passing &he_cap, never NULL"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 397,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "hapd is completely unused in this function body; trivially const-qualifiable"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 405,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*neg_he_cap) is the correct sizeof-pointee idiom, unrelated to parameter decay"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 406,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*neg_he_cap) correct sizeof-pointee idiom"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 413,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hapd used read-only in check_valid_he_mcs (current_mode/conf fields only read); low-value TP"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 417,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "mcs_count=0 initializer always overwritten by the switch below before any read; genuine trivial dead store"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 450,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_mcs_set is a plain local const u8* variable (declared :419), initialized FROM a struct member's address but not itself a struct member"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 455,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "j is only ever a loop counter / shift-count operand (j++, j*2); never itself operated on with a bitwise operator"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 455,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "j is the shift-COUNT (right operand of >>), not the value being shifted; the shifted value ap_tx_mcs_set is already unsigned u16"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 458,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same misapplication: j is the shift count, not the shifted operand"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 478,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "check_valid_he_mcs is a locally-defined boolean-style predicate (1=valid/0=invalid) used consistently with '!'; no real success/failure ambiguity"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 536,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "mode is an internal enum ieee80211_op_mode; only 2 call sites, both passing fixed compile-time constants, never wire-derived"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 540,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same closed-call-site enum parameter, not attacker-controlled"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 547,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd_eid_cca internal-only API, eid always valid from beacon-building code"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 547,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hapd used read-only (cca_in_progress/cca_count/cca_color fields only read); low-value TP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 547,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eid is directly written through (*eid++ = ...) in this function, unlike the aliased-pos shape elsewhere in the file"
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/l2_packet/l2_packet_privsep.c",
+   "line": 71,
+   "rule": "ARR01-C",
+   "desc": "l2_packet_send() builds io[1].iov_base = &dst_addr (address of the local `const u8 *dst_addr` PARAMETER itself, a stack slot holding a pointer) instead of (u8 *) dst_addr (the actual 6-byte MAC address it points to, as correctly done for `buf` two lines below at io[3]). This sends ETH_ALEN=6 raw bytes of the pointer's own in-memory representation to the wpa_priv privileged helper as the 'destination address' field, not the real MAC address -- a genuine data-corruption bug in the CONFIG_PRIVSEP build, silent (no crash, no NULL-deref) but functionally wrong every time l2_packet_send() is used with privilege separation enabled.",
+   "upstream_present": "unknown"
+  },
+  {
+   "file": "src/ap/ieee802_11_he.c",
+   "line": 478,
+   "rule": "ARR30-C",
+   "desc": "copy_sta_he_capab()'s guard chain calls check_valid_he_mcs(hapd, he_capab, opmode) BEFORE ieee80211_invalid_he_cap_size(he_capab, he_capab_len) validates the actual received length. check_valid_he_mcs() takes no length parameter at all and unconditionally reads sta_mcs_set[i*4] (i.e. bytes at offset IEEE80211_HE_CAPAB_MIN_LEN(17)+i*4 into the peer-supplied buffer, for i up to mcs_count-1 which can be 1-3 depending on the AP's OWN configured channel width) via WPA_GET_LE16 at ieee802_11_he.c:450-452. he_capab/he_capab_len come directly from the STA's wire-supplied HE Capabilities IE (elems->he_capabilities / elems->he_capabilities_len in ieee802_11.c:5463-5555, attacker-controlled length). A malicious/malformed STA sending an HE Capabilities IE shorter than 17+mcs_nss_size bytes (e.g. exactly the 17-byte mac+phy-capab minimum, omitting the MCS set entirely) causes an out-of-bounds read past the actual received IE buffer before any length check runs -- a real CWE-125 buffer over-read on attacker-controlled wire data, exactly the class of bug the FN read-through was asked to hunt for.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 14,
+  "fp": 85,
+  "fn": 2
+ }
+}

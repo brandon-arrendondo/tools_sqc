@@ -1,0 +1,47 @@
+{
+ "labels": [
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 8089,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP pattern; also factually wrong: while(vlan_gsm) loop already guards every deref of gsm/vlan_gsm."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 8089,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "gsm is genuinely read-only (only vlan_gsm mutated); plain lookup helper, not a vtable/eloop callback slot. DCL13-C plain-helper TP pattern."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 8105,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "confused local automatic-storage pointer variable with local storage; vlan_gsm always points to heap (os_zalloc'd) wpa_group nodes, matches comeback_token.c FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 8121,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "wpa_auth_get_first_sta_seen only reads wpa_auth->group; matches b54's wpa_auth_get_*/sta_*/pmksa_* accessor TP pattern (not a registered callback)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 8130,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_select_vlan_wpa_group non-null-by-construction pattern (b52/b53): wpa_init fails wpa_init() itself if wpa_group_init fails, so wpa_auth->group is always non-NULL once wpa_auth exists; gsm input here can't be NULL, so callee can't return NULL."
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": ["src/ap/wpa_auth.c#part4of4"],
+ "summary": {"tp": 2, "fp": 3, "fn": 0}
+}

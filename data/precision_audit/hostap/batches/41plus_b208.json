@@ -1,0 +1,796 @@
+{
+ "src/drivers/driver_privsep.c": [
+  {
+   "column": 60,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 30,
+   "message": "Pointer parameter 'drv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *drv'"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 36,
+   "message": "sizeof applied to pointer/array parameter 'drv' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(drv->priv_addr)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 39,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 38,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 39,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 38,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 15,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 44,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 9,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 45,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 19,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 52,
+   "message": "Do not cast away const qualification: '(u8 *) data'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 19,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 52,
+   "message": "Casting from char * (alignment 1) to u8 * (alignment 4) may cause alignment issues",
+   "rule_id": "EXP36-C",
+   "severity": "Low",
+   "suggestion": "Use memcpy or ensure proper alignment before casting"
+  },
+  {
+   "column": 20,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 59,
+   "message": "sizeof applied to pointer/array parameter 'drv' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(drv->priv_addr)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 61,
+   "message": "Structure 'msg' passed to trust boundary function 'sendmsg' may leak padding bytes. Use packed attributes, explicit padding fields, or serialize fields individually.",
+   "rule_id": "DCL39-C",
+   "severity": "Medium",
+   "suggestion": "Use __attribute__((__packed__)) or serialize fields: copy_to_user(buf, &msg.a, sizeof(msg.a)); ..."
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 63,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 63,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 40,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 78,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 40,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 78,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 39,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 83,
+   "message": "Potential null pointer dereference of variable 'reply_len'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'reply_len' is not NULL before dereferencing"
+  },
+  {
+   "column": 9,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 86,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 9,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 86,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 29,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 167,
+   "message": "Dereference of uninitialized pointer 'results'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'results' before dereferencing"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 177,
+   "message": "Function returns without releasing all resources. Leaked: buf, results->res. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 180,
+   "message": "Loop uses sizeof() as bound (byte count) but performs pointer arithmetic (element-based), causing double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Use array element count (sizeof(array)/sizeof(array[0])) instead of sizeof(array) in loop bound"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 204,
+   "message": "Function returns pointer to local variable 'results' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 204,
+   "message": "Function returns without releasing all resources. Leaked: buf, results->res. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 18,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 265,
+   "message": "Dereference of uninitialized pointer 'data'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'data' before dereferencing"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 285,
+   "message": "Casting from char * (alignment 1) to u8 * (alignment 4) may cause alignment issues",
+   "rule_id": "EXP36-C",
+   "severity": "Low",
+   "suggestion": "Use memcpy or ensure proper alignment before casting"
+  },
+  {
+   "column": 18,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 315,
+   "message": "Dereference of uninitialized pointer 'data'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'data' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 362,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 362,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 51,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 379,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 48,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 390,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 57,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 390,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 19,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 396,
+   "message": "Dereference of uninitialized pointer 'auth'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'auth' before dereferencing"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 402,
+   "message": "Accessing union 'data' member 'auth' after writing to 'freq' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 49,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 416,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 418,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 437,
+   "message": "Accessing union 'data' member 'assoc_info' after writing to 'freq' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 439,
+   "message": "Value assigned to 'pos' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 60,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 447,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 33,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 454,
+   "message": "Variable 'data' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'data' before use, e.g., at its declaration"
+  },
+  {
+   "column": 33,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 454,
+   "message": "Accessing union 'data' member 'interface_status' after writing to 'freq' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 42,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 461,
+   "message": "Scaled integer arithmetic with pointer: 'buf + sizeof(int)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 468,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 13,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 476,
+   "message": "Accessing union 'data' member 'michael_mic_failure' after writing to 'freq' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 59,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 481,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 55,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 495,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 13,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 504,
+   "message": "Accessing union 'data' member 'ft_ies' after writing to 'freq' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 35,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 505,
+   "message": "Scaled integer arithmetic with pointer: 'buf + sizeof(int)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 20,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 506,
+   "message": "Scaled integer arithmetic with pointer: 'buf + sizeof(int)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 52,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 512,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 55,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 520,
+   "message": "Pointer parameter 'eloop_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *eloop_ctx'"
+  },
+  {
+   "column": 17,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 521,
+   "message": "Pointer parameter 'sock_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sock_ctx'"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 539,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 539,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 15,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 552,
+   "message": "Array/pointer 'buf' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'buf' after calling free(). Set pointer to NULL after freeing: free(buf); buf = NULL;"
+  },
+  {
+   "column": 15,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 552,
+   "message": "Reading from 'buf' which may contain uninitialized data",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize the contents of 'buf' before reading"
+  },
+  {
+   "column": 25,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 609,
+   "message": "Dereference of uninitialized pointer 'drv'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'drv' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 617,
+   "message": "Function returns pointer to local variable 'drv' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 650,
+   "message": "Function 'wpa_driver_privsep_set_param' performs compound operation on shared static variable 'counter' without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 655,
+   "message": "Shared variable 'counter' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 5,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 660,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 671,
+   "message": "Pointer dereference '*end' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 5,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 678,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 691,
+   "message": "Pointer dereference '*end' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 717,
+   "message": "Function returns without releasing all resources. Leaked: drv->own_socket_path, drv->own_cmd_path. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 48,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 731,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 48,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 731,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 734,
+   "message": "Function returns without releasing all resources. Leaked: drv->own_socket_path, drv->own_cmd_path, drv->priv_socket. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 740,
+   "message": "Privileged operation 'bind' without subsequent privilege dropping",
+   "rule_id": "POS02-C",
+   "severity": "Medium",
+   "suggestion": "Call setuid/setgid to drop privileges after setup"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 744,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 744,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 750,
+   "message": "Function returns without releasing all resources. Leaked: drv->own_socket_path, drv->own_cmd_path. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 48,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 758,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 48,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 758,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 761,
+   "message": "Function returns without releasing all resources. Leaked: drv->own_socket_path, drv->own_cmd_path, drv->cmd_socket. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 767,
+   "message": "Privileged operation 'bind' without subsequent privilege dropping",
+   "rule_id": "POS02-C",
+   "severity": "Medium",
+   "suggestion": "Call setuid/setgid to drop privileges after setup"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 771,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 771,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 777,
+   "message": "Function returns without releasing all resources. Leaked: drv->own_socket_path, drv->own_cmd_path. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 782,
+   "message": "Function returns without releasing all resources. Leaked: drv->own_socket_path, drv->own_cmd_path. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 785,
+   "message": "Function returns without releasing all resources. Leaked: drv->own_socket_path, drv->own_cmd_path. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 15,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 794,
+   "message": "sizeof applied to pointer/array parameter 'capa' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*capa)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 24,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 797,
+   "message": "sizeof applied to pointer/array parameter 'capa' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*capa)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 56,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 809,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 826,
+   "message": "Shared variable 'wpa_driver_privsep_ops' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 826,
+   "message": "Variable 'wpa_driver_privsep_ops' should be declared static if it doesn't need external linkage",
+   "rule_id": "DCL15-C",
+   "severity": "Low",
+   "suggestion": "Add 'static' storage-class specifier"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 826,
+   "message": "File-scope variable should have minimal scope. Consider making it static within a function or limiting its scope.",
+   "rule_id": "DCL19-C",
+   "severity": "Low",
+   "suggestion": "Move variable to the smallest scope where it's used, or make it static inside a function"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 846,
+   "message": "Variable 'wpa_drivers' should be declared static if it doesn't need external linkage",
+   "rule_id": "DCL15-C",
+   "severity": "Low",
+   "suggestion": "Add 'static' storage-class specifier"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 846,
+   "message": "File-scope variable should have minimal scope. Consider making it static within a function or limiting its scope.",
+   "rule_id": "DCL19-C",
+   "severity": "Low",
+   "suggestion": "Move variable to the smallest scope where it's used, or make it static inside a function"
+  },
+  {
+   "column": 36,
+   "file": "src/drivers/driver_privsep.c",
+   "line": 846,
+   "message": "Array declaration 'wpa_drivers[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  }
+ ]
+}

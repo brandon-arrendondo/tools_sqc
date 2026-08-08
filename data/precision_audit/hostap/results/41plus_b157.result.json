@@ -1,0 +1,1179 @@
+{
+ "labels": [
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 25,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No getenv() call anywhere in file; wholesale ENV01-C misfire (established pattern)"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 46,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(auth->Mx) etc is sizeof of a fixed struct array member, not decayed-pointer sizeof(auth); established ARR01-C idiom FP"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 48,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(auth->Mx) etc is sizeof of a fixed struct array member, not decayed-pointer sizeof(auth); established ARR01-C idiom FP"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 50,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(auth->Mx) etc is sizeof of a fixed struct array member, not decayed-pointer sizeof(auth); established ARR01-C idiom FP"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 52,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(auth->Mx) etc is sizeof of a fixed struct array member, not decayed-pointer sizeof(auth); established ARR01-C idiom FP"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 53,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(auth->Mx) etc is sizeof of a fixed struct array member, not decayed-pointer sizeof(auth); established ARR01-C idiom FP"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 67,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No getenv() call anywhere in file; wholesale ENV01-C misfire (established pattern)"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 67,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed-size array (macro-constant bound, e.g. DPP_MAX_NONCE_LEN/DPP_AUTH_RESP_CLEAR_LEN), not a VLA; established MEM05-C misfire"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 68,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No getenv() call anywhere in file; wholesale ENV01-C misfire (established pattern)"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 68,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed-size array (macro-constant bound, e.g. DPP_MAX_NONCE_LEN/DPP_AUTH_RESP_CLEAR_LEN), not a VLA; established MEM05-C misfire"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 75,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pure size_t/integer addition or subtraction (attr_len/unwrapped_len sizing calc), no actual pointer arithmetic involved; mislabeled double-scaling"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 75,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "attr_len built from small fixed protocol constants (SHA256_MAC_LEN, header sizes) plus own-generated key/point lengths bounded by curve size; wraparound not realistically reachable"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 78,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "attr_len built from small fixed protocol constants (SHA256_MAC_LEN, header sizes) plus own-generated key/point lengths bounded by curve size; wraparound not realistically reachable"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 80,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "attr_len built from small fixed protocol constants (SHA256_MAC_LEN, header sizes) plus own-generated key/point lengths bounded by curve size; wraparound not realistically reachable"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 84,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "attr_len built from small fixed protocol constants (SHA256_MAC_LEN, header sizes) plus own-generated key/point lengths bounded by curve size; wraparound not realistically reachable"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 152,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "nonce_len derived from curve->nonce_len (small fixed curve constant, always >=1); underflow not reachable, testing-only code path"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 154,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "nonce_len derived from curve->nonce_len (small fixed curve constant, always >=1); underflow not reachable, testing-only code path"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 155,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "nonce_len derived from curve->nonce_len (small fixed curve constant, always >=1); underflow not reachable, testing-only code path"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 186,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos[-1] read immediately after *pos++ = x; accesses the just-written in-bounds byte, standard idiom (established pos[-1] pattern)"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 186,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same pos[-1]-after-increment idiom as the paired ARR00-C finding; in-bounds, not OOB"
+  },
+  {
+   "rule": "PRE02-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 245,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DPP_AUTH_RESP_CLEAR_LEN macro body is an unparenthesized multi-term + expression; real (if low-risk given current pure-addition use sites) rule-text violation"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 248,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed-size array (macro-constant bound, e.g. DPP_MAX_NONCE_LEN/DPP_AUTH_RESP_CLEAR_LEN), not a VLA; established MEM05-C misfire"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 258,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pure size_t/integer addition or subtraction (attr_len/unwrapped_len sizing calc), no actual pointer arithmetic involved; mislabeled double-scaling"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 258,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "attr_len built from small fixed protocol constants (SHA256_MAC_LEN, header sizes) plus own-generated key/point lengths bounded by curve size; wraparound not realistically reachable"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 261,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "attr_len built from small fixed protocol constants (SHA256_MAC_LEN, header sizes) plus own-generated key/point lengths bounded by curve size; wraparound not realistically reachable"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 265,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "attr_len built from small fixed protocol constants (SHA256_MAC_LEN, header sizes) plus own-generated key/point lengths bounded by curve size; wraparound not realistically reachable"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 355,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos[-1] read immediately after *pos++ = x; accesses the just-written in-bounds byte, standard idiom (established pos[-1] pattern)"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 355,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same pos[-1]-after-increment idiom as the paired ARR00-C finding; in-bounds, not OOB"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 356,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause if/else-if chain (protocol status/testing dispatch); established MSC01-C no-final-else pedantry pattern"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 361,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos[-1] read immediately after *pos++ = x; accesses the just-written in-bounds byte, standard idiom (established pos[-1] pattern)"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 361,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same pos[-1]-after-increment idiom as the paired ARR00-C finding; in-bounds, not OOB"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 363,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos[-1] read immediately after *pos++ = x; accesses the just-written in-bounds byte, standard idiom (established pos[-1] pattern)"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 363,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same pos[-1]-after-increment idiom as the paired ARR00-C finding; in-bounds, not OOB"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 423,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No getenv() call anywhere in file; wholesale ENV01-C misfire (established pattern)"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 423,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed-size array (macro-constant bound, e.g. DPP_MAX_NONCE_LEN/DPP_AUTH_RESP_CLEAR_LEN), not a VLA; established MEM05-C misfire"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 424,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No getenv() call anywhere in file; wholesale ENV01-C misfire (established pattern)"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 424,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed-size array (macro-constant bound, e.g. DPP_MAX_NONCE_LEN/DPP_AUTH_RESP_CLEAR_LEN), not a VLA; established MEM05-C misfire"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 519,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pure size_t/integer addition or subtraction (attr_len/unwrapped_len sizing calc), no actual pointer arithmetic involved; mislabeled double-scaling"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 580,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause if/else-if chain (protocol status/testing dispatch); established MSC01-C no-final-else pedantry pattern"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 586,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Function fully defined earlier in the same file (dpp_auth_build_resp:233, dpp_auth_build_req:59) and called hundreds of lines later; established same-file-distance DCL31-C blind spot"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 597,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pr freed exactly once via single fail:-style exit path (testing-option free+reassign branches are mutually exclusive, not sequential); established mutually-exclusive-branch double-free misfire"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 650,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause if/else-if chain (protocol status/testing dispatch); established MSC01-C no-final-else pedantry pattern"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 656,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Function fully defined earlier in the same file (dpp_auth_build_resp:233, dpp_auth_build_req:59) and called hundreds of lines later; established same-file-distance DCL31-C blind spot"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 667,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal dispatch-path parameter (msg_ctx/hdr/dpp/own_bi) always supplied by caller from a validated receive path; own_bi NULL is an anticipated, handled case (dpp_autogen_bootstrap_key); established API00-C internal-API pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 667,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal dispatch-path parameter (msg_ctx/hdr/dpp/own_bi) always supplied by caller from a validated receive path; own_bi NULL is an anticipated, handled case (dpp_autogen_bootstrap_key); established API00-C internal-API pattern"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 668,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+own-size-param pair (hdr/attr_start with attr_len); established API05-C conformant-array-syntax misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 742,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 752,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 768,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 780,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 802,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pure size_t/integer addition or subtraction (attr_len/unwrapped_len sizing calc), no actual pointer arithmetic involved; mislabeled double-scaling"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 809,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 823,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 833,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 885,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed-size array (macro-constant bound, e.g. DPP_MAX_NONCE_LEN/DPP_AUTH_RESP_CLEAR_LEN), not a VLA; established MEM05-C misfire"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 914,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Line immediately follows a goto-target label (fail:/not_compatible:/out-adjacent) reached from earlier branches; established goto-label-blindness pattern, code is not actually unreachable"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 929,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same mutually-exclusive-branch conflation as paired MEM31-C finding at this line; unwrapped_len is a size_t length, not a freed pointer at all"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 929,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "unwrapped set NULL after its one free at line 840 (bin_clear_free NULL-safe); fail: label reached only via later mutually-exclusive branches, no second real free"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 929,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "unwrapped set NULL after its one free at line 840 (bin_clear_free NULL-safe); fail: label reached only via later mutually-exclusive branches, no second real free"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 960,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No getenv() call anywhere in file; wholesale ENV01-C misfire (established pattern)"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 960,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed-size array (macro-constant bound, e.g. DPP_MAX_NONCE_LEN/DPP_AUTH_RESP_CLEAR_LEN), not a VLA; established MEM05-C misfire"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 962,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No getenv() call anywhere in file; wholesale ENV01-C misfire (established pattern)"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 962,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed-size array (macro-constant bound, e.g. DPP_MAX_NONCE_LEN/DPP_AUTH_RESP_CLEAR_LEN), not a VLA; established MEM05-C misfire"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 979,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pure size_t/integer addition or subtraction (attr_len/unwrapped_len sizing calc), no actual pointer arithmetic involved; mislabeled double-scaling"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1001,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause if/else-if chain (protocol status/testing dispatch); established MSC01-C no-final-else pedantry pattern"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1025,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause if/else-if chain (protocol status/testing dispatch); established MSC01-C no-final-else pedantry pattern"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1126,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Local pointer *variable* (msg/auth) holds a heap object from wpabuf_alloc()/os_zalloc()-backed allocator, not automatic-storage memory; DCL30-C confuses variable with storage duration"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1128,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Line immediately follows a goto-target label (fail:/not_compatible:/out-adjacent) reached from earlier branches; established goto-label-blindness pattern, code is not actually unreachable"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1141,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*bi) is a non-evaluating sizeof context, not a dereference of the not-yet-initialized bi; established sizeof(*ptr) idiom FP"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1155,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Line immediately follows a goto-target label (fail:/not_compatible:/out-adjacent) reached from earlier branches; established goto-label-blindness pattern, code is not actually unreachable"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1161,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal dispatch-path parameter (msg_ctx/hdr/dpp/own_bi) always supplied by caller from a validated receive path; own_bi NULL is an anticipated, handled case (dpp_autogen_bootstrap_key); established API00-C internal-API pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1161,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal dispatch-path parameter (msg_ctx/hdr/dpp/own_bi) always supplied by caller from a validated receive path; own_bi NULL is an anticipated, handled case (dpp_autogen_bootstrap_key); established API00-C internal-API pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1161,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal dispatch-path parameter (msg_ctx/hdr/dpp/own_bi) always supplied by caller from a validated receive path; own_bi NULL is an anticipated, handled case (dpp_autogen_bootstrap_key); established API00-C internal-API pattern"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1161,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Every path (return auth / goto fail -> goto out -> return auth) returns a value; established goto-blindness \"reach end without returning\" misfire"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1280,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause if/else-if chain (protocol status/testing dispatch); established MSC01-C no-final-else pedantry pattern"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1291,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Function fully defined earlier in the same file (dpp_auth_build_resp:233, dpp_auth_build_req:59) and called hundreds of lines later; established same-file-distance DCL31-C blind spot"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1297,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pi freed exactly once at out: label reached via single path (fall-through or goto out); not a double free"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1298,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Local pointer *variable* (msg/auth) holds a heap object from wpabuf_alloc()/os_zalloc()-backed allocator, not automatic-storage memory; DCL30-C confuses variable with storage duration"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1299,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Line immediately follows a goto-target label (fail:/not_compatible:/out-adjacent) reached from earlier branches; established goto-label-blindness pattern, code is not actually unreachable"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1327,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1339,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pure size_t/integer addition or subtraction (attr_len/unwrapped_len sizing calc), no actual pointer arithmetic involved; mislabeled double-scaling"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1346,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1360,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1365,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1373,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1381,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause if/else-if chain (protocol status/testing dispatch); established MSC01-C no-final-else pedantry pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1402,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal dispatch-path parameter (msg_ctx/hdr/dpp/own_bi) always supplied by caller from a validated receive path; own_bi NULL is an anticipated, handled case (dpp_autogen_bootstrap_key); established API00-C internal-API pattern"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1417,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No getenv() call anywhere in file; wholesale ENV01-C misfire (established pattern)"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1433,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1443,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1456,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1464,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1487,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1493,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1495,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause if/else-if chain (protocol status/testing dispatch); established MSC01-C no-final-else pedantry pattern"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1501,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1525,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1550,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1562,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1588,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pure size_t/integer addition or subtraction (attr_len/unwrapped_len sizing calc), no actual pointer arithmetic involved; mislabeled double-scaling"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1595,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1618,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1623,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1637,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1651,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause if/else-if chain (protocol status/testing dispatch); established MSC01-C no-final-else pedantry pattern"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1669,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1686,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1702,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1713,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1717,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "Uncategorized - default"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1728,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "Uncategorized - default"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1729,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "Uncategorized - default"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1733,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "Uncategorized - default"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1735,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Line immediately follows a goto-target label (fail:/not_compatible:/out-adjacent) reached from earlier branches; established goto-label-blindness pattern, code is not actually unreachable"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1736,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "unwrapped/unwrapped2 freed exactly once per mutually-exclusive return-vs-goto-fail path; sqc conflates disjoint branches as sequential (established pattern), and *_len args are size_t, not freed pointers at all"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1736,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "unwrapped/unwrapped2 freed exactly once per mutually-exclusive return-vs-goto-fail path; sqc conflates disjoint branches as sequential (established pattern), and *_len args are size_t, not freed pointers at all"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1737,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "unwrapped/unwrapped2 freed exactly once per mutually-exclusive return-vs-goto-fail path; sqc conflates disjoint branches as sequential (established pattern), and *_len args are size_t, not freed pointers at all"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1737,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "unwrapped/unwrapped2 freed exactly once per mutually-exclusive return-vs-goto-fail path; sqc conflates disjoint branches as sequential (established pattern), and *_len args are size_t, not freed pointers at all"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1739,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "Uncategorized - default"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1768,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pure size_t/integer addition or subtraction (attr_len/unwrapped_len sizing calc), no actual pointer arithmetic involved; mislabeled double-scaling"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1771,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1777,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1799,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1804,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1805,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause if/else-if chain (protocol status/testing dispatch); established MSC01-C no-final-else pedantry pattern"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1806,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1814,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal dispatch-path parameter (msg_ctx/hdr/dpp/own_bi) always supplied by caller from a validated receive path; own_bi NULL is an anticipated, handled case (dpp_autogen_bootstrap_key); established API00-C internal-API pattern"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1824,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No getenv() call anywhere in file; wholesale ENV01-C misfire (established pattern)"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1840,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1850,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1863,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1874,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1894,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1897,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause if/else-if chain (protocol status/testing dispatch); established MSC01-C no-final-else pedantry pattern"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1901,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1909,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1920,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1932,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pure size_t/integer addition or subtraction (attr_len/unwrapped_len sizing calc), no actual pointer arithmetic involved; mislabeled double-scaling"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1939,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1954,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1965,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cited \"sensitive\" string is a descriptive protocol failure-reason/hexdump-title literal, not a secret/credential; established MSC41-C hard-coded-string misfire"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1972,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Line immediately follows a goto-target label (fail:/not_compatible:/out-adjacent) reached from earlier branches; established goto-label-blindness pattern, code is not actually unreachable"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1973,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same mutually-exclusive-branch conflation as paired MEM31-C finding at this line; unwrapped_len is a size_t length, not a freed pointer at all"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1973,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "unwrapped/unwrapped2 freed exactly once per mutually-exclusive return-vs-goto-fail path; sqc conflates disjoint branches as sequential (established pattern), and *_len args are size_t, not freed pointers at all"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp_auth.c",
+   "line": 1973,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "unwrapped/unwrapped2 freed exactly once per mutually-exclusive return-vs-goto-fail path; sqc conflates disjoint branches as sequential (established pattern), and *_len args are size_t, not freed pointers at all"
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/common/dpp_auth.c",
+   "line": 484,
+   "rule": "MSC13-C",
+   "desc": "dpp_ecdh(...,auth->Nx,&secret_len) writes the computed ECDH shared-secret length into local var secret_len, which is then never copied into auth->secret_len before auth->secret_len is read at lines 488/489/491 (stale value from the earlier Mx derivation reused instead). Currently benign because both derivations use the same curve (fixed x-coordinate length), so not exploitable, but the local secret_len output is effectively a dead store and a latent bug if a mixed-curve path is ever introduced.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 1,
+  "fp": 144,
+  "fn": 1
+ }
+}

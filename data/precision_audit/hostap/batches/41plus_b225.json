@@ -1,0 +1,697 @@
+{
+ "src/ap/vlan_full.c": [
+  {
+   "column": 2,
+   "file": "src/ap/vlan_full.c",
+   "line": 40,
+   "message": "String buffer placed before pointer in struct 'dynamic_iface': 'char ifname[IFNAMSIZ + 1];' before 'struct dynamic_iface *next;' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'char ifname' after the pointer field 'struct dynamic_iface *next;', or use a char* pointer instead of a char array"
+  },
+  {
+   "column": 47,
+   "file": "src/ap/vlan_full.c",
+   "line": 50,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/vlan_full.c",
+   "line": 80,
+   "message": "Local variable 'next' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 46,
+   "file": "src/ap/vlan_full.c",
+   "line": 87,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 31,
+   "file": "src/ap/vlan_full.c",
+   "line": 143,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 31,
+   "file": "src/ap/vlan_full.c",
+   "line": 143,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 13,
+   "file": "src/ap/vlan_full.c",
+   "line": 150,
+   "message": "Function 'if_nametoindex' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 13,
+   "file": "src/ap/vlan_full.c",
+   "line": 163,
+   "message": "Variable 'ifr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'ifr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/vlan_full.c",
+   "line": 166,
+   "message": "Structure 'ifr' passed to trust boundary function 'ioctl' may leak padding bytes. Use packed attributes, explicit padding fields, or serialize fields individually.",
+   "rule_id": "DCL39-C",
+   "severity": "Medium",
+   "suggestion": "Use __attribute__((__packed__)) or serialize fields: copy_to_user(buf, &ifr.a, sizeof(ifr.a)); ..."
+  },
+  {
+   "column": 41,
+   "file": "src/ap/vlan_full.c",
+   "line": 170,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 41,
+   "file": "src/ap/vlan_full.c",
+   "line": 170,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/vlan_full.c",
+   "line": 171,
+   "message": "Resource 'fd' is closed again after already being closed at line 156. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 2,
+   "file": "src/ap/vlan_full.c",
+   "line": 176,
+   "message": "Resource 'fd' is closed again after already being closed at line 156. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 31,
+   "file": "src/ap/vlan_full.c",
+   "line": 198,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 31,
+   "file": "src/ap/vlan_full.c",
+   "line": 198,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 13,
+   "file": "src/ap/vlan_full.c",
+   "line": 210,
+   "message": "Function 'if_nametoindex' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/vlan_full.c",
+   "line": 216,
+   "message": "Resource 'fd' is closed again after already being closed at line 206. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 13,
+   "file": "src/ap/vlan_full.c",
+   "line": 223,
+   "message": "Variable 'ifr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'ifr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/vlan_full.c",
+   "line": 226,
+   "message": "Structure 'ifr' passed to trust boundary function 'ioctl' may leak padding bytes. Use packed attributes, explicit padding fields, or serialize fields individually.",
+   "rule_id": "DCL39-C",
+   "severity": "Medium",
+   "suggestion": "Use __attribute__((__packed__)) or serialize fields: copy_to_user(buf, &ifr.a, sizeof(ifr.a)); ..."
+  },
+  {
+   "column": 4,
+   "file": "src/ap/vlan_full.c",
+   "line": 229,
+   "message": "Resource 'fd' is closed again after already being closed at line 206. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 41,
+   "file": "src/ap/vlan_full.c",
+   "line": 235,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 41,
+   "file": "src/ap/vlan_full.c",
+   "line": 235,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/vlan_full.c",
+   "line": 236,
+   "message": "Resource 'fd' is closed again after already being closed at line 206. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 2,
+   "file": "src/ap/vlan_full.c",
+   "line": 241,
+   "message": "Resource 'fd' is closed again after already being closed at line 206. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 31,
+   "file": "src/ap/vlan_full.c",
+   "line": 254,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 31,
+   "file": "src/ap/vlan_full.c",
+   "line": 254,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 36,
+   "file": "src/ap/vlan_full.c",
+   "line": 267,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 36,
+   "file": "src/ap/vlan_full.c",
+   "line": 267,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/vlan_full.c",
+   "line": 273,
+   "message": "Resource 'fd' is closed again after already being closed at line 268. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 31,
+   "file": "src/ap/vlan_full.c",
+   "line": 294,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 31,
+   "file": "src/ap/vlan_full.c",
+   "line": 294,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/vlan_full.c",
+   "line": 312,
+   "message": "Resource 'fd' is closed again after already being closed at line 302. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 27,
+   "file": "src/ap/vlan_full.c",
+   "line": 317,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 27,
+   "file": "src/ap/vlan_full.c",
+   "line": 317,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/vlan_full.c",
+   "line": 318,
+   "message": "Resource 'fd' is closed again after already being closed at line 302. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 6,
+   "file": "src/ap/vlan_full.c",
+   "line": 332,
+   "message": "Structure 'ifr' passed to trust boundary function 'ioctl' may leak padding bytes. Use packed attributes, explicit padding fields, or serialize fields individually.",
+   "rule_id": "DCL39-C",
+   "severity": "Medium",
+   "suggestion": "Use __attribute__((__packed__)) or serialize fields: copy_to_user(buf, &ifr.a, sizeof(ifr.a)); ..."
+  },
+  {
+   "column": 36,
+   "file": "src/ap/vlan_full.c",
+   "line": 335,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 36,
+   "file": "src/ap/vlan_full.c",
+   "line": 335,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/vlan_full.c",
+   "line": 339,
+   "message": "Resource 'fd' is closed again after already being closed at line 302. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 2,
+   "file": "src/ap/vlan_full.c",
+   "line": 350,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 31,
+   "file": "src/ap/vlan_full.c",
+   "line": 355,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 31,
+   "file": "src/ap/vlan_full.c",
+   "line": 355,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 27,
+   "file": "src/ap/vlan_full.c",
+   "line": 360,
+   "message": "Variable 'ifindices' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'ifindices' before use, e.g., at its declaration"
+  },
+  {
+   "column": 13,
+   "file": "src/ap/vlan_full.c",
+   "line": 365,
+   "message": "Variable 'ifr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'ifr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/vlan_full.c",
+   "line": 368,
+   "message": "Structure 'ifr' passed to trust boundary function 'ioctl' may leak padding bytes. Use packed attributes, explicit padding fields, or serialize fields individually.",
+   "rule_id": "DCL39-C",
+   "severity": "Medium",
+   "suggestion": "Use __attribute__((__packed__)) or serialize fields: copy_to_user(buf, &ifr.a, sizeof(ifr.a)); ..."
+  },
+  {
+   "column": 26,
+   "file": "src/ap/vlan_full.c",
+   "line": 371,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 26,
+   "file": "src/ap/vlan_full.c",
+   "line": 371,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/vlan_full.c",
+   "line": 382,
+   "message": "Resource 'fd' is closed again after already being closed at line 372. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 65,
+   "file": "src/ap/vlan_full.c",
+   "line": 420,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 29,
+   "file": "src/ap/vlan_full.c",
+   "line": 421,
+   "message": "Pointer parameter 'vlan' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *vlan'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/vlan_full.c",
+   "line": 461,
+   "message": "Function 'vlan_newlink' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/vlan_full.c",
+   "line": 497,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/vlan_full.c",
+   "line": 543,
+   "message": "Bitwise operator '&' used on signed operand 'clean' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'clean' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/vlan_full.c",
+   "line": 546,
+   "message": "Bitwise operator '&' used on signed operand 'clean' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'clean' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/vlan_full.c",
+   "line": 565,
+   "message": "Bitwise operator '&' used on signed operand 'clean' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'clean' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/vlan_full.c",
+   "line": 572,
+   "message": "Function 'vlan_dellink' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 10,
+   "file": "src/ap/vlan_full.c",
+   "line": 624,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/vlan_full.c",
+   "line": 638,
+   "message": "Function 'if_nametoindex' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 21,
+   "file": "src/ap/vlan_full.c",
+   "line": 641,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 21,
+   "file": "src/ap/vlan_full.c",
+   "line": 641,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/vlan_full.c",
+   "line": 646,
+   "message": "Potential null pointer dereference in member access of variable 'prev'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'prev' is not NULL before member access"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/vlan_full.c",
+   "line": 659,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 19,
+   "file": "src/ap/vlan_full.c",
+   "line": 661,
+   "message": "Dereference of uninitialized pointer 'ifi'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ifi' before dereferencing"
+  },
+  {
+   "column": 28,
+   "file": "src/ap/vlan_full.c",
+   "line": 672,
+   "message": "Variable 'ifi' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 13,
+   "file": "src/ap/vlan_full.c",
+   "line": 693,
+   "message": "Function 'if_nametoindex' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 64,
+   "file": "src/ap/vlan_full.c",
+   "line": 715,
+   "message": "Pointer parameter 'sock_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sock_ctx'"
+  },
+  {
+   "column": 18,
+   "file": "src/ap/vlan_full.c",
+   "line": 730,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 18,
+   "file": "src/ap/vlan_full.c",
+   "line": 730,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 26,
+   "file": "src/ap/vlan_full.c",
+   "line": 772,
+   "message": "Dereference of uninitialized pointer 'priv'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'priv' before dereferencing"
+  },
+  {
+   "column": 17,
+   "file": "src/ap/vlan_full.c",
+   "line": 785,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 17,
+   "file": "src/ap/vlan_full.c",
+   "line": 785,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/vlan_full.c",
+   "line": 793,
+   "message": "Privileged operation 'bind' without subsequent privilege dropping",
+   "rule_id": "POS02-C",
+   "severity": "Medium",
+   "suggestion": "Call setuid/setgid to drop privileges after setup"
+  },
+  {
+   "column": 17,
+   "file": "src/ap/vlan_full.c",
+   "line": 795,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 17,
+   "file": "src/ap/vlan_full.c",
+   "line": 795,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/vlan_full.c",
+   "line": 803,
+   "message": "Resource 'priv->s' is closed again after already being closed at line 796. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 2,
+   "file": "src/ap/vlan_full.c",
+   "line": 808,
+   "message": "Function returns pointer to local variable 'priv' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 5,
+   "file": "src/ap/vlan_full.c",
+   "line": 814,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  }
+ ]
+}

@@ -1,0 +1,1219 @@
+{
+ "labels": [
+  {
+   "rule": "EXP08-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3111,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP08-C misfires: 'len - offsetof(...)' is size_t arithmetic (offsetof used to compute a length), no pointer arithmetic exists in this expression at all"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3119,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C output-param-uninitialized misfire: ieee802_11_parse_elems() os_memset(elems,...) unconditionally as its first statement before parsing (ieee802_11_common.c:738), classic parse-output-param pattern"
+  },
+  {
+   "rule": "EXP08-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3207,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same EXP08-C misfire on offsetof-derived length arithmetic, no pointer arithmetic"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3217,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same ieee802_11_parse_elems output-param-uninitialized misfire"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3288,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor-args misfire: ptksa_cache_add args are pasn_get_cipher/pasn_get_ptk/pasn_get_akmp getters with no side effects"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3305,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor misfire: wpa_cipher_to_alg(sta->pasn->cipher) is a pure converter, other args are plain field reads"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3335,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM05-C/ENV01-C wholesale misfire: resp_ies[2+WLAN_AUTH_CHALLENGE_LEN] is a fixed compile-time-sized array (macro constant), not a VLA"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3342,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR01-C sizeof(mgmt->u.auth) is sizeof of a real fixed-size struct member reached via the pointer param, not a decayed array"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3378,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same ARR01-C sizeof-struct-member misfire"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3492,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'pos = &resp_ies[0];' takes the address of resp_ies, it is not a read of its contents; EXP33-C mischaracterizes address-of as a read"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3493,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR37-C misfires: pos is assigned from &resp_ies[0], a real local array; rule loses that array-provenance through the intervening pointer variable (confirmed cross-function/array-provenance-loss ARR37-C class)"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3494,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same ARR37-C provenance-loss misfire on pos++"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3496,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same ARR37-C provenance-loss misfire on pos += ETH_ALEN"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3499,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR30-C cross-function buffer-size identifier conflation: 'allocated at line 4118' is size_t len[2] inside the unrelated owe_process_assoc_req function, not this pos/resp_ies"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3499,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR37-C provenance-loss misfire on pos += 4 (same resp_ies-backed pointer)"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3523,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR37-C provenance-loss misfire on pos++ (resp_ies-backed pointer)"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3524,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR37-C provenance-loss misfire on pos++ (resp_ies-backed pointer)"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3525,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR37-C provenance-loss misfire on pos++ (resp_ies-backed pointer)"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3767,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR39-C double-scaling misfire on pure integer/size_t arithmetic (len - IEEE80211_HDRLEN - sizeof(...)); no pointer operand present at all"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3768,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR01-C sizeof(mgmt->u.auth) on a real struct member, not decay"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3798,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same ARR39-C pure-integer-arithmetic misfire"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3798,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same ARR01-C sizeof-struct-member misfire"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3826,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC41-C hard-coded-sensitive-info misfire: \"handle-auth\" is a plain debug/context-tag string literal passed to send_auth_reply, not a secret/password/key/token"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3836,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hapd is only read (hapd->iconf/hapd->iface->...) in hostapd_max_bssid_indicator, never modified or forwarded to a non-const consumer; genuinely const-qualifiable"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3857,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "sta is only read (sta->mld_info...) in hostapd_get_aid_word, never modified; genuinely const-qualifiable"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3868,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "link_bss is unconditionally assigned (line 3873) immediately after declaration, before any use at line 3881; EXP33-C flags the declaration line itself despite no use-before-assignment"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3892,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API-no-NULL-check FP class: hostapd_get_aid is called only internally with a valid hapd, never externally nullable"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3916,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT14-C loop-counter-with-parity/bit-test FP class: 'j' is a plain for-loop counter used with BIT(j) test and ordinary arithmetic (j<32, i*32+j) -- stylistic pedantry, not a real defect"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3924,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT14-C misattributes a function name (hostapd_max_bssid_indicator) as if it were a variable used bitwise+arithmetically -- member/identifier-conflation family"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3924,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT14-C misattributes hostapd_max_bssid_indicator's internal bitwise shift (on its own local num_bss_nontx) to the caller's 'hapd' argument -- cross-function identifier conflation"
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3924,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "INT34-C shift-amount misfire: hostapd_max_bssid_indicator() is bounded (loop halves num_bss_nontx, AID_WORDS*32=2048 domain, result capped by 'aid > 2007' check below) -- rule doesn't see the callee's bounded return range"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3929,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP34-C null-deref on 'hapd': hostapd_get_aid is an internal-only API always called with a valid hapd (API00-C internal-API pattern extended to EXP34-C)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3935,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "sta is only read (sta->addr) in check_ssid, never modified; genuinely const-qualifiable"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3938,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic 'use a validation function' FP class: plain 'if (ssid_ie == NULL)' guard, not a real defect"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3972,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "EXP05-C cast-away-const on wmm_ie is real (const u8* cast to non-const struct*), but only ever read afterward (wmm->qos_info) -- established read-only-cast-away-const disposition (genuine, low-severity TP)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4054,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "elems is only read in copy_supp_rates, never modified or forwarded to a non-const consumer; genuinely const-qualifiable"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4069,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR01-C sizeof(sta->supported_rates) is sizeof of a real fixed-size struct member, not decay"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4079,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same ARR01-C sizeof-struct-member misfire"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4089,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hapd is only read (hapd->conf->owe_groups) in owe_group_supported, never modified; genuinely const-qualifiable"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4100,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR30-C cross-function buffer-size conflation: 'groups' with 'size 2 allocated at line 872' is an unrelated int groups[2] local in a different function (SAE PT derivation); owe_group_supported's own 'groups' is int* from hapd->conf->owe_groups walked via a 0-terminated sentinel scan"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4101,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same ARR30-C cross-function buffer-size conflation"
+  },
+  {
+   "rule": "MEM03-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4113,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "MEM03-C: 'secret' (DH shared secret wpabuf) is cleared via wpabuf_clear_free at every return path in owe_process_assoc_req, so this specific finding's literal premise doesn't hold at the flagged point, but see FN note on the file for genuine sensitive-buffer handling elsewhere"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4199,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM30-C/MEM31-C double-free misfire: 'secret' is freed via wpabuf_clear_free() in mutually-exclusive if/return branches (4173, 4193, 4199, 4206, 4224) -- only one path executes per call, not a real double-free"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4206,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same mutually-exclusive-branch double-free misfire"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4215,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor misfire: hmac_sha256(wpabuf_head(hkey), wpabuf_len(hkey), wpabuf_head(secret), wpabuf_len(secret), prk) args are all side-effect-free getters"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4216,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM30-C use-after-free misfire: line 4216 (reading secret via wpabuf_head/len) executes strictly BEFORE the real free at line 4224; the 'free' sqc associates with this UAF is in a mutually-exclusive early-return branch that never co-executes with this line"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4216,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same mutually-exclusive-branch UAF misfire (duplicate finding on same line/call)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4218,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor misfire on hmac_sha384 wpabuf_head/len args"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4219,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same mutually-exclusive-branch UAF misfire as #45, for the sha384 branch"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4219,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same mutually-exclusive-branch UAF misfire (duplicate)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4220,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C guard-clause misfire: group is already validated to be 19/20/21 earlier (lines 4132-4139), so the if/else-if chain on group is provably exhaustive; no final else needed"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4221,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor misfire on hmac_sha512 wpabuf_head/len args"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4222,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same mutually-exclusive-branch UAF misfire as #45, for the sha512 branch"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4222,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same mutually-exclusive-branch UAF misfire (duplicate)"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4224,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM30-C double-free misfire: this IS the single real free of 'secret' (only reached if none of the earlier early-return branches fired); sqc's other 'double-free' findings against this line are the actual bug in sqc's mutually-exclusive-branch tracking"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4245,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C guard-clause misfire: same provably-exhaustive group==19/20/21 chain (hmac_shaXXX_kdf), guarded by the earlier group validation"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4266,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hapd parameter is entirely unused in owe_validate_request's body; trivially const-qualifiable"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4305,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API-no-NULL-check FP class: owe_process_rsn_ie is called only internally from OWE association handling with always-valid params"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4305,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4305,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4305,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4305,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same API00-C internal-API FP class"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4312,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM05-C misfire: 'ie[256 * 2]' is a fixed compile-time-constant-sized array, not a VLA"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4370,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor misfire: os_memcpy(owe_buf, wpabuf_head(pub), wpabuf_len(pub)) args are side-effect-free getters"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4383,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C misfire: 'ie' is a fixed array (u8 ie[256*2]); its address is always valid regardless of contents, and the ternary yields NULL whenever status!=SUCCESS (the only case ie_len could be 0/unwritten), so no uninitialized read occurs downstream"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4392,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hapd is only read (hapd->conf->known_sta_identification) in hapd_is_known_sta, never modified; genuinely const-qualifiable"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4412,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR30-C cross-function buffer-size conflation: 'pos' (walking a parsed IE, bounds-checked via 'end - pos' comparisons) misattributed to the unrelated size_t len[2] local at line 4118 in a different function"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4473,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "DCL37-C genuine violation: '__check_assoc_ies' begins with a double underscore, which is always reserved per C 7.1.3 regardless of scope"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4607,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM30-C reassign-then-check misfire: wpabuf_free(sta->p2p_ie) at 4604 is immediately followed by reassignment at 4605; the read at 4607/4608 reads the NEW value, not the freed one -- confirmed reassign-then-check FP class"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4608,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same reassign-then-check misfire"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4645,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same reassign-then-check misfire for sta->wps_ie (freed at 4642, reassigned at 4643, read-back at 4645 reads the new value)"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4645,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same reassign-then-check misfire"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4651,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same reassign-then-check misfire (read at 4651 reads the reassigned value)"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4651,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same reassign-then-check misfire"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4657,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C guard-clause misfire: the WPS if/else-if/else chain (4638-4663) already has an else at 4661; the flagged 'if (hapd->conf->wpa && wpa_ie==NULL)' at 4663 is an independent, deliberate guard clause with fallthrough-is-fine semantics"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4724,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT14-C member-conflation misfire: the bitwise op is '(hapd->conf->wpa & WPA_PROTO_RSN)' on a *different* base identifier, while 'elems->rsnxe - 2'/'+2' (arithmetic) is on elems -- misattributed to elems alone"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4798,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C guard-clause misfire: independent OCV if/else-if handling; falling through when neither condition applies is the intended 'no special handling needed' path"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4846,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor misfire: dpp_pfs_init(wpabuf_head(...), wpabuf_len(...)) args are side-effect-free getters"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4902,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP43-C category error: wpabuf_alloc_copy(const void *data, size_t len) has exactly one pointer parameter, there is no second pointer to overlap with"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4919,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same EXP43-C category-error misfire (wpabuf_alloc_copy, single-pointer-param function)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4981,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C guard-clause misfire: the OCV if/else-if handles the two failure shapes; falling through means OCV succeeded, no further action required"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 4998,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR01-C sizeof(sta->rrm_enabled_capa) on a real fixed-size struct member, not decay"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5000,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same ARR01-C sizeof-struct-member misfire"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5017,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C guard-clause misfire: 'req <= max' / 'else if max > ap_max_inactivity' with no final else is a deliberate 'otherwise leave default idle period unchanged' guard, not a missing case"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5065,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C output-param-uninitialized misfire: ieee802_11_parse_elems memsets elems unconditionally before use (ieee802_11_common.c:738)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5078,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class: ieee80211_ml_build_assoc_resp is called only internally from ML link-response building with an always-valid hapd"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5081,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ENV01-C wholesale misfire: 'u8 buf[EHT_ML_MAX_STA_PROF_LEN]' is a fixed macro-sized local array; no getenv()/environment-variable usage anywhere in the function"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5082,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP40-C fabricated-const misfire: 'buf' is 'u8 buf[EHT_ML_MAX_STA_PROF_LEN]', a plain non-const array; there is no const object being assigned to p at all"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5124,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP34-C null-deref misfire: hapd is an internal-only API parameter, always valid in this call chain (same API00-C-adjacent 'internal API, never externally nullable' class)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5127,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor misfire: os_memcpy(p, wpabuf_head(...), wpabuf_len(...)) args are side-effect-free getters"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5139,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C factually wrong: set_beacon IS null-checked before dereference, at line 5233 ('... && set_beacon) *set_beacon = true;'), just not at function entry"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5177,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C output-param-uninitialized misfire: ieee802_11_parse_elems memsets elems unconditionally before parsing"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5380,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33-C strerror() thread-safety FP class: no pthread_create/pthread_mutex anywhere in ieee802_11.c (grep confirms), single-threaded eloop model"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5380,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same CON34-C strerror() no-pthread FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5432,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor/macro-arg misfire: MACSTR/MAC2STR expand to array-index reads, wpa_auth_sta_ft_tk_already_set/_fils_tk_already_set are pure getters, no side effects"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5463,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C misfire, factually backwards: hostapd_get_he_capab() only WRITES to its neg_he_cap out-param (os_memcpy dest), it never reads it -- the finding's own premise ('which reads the value') is false"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5469,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same misfire for hostapd_get_eht_capab, which additionally os_memset()s dest to 0 before the memcpy, so eht_cap ends up fully initialized regardless"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5531,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT14-C member-conflation misfire: no bitwise use of 'hapd' itself appears in add_associated_sta; likely misattributed from an unrelated bitwise expression on a different identifier in a nearby line"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5536,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT14-C member-conflation misfire: 'sta->flags & WLAN_STA_HT' (bitwise, on the flags field) vs other arithmetic on sta-derived values are different operations on different fields, merged into one finding against 'sta'"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5541,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR39-C misfire on pure size_t arithmetic: 'buflen += 3 + sizeof(struct ieee80211_eht_operation)' has no pointer operand at all, buflen is size_t"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5543,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same ARR39-C pure-integer-arithmetic misfire (buflen += EHT_OPER_DISABLED_SUBCHAN_BITMAP_SIZE)"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5565,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same ARR39-C pure-integer-arithmetic misfire (send_len is int, send_len += sizeof(...))"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5675,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor misfire: os_memcpy args use wpabuf_head/wpabuf_len getters"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5687,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same EXP30-C pure-accessor misfire"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5729,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same EXP30-C pure-accessor misfire"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5749,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same EXP30-C pure-accessor misfire"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5769,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same EXP30-C pure-accessor misfire"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5796,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same EXP30-C pure-accessor misfire"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5814,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same EXP30-C pure-accessor misfire"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5830,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C output-param-uninitialized misfire: ieee802_11_parse_elems memsets elems before use"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5853,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33-C strerror() no-pthread FP class, reconfirmed"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5853,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON34-C strerror() no-pthread FP class, reconfirmed"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5864,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class: owe_assoc_req_process is called only internally during OWE association response building"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5864,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same API00-C internal-API FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5914,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor misfire: os_memcpy(owe_buf, wpabuf_head(pub), wpabuf_len(pub)) getters"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5926,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class: fils_hlp_finish_assoc called only internally from the FILS HLP completion path"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5988,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR01-C sizeof(mgmt->u.reassoc_req) on a real struct member, not decay"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5991,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same ARR01-C sizeof-struct-member misfire"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 5998,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C output-param-uninitialized misfire: ieee802_11_parse_elems memsets elems before parsing"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6007,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor/macro-arg misfire: MACSTR args are array-index reads with no side effects"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6033,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR01-C sizeof(mgmt->u.reassoc_req) struct-member misfire"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6034,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR01-C sizeof(mgmt->u.assoc_req) struct-member misfire"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6067,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor/macro-arg misfire: MACSTR args in wpa_printf, no side effects"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6073,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR01-C sizeof(mgmt->u.reassoc_req) struct-member misfire"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6084,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR01-C sizeof(mgmt->u.assoc_req) struct-member misfire"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6113,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL37-C misapplied: '_link' is a block-scope local declared inside a nested if-block (line 6113), not a file-scope identifier -- confirmed block-scope-mistaken-for-file-scope FP class"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6113,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP34-C null-deref misfire: whenever 'sta' is non-NULL from handle_mlo_translate/hostapd_ml_get_assoc_sta, *assoc_hapd (hence 'hapd' after reassignment) is provably set to a non-NULL value in every return path of hostapd_ml_get_assoc_sta -- callee-guarantees-non-null class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6482,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor/macro-arg misfire: MACSTR(mgmt->sa) array-index reads, no side effects"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6506,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same EXP30-C macro-arg misfire"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6523,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM30-C conflates 'helper frees a sub-field of *ptr' with '*ptr itself is freed': ieee802_1x_free_station() only frees sta->eapol_sm/sta->pending_eapol_rx, never sta itself (verified in ieee802_1x.c:1495-1520); sta remains valid and is legitimately used for the rest of hostapd_disassoc_sta"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6524,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same sub-field-vs-whole-object free conflation"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6524,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same sub-field-vs-whole-object free conflation"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6524,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same sub-field-vs-whole-object free conflation"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6525,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same sub-field-vs-whole-object free conflation"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6526,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same sub-field-vs-whole-object free conflation"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6526,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same sub-field-vs-whole-object free conflation"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6553,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC37-C preprocessor-branch-blind misfire: hostapd_ml_handle_disconnect has an explicit '#else return false; #endif' branch (line 6603-6605); every preprocessor branch returns"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6614,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR01-C sizeof(mgmt->u.disassoc) struct-member misfire"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6641,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR01-C sizeof(mgmt->u.deauth) struct-member misfire"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6666,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hapd is only read (hapd->iface) in handle_beacon and forwarded as hapd->iface (a pointer value, not hapd itself) to ap_list_process_beacon; genuinely const-qualifiable"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6672,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR01-C sizeof(mgmt->u.beacon) struct-member misfire"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6678,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C output-param-uninitialized misfire: this IS the call that memsets+parses elems; the callee never reads the incoming value"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6680,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR01-C sizeof(mgmt->u.beacon) struct-member misfire"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6700,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR37-C misfire: pos is a plain local 'const u8*' assigned from &mgmt->u.action; subsequent pos++ is ordinary pointer arithmetic on a local variable, not arithmetic 'across struct members'; also cross-function buffer-size conflation (see #144)"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6703,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR30-C cross-function buffer-size conflation: 'size 2 allocated at line 4118' is the unrelated size_t len[2] in owe_process_assoc_req; hostapd_action_vs's pos is explicitly bounds-checked ('end - pos < 1+4') before every advance"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6703,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same ARR37-C struct-member-arithmetic misfire on pos += 4, same bounds-checked local pointer"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6751,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor/macro-arg misfire: MACSTR(mgmt->sa)/MACSTR(mgmt->da) array-index reads, no side effects"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6767,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT14-C member-conflation misfire: 'mgmt->frame_control & host_to_le16(...)' (bitwise, on frame_control field) vs other mgmt-> field/pointer uses elsewhere in the function are different operations on different fields, merged against the base identifier 'mgmt'"
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6808,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC17-C factually wrong: 'case WLAN_ACTION_SA_QUERY:' at line 6808 has an explicit 'return 1;' at line 6810, no fallthrough exists"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6885,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "EXP05-C cast-away-const on mgmt is real ('(u8*) mgmt' passed to hapd->public_action_cb), but the callback processes a received frame and there's no evidence it writes back through the pointer -- established read-only-cast-away-const disposition (genuine, low-severity TP)"
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/ap/ieee802_11.c",
+   "line": 5081,
+   "rule": "ARR30-C",
+   "desc": "ieee80211_ml_build_assoc_resp: 'u8 buf[EHT_ML_MAX_STA_PROF_LEN]' is filled by a long chain of hostapd_eid_* builders; several early calls (hostapd_eid_supp_rates/hostapd_eid_ext_supp_rates/hostapd_eid_ht_capabilities/hostapd_eid_ht_operation at lines 5097-5101) are NOT passed a remaining-length bound ('buf+buflen-p') unlike the later calls in the same function -- worth verifying those EID builders have their own internal size guarantees, since nothing here defensively bounds them",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 12,
+  "fp": 138,
+  "fn": 1
+ }
+}

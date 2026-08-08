@@ -1,0 +1,40 @@
+{
+ "src/common/dpp_crypto.c#part2of2": [
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 2571,
+   "message": "Function 'dpp_corrupt_connector_signature' does not validate pointer parameter 'connector' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'connector' at the start of the function, e.g., 'if (!connector) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 2571,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 12,
+   "file": "src/common/dpp_crypto.c",
+   "line": 2598,
+   "message": "Unsigned integer subtraction 'signature_len - 1' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 2613,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  }
+ ]
+}

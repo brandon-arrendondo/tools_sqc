@@ -1,0 +1,1309 @@
+{
+ "src/radius/radius.c": [
+  {
+   "column": 58,
+   "file": "src/radius/radius.c",
+   "line": 52,
+   "message": "Pointer parameter 'msg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *msg'"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius.c",
+   "line": 58,
+   "message": "Function 'radius_msg_get_buf' does not validate pointer parameter 'msg' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'msg' at the start of the function, e.g., 'if (!msg) { return error_code; }'"
+  },
+  {
+   "column": 54,
+   "file": "src/radius/radius.c",
+   "line": 58,
+   "message": "Pointer parameter 'msg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *msg'"
+  },
+  {
+   "column": 9,
+   "file": "src/radius/radius.c",
+   "line": 60,
+   "message": "Potential null pointer dereference in member access of variable 'msg'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'msg' is not NULL before member access"
+  },
+  {
+   "column": 39,
+   "file": "src/radius/radius.c",
+   "line": 65,
+   "message": "Pointer parameter 'msg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *msg'"
+  },
+  {
+   "column": 7,
+   "file": "src/radius/radius.c",
+   "line": 82,
+   "message": "sizeof applied to pointer/array parameter 'msg' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*msg->attr_pos)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 25,
+   "file": "src/radius/radius.c",
+   "line": 106,
+   "message": "Dereference of uninitialized pointer 'msg'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'msg' before dereferencing"
+  },
+  {
+   "column": 13,
+   "file": "src/radius/radius.c",
+   "line": 110,
+   "message": "Memory allocated with 'wpabuf_alloc' for variable 'msg->buf' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(msg->buf)' before the variable goes out of scope"
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius.c",
+   "line": 119,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius.c",
+   "line": 119,
+   "message": "Memory leak: 'msg->buf' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'msg->buf' before this return statement"
+  },
+  {
+   "column": 5,
+   "file": "src/radius/radius.c",
+   "line": 129,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 38,
+   "file": "src/radius/radius.c",
+   "line": 171,
+   "message": "Array declaration 'radius_attrs[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 57,
+   "file": "src/radius/radius.c",
+   "line": 316,
+   "message": "Pointer parameter 'hdr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hdr'"
+  },
+  {
+   "column": 31,
+   "file": "src/radius/radius.c",
+   "line": 339,
+   "message": "Variable 'ext' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius.c",
+   "line": 363,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 8,
+   "file": "src/radius/radius.c",
+   "line": 368,
+   "message": "'inet_ntoa()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'inet_ntop' instead for thread safety"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius.c",
+   "line": 411,
+   "message": "Function 'radius_msg_dump' does not validate pointer parameter 'msg' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'msg' at the start of the function, e.g., 'if (!msg) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius.c",
+   "line": 415,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 6,
+   "file": "src/radius/radius.c",
+   "line": 416,
+   "message": "Potential null pointer dereference in member access of variable 'msg'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'msg' is not NULL before member access"
+  },
+  {
+   "column": 3,
+   "file": "src/radius/radius.c",
+   "line": 453,
+   "message": "Function returns pointer to local variable 'pos' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 7,
+   "file": "src/radius/radius.c",
+   "line": 471,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius.c",
+   "line": 488,
+   "message": "Function 'radius_msg_finish_srv' does not validate pointer parameter 'req_authenticator' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'req_authenticator' at the start of the function, e.g., 'if (!req_authenticator) { return error_code; }'"
+  },
+  {
+   "column": 5,
+   "file": "src/radius/radius.c",
+   "line": 500,
+   "message": "sizeof applied to pointer/array parameter 'msg' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(msg->hdr->authenticator)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 6,
+   "file": "src/radius/radius.c",
+   "line": 501,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius.c",
+   "line": 514,
+   "message": "Out-of-bounds array access at index 3: Buffer 'addr' with size 3 (allocated at line 1788)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius.c",
+   "line": 530,
+   "message": "Function 'radius_msg_finish_das_resp' does not validate pointer parameter 'req_hdr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'req_hdr' at the start of the function, e.g., 'if (!req_hdr) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius.c",
+   "line": 542,
+   "message": "Potential null pointer dereference in member access of variable 'msg'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'msg' is not NULL before member access"
+  },
+  {
+   "column": 6,
+   "file": "src/radius/radius.c",
+   "line": 544,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius.c",
+   "line": 569,
+   "message": "Function 'radius_msg_finish_acct' does not validate pointer parameter 'secret' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'secret' at the start of the function, e.g., 'if (!secret) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius.c",
+   "line": 595,
+   "message": "Function 'radius_msg_finish_acct_resp' does not validate pointer parameter 'secret' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'secret' at the start of the function, e.g., 'if (!secret) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius.c",
+   "line": 595,
+   "message": "Function 'radius_msg_finish_acct_resp' does not validate pointer parameter 'req_authenticator' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'req_authenticator' at the start of the function, e.g., 'if (!req_authenticator) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius.c",
+   "line": 621,
+   "message": "Function 'radius_msg_verify_acct_req' does not validate pointer parameter 'secret' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'secret' at the start of the function, e.g., 'if (!secret) { return error_code; }'"
+  },
+  {
+   "column": 50,
+   "file": "src/radius/radius.c",
+   "line": 621,
+   "message": "Pointer parameter 'msg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *msg'"
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius.c",
+   "line": 636,
+   "message": "Out-of-bounds array access at index 3: Buffer 'addr' with size 3 (allocated at line 1788)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius.c",
+   "line": 667,
+   "message": "Out-of-bounds array access at index 3: Buffer 'addr' with size 3 (allocated at line 1788)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 7,
+   "file": "src/radius/radius.c",
+   "line": 678,
+   "message": "Potential null pointer dereference in member access of variable 'tmp'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'tmp' is not NULL before member access"
+  },
+  {
+   "column": 5,
+   "file": "src/radius/radius.c",
+   "line": 703,
+   "message": "sizeof applied to pointer/array parameter 'msg' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(msg->hdr->authenticator)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 6,
+   "file": "src/radius/radius.c",
+   "line": 704,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 29,
+   "file": "src/radius/radius.c",
+   "line": 718,
+   "message": "Pointer parameter 'attr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *attr'"
+  },
+  {
+   "column": 11,
+   "file": "src/radius/radius.c",
+   "line": 725,
+   "message": "sizeof applied to pointer/array parameter 'msg' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*msg->attr_pos)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 19,
+   "file": "src/radius/radius.c",
+   "line": 725,
+   "message": "Use-after-free: accessing freed pointer 'msg->attr_pos'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 3,
+   "file": "src/radius/radius.c",
+   "line": 734,
+   "message": "Do not cast away const qualification: '(unsigned char *) attr'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 9,
+   "file": "src/radius/radius.c",
+   "line": 760,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 9,
+   "file": "src/radius/radius.c",
+   "line": 771,
+   "message": "Division or modulo by 'plen' without checking for zero",
+   "rule_id": "INT33-C",
+   "severity": "High",
+   "suggestion": "Check if 'plen' is not zero before division"
+  },
+  {
+   "column": 35,
+   "file": "src/radius/radius.c",
+   "line": 856,
+   "message": "Dereference of uninitialized pointer 'hdr'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'hdr' before dereferencing"
+  },
+  {
+   "column": 8,
+   "file": "src/radius/radius.c",
+   "line": 859,
+   "message": "Do not cast away const qualification: '(struct radius_hdr *) data'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 8,
+   "file": "src/radius/radius.c",
+   "line": 859,
+   "message": "Casting from char * (alignment 1) to struct radius_hdr * (alignment 4) may cause alignment issues",
+   "rule_id": "EXP36-C",
+   "severity": "Low",
+   "suggestion": "Use memcpy or ensure proper alignment before casting"
+  },
+  {
+   "column": 25,
+   "file": "src/radius/radius.c",
+   "line": 872,
+   "message": "Dereference of uninitialized pointer 'msg'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'msg' before dereferencing"
+  },
+  {
+   "column": 37,
+   "file": "src/radius/radius.c",
+   "line": 887,
+   "message": "Dereference of uninitialized pointer 'attr'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'attr' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius.c",
+   "line": 903,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius.c",
+   "line": 905,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius.c",
+   "line": 911,
+   "message": "Function 'radius_msg_add_eap' does not validate pointer parameter 'data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'data' at the start of the function, e.g., 'if (!data) { return error_code; }'"
+  },
+  {
+   "column": 5,
+   "file": "src/radius/radius.c",
+   "line": 941,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 7,
+   "file": "src/radius/radius.c",
+   "line": 947,
+   "message": "Potential null pointer dereference in member access of variable 'attr'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'attr' is not NULL before member access"
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius.c",
+   "line": 968,
+   "message": "Function returns pointer to local variable 'eap' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 7,
+   "file": "src/radius/radius.c",
+   "line": 982,
+   "message": "Potential null pointer dereference in member access of variable 'tmp'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'tmp' is not NULL before member access"
+  },
+  {
+   "column": 6,
+   "file": "src/radius/radius.c",
+   "line": 1002,
+   "message": "sizeof applied to pointer/array parameter 'msg' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(msg->hdr->authenticator)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 6,
+   "file": "src/radius/radius.c",
+   "line": 1004,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 38,
+   "file": "src/radius/radius.c",
+   "line": 1011,
+   "message": "Variable 'orig_authenticator' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'orig_authenticator' before use, e.g., at its declaration"
+  },
+  {
+   "column": 46,
+   "file": "src/radius/radius.c",
+   "line": 1025,
+   "message": "Pointer parameter 'sent_msg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sent_msg'"
+  },
+  {
+   "column": 5,
+   "file": "src/radius/radius.c",
+   "line": 1031,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius.c",
+   "line": 1063,
+   "message": "Out-of-bounds array access at index 3: Buffer 'addr' with size 3 (allocated at line 1788)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 7,
+   "file": "src/radius/radius.c",
+   "line": 1084,
+   "message": "Potential null pointer dereference in member access of variable 'attr'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'attr' is not NULL before member access"
+  },
+  {
+   "column": 53,
+   "file": "src/radius/radius.c",
+   "line": 1099,
+   "message": "Pointer parameter 'msg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *msg'"
+  },
+  {
+   "column": 9,
+   "file": "src/radius/radius.c",
+   "line": 1102,
+   "message": "sizeof applied to pointer/array parameter 'msg' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(msg->hdr->authenticator)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 5,
+   "file": "src/radius/radius.c",
+   "line": 1118,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 30,
+   "file": "src/radius/radius.c",
+   "line": 1125,
+   "message": "Variable 'vhdr' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'vhdr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 7,
+   "file": "src/radius/radius.c",
+   "line": 1127,
+   "message": "Potential null pointer dereference in member access of variable 'attr'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'attr' is not NULL before member access"
+  },
+  {
+   "column": 4,
+   "file": "src/radius/radius.c",
+   "line": 1162,
+   "message": "Function returns pointer to local variable 'data' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 3,
+   "file": "src/radius/radius.c",
+   "line": 1201,
+   "message": "Function returns without releasing all resources. Leaked: ppos, plain. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 14,
+   "file": "src/radius/radius.c",
+   "line": 1216,
+   "message": "Variable 'pos' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 33,
+   "file": "src/radius/radius.c",
+   "line": 1219,
+   "message": "Variable 'addr' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'addr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 4,
+   "file": "src/radius/radius.c",
+   "line": 1222,
+   "message": "Function returns without releasing all resources. Leaked: ppos, plain. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 6,
+   "file": "src/radius/radius.c",
+   "line": 1231,
+   "message": "Array/pointer 'plain' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'plain' after calling free(). Set pointer to NULL after freeing: free(plain); plain = NULL;"
+  },
+  {
+   "column": 23,
+   "file": "src/radius/radius.c",
+   "line": 1231,
+   "message": "Array/pointer 'plain' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'plain' after calling free(). Set pointer to NULL after freeing: free(plain); plain = NULL;"
+  },
+  {
+   "column": 3,
+   "file": "src/radius/radius.c",
+   "line": 1234,
+   "message": "Function returns without releasing all resources. Leaked: ppos, plain. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 29,
+   "file": "src/radius/radius.c",
+   "line": 1237,
+   "message": "Array/pointer 'plain' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'plain' after calling free(). Set pointer to NULL after freeing: free(plain); plain = NULL;"
+  },
+  {
+   "column": 3,
+   "file": "src/radius/radius.c",
+   "line": 1240,
+   "message": "Function returns without releasing all resources. Leaked: ppos, plain. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 13,
+   "file": "src/radius/radius.c",
+   "line": 1243,
+   "message": "Array/pointer 'plain' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'plain' after calling free(). Set pointer to NULL after freeing: free(plain); plain = NULL;"
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius.c",
+   "line": 1245,
+   "message": "Function returns pointer to local variable 'res' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius.c",
+   "line": 1245,
+   "message": "Function returns without releasing all resources. Leaked: ppos, plain. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 9,
+   "file": "src/radius/radius.c",
+   "line": 1257,
+   "message": "File-scope identifier '_len' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 6,
+   "file": "src/radius/radius.c",
+   "line": 1262,
+   "message": "Variable 'len' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 33,
+   "file": "src/radius/radius.c",
+   "line": 1286,
+   "message": "Variable 'addr' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'addr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 66,
+   "file": "src/radius/radius.c",
+   "line": 1303,
+   "message": "Pointer parameter 'sent_msg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sent_msg'"
+  },
+  {
+   "column": 26,
+   "file": "src/radius/radius.c",
+   "line": 1313,
+   "message": "Dereference of uninitialized pointer 'keys'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'keys' before dereferencing"
+  },
+  {
+   "column": 3,
+   "file": "src/radius/radius.c",
+   "line": 1344,
+   "message": "Double free detected: 'key' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius.c",
+   "line": 1347,
+   "message": "Function returns pointer to local variable 'keys' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 69,
+   "file": "src/radius/radius.c",
+   "line": 1352,
+   "message": "Pointer parameter 'sent_msg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sent_msg'"
+  },
+  {
+   "column": 26,
+   "file": "src/radius/radius.c",
+   "line": 1362,
+   "message": "Dereference of uninitialized pointer 'keys'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'keys' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius.c",
+   "line": 1377,
+   "message": "Function returns pointer to local variable 'keys' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius.c",
+   "line": 1381,
+   "message": "Function 'radius_msg_add_mppe_keys' does not validate integer parameter 'send_key_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'send_key_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius.c",
+   "line": 1381,
+   "message": "Function 'radius_msg_add_mppe_keys' does not validate integer parameter 'recv_key_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'recv_key_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius.c",
+   "line": 1391,
+   "message": "Variable 'pos' should be declared volatile - modified around function calls that may have external side effects",
+   "rule_id": "DCL22-C",
+   "severity": "Low",
+   "suggestion": "Declare as 'volatile' to prevent compiler optimizations that assume variable state is unchanged across function calls"
+  },
+  {
+   "column": 36,
+   "file": "src/radius/radius.c",
+   "line": 1396,
+   "message": "Dereference of uninitialized pointer 'vhdr'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'vhdr' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius.c",
+   "line": 1413,
+   "message": "Variable 'salt' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'salt' before use, e.g., at its declaration"
+  },
+  {
+   "column": 24,
+   "file": "src/radius/radius.c",
+   "line": 1419,
+   "message": "Scaled integer arithmetic with pointer: 'hlen + elen - sizeof(vendor_id)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 3,
+   "file": "src/radius/radius.c",
+   "line": 1431,
+   "message": "Function returns without releasing all resources. Leaked: buf, buf. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 3,
+   "file": "src/radius/radius.c",
+   "line": 1444,
+   "message": "Function returns without releasing all resources. Leaked: buf, buf. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 24,
+   "file": "src/radius/radius.c",
+   "line": 1445,
+   "message": "Scaled integer arithmetic with pointer: 'hlen + elen - sizeof(vendor_id)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius.c",
+   "line": 1449,
+   "message": "Double free detected: 'buf' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 3,
+   "file": "src/radius/radius.c",
+   "line": 1451,
+   "message": "Function returns without releasing all resources. Leaked: buf, buf. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius.c",
+   "line": 1454,
+   "message": "Function returns without releasing all resources. Leaked: buf, buf. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius.c",
+   "line": 1458,
+   "message": "Function 'radius_msg_add_wfa' does not validate integer parameter 'len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius.c",
+   "line": 1485,
+   "message": "Function 'radius_msg_add_ext_vs' does not validate pointer parameter 'data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'data' at the start of the function, e.g., 'if (!data) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius.c",
+   "line": 1485,
+   "message": "Function 'radius_msg_add_ext_vs' does not validate integer parameter 'len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius.c",
+   "line": 1507,
+   "message": "Function 'radius_user_password_hide' does not validate pointer parameter 'secret' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'secret' at the start of the function, e.g., 'if (!secret) { return error_code; }'"
+  },
+  {
+   "column": 49,
+   "file": "src/radius/radius.c",
+   "line": 1507,
+   "message": "Pointer parameter 'msg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *msg'"
+  },
+  {
+   "column": 3,
+   "file": "src/radius/radius.c",
+   "line": 1541,
+   "message": "Potentially unsafe array access with variable index 'i': Buffer 'buf' with size 10 (allocated at line 1684)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 18,
+   "file": "src/radius/radius.c",
+   "line": 1547,
+   "message": "Signed integer subtraction 'pos - 16' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b < 0 && a > INT_MAX + b) || (b > 0 && a < INT_MIN + b)) { /* handle error */ }"
+  },
+  {
+   "column": 3,
+   "file": "src/radius/radius.c",
+   "line": 1557,
+   "message": "Pointer arithmetic moves 16 elements beyond buffer bounds (effective size: 10): Buffer 'pos' with size 10 (allocated at line 1684)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius.c",
+   "line": 1566,
+   "message": "Function 'radius_msg_add_attr_user_password' does not validate pointer parameter 'data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'data' at the start of the function, e.g., 'if (!data) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius.c",
+   "line": 1566,
+   "message": "Function 'radius_msg_add_attr_user_password' does not validate pointer parameter 'secret' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'secret' at the start of the function, e.g., 'if (!secret) { return error_code; }'"
+  },
+  {
+   "column": 7,
+   "file": "src/radius/radius.c",
+   "line": 1591,
+   "message": "Potential null pointer dereference in member access of variable 'tmp'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'tmp' is not NULL before member access"
+  },
+  {
+   "column": 7,
+   "file": "src/radius/radius.c",
+   "line": 1615,
+   "message": "Potential null pointer dereference in member access of variable 'tmp'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'tmp' is not NULL before member access"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius.c",
+   "line": 1631,
+   "message": "Function 'radius_msg_count_attr' does not validate pointer parameter 'msg' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'msg' at the start of the function, e.g., 'if (!msg) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius.c",
+   "line": 1631,
+   "message": "Function 'radius_msg_count_attr' does not validate integer parameter 'min_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'min_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 7,
+   "file": "src/radius/radius.c",
+   "line": 1638,
+   "message": "Potential null pointer dereference in member access of variable 'attr'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'attr' is not NULL before member access"
+  },
+  {
+   "column": 8,
+   "file": "src/radius/radius.c",
+   "line": 1659,
+   "message": "Do not cast away const qualification: '(int *) a'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 8,
+   "file": "src/radius/radius.c",
+   "line": 1660,
+   "message": "Do not cast away const qualification: '(int *) b'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius.c",
+   "line": 1677,
+   "message": "Function 'radius_msg_get_vlanid' does not validate pointer parameter 'msg' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'msg' at the start of the function, e.g., 'if (!msg) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius.c",
+   "line": 1682,
+   "message": "Value assigned to 'attr' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 7,
+   "file": "src/radius/radius.c",
+   "line": 1695,
+   "message": "Potential null pointer dereference in member access of variable 'attr'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'attr' is not NULL before member access"
+  },
+  {
+   "column": 11,
+   "file": "src/radius/radius.c",
+   "line": 1702,
+   "message": "Reading from uninitialized array 'tunnel' inside a loop. Array was declared but never initialized before being read.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize array 'tunnel' before reading: int tunnel[N] = {0}; or assign values before use"
+  },
+  {
+   "column": 11,
+   "file": "src/radius/radius.c",
+   "line": 1704,
+   "message": "Reading from uninitialized array 'tunnel' inside a loop. Array was declared but never initialized before being read.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize array 'tunnel' before reading: int tunnel[N] = {0}; or assign values before use"
+  },
+  {
+   "column": 3,
+   "file": "src/radius/radius.c",
+   "line": 1706,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  },
+  {
+   "column": 14,
+   "file": "src/radius/radius.c",
+   "line": 1728,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 14,
+   "file": "src/radius/radius.c",
+   "line": 1728,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 9,
+   "file": "src/radius/radius.c",
+   "line": 1742,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 10,
+   "file": "src/radius/radius.c",
+   "line": 1751,
+   "message": "Reading from uninitialized array 'tunnel' inside a loop. Array was declared but never initialized before being read.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize array 'tunnel' before reading: int tunnel[N] = {0}; or assign values before use"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius.c",
+   "line": 1780,
+   "message": "Function 'radius_msg_get_tunnel_password' does not validate pointer parameter 'msg' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'msg' at the start of the function, e.g., 'if (!msg) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius.c",
+   "line": 1780,
+   "message": "Function 'radius_msg_get_tunnel_password' does not validate pointer parameter 'secret' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'secret' at the start of the function, e.g., 'if (!secret) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius.c",
+   "line": 1780,
+   "message": "Function 'radius_msg_get_tunnel_password' does not validate pointer parameter 'sent_msg' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sent_msg' at the start of the function, e.g., 'if (!sent_msg) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius.c",
+   "line": 1780,
+   "message": "Function 'radius_msg_get_tunnel_password' does not validate integer parameter 'n' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'n' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 67,
+   "file": "src/radius/radius.c",
+   "line": 1780,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 29,
+   "file": "src/radius/radius.c",
+   "line": 1782,
+   "message": "Pointer parameter 'sent_msg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sent_msg'"
+  },
+  {
+   "column": 21,
+   "file": "src/radius/radius.c",
+   "line": 1841,
+   "message": "Variable 'addr' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'addr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 4,
+   "file": "src/radius/radius.c",
+   "line": 1847,
+   "message": "Potentially unsafe array access with variable index 'i': Buffer 'pos' with size 10 (allocated at line 1684)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 3,
+   "file": "src/radius/radius.c",
+   "line": 1867,
+   "message": "Potentially unsafe array access with variable index 'i': Buffer 'pos' with size 10 (allocated at line 1684)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 18,
+   "file": "src/radius/radius.c",
+   "line": 1883,
+   "message": "Pointer arithmetic 'str + 1' goes 1 elements past the end of array 'str[0]'. This exceeds array bounds.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Ensure pointer arithmetic stays within array bounds (0 to 0)"
+  },
+  {
+   "column": 5,
+   "file": "src/radius/radius.c",
+   "line": 1895,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius.c",
+   "line": 1932,
+   "message": "Function 'radius_msg_find_unlisted_attr' does not validate pointer parameter 'attrs' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'attrs' at the start of the function, e.g., 'if (!attrs) { return error_code; }'"
+  },
+  {
+   "column": 61,
+   "file": "src/radius/radius.c",
+   "line": 1932,
+   "message": "Pointer parameter 'attrs' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *attrs'"
+  },
+  {
+   "column": 8,
+   "file": "src/radius/radius.c",
+   "line": 1941,
+   "message": "Potential null pointer dereference in member access of variable 'attr'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'attr' is not NULL before member access"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius.c",
+   "line": 1953,
+   "message": "Function 'radius_gen_session_id' does not validate pointer parameter 'id' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'id' at the start of the function, e.g., 'if (!id) { return error_code; }'"
+  }
+ ]
+}

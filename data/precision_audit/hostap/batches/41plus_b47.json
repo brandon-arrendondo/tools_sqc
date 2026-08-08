@@ -1,0 +1,463 @@
+{
+ "src/crypto/tls_openssl.c#part4of4": [
+  {
+   "column": 19,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5530,
+   "message": "fgets() without truncation check. Input may be silently truncated.",
+   "rule_id": "FIO20-C",
+   "severity": "Medium",
+   "suggestion": "Check for newline character to detect truncation: if (strchr(buf, '\\n') == NULL) { /* handle truncation */ }"
+  },
+  {
+   "column": 16,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5533,
+   "message": "Variable 'p' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'p' before use, e.g., at its declaration"
+  },
+  {
+   "column": 16,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5536,
+   "message": "Array/pointer 'buf' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'buf' after calling free(). Set pointer to NULL after freeing: free(buf); buf = NULL;"
+  },
+  {
+   "column": 16,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5536,
+   "message": "Potentially unsafe array access with variable index 'len': Buffer 'buf' with size 256 (allocated at line 5854)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5537,
+   "message": "Array/pointer 'buf' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'buf' after calling free(). Set pointer to NULL after freeing: free(buf); buf = NULL;"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5537,
+   "message": "Potentially unsafe array access with variable index 'len': Buffer 'buf' with size 256 (allocated at line 5854)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5546,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5546,
+   "message": "Return value of 'fclose' ignored: 'fclose(f)' - Returns non-zero on error",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (fclose(file) != 0) for close errors"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5549,
+   "message": "Function returns without releasing all resources. Leaked: buf. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 21,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5556,
+   "message": "Array declaration 'tpm2_tags[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5579,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 9,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5686,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 9,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5699,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 9,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5713,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5741,
+   "message": "Variable 'params' of type char used in numeric operation. Use explicit 'signed char' or 'unsigned char' for numeric values.",
+   "rule_id": "INT07-C",
+   "severity": "Medium",
+   "suggestion": "Change declaration of 'params' from 'char' to 'signed char' or 'unsigned char'"
+  },
+  {
+   "column": 9,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5753,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5866,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5881,
+   "message": "Declaration is missing an explicit type specifier",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Add an explicit type specifier to the declaration"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5884,
+   "message": "Testing 'SSL_CTX_get0_chain_certs(ssl_ctx, &certs)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: SSL_CTX_get0_chain_certs(ssl_ctx, &certs) != 0"
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5903,
+   "message": "loop termination uses '==' with a step other than +-1 -- the counter can skip over the target value and never terminate",
+   "rule_id": "MSC21-C",
+   "severity": "Low",
+   "suggestion": "Use a relational operator (<, <=, >, >=) to terminate the loop instead of an equality operator, unless the step is exactly 1"
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5968,
+   "message": "Variable 'params' of type char used in numeric operation. Use explicit 'signed char' or 'unsigned char' for numeric values.",
+   "rule_id": "INT07-C",
+   "severity": "Medium",
+   "suggestion": "Change declaration of 'params' from 'char' to 'signed char' or 'unsigned char'"
+  },
+  {
+   "column": 9,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5980,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 6014,
+   "message": "Function 'SSL_CTX_set_tlsext_status_arg' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 10,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 6015,
+   "message": "Potential null pointer dereference in member access of variable 'tls_global'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'tls_global' is not NULL before member access"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 6037,
+   "message": "Function has pointer parameter without size argument: 'static int tls_sess_sec_cb(SSL *s, void *secret, int *secret_len,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'int *secret_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 28,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 6042,
+   "message": "Pointer parameter 'peer_ciphers' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *peer_ciphers'"
+  },
+  {
+   "column": 18,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 6043,
+   "message": "Pointer parameter 'cipher' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *cipher'"
+  },
+  {
+   "column": 42,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 6086,
+   "message": "Pointer parameter 's' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *s'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 6113,
+   "message": "Function 'tls_connection_set_session_ticket_cb' does not validate pointer parameter 'conn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conn' at the start of the function, e.g., 'if (!conn) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 6113,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 47,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 6113,
+   "message": "Pointer parameter 'tls_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tls_ctx'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 6141,
+   "message": "Function 'tls_get_library_version' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 6141,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 34,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 6141,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 6155,
+   "message": "Function 'tls_connection_set_success_data' does not validate pointer parameter 'conn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conn' at the start of the function, e.g., 'if (!conn) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 6191,
+   "message": "Bit-field 'success_data' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 6194,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 10,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 6197,
+   "message": "Passing null pointer 'sess_data' to 'os_free' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'sess_data' is not NULL before passing to 'os_free'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 6201,
+   "message": "Function 'tls_connection_set_success_data_resumed' does not validate pointer parameter 'conn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conn' at the start of the function, e.g., 'if (!conn) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 6201,
+   "message": "Identifier 'tls_connection_set_success_data_resumed' agrees with 'tls_connection_set_success_data' in its first 31 significant characters; they may collide as the same external identifier on a conforming implementation",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Shorten one of the identifiers so they differ within the first 31 characters"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 6205,
+   "message": "Bit-field 'success_data' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 55,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 6210,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 6215,
+   "message": "Assignment in if statement condition: 'sess = SSL_get_session(conn->ssl)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 6221,
+   "message": "Function 'tls_connection_remove_session' does not validate pointer parameter 'conn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conn' at the start of the function, e.g., 'if (!conn) { return error_code; }'"
+  },
+  {
+   "column": 58,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 6221,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 46,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 6238,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 6256,
+   "message": "Function 'tls_connection_get_cipher_suite' does not validate pointer parameter 'conn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conn' at the start of the function, e.g., 'if (!conn) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 6256,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 59,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 6256,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 68,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 6271,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 61,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 6279,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  }
+ ]
+}

@@ -1,0 +1,1211 @@
+{
+ "labels": [
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2009,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "heap-not-stack DCL30-C/ARR00-C confusion: value/buf is os_malloc/zalloc'd heap memory, not automatic storage"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2019,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+len-pair idiom FP class: 'key' immediately followed by its own size_t *len companion param"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2091,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "config-parser dispatch-table DCL13-C FP class (41plus_b40): ssid_fields[] .parser/.writer callback signature pins this param"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2157,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "config-parser dispatch-table DCL13-C FP class (41plus_b40): ssid_fields[] .parser/.writer callback signature pins this param"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2173,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conditional-branch-blind false UAF: the free() is inside an error branch that returns immediately; normal path never frees before this use"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2174,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "heap-not-stack DCL30-C/ARR00-C confusion: value/buf is os_malloc/zalloc'd heap memory, not automatic storage"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2174,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "heap-not-stack DCL30-C/ARR00-C confusion: value/buf is os_malloc/zalloc'd heap memory, not automatic storage"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2194,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR34-C misattribution/line-drift: line is 'int *ids = wpa_config_parse_int_array(value);' - no char conversion at all"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2212,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "config-parser dispatch-table DCL13-C FP class (41plus_b40): ssid_fields[] .parser/.writer callback signature pins this param"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2221,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "config-parser dispatch-table DCL13-C FP class (41plus_b40): ssid_fields[] .parser/.writer callback signature pins this param"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2236,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'p' is os_zalloc'd and NULL-checked immediately above; not uninitialized, pointer-init blindness"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2276,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "config-parser dispatch-table DCL13-C FP class (41plus_b40): ssid_fields[] .parser/.writer callback signature pins this param"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2291,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR34-C misattribution: 'value' here is line inside psk_list parse, not a char widening conversion site"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2313,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "config-parser dispatch-table DCL13-C FP class (41plus_b40): ssid_fields[] .parser/.writer callback signature pins this param"
+  },
+  {
+   "rule": "INT10-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2357,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT10-C misattribution: 'len' is size_t (unsigned), modulo-signedness concern does not apply"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2380,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "config-parser dispatch-table DCL13-C FP class (41plus_b40): ssid_fields[] .parser/.writer callback signature pins this param"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2390,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "config-parser dispatch-table DCL13-C FP class (41plus_b40): ssid_fields[] .parser/.writer callback signature pins this param"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2410,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ERR33-C strtol() *end-checked but errno/ERANGE not verified - established low-severity TP shape for this file (41plus_b40 config.c:209 precedent)"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2410,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ERR00-C strtol() return not checked for errors beyond *end test - same reconfirmed shape"
+  },
+  {
+   "rule": "ERR01-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2410,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ERR01-C errno not checked after strtol() - same reconfirmed shape"
+  },
+  {
+   "rule": "ERR30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2410,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ERR30-C errno not reset before strtol() call - same reconfirmed shape"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2411,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP34-C strtol() endptr-never-NULL FP class: 'end' is always written by strtol(), cannot be NULL after the call"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2424,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "config-parser dispatch-table DCL13-C FP class (41plus_b40): ssid_fields[] .parser/.writer callback signature pins this param"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2432,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "heap-not-stack DCL30-C/ARR00-C confusion: value/buf is os_malloc/zalloc'd heap memory, not automatic storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2440,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "config-parser dispatch-table DCL13-C FP class (41plus_b40): ssid_fields[] .parser/.writer callback signature pins this param"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2450,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "config-parser dispatch-table DCL13-C FP class (41plus_b40): ssid_fields[] .parser/.writer callback signature pins this param"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2458,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "config-parser dispatch-table DCL13-C FP class (41plus_b40): ssid_fields[] .parser/.writer callback signature pins this param"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2478,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "config-parser dispatch-table DCL13-C FP class (41plus_b40): ssid_fields[] .parser/.writer callback signature pins this param"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2495,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conditional-branch-blind false UAF: the free() is inside an error branch that returns immediately; normal path never frees before this use"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2496,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "heap-not-stack DCL30-C/ARR00-C confusion: value/buf is os_malloc/zalloc'd heap memory, not automatic storage"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2496,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "heap-not-stack DCL30-C/ARR00-C confusion: value/buf is os_malloc/zalloc'd heap memory, not automatic storage"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2511,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE00-C category error: _STR macro args are only stringified (#f)/token-pasted, never runtime-evaluated"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2511,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE12-C category error: same as PRE00-C, stringification isn't evaluation"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2511,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "DCL37-C reserved-identifier: _STR is file-scope reserved per C 7.1.3 - judged consistent with prior __must_check-style TP calls, but this is a private macro #undef'd at file end with no external-header shadowing justification"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2512,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "DCL37-C same reasoning as _STR"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2514,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE00-C category error, same as _STR entry"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2514,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE12-C category error, same as _STR entry"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2514,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "DCL37-C same reasoning"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2515,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "DCL37-C same reasoning"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2526,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE00-C category error: _STR_LEN macro args token-pasted/stringified only"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2526,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE12-C category error, same shape"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2526,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "DCL37-C same reasoning"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2527,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE00-C category error: _STR_LENe"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2527,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE12-C category error, same shape"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2527,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "DCL37-C same reasoning"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2534,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "DCL37-C same reasoning, _STR_RANGE"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2539,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE00-C category error: _INT macro"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2539,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE12-C category error, same shape"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2539,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "DCL37-C same reasoning"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2540,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "DCL37-C same reasoning"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2542,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE00-C category error: _INT macro (2nd definition)"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2542,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE12-C category error, same shape"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2542,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "DCL37-C same reasoning"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2544,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "DCL37-C same reasoning"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2554,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE00-C category error: INT_RANGE macro, f is only stringified/pasted"
+  },
+  {
+   "rule": "PRE05-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2554,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE05-C misfire: matches confirmed PRE00/01/02/05/12-C bundle misfire family - # here stringifies a plain identifier, no pre-expansion concern"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2554,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE12-C category error, same shape"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2557,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE00-C category error: INT_RANGE (2nd definition)"
+  },
+  {
+   "rule": "PRE05-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2557,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE05-C misfire, same reasoning"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2557,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE12-C category error, same shape"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2565,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE00-C category error: _FUNC macro, f only used via ## token-paste and #f stringify"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2565,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE12-C category error, same shape"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2565,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "DCL37-C same reasoning"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2567,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE00-C category error: _FUNC (2nd definition)"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2567,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE12-C category error, same shape"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2567,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "DCL37-C same reasoning"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2596,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR02-C implicit-bounds FP class: ssid_fields[] is ARRAY_SIZE()-consumed (NUM_SSID_FIELDS), size-mismatch risk never materializes"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2630,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP43-C macro category-error (cf. __AKM X-macro entry): STR_LENe/STRe/INTe are macros building a static initializer, args are bare field-name identifiers not pointers, no function call exists"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2631,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP43-C macro category-error (cf. __AKM X-macro entry): STR_LENe/STRe/INTe are macros building a static initializer, args are bare field-name identifiers not pointers, no function call exists"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2632,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP43-C macro category-error (cf. __AKM X-macro entry): STR_LENe/STRe/INTe are macros building a static initializer, args are bare field-name identifiers not pointers, no function call exists"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2633,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP43-C macro category-error (cf. __AKM X-macro entry): STR_LENe/STRe/INTe are macros building a static initializer, args are bare field-name identifiers not pointers, no function call exists"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2656,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP43-C macro category-error (cf. __AKM X-macro entry): STR_LENe/STRe/INTe are macros building a static initializer, args are bare field-name identifiers not pointers, no function call exists"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2657,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP43-C macro category-error (cf. __AKM X-macro entry): STR_LENe/STRe/INTe are macros building a static initializer, args are bare field-name identifiers not pointers, no function call exists"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2658,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP43-C macro category-error (cf. __AKM X-macro entry): STR_LENe/STRe/INTe are macros building a static initializer, args are bare field-name identifiers not pointers, no function call exists"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2659,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP43-C macro category-error (cf. __AKM X-macro entry): STR_LENe/STRe/INTe are macros building a static initializer, args are bare field-name identifiers not pointers, no function call exists"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2692,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP43-C macro category-error (cf. __AKM X-macro entry): STR_LENe/STRe/INTe are macros building a static initializer, args are bare field-name identifiers not pointers, no function call exists"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2693,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP43-C macro category-error (cf. __AKM X-macro entry): STR_LENe/STRe/INTe are macros building a static initializer, args are bare field-name identifiers not pointers, no function call exists"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2694,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP43-C macro category-error (cf. __AKM X-macro entry): STR_LENe/STRe/INTe are macros building a static initializer, args are bare field-name identifiers not pointers, no function call exists"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2695,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP43-C macro category-error (cf. __AKM X-macro entry): STR_LENe/STRe/INTe are macros building a static initializer, args are bare field-name identifiers not pointers, no function call exists"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2696,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP43-C macro category-error (cf. __AKM X-macro entry): STR_LENe/STRe/INTe are macros building a static initializer, args are bare field-name identifiers not pointers, no function call exists"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2708,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP43-C macro category-error (cf. __AKM X-macro entry): STR_LENe/STRe/INTe are macros building a static initializer, args are bare field-name identifiers not pointers, no function call exists"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2709,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP43-C macro category-error (cf. __AKM X-macro entry): STR_LENe/STRe/INTe are macros building a static initializer, args are bare field-name identifiers not pointers, no function call exists"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2875,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: param supplied exclusively by internal callers, never externally nullable"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2885,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C misfire: 'prio' is initialized in the very for-loop's own init clause (for (prio = 0; ...)), not uninitialized"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2896,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP43-C no-restrict-qualifier FP class: os_realloc_array has no restrict params, single-pointer realloc, no aliasing"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2927,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: param supplied exclusively by internal callers, never externally nullable"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2940,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR00-C type misattribution: 'ret' is declared 'int ret = 0;', not a plain char variable"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 2950,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C real opportunity: eap_peer_config_free_cert is a private static helper never registered in ssid_fields[] (disambiguation test from 41plus_b40), cert genuinely never modified"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3006,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: param supplied exclusively by internal callers, never externally nullable"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3010,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP34-C internal-only-API FP class extended (41plus_b?): wpa_config_free_ssid's ssid is only ever called on live list entries from wpa_config_free's non-null walk, never externally nullable"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3042,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP34-C misfire inside while ((psk = dl_list_first(...))) - the while condition itself is the null-guard for psk, established FP class"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3048,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR01-C pointee-sizing-correct-idiom FP class: sizeof(*ssid) dereferences first to get the pointee type, not a decayed-array sizeof"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3114,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "MSC13-C genuine dead-NULL-init: 'prev' is set NULL then unconditionally overwritten inside the loop on every iteration and never read after the loop"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3208,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: config only ever supplied by internal callers"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3208,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C misfire: 'func' is a fixed-signature callback param, always supplied by call sites, and dereferencing it (calling it) is the function's entire purpose"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3208,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C misfire: 'arg' is an opaque context pointer only ever passed through to func(), never dereferenced in this function - opaque-handle API00 FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3208,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C real opportunity: wpa_config_foreach_network is a plain public utility, not a dispatch-table entry, and never modifies config"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3217,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C category error: 'func' is a function-pointer PARAMETER (typed in the signature), not an undeclared external function requiring a prior prototype"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3218,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C false claim: 'ssid' here is a LOCAL variable declared in this function ('struct wpa_ssid *ssid, *next;'), not a global/static - no such assignment-to-global exists"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3229,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: param supplied exclusively by internal callers, never externally nullable"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3229,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C category error: 'id' is only ever compared with ==, no arithmetic operation exists to overflow"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3229,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C real opportunity: config only read (config->ssid), not a dispatch-table entry"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3240,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C heap-vs-stack-pointer-variable confusion: 'ssid' local var holds a pointer into the persistent config->ssid heap-allocated list, not automatic storage"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3252,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: param supplied exclusively by internal callers, never externally nullable"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3252,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C real opportunity: config only read via config->ssid walk, not a dispatch-table entry"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3262,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C heap-vs-stack-pointer-variable confusion, same as wpa_config_get_network"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3265,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C heap-vs-stack-pointer-variable confusion, same as wpa_config_get_network"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3278,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: param supplied exclusively by internal callers, never externally nullable"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3315,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: param supplied exclusively by internal callers, never externally nullable"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3315,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C category error: 'id' only compared with ==, no arithmetic"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3411,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR02-C implicit-bounds FP class: removed_fields[] is a NULL-terminated sentinel array, consumed via 'for (i=0; removed_fields[i]; i++)', never ARRAY_SIZE'd"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3465,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR00-C type misattribution: 'ret' is declared 'int ret = 0;' in wpa_config_set, not a char"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3489,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR00-C type misattribution, same function/variable"
+  },
+  {
+   "rule": "DCL22-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3501,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL22-C misfire on an ordinary local pointer FP class: 'buf' is a plain heap pointer used only within this one function, no signal-handler/setjmp interaction"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3530,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: param supplied exclusively by internal callers, never externally nullable"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3530,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC37-C preprocessor-branch-blind FP class: #ifdef NO_CONFIG_WRITE return NULL; #else ... #endif - both branches return"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3562,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C cross-iteration name conflation: the only os_free(value) on this path is inside 'if (key==NULL)' (value not yet stored to props), sqc conflates it with a later loop iteration's distinct field->writer() allocation reusing the same local name"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3660,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP34-C os_free(NULL)-is-safe FP class: os_free is a NULL-safe wrapper, passing a possibly-NULL 'res' is not a bug"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3663,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "heap-not-stack DCL30-C/ARR00-C confusion: value/buf is os_malloc/zalloc'd heap memory, not automatic storage"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3687,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC41-C misfire on a wpa_hexdump_key() debug-log label string ('PSK (from passphrase)' describes what's dumped, not the actual sensitive data) - established FP class"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3703,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP43-C no-restrict-qualifier FP class: os_realloc_array has no restrict params, single-pointer realloc, no aliasing"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3709,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP43-C no-restrict-qualifier FP class: os_realloc_array has no restrict params, single-pointer realloc, no aliasing"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3715,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "unchecked atoi() assigned straight to struct field with zero downstream validation - established ERR07/ERR34 disposition"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3715,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "unchecked atoi() assigned straight to struct field with zero downstream validation - established ERR07/ERR34 disposition"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3735,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conditional-branch-blind false UAF: the free() is inside an error branch that returns immediately; normal path never frees before this use"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3735,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "unchecked atoi() assigned straight to struct field with zero downstream validation - established ERR07/ERR34 disposition"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3735,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "unchecked atoi() assigned straight to struct field with zero downstream validation - established ERR07/ERR34 disposition"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3749,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conditional-branch-blind false UAF: the free() is inside an error branch that returns immediately; normal path never frees before this use"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3758,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C misfire on a #define'd compile-time constant used as array-size annotation (MAX_ROAMING_CONS_OI_LEN) - established FP class (driver_roboswitch.c precedent), not an undeclared/later-declared runtime variable"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3759,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C misfire, same #define-constant-as-array-bound FP class (MAX_ROAMING_CONS)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3760,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API05-C misfire: cred_ois_len[MAX_ROAMING_CONS] is a fixed-size array param with a macro-constant bound, not a conformant-array-syntax gap"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3761,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API05-C misfire: cred_num_ois is a plain scalar unsigned int* out-param, not an array - extends the scalar-out-param API05 FP class"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3763,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ENV01-C wholesale misfire FP class: no getenv() call anywhere in this function, 'ois' is fixed-size WLAN roaming-consortium data"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3763,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C VLA misfire FP class: MAX_ROAMING_CONS_OI_LEN is a compile-time #define constant, not a runtime parameter - ois[][] is not a VLA"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3764,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ENV01-C wholesale misfire, same reasoning as :3763"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3764,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C VLA misfire, same reasoning as :3763 (MAX_ROAMING_CONS)"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3770,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "INT14-C pedantry: 'len & 1' is a standard odd/even parity idiom and 'len/2' a standard byte-count conversion - mixing them on one variable is not a real readability/correctness issue"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3786,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C category error: MAX_ROAMING_CONS_OI_LEN is a #define macro constant, not a variable requiring initialization"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3826,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "unchecked atoi() assigned straight to struct field with zero downstream validation - established ERR07/ERR34 disposition"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3826,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "unchecked atoi() assigned straight to struct field with zero downstream validation - established ERR07/ERR34 disposition"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3831,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "unchecked atoi() assigned straight to struct field with zero downstream validation - established ERR07/ERR34 disposition"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3831,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "unchecked atoi() assigned straight to struct field with zero downstream validation - established ERR07/ERR34 disposition"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3836,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "unchecked atoi() assigned straight to struct field with zero downstream validation - established ERR07/ERR34 disposition"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3836,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "unchecked atoi() assigned straight to struct field with zero downstream validation - established ERR07/ERR34 disposition"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3836,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR34-C misattribution: 'value' at this line is a const char* argument to atoi(), not a char undergoing widening conversion"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3844,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "unchecked atoi() assigned straight to struct field with zero downstream validation - established ERR07/ERR34 disposition"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3844,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "unchecked atoi() assigned straight to struct field with zero downstream validation - established ERR07/ERR34 disposition"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3850,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "EXP33-C misfire: '&method.vendor' is passed as an OUT-param address to be filled by eap_peer_get_type() before method.method is read - address-of an as-yet-unwritten field for output is not a 'use' of uninitialized memory"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3858,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR01-C pointee-sizing-correct-idiom FP class: sizeof(*cred->eap_method) dereferences first, correct malloc-sizing idiom"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 3876,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "unchecked atoi() assigned straight to struct field with zero downstream validation - established ERR07/ERR34 disposition"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 22,
+  "fp": 128,
+  "fn": 0
+ }
+}

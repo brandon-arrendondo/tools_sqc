@@ -1,0 +1,1147 @@
+{
+ "src/ap/ieee802_11_eht.c": [
+  {
+   "column": 7,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 31,
+   "message": "Variable 'ppe_thres_hdr' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 39,
+   "message": "Variable 'EHT_PPE_THRES_NSS_MASK' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 39,
+   "message": "Variable 'EHT_PPE_THRES_NSS_SHIFT' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 93,
+   "message": "Function 'hostapd_eid_eht_capab_len' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 54,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 93,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 13,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 104,
+   "message": "Array subscript uses function parameter 'opmode' without bounds checking. Caller could pass invalid index.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Add bounds checking for 'opmode' before using it as an array index"
+  },
+  {
+   "column": 13,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 104,
+   "message": "Potentially unsafe array access with unvalidated function parameter index 'opmode'",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking for function parameter before using as array index."
+  },
+  {
+   "column": 8,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 109,
+   "message": "Array subscript uses function parameter 'opmode' without bounds checking. Caller could pass invalid index.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Add bounds checking for 'opmode' before using it as an array index"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 109,
+   "message": "Potentially unsafe array access with unvalidated function parameter index 'opmode'",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking for function parameter before using as array index."
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 118,
+   "message": "Function 'hostapd_eid_eht_capab' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 48,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 118,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 129,
+   "message": "Function returns pointer to local variable 'eid' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 133,
+   "message": "Function returns pointer to local variable 'eid' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 179,
+   "message": "Function returns pointer to local variable 'pos' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 183,
+   "message": "Function 'hostapd_eid_eht_operation' does not validate pointer parameter 'eid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'eid' at the start of the function, e.g., 'if (!eid) { return error_code; }'"
+  },
+  {
+   "column": 62,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 183,
+   "message": "Pointer parameter 'eid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *eid'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 187,
+   "message": "Value assigned to 'seg0' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 194,
+   "message": "Function returns pointer to local variable 'eid' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 257,
+   "message": "Function returns pointer to local variable 'eid' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 57,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 273,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 279,
+   "message": "Variable 'ap_mcs' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 280,
+   "message": "Variable 'sta_mcs' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 353,
+   "message": "Do not cast away const qualification: '(struct ieee80211_eht_capabilities *) eht_cap'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 385,
+   "message": "Implicit boolean test on 'check_valid_eht_mcs(hapd, eht_capab, opmode)'. May be unclear what constitutes success or failure.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Use explicit test: check_valid_eht_mcs(hapd, eht_capab, opmode) == 0 or check_valid_eht_mcs(hapd, eht_capab, opmode) != 0 depending on success convention"
+  },
+  {
+   "column": 48,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 407,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 415,
+   "message": "sizeof applied to pointer/array parameter 'dest' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*dest)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 9,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 416,
+   "message": "sizeof applied to pointer/array parameter 'dest' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*dest)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 21,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 419,
+   "message": "sizeof applied to pointer/array parameter 'dest' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*dest)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 435,
+   "message": "Function 'hostapd_eid_eht_basic_ml_common' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 435,
+   "message": "Function 'hostapd_eid_eht_basic_ml_common' does not validate pointer parameter 'eid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'eid' at the start of the function, e.g., 'if (!eid) { return error_code; }'"
+  },
+  {
+   "column": 35,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 436,
+   "message": "Pointer parameter 'mld_info' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *mld_info'"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 455,
+   "message": "Function returns pointer to local variable 'pos' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 24,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 532,
+   "message": "Variable 'link_bss' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'link_bss' before use, e.g., at its declaration"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 665,
+   "message": "Function returns pointer to local variable 'pos' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 669,
+   "message": "Function 'hostapd_eid_eht_basic_ml_len' does not validate pointer parameter 'info' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'info' at the start of the function, e.g., 'if (!info) { return error_code; }'"
+  },
+  {
+   "column": 25,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 670,
+   "message": "Pointer parameter 'info' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *info'"
+  },
+  {
+   "column": 24,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 694,
+   "message": "Variable 'link_bss' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'link_bss' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 738,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 59,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 738,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 54,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 811,
+   "message": "Pointer parameter 'info' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *info'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 857,
+   "message": "Function 'hostapd_eid_eht_ml_beacon' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 857,
+   "message": "Function 'hostapd_eid_eht_ml_beacon' does not validate pointer parameter 'eid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'eid' at the start of the function, e.g., 'if (!eid) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 868,
+   "message": "Function 'hostapd_eid_eht_ml_assoc' does not validate pointer parameter 'eid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'eid' at the start of the function, e.g., 'if (!eid) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 881,
+   "message": "Function 'hostapd_eid_eht_ml_beacon_len' does not validate pointer parameter 'info' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'info' at the start of the function, e.g., 'if (!info) { return error_code; }'"
+  },
+  {
+   "column": 58,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 881,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 889,
+   "message": "Function 'hostapd_ml_auth_resp' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 58,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 889,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 968,
+   "message": "Signed integer subtraction '(int) len - (pos - mgmt->u.auth.variable)' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b < 0 && a > INT_MAX + b) || (b > 0 && a < INT_MIN + b)) { /* handle error */ }"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1054,
+   "message": "Value assigned to 'auth_transaction' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1055,
+   "message": "Value assigned to 'status_code' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1063,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1064,
+   "message": "Function returns pointer to local variable 'pos' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 10,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1076,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1081,
+   "message": "Function returns pointer to local variable 'pos' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1103,
+   "message": "Function 'hostapd_process_ml_auth' does not validate pointer parameter 'mgmt' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'mgmt' at the start of the function, e.g., 'if (!mgmt) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1103,
+   "message": "Function 'hostapd_process_ml_auth' does not validate integer parameter 'len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1126,
+   "message": "Variable 'elems' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'elems' before use, e.g., at its declaration"
+  },
+  {
+   "column": 24,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1154,
+   "message": "Variable 'other_hapd' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'other_hapd' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1174,
+   "message": "Function 'hostapd_process_ml_assoc_req_addr' does not validate pointer parameter 'mld_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'mld_addr' at the start of the function, e.g., 'if (!mld_addr) { return error_code; }'"
+  },
+  {
+   "column": 59,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1174,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1231,
+   "message": "Function 'hostapd_process_ml_assoc_req' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1231,
+   "message": "Function 'hostapd_process_ml_assoc_req' does not validate pointer parameter 'elems' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'elems' at the start of the function, e.g., 'if (!elems) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1231,
+   "message": "Function 'hostapd_process_ml_assoc_req' does not validate pointer parameter 'sta' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sta' at the start of the function, e.g., 'if (!sta) { return error_code; }'"
+  },
+  {
+   "column": 30,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1232,
+   "message": "Pointer parameter 'elems' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *elems'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1332,
+   "message": "Value assigned to 'pos' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1342,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 13,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1358,
+   "message": "Variable 'sub_elem_end' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'sub_elem_end' before use, e.g., at its declaration"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1444,
+   "message": "Compound assignment 'sta_info_len += link_info->nstr_bitmap_len' on non-array pointer 'sta_info_len'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1473,
+   "message": "Value assigned to 'pos' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 36,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1515,
+   "message": "Potential null pointer dereference in member access of variable 'req_list'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'req_list' is not NULL before member access"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1521,
+   "message": "Use-after-free: passing freed pointer 'info' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1523,
+   "message": "Use-after-free: passing freed pointer 'info' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 15,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1523,
+   "message": "Use-after-free: dereferencing freed pointer 'info'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access memory after freeing it."
+  },
+  {
+   "column": 16,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1523,
+   "message": "Use-after-free: accessing member of freed pointer 'info'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1524,
+   "message": "Double-free: 'info' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1524,
+   "message": "Double free detected: 'info' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1532,
+   "message": "Function 'hostapd_link_reconf_resp_tx_status' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1587,
+   "message": "Value assigned to 'lhapd' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 25,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1771,
+   "message": "File-scope identifier '_link' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 5,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1798,
+   "message": "Pointer to const assigned to non-const pointer without cast: *buf = pos: '*buf = pos'",
+   "rule_id": "EXP40-C",
+   "severity": "Low",
+   "suggestion": "Either remove const qualifier if the object should be modifiable, or use explicit casts to show intentional const removal"
+  },
+  {
+   "column": 26,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1800,
+   "message": "Potential null pointer dereference in member access of variable 'req_list'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'req_list' is not NULL before member access"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1802,
+   "message": "Value assigned to 'lhapd' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 26,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1846,
+   "message": "Pointer parameter 'assoc_sta' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *assoc_sta'"
+  },
+  {
+   "column": 10,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1859,
+   "message": "Variable 'req_list' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 23,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1859,
+   "message": "Potential null pointer dereference in member access of variable 'req_list'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'req_list' is not NULL before member access"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1895,
+   "message": "Value assigned to 'lhapd' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1970,
+   "message": "Pointer to const assigned to non-const pointer without cast: *kde_pos = pos: '*kde_pos = pos'",
+   "rule_id": "EXP40-C",
+   "severity": "Low",
+   "suggestion": "Either remove const qualifier if the object should be modifiable, or use explicit casts to show intentional const removal"
+  },
+  {
+   "column": 10,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1974,
+   "message": "Pointer subtraction between pointers from different arrays: 'pos' and 'orig_pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2012,
+   "message": "Pointer to const assigned to non-const pointer without cast: *mle_pos = pos: '*mle_pos = pos'",
+   "rule_id": "EXP40-C",
+   "severity": "Low",
+   "suggestion": "Either remove const qualifier if the object should be modifiable, or use explicit casts to show intentional const removal"
+  },
+  {
+   "column": 17,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2023,
+   "message": "Pointer subtraction between pointers from different arrays: 'pos' and 'orig_pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2026,
+   "message": "Pointer subtraction between pointers from different arrays: 'pos' and 'orig_pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2031,
+   "message": "Value assigned to 'pos' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 66,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2058,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 27,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2059,
+   "message": "Pointer parameter 'sta' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sta'"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2072,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2100,
+   "message": "Value assigned to 'info' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 19,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2114,
+   "message": "Dereference of uninitialized pointer 'elem'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'elem' before dereferencing"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2136,
+   "message": "Variable 'sta_control' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2162,
+   "message": "Compound assignment 'sta_info_len += ETH_ALEN' on non-array pointer 'sta_info_len'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2167,
+   "message": "Compound assignment 'sta_info_len += 2' on non-array pointer 'sta_info_len'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2172,
+   "message": "Compound assignment 'sta_info_len += 3' on non-array pointer 'sta_info_len'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2198,
+   "message": "Compound assignment 'sta_info_len += nstr_bitmap_size' on non-array pointer 'sta_info_len'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 18,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2201,
+   "message": "Subtracting pointers from different arrays ('end' from 'buf' and 'sta_info' from 'NULL'). Pointer subtraction is only defined for pointers within the same array object.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Only subtract pointers that point to elements within the same array object."
+  },
+  {
+   "column": 18,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2201,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:buf' and 'per_sta_prof->variable'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2237,
+   "message": "Potential null pointer dereference in member access of variable 'lsta'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'lsta' is not NULL before member access"
+  },
+  {
+   "column": 31,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2263,
+   "message": "Subtracting pointers from different arrays ('end' from 'buf' and 'sta_info' from 'NULL'). Pointer subtraction is only defined for pointers within the same array object.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Only subtract pointers that point to elements within the same array object."
+  },
+  {
+   "column": 31,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2263,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:buf' and 'per_sta_prof->variable'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2331,
+   "message": "Value assigned to 'mlbuf' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2404,
+   "message": "Potential null pointer dereference in member access of variable 'req_list'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'req_list' is not NULL before member access"
+  },
+  {
+   "column": 21,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2465,
+   "message": "Potential null pointer dereference in member access of variable 'req_list'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'req_list' is not NULL before member access"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2481,
+   "message": "Value assigned to 'lhapd' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2492,
+   "message": "Function 'hostapd_ml_process_reconf_link' called with overlapping memory regions. If parameters are restrict-qualified, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure memory regions do not overlap when using restrict pointers"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2528,
+   "message": "Value assigned to 'total_kde_len' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2598,
+   "message": "Value assigned to 'pos' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 34,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2648,
+   "message": "Unsigned integer subtraction 'len - (pos - buf)' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 41,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2648,
+   "message": "Pointer subtraction between pointers from different arrays: 'mgmt->u.action.u.link_reconf_req.variable' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2655,
+   "message": "Variable 'elems' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'elems' before use, e.g., at its declaration"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2675,
+   "message": "Testing 'wpa_auth_uses_ocv(assoc_sta->wpa_sm)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: wpa_auth_uses_ocv(assoc_sta->wpa_sm) != 0"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2695,
+   "message": "Implicit boolean test on 'ocv_verify_tx_params(elems.oci, elems.oci_len, &ci,\n\t\t\t\t\t  channel_width_to_int(ci.chanwidth),\n\t\t\t\t\t  ci.seg1_idx)'. May be unclear what constitutes success or failure.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Use explicit test: ocv_verify_tx_params(elems.oci, elems.oci_len, &ci,\n\t\t\t\t\t  channel_width_to_int(ci.chanwidth),\n\t\t\t\t\t  ci.seg1_idx) == 0 or ocv_verify_tx_params(elems.oci, elems.oci_len, &ci,\n\t\t\t\t\t  channel_width_to_int(ci.chanwidth),\n\t\t\t\t\t  ci.seg1_idx) != 0 depending on success convention"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2707,
+   "message": "Implicit boolean test on 'hostapd_validate_link_reconf_req(hapd, assoc_sta, req_list)'. May be unclear what constitutes success or failure.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Use explicit test: hostapd_validate_link_reconf_req(hapd, assoc_sta, req_list) == 0 or hostapd_validate_link_reconf_req(hapd, assoc_sta, req_list) != 0 depending on success convention"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2727,
+   "message": "Function 'ieee802_11_rx_protected_eht_action' does not validate pointer parameter 'mgmt' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'mgmt' at the start of the function, e.g., 'if (!mgmt) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2755,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 67,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2755,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2773,
+   "message": "Function 'hostapd_eid_eht_ml_tid_to_link_map' does not validate pointer parameter 'eid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'eid' at the start of the function, e.g., 'if (!eid) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2773,
+   "message": "Identifier 'hostapd_eid_eht_ml_tid_to_link_map' agrees with 'hostapd_eid_eht_ml_tid_to_link_map_len' in its first 31 significant characters; they may collide as the same external identifier on a conforming implementation",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Shorten one of the identifiers so they differ within the first 31 characters"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2783,
+   "message": "Function returns pointer to local variable 'eid' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2810,
+   "message": "Function returns pointer to local variable 'pos' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  }
+ ]
+}

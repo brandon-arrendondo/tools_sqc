@@ -1,0 +1,930 @@
+{
+ "labels": [
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 66,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EAP-callback dispatch-contract (wpa_auth_callbacks.logger), fixed signature"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 77,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom, CONFIRMED categorical FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 77,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-contract callback ctx, fixed signature"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 79,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom, CONFIRMED categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 102,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom, CONFIRMED categorical FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 102,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-contract callback ctx, fixed signature"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 126,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-contract callback ctx, fixed signature"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 146,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-contract callback ctx, fixed signature"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 155,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cb is a function-pointer parameter, not an undeclared function"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 162,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "leading double underscore is a reserved identifier"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 237,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(rsn->mgtk) is sizeof(ptr->fixed_array_member), correct idiom"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 239,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(rsn->igtk) is sizeof(ptr->fixed_array_member), correct idiom"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 257,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*mesh_rsn) for os_zalloc sizing, not a dereference"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 281,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "entry checked non-NULL by the enclosing while() condition"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 291,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "cast-away-const read-only overlay; rsn_ie only ever read downstream"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 296,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mesh_rsn is os_zalloc'd heap memory, not automatic storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 340,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper, ssid never modified; low-value const opportunity"
+  },
+  {
+   "rule": "MEM03-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 343,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "password aliases ssid's persistent stored password, not an owned local buffer to clear"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 365,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cast into callee's own const u8* parameter (sae_prepare_commit), pointless"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 387,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*sta->sae) used for os_zalloc sizing, correct idiom"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 428,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no pthread usage in this codebase; CON34-C no-pthread FP"
+  },
+  {
+   "rule": "MSC30-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 428,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "rand()%%MESH_AUTH_TIMEOUT is non-adversarial retry jitter, not security-relevant"
+  },
+  {
+   "rule": "MSC32-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 428,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "rand() jitter used only for auth-retry timing, non-adversarial"
+  },
+  {
+   "rule": "INT10-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 428,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "rand() is specified to return non-negative int; modulo never negative here"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 435,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API, pmkid always a fixed local buffer from the sole caller"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 435,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "rsn param entirely unused in function body; trivially const-able"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 435,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "sta only read (sta->sae->pmkid); low-value const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 442,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "rsn only read (rsn->wpa_s); low-value const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 442,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta->aek is written via sha256_prf() through this pointer; cannot be const"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 447,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "context[] sized by RSN_SELECTOR_LEN/ETH_ALEN macros, fixed at compile time, not a VLA"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 468,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(sta->sae->pmk) is sizeof(ptr->fixed_array_member), correct idiom"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 469,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(sta->aek) is sizeof(ptr->fixed_array_member), correct idiom"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 474,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API, wpa_s always valid from the sole caller"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 474,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_s only read; low-value const opportunity"
+  },
+  {
+   "rule": "DCL22-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 476,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "volatile is for signal/async-side-effect variables, not ordinary memcpy sequencing"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 480,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "context[] sized by macro constants, fixed at compile time, not a VLA"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 536,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API, wpa_s always valid from the sole caller"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 536,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_s only read (wpa_s->mesh_rsn); low-value const opportunity"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 553,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API, rsn always valid from callers"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 553,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API, cat always a valid frame-header pointer from callers"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 553,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "rsn only read in this function; low-value const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 553,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "sta only read in this function; low-value const opportunity"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 559,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "local array sized only by its own 3-element initializer; explicit bound could be added"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 560,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "local array sized only by its own 3-element initializer; explicit bound could be added"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 564,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ampe) used before assignment purely for type size, not a dereference"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 633,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pure integer sum '2 + len + AES_BLOCK_SIZE' passed to wpabuf_put(), no pointer operand on this line"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 635,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(sta->aek) is sizeof(ptr->fixed_array_member), correct idiom"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 647,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API, wpa_s always valid from the sole caller"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 648,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "elems only read; low-value const opportunity"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 657,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "crypt's initial NULL is always overwritten by os_zalloc before any goto free reads it; dead store"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 659,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "local array sized only by its own 3-element initializer"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 660,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "local array sized only by its own 3-element initializer"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 689,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ampe_buf/start both derived from the same parsed wire buffer, not different arrays"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 708,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(sta->aek) is sizeof(ptr->fixed_array_member), correct idiom"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 785,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(sta->mgtk_rsc) is sizeof(ptr->fixed_array_member), correct idiom"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 802,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(sta->igtk_rsc) is sizeof(ptr->fixed_array_member), correct idiom"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 804,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(sta->igtk_rsc) is sizeof(ptr->fixed_array_member), correct idiom"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/main.c",
+   "line": 46,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom, CONFIRMED categorical FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/main.c",
+   "line": 46,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed hostapd_logger_cb_func callback typedef, dispatch contract"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/main.c",
+   "line": 47,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom, CONFIRMED categorical FP"
+  },
+  {
+   "rule": "FIO23-C",
+   "file": "hostapd/main.c",
+   "line": 58,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misattributed: this return is inside hostapd_logger_cb, not main()"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "hostapd/main.c",
+   "line": 216,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "global is a static struct, zero-initialized by C, and explicitly memset in hostapd_global_init before this use"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "hostapd/main.c",
+   "line": 375,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_printf/MAC2STR macro args are pure array-index reads, no side effects to unsequence"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "hostapd/main.c",
+   "line": 422,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "debug is a caller-supplied int parameter (always defined), not an uninitialized variable; loop is a plain counter, not an array index"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "hostapd/main.c",
+   "line": 436,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "iface returned from hostapd_init() is heap-allocated, not automatic storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/main.c",
+   "line": 443,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed eloop signal-handler callback typedef, dispatch contract"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/main.c",
+   "line": 452,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed hostapd_for_each_interface callback typedef, dispatch contract"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/main.c",
+   "line": 474,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed eloop signal-handler callback typedef, dispatch contract"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "hostapd/main.c",
+   "line": 531,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "global is a static struct, zero-initialized by C and explicitly memset in hostapd_global_init"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/main.c",
+   "line": 558,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ifaces only read in this function; low-value const opportunity"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "hostapd/main.c",
+   "line": 582,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no pthread usage in this codebase; CON33-C no-pthread FP"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "hostapd/main.c",
+   "line": 582,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no pthread usage in this codebase; CON34-C no-pthread FP"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "hostapd/main.c",
+   "line": 587,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no pthread usage in this codebase; CON33-C no-pthread FP"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "hostapd/main.c",
+   "line": 587,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no pthread usage in this codebase; CON34-C no-pthread FP"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/main.c",
+   "line": 600,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "show_version()'s fprintf has no #ifdef in its argument list at all"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/main.c",
+   "line": 601,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "show_version()'s fprintf has no #ifdef in its argument list at all"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/main.c",
+   "line": 613,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "#ifdef-fragmented string-literal args inside fprintf, CONFIRMED categorical FP (usage()-helper pattern)"
+  },
+  {
+   "rule": "FIO30-C",
+   "file": "hostapd/main.c",
+   "line": 614,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "resulting literal is compile-time-constant, not user input used as a format string"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/main.c",
+   "line": 614,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "#ifdef-fragmented string-literal args inside fprintf, CONFIRMED categorical FP"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/main.c",
+   "line": 622,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "#ifdef-fragmented string-literal args inside fprintf, CONFIRMED categorical FP"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/main.c",
+   "line": 640,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "#ifdef-fragmented string-literal args inside fprintf, CONFIRMED categorical FP"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/main.c",
+   "line": 644,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "#ifdef-fragmented string-literal args inside fprintf, CONFIRMED categorical FP"
+  },
+  {
+   "rule": "ERR05-C",
+   "file": "hostapd/main.c",
+   "line": 652,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "usage() is main()'s own top-level CLI helper whose purpose is to terminate on bad args, not application-independent library code"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/main.c",
+   "line": 656,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed wpa_msg_get_ifname_func callback typedef, dispatch contract"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/main.c",
+   "line": 687,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char '\\0' literal assignment, no widening conversion"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/main.c",
+   "line": 711,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom, CONFIRMED categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/main.c",
+   "line": 713,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom, CONFIRMED categorical FP"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "hostapd/main.c",
+   "line": 723,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no free has occurred yet in this call; *if_names is valid heap memory or NULL on first use"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "hostapd/main.c",
+   "line": 727,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nnames is heap memory from os_realloc_array, not automatic/local storage"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "hostapd/main.c",
+   "line": 727,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*if_names = nnames assigns freshly reallocated valid memory, not a write to freed memory"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/main.c",
+   "line": 727,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*if_names is char**, not a char type; STR34-C type misclassification"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "hostapd/main.c",
+   "line": 729,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "(*if_names)[*if_names_size] was just validly reallocated at :723/:727, not freed"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "hostapd/main.c",
+   "line": 730,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "(*if_names)[*if_names_size] is freshly allocated via os_strdup two lines above, not freed"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "hostapd/main.c",
+   "line": 738,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: is a goto target reached from :726/:731, not unreachable"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "hostapd/main.c",
+   "line": 740,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "this is the cleanup loop's first free of each element, not a use-after-free"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "hostapd/main.c",
+   "line": 741,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "this is the cleanup path's first free of *if_names, not a use-after-free"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/main.c",
+   "line": 742,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*if_names is char**, not a char type; STR34-C type misclassification"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "hostapd/main.c",
+   "line": 762,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is char buf[100] decaying to char*, not an Integer; FIO47-C array-decay misclassification"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/main.c",
+   "line": 773,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed hostapd_for_each_interface callback typedef, dispatch contract"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/main.c",
+   "line": 781,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed eloop_timeout_handler callback typedef, dispatch contract"
+  },
+  {
+   "rule": "API00-C",
+   "file": "hostapd/main.c",
+   "line": 815,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "main()'s argv is guaranteed valid by the C runtime"
+  },
+  {
+   "rule": "API00-C",
+   "file": "hostapd/main.c",
+   "line": 815,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "main()'s argc is guaranteed valid by the C runtime, not attacker-controlled arithmetic"
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "hostapd/main.c",
+   "line": 900,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "case 't' has an explicit break two lines below; preprocessor-adjacent #ifdef confuses the rule"
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "hostapd/main.c",
+   "line": 908,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "case 'v' terminates via exit(1), which never returns; not a real fallthrough"
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "hostapd/main.c",
+   "line": 919,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "case 'b' has an explicit break; #ifdef-adjacent misfire"
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "hostapd/main.c",
+   "line": 933,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "case 'S' has an explicit break; #ifdef-adjacent misfire"
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "hostapd/main.c",
+   "line": 945,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "case 'q' has an explicit break; rule simply wrong here"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "hostapd/main.c",
+   "line": 985,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise ops belong to other members of the interfaces struct, not the container variable itself"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "hostapd/main.c",
+   "line": 1025,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if_names[i] is only reached when i < if_names_size, which is 0 whenever if_names is NULL"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "hostapd/main.c",
+   "line": 1029,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "i is a plain arithmetic loop counter in this scope, never used with a bitwise operator"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "hostapd/main.c",
+   "line": 1044,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bss_config[i] is only reached when i < num_bss_configs, which is 0 whenever bss_config is NULL"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/main.c",
+   "line": 1052,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char '\\0' literal assignment, no widening conversion"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "hostapd/main.c",
+   "line": 1139,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free(NULL) is safe/standard-defined; if_names may legitimately be NULL when -i was never given"
+  }
+ ],
+ "fns": [
+  {
+   "file": "wpa_supplicant/mesh_rsn.c",
+   "line": 285,
+   "rule": "MEM31-C",
+   "desc": "mesh_rsn_auth_init(): inside the CONFIG_PMKSA_CACHE_EXTERNAL dl_list_last() loop, if wpa_auth_pmksa_add_entry() fails (ret<0) the function returns NULL without freeing 'mesh_rsn' (os_zalloc'd at :257, already wired into bss->wpa_auth) or calling mesh_rsn_deinit() -- leaks the mesh_rsn context and its wpa_auth state on this error path.",
+   "upstream_present": "unknown"
+  },
+  {
+   "file": "hostapd/main.c",
+   "line": 913,
+   "rule": "MEM12-C",
+   "desc": "main()'s getopt switch: case 'g' (:913), case 'G' (:917), and case 'u' (:938) all `return -1;`/`return gen_uuid();` directly instead of `goto out;`, bypassing the out: cleanup block -- leaks interfaces.dpp (dpp_global_init()'d unconditionally at :866 before the getopt loop) and any pid_file already set by an earlier -P option in the same argv, unlike sibling cases 'b'/'i' in the same switch which correctly `goto out;` on failure.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 16,
+  "fp": 97,
+  "fn": 2
+ }
+}

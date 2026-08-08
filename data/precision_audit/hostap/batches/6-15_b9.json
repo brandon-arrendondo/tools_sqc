@@ -1,0 +1,990 @@
+{
+ "src/tls/pkcs1.c": [
+  {
+   "column": 12,
+   "file": "src/tls/pkcs1.c",
+   "line": 20,
+   "message": "Pointer parameter 'out' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *out'"
+  },
+  {
+   "column": 25,
+   "file": "src/tls/pkcs1.c",
+   "line": 20,
+   "message": "Pointer parameter 'outlen' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *outlen'"
+  },
+  {
+   "column": 11,
+   "file": "src/tls/pkcs1.c",
+   "line": 47,
+   "message": "Unsigned subtraction 'modlen - inlen' without guard assumes non-negative result",
+   "rule_id": "INT00-C",
+   "severity": "Medium",
+   "suggestion": "Add a guard: if (a >= b) before unsigned subtraction a - b"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/pkcs1.c",
+   "line": 81,
+   "message": "Function 'pkcs1_encrypt' does not validate pointer parameter 'key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+  },
+  {
+   "column": 9,
+   "file": "src/tls/pkcs1.c",
+   "line": 93,
+   "message": "Function 'crypto_rsa_exptmod' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/pkcs1.c",
+   "line": 125,
+   "message": "Unsigned integer compound subtraction '*outlen -= pos - out' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check before compound assignment"
+  },
+  {
+   "column": 30,
+   "file": "src/tls/pkcs1.c",
+   "line": 160,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Signature EB\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 30,
+   "file": "src/tls/pkcs1.c",
+   "line": 169,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Signature EB\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 30,
+   "file": "src/tls/pkcs1.c",
+   "line": 179,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Signature EB\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 30,
+   "file": "src/tls/pkcs1.c",
+   "line": 186,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Signature EB\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 2,
+   "file": "src/tls/pkcs1.c",
+   "line": 190,
+   "message": "Compound assignment 'len -= pos - plain' on non-array pointer 'len'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/pkcs1.c",
+   "line": 190,
+   "message": "Unsigned integer compound subtraction 'len -= pos - plain' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check before compound assignment"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/pkcs1.c",
+   "line": 200,
+   "message": "Function 'pkcs1_v15_sig_ver' does not validate pointer parameter 'pk' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pk' at the start of the function, e.g., 'if (!pk) { return error_code; }'"
+  }
+ ],
+ "src/utils/browser-system.c": [
+  {
+   "column": 34,
+   "file": "src/utils/browser-system.c",
+   "line": 22,
+   "message": "Pointer parameter 'eloop_data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *eloop_data'"
+  },
+  {
+   "column": 52,
+   "file": "src/utils/browser-system.c",
+   "line": 22,
+   "message": "Pointer parameter 'user_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *user_ctx'"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/browser-system.c",
+   "line": 43,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 19,
+   "file": "src/utils/browser-system.c",
+   "line": 44,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 19,
+   "file": "src/utils/browser-system.c",
+   "line": 44,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/browser-system.c",
+   "line": 65,
+   "message": "Function 'hs20_web_browser' does not validate pointer parameter 'url' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'url' at the start of the function, e.g., 'if (!url) { return error_code; }'"
+  },
+  {
+   "column": 37,
+   "file": "src/utils/browser-system.c",
+   "line": 90,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 37,
+   "file": "src/utils/browser-system.c",
+   "line": 90,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 13,
+   "file": "src/utils/browser-system.c",
+   "line": 101,
+   "message": "Do not cast away const qualification: '(void *) url'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 38,
+   "file": "src/utils/browser-system.c",
+   "line": 105,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 38,
+   "file": "src/utils/browser-system.c",
+   "line": 105,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/browser-system.c",
+   "line": 106,
+   "message": "Function 'hs20_web_browser' calls 'exit', which dictates error handling. Application-independent code should report errors to the caller (via return values, error parameters, or error indicators) rather than terminating the program.",
+   "rule_id": "ERR05-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'exit' with error reporting via return value (e.g., 'return ERROR_CODE;'), error parameter (e.g., '*err = ERROR_CODE;'), or global error indicator"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/browser-system.c",
+   "line": 107,
+   "message": "Unreachable code after unconditional 'noreturn function call'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  }
+ ],
+ "wpa_supplicant/pr_supplicant.h": [
+  {
+   "column": 15,
+   "file": "wpa_supplicant/pr_supplicant.h",
+   "line": 21,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 50,
+   "file": "wpa_supplicant/pr_supplicant.h",
+   "line": 39,
+   "message": "Pointer parameter 'global' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *global'"
+  },
+  {
+   "column": 33,
+   "file": "wpa_supplicant/pr_supplicant.h",
+   "line": 40,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 56,
+   "file": "wpa_supplicant/pr_supplicant.h",
+   "line": 46,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 57,
+   "file": "wpa_supplicant/pr_supplicant.h",
+   "line": 50,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 66,
+   "file": "wpa_supplicant/pr_supplicant.h",
+   "line": 54,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 64,
+   "file": "wpa_supplicant/pr_supplicant.h",
+   "line": 58,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 61,
+   "file": "wpa_supplicant/pr_supplicant.h",
+   "line": 62,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 37,
+   "file": "wpa_supplicant/pr_supplicant.h",
+   "line": 63,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 71,
+   "file": "wpa_supplicant/pr_supplicant.h",
+   "line": 68,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 68,
+   "file": "wpa_supplicant/pr_supplicant.h",
+   "line": 73,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 69,
+   "file": "wpa_supplicant/pr_supplicant.h",
+   "line": 82,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 62,
+   "file": "wpa_supplicant/pr_supplicant.h",
+   "line": 89,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  }
+ ],
+ "wpa_supplicant/wpa_gui-qt4/eventhistory.h": [
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_gui-qt4/eventhistory.h",
+   "line": 16,
+   "message": "Function 'QAbstractTableModel' calls itself directly (direct recursion)",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to use iteration instead of recursion"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_gui-qt4/eventhistory.h",
+   "line": 16,
+   "message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add a return statement on all execution paths of this function"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_gui-qt4/eventhistory.h",
+   "line": 21,
+   "message": "Value assigned to 'EventListModel' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_gui-qt4/eventhistory.h",
+   "line": 21,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_gui-qt4/eventhistory.h",
+   "line": 27,
+   "message": "Value assigned to 'headerData' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 18,
+   "file": "wpa_supplicant/wpa_gui-qt4/eventhistory.h",
+   "line": 27,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_gui-qt4/eventhistory.h",
+   "line": 32,
+   "message": "Variable 'timeList' is declared but never used.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Use the variable or remove it"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_gui-qt4/eventhistory.h",
+   "line": 33,
+   "message": "Variable 'msgList' is declared but never used.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Use the variable or remove it"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_gui-qt4/eventhistory.h",
+   "line": 42,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 47,
+   "file": "wpa_supplicant/wpa_gui-qt4/eventhistory.h",
+   "line": 42,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/wpa_gui-qt4/eventhistory.h",
+   "line": 43,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 44,
+   "file": "wpa_supplicant/wpa_gui-qt4/eventhistory.h",
+   "line": 43,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 29,
+   "file": "wpa_supplicant/wpa_gui-qt4/eventhistory.h",
+   "line": 51,
+   "message": "Function has empty parameter list () - should explicitly specify (void) to indicate no arguments",
+   "rule_id": "DCL20-C",
+   "severity": "Medium",
+   "suggestion": "Change () to (void) to explicitly indicate function takes no arguments"
+  }
+ ],
+ "src/ap/ap_config.h": [
+  {
+   "column": 1,
+   "file": "src/ap/ap_config.h",
+   "line": 16,
+   "message": "Header file 'ieee802_11_defs.h' has the same first 8 characters (case-insensitive) as 'ieee802_11_common.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_defs.h' -> unique name)"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ap_config.h",
+   "line": 107,
+   "message": "String buffer placed before pointer in struct 'hostapd_ssid': 'char vlan[IFNAMSIZ + 1];' before 'struct hostapd_wpa_psk *wpa_psk;' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'char vlan' after the pointer field 'struct hostapd_wpa_psk *wpa_psk;', or use a char* pointer instead of a char array"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ap_config.h",
+   "line": 134,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (-1)"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ap_config.h",
+   "line": 230,
+   "message": "String buffer placed before pointer in struct 'hostapd_nai_realm_data': 'char realm_buf[MAX_NAI_REALMLEN + 1];' before 'char *realm[MAX_NAI_REALMS];' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'char realm_buf' after the pointer field 'char *realm[MAX_NAI_REALMS];', or use a char* pointer instead of a char array"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ap_config.h",
+   "line": 285,
+   "message": "String buffer placed before pointer in struct 'hostapd_bss_config': 'char iface[IFNAMSIZ + 1];' before 'struct hostapd_eap_user *eap_user;' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'char iface' after the pointer field 'struct hostapd_eap_user *eap_user;', or use a char* pointer instead of a char array"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ap_config.h",
+   "line": 286,
+   "message": "String buffer placed before pointer in struct 'hostapd_bss_config': 'char bridge[IFNAMSIZ + 1];' before 'struct hostapd_eap_user *eap_user;' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'char bridge' after the pointer field 'struct hostapd_eap_user *eap_user;', or use a char* pointer instead of a char array"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ap_config.h",
+   "line": 287,
+   "message": "String buffer placed before pointer in struct 'hostapd_bss_config': 'char vlan_bridge[IFNAMSIZ + 1];' before 'struct hostapd_eap_user *eap_user;' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'char vlan_bridge' after the pointer field 'struct hostapd_eap_user *eap_user;', or use a char* pointer instead of a char array"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ap_config.h",
+   "line": 288,
+   "message": "String buffer placed before pointer in struct 'hostapd_bss_config': 'char wds_bridge[IFNAMSIZ + 1];' before 'struct hostapd_eap_user *eap_user;' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'char wds_bridge' after the pointer field 'struct hostapd_eap_user *eap_user;', or use a char* pointer instead of a char array"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ap_config.h",
+   "line": 1083,
+   "message": "String buffer placed before pointer in struct 'hostapd_config': 'char country[3];' before 'struct wpabuf *lci;' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'char country' after the pointer field 'struct wpabuf *lci;', or use a char* pointer instead of a char array"
+  },
+  {
+   "column": 48,
+   "file": "src/ap/ap_config.h",
+   "line": 1259,
+   "message": "Pointer parameter 'conf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conf'"
+  },
+  {
+   "column": 60,
+   "file": "src/ap/ap_config.h",
+   "line": 1290,
+   "message": "Pointer parameter 'conf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conf'"
+  },
+  {
+   "column": 60,
+   "file": "src/ap/ap_config.h",
+   "line": 1323,
+   "message": "Pointer parameter 'conf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conf'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ap_config.h",
+   "line": 1393,
+   "message": "Function has pointer parameter without size argument: 'const u8 * hostapd_get_psk(const struct hostapd_bss_config *conf,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'int *vlan_id' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ap_config.h",
+   "line": 1414,
+   "message": "Function has pointer parameter without size argument: 'void hostapd_remove_acl_mac(struct mac_acl_entry **acl, int *num,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'int *num' to specify the maximum number of elements in the array"
+  }
+ ],
+ "src/common/dragonfly.c": [
+  {
+   "column": 1,
+   "file": "src/common/dragonfly.c",
+   "line": 53,
+   "message": "Function 'dragonfly_get_random_qr_qnr' does not validate pointer parameter 'prime' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'prime' at the start of the function, e.g., 'if (!prime) { return error_code; }'"
+  },
+  {
+   "column": 25,
+   "file": "src/common/dragonfly.c",
+   "line": 65,
+   "message": "Passing null pointer 'tmp' to 'crypto_bignum_deinit' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'tmp' is not NULL before passing to 'crypto_bignum_deinit'"
+  },
+  {
+   "column": 6,
+   "file": "src/common/dragonfly.c",
+   "line": 101,
+   "message": "Function 'crypto_bignum_add' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 24,
+   "file": "src/common/dragonfly.c",
+   "line": 102,
+   "message": "Passing null pointer 'tmp' to 'crypto_bignum_deinit' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'tmp' is not NULL before passing to 'crypto_bignum_deinit'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dragonfly.c",
+   "line": 108,
+   "message": "Function returns pointer to local variable 'tmp' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dragonfly.c",
+   "line": 112,
+   "message": "Function 'dragonfly_is_quadratic_residue_blind' does not validate pointer parameter 'ec' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ec' at the start of the function, e.g., 'if (!ec) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dragonfly.c",
+   "line": 118,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 6,
+   "file": "src/common/dragonfly.c",
+   "line": 142,
+   "message": "Function 'crypto_bignum_mulmod' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 6,
+   "file": "src/common/dragonfly.c",
+   "line": 162,
+   "message": "Function 'crypto_bignum_mulmod' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 7,
+   "file": "src/common/dragonfly.c",
+   "line": 207,
+   "message": "Function 'crypto_bignum_mod' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dragonfly.c",
+   "line": 222,
+   "message": "Function 'dragonfly_sqrt' does not validate pointer parameter 'ec' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ec' at the start of the function, e.g., 'if (!ec) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dragonfly.c",
+   "line": 228,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 7,
+   "file": "src/common/dragonfly.c",
+   "line": 240,
+   "message": "Variable 'prime_len' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 6,
+   "file": "src/common/dragonfly.c",
+   "line": 244,
+   "message": "Function 'crypto_bignum_rshift' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  }
+ ],
+ "src/crypto/crypto_internal.c": [
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_internal.c",
+   "line": 39,
+   "message": "Function 'crypto_hash_init' does not validate pointer parameter 'key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+  },
+  {
+   "column": 25,
+   "file": "src/crypto/crypto_internal.c",
+   "line": 47,
+   "message": "Dereference of uninitialized pointer 'ctx'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ctx' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_internal.c",
+   "line": 57,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_internal.c",
+   "line": 94,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_internal.c",
+   "line": 139,
+   "message": "Function returns pointer to local variable 'ctx' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_internal.c",
+   "line": 139,
+   "message": "Use-after-free: returning freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not return freed memory from functions."
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/crypto_internal.c",
+   "line": 145,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_internal.c",
+   "line": 154,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/crypto_internal.c",
+   "line": 184,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_internal.c",
+   "line": 202,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_internal.c",
+   "line": 264,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_internal.c",
+   "line": 311,
+   "message": "Double-free: 'ctx' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_internal.c",
+   "line": 311,
+   "message": "Double free detected: 'ctx' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_internal.c",
+   "line": 320,
+   "message": "Function 'crypto_global_init' should be declared static if it doesn't need external linkage",
+   "rule_id": "DCL15-C",
+   "severity": "Low",
+   "suggestion": "Add 'static' storage-class specifier: static int crypto_global_init"
+  }
+ ],
+ "src/crypto/tls.h": [
+  {
+   "column": 2,
+   "file": "src/crypto/tls.h",
+   "line": 58,
+   "message": "String buffer placed before pointer in struct 'tls_cert_data': 'const char *altsubject[TLS_MAX_ALT_SUBJECT];' before 'const char *serial_num;' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'const char *altsubject' after the pointer field 'const char *serial_num;', or use a char* pointer instead of a char array"
+  },
+  {
+   "column": 49,
+   "file": "src/crypto/tls.h",
+   "line": 370,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 49,
+   "file": "src/crypto/tls.h",
+   "line": 403,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 20,
+   "file": "src/crypto/tls.h",
+   "line": 405,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 55,
+   "file": "src/crypto/tls.h",
+   "line": 422,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls.h",
+   "line": 458,
+   "message": "Function has pointer parameter without size argument: 'struct wpabuf * tls_connection_handshake2(void *tls_ctx,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'int *more_data_needed' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls.h",
+   "line": 509,
+   "message": "Function has pointer parameter without size argument: 'struct wpabuf * tls_connection_decrypt2(void *tls_ctx,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'int *more_data_needed' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 39,
+   "file": "src/crypto/tls.h",
+   "line": 554,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 11,
+   "file": "src/crypto/tls.h",
+   "line": 555,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 38,
+   "file": "src/crypto/tls.h",
+   "line": 567,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 10,
+   "file": "src/crypto/tls.h",
+   "line": 568,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 55,
+   "file": "src/crypto/tls.h",
+   "line": 591,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 34,
+   "file": "src/crypto/tls.h",
+   "line": 647,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls.h",
+   "line": 652,
+   "message": "Identifier 'tls_connection_set_success_data_resumed' agrees with 'tls_connection_set_success_data' in its first 31 significant characters; they may collide as the same external identifier on a conforming implementation",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Shorten one of the identifiers so they differ within the first 31 characters"
+  }
+ ]
+}

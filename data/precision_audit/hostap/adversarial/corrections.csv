@@ -1,0 +1,21 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+EXP36-C,hostap,src/ap/ieee802_11_ht.c,280,FP,"[ADVERSARIAL FLIP from TP] struct ieee80211_2040_bss_coex_ie is STRUCT_PACKED, all u8 fields; alignof==1",hostap_adversarial_verification,high
+EXP36-C,hostap,src/ap/ieee802_11_ht.c,343,FP,"[ADVERSARIAL FLIP from TP] struct ieee80211_2040_intol_chan_report is STRUCT_PACKED, all u8 fields; alignof==1",hostap_adversarial_verification,high
+EXP36-C,hostap,src/ap/wpa_auth.c,1685,FP,[ADVERSARIAL FLIP from TP] ieee802_1x_hdr/wpa_eapol_key both STRUCT_PACKED; alignof==1 for each,hostap_adversarial_verification,high
+EXP36-C,hostap,src/ap/wpa_auth.c,2394,FP,"[ADVERSARIAL FLIP from TP] same packed structs (ieee802_1x_hdr, wpa_eapol_key), alignof==1, no real mismatch",hostap_adversarial_verification,high
+EXP36-C,hostap,src/common/proximity_ranging.c,1991,FP,[ADVERSARIAL FLIP from TP] struct ieee80211_mgmt is STRUCT_PACKED end-to-end; alignof==1,hostap_adversarial_verification,high
+EXP36-C,hostap,src/common/wpa_common.c,4351,FP,"[ADVERSARIAL FLIP from TP] struct pasn_parameter_ie is STRUCT_PACKED, all u8 fields; alignof==1",hostap_adversarial_verification,high
+EXP36-C,hostap,src/drivers/driver_nl80211.c,4739,FP,"[ADVERSARIAL FLIP from TP] cast target struct ieee80211_mgmt is STRUCT_PACKED; alignof==1, no mismatch",hostap_adversarial_verification,high
+EXP36-C,hostap,src/drivers/driver_nl80211_event.c,1843,FP,"[ADVERSARIAL FLIP from TP] cast to struct ieee80211_mgmt (STRUCT_PACKED), alignof==1, no mismatch",hostap_adversarial_verification,high
+EXP36-C,hostap,src/drivers/driver_nl80211_event.c,2815,FP,[ADVERSARIAL FLIP from TP] struct qca_avoid_freq_list is __attribute__((packed)); alignof==1,hostap_adversarial_verification,high
+EXP36-C,hostap,src/l2_packet/l2_packet_winpcap.c,111,FP,"[ADVERSARIAL FLIP from TP] struct l2_ethhdr is STRUCT_PACKED; alignof==1, no mismatch",hostap_adversarial_verification,high
+EXP36-C,hostap,src/p2p/p2p.c,7129,FP,"[ADVERSARIAL FLIP from TP] cast to struct ieee80211_mgmt (STRUCT_PACKED), alignof==1",hostap_adversarial_verification,high
+EXP36-C,hostap,src/pasn/pasn_common.c,336,FP,"[ADVERSARIAL FLIP from TP] cast to struct ieee80211_mgmt (STRUCT_PACKED), alignof==1",hostap_adversarial_verification,high
+EXP36-C,hostap,src/pasn/pasn_initiator.c,1162,FP,"[ADVERSARIAL FLIP from TP] cast to struct ieee80211_mgmt (STRUCT_PACKED), alignof==1",hostap_adversarial_verification,high
+EXP36-C,hostap,src/pasn/pasn_initiator.c,1477,FP,"[ADVERSARIAL FLIP from TP] cast to struct ieee80211_mgmt (STRUCT_PACKED), alignof==1",hostap_adversarial_verification,high
+EXP36-C,hostap,src/radius/radius.c,859,FP,"[ADVERSARIAL FLIP from TP] struct radius_hdr is STRUCT_PACKED; alignof==1, no mismatch",hostap_adversarial_verification,high
+EXP36-C,hostap,wpa_supplicant/wnm_sta.c,1760,FP,"[ADVERSARIAL FLIP from TP] cast to struct ieee80211_mgmt (STRUCT_PACKED), alignof==1",hostap_adversarial_verification,high
+MSC09-C,hostap,src/ap/drv_callbacks.c,604,FP,"[ADVERSARIAL FLIP from TP] binary WPS vendor-OUI byte string used with os_memcmp, not text; matches established MSC09-C raw-byte-pattern-not-text FP class.",hostap_adversarial_verification,med
+MSC09-C,hostap,wpa_supplicant/sme.c,2345,FP,"[ADVERSARIAL FLIP from TP] binary SNAP-header byte string used with wpabuf_put_data, not text; matches established MSC09-C raw-byte-pattern-not-text FP class.",hostap_adversarial_verification,med
+MSC32-C,hostap,src/utils/os_internal.c,150,FP,"[ADVERSARIAL FLIP from TP] os_random() callers here are all non-adversarial jitter (BSS-color, timeouts); matches established MSC30/32-C rand()-quality FP-by-context class covering the wrapper definition itself.",hostap_adversarial_verification,med
+POS01-C,hostap,src/drivers/driver_nl80211.c,13033,FP,[ADVERSARIAL FLIP from TP] path built from kernel-reported ifname/brname into /sys or /proc virtual fs; matches established POS01-C sysfs-virtual-path FP class (rfkill.c precedent).,hostap_adversarial_verification,med

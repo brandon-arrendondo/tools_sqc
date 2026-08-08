@@ -1,0 +1,71 @@
+{
+ "labels": [
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5285,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Ordinary fprintf with concatenated string literals, zero preprocessor directives; matches PRE32-C ordinary-multiline-literal FP family."
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5285,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same fprintf call; cited 'directive' is just the second half of a split string literal, no #if/#define present."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5288,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Confirmed CON33-C strerror() thread-safety FP pattern; wpa_cli is single-threaded, no pthread anywhere in file."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5288,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Confirmed CON34-C strerror() thread-safety FP pattern; single-threaded CLI, no pthread usage."
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5296,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Ordinary printf with concatenated string literals, zero real preprocessor directives; ordinary-multiline-literal PRE32-C FP family."
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5296,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same printf call; flagged text is just the wrapped second half of the literal, not a directive."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5309,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cross-function ARR30-C conflation: argv here is main()'s own argv param (line 5195); size/alloc cited at 4810 is an unrelated char*argv[max_args] local in wpa_cli_edit_cmd_cb."
+  },
+  {
+   "rule": "STR31-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5320,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Misattributed: line 5320 is the #else-branch main() stub whose body only printf's a disabled-config message and returns -1; argv is never touched."
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {"tp": 0, "fp": 8, "fn": 0}
+}

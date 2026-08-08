@@ -1,0 +1,1213 @@
+{
+ "labels": [
+  {
+   "rule": "CON03-C",
+   "file": "src/utils/edit.c",
+   "line": 19,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No-thread eloop CLI FP class: hostapd/wpa_supplicant single-threaded, no pthread anywhere"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "src/utils/edit.c",
+   "line": 20,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No-thread eloop CLI FP class: single-threaded, no pthread anywhere"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "src/utils/edit.c",
+   "line": 22,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No-thread eloop CLI FP class: single-threaded, no pthread anywhere"
+  },
+  {
+   "rule": "DCL38-C",
+   "file": "src/utils/edit.c",
+   "line": 29,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "struct-hack char str[1] FAM idiom; DCL38-C literally recommends [] syntax, low value"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/utils/edit.c",
+   "line": 29,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "struct-hack FAM: str[1] correctly sized via os_zalloc(sizeof(*h)+len), not undersized"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/utils/edit.c",
+   "line": 36,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API02-C misfires on NUL-terminated 'char *cmd' string param; also fixed callback-registration signature"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "src/utils/edit.c",
+   "line": 38,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No-thread eloop CLI FP class"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/utils/edit.c",
+   "line": 38,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "WIN04-C platform-inapplicable: file uses <termios.h>, POSIX-only, never built for Windows"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "src/utils/edit.c",
+   "line": 47,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No-thread eloop CLI FP class"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/utils/edit.c",
+   "line": 51,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ps2 is null-checked in the same ternary before os_strlen(ps2) is called"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "src/utils/edit.c",
+   "line": 70,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No-thread eloop CLI FP class"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "src/utils/edit.c",
+   "line": 79,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No-thread eloop CLI FP class"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "src/utils/edit.c",
+   "line": 88,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No-thread eloop CLI FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/utils/edit.c",
+   "line": 90,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cmdbuf is static (zero-init) and cmdbuf_pos<=cmdbuf_len invariant keeps index in populated range"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "src/utils/edit.c",
+   "line": 98,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No-thread eloop CLI FP class"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/utils/edit.c",
+   "line": 100,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "while-loop condition cmdbuf_pos<cmdbuf_len already bounds the index before the access"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/utils/edit.c",
+   "line": 100,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cmdbuf is static zero-init array, index bounded by invariant, not truly uninitialized"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/utils/edit.c",
+   "line": 102,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "while-loop condition bounds cmdbuf_pos<cmdbuf_len before the access"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "src/utils/edit.c",
+   "line": 108,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No-thread eloop CLI FP class"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "src/utils/edit.c",
+   "line": 122,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No-thread eloop CLI FP class"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "src/utils/edit.c",
+   "line": 135,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No-thread eloop CLI FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/utils/edit.c",
+   "line": 141,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cmdbuf_pos<=cmdbuf_len invariant keeps pos within the always-written range"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/utils/edit.c",
+   "line": 144,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pos is a local int bounded 0..cmdbuf_len(<=4095), nowhere near INT_MIN"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/utils/edit.c",
+   "line": 145,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "INT32-C misapplied to pointer arithmetic (cmdbuf+pos), pos bounded <=4095"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/utils/edit.c",
+   "line": 146,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC13 misses cross-function read: edit_redraw() (called next line) reads cmdbuf_len"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/utils/edit.c",
+   "line": 146,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "cmdbuf_pos/pos both bounded small non-negative ints, cannot overflow"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/utils/edit.c",
+   "line": 147,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC13 misses cross-function read: edit_redraw() reads cmdbuf_pos immediately after"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "src/utils/edit.c",
+   "line": 152,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No-thread eloop CLI FP class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/utils/edit.c",
+   "line": 159,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC13 misses cross-function read: edit_redraw() reads cmdbuf_len right after"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/utils/edit.c",
+   "line": 160,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC13 misses cross-function read: edit_redraw() reads cmdbuf_pos right after"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "src/utils/edit.c",
+   "line": 165,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No-thread eloop CLI FP class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/utils/edit.c",
+   "line": 171,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC13 misses cross-function read: edit_redraw() reads cmdbuf_len right after"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/utils/edit.c",
+   "line": 178,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "dl_list_for_each loop-carried read: 'last' read right after loop exit at count>=HISTORY_MAX check"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/utils/edit.c",
+   "line": 186,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "dl_list_for_each loop-carried read: 'match' read immediately after break, at if(match)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/utils/edit.c",
+   "line": 196,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "heap-vs-stack confusion: h is a dl_list node pointer (heap), not a local/stack variable"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/utils/edit.c",
+   "line": 196,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "heap-vs-stack confusion: h is a heap pointer via dl_list iteration, not stack memory"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/utils/edit.c",
+   "line": 211,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "heap-vs-stack confusion: h is freshly os_zalloc'd heap memory, not a stack local"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/utils/edit.c",
+   "line": 211,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "heap-vs-stack confusion: h is os_zalloc'd heap memory escaping to a persistent list, not stack"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "src/utils/edit.c",
+   "line": 215,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No-thread eloop CLI FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/utils/edit.c",
+   "line": 218,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "static-storage zero-init guarantee; history_curr set in edit_init before any use"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/utils/edit.c",
+   "line": 218,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "history_use only called after callers verify history_curr non-NULL (history_prev/_next guards)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/utils/edit.c",
+   "line": 226,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "static zero-init guarantee; read here is the NULL-guard itself (history_curr==NULL)"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/utils/edit.c",
+   "line": 232,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cmdbuf_len bounded <=CMD_BUF_LEN-1 by insert_char's guard invariant elsewhere in the file"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/utils/edit.c",
+   "line": 234,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC13 misses cross-call significance: currbuf_valid is a static read by history_next/_debug_dump later"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/utils/edit.c",
+   "line": 244,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC13 misses cross-function read: history_use() reads history_curr right after this assignment"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "src/utils/edit.c",
+   "line": 250,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No-thread eloop CLI FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/utils/edit.c",
+   "line": 252,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "static zero-init guarantee; read here is part of the NULL-guard chain"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/utils/edit.c",
+   "line": 256,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC13 misses cross-call significance: currbuf_valid read by later invocations (history_prev/_debug_dump)"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/utils/edit.c",
+   "line": 265,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC13 misses cross-function read: history_use() reads history_curr right after"
+  },
+  {
+   "rule": "FIO05-C",
+   "file": "src/utils/edit.c",
+   "line": 276,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "FIO05-C admin/local-config-path FP class: history_file is app-supplied local path, not adversarial input"
+  },
+  {
+   "rule": "WIN03-C",
+   "file": "src/utils/edit.c",
+   "line": 276,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "WIN03-C platform-inapplicable: file uses <termios.h>, never built for Windows"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/utils/edit.c",
+   "line": 280,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ARR30-C misfires on a provably-bounded NUL-terminated fgets()-populated buffer scan"
+  },
+  {
+   "rule": "FIO20-C",
+   "file": "src/utils/edit.c",
+   "line": 280,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "fgets() truncation genuinely unchecked if a history line exceeds CMD_BUF_LEN-1, low severity"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/utils/edit.c",
+   "line": 280,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "rule-engine misfire: no cast at all is present on this fgets() call line"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/utils/edit.c",
+   "line": 281,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "factually wrong: pos and buf are both ordinary locals in the same function, not global"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/edit.c",
+   "line": 283,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "plain char-to-char assignment ('\\0' literal), no widening conversion involved"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/utils/edit.c",
+   "line": 290,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "fclose() on a read stream; established read-stream-ignored-fclose FP distinction"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/utils/edit.c",
+   "line": 290,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "fclose() on a read stream; established read-stream-ignored-fclose FP distinction"
+  },
+  {
+   "rule": "FIO03-C",
+   "file": "src/utils/edit.c",
+   "line": 300,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "fopen(w) history-file rewrite with no exclusive-creation guarantee, literal low-severity TP"
+  },
+  {
+   "rule": "FIO05-C",
+   "file": "src/utils/edit.c",
+   "line": 300,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "FIO05-C admin/local-config-path FP class: history_file is app-supplied local path"
+  },
+  {
+   "rule": "FIO06-C",
+   "file": "src/utils/edit.c",
+   "line": 300,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "fopen(w) with no explicit permissions on a file that may carry sensitive typed commands, low severity"
+  },
+  {
+   "rule": "WIN03-C",
+   "file": "src/utils/edit.c",
+   "line": 300,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "WIN03-C platform-inapplicable: file never built for Windows (termios.h)"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/edit.c",
+   "line": 305,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C misfires on calling a function-pointer variable (filter_cb param), not an undeclared function"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/utils/edit.c",
+   "line": 305,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "static-storage zero-init; edit_cb_ctx set in edit_init() before history_write can run"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/utils/edit.c",
+   "line": 310,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "fclose() on a write stream; established write-stream-ignored-fclose genuine TP (flush-failure data loss)"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/utils/edit.c",
+   "line": 310,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "fclose() on a write stream; established write-stream-ignored-fclose genuine TP"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/utils/edit.c",
+   "line": 320,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "static zero-init guarantee; history_curr read here as part of ternary comparison"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "src/utils/edit.c",
+   "line": 322,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "currbuf is a static char array; decays to pointer for %s, sqc mistypes it as Integer"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "src/utils/edit.c",
+   "line": 327,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No-thread eloop CLI FP class"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/utils/edit.c",
+   "line": 335,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "fflush(stdout) return value genuinely unchecked, literal low-severity per rule text"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "src/utils/edit.c",
+   "line": 346,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No-thread eloop CLI FP class"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/utils/edit.c",
+   "line": 351,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "fflush(stdout) return value genuinely unchecked, literal low-severity per rule text"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/utils/edit.c",
+   "line": 358,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC13 misses cross-call significance: cmdbuf_len is a persistent static read by other input handlers"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/edit.c",
+   "line": 359,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C misfires on calling a function-pointer variable (edit_cmd_cb), not an undeclared function"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/utils/edit.c",
+   "line": 361,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "fflush(stdout) return value genuinely unchecked, literal low-severity per rule text"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/utils/edit.c",
+   "line": 368,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MEM10-C ad-hoc NULL-check stylistic FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/edit.c",
+   "line": 376,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API05-C ptr+size idiom FP class: char **c / char *str,size_t len pair"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/edit.c",
+   "line": 376,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API05-C ptr+size idiom FP class, second param on same signature"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/edit.c",
+   "line": 406,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal static helper reading its param read-only, not bound to any dispatch typedef; low value"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/edit.c",
+   "line": 412,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "plain char==char equality comparison; sign-extension has no effect on equality result"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/edit.c",
+   "line": 412,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "plain char==char equality comparison; sign-extension has no effect on equality result"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "src/utils/edit.c",
+   "line": 426,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No-thread eloop CLI FP class"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/utils/edit.c",
+   "line": 436,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cmdbuf_len bounded <=CMD_BUF_LEN-1 by insert_char's guard invariant"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/edit.c",
+   "line": 437,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C misfires on calling a function-pointer variable (edit_completion_cb)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/utils/edit.c",
+   "line": 437,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "static-storage zero-init; edit_cb_ctx set in edit_init() before complete() can run"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/utils/edit.c",
+   "line": 447,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "start is derived by a bounded while(start>0 ...) decrement from a valid cmdbuf_pos"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/utils/edit.c",
+   "line": 454,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "rule-engine misfire: len<=plen are both ints, no pointers named 'room'/'cmdbuf_pos' appear on this line"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/utils/edit.c",
+   "line": 480,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC13 misses cross-function read: edit_redraw() reads cmdbuf_pos right after"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/utils/edit.c",
+   "line": 481,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC13 misses cross-function read: edit_redraw() reads cmdbuf_len right after"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "src/utils/edit.c",
+   "line": 556,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "esc_buf is a genuine 'const char *' pointer param; FIO47-C array/pointer-typing misfire"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "src/utils/edit.c",
+   "line": 556,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "c is a plain 'char' param, not a pointer; FIO47-C typing misfire"
+  },
+  {
+   "rule": "INT00-C",
+   "file": "src/utils/edit.c",
+   "line": 556,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "%c with an int-promoted char argument is exactly correct C varargs usage"
+  },
+  {
+   "rule": "DCL11-C",
+   "file": "src/utils/edit.c",
+   "line": 556,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "c is 'char c', not char*; DCL11-C typing misfire, part of the same line-556 pileon bug"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/utils/edit.c",
+   "line": 668,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "factually wrong: an explicit 'return EDIT_KEY_NONE;' fallback follows this switch/if block"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/edit.c",
+   "line": 734,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "plain char-to-char assignment (last=*pos), no widening conversion"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/edit.c",
+   "line": 734,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "plain char-to-char assignment (last=*pos), no widening conversion (duplicate finding)"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/utils/edit.c",
+   "line": 737,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "atoi() result only ever used via a bounded switch dispatch that safely defaults on any value"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/utils/edit.c",
+   "line": 737,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "atoi() result only ever used via a bounded switch dispatch that safely defaults on any value"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/utils/edit.c",
+   "line": 740,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "atoi() result only ever used via a bounded switch dispatch that safely defaults on any value"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/utils/edit.c",
+   "line": 740,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "atoi() result only ever used via a bounded switch dispatch that safely defaults on any value"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/utils/edit.c",
+   "line": 745,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ret already default-initialized to EDIT_KEY_NONE at declaration; missing else is deliberate"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "src/utils/edit.c",
+   "line": 758,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No-thread eloop CLI FP class"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/utils/edit.c",
+   "line": 761,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "esc_buf[7] exactly accommodates the max 6-char escape sequence + NUL, correctly sized"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "src/utils/edit.c",
+   "line": 763,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No-thread eloop CLI FP class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/utils/edit.c",
+   "line": 776,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC13 misses cross-call significance: static 'esc' read at top of next edit_read_key() invocation"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/utils/edit.c",
+   "line": 792,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC13 misses cross-call significance: static 'esc' read on next invocation"
+  },
+  {
+   "rule": "STR09-C",
+   "file": "src/utils/edit.c",
+   "line": 802,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "non-portable 'A'..'Z' ordering comparison, literal low-value/low-severity per rule text"
+  },
+  {
+   "rule": "STR09-C",
+   "file": "src/utils/edit.c",
+   "line": 802,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "non-portable 'A'..'Z' ordering comparison, literal low-value/low-severity per rule text"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/utils/edit.c",
+   "line": 803,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC13 misses cross-call significance: static 'esc' read on next invocation"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/utils/edit.c",
+   "line": 808,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC13 misses cross-call significance: static 'esc' read on next invocation"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/utils/edit.c",
+   "line": 854,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC13 misses cross-call significance: static 'esc' read on next invocation"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "src/utils/edit.c",
+   "line": 892,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "search_buf is a static array; decays to pointer for %s, sqc mistypes it as Integer"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "src/utils/edit.c",
+   "line": 892,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "PRE32-C misfires: CLEAR_END_LINE is a string-literal macro used for literal concatenation, no directive"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/utils/edit.c",
+   "line": 893,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "static-storage zero-init guarantee for search_buf; always kept NUL-terminated by mutators"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "src/utils/edit.c",
+   "line": 894,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "search_buf array decays to pointer for %s, sqc mistypes it as Integer"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/utils/edit.c",
+   "line": 895,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "fflush(stdout) return value genuinely unchecked, literal low-severity per rule text"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "src/utils/edit.c",
+   "line": 915,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No-thread eloop CLI FP class"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "src/utils/edit.c",
+   "line": 949,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No-thread eloop CLI FP class"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/utils/edit.c",
+   "line": 963,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "len bounded by the explicit guard 'if (len==sizeof(search_buf)-1) return;' just above"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "src/utils/edit.c",
+   "line": 1004,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No-thread eloop CLI FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/edit.c",
+   "line": 1004,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "eloop_register_read_sock callback fixed-signature dispatch contract, matches eloop.h typedef"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/edit.c",
+   "line": 1004,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "eloop_register_read_sock callback fixed-signature dispatch contract, matches eloop.h typedef"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "src/utils/edit.c",
+   "line": 1006,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No-thread eloop CLI FP class"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "src/utils/edit.c",
+   "line": 1007,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No-thread eloop CLI FP class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/utils/edit.c",
+   "line": 1016,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC13 misses cross-call significance: static 'search' read at top of next invocation"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/edit.c",
+   "line": 1028,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C misfires on calling a function-pointer variable (edit_eof_cb)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/utils/edit.c",
+   "line": 1028,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "static-storage zero-init; edit_cb_ctx set in edit_init() before any callback fires"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/utils/edit.c",
+   "line": 1032,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC13 misses cross-call significance: static 'last_tab' read via complete(last_tab) on next TAB press"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/edit.c",
+   "line": 1075,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C misfires on calling a function-pointer variable (edit_eof_cb), 2nd call site"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/utils/edit.c",
+   "line": 1096,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC13 misses cross-call significance: static 'search' read at top of next invocation"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/edit.c",
+   "line": 1113,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-only-API FP: edit_init has 2 fixed in-tree callers, always pass non-NULL cmd_cb"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/edit.c",
+   "line": 1113,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-only-API FP: edit_init's eof_cb always non-NULL at both call sites"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/edit.c",
+   "line": 1113,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-only-API FP: completion_cb already NULL-tolerant by design (checked in complete())"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/edit.c",
+   "line": 1113,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-only-API FP: ps is explicitly NULL-tolerant, checked via ternary throughout"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/edit.c",
+   "line": 1115,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "DCL13-C misapplied to a function-pointer-typed parameter, stored into a non-const global of the same type"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/edit.c",
+   "line": 1116,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "DCL13-C forwarding-to-non-const-callee FP: ctx stored into non-const edit_cb_ctx, passed to non-const callbacks"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/edit.c",
+   "line": 1129,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "DCL31-C misfires: tcgetattr is declared via <termios.h>, header-resolution FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/edit.c",
+   "line": 1132,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "DCL31-C misfires: tcsetattr is declared via <termios.h>, header-resolution FP class"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/utils/edit.c",
+   "line": 1138,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "fflush(stdout) return value genuinely unchecked, literal low-severity per rule text"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/utils/edit.c",
+   "line": 1151,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "EXP34-C while-condition-guard-not-recognized: the while((h=dl_list_first(...))) itself null-checks h"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/utils/edit.c",
+   "line": 1156,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "fflush(stdout) return value genuinely unchecked, literal low-severity per rule text"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/edit.c",
+   "line": 1158,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "DCL31-C misfires: tcsetattr is declared via <termios.h>, header-resolution FP class"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "src/utils/edit.c",
+   "line": 1162,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No-thread eloop CLI FP class"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/utils/edit.c",
+   "line": 1165,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cmdbuf_len bounded <=CMD_BUF_LEN-1 by insert_char's guard invariant"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "src/utils/edit.c",
+   "line": 1166,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "cmdbuf is a static array; decays to pointer for %s, sqc mistypes it as Integer"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/utils/edit.c",
+   "line": 1168,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cmdbuf_pos<=cmdbuf_len invariant keeps the index within the populated range"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/utils/edit.c",
+   "line": 1169,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cmdbuf_pos<=cmdbuf_len invariant keeps the index within the populated range"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "src/utils/edit.c",
+   "line": 1170,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "cmdbuf array decays to pointer for %s, sqc mistypes it as Integer"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/utils/edit.c",
+   "line": 1171,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cmdbuf_pos<=cmdbuf_len invariant keeps the index within the populated range"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/utils/edit.c",
+   "line": 1173,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "fflush(stdout) return value genuinely unchecked, literal low-severity per rule text"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "src/utils/edit.c"
+ ],
+ "summary": {
+  "tp": 16,
+  "fp": 134,
+  "fn": 0
+ }
+}

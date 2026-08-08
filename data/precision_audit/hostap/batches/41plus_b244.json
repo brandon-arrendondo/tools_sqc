@@ -1,0 +1,589 @@
+{
+ "src/ap/acs.c": [
+  {
+   "column": 1,
+   "file": "src/ap/acs.c",
+   "line": 18,
+   "message": "Header file 'hw_features_common.h' has the same first 8 characters (case-insensitive) as 'hw_features.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'hw_features_common.h' -> unique name)"
+  },
+  {
+   "column": 29,
+   "file": "src/ap/acs.c",
+   "line": 260,
+   "message": "Array declaration 'bw_40[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 29,
+   "file": "src/ap/acs.c",
+   "line": 277,
+   "message": "Array declaration 'bw_80[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 29,
+   "file": "src/ap/acs.c",
+   "line": 287,
+   "message": "Array declaration 'bw_160[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 29,
+   "file": "src/ap/acs.c",
+   "line": 293,
+   "message": "Array declaration 'bw_320_1[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 29,
+   "file": "src/ap/acs.c",
+   "line": 297,
+   "message": "Array declaration 'bw_320_2[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 30,
+   "file": "src/ap/acs.c",
+   "line": 301,
+   "message": "Array declaration 'bw_desc[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 54,
+   "file": "src/ap/acs.c",
+   "line": 330,
+   "message": "Pointer parameter 'mode' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *mode'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/acs.c",
+   "line": 349,
+   "message": "Function 'acs_cleanup' does not validate pointer parameter 'iface' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'iface' at the start of the function, e.g., 'if (!iface) { return error_code; }'"
+  },
+  {
+   "column": 51,
+   "file": "src/ap/acs.c",
+   "line": 372,
+   "message": "Pointer parameter 'survey' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *survey'"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/acs.c",
+   "line": 376,
+   "message": "Variable 'survey' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 0,
+   "file": "src/ap/acs.c",
+   "line": 393,
+   "message": "Call to pow() without checking for domain/range errors",
+   "rule_id": "FLP32-C",
+   "severity": "Medium",
+   "suggestion": "Check errno or use isnan()/isinf() to detect math errors"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/acs.c",
+   "line": 393,
+   "message": "Function call 'pow(10, survey->nf / 5.0L)' assigned to 'long double' variable 'factor' without explicit cast",
+   "rule_id": "FLP07-C",
+   "severity": "Medium",
+   "suggestion": "Cast the function return value to the expected type"
+  },
+  {
+   "column": 11,
+   "file": "src/ap/acs.c",
+   "line": 393,
+   "message": "pow() can set errno but errno is not checked after the call",
+   "rule_id": "ERR01-C",
+   "severity": "Low",
+   "suggestion": "Set errno to 0 before calling pow() and check errno afterward to detect errors"
+  },
+  {
+   "column": 19,
+   "file": "src/ap/acs.c",
+   "line": 393,
+   "message": "Floating-point division without error checking (consider using feclearexcept/fetestexcept)",
+   "rule_id": "FLP03-C",
+   "severity": "Low",
+   "suggestion": "Use feclearexcept(FE_ALL_EXCEPT) before and fetestexcept(FE_ALL_EXCEPT) after floating-point operations"
+  },
+  {
+   "column": 13,
+   "file": "src/ap/acs.c",
+   "line": 394,
+   "message": "Division or modulo by 'total' without checking for zero",
+   "rule_id": "INT33-C",
+   "severity": "High",
+   "suggestion": "Check if 'total' is not zero before division"
+  },
+  {
+   "column": 0,
+   "file": "src/ap/acs.c",
+   "line": 395,
+   "message": "Call to pow() without checking for domain/range errors",
+   "rule_id": "FLP32-C",
+   "severity": "Medium",
+   "suggestion": "Check errno or use isnan()/isinf() to detect math errors"
+  },
+  {
+   "column": 0,
+   "file": "src/ap/acs.c",
+   "line": 395,
+   "message": "Call to pow() without checking for domain/range errors",
+   "rule_id": "FLP32-C",
+   "severity": "Medium",
+   "suggestion": "Check errno or use isnan()/isinf() to detect math errors"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/acs.c",
+   "line": 395,
+   "message": "pow() can set errno but errno is not checked after the call",
+   "rule_id": "ERR01-C",
+   "severity": "Low",
+   "suggestion": "Set errno to 0 before calling pow() and check errno afterward to detect errors"
+  },
+  {
+   "column": 10,
+   "file": "src/ap/acs.c",
+   "line": 395,
+   "message": "pow() can set errno but errno is not checked after the call",
+   "rule_id": "ERR01-C",
+   "severity": "Low",
+   "suggestion": "Set errno to 0 before calling pow() and check errno afterward to detect errors"
+  },
+  {
+   "column": 18,
+   "file": "src/ap/acs.c",
+   "line": 395,
+   "message": "Floating-point division without error checking (consider using feclearexcept/fetestexcept)",
+   "rule_id": "FLP03-C",
+   "severity": "Low",
+   "suggestion": "Use feclearexcept(FE_ALL_EXCEPT) before and fetestexcept(FE_ALL_EXCEPT) after floating-point operations"
+  },
+  {
+   "column": 0,
+   "file": "src/ap/acs.c",
+   "line": 396,
+   "message": "Call to pow() without checking for domain/range errors",
+   "rule_id": "FLP32-C",
+   "severity": "Medium",
+   "suggestion": "Check errno or use isnan()/isinf() to detect math errors"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/acs.c",
+   "line": 396,
+   "message": "pow() can set errno but errno is not checked after the call",
+   "rule_id": "ERR01-C",
+   "severity": "Low",
+   "suggestion": "Set errno to 0 before calling pow() and check errno afterward to detect errors"
+  },
+  {
+   "column": 15,
+   "file": "src/ap/acs.c",
+   "line": 396,
+   "message": "Floating-point division without error checking (consider using feclearexcept/fetestexcept)",
+   "rule_id": "FLP03-C",
+   "severity": "Low",
+   "suggestion": "Use feclearexcept(FE_ALL_EXCEPT) before and fetestexcept(FE_ALL_EXCEPT) after floating-point operations"
+  },
+  {
+   "column": 58,
+   "file": "src/ap/acs.c",
+   "line": 403,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/acs.c",
+   "line": 408,
+   "message": "Value assigned to 'int_factor' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/acs.c",
+   "line": 427,
+   "message": "Function call 'acs_survey_interference_factor(survey,\n\t\t\t\t\t\t\t    iface->lowest_nf)' assigned to 'long double' variable 'int_factor' without explicit cast",
+   "rule_id": "FLP07-C",
+   "severity": "Medium",
+   "suggestion": "Cast the function return value to the expected type"
+  },
+  {
+   "column": 56,
+   "file": "src/ap/acs.c",
+   "line": 472,
+   "message": "Pointer parameter 'survey' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *survey'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/acs.c",
+   "line": 503,
+   "message": "Value assigned to 'ret' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/acs.c",
+   "line": 508,
+   "message": "Value assigned to 'ret' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 68,
+   "file": "src/ap/acs.c",
+   "line": 527,
+   "message": "Pointer parameter 'mode' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *mode'"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/acs.c",
+   "line": 561,
+   "message": "Potential null pointer dereference in member access of variable 'chan'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'chan' is not NULL before member access"
+  },
+  {
+   "column": 34,
+   "file": "src/ap/acs.c",
+   "line": 571,
+   "message": "Pointer parameter 'chan' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *chan'"
+  },
+  {
+   "column": 61,
+   "file": "src/ap/acs.c",
+   "line": 576,
+   "message": "Potential null pointer dereference in member access of variable 'chan'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'chan' is not NULL before member access"
+  },
+  {
+   "column": 34,
+   "file": "src/ap/acs.c",
+   "line": 581,
+   "message": "Pointer parameter 'chan' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *chan'"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/acs.c",
+   "line": 587,
+   "message": "Potential null pointer dereference in member access of variable 'chan'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'chan' is not NULL before member access"
+  },
+  {
+   "column": 55,
+   "file": "src/ap/acs.c",
+   "line": 592,
+   "message": "Pointer parameter 'mode' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *mode'"
+  },
+  {
+   "column": 44,
+   "file": "src/ap/acs.c",
+   "line": 646,
+   "message": "Pointer parameter 'mode' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *mode'"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/acs.c",
+   "line": 658,
+   "message": "Function returns pointer to local variable 'chan' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 5,
+   "file": "src/ap/acs.c",
+   "line": 697,
+   "message": "Function returns pointer to local variable 'chan' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 31,
+   "file": "src/ap/acs.c",
+   "line": 738,
+   "message": "Pointer parameter 'mode' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *mode'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/acs.c",
+   "line": 745,
+   "message": "Value assigned to 'adj_chan' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 48,
+   "file": "src/ap/acs.c",
+   "line": 745,
+   "message": "Pointer to const assigned to non-const pointer without cast: *first_chan = chan: '*first_chan = chan'",
+   "rule_id": "EXP40-C",
+   "severity": "Low",
+   "suggestion": "Either remove const qualifier if the object should be modifiable, or use explicit casts to show intentional const removal"
+  },
+  {
+   "column": 44,
+   "file": "src/ap/acs.c",
+   "line": 792,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 14,
+   "file": "src/ap/acs.c",
+   "line": 795,
+   "message": "Array declaration 'bw320_str[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/acs.c",
+   "line": 813,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/acs.c",
+   "line": 835,
+   "message": "Value assigned to 'adj_chan' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/acs.c",
+   "line": 836,
+   "message": "Value assigned to 'chan2' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 20,
+   "file": "src/ap/acs.c",
+   "line": 851,
+   "message": "Variable 'bias' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'bias' before use, e.g., at its declaration"
+  },
+  {
+   "column": 10,
+   "file": "src/ap/acs.c",
+   "line": 1031,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/acs.c",
+   "line": 1057,
+   "message": "Local variable 'chan' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/acs.c",
+   "line": 1071,
+   "message": "Local variable 'chan' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/acs.c",
+   "line": 1150,
+   "message": "Function returns pointer to local variable 'ideal_chan' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/acs.c",
+   "line": 1153,
+   "message": "Function returns pointer to local variable 'rand_chan' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/acs.c",
+   "line": 1174,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 57,
+   "file": "src/ap/acs.c",
+   "line": 1180,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/acs.c",
+   "line": 1388,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 30,
+   "file": "src/ap/acs.c",
+   "line": 1395,
+   "message": "Pointer parameter 'mode' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *mode'"
+  },
+  {
+   "column": 10,
+   "file": "src/ap/acs.c",
+   "line": 1396,
+   "message": "Pointer parameter 'freq' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *freq'"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/acs.c",
+   "line": 1456,
+   "message": "Potential null pointer dereference of variable 'freq'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'freq' is not NULL before dereferencing"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/acs.c",
+   "line": 1465,
+   "message": "Function 'wpa_printf' called with overlapping memory regions. If parameters are restrict-qualified, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure memory regions do not overlap when using restrict pointers"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/acs.c",
+   "line": 1469,
+   "message": "Function 'wpa_printf' called with overlapping memory regions. If parameters are restrict-qualified, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure memory regions do not overlap when using restrict pointers"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/acs.c",
+   "line": 1489,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/acs.c",
+   "line": 1489,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 51,
+   "file": "src/ap/acs.c",
+   "line": 1508,
+   "message": "Pointer parameter 'user_data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *user_data'"
+  }
+ ]
+}

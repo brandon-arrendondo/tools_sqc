@@ -1,0 +1,722 @@
+[
+ {
+  "rule": "MSC01-C",
+  "file": "src/crypto/crypto_libtomcrypt.c",
+  "line": 200,
+  "verdict": "TP",
+  "reason": "crypto_hash_update's switch on ctx->alg has no default; safe in practice (init rejects other values) but rule text literally applies.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/crypto/tls_openssl.c",
+  "line": 4717,
+  "verdict": "TP",
+  "reason": "ret pre-set to -1 (failure default); no final else is the deliberate default-value guard shape (MSC01-C low-severity reconfirmed)",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/crypto/tls_openssl.c",
+  "line": 5144,
+  "verdict": "TP",
+  "reason": "intentional no-op fallthrough (neither branch needs an else; MSC01-C low-severity reconfirmed)",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/drivers/driver_macsec_linux.c",
+  "line": 591,
+  "verdict": "TP",
+  "reason": "if/else-if chain has no final else; literal rule-text violation, low value (falls through intentionally)",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/drivers/driver_macsec_linux.c",
+  "line": 1199,
+  "verdict": "TP",
+  "reason": "if/else-if chain has no final else; literal rule-text violation, low value (falls through intentionally)",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/drivers/driver_ndis_.c",
+  "line": 66,
+  "verdict": "TP",
+  "reason": "switch on 'type' read directly from untrusted event buffer (*(int*)buf) with no default case to handle unanticipated values",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/eap_peer/eap_mschapv2.c",
+  "line": 201,
+  "verdict": "TP",
+  "reason": "literal no-final-else match; success path intentionally falls through.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/eap_peer/eap_mschapv2.c",
+  "line": 505,
+  "verdict": "TP",
+  "reason": "literal no-final-else match in eap_mschapv2_failure_txt's retry decision chain.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/eap_peer/eap_mschapv2.c",
+  "line": 694,
+  "verdict": "TP",
+  "reason": "literal no-final-else match in eap_mschapv2_failure's dispatch chain.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/eap_server/eap_server_psk.c",
+  "line": 425,
+  "verdict": "TP",
+  "reason": "switch on decrypted[0]>>6 (2-bit, 4 possible values) only handles 3 R_FLAG cases with no default; an unanticipated 4th value from the authenticated PCHANNEL byte is silently unhandled",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/eap_server/eap_server_sake.c",
+  "line": 441,
+  "verdict": "TP",
+  "reason": "switch(subtype) on attacker-controlled EAP response subtype has no default; unlike sibling switches in this codebase (eap_sake_buildReq, eap_eke_process) which log unknown values, unrecognized subtypes here are silently dropped with no diagnostic.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/eap_server/eap_server_teap.c",
+  "line": 346,
+  "verdict": "TP",
+  "reason": "cfg->eap_teap_id is set via atoi() with zero range validation (config_file.c:2535); switch can receive an out-of-enum value with no default.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/utils/browser-wpadebug.c",
+  "line": 43,
+  "verdict": "TP",
+  "reason": "if/else-if genuinely has no final else clause; benign but real per literal rule",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "wpa_supplicant/ap.c",
+  "line": 354,
+  "verdict": "TP",
+  "reason": "if/else-if with no final else; stylistic pedantry, established low-value convention",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "wpa_supplicant/ap.c",
+  "line": 383,
+  "verdict": "TP",
+  "reason": "if/else-if with no final else; stylistic pedantry, established low-value convention",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "wpa_supplicant/ap.c",
+  "line": 605,
+  "verdict": "TP",
+  "reason": "if/else-if with no final else; stylistic pedantry, established low-value convention",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "wpa_supplicant/ap.c",
+  "line": 674,
+  "verdict": "TP",
+  "reason": "if/else-if with no final else; stylistic pedantry, established low-value convention",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "wpa_supplicant/ap.c",
+  "line": 679,
+  "verdict": "TP",
+  "reason": "if/else-if with no final else; stylistic pedantry, established low-value convention",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "wpa_supplicant/ap.c",
+  "line": 747,
+  "verdict": "TP",
+  "reason": "if/else-if with no final else; stylistic pedantry, established low-value convention",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "wpa_supplicant/ap.c",
+  "line": 1110,
+  "verdict": "TP",
+  "reason": "if/else-if with no final else; stylistic pedantry, established low-value convention",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "wpa_supplicant/ap.c",
+  "line": 1355,
+  "verdict": "TP",
+  "reason": "if/else-if with no final else; stylistic pedantry, established low-value convention",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "wpa_supplicant/ap.c",
+  "line": 1758,
+  "verdict": "TP",
+  "reason": "if/else-if with no final else; stylistic pedantry, established low-value convention",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "wpa_supplicant/ap.c",
+  "line": 1819,
+  "verdict": "TP",
+  "reason": "if/else-if with no final else; stylistic pedantry, established low-value convention",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "wpa_supplicant/ap.c",
+  "line": 1842,
+  "verdict": "TP",
+  "reason": "if/else-if with no final else; stylistic pedantry, established low-value convention",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "wpa_supplicant/hs20_supplicant.c",
+  "line": 51,
+  "verdict": "TP",
+  "reason": "no-final-else deliberate guard-clause pedantry, literal per rule text",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "wpa_supplicant/rrm.c",
+  "line": 265,
+  "verdict": "TP",
+  "reason": "if/else-if with no final else; low-value guard-clause pedantry, literal rule text violation",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "wpa_supplicant/rrm.c",
+  "line": 300,
+  "verdict": "TP",
+  "reason": "same guard-clause pedantry class as line 265",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "wpa_supplicant/rrm.c",
+  "line": 624,
+  "verdict": "TP",
+  "reason": "if/else-if bandwidth chain with no final else; low-value guard-clause pedantry",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "wpa_supplicant/rrm.c",
+  "line": 773,
+  "verdict": "TP",
+  "reason": "sec_chan_offset if/else-if with no final else; low-value guard-clause pedantry",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "wpa_supplicant/rrm.c",
+  "line": 1263,
+  "verdict": "TP",
+  "reason": "res<0/!res if/else-if with no final else; low-value guard-clause pedantry (success falls through intentionally)",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "wpa_supplicant/rrm.c",
+  "line": 1634,
+  "verdict": "TP",
+  "reason": "if/else-if scan-result filter chain with no final else; low-value guard-clause pedantry",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC05-C",
+  "file": "src/ap/dpp_hostapd.c",
+  "line": 2157,
+  "verdict": "TP",
+  "reason": "Direct subtraction of two time_t values (expire - now.sec); literal rule violation, low real impact",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC05-C",
+  "file": "src/ap/dpp_hostapd.c",
+  "line": 2942,
+  "verdict": "TP",
+  "reason": "Direct subtraction of two time_t values (expire - now.sec); literal rule violation, low real impact",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC05-C",
+  "file": "src/common/wpa_helpers.c",
+  "line": 148,
+  "verdict": "TP",
+  "reason": "Direct '-' on time_t 'now'/'start'; literal rule-text violation, no downstream mitigation, low severity.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC05-C",
+  "file": "src/crypto/tls_openssl_ocsp.c",
+  "line": 357,
+  "verdict": "TP",
+  "reason": "now + 5*60 arithmetic directly on time_t; matches rule literally though harmless on virtually all real platforms.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC05-C",
+  "file": "src/crypto/tls_openssl_ocsp.c",
+  "line": 372,
+  "verdict": "TP",
+  "reason": "now - 5*60 arithmetic directly on time_t; same low-severity portability nit as line 357.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC05-C",
+  "file": "src/radius/radius_client.c",
+  "line": 479,
+  "verdict": "TP",
+  "reason": "delay_time = now - entry->first_try is a direct time_t-time_t subtraction (genuine per established MSC05 TP class).",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC05-C",
+  "file": "src/radius/radius_client.c",
+  "line": 628,
+  "verdict": "TP",
+  "reason": "first - now.sec is a direct time_t-time_t subtraction.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC05-C",
+  "file": "src/radius/radius_client.c",
+  "line": 633,
+  "verdict": "TP",
+  "reason": "same first - now.sec subtraction repeated in the log message.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC05-C",
+  "file": "src/radius/radius_client.c",
+  "line": 714,
+  "verdict": "TP",
+  "reason": "first - now.sec is a direct time_t-time_t subtraction in radius_client_update_timeout.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC05-C",
+  "file": "src/radius/radius_client.c",
+  "line": 718,
+  "verdict": "TP",
+  "reason": "same first - now.sec subtraction repeated in the log message.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC05-C",
+  "file": "src/utils/os_unix.c",
+  "line": 163,
+  "verdict": "TP",
+  "reason": "tz_offset = t2 - t1 is direct subtraction of two time_t values, real MSC05-C case",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC05-C",
+  "file": "src/utils/os_unix.c",
+  "line": 169,
+  "verdict": "TP",
+  "reason": "t_local - tz_offset applies arithmetic directly to a time_t-derived value",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC05-C",
+  "file": "src/utils/os_win32.c",
+  "line": 91,
+  "verdict": "TP",
+  "reason": "tz_offset = t2 - t1, direct time_t-time_t subtraction (both declared time_t); genuine per established direct-subtraction TP shape",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC05-C",
+  "file": "wpa_supplicant/dpp_supplicant.c",
+  "line": 2908,
+  "verdict": "TP",
+  "reason": "seconds = expiry - now.sec directly subtracts two time_t values instead of using difftime()",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC05-C",
+  "file": "wpa_supplicant/dpp_supplicant.c",
+  "line": 4054,
+  "verdict": "TP",
+  "reason": "seconds = expiry - now.sec directly subtracts two time_t values instead of using difftime()",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC09-C",
+  "file": "src/ap/drv_callbacks.c",
+  "line": 604,
+  "verdict": "TP",
+  "reason": "\"\\x00\\x50\\xf2\\x04\" contains byte 0xf2 (>=0x80); mechanically true though this is intentional binary OUI data, not text",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC09-C",
+  "file": "wpa_supplicant/sme.c",
+  "line": 2345,
+  "verdict": "TP",
+  "reason": "binary SNAP-header byte string literal contains bytes >=0x80; technically true but by design",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC24-C",
+  "file": "src/crypto/crypto_openssl.c",
+  "line": 4556,
+  "verdict": "TP",
+  "reason": "rewind() is genuinely listed obsolescent by MSC24-C in favor of fseek(); real (if trivial) observation, paired with the ERR07-C finding above",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC32-C",
+  "file": "src/utils/os_internal.c",
+  "line": 150,
+  "verdict": "TP",
+  "reason": "os_internal.c never calls srandom()/srand() anywhere in the file, unlike os_unix.c's os_program_init which explicitly seeds; genuine missing-seed gap in this backend",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC42-C",
+  "file": "src/crypto/crypto_openssl.c",
+  "line": 410,
+  "verdict": "TP",
+  "reason": "genuine use of DES (weak cipher), though retained for legacy WEP/TKIP wire-protocol compatibility, not implementer choice",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC42-C",
+  "file": "src/crypto/crypto_openssl.c",
+  "line": 440,
+  "verdict": "TP",
+  "reason": "genuine use of RC4 (weak cipher), retained for legacy WEP/TKIP wire-protocol compatibility",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC42-C",
+  "file": "src/crypto/crypto_openssl.c",
+  "line": 932,
+  "verdict": "TP",
+  "reason": "genuine use of RC4, retained for legacy CRYPTO_CIPHER_ALG_RC4 wire-protocol compatibility",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC42-C",
+  "file": "src/crypto/crypto_openssl.c",
+  "line": 958,
+  "verdict": "TP",
+  "reason": "genuine use of 3DES, retained for legacy CRYPTO_CIPHER_ALG_3DES wire-protocol compatibility",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC42-C",
+  "file": "src/crypto/crypto_openssl.c",
+  "line": 961,
+  "verdict": "TP",
+  "reason": "genuine use of DES, retained for legacy CRYPTO_CIPHER_ALG_DES wire-protocol compatibility",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "POS01-C",
+  "file": "src/crypto/tls_openssl.c",
+  "line": 1822,
+  "verdict": "TP",
+  "reason": "open() without O_NOFOLLOW/lstat validation on the same env-derived path -- real symlink-attack gap, same debug-only caveat",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "POS01-C",
+  "file": "src/drivers/driver_nl80211.c",
+  "line": 13033,
+  "verdict": "TP",
+  "reason": "open(path, O_WRONLY) on an attacker-influenceable-ish /sys or /proc path with no O_NOFOLLOW flag and no prior lstat() check \u2014 literal rule violation, no earlier guard found.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "POS01-C",
+  "file": "src/utils/wpa_debug.c",
+  "line": 136,
+  "verdict": "TP",
+  "reason": "open() literally lacks O_NOFOLLOW; hardcoded /proc/mounts path limits real risk but rule text applies.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "POS01-C",
+  "file": "src/utils/wpa_debug.c",
+  "line": 185,
+  "verdict": "TP",
+  "reason": "open() lacks O_NOFOLLOW; path derived from kernel /proc/mounts data, low real risk but literal violation.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "POS01-C",
+  "file": "src/utils/wpa_debug.c",
+  "line": 579,
+  "verdict": "TP",
+  "reason": "open() lacks O_NOFOLLOW on admin-configured log path; literal violation, low real risk.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "PRE08-C",
+  "file": "src/ap/ap_list.c",
+  "line": 15,
+  "verdict": "TP",
+  "reason": "ieee802_11_defs.h and ieee802_11_common.h genuinely share 'ieee802_' as first 8 chars",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "PRE08-C",
+  "file": "src/ap/ap_list.c",
+  "line": 16,
+  "verdict": "TP",
+  "reason": "ieee802_11_common.h and ieee802_11.h genuinely share 'ieee802_' as first 8 chars",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "PRE08-C",
+  "file": "src/ap/beacon.c",
+  "line": 17,
+  "verdict": "TP",
+  "reason": "Filenames literally share first-8-char prefix 'ieee802_'; low-value but factually true per established header-family convention.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "PRE08-C",
+  "file": "src/ap/beacon.c",
+  "line": 18,
+  "verdict": "TP",
+  "reason": "Filenames literally share first-8-char prefix 'ieee802_'; low-value but factually true per established header-family convention.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "PRE08-C",
+  "file": "src/ap/beacon.c",
+  "line": 25,
+  "verdict": "TP",
+  "reason": "Filenames literally share first-8-char prefix 'ieee802_'; low-value but factually true per established header-family convention.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "PRE08-C",
+  "file": "src/ap/ctrl_iface_ap.c",
+  "line": 12,
+  "verdict": "TP",
+  "reason": "ieee802_11_defs.h/ieee802_1x.h literally share first 8 chars; low-value TP per ieee802_1x/dbus_new header-family precedent.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "PRE08-C",
+  "file": "src/ap/ctrl_iface_ap.c",
+  "line": 18,
+  "verdict": "TP",
+  "reason": "ieee802_1x.h/ieee802_11.h literally share first 8 chars; same low-value TP convention.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "PRE08-C",
+  "file": "src/ap/drv_callbacks.c",
+  "line": 16,
+  "verdict": "TP",
+  "reason": "Same 'ieee802_' 8-char prefix as ieee802_11_common.h, mechanically true low-value",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "PRE08-C",
+  "file": "src/ap/drv_callbacks.c",
+  "line": 17,
+  "verdict": "TP",
+  "reason": "Same 'ieee802_' 8-char prefix as ieee802_11.h",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "PRE08-C",
+  "file": "src/ap/drv_callbacks.c",
+  "line": 21,
+  "verdict": "TP",
+  "reason": "Same 'hw_featu' 8-char prefix as hw_features.h",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "PRE08-C",
+  "file": "src/ap/drv_callbacks.c",
+  "line": 29,
+  "verdict": "TP",
+  "reason": "Same 'ieee802_' 8-char prefix as ieee802_11_auth.h",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "PRE08-C",
+  "file": "src/ap/drv_callbacks.c",
+  "line": 30,
+  "verdict": "TP",
+  "reason": "Same 'ieee802_' 8-char prefix as ieee802_1x.h",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "PRE08-C",
+  "file": "src/ap/hostapd.c",
+  "line": 17,
+  "verdict": "TP",
+  "reason": "Header names literally share first 8 chars (case-insensitive); low-value/obsolete 8.3-filename concern but technically correct per established convention",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "PRE08-C",
+  "file": "src/ap/hostapd.c",
+  "line": 19,
+  "verdict": "TP",
+  "reason": "Header names literally share first 8 chars (case-insensitive); low-value/obsolete 8.3-filename concern but technically correct per established convention",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "PRE08-C",
+  "file": "src/ap/hostapd.c",
+  "line": 23,
+  "verdict": "TP",
+  "reason": "Header names literally share first 8 chars (case-insensitive); low-value/obsolete 8.3-filename concern but technically correct per established convention",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "PRE08-C",
+  "file": "src/ap/hostapd.c",
+  "line": 32,
+  "verdict": "TP",
+  "reason": "Header names literally share first 8 chars (case-insensitive); low-value/obsolete 8.3-filename concern but technically correct per established convention",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "PRE08-C",
+  "file": "src/ap/hostapd.c",
+  "line": 33,
+  "verdict": "TP",
+  "reason": "Header names literally share first 8 chars (case-insensitive); low-value/obsolete 8.3-filename concern but technically correct per established convention",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "PRE08-C",
+  "file": "src/ap/hostapd.c",
+  "line": 35,
+  "verdict": "TP",
+  "reason": "Header names literally share first 8 chars (case-insensitive); low-value/obsolete 8.3-filename concern but technically correct per established convention",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "PRE08-C",
+  "file": "src/ap/hostapd.c",
+  "line": 41,
+  "verdict": "TP",
+  "reason": "Header names literally share first 8 chars (case-insensitive); low-value/obsolete 8.3-filename concern but technically correct per established convention",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "PRE08-C",
+  "file": "src/ap/ieee802_11_auth.c",
+  "line": 25,
+  "verdict": "TP",
+  "reason": "genuinely shares first 8 chars ('ieee802_') with ieee802_1x.h; low-value 8.3-legacy-filesystem convention hit",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "PRE08-C",
+  "file": "src/ap/ieee802_11_auth.c",
+  "line": 26,
+  "verdict": "TP",
+  "reason": "genuinely shares first 8 chars ('ieee802_') with ieee802_11_auth.h",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "PRE08-C",
+  "file": "src/ap/ieee802_11_he.c",
+  "line": 14,
+  "verdict": "TP",
+  "reason": "ieee802_11_defs.h/ieee802_11_common.h genuinely share 'ieee802_' first 8 chars; low-value literal-rule-text TP",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "PRE08-C",
+  "file": "src/ap/ieee802_11_he.c",
+  "line": 15,
+  "verdict": "TP",
+  "reason": "ieee802_11_common.h/ieee802_11.h genuinely share first 8 chars; low-value TP",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "PRE08-C",
+  "file": "src/ap/ieee802_11_ht.c",
+  "line": 14,
+  "verdict": "TP",
+  "reason": "ieee802_11_defs.h and ieee802_11.h literally share identical 8-char prefix per rule text, though practically harmless on modern filesystems",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "PRE08-C",
+  "file": "src/ap/ieee802_11_shared.c",
+  "line": 12,
+  "verdict": "TP",
+  "reason": "ieee802_11_defs.h/ieee802_11.h genuinely share 'ieee802_' first 8 chars; established low-value-TP header convention.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "PRE08-C",
+  "file": "src/ap/ieee802_1x.c",
+  "line": 19,
+  "verdict": "TP",
+  "reason": "PRE08-C header-family first-8-char collision convention: literally true, low-value TP per established disposition.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "PRE08-C",
+  "file": "src/ap/ieee802_1x.c",
+  "line": 24,
+  "verdict": "TP",
+  "reason": "Same PRE08-C header-collision convention (eapol_auth_sm.h vs eapol_auth_sm_i.h).",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "PRE08-C",
+  "file": "src/ap/ieee802_1x.c",
+  "line": 30,
+  "verdict": "TP",
+  "reason": "Same PRE08-C header-collision convention (wpa_auth.h vs wpa_auth_kay.h).",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "PRE08-C",
+  "file": "src/ap/ieee802_1x.c",
+  "line": 38,
+  "verdict": "TP",
+  "reason": "Same PRE08-C header-collision convention (ieee802_11.h vs ieee802_1x.h).",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "PRE08-C",
+  "file": "src/ap/sta_info.c",
+  "line": 13,
+  "verdict": "TP",
+  "reason": "ieee802_11_defs.h/ieee802_1x.h/ieee802_11.h/ieee802_11_auth.h genuinely share first 8 chars 'ieee802_'; real but low-value 8.3-legacy-filesystem TP per established convention",
+  "set": "RISKY_TP"
+ }
+]

@@ -1,0 +1,1029 @@
+{
+ "src/wps/wps_attr_build.c": [
+  {
+   "column": 12,
+   "file": "src/wps/wps_attr_build.c",
+   "line": 39,
+   "message": "Memory allocated with 'wpabuf_dup' for variable 'pubkey@39:12' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(pubkey@39:12)' before the variable goes out of scope"
+  },
+  {
+   "column": 4,
+   "file": "src/wps/wps_attr_build.c",
+   "line": 54,
+   "message": "Memory leak: 'pubkey' allocated with 'wpabuf_dup' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'pubkey' before this return statement"
+  },
+  {
+   "column": 4,
+   "file": "src/wps/wps_attr_build.c",
+   "line": 59,
+   "message": "Memory leak: 'pubkey' allocated with 'wpabuf_dup' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'pubkey' before this return statement"
+  },
+  {
+   "column": 6,
+   "file": "src/wps/wps_attr_build.c",
+   "line": 72,
+   "message": "Use-after-free: accessing freed pointer 'wps->dh_ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_attr_build.c",
+   "line": 127,
+   "message": "Function 'wps_build_uuid_e' does not validate pointer parameter 'uuid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'uuid' at the start of the function, e.g., 'if (!uuid) { return error_code; }'"
+  },
+  {
+   "column": 45,
+   "file": "src/wps/wps_attr_build.c",
+   "line": 159,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_attr_build.c",
+   "line": 176,
+   "message": "Out-of-bounds array access at index 1: Buffer 'addr' with size 1 (allocated at line 428)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_attr_build.c",
+   "line": 208,
+   "message": "Function 'wps_build_wfa_ext' does not validate integer parameter 'auth_macs_count' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'auth_macs_count' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_attr_build.c",
+   "line": 286,
+   "message": "Function 'wps_build_enrollee_nonce' does not validate pointer parameter 'wps' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wps' at the start of the function, e.g., 'if (!wps) { return error_code; }'"
+  },
+  {
+   "column": 46,
+   "file": "src/wps/wps_attr_build.c",
+   "line": 286,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_attr_build.c",
+   "line": 296,
+   "message": "Function 'wps_build_registrar_nonce' does not validate pointer parameter 'wps' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wps' at the start of the function, e.g., 'if (!wps) { return error_code; }'"
+  },
+  {
+   "column": 47,
+   "file": "src/wps/wps_attr_build.c",
+   "line": 296,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 47,
+   "file": "src/wps/wps_attr_build.c",
+   "line": 306,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 47,
+   "file": "src/wps/wps_attr_build.c",
+   "line": 333,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 47,
+   "file": "src/wps/wps_attr_build.c",
+   "line": 357,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 43,
+   "file": "src/wps/wps_attr_build.c",
+   "line": 367,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 45,
+   "file": "src/wps/wps_attr_build.c",
+   "line": 377,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 6,
+   "file": "src/wps/wps_attr_build.c",
+   "line": 382,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 45,
+   "file": "src/wps/wps_attr_build.c",
+   "line": 393,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_attr_build.c",
+   "line": 423,
+   "message": "Function 'wps_build_oob_dev_pw' does not validate integer parameter 'dev_pw_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'dev_pw_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 12,
+   "file": "src/wps/wps_attr_build.c",
+   "line": 428,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_attr_build.c",
+   "line": 491,
+   "message": "Function returns pointer to local variable 'ie' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_attr_build.c",
+   "line": 495,
+   "message": "Function 'wps_build_mac_addr' does not validate pointer parameter 'addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'addr' at the start of the function, e.g., 'if (!addr) { return error_code; }'"
+  }
+ ],
+ "wpa_supplicant/hs20_supplicant.c": [
+  {
+   "column": 1,
+   "file": "wpa_supplicant/hs20_supplicant.c",
+   "line": 14,
+   "message": "Header file 'ieee802_11_common.h' has the same first 8 characters (case-insensitive) as 'ieee802_11_defs.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_common.h' -> unique name)"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/hs20_supplicant.c",
+   "line": 51,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/hs20_supplicant.c",
+   "line": 69,
+   "message": "Function 'wpas_hs20_add_indication' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/hs20_supplicant.c",
+   "line": 74,
+   "message": "Variable 'HS20_VERSION' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/hs20_supplicant.c",
+   "line": 84,
+   "message": "Bitwise operator '<<' used on signed operand 'release' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'release' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/hs20_supplicant.c",
+   "line": 84,
+   "message": "Variable 'release' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/hs20_supplicant.c",
+   "line": 93,
+   "message": "Function 'wpas_hs20_add_roam_cons_sel' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  },
+  {
+   "column": 43,
+   "file": "wpa_supplicant/hs20_supplicant.c",
+   "line": 124,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 67,
+   "file": "wpa_supplicant/hs20_supplicant.c",
+   "line": 124,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/hs20_supplicant.c",
+   "line": 153,
+   "message": "Function 'hs20_get_pps_mo_id' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 46,
+   "file": "wpa_supplicant/hs20_supplicant.c",
+   "line": 153,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 70,
+   "file": "wpa_supplicant/hs20_supplicant.c",
+   "line": 153,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/hs20_supplicant.c",
+   "line": 157,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/hs20_supplicant.c",
+   "line": 180,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/hs20_supplicant.c",
+   "line": 217,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/hs20_supplicant.c",
+   "line": 221,
+   "message": "Function 'hs20_anqp_send_req' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/hs20_supplicant.c",
+   "line": 221,
+   "message": "Function 'hs20_anqp_send_req' does not validate pointer parameter 'payload' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'payload' at the start of the function, e.g., 'if (!payload) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/hs20_supplicant.c",
+   "line": 262,
+   "message": "Function 'hs20_parse_rx_hs20_anqp_resp' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/hs20_supplicant.c",
+   "line": 262,
+   "message": "Function 'hs20_parse_rx_hs20_anqp_resp' does not validate pointer parameter 'sa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sa' at the start of the function, e.g., 'if (!sa) { return error_code; }'"
+  },
+  {
+   "column": 22,
+   "file": "wpa_supplicant/hs20_supplicant.c",
+   "line": 263,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/hs20_supplicant.c",
+   "line": 310,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/hs20_supplicant.c",
+   "line": 346,
+   "message": "Function 'hs20_rx_deauth_imminent_notice' does not validate pointer parameter 'url' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'url' at the start of the function, e.g., 'if (!url) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/hs20_supplicant.c",
+   "line": 389,
+   "message": "Function 'hs20_rx_t_c_acceptance' does not validate pointer parameter 'url' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'url' at the start of the function, e.g., 'if (!url) { return error_code; }'"
+  }
+ ],
+ "wpa_supplicant/nan_supplicant.h": [
+  {
+   "column": 1,
+   "file": "wpa_supplicant/nan_supplicant.h",
+   "line": 19,
+   "message": "Function has pointer parameter without size argument: 'int wpas_nan_set(struct wpa_supplicant *wpa_s, char *cmd);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'char *cmd' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 55,
+   "file": "wpa_supplicant/nan_supplicant.h",
+   "line": 30,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 58,
+   "file": "wpa_supplicant/nan_supplicant.h",
+   "line": 35,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 56,
+   "file": "wpa_supplicant/nan_supplicant.h",
+   "line": 38,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 54,
+   "file": "wpa_supplicant/nan_supplicant.h",
+   "line": 43,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 67,
+   "file": "wpa_supplicant/nan_supplicant.h",
+   "line": 43,
+   "message": "Pointer parameter 'cmd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *cmd'"
+  },
+  {
+   "column": 62,
+   "file": "wpa_supplicant/nan_supplicant.h",
+   "line": 48,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 55,
+   "file": "wpa_supplicant/nan_supplicant.h",
+   "line": 53,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 57,
+   "file": "wpa_supplicant/nan_supplicant.h",
+   "line": 58,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 64,
+   "file": "wpa_supplicant/nan_supplicant.h",
+   "line": 61,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 59,
+   "file": "wpa_supplicant/nan_supplicant.h",
+   "line": 66,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 58,
+   "file": "wpa_supplicant/nan_supplicant.h",
+   "line": 104,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 61,
+   "file": "wpa_supplicant/nan_supplicant.h",
+   "line": 109,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 47,
+   "file": "wpa_supplicant/nan_supplicant.h",
+   "line": 113,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 60,
+   "file": "wpa_supplicant/nan_supplicant.h",
+   "line": 118,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 62,
+   "file": "wpa_supplicant/nan_supplicant.h",
+   "line": 144,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 69,
+   "file": "wpa_supplicant/nan_supplicant.h",
+   "line": 150,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 70,
+   "file": "wpa_supplicant/nan_supplicant.h",
+   "line": 154,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 52,
+   "file": "wpa_supplicant/nan_supplicant.h",
+   "line": 158,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 56,
+   "file": "wpa_supplicant/nan_supplicant.h",
+   "line": 164,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 60,
+   "file": "wpa_supplicant/nan_supplicant.h",
+   "line": 171,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 62,
+   "file": "wpa_supplicant/nan_supplicant.h",
+   "line": 178,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 74,
+   "file": "wpa_supplicant/nan_supplicant.h",
+   "line": 184,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  }
+ ],
+ "src/drivers/driver_nl80211_android.c": [
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211_android.c",
+   "line": 30,
+   "message": "Shared variable 'drv_errors' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211_android.c",
+   "line": 32,
+   "message": "Function 'wpa_driver_send_hang_msg' performs compound operation on shared static variable 'drv_errors' without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 69,
+   "file": "src/drivers/driver_nl80211_android.c",
+   "line": 32,
+   "message": "Pointer parameter 'drv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *drv'"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211_android.c",
+   "line": 36,
+   "message": "Value assigned to 'drv_errors' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 45,
+   "file": "src/drivers/driver_nl80211_android.c",
+   "line": 42,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_android.c",
+   "line": 47,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211_android.c",
+   "line": 62,
+   "message": "Structure 'ifr' passed to trust boundary function 'ioctl' may leak padding bytes. Use packed attributes, explicit padding fields, or serialize fields individually.",
+   "rule_id": "DCL39-C",
+   "severity": "Medium",
+   "suggestion": "Use __attribute__((__packed__)) or serialize fields: copy_to_user(buf, &ifr.a, sizeof(ifr.a)); ..."
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211_android.c",
+   "line": 75,
+   "message": "Function 'android_pno_start' does not validate pointer parameter 'bss' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'bss' at the start of the function, e.g., 'if (!bss) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211_android.c",
+   "line": 75,
+   "message": "Function 'android_pno_start' does not validate pointer parameter 'params' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'params' at the start of the function, e.g., 'if (!params) { return error_code; }'"
+  },
+  {
+   "column": 39,
+   "file": "src/drivers/driver_nl80211_android.c",
+   "line": 76,
+   "message": "Pointer parameter 'params' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *params'"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211_android.c",
+   "line": 81,
+   "message": "Value assigned to 'ret' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_android.c",
+   "line": 82,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211_android.c",
+   "line": 94,
+   "message": "Scaled integer arithmetic with pointer: 'bp + WEXT_PNO_SSID_HEADER_SIZE + MAX_SSID_LEN +\n\t\t     WEXT_PNO_NONSSID_SECTIONS_SIZE'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211_android.c",
+   "line": 132,
+   "message": "Structure 'ifr' passed to trust boundary function 'ioctl' may leak padding bytes. Use packed attributes, explicit padding fields, or serialize fields individually.",
+   "rule_id": "DCL39-C",
+   "severity": "Medium",
+   "suggestion": "Use __attribute__((__packed__)) or serialize fields: copy_to_user(buf, &ifr.a, sizeof(ifr.a)); ..."
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211_android.c",
+   "line": 147,
+   "message": "Function 'android_pno_stop' does not validate pointer parameter 'bss' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'bss' at the start of the function, e.g., 'if (!bss) { return error_code; }'"
+  },
+  {
+   "column": 33,
+   "file": "src/drivers/driver_nl80211_android.c",
+   "line": 156,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 33,
+   "file": "src/drivers/driver_nl80211_android.c",
+   "line": 162,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 33,
+   "file": "src/drivers/driver_nl80211_android.c",
+   "line": 162,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 43,
+   "file": "src/drivers/driver_nl80211_android.c",
+   "line": 162,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 32,
+   "file": "src/drivers/driver_nl80211_android.c",
+   "line": 168,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 39,
+   "file": "src/drivers/driver_nl80211_android.c",
+   "line": 174,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211_android.c",
+   "line": 185,
+   "message": "Function 'android_nl_socket_set_nonblocking' does not validate pointer parameter 'handle' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'handle' at the start of the function, e.g., 'if (!handle) { return error_code; }'"
+  }
+ ],
+ "src/drivers/netlink.c": [
+  {
+   "column": 54,
+   "file": "src/drivers/netlink.c",
+   "line": 23,
+   "message": "Pointer parameter 'netlink' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *netlink'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/netlink.c",
+   "line": 30,
+   "message": "Function 'cb' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/netlink.c",
+   "line": 30,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 5,
+   "file": "src/drivers/netlink.c",
+   "line": 31,
+   "message": "Scaled integer arithmetic with pointer: '(u8 *) NLMSG_DATA(h) + NLMSG_ALIGN(sizeof(struct ifinfomsg))'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 61,
+   "file": "src/drivers/netlink.c",
+   "line": 36,
+   "message": "Pointer parameter 'sock_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sock_ctx'"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/netlink.c",
+   "line": 53,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/netlink.c",
+   "line": 53,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 29,
+   "file": "src/drivers/netlink.c",
+   "line": 96,
+   "message": "Dereference of uninitialized pointer 'netlink'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'netlink' before dereferencing"
+  },
+  {
+   "column": 21,
+   "file": "src/drivers/netlink.c",
+   "line": 103,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 21,
+   "file": "src/drivers/netlink.c",
+   "line": 103,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/netlink.c",
+   "line": 111,
+   "message": "Privileged operation 'bind' without subsequent privilege dropping",
+   "rule_id": "POS02-C",
+   "severity": "Medium",
+   "suggestion": "Call setuid/setgid to drop privileges after setup"
+  },
+  {
+   "column": 21,
+   "file": "src/drivers/netlink.c",
+   "line": 114,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 21,
+   "file": "src/drivers/netlink.c",
+   "line": 114,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/netlink.c",
+   "line": 124,
+   "message": "Function returns pointer to local variable 'netlink' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 5,
+   "file": "src/drivers/netlink.c",
+   "line": 130,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/netlink.c",
+   "line": 171,
+   "message": "Function 'netlink_send_oper_ifla' does not validate pointer parameter 'netlink' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'netlink' at the start of the function, e.g., 'if (!netlink) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/netlink.c",
+   "line": 171,
+   "message": "Function 'netlink_send_oper_ifla' performs compound operation on shared static variable 'nl_seq' without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 48,
+   "file": "src/drivers/netlink.c",
+   "line": 171,
+   "message": "Pointer parameter 'netlink' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *netlink'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/netlink.c",
+   "line": 216,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/netlink.c",
+   "line": 220,
+   "message": "Structure 'req' passed to trust boundary function 'send' may leak padding bytes. Use packed attributes, explicit padding fields, or serialize fields individually.",
+   "rule_id": "DCL39-C",
+   "severity": "Medium",
+   "suggestion": "Use __attribute__((__packed__)) or serialize fields: copy_to_user(buf, &req.a, sizeof(req.a)); ..."
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/netlink.c",
+   "line": 224,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/netlink.c",
+   "line": 224,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  }
+ ]
+}

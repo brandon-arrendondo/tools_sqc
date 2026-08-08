@@ -1,0 +1,1035 @@
+{
+ "labels": [
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 31,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ppe_thres_hdr genuinely mixes & and arithmetic (>>,*) on same var; low-severity readability, but real per rule text"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 39,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "EHT_PPE_THRES_NSS_MASK macro-expanded const mixes bitwise/arith in same expr"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 39,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "EHT_PPE_THRES_NSS_SHIFT same expression, same reasoning"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 93,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: hapd always the real hostapd_data from beacon.c/ieee802_11.c callers, never NULL"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 93,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hapd genuinely read-only in this function; plain internal helper, not a dispatch-contract callback -> real if low-value DCL13-C"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 104,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "opmode is enum ieee80211_op_mode; every real caller passes fixed IEEE80211_MODE_AP; array eht_capab[IEEE80211_MODE_NUM] sized to match -- internal invariant, not attacker-controlled index"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 104,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same opmode/eht_capab[] internal-invariant reasoning as ARR00-C sibling finding"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 109,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "opmode internal invariant (fixed enum from all real callers), same as line 104"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 109,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "opmode internal invariant, ARR30-C sibling of ARR00-C at same line"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 118,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class; hapd never NULL from real callers (beacon.c/ieee802_11.c)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 118,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hapd read-only in hostapd_eid_eht_capab; plain internal helper -> real if low-value DCL13-C"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 129,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C confuses local *variable* with local *storage*: 'eid' is the function PARAMETER (caller-owned output buffer), never automatic-storage; established hostap-wide FP class (ieee802_11_ht.c/vht.c precedent)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 133,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same eid-parameter DCL30-C FP class as line 129"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 179,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'pos' is a local alias (u8 *pos = eid;) of the eid PARAMETER, never automatic storage -- same established DCL30-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 183,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP: eid always a valid caller-supplied output buffer, hapd never NULL from real callers"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 183,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C misses that 'eid' IS modified through the *pos++ write-through-pointer idiom (pos=eid, then *pos++=...); established ieee802_11.c IE-builder FP class, factually wrong not modified"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 187,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "seg0's declaration-time '=0' is never read: function returns before use if !eht_oper_info_present, else seg0 is unconditionally overwritten by hostapd_get_oper_centr_freq_seg0_idx() before its first real read -- genuine (low-severity) dead store"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 194,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eid-parameter DCL30-C FP class (return eid at line 194, the not-current-mode guard branch)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 257,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eid-parameter DCL30-C FP class (default: case of chwidth switch)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 273,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "hapd parameter is completely unused in check_valid_eht_mcs_nss's body -- clear-cut DCL13-C opportunity"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 279,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ap_mcs used with both pointer arithmetic/indexing (>>4,&0xFF) mixing bitwise and arithmetic on same var per rule text"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 280,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sta_mcs same shape as ap_mcs"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 353,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "cap=(struct ieee80211_eht_capabilities*)eht_cap casts away const from a genuinely const-qualified parameter (const u8 *eht_cap); harmless since cap only read afterward, but the cast-away-const is real"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 385,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "check_valid_eht_mcs returns bool; '!' on a bool-typed call is an unambiguous true/false test, not an unclear int-convention issue"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 407,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hapd read-only in copy_sta_eht_capab (hostapd_is_eht_enabled(hapd), hapd->iconf->op_class)"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 415,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sizeof(*dest) is the pointee struct's size, the correct/intended idiom for a single-object out-param pointer -- dest was never an array, nothing decayed"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 416,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same sizeof(*dest) correct-idiom reasoning as line 415"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 419,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same sizeof(*dest) correct-idiom reasoning"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 435,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP: hapd never NULL from the 2 real callers (hostapd_eid_eht_ml_beacon/_ml_assoc)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 435,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP: eid always a valid caller output buffer"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 436,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "mld_info read-only throughout hostapd_eid_eht_basic_ml_common"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 455,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'pos' is a local alias of the eid parameter (u8 *pos = eid;), never automatic storage -- established DCL30-C FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 532,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "link_bss is declared, then an early 'continue' (line 536, before any use) skips iterations that haven't set it; every path that reaches a use of link_bss goes through the unconditional assignment at line 539 first -- sqc's CFG misses that the continue precedes any read"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 665,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'pos' returned is the eid-derived local alias, not automatic storage -- established DCL30-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 669,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP: info is NULL-checked ('if (!info) goto out;') before any dereference in this same function; caller-guard also applies"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 670,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "info read-only in hostapd_eid_eht_basic_ml_len"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 694,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "link_bss same continue-before-any-use pattern as line 532 (2nd instance, same file)"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 738,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd_eid_eht_reconf_ml: entire body is either the #ifdef CONFIG_TESTING_OPTIONS branch (every path ends in an explicit 'return pos;'/'return eid;') or the #else branch ('return eid;') -- every reachable path returns; established preprocessor-branch-blind MSC37-C class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 738,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hapd read-only (hapd->iface->interfaces...) in hostapd_eid_eht_reconf_ml, plain internal helper not a dispatch callback"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 811,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "info read-only in hostapd_eid_eht_ml_len (info->links[])"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 857,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP: hapd never NULL from real callers of hostapd_eid_eht_ml_beacon"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 857,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP: eid always a valid caller output buffer"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 868,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP: eid always a valid caller output buffer (hostapd_eid_eht_ml_assoc)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 881,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "hapd parameter of hostapd_eid_eht_ml_beacon_len is completely unused (the body only calls hostapd_eid_eht_ml_len(info,...), never touching hapd)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 881,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "hapd is completely unused in hostapd_eid_eht_ml_beacon_len's body -- stronger than the usual low-value DCL13-C since the param isn't even read"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 889,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP: hapd never NULL for hostapd_ml_auth_resp's real callers"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 889,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hapd read-only (hapd->mld->mld_addr) in hostapd_ml_auth_resp"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 968,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pos-mgmt->u.auth.variable is proven <= (int)len by the 'if (pos - mgmt->u.auth.variable > (int) len) goto truncated;' guard immediately above (line 960); by line 968 the subtraction is guaranteed non-negative -- established 'guarded earlier in same function' INT3x-C FP class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1054,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "auth_transaction/status_code (CONFIG_SAE-only locals) are read only inside the SAE case's nested branches; sqc's dead-assignment detector may be missing later conditional reads via the auth_transaction==WLAN_AUTH_TR_SEQ_SAE_COMMIT/_CONFIRM comparisons -- graded low-confidence TP per literal-CFG default, not a clean established FP shape"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1055,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "status_code shares the same declaration/use shape as auth_transaction; graded TP low-confidence, consistent with sibling finding"
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1063,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "WLAN_AUTH_OPEN/WLAN_AUTH_EPPKE case both 'return pos;' -- no execution ever falls through to the next case; sqc's fallthrough scanner misfires (established MSC17-C false-fallthrough family)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1064,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'pos' returned here is mgmt->u.auth.variable (a parameter-derived pointer into the caller's frame buffer), never automatic storage -- established DCL30-C FP class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1076,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "the if/else-if chain (SAE commit vs confirm) is followed by an unconditional 'return pos;' that fully handles the 'neither' case -- functionally equivalent to a final else, just expressed as trailing code rather than the else keyword"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1081,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same pos-is-mgmt-auth-variable-derived DCL30-C FP class as line 1064"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1103,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP: mgmt always a valid frame pointer from handle_auth's own earlier length-checked call"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1103,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len's only caller (handle_auth) checks 'if (len < IEEE80211_HDRLEN + sizeof(mgmt->u.auth)) return;' before calling hostapd_process_ml_auth, guaranteeing len >= offsetof(mgmt,u.auth.variable) so 'len -= offsetof(...)' cannot underflow -- established interprocedural caller-guard-blindness FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1126,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'struct ieee802_11_elems elems;' is fully populated as an output-parameter by ieee802_11_parse_elems(pos,...,&elems,0) two lines earlier; established interprocedural output-param-not-tracked EXP33-C FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1154,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "other_hapd is declared, an early 'continue' (line 1156) precedes any use, and every path that reaches a read of other_hapd (line 1160) has already gone through the unconditional assignment at line 1159 -- same continue-before-use CFG blind spot as link_bss"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1174,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "hapd parameter is genuinely never referenced anywhere in hostapd_process_ml_assoc_req_addr's body -- unused parameter"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1174,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "hapd is completely unused in hostapd_process_ml_assoc_req_addr"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP: hapd never NULL from ieee802_11.c's real call sites into hostapd_process_ml_assoc_req"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP: elems always a valid struct from the caller's own parsed-elements state"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP: sta always a valid struct from the caller's association-processing state machine"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1232,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "elems read-only in hostapd_process_ml_assoc_req (elems->basic_mle/_len)"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1332,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "pos+=2 at line 1332 (inside the EXT_MLD_CAP branch) is never read afterward -- pos is unconditionally reassigned to 'end' at line 1354 before any further use, making the 1332 update a genuine dead store"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1342,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR macro args expand to pure array-indexing reads with no side effects; established 'EXP30-C on side-effect-free macro-expanded logging args' FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1358,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sub_elem_end is declared, then every path that could reach a read of it (line 1405) has already gone through its unconditional assignment at line 1402; the two 'continue' branches (1389,1397) that skip the assignment also never read sub_elem_end -- 3rd instance in this file of the continue-before-use EXP33-C blind spot"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1444,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info_len is declared 'size_t sta_info_len' (line 1356) -- a plain integer length counter, never a pointer of any kind; established 'ARR37-C compound-assignment-on-non-array-pointer misfires on plain size_t byte-counters' FP class (16-40_b3/b13 precedent)"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1473,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "the 'pos += 2 + sub_elem_len;' assignments at the two skip-branches (1388,1396) are each immediately followed by 'continue;' with no intervening read in that iteration -- genuine dead store on that particular branch"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1515,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "req_list = *req_list_ptr is assigned immediately after 'if (!(*req_list_ptr)) return;' -- req_list is provably non-NULL by the check on the same underlying value one statement earlier; correlated-guard EXP34-C FP"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1521,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM30-C/MEM31-C free-state bleeds across two sequential, independent dl_list_for_each_safe loops (over add_req then del_req) in the same function that reuse the same loop-variable name 'info'/'tmp'; the macro's own initializer clause reassigns 'info' to a fresh, live list node at the start of each loop -- established dl_list_for_each_safe cross-loop FP class (ieee802_1x_kay.c precedent, categorical_patterns.md)"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1523,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same dl_list_for_each_safe cross-loop reused-loop-variable FP class as line 1521"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1523,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same dl_list_for_each_safe cross-loop reused-loop-variable FP class"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1523,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same dl_list_for_each_safe cross-loop reused-loop-variable FP class"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1524,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same dl_list_for_each_safe cross-loop reused-loop-variable FP class -- each loop only frees its own, not-yet-freed nodes"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1524,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same dl_list_for_each_safe cross-loop reused-loop-variable FP class, MEM31-C sibling of the MEM30-C finding at the same line"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1532,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP: hapd never NULL from the driver-event callback that invokes hostapd_link_reconf_resp_tx_status"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1587,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "lhapd=NULL at line 1587 is unconditionally overwritten by hostapd_mld_get_link_bss() two lines later (1589) before any read -- genuine dead store"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1771,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'_link' (line 1771) is a block-scope local declared inside a for_each_mld_link loop body, not a file-scope identifier at all; established 'block-scope local misclassified as file-scope' DCL37-C FP class"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1798,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'pos' at this point is the plain u8 *pos function parameter of hostapd_reject_all_reconf_req (never const-qualified); sqc's claim that pos is const-qualified is factually wrong -- neither side of 'buf = pos' is const, established 'phantom cast-away-const' EXP40-C FP class"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1800,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "req_list is hostapd_reject_all_reconf_req's own parameter, always passed non-NULL by its sole caller (hostapd_send_link_reconf_resp, itself only reached after a successful non-NULL req_list allocation) -- internal invariant never null"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1802,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "lhapd=NULL at line 1802 is only ever read inside the 'if (info->status==SUCCESS)' block where it's unconditionally reassigned first (1810); on the other path it's assigned but never read at all -- genuine dead store"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1846,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "assoc_sta read-only in hostapd_send_link_reconf_resp (assoc_sta->wpa_sm/->addr)"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1859,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "req_list-> fields are used with mixed bitwise (&) masking and arithmetic size/length computation in the surrounding block; low-value but real per literal rule text"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1859,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "req_list is hostapd_send_link_reconf_resp's own parameter, an internal invariant never NULL by the time this function is reached (only called after successful parse+allocation)"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1895,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "lhapd=NULL at line 1895 (loop-local, declared fresh each iteration) is unconditionally overwritten by hostapd_mld_get_link_bss() at line 1902 before any read on every path that reaches a read (the earlier 'continue' at 1898 skips to next iteration without reading it) -- genuine dead store"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1970,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'pos' here is the local u8 *pos variable declared at line 1849 (never const), assigned into kde_pos -- neither side const, established phantom cast-away-const EXP40-C FP class (2nd instance, same file)"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 1974,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "kde_pos was just initialized 'kde_pos = pos;' one line above (1970) -- kde_pos and pos are the *same* buffer (buf, allocated via os_zalloc at line 1920), not different arrays; established pos/end-paired-buffer-from-same-allocation ARR36-C FP class"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2012,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'pos' here is the same local u8 *pos, never const, assigned into mle_pos -- neither side const, 3rd instance of the phantom cast-away-const EXP40-C FP class in this file"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2023,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mle_pos was just initialized 'mle_pos = pos;' one line above (2012) -- both derive from the same buf allocation; same same-buffer ARR36-C FP class"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2026,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mle_pos and pos still the same buf-derived buffer at the debug wpa_printf a few lines later; same ARR36-C FP class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2031,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "pos declared 'const u8 *pos = NULL;' at 2598, unconditionally reassigned at line 2617 before its first read at 2648 -- the NULL init is a genuine (trivial, harmless) dead store"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2058,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd_ml_check_sta_entry_by_link_addr_iter matches the fixed ap_for_each_sta callback typedef 'int (*cb)(struct hostapd_data *hapd, struct sta_info *sta, void *ctx)' (sta_info.h:351) -- dispatch-contract-pinned signature, extends the established eloop-callback DCL13-C FP class to ap_for_each_sta iterators"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2059,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same ap_for_each_sta dispatch-contract FP reasoning for the 'sta' parameter"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2072,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR pure macro args, same side-effect-free logging-macro EXP30-C FP class as line 1342"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2100,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "info=NULL at declaration (line 2100) is unconditionally overwritten by os_zalloc() at line 2289 before any real use of the pointer's value; trivial dead store"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2114,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'sizeof(*elem)' at line 2114 is a compile-time sizeof operand, not an actual dereference of the not-yet-initialized 'elem' pointer -- established sizeof(*ptr)-is-not-a-dereference EXP33-C FP class"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2136,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sta_control mixed with bitwise (&) masks (EHT_PER_STA_RECONF_CTRL_*) and arithmetic-adjacent shift macros in the surrounding block; low-value but real per rule text"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2162,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info_len is 'size_t sta_info_len' (line 2105), a plain length counter, never a pointer -- established ARR37-C plain-size_t-counter FP class (2nd instance, same file)"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2167,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same plain size_t sta_info_len counter, 3rd instance"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2172,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same plain size_t sta_info_len counter, 4th instance"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2198,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same plain size_t sta_info_len counter, 5th instance"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2201,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'sta_info' is assigned from per_sta_prof->variable (an offset into the same 'buf'-derived elem/per_sta_prof overlay) at line 2200, not from NULL; sqc's provenance tracker appears to have latched onto sta_info's declaration-time initializer '= NULL' (line 2108) rather than its real assignment -- 'end' (buf+len) and 'sta_info' are the same underlying buffer"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2201,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR36-C sibling of the ARR00-C finding at the same line, same same-buffer-overlay reasoning"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2237,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'!lsta ||' at the start of the same if-condition (line 2236) short-circuits before 'lsta->mld_info.links[link_id].valid' is ever evaluated when lsta is NULL -- classic same-condition short-circuit-guard EXP34-C FP"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2263,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same buf/per_sta_prof->variable/NULL-declaration-provenance-confusion ARR00-C FP class as line 2201 (2nd instance)"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2263,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR36-C sibling, same reasoning as line 2263's ARR00-C finding"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2331,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "mlbuf is genuinely read at 'wpabuf_free(mlbuf)' on the 'fail:' path a few lines later -- not truly dead; likely a dl_list/goto-boundary blind spot in sqc's dead-store detector"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2404,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "req_list is hostapd_validate_link_reconf_req's own parameter, an internal invariant never NULL for this internal-only helper (only called after a successful parse+allocation from hostapd_handle_link_reconf_req)"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2465,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same req_list internal-invariant-never-null reasoning as line 2404"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2481,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "lhapd=NULL at line 2481 is only read after being unconditionally reassigned inside the 'if (total_kde_len+link_kde_len > MAX)' branch (2520); on the else branch it's never read at all -- genuine dead store"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2492,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd_ml_process_reconf_link's parameters are not restrict-qualified at all, and the actual call-site args (info->sta_prof+2, info->peer_addr) are two distinct, non-overlapping fields of the same struct -- no restrict qualifier exists to violate and no real aliasing"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2528,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "total_kde_len's update at line 2528 is read on the very next dl_list_for_each loop iteration's guard check (line 2511, 'if (total_kde_len + link_kde_len > MAX)') -- established dl_list_for_each loop-carried-variable MSC13-C blind-spot FP class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2598,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "pos's declaration-time '= NULL;' (line 2598) is unconditionally overwritten at line 2617 before its first read at line 2648 -- trivial genuine dead store"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2648,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos-buf is bounded: len is checked >= IEEE80211_HDRLEN+3+3 at line 2609 before this call, and pos = mgmt->u.action.u.link_reconf_req.variable is a fixed small positive offset into the same buf (mgmt overlays buf) that matches that checked minimum -- established 'wraps proven safe by earlier same-function guard' INT30-C FP class"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2648,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mgmt is (const struct ieee80211_mgmt *) buf (line 2596) -- mgmt->u.action.u.link_reconf_req.variable is literally an offset into 'buf' itself via a cast overlay, not a different array; established same-buffer-cast-overlay ARR36-C FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2655,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'struct ieee802_11_elems elems;' is fully populated as an output-parameter by ieee802_11_parse_elems(pos,...,&elems,1) at line 2648, whose ParseFailed branch already 'goto out;'s before line 2655 is reached -- established output-param-not-tracked EXP33-C FP class (2nd instance, same file)"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2675,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_auth_uses_ocv()/sm->ocv_enabled genuinely ranges over {0,1,2} (0=disabled,1=mandatory,2=workaround-tolerant per wpa_auth_ie.c:1121-1140, and wpa_auth.c:4068 explicitly checks '==2'); testing '==1' here silently excludes the ocv_enabled==2 case, unlike every other call site in the codebase which uses a plain truthy check -- a real, if narrow, logic inconsistency, not the usual exact-0/1-contract FP"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2695,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ocv_verify_tx_params returns 'enum oci_verify_result' with OCI_SUCCESS==0 as the sole success value, used the same way elsewhere in the codebase ('res != OCI_SUCCESS'); the implicit '!' test is an unambiguous 0-is-success convention, not a real clarity gap"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2707,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "hostapd_validate_link_reconf_req returns 'static bool' -- an unambiguous true/false type, not an int-convention ambiguity"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2727,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP: mgmt always a valid frame pointer from the driver's own RX dispatch"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2755,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd_eid_eht_ml_tid_to_link_map_len: every reachable path returns explicitly (the early 'if (!hapd->conf->mld_ap) return 0;' plus the #ifdef/#else pair that both return) -- established preprocessor-branch-blind MSC37-C FP class (2nd instance, same file)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2755,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "hapd read-only (hapd->conf->mld_ap) in hostapd_eid_eht_ml_tid_to_link_map_len, plain internal helper"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2773,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP: eid always a valid caller output buffer"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2773,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hostapd_eid_eht_ml_tid_to_link_map/_len genuinely share their first 31 significant characters ('hostapd_eid_eht_ml_tid_to_link_'); technically true per rule text though not practically actionable on any modern toolchain (established 31-char-judgment-call convention)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2783,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'eid' returned at line 2783 is the function's own parameter (early-return guard), never automatic storage -- established eid-parameter DCL30-C FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2810,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'pos' returned at line 2810 is a local alias of the eid parameter (u8 *pos = eid;), never automatic storage -- established eid-parameter DCL30-C FP class, final instance in this file"
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/ap/ieee802_11_eht.c",
+   "line": 2200,
+   "rule": "ARR30-C",
+   "desc": "hostapd_parse_link_reconf_req_sta_profile: 'sta_info = per_sta_prof->variable;' (== buf+4) then immediately 'if (*sta_info > end - sta_info)' dereferences *sta_info WITHOUT first checking that at least 1 byte remains at that offset. The only earlier length check (line 2114, 'len < sizeof(*elem) + 2UL') only guarantees len >= 4, i.e. end == buf+4 == sta_info is a valid (boundary) case -- when an attacker sends a Per-STA Profile subelement whose declared length (sub_elem_len+2, wire-controlled from the Reconfiguration MLE) is exactly 4, sta_info == end and '*sta_info' reads 1 byte past the subelement's validated length before the length is itself checked. Likely non-crashing in practice (mlbuf's real allocation is usually larger than one subelement), but a genuine out-of-bounds-relative-to-validated-length read on attacker-controlled wire data.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 38,
+  "fp": 89,
+  "fn": 1
+ }
+}

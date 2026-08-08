@@ -1,0 +1,1149 @@
+{
+ "labels": [
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7215,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param genuinely never written in this function body (verified by read); real but low-value const opportunity, not a dispatch-contract callback"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7222,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param genuinely never written in this function body (verified by read); real but low-value const opportunity, not a dispatch-contract callback"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7253,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'tmp' is a local pointer variable pointing to heap/dl_list-linked storage, not an automatic-storage object; matches confirmed DCL30-C local-pointer-vs-storage-confusion FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7313,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'tmp' is a local pointer variable pointing to heap/dl_list-linked storage, not an automatic-storage object; matches confirmed DCL30-C local-pointer-vs-storage-confusion FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7322,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_timeout_handler dispatch-contract callback signature, matches confirmed eloop const-param FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7392,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'tmp' is initialized by dl_list_for_each_safe's own for-loop init clause (list.h macro); confirmed dl_list macro lvalue-init FP class"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7392,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'radio = wpa_s->radio' is dereferenced via &radio->work with no NULL guard in radio_remove_works (unlike sibling radio_remove_interface which does check); plausible if called before radio assigned"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7412,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API pattern (established): param is always a valid struct pointer from a small internal call-graph, never externally nullable; matches confirmed API00-C internal-invariant FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7412,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param genuinely never written in this function body (verified by read); real but low-value const opportunity, not a dispatch-contract callback"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7428,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param genuinely never written in this function body (verified by read); real but low-value const opportunity, not a dispatch-contract callback"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7435,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'tmp' is initialized by dl_list_for_each_safe's own for-loop init clause; confirmed dl_list macro lvalue-init FP class"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7441,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'cwork = work->ctx' is dereferenced but work is a connect-type radio work whose ctx is always a struct wpa_connect_work* by construction (radio_work_is_connect guard); internal-invariant, not externally nullable"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7478,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param genuinely never written in this function body (verified by read); real but low-value const opportunity, not a dispatch-contract callback"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7519,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API pattern (established): param is always a valid struct pointer from a small internal call-graph, never externally nullable; matches confirmed API00-C internal-invariant FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7519,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API pattern (established): param is always a valid struct pointer from a small internal call-graph, never externally nullable; matches confirmed API00-C internal-invariant FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7528,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*work) never evaluates its operand; classic confirmed sizeof-is-compile-time-only FP class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7557,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Independent if/else-if guard-clause chain where absence of a matching branch is an intentional fallthrough/no-op, not a missing case; matches confirmed MSC01-C stylistic-pedantry FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7593,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API pattern (established): param is always a valid struct pointer from a small internal call-graph, never externally nullable; matches confirmed API00-C internal-invariant FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7594,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param genuinely never written in this function body (verified by read); real but low-value const opportunity, not a dispatch-contract callback"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7601,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'work' is a local pointer variable pointing to heap/dl_list-linked storage, not an automatic-storage object; matches confirmed DCL30-C local-pointer-vs-storage-confusion FP class"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7648,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(wpa_s->ifname)/sizeof(wpa_s->bridge_ifname) -- member arrays retain full array type through -> access; nothing decayed. Matches confirmed ARR01-C member-array FP class"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7655,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "radio_add_interface() explicitly guards every use of 'rn' with 'while (rn && ...)' / 'if (rn)'; claim that callee 'does not check for NULL' is factually wrong"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7665,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "offchannel_send_action tx_cb dispatch-contract callback (offchannel.h), non-const wpa_s fixed by typedef, extends eloop/vtable FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7691,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head(buf)/wpabuf_len(buf) are pure read-only accessors with no side effects to unsequence; matches confirmed EXP30-C pure-accessor-args FP class"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7789,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(wpa_s->ifname)/sizeof(wpa_s->bridge_ifname) -- member arrays retain full array type through -> access; nothing decayed. Matches confirmed ARR01-C member-array FP class"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7794,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(wpa_s->ifname)/sizeof(wpa_s->bridge_ifname) -- member arrays retain full array type through -> access; nothing decayed. Matches confirmed ARR01-C member-array FP class"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7801,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(wpa_s->ifname)/sizeof(wpa_s->bridge_ifname) -- member arrays retain full array type through -> access; nothing decayed. Matches confirmed ARR01-C member-array FP class"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7807,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(wpa_s->ifname)/sizeof(wpa_s->bridge_ifname) -- member arrays retain full array type through -> access; nothing decayed. Matches confirmed ARR01-C member-array FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7980,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'cfg' has all 3 fields (group_id/priority/llt) explicitly written before fst_attach() use; not a read-of-uninitialized"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8125,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Genuine call-graph cycle (wpa_supplicant_deinit_iface -> wpa_supplicant_remove_iface -> wpa_supplicant_deinit_iface) though runtime-bounded by finite child-interface tree, not infinite"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8215,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Only os_free(wpa_s) call in this function; recursion in wpa_supplicant_deinit_iface always operates on distinct child wpa_s pointers, never re-frees the same object -- looks like sqc conflating recursive-call frames"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8227,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param genuinely never written in this function body (verified by read); real but low-value const opportunity, not a dispatch-contract callback"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8237,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*iface) never evaluates its operand; classic confirmed sizeof-is-compile-time-only FP class"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8240,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "struct wpa_interface has no flexible array member at all (checked wpa_supplicant_i.h); rule misapplied to a plain whole-struct assignment"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8246,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'iface' is a local pointer variable pointing to heap/dl_list-linked storage, not an automatic-storage object; matches confirmed DCL30-C local-pointer-vs-storage-confusion FP class"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8267,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_supplicant core is single-threaded eloop-based (no pthread_create anywhere); matches confirmed CON33-C/CON34-C no-pthread strerror FP class"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8267,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_supplicant core is single-threaded eloop-based (no pthread_create anywhere); matches confirmed CON33-C/CON34-C no-pthread strerror FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8302,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'parent' is an optional caller-supplied pointer explicitly allowed to be NULL per the function's own doc comment ('%NULL to assign new interface as parent'); not a validation gap"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8302,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Genuine call-graph cycle via wpas_p2p_add_p2pdev_interface, runtime-bounded by design (single P2P device interface), real structural recursion"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8303,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param genuinely never written in this function body (verified by read); real but low-value const opportunity, not a dispatch-contract callback"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8370,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'wpa_s' is a local pointer variable pointing to heap/dl_list-linked storage, not an automatic-storage object; matches confirmed DCL30-C local-pointer-vs-storage-confusion FP class"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8385,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Genuine long call-graph cycle through the disconnect/event chain back to wpa_supplicant_remove_iface; real structural recursion, runtime-bounded"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8443,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param genuinely never written in this function body (verified by read); real but low-value const opportunity, not a dispatch-contract callback"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8456,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'eapol_method' is a local pointer variable pointing to heap/dl_list-linked storage, not an automatic-storage object; matches confirmed DCL30-C local-pointer-vs-storage-confusion FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8466,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param genuinely never written in this function body (verified by read); real but low-value const opportunity, not a dispatch-contract callback"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8473,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'wpa_s' is a local pointer variable pointing to heap/dl_list-linked storage, not an automatic-storage object; matches confirmed DCL30-C local-pointer-vs-storage-confusion FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8480,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_msg_get_ifname_func dispatch-contract callback signature, extends eloop/vtable FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8495,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_timeout_handler dispatch-contract callback (wpas_periodic), matches confirmed eloop const-param FP class"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8531,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain 'if (ptr == NULL)' ad-hoc guard IS present; matches confirmed MEM10-C stylistic-pedantry FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8569,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'global' is assigned from os_zalloc()'s own return a few lines above in this same init routine (verified in wpa_supplicant_init); rule lookahead/scope issue"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8700,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Every failure branch calls wpa_supplicant_deinit(global) before returning, which os_free()s both match_ifaces and drv_priv (verified in deinit body); not a real leak"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8707,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Failure branch calls wpa_supplicant_deinit(global) before returning, which frees both cited fields; not a real leak"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8714,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'global' is a local pointer variable pointing to heap/dl_list-linked storage, not an automatic-storage object; matches confirmed DCL30-C local-pointer-vs-storage-confusion FP class"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8714,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "This is the successful 'return global;' path -- ownership transfer to caller, not a leak"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8768,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain 'if (ptr == NULL)' ad-hoc guard IS present; matches confirmed MEM10-C stylistic-pedantry FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8831,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API pattern (established): param is always a valid struct pointer from a small internal call-graph, never externally nullable; matches confirmed API00-C internal-invariant FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8849,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API pattern (established): param is always a valid struct pointer from a small internal call-graph, never externally nullable; matches confirmed API00-C internal-invariant FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8911,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API pattern: 'bssid' always a valid MAC-address pointer from internal event/sme callers; matches confirmed API00-C internal-invariant FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8911,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'link_bssids' IS checked before use ('while (link_bssids && *link_bssids)') a few lines later in this same function; claim it is unvalidated is factually wrong"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8911,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Genuine call-graph cycle through wpa_supplicant_fast_associate -> ... -> wpas_connection_failed; real structural recursion"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8942,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "link_bssids is a fixed-size NULL-terminated array (sme.c/events.c: const u8 *link_bssids[MAX_NUM_MLD_LINKS+1], zeroed then filled), safely bounded by the sentinel; matches 'rule doesn't see bounded protocol array' family"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8959,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_supplicant_fast_associate's return contract is not locally provably restricted to {0,1} the way the established OpenSSL-1/0-contract class requires; literal ==1 test is fragile style, plausible low-severity TP"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8967,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "\"CONN_FAILED\" is a ctrl_iface status/reason-code string, not password/key/token material; matches confirmed MSC41-C security-substring-pattern-match FP class"
+  },
+  {
+   "rule": "INT10-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 8999,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_random() returns unsigned long and ssid->auth_failures is unsigned int -- both operands unsigned, no signed-modulo issue; rule type-detection wrong"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9072,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param genuinely never written in this function body (verified by read); real but low-value const opportunity, not a dispatch-contract callback"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9079,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param genuinely never written in this function body (verified by read); real but low-value const opportunity, not a dispatch-contract callback"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9085,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param genuinely never written in this function body (verified by read); real but low-value const opportunity, not a dispatch-contract callback"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9109,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal ctrl_iface handler; wpa_s/ssid/field/value are all populated by the ctrl_iface dispatcher from an already-validated pending request, matches confirmed API00-C internal-invariant FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9109,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal ctrl_iface handler; wpa_s/ssid/field/value are all populated by the ctrl_iface dispatcher from an already-validated pending request, matches confirmed API00-C internal-invariant FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9109,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal ctrl_iface handler; wpa_s/ssid/field/value are all populated by the ctrl_iface dispatcher from an already-validated pending request, matches confirmed API00-C internal-invariant FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9109,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal ctrl_iface handler; wpa_s/ssid/field/value are all populated by the ctrl_iface dispatcher from an already-validated pending request, matches confirmed API00-C internal-invariant FP class"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9109,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Every switch case break;s to an explicit 'return 0;' at the end of the #ifdef branch, and the #else branch returns -1; all paths return. Matches confirmed MSC37-C preprocessor-branch-blind class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9188,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set()'s 'var' param is declared const char* (config.h); cannot modify the literal. Matches confirmed STR30-C const-param-callee FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9220,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param genuinely never written in this function body (verified by read); real but low-value const opportunity, not a dispatch-contract callback"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9220,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param genuinely never written in this function body (verified by read); real but low-value const opportunity, not a dispatch-contract callback"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9230,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain 'if (ptr == NULL)' ad-hoc guard IS present; matches confirmed MEM10-C stylistic-pedantry FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9287,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API pattern (established): param is always a valid struct pointer from a small internal call-graph, never externally nullable; matches confirmed API00-C internal-invariant FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9287,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param genuinely never written in this function body (verified by read); real but low-value const opportunity, not a dispatch-contract callback"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9287,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param genuinely never written in this function body (verified by read); real but low-value const opportunity, not a dispatch-contract callback"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9329,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param genuinely never written in this function body (verified by read); real but low-value const opportunity, not a dispatch-contract callback"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9330,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param genuinely never written in this function body (verified by read); real but low-value const opportunity, not a dispatch-contract callback"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9338,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API pattern: wpa_s/ie always non-null from the single internal SAE call path; matches confirmed API00-C internal-invariant FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9338,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API pattern: wpa_s/ie always non-null from the single internal SAE call path; matches confirmed API00-C internal-invariant FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9368,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param genuinely never written in this function body (verified by read); real but low-value const opportunity, not a dispatch-contract callback"
+  },
+  {
+   "rule": "INT33-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9424,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Reached only when 'ssid->auth_failures > 1' (line 9422 guard), so (auth_failures*10) is always >= 20, never zero; matches confirmed 'earlier same-function guard' FP family"
+  },
+  {
+   "rule": "INT10-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9424,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_random() returns unsigned long, ssid->auth_failures is unsigned int -- both operands unsigned, no signed-modulo issue"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9445,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain 'if (ptr == NULL)' ad-hoc guard IS present; matches confirmed MEM10-C stylistic-pedantry FP class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9457,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Independent if/else-if guard-clause chain where absence of a matching branch is an intentional fallthrough/no-op, not a missing case; matches confirmed MSC01-C stylistic-pedantry FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9467,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param genuinely never written in this function body (verified by read); real but low-value const opportunity, not a dispatch-contract callback"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9484,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param genuinely never written in this function body (verified by read); real but low-value const opportunity, not a dispatch-contract callback"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9511,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API pattern (established): param is always a valid struct pointer from a small internal call-graph, never externally nullable; matches confirmed API00-C internal-invariant FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9534,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API pattern (established): param is always a valid struct pointer from a small internal call-graph, never externally nullable; matches confirmed API00-C internal-invariant FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9556,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param genuinely never written in this function body (verified by read); real but low-value const opportunity, not a dispatch-contract callback"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9576,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "'len' is an internal array-size parameter from a small set of internal callers, not attacker-controlled wire data; overflow-check pedantry on an internal API"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9590,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'char buf[30]' in wpas_vendor_elem_update has no getenv/putenv anywhere in the function; matches confirmed ENV01-C no-real-envvar FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9621,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'j' is initialized by the for_each_link macro's own for-loop init clause (common.h); extends confirmed macro lvalue-init FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9660,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "'len' is an internal array-size parameter from a small set of internal callers, not attacker-controlled wire data; overflow-check pedantry on an internal API"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9684,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API pattern (established): param is always a valid struct pointer from a small internal call-graph, never externally nullable; matches confirmed API00-C internal-invariant FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9685,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param genuinely never written in this function body (verified by read); real but low-value const opportunity, not a dispatch-contract callback"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9710,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API pattern (established): param is always a valid struct pointer from a small internal call-graph, never externally nullable; matches confirmed API00-C internal-invariant FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9710,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param genuinely never written in this function body (verified by read); real but low-value const opportunity, not a dispatch-contract callback"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9738,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API pattern (established): param is always a valid struct pointer from a small internal call-graph, never externally nullable; matches confirmed API00-C internal-invariant FP class"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9743,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'frame' is bounds-checked (0 <= frame < NUM_VENDOR_ELEM_FRAMES) at the single call site in ctrl_iface.c before wpas_vendor_elem_remove is invoked; internal-API defense-in-depth gap, not a reachable OOB"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9744,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'frame' is bounds-checked (0 <= frame < NUM_VENDOR_ELEM_FRAMES) at the single call site in ctrl_iface.c before wpas_vendor_elem_remove is invoked; internal-API defense-in-depth gap, not a reachable OOB"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9752,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'frame' is bounds-checked (0 <= frame < NUM_VENDOR_ELEM_FRAMES) at the single call site in ctrl_iface.c before wpas_vendor_elem_remove is invoked; internal-API defense-in-depth gap, not a reachable OOB"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9753,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'frame' is bounds-checked (0 <= frame < NUM_VENDOR_ELEM_FRAMES) at the single call site in ctrl_iface.c before wpas_vendor_elem_remove is invoked; internal-API defense-in-depth gap, not a reachable OOB"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9754,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'frame' is bounds-checked (0 <= frame < NUM_VENDOR_ELEM_FRAMES) at the single call site in ctrl_iface.c before wpas_vendor_elem_remove is invoked; internal-API defense-in-depth gap, not a reachable OOB"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9757,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'frame' is bounds-checked (0 <= frame < NUM_VENDOR_ELEM_FRAMES) at the single call site in ctrl_iface.c before wpas_vendor_elem_remove is invoked; internal-API defense-in-depth gap, not a reachable OOB"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9767,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param genuinely never written in this function body (verified by read); real but low-value const opportunity, not a dispatch-contract callback"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9788,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'modes' is used only after num_modes>0, and hostap's invariant throughout is num_modes==0 whenever modes==NULL (unlike sibling get_mode() which does check, this one relies on the same caller-guaranteed invariant); internal-API pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9788,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param genuinely never written in this function body (verified by read); real but low-value const opportunity, not a dispatch-contract callback"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9793,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'num_modes' is a function PARAMETER (u16 num_modes), always initialized by the caller -- not an uninitialized local; matches confirmed ARR00-C parameter-confused-with-local FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9813,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'bss' is a local pointer variable pointing to heap/dl_list-linked storage, not an automatic-storage object; matches confirmed DCL30-C local-pointer-vs-storage-confusion FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9832,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'bssids' is the os_memcpy *destination* being written, not read, at this line; output-param write-blindness FP shape"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9842,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_timeout_handler dispatch-contract callback (wpa_bss_tmp_disallow_timeout), matches confirmed eloop const-param FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9859,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API pattern: wpa_s/bssid always non-null from the single internal call path; matches confirmed API00-C internal-invariant FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9859,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API pattern: wpa_s/bssid always non-null from the single internal call path; matches confirmed API00-C internal-invariant FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9888,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API pattern (established): param is always a valid struct pointer from a small internal call-graph, never externally nullable; matches confirmed API00-C internal-invariant FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9889,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param genuinely never written in this function body (verified by read); real but low-value const opportunity, not a dispatch-contract callback"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9893,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'prev' is initialized by dl_list_for_each_safe's own for-loop init clause; confirmed dl_list macro lvalue-init FP class"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9895,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'bss' is a function parameter already dereferenced multiple times earlier in the same function (bss->last_update etc.) with no prior check; established non-null by design, not a real gap"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9914,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API pattern (established): param is always a valid struct pointer from a small internal call-graph, never externally nullable; matches confirmed API00-C internal-invariant FP class"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9932,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_mac_addr_rand_scan_set() (scan.c) explicitly checks 'if (addr)' before any deref of addr or mask; claim callee lacks a NULL check is factually wrong"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9932,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_mac_addr_rand_scan_set() (scan.c) only dereferences 'mask' inside the same 'if (addr)' guard; factually wrong claim that callee lacks a NULL check"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9938,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_mac_addr_rand_scan_set() (scan.c) explicitly checks 'if (addr)' before any deref of addr or mask; claim callee lacks a NULL check is factually wrong"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9938,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_mac_addr_rand_scan_set() (scan.c) only dereferences 'mask' inside the same 'if (addr)' guard; factually wrong claim that callee lacks a NULL check"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9947,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_mac_addr_rand_scan_set() (scan.c) explicitly checks 'if (addr)' before any deref of addr or mask; claim callee lacks a NULL check is factually wrong"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9947,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_mac_addr_rand_scan_set() (scan.c) only dereferences 'mask' inside the same 'if (addr)' guard; factually wrong claim that callee lacks a NULL check"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9960,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API pattern (established): param is always a valid struct pointer from a small internal call-graph, never externally nullable; matches confirmed API00-C internal-invariant FP class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 9969,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Independent if/else-if guard-clause chain where absence of a matching branch is an intentional fallthrough/no-op, not a missing case; matches confirmed MSC01-C stylistic-pedantry FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 10018,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API pattern (established): param is always a valid struct pointer from a small internal call-graph, never externally nullable; matches confirmed API00-C internal-invariant FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 10060,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'scan_res' is a local pointer variable pointing to heap/dl_list-linked storage, not an automatic-storage object; matches confirmed DCL30-C local-pointer-vs-storage-confusion FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 10064,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param genuinely never written in this function body (verified by read); real but low-value const opportunity, not a dispatch-contract callback"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 10071,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'i' is initialized by the for_each_link macro's own for-loop init clause; extends confirmed macro lvalue-init FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 10080,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "dst/src/bssid are MAC-address pointers always supplied by internal callers; matches confirmed API00-C internal-invariant FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 10080,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "dst/src/bssid are MAC-address pointers always supplied by internal callers; matches confirmed API00-C internal-invariant FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 10080,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "dst/src/bssid are MAC-address pointers always supplied by internal callers; matches confirmed API00-C internal-invariant FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 10101,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param genuinely never written in this function body (verified by read); real but low-value const opportunity, not a dispatch-contract callback"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 10123,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param genuinely never written in this function body (verified by read); real but low-value const opportunity, not a dispatch-contract callback"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 10152,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param genuinely never written in this function body (verified by read); real but low-value const opportunity, not a dispatch-contract callback"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 10178,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Both the #ifdef CONFIG_OWE and #else branches return a value on every path; matches confirmed MSC37-C preprocessor-branch-blind class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 10209,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API pattern (established): param is always a valid struct pointer from a small internal call-graph, never externally nullable; matches confirmed API00-C internal-invariant FP class"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "wpa_supplicant/wpa_supplicant.c#part3of3 (lines ~7150-10228)"
+ ],
+ "summary": {
+  "tp": 38,
+  "fp": 104,
+  "fn": 0
+ }
+}

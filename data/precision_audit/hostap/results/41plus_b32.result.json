@@ -1,0 +1,1211 @@
+{
+ "labels": [
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 59,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ctx) idiom, never dereferences uninitialized ctx (confirmed EXP33-C sizeof FP class)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 62,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx is a local *variable* pointing to os_zalloc heap storage, not automatic storage (confirmed local-var-vs-storage FP)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 71,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "only free call here; HMAC_CTX_cleanup() is a cleanup not a free, conflated as prior free (confirmed cleanup-vs-free FP class)"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 71,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ctx) sizes the pointee struct for free, not a decayed-array bug (confirmed ARR01-C sizeof(*ptr) FP)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 79,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ctx) idiom, same as line 59"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 82,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx is local pointer var to heap storage, same as line 62"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 91,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EVP_MD_CTX_cleanup() conflated with the actual bin_clear_free(), same as line 71"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 91,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ctx) correctly sizes pointee for free, same as line 71"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 97,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "compat shim reimplements real OpenSSL EVP_PKEY_get0_EC_KEY(EVP_PKEY*) signature; must match external API contract like eloop/EAP dispatch-contract FP class"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 126,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "compat shim casts away const only to call a legacy non-const pure-getter ASN1_STRING_data(); no mutation occurs, idiomatic legacy-API workaround (new pattern, not yet 3x confirmed)"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 193,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "static one-time-init flag; hostap core has no pthread usage anywhere (confirmed CON03-C no-pthread-in-core FP class)"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 197,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "static var write is read on the NEXT call via the same static (cross-invocation read); sqc's dataflow is intra-function only"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 213,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "static provider-handle var, no pthread anywhere in core (confirmed CON03-C FP class)"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 214,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "static provider-handle var, no pthread anywhere in core (confirmed CON03-C FP class)"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 217,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function has a real external caller (tls_openssl.c forward-declares and calls it) -- adding static would break the build"
+  },
+  {
+   "rule": "DCL19-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 217,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same as DCL15-C: openssl_load_legacy_provider() is called from tls_openssl.c, not file-local"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 223,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "assignment read on a later call to openssl_unload_legacy_provider() via the shared static var; cross-function static read not tracked"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 233,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NULL-out read on next call to openssl_load_legacy_provider()'s guard check; cross-function static read not tracked"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 263,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NULL-out read on next call to openssl_load_default_provider_if_fips()'s guard check; cross-function static read not tracked"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 271,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "get_group5_prime(): every #if/#elif/#else branch ends in a return (confirmed MSC37-C preprocessor-branch-blind FP class)"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 278,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "RFC3526_PRIME_1536[] size is always retrieved via sizeof() at its only use site (confirmed ARR02-C sizeof-consumer FP class)"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 303,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "RFC3526_ORDER_1536[] same sizeof()-consumer shape as line 278"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 403,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'i' used only as a shift-count/index, never as the shifted operand itself (confirmed INT13/14-C shift-count-loop-var FP class)"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 403,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'i' is the shift-count operand of '>>', not the value being shifted (confirmed INT13-C shift-count FP class)"
+  },
+  {
+   "rule": "FIO50-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 404,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'tmp'/'next' are plain u8 locals, not FILE streams -- no I/O anywhere nearby (confirmed FIO50-C non-stream misfire)"
+  },
+  {
+   "rule": "FIO50-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 404,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'tmp'/'next' are plain u8 locals, not FILE streams -- no I/O anywhere nearby (confirmed FIO50-C non-stream misfire)"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 404,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'i' is again only the shift-count operand of '<<', same FP class as line 403"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 408,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx is unconditionally freed via 'if (ctx) EVP_CIPHER_CTX_free(ctx);' right before the single return -- no leak on any path"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 410,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL EVP_EncryptInit_ex() is documented to return exactly 1 (success) or 0 (failure), never >1 -- '==1' is the textually-correct check (extends sscanf single-outcome '==1' FP precedent to OpenSSL EVP API contract)"
+  },
+  {
+   "rule": "MSC42-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 410,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "genuine use of DES (weak cipher), though retained for legacy WEP/TKIP wire-protocol compatibility, not implementer choice"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 411,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EVP_CIPHER_CTX_set_padding() also documented 1/0 only -- same OpenSSL EVP '==1' FP class"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 412,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EVP_EncryptUpdate() documented 1/0 only -- same OpenSSL EVP '==1' FP class"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 413,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EVP_EncryptFinal_ex() documented 1/0 only -- same OpenSSL EVP '==1' FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 420,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx already freed one line above (line 419) before this return; sqc misses the free immediately preceding the return"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 425,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "rc4_skip() is an internal-only crypto primitive; 'skip' overflow is not attacker-controllable at this call layer (confirmed API00-C internal-API FP class)"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 425,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "every #ifdef OPENSSL_NO_RC4/#else branch of rc4_skip() ends in a return (confirmed MSC37-C preprocessor-branch-blind FP class)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 438,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx is freed at the 'out:' label reached via every goto in the function -- no leak on any path"
+  },
+  {
+   "rule": "MSC42-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 440,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "genuine use of RC4 (weak cipher), retained for legacy WEP/TKIP wire-protocol compatibility"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 461,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx already freed at line 460 immediately above this return; same as line 420 pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 476,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sha1_vector() is an internal-only wrapper always called with valid struct-field/array pointers from within hostap (confirmed API00-C internal-API FP class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 476,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sha1_vector() is an internal-only wrapper always called with valid struct-field/array pointers from within hostap (confirmed API00-C internal-API FP class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 476,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sha1_vector() is an internal-only wrapper always called with valid struct-field/array pointers from within hostap (confirmed API00-C internal-API FP class)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 547,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx is a local pointer variable to EVP_CIPHER_CTX_new() heap storage, not automatic storage (confirmed local-var-vs-storage FP)"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 553,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'c' (EVP_CIPHER_CTX *c = ctx;) is genuinely never reassigned in this function; real, if trivial, const opportunity"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 566,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "same as line 553: 'c' never reassigned in aes_encrypt_deinit()"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 604,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx is a local pointer variable to heap storage in aes_decrypt_init(), same FP as line 547"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 610,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'c' never reassigned in aes_decrypt()"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 623,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'c' never reassigned in aes_decrypt_deinit()"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 658,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "aes_wrap() is an internal-only crypto primitive with protocol-fixed key/block sizes (confirmed API00-C internal-API FP class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 658,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "aes_wrap() is an internal-only crypto primitive with protocol-fixed key/block sizes (confirmed API00-C internal-API FP class)"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 658,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "both the #if>=3.0 and #else branches of aes_wrap() end in a return (confirmed MSC37-C preprocessor-branch-blind FP class)"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 677,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL EVP_EncryptInit_ex() documented 1/0-only return -- same OpenSSL EVP '==1' FP class as line 410"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 678,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EVP_CIPHER_CTX_set_padding() documented 1/0-only -- same FP class"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 679,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EVP_EncryptUpdate() documented 1/0-only -- same FP class"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 681,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EVP_EncryptFinal_ex() documented 1/0-only -- same FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 701,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "aes_unwrap() is an internal-only crypto primitive, same API00-C internal-API FP class as line 658"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 701,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "aes_unwrap() is an internal-only crypto primitive, same API00-C internal-API FP class as line 658"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 701,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "aes_unwrap() is an internal-only crypto primitive, same API00-C internal-API FP class as line 658"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 701,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "both branches of aes_unwrap() end in a return (preprocessor-branch-blind FP class)"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 721,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EVP_DecryptInit_ex() documented 1/0-only -- OpenSSL EVP '==1' FP class"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 722,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EVP_CIPHER_CTX_set_padding() documented 1/0-only -- same FP class"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 723,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EVP_DecryptUpdate() documented 1/0-only -- same FP class"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 725,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EVP_DecryptFinal_ex() documented 1/0-only -- same FP class"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 763,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EVP_EncryptInit_ex() documented 1/0-only -- same FP class"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 764,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EVP_CIPHER_CTX_set_padding() documented 1/0-only -- same FP class"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 765,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EVP_EncryptUpdate() documented 1/0-only -- same FP class"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 767,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EVP_EncryptFinal_ex() documented 1/0-only -- same FP class"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 790,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EVP_DecryptInit_ex() documented 1/0-only -- same FP class"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 791,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EVP_CIPHER_CTX_set_padding() documented 1/0-only -- same FP class"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 792,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EVP_DecryptUpdate() documented 1/0-only -- same FP class"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 794,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EVP_DecryptFinal_ex() documented 1/0-only -- same FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 803,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "crypto_dh_init() is an internal-only DH primitive with protocol-fixed prime_len (confirmed API00-C internal-API FP class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 829,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "crypto_dh_derive_secret() is internal-only, always called with valid struct-owned buffers (confirmed API00-C internal-API FP class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 829,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "crypto_dh_derive_secret() is internal-only, always called with valid struct-owned buffers (confirmed API00-C internal-API FP class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 872,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "crypto_mod_exp() is internal-only, always called with valid struct-owned buffers (confirmed API00-C internal-API FP class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 872,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "crypto_mod_exp() is internal-only, always called with valid struct-owned buffers (confirmed API00-C internal-API FP class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 924,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx = os_zalloc(sizeof(*ctx)) -- sizeof idiom, never dereferences uninitialized ctx"
+  },
+  {
+   "rule": "MSC42-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 932,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "genuine use of RC4, retained for legacy CRYPTO_CIPHER_ALG_RC4 wire-protocol compatibility"
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 939,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "case 16 has its own unconditional break at line 941; sqc is blind to the #ifndef OPENSSL_IS_BORINGSSL/#endif wrapping case 24 in between (confirmed MSC17-C ifdef-between-cases FP class)"
+  },
+  {
+   "rule": "MSC42-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 958,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "genuine use of 3DES, retained for legacy CRYPTO_CIPHER_ALG_3DES wire-protocol compatibility"
+  },
+  {
+   "rule": "MSC42-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 961,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "genuine use of DES, retained for legacy CRYPTO_CIPHER_ALG_DES wire-protocol compatibility"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 974,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "parenthesized 'if (!(ctx->enc = alloc()) || ...)' is the pervasive, disambiguated hostap alloc-check idiom (EXP45-C alloc-idiom FP)"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 975,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "flagged 'use-after-free' is still inside the || condition chain, before any free executes in either branch body -- ctx->enc has not been freed yet"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 975,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "flagged 'use-after-free' is still inside the || condition chain, before any free executes in either branch body -- ctx->enc has not been freed yet"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 976,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same as line 975: still within the unevaluated-yet-not-freed condition chain"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 976,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same as line 975: still within the unevaluated-yet-not-freed condition chain"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 977,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same as line 975/976"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 977,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same as line 975/976"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 978,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same as line 975/976/977"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 978,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same as line 975/976/977"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 979,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'if (ctx->enc)' null-check misread as UAF; only ctx->enc gets freed on the sibling line, not ctx itself yet"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 981,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free(ctx) here frees the *container* struct; EVP_CIPHER_CTX_free(ctx->enc) one line above freed a distinct sub-object (ctx->enc), not ctx -- not a double free (confirmed sub-field-vs-container conflation FP class)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 981,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same container-vs-sub-field conflation as the MEM30-C finding on this line"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 985,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same parenthesized alloc-check idiom as line 974, now for ctx->dec"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 986,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "still inside the || condition chain before any free executes, same as line 975"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 986,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "still inside the || condition chain before any free executes, same as line 975"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 987,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same as line 986"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 987,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same as line 986"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 988,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same as line 986/987"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 988,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same as line 986/987"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 989,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same as line 986/987/988"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 989,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same as line 986/987/988"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 991,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'if (ctx->dec)' misread as accessing freed 'ctx'; only ctx->enc was freed at line 990, ctx->dec/ctx itself weren't (sub-field-vs-container conflation)"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 993,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free(ctx) frees the container once; ctx->enc/ctx->dec sub-object frees at 990/992 are distinct objects, not ctx itself (confirmed conflation FP class)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 993,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same container-vs-sub-field conflation as the MEM30-C finding on this line"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 997,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx is a local pointer *variable* to os_zalloc() heap storage, not automatic storage (confirmed local-var-vs-storage FP)"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 997,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "carries forward the same container-vs-sub-field free conflation into the return statement; ctx itself was never freed on this success/return path"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1001,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ctx is only read to forward ctx->enc into EVP_EncryptUpdate(); ctx itself is never reassigned so 'const struct crypto_cipher *ctx' would compile (read-only forwarding-wrapper TP class, distinct from eloop/vtable dispatch FP class)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1011,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "same read-only forwarding shape as line 1001, for ctx->dec in crypto_cipher_decrypt()"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1086,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'privkey' is read at both the failure path (wpabuf_clear_free) and success path (BN_bn2bin/*priv=privkey) later in the same function -- not dead"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1092,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sqc bleeds the wpabuf_free(*publ) call from the mutually-exclusive #if<1.1.0 branch (line 1038) into this #elif>=3.0 branch's own first wpabuf_free(*publ) as if both executed sequentially (new preprocessor-branch-bleed pattern)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1106,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "finding is misattributed to the first physical line of a multi-line '||'-chained if-condition; the actual priv_len/pubkey assignments are several lines later and are properly sequenced by '||' short-circuit (||/&& sequence-point blindness)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1106,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "finding is misattributed to the first physical line of a multi-line '||'-chained if-condition; the actual priv_len/pubkey assignments are several lines later and are properly sequenced by '||' short-circuit (||/&& sequence-point blindness)"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1117,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "parenthesized 'if (... || !(pubkey = wpabuf_alloc(pub_len)) || ...)' alloc-check idiom"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1118,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same alloc-check idiom for privkey"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1125,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_free(pubkey) here is in the failure branch only; the success branch (mutually exclusive) assigns pubkey to *publ instead -- not a double free, and sqc conflates local 'pubkey' with the 'publ' parameter"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1126,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same mutually-exclusive-branch/name-conflation issue as line 1125, for privkey"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1126,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_clear_free() internally checks 'if (buf)' before use -- NULL-safe by design, same as os_free(NULL) FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1147,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same preprocessor-branch-bleed as line 1092: this is the #else (oldest OpenSSL) branch's own independent first wpabuf_free(*publ), not a 2nd free of the same call"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1154,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'g' ownership transfers into 'dh' via DH_set0_pqg() then is set to NULL at line 1162; no leak (ownership-transfer-then-null-out FP class)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1182,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'g' was already NULLed out after ownership transfer to 'dh' before this return (same as line 1154)"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1189,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_clear_free() is NULL-safe by design, same FP class as line 1126"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1213,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() are pure side-effect-free accessors passed as sibling args (confirmed EXP30-C accessor-args FP class)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1217,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same wpabuf_head()/wpabuf_len() accessor-args FP as line 1213"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1236,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EVP_PKEY_CTX_new_from_name(NULL, \"DH\", NULL) flagged purely for its two NULL literal args, no real aliasing (confirmed EXP43-C NULL/0-literal-args FP class)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1237,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same wpabuf_head()/wpabuf_len() accessor-args FP as line 1213"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1238,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same wpabuf_head()/wpabuf_len() accessor-args FP as line 1213"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1240,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "finding misattributed to the first line of the multi-line if-condition; 'params' is not assigned until line 1247, properly sequenced by '||' (||/&& sequence-point blindness)"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1247,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "parenthesized 'if (... || !(params = OSSL_PARAM_BLD_to_param(bld)) || ...)' alloc-check idiom"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1264,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'p = NULL' initializer is genuinely never read -- 'p' is unconditionally reassigned via get_group5_prime() before any use (real, low-severity dead-init TP)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1270,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'g' ownership transfers into 'dh' via DH_set0_pqg() then NULLed at line 1276; no leak (ownership-transfer-then-null-out FP class)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1278,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same wpabuf_head()/wpabuf_len() accessor-args FP as line 1213"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1279,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same wpabuf_head()/wpabuf_len() accessor-args FP as line 1213"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1288,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'g' already NULLed out after ownership transfer before this return, same as line 1270"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1293,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'pub_key' err: cleanup only runs via goto before the NULL-out at line 1282; on the success path pub_key was already NULLed, so no double free on any real path (ownership-transfer FP class)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1294,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same as line 1293, for priv_key"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1301,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dh5_derive_shared(): both the #if>=3.0 and #else branches end in a return (confirmed MSC37-C preprocessor-branch-blind FP class)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1312,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "finding misattributed to the first line of the multi-line if-condition; 'dctx' isn't assigned until line 1316, properly sequenced by '||' short-circuit (||/&& sequence-point blindness)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1312,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "finding misattributed to the first line of the multi-line if-condition; 'dctx' isn't assigned until line 1316, properly sequenced by '||' short-circuit (||/&& sequence-point blindness)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1312,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "finding misattributed to the first line of the multi-line if-condition; 'dctx' isn't assigned until line 1316, properly sequenced by '||' short-circuit (||/&& sequence-point blindness)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1312,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "finding misattributed to the first line of the multi-line if-condition; 'dctx' isn't assigned until line 1316, properly sequenced by '||' short-circuit (||/&& sequence-point blindness)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1312,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "finding misattributed to the first line of the multi-line if-condition; 'dctx' isn't assigned until line 1316, properly sequenced by '||' short-circuit (||/&& sequence-point blindness)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1314,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure accessor args, same confirmed FP class as line 1213"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1316,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "parenthesized 'if (... || !(dctx = EVP_PKEY_CTX_new(...)) || ...)' alloc-check idiom"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1320,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "parenthesized 'if (... || !(res = wpabuf_alloc(len)) || ...)' alloc-check idiom"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1321,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'res' is only used in 'wpabuf_mhead(res)' after '!(res = wpabuf_alloc(len))' already evaluated false via '||' short-circuit, guaranteeing res is non-NULL here -- sqc doesn't recognize the short-circuit NULL guarantee"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1335,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'res = NULL' initializer is genuinely never read before being reassigned at line 1349 (real, low-severity dead-init TP, same class as line 1264)"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1340,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fires on an ordinary 'if (ctx == NULL)' guard -- stylistic MEM10-C pattern, not indicative of a real gap (confirmed MEM10-C ad-hoc-NULL-check FP class)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1343,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure accessor args, same confirmed FP class as line 1213"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1362,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "err: label's BN_clear_free(pub_key) and the success path's earlier BN_clear_free(pub_key) (line 1357) are mutually exclusive via goto -- not both executed (confirmed mutually-exclusive-branch free-tracking FP class)"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 13,
+  "fp": 137,
+  "fn": 0
+ }
+}

@@ -1,0 +1,751 @@
+{
+ "src/eap_server/eap_server.c": [
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_server.c",
+   "line": 38,
+   "message": "Function has pointer parameter without size argument: 'static enum eap_type eap_sm_Policy_getNextMethod(struct eap_sm *sm,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'int *vendor' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 56,
+   "file": "src/eap_server/eap_server.c",
+   "line": 44,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 54,
+   "file": "src/eap_server/eap_server.c",
+   "line": 52,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 66,
+   "file": "src/eap_server/eap_server.c",
+   "line": 62,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 42,
+   "file": "src/eap_server/eap_server.c",
+   "line": 71,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server.c",
+   "line": 108,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 5,
+   "file": "src/eap_server/eap_server.c",
+   "line": 114,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "src/eap_server/eap_server.c",
+   "line": 126,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_server.c",
+   "line": 141,
+   "message": "Function-like macro 'EAP_COPY' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_server.c",
+   "line": 141,
+   "message": "Macro 'EAP_COPY' uses token concatenation operator (##) which prevents parameter expansion - consider using two-level macro indirection for proper expansion",
+   "rule_id": "PRE05-C",
+   "severity": "Low",
+   "suggestion": "Use two-level indirection: define a wrapper macro that calls another macro with ##, allowing parameters to expand first"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_server.c",
+   "line": 141,
+   "message": "Macro evaluates parameter 'dst' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 26,
+   "file": "src/eap_server/eap_server.c",
+   "line": 170,
+   "message": "Dereference of uninitialized pointer 'user'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'user' before dereferencing"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_server.c",
+   "line": 187,
+   "message": "Function 'eap_log_msg' should be declared static if it doesn't need external linkage",
+   "rule_id": "DCL15-C",
+   "severity": "Low",
+   "suggestion": "Add 'static' storage-class specifier: static void eap_log_msg"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_server.c",
+   "line": 187,
+   "message": "Function 'eap_log_msg' is only used within this file. It should be declared static to minimize scope.",
+   "rule_id": "DCL19-C",
+   "severity": "Low",
+   "suggestion": "Add 'static' storage class to function 'eap_log_msg'"
+  },
+  {
+   "column": 32,
+   "file": "src/eap_server/eap_server.c",
+   "line": 187,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server.c",
+   "line": 204,
+   "message": "Return value of 'vsnprintf' ignored: 'vsnprintf(buf, buflen, fmt, ap)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server.c",
+   "line": 339,
+   "message": "Signed integer increment 'sm->num_rounds++' may overflow at INT_MAX",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking before increment/decrement"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_server.c",
+   "line": 341,
+   "message": "Signed integer increment 'sm->num_rounds_short++' may overflow at INT_MAX",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking before increment/decrement"
+  },
+  {
+   "column": 23,
+   "file": "src/eap_server/eap_server.c",
+   "line": 619,
+   "message": "Signed integer addition 'nak + 1' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_server.c",
+   "line": 620,
+   "message": "Unsigned integer compound subtraction 'len -= sizeof(*nak)' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check before compound assignment"
+  },
+  {
+   "column": 7,
+   "file": "src/eap_server/eap_server.c",
+   "line": 744,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server.c",
+   "line": 862,
+   "message": "Potentially unsafe array access with variable index 'parse.keyname_len': Buffer 'nai' with size 254 (allocated at line 804)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 7,
+   "file": "src/eap_server/eap_server.c",
+   "line": 908,
+   "message": "Array subscript -33 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 7,
+   "file": "src/eap_server/eap_server.c",
+   "line": 916,
+   "message": "Array subscript -17 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 5,
+   "file": "src/eap_server/eap_server.c",
+   "line": 930,
+   "message": "Unsigned integer subtraction 'end - hdr - hash_len' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 17,
+   "file": "src/eap_server/eap_server.c",
+   "line": 932,
+   "message": "Unsigned integer subtraction 'end - hash_len' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 6,
+   "file": "src/eap_server/eap_server.c",
+   "line": 941,
+   "message": "Array subscript -33 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 19,
+   "file": "src/eap_server/eap_server.c",
+   "line": 953,
+   "message": "Array subscript -17 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_server.c",
+   "line": 990,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1166,
+   "message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add a return statement on all execution paths of this function"
+  },
+  {
+   "column": 10,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1225,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1242,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1262,
+   "message": "Unreachable code after unconditional 'break'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1351,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1383,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1417,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 50,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1430,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 48,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1501,
+   "message": "Dereference of uninitialized pointer 'hdr'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'hdr' before dereferencing"
+  },
+  {
+   "column": 18,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1503,
+   "message": "Passing null pointer 'resp' to 'wpa_printf' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'resp' is not NULL before passing to 'wpa_printf'"
+  },
+  {
+   "column": 41,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1504,
+   "message": "Passing null pointer 'resp' to 'wpabuf_len' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'resp' is not NULL before passing to 'wpabuf_len'"
+  },
+  {
+   "column": 7,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1522,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 48,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1552,
+   "message": "Dereference of uninitialized pointer 'hdr'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'hdr' before dereferencing"
+  },
+  {
+   "column": 58,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1561,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 28,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1567,
+   "message": "Dereference of uninitialized pointer 'resp'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'resp' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1575,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 58,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1579,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 28,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1585,
+   "message": "Dereference of uninitialized pointer 'resp'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'resp' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1593,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 40,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1597,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1602,
+   "message": "'rand()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'rand_r or a thread-local PRNG' instead for thread safety"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1602,
+   "message": "Use of rand() function for pseudorandom number generation detected. rand() produces poor quality random numbers that may be predictable.",
+   "rule_id": "MSC30-C",
+   "severity": "Medium",
+   "suggestion": "Replace rand() with a better alternative: random() (POSIX), drand48() (POSIX), arc4random() (cryptographic), or BCryptGenRandom() (Windows)"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1602,
+   "message": "Pseudorandom number generator 'rand()' called without proper seeding - will produce predictable sequences",
+   "rule_id": "MSC32-C",
+   "severity": "Medium",
+   "suggestion": "Call srand() or srandom() with a non-deterministic seed (e.g., from time() or /dev/urandom) before calling rand()"
+  },
+  {
+   "column": 25,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1632,
+   "message": "sizeof applied to pointer/array parameter 'sm' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(sm->user->methods[0])'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 8,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1660,
+   "message": "sizeof applied to pointer/array parameter 'sm' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(sm->user->methods[0])'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 7,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1669,
+   "message": "sizeof applied to pointer/array parameter 'sm' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(sm->user->methods[0])'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 50,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1804,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1819,
+   "message": "Function 'eap_server_sm_step' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 5,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1834,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1853,
+   "message": "Function 'eap_server_sm_init' does not validate pointer parameter 'conf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conf' at the start of the function, e.g., 'if (!conf) { return error_code; }'"
+  },
+  {
+   "column": 24,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1860,
+   "message": "Dereference of uninitialized pointer 'sm'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'sm' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1879,
+   "message": "Function returns pointer to local variable 'sm' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 5,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1892,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1923,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1938,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 41,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1951,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 5,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1953,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1965,
+   "message": "Function 'eap_get_identity' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 43,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1965,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1977,
+   "message": "Function 'eap_get_serial_num' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 47,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1977,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 43,
+   "file": "src/eap_server/eap_server.c",
+   "line": 1988,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 41,
+   "file": "src/eap_server/eap_server.c",
+   "line": 2001,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_server.c",
+   "line": 2009,
+   "message": "Function 'eap_erp_update_identity' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_server.c",
+   "line": 2009,
+   "message": "Function 'eap_erp_update_identity' does not validate pointer parameter 'eap' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'eap' at the start of the function, e.g., 'if (!eap) { return error_code; }'"
+  },
+  {
+   "column": 19,
+   "file": "src/eap_server/eap_server.c",
+   "line": 2016,
+   "message": "Dereference of uninitialized pointer 'hdr'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'hdr' before dereferencing"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_server.c",
+   "line": 2052,
+   "message": "Function 'eap_get_interface' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 62,
+   "file": "src/eap_server/eap_server.c",
+   "line": 2052,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_server.c",
+   "line": 2066,
+   "message": "Function 'eap_server_clear_identity' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_server.c",
+   "line": 2074,
+   "message": "Function 'eap_server_mschap_rx_callback' does not validate pointer parameter 'response' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'response' at the start of the function, e.g., 'if (!response) { return error_code; }'"
+  },
+  {
+   "column": 50,
+   "file": "src/eap_server/eap_server.c",
+   "line": 2074,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 66,
+   "file": "src/eap_server/eap_server.c",
+   "line": 2074,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 20,
+   "file": "src/eap_server/eap_server.c",
+   "line": 2086,
+   "message": "Misuse of sizeof() on array parameter 'challenge'. Array parameters decay to pointers, sizeof will return pointer size not array size.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Pass array size as a separate parameter or use a different method to track array size"
+  },
+  {
+   "column": 20,
+   "file": "src/eap_server/eap_server.c",
+   "line": 2086,
+   "message": "sizeof applied to pointer/array parameter 'challenge' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(challenge)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  }
+ ]
+}

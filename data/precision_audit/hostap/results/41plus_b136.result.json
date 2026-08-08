@@ -1,0 +1,25 @@
+{
+ "labels": [
+  {"rule": "POS49-C", "file": "src/common/dpp_tcp.c", "line": 2500, "verdict": "FP", "confidence": "high", "reason": "No pthread usage anywhere in file; wpa_supplicant/hostap core is single-threaded eloop model (established CON32/POS49-C no-pthread class)."},
+  {"rule": "MSC07-C", "file": "src/common/dpp_tcp.c", "line": 2507, "verdict": "FP", "confidence": "high", "reason": "fail: label is a real goto target from 5 earlier sites (2457,2471,2477,2482,2494,2499); CFG doesn't link goto to label (goto-label-blindness class)."},
+  {"rule": "CON33-C", "file": "src/common/dpp_tcp.c", "line": 2530, "verdict": "FP", "confidence": "high", "reason": "strerror() thread-safety FP; codebase has no pthreads (confirmed CON33/34-C class)."},
+  {"rule": "CON34-C", "file": "src/common/dpp_tcp.c", "line": 2530, "verdict": "FP", "confidence": "high", "reason": "Same confirmed no-pthread CON33/34-C strerror() FP class."},
+  {"rule": "CON33-C", "file": "src/common/dpp_tcp.c", "line": 2537, "verdict": "FP", "confidence": "high", "reason": "strerror() thread-safety FP; no pthreads in file (confirmed class)."},
+  {"rule": "CON34-C", "file": "src/common/dpp_tcp.c", "line": 2537, "verdict": "FP", "confidence": "high", "reason": "Same confirmed no-pthread CON33/34-C strerror() FP class."},
+  {"rule": "CON33-C", "file": "src/common/dpp_tcp.c", "line": 2543, "verdict": "FP", "confidence": "high", "reason": "strerror() thread-safety FP; no pthreads in file (confirmed class)."},
+  {"rule": "CON34-C", "file": "src/common/dpp_tcp.c", "line": 2543, "verdict": "FP", "confidence": "high", "reason": "Same confirmed no-pthread CON33/34-C strerror() FP class."},
+  {"rule": "POS02-C", "file": "src/common/dpp_tcp.c", "line": 2553, "verdict": "FP", "confidence": "high", "reason": "No setuid/setgid/capset anywhere in file; codebase has no privilege-separation model (confirmed POS02-C class)."},
+  {"rule": "CON33-C", "file": "src/common/dpp_tcp.c", "line": 2556, "verdict": "FP", "confidence": "high", "reason": "strerror() thread-safety FP; no pthreads in file (confirmed class)."},
+  {"rule": "CON34-C", "file": "src/common/dpp_tcp.c", "line": 2556, "verdict": "FP", "confidence": "high", "reason": "Same confirmed no-pthread CON33/34-C strerror() FP class."},
+  {"rule": "FIO24-C", "file": "src/common/dpp_tcp.c", "line": 2557, "verdict": "FP", "confidence": "high", "reason": "close(s) at 2544 (fcntl-fail branch) and close(s) at 2557 (bind-fail branch) are mutually exclusive early returns, not a real double close (confirmed FIO24-C branch-blind class)."},
+  {"rule": "POS02-C", "file": "src/common/dpp_tcp.c", "line": 2560, "verdict": "FP", "confidence": "high", "reason": "No privilege separation anywhere in file; same confirmed POS02-C class as line 2553."},
+  {"rule": "FIO24-C", "file": "src/common/dpp_tcp.c", "line": 2564, "verdict": "FP", "confidence": "high", "reason": "close(s) at 2544 and close(s) at 2564 (listen-fail branch) are in mutually exclusive early-return branches; confirmed FIO24-C branch-blind class."},
+  {"rule": "API05-C", "file": "src/common/dpp_tcp.c", "line": 2608, "verdict": "FP", "confidence": "high", "reason": "channel_list is a bare NUL-terminated const char* string, not a ptr+len pair needing conformant array syntax (confirmed API05-C bare-string class)."},
+  {"rule": "POS49-C", "file": "src/common/dpp_tcp.c", "line": 2638, "verdict": "FP", "confidence": "high", "reason": "Bit-field write on_tcp_tx_complete_remove=1; no pthread usage in file (confirmed CON32/POS49-C class)."},
+  {"rule": "API00-C", "file": "src/common/dpp_tcp.c", "line": 2645, "verdict": "FP", "confidence": "high", "reason": "dpp_tcp_send_conn_status's only caller (dpp_supplicant.c:401) reaches it only after dpp_tcp_conn_status_requested(wpa_s->dpp) returned true, which itself returns false for NULL dpp -- caller guarantees non-NULL (internal-API contract FP)."},
+  {"rule": "API05-C", "file": "src/common/dpp_tcp.c", "line": 2648, "verdict": "FP", "confidence": "high", "reason": "channel_list is a bare NUL-terminated string param, same confirmed API05-C bare-string FP class as line 2608."}
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {"tp": 0, "fp": 18, "fn": 0}
+}

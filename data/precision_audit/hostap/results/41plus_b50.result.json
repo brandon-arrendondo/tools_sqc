@@ -1,0 +1,1226 @@
+{
+ "labels": [
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4347,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_list_cmd_list is a function (decl :75, def :4271), not a static variable \u2014 rule misidentifies a function call as an uninitialized static var (factual error)."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4349,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pos is an interactive editor cursor position (line-length bound), nowhere near INT_MAX; extends established INT32-C unrealistic-bound family."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4356,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "res is assigned from wpa_cli_cmd_completion(), which returns a completion callback's heap alloc or NULL, never a stack pointer \u2014 confuses local pointer variable with local storage (established DCL30-C class)."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4364,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ret=0 is always overwritten by one of the count>1/count==0/else branches before return \u2014 harmless but literally a dead initial value (established MSC13-C correctly-caught class)."
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4366,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "argv is declared 'char *argv[]' in the function signature \u2014 a genuine array parameter, not a 'non-array pointer'; new pattern (argv[] array-parameter subscript misfire)."
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4367,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "argv is declared 'char *argv[]' in the function signature \u2014 a genuine array parameter, not a 'non-array pointer'; new pattern (argv[] array-parameter subscript misfire)."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4368,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "line is 'argv = &argv[1];' \u2014 an address-of expression assigning a pointer to argv; no char dereference or widening conversion exists here at all (misattribution)."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4368,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "line is 'argv = &argv[1];' \u2014 an address-of expression assigning a pointer to argv; no char dereference or widening conversion exists here at all (misattribution)."
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4368,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "argv is declared 'char *argv[]' in the function signature \u2014 a genuine array parameter, not a 'non-array pointer'; new pattern (argv[] array-parameter subscript misfire)."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4378,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "loop scans the static wpa_cli_commands[] table via its NULL-sentinel 'cmd->cmd' test \u2014 a bounded compile-time table scan, not an unbounded pointer walk; extends established sentinel-scan ARR30-C FP family."
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4379,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "argv is declared 'char *argv[]' in the function signature \u2014 a genuine array parameter, not a 'non-array pointer'; new pattern (argv[] array-parameter subscript misfire)."
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4379,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "argv is declared 'char *argv[]' in the function signature \u2014 a genuine array parameter, not a 'non-array pointer'; new pattern (argv[] array-parameter subscript misfire)."
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4382,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "argv is declared 'char *argv[]' in the function signature \u2014 a genuine array parameter, not a 'non-array pointer'; new pattern (argv[] array-parameter subscript misfire)."
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4393,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "argv is declared 'char *argv[]' in the function signature \u2014 a genuine array parameter, not a 'non-array pointer'; new pattern (argv[] array-parameter subscript misfire)."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4395,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "loop scans the static wpa_cli_commands[] table via its NULL-sentinel 'cmd->cmd' test \u2014 a bounded compile-time table scan, not an unbounded pointer walk; extends established sentinel-scan ARR30-C FP family."
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4396,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "argv is declared 'char *argv[]' in the function signature \u2014 a genuine array parameter, not a 'non-array pointer'; new pattern (argv[] array-parameter subscript misfire)."
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4397,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "argv is declared 'char *argv[]' in the function signature \u2014 a genuine array parameter, not a 'non-array pointer'; new pattern (argv[] array-parameter subscript misfire)."
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4405,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "argv is declared 'char *argv[]' in the function signature \u2014 a genuine array parameter, not a 'non-array pointer'; new pattern (argv[] array-parameter subscript misfire)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4408,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "match is only dereferenced in the else branch reached when count==1, which is only ever set in the same loop iteration that also assigns match \u2014 control flow guarantees non-NULL."
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4408,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "argv is declared 'char *argv[]' in the function signature \u2014 a genuine array parameter, not a 'non-array pointer'; new pattern (argv[] array-parameter subscript misfire)."
+  },
+  {
+   "rule": "CON07-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4438,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread FP class: wpa_cli.c has zero pthread_create/mutex usage (single-threaded/eloop CLI), same class as CON32-C/POS49-C/CON33-C/CON34-C precedent."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4451,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pos is a wire-message pointer bounded by the fixed 4096-byte control-interface buffer; extends established protocol/buffer-bound INT32-C FP family."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4453,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pos is a wire-message pointer bounded by the fixed 4096-byte control-interface buffer; extends established protocol/buffer-bound INT32-C FP family."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4465,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pos is a wire-message pointer bounded by the fixed 4096-byte control-interface buffer; extends established protocol/buffer-bound INT32-C FP family."
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4472,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_setenv/os_unsetenv declare their string params 'const char *' (src/utils/os_unix.c:402,408) \u2014 cannot modify a literal by signature; established STR30-C const-param rule-logic-bug class."
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4473,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_setenv/os_unsetenv declare their string params 'const char *' (src/utils/os_unix.c:402,408) \u2014 cannot modify a literal by signature; established STR30-C const-param rule-logic-bug class."
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4474,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_setenv/os_unsetenv declare their string params 'const char *' (src/utils/os_unix.c:402,408) \u2014 cannot modify a literal by signature; established STR30-C const-param rule-logic-bug class."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4484,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain '*ptr = '\\0';' NUL-terminator char assignment, not a widening char-to-int conversion; established STR34-C misfire class."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4485,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "new_id = atoi(id) has no error/range check at all; a malformed id string silently becomes 0 with no signal \u2014 genuine (low-severity) violation per rule text."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4485,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "new_id = atoi(id) has no error/range check at all; a malformed id string silently becomes 0 with no signal \u2014 genuine (low-severity) violation per rule text."
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4486,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_setenv/os_unsetenv declare their string params 'const char *' (src/utils/os_unix.c:402,408) \u2014 cannot modify a literal by signature; established STR30-C const-param rule-logic-bug class."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4494,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain '*ptr = '\\0';' NUL-terminator char assignment, not a widening char-to-int conversion; established STR34-C misfire class."
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4495,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_setenv/os_unsetenv declare their string params 'const char *' (src/utils/os_unix.c:402,408) \u2014 cannot modify a literal by signature; established STR30-C const-param rule-logic-bug class."
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4499,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_setenv/os_unsetenv declare their string params 'const char *' (src/utils/os_unix.c:402,408) \u2014 cannot modify a literal by signature; established STR30-C const-param rule-logic-bug class."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4502,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "wpa_cli_connected/wpa_cli_last_id are file-scope statics read at the top of this same function on the NEXT invocation (line ~4500) \u2014 the assignment persists and is genuinely consumed across calls, not dead."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4503,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "wpa_cli_connected/wpa_cli_last_id are file-scope statics read at the top of this same function on the NEXT invocation (line ~4500) \u2014 the assignment persists and is genuinely consumed across calls, not dead."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4504,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4508,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "wpa_cli_connected=0 here is read at the top of this same function on the next invocation ('wpa_cli_connected <= 0') \u2014 persisted static consumed across calls, not dead."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4509,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4512,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4514,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4516,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4518,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4520,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4522,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4524,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4526,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4528,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4530,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4532,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4534,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4536,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4538,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4540,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4542,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4544,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4546,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4548,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4550,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4552,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4554,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4556,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4558,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4560,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4562,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4564,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4566,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4568,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4570,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4572,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4574,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4576,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "action_file is only reachable down this code path when the CLI was invoked with a non-NULL action_file \u2014 main() only calls wpa_cli_action() 'if (action_file)' (lines ~5265,5305), which is the sole route into wpa_cli_action_process()/wpa_cli_exec(). Caller-side guard proves action_file non-NULL at every one of these call sites (new interprocedural-guard pattern)."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4577,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "the giant str_starts()-chain intentionally ignores unrecognized events (no-op); matches established MSC01-C guard-clause/default-value no-final-else FP family."
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4586,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_cli_action_cb(char *msg, size_t len) is the standard 'T *ptr, size_t len' idiom; established API05-C categorical FP."
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4601,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no #ifdef/#else/#endif appears anywhere inside or adjacent to this call's arguments (nearest preprocessor block already closed several lines earlier); the finding even quotes the plain string literal itself as the 'directive' \u2014 extends established 'no actual #-directive in the call' PRE32-C class (l2_packet_freebsd.c precedent)."
+  },
+  {
+   "rule": "DCL11-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4603,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "global is only passed to wpa_cli_open_global_ctrl() from call sites gated by 'global &&' (lines 4631, 5257) \u2014 provably non-NULL whenever this function runs; interprocedural caller-guard pattern (same root cause as the action_file EXP34-C family above)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4603,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same caller-side 'global &&' guard as the DCL11-C finding on this line \u2014 global cannot be NULL here."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4603,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread FP class: wpa_cli.c has zero pthread_create/mutex usage (single-threaded/eloop CLI), same class as CON32-C/POS49-C/CON33-C/CON34-C precedent. (strerror/getenv/readdir internal-static-storage concerns are moot without threads.)"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4603,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread FP class: wpa_cli.c has zero pthread_create/mutex usage (single-threaded/eloop CLI), same class as CON32-C/POS49-C/CON33-C/CON34-C precedent. (strerror/getenv/readdir internal-static-storage concerns are moot without threads.)"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4604,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ctrl_conn/mon_conn are file-scope statics with process lifetime, closed later by wpa_cli_close_connection() \u2014 not leaked at this function's own return; extends the established MEM12-C ownership-persists-elsewhere FP family."
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4624,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ctrl_conn/mon_conn are file-scope statics with process lifetime, closed later by wpa_cli_close_connection() \u2014 not leaked at this function's own return; extends the established MEM12-C ownership-persists-elsewhere FP family."
+  },
+  {
+   "rule": "CON07-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4628,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread FP class: wpa_cli.c has zero pthread_create/mutex usage (single-threaded/eloop CLI), same class as CON32-C/POS49-C/CON33-C/CON34-C precedent."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4725,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctrl_conn/mon_conn are file-scope statics declared with no initializer (:40,41) \u2014 implicitly zero-initialized to NULL per C 6.7.9p10; reading them (even in a boolean/NULL test) is well-defined, not an uninitialized-read. New pattern: static-implicit-zero-init misfire."
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4727,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no #ifdef/#else/#endif appears anywhere inside or adjacent to this call's arguments (nearest preprocessor block already closed several lines earlier); the finding even quotes the plain string literal itself as the 'directive' \u2014 extends established 'no actual #-directive in the call' PRE32-C class (l2_packet_freebsd.c precedent)."
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4727,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no #ifdef/#else/#endif appears anywhere inside or adjacent to this call's arguments (nearest preprocessor block already closed several lines earlier); the finding even quotes the plain string literal itself as the 'directive' \u2014 extends established 'no actual #-directive in the call' PRE32-C class (l2_packet_freebsd.c precedent)."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4741,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctrl_conn/mon_conn are file-scope statics declared with no initializer (:40,41) \u2014 implicitly zero-initialized to NULL per C 6.7.9p10; reading them (even in a boolean/NULL test) is well-defined, not an uninitialized-read. New pattern: static-implicit-zero-init misfire."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4749,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len is bounded by the preceding wpa_ctrl_recv/wpa_ctrl_request(..., buf, &len, ...) call, which never writes beyond the input len value (initialized to sizeof(buf)-1 or sizeof(buf)); extends the established recv/request-length-cap ARR30-C FP family."
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4770,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no #ifdef/#else/#endif appears anywhere inside or adjacent to this call's arguments (nearest preprocessor block already closed several lines earlier); the finding even quotes the plain string literal itself as the 'directive' \u2014 extends established 'no actual #-directive in the call' PRE32-C class (l2_packet_freebsd.c precedent)."
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4770,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no #ifdef/#else/#endif appears anywhere inside or adjacent to this call's arguments (nearest preprocessor block already closed several lines earlier); the finding even quotes the plain string literal itself as the 'directive' \u2014 extends established 'no actual #-directive in the call' PRE32-C class (l2_packet_freebsd.c precedent)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4781,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "parameter matches the fixed eloop_timeout_handler/eloop_sock_handler callback typedef (src/utils/eloop.h) \u2014 signature is pinned by the eloop dispatch contract; established DCL13-C eloop-callback FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4781,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "parameter matches the fixed eloop_timeout_handler/eloop_sock_handler callback typedef (src/utils/eloop.h) \u2014 signature is pinned by the eloop dispatch contract; established DCL13-C eloop-callback FP class."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4783,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctrl_conn/mon_conn are file-scope statics declared with no initializer (:40,41) \u2014 implicitly zero-initialized to NULL per C 6.7.9p10; reading them (even in a boolean/NULL test) is well-defined, not an uninitialized-read. New pattern: static-implicit-zero-init misfire."
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4791,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no #ifdef/#else/#endif appears anywhere inside or adjacent to this call's arguments (nearest preprocessor block already closed several lines earlier); the finding even quotes the plain string literal itself as the 'directive' \u2014 extends established 'no actual #-directive in the call' PRE32-C class (l2_packet_freebsd.c precedent)."
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4791,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no #ifdef/#else/#endif appears anywhere inside or adjacent to this call's arguments (nearest preprocessor block already closed several lines earlier); the finding even quotes the plain string literal itself as the 'directive' \u2014 extends established 'no actual #-directive in the call' PRE32-C class (l2_packet_freebsd.c precedent)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4802,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "parameter matches the fixed eloop_timeout_handler/eloop_sock_handler callback typedef (src/utils/eloop.h) \u2014 signature is pinned by the eloop dispatch contract; established DCL13-C eloop-callback FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4802,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "parameter matches the fixed eloop_timeout_handler/eloop_sock_handler callback typedef (src/utils/eloop.h) \u2014 signature is pinned by the eloop dispatch contract; established DCL13-C eloop-callback FP class."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4804,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctrl_conn/mon_conn are file-scope statics declared with no initializer (:40,41) \u2014 implicitly zero-initialized to NULL per C 6.7.9p10; reading them (even in a boolean/NULL test) is well-defined, not an uninitialized-read. New pattern: static-implicit-zero-init misfire."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4808,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "parameter matches the fixed eloop_timeout_handler/eloop_sock_handler callback typedef (src/utils/eloop.h) \u2014 signature is pinned by the eloop dispatch contract; established DCL13-C eloop-callback FP class."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4810,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "max_args is '#define max_args 10' (src/common/cli.h:44), a compile-time constant \u2014 'char *argv[max_args]' is a fixed-size array, not a VLA; extends established macro-constant-sized-array MEM05-C FP family."
+  },
+  {
+   "rule": "ARR32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4810,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same as the paired MEM05-C finding on this line: max_args is a compile-time #define (cli.h:44), not a runtime size."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4812,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "argv is filled entirely by tokenize_cmd(cmd, argv)'s write-only output-param loop (src/common/cli.c:240) before any read \u2014 established uninitialized-output-param EXP33-C FP class."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4814,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctrl_conn/mon_conn are file-scope statics declared with no initializer (:40,41) \u2014 implicitly zero-initialized to NULL per C 6.7.9p10; reading them (even in a boolean/NULL test) is well-defined, not an uninitialized-read. New pattern: static-implicit-zero-init misfire."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4818,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "parameter matches the fixed eloop_timeout_handler/eloop_sock_handler callback typedef (src/utils/eloop.h) \u2014 signature is pinned by the eloop dispatch contract; established DCL13-C eloop-callback FP class."
+  },
+  {
+   "rule": "CON03-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4824,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread FP class: wpa_cli.c has zero pthread_create/mutex usage (single-threaded/eloop CLI), same class as CON32-C/POS49-C/CON33-C/CON34-C precedent."
+  },
+  {
+   "rule": "CON03-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4825,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread FP class: wpa_cli.c has zero pthread_create/mutex usage (single-threaded/eloop CLI), same class as CON32-C/POS49-C/CON33-C/CON34-C precedent."
+  },
+  {
+   "rule": "CON03-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4826,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread FP class: wpa_cli.c has zero pthread_create/mutex usage (single-threaded/eloop CLI), same class as CON32-C/POS49-C/CON33-C/CON34-C precedent."
+  },
+  {
+   "rule": "CON07-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4828,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread FP class: wpa_cli.c has zero pthread_create/mutex usage (single-threaded/eloop CLI), same class as CON32-C/POS49-C/CON33-C/CON34-C precedent."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4834,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctrl_conn/mon_conn are file-scope statics declared with no initializer (:40,41) \u2014 implicitly zero-initialized to NULL per C 6.7.9p10; reading them (even in a boolean/NULL test) is well-defined, not an uninitialized-read. New pattern: static-implicit-zero-init misfire."
+  },
+  {
+   "rule": "ENV34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4840,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "home is consumed immediately in the same scope (os_strlen/os_snprintf a few lines later) with zero intervening getenv/setenv/putenv calls anywhere in between \u2014 no actual invalidation window exists despite the missing strdup."
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4840,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "the very next line is 'if (home) {' \u2014 the NULL check the rule claims is missing is right there."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4840,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread FP class: wpa_cli.c has zero pthread_create/mutex usage (single-threaded/eloop CLI), same class as CON32-C/POS49-C/CON33-C/CON34-C precedent. (strerror/getenv/readdir internal-static-storage concerns are moot without threads.)"
+  },
+  {
+   "rule": "ENV30-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4844,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_strlen() is a pure read-only length function \u2014 cannot modify its argument; rule's 'may modify it' premise is wrong."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4844,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "line only passes home/fname pointers into os_strlen() calls to compute hfile_len \u2014 no char dereference or widening conversion occurs at all (misattribution, cf. keystore_get precedent)."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4844,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "line only passes home/fname pointers into os_strlen() calls to compute hfile_len \u2014 no char dereference or widening conversion occurs at all (misattribution, cf. keystore_get precedent)."
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4869,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain 'if (ctrl == NULL) return;' guard; established MEM10-C ad-hoc-NULL-check-is-stylistic FP class."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4874,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len is bounded by the preceding wpa_ctrl_recv/wpa_ctrl_request(..., buf, &len, ...) call, which never writes beyond the input len value (initialized to sizeof(buf)-1 or sizeof(buf)); extends the established recv/request-length-cap ARR30-C FP family."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4885,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'*end = '\\0';' / '*pos = '\\0';' is a plain char assignment, not a widening char-to-int conversion; established STR34-C plain-assignment misfire class."
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4903,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain 'if (ctrl == NULL) return;' guard; established MEM10-C ad-hoc-NULL-check-is-stylistic FP class."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4908,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len is bounded by the preceding wpa_ctrl_recv/wpa_ctrl_request(..., buf, &len, ...) call, which never writes beyond the input len value (initialized to sizeof(buf)-1 or sizeof(buf)); extends the established recv/request-length-cap ARR30-C FP family."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4915,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'*end = '\\0';' / '*pos = '\\0';' is a plain char assignment, not a widening char-to-int conversion; established STR34-C plain-assignment misfire class."
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4935,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain 'if (ctrl == NULL) return;' guard; established MEM10-C ad-hoc-NULL-check-is-stylistic FP class."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4940,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len is bounded by the preceding wpa_ctrl_recv/wpa_ctrl_request(..., buf, &len, ...) call, which never writes beyond the input len value (initialized to sizeof(buf)-1 or sizeof(buf)); extends the established recv/request-length-cap ARR30-C FP family."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4947,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'*end = '\\0';' / '*pos = '\\0';' is a plain char assignment, not a widening char-to-int conversion; established STR34-C plain-assignment misfire class."
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4967,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain 'if (ctrl == NULL) return;' guard; established MEM10-C ad-hoc-NULL-check-is-stylistic FP class."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4972,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len is bounded by the preceding wpa_ctrl_recv/wpa_ctrl_request(..., buf, &len, ...) call, which never writes beyond the input len value (initialized to sizeof(buf)-1 or sizeof(buf)); extends the established recv/request-length-cap ARR30-C FP family."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 4979,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'*end = '\\0';' / '*pos = '\\0';' is a plain char assignment, not a widening char-to-int conversion; established STR34-C plain-assignment misfire class."
+  },
+  {
+   "rule": "CON07-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5009,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread FP class: wpa_cli.c has zero pthread_create/mutex usage (single-threaded/eloop CLI), same class as CON32-C/POS49-C/CON33-C/CON34-C precedent."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5009,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "parameter matches the fixed eloop_timeout_handler/eloop_sock_handler callback typedef (src/utils/eloop.h) \u2014 signature is pinned by the eloop dispatch contract; established DCL13-C eloop-callback FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5009,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "parameter matches the fixed eloop_timeout_handler/eloop_sock_handler callback typedef (src/utils/eloop.h) \u2014 signature is pinned by the eloop dispatch contract; established DCL13-C eloop-callback FP class."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5011,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctrl_conn/mon_conn are file-scope statics declared with no initializer (:40,41) \u2014 implicitly zero-initialized to NULL per C 6.7.9p10; reading them (even in a boolean/NULL test) is well-defined, not an uninitialized-read. New pattern: static-implicit-zero-init misfire."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5015,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_cli_get_default_ifname is a function (decl :74, def :5128), not a static variable \u2014 same function-misidentified-as-static-var factual error as the wpa_list_cmd_list finding at :4347."
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5019,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no #ifdef/#else/#endif appears anywhere inside or adjacent to this call's arguments (nearest preprocessor block already closed several lines earlier); the finding even quotes the plain string literal itself as the 'directive' \u2014 extends established 'no actual #-directive in the call' PRE32-C class (l2_packet_freebsd.c precedent)."
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5019,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no #ifdef/#else/#endif appears anywhere inside or adjacent to this call's arguments (nearest preprocessor block already closed several lines earlier); the finding even quotes the plain string literal itself as the 'directive' \u2014 extends established 'no actual #-directive in the call' PRE32-C class (l2_packet_freebsd.c precedent)."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5022,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "warning_displayed is a file-scope static read at the top of this same function on the next invocation ('if (!warning_displayed)') \u2014 persisted static consumed across calls, not dead; same class as the wpa_cli_connected/last_id entries above."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5063,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "parameter matches the fixed eloop_timeout_handler/eloop_sock_handler callback typedef (src/utils/eloop.h) \u2014 signature is pinned by the eloop dispatch contract; established DCL13-C eloop-callback FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5083,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "parameter matches the fixed eloop_timeout_handler/eloop_sock_handler callback typedef (src/utils/eloop.h) \u2014 signature is pinned by the eloop dispatch contract; established DCL13-C eloop-callback FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5120,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "parameter matches the fixed eloop_timeout_handler/eloop_sock_handler callback typedef (src/utils/eloop.h) \u2014 signature is pinned by the eloop dispatch contract; established DCL13-C eloop-callback FP class."
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5133,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ifprop is filled via Android's property_get(), not getenv() \u2014 no environment-variable code exists anywhere in this branch; established ENV01-C no-getenv-nearby FP class."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5145,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread FP class: wpa_cli.c has zero pthread_create/mutex usage (single-threaded/eloop CLI), same class as CON32-C/POS49-C/CON33-C/CON34-C precedent. (strerror/getenv/readdir internal-static-storage concerns are moot without threads.)"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5152,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "the enclosing 'while ((dent = readdir(dir)))' loop condition already gates dent non-NULL before every dent-> access in the body."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5181,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len is bounded by the preceding wpa_ctrl_recv/wpa_ctrl_request(..., buf, &len, ...) call, which never writes beyond the input len value (initialized to sizeof(buf)-1 or sizeof(buf)); extends the established recv/request-length-cap ARR30-C FP family."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5184,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'*end = '\\0';' / '*pos = '\\0';' is a plain char assignment, not a widening char-to-int conversion; established STR34-C plain-assignment misfire class."
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5195,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "main()'s argv is guaranteed valid by the C runtime (5.1.2.2.1: argv[0..argc-1] non-null, argv[argc]==NULL) \u2014 not attacker-suppliable garbage; rule over-applies defensive pedantry to a language-guaranteed invariant."
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5195,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "main()'s argc is supplied by the OS/runtime, not computed from untrusted arithmetic \u2014 'overflow validation' on it is not a meaningful check."
+  },
+  {
+   "rule": "CON07-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5195,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread FP class: wpa_cli.c has zero pthread_create/mutex usage (single-threaded/eloop CLI), same class as CON32-C/POS49-C/CON33-C/CON34-C precedent."
+  },
+  {
+   "rule": "STR31-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5195,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same as the API00-C findings on this line: argc/argv are runtime-guaranteed valid for main(), not unvalidated attacker input."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5219,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ping_interval = atoi(optarg) (the -G CLI option) has no range/error check at all and feeds directly into eloop_register_timeout() as a seconds value; genuine (low-severity) unchecked conversion."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5219,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ping_interval = atoi(optarg) (the -G CLI option) has no range/error check at all and feeds directly into eloop_register_timeout() as a seconds value; genuine (low-severity) unchecked conversion."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5263,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_cli_get_default_ifname is a function (decl :74, def :5128), not a static variable \u2014 same function-misidentified-as-static-var factual error as the wpa_list_cmd_list finding at :4347."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5267,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctrl_conn/mon_conn are file-scope statics declared with no initializer (:40,41) \u2014 implicitly zero-initialized to NULL per C 6.7.9p10; reading them (even in a boolean/NULL test) is well-defined, not an uninitialized-read. New pattern: static-implicit-zero-init misfire."
+  }
+ ],
+ "fns": [
+  {
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5289,
+   "rule": "MEM12-C",
+   "desc": "main()'s early 'return -1;' on ctrl_ifname connect failure (non-global path) and on wpa_ctrl_attach failure (line 5300) both skip the tail cleanup 'os_free(ctrl_ifname); eloop_destroy(); wpa_cli_cleanup();' at the function's normal exit \u2014 heap-allocated ctrl_ifname (from os_strdup at -i or wpa_cli_get_default_ifname()) and the eloop instance are not released before process exit. Low real-world impact since the process terminates immediately after, but is exactly the goto-chain-cleanup gap MEM12-C targets elsewhere in this file.",
+   "upstream_present": "unknown"
+  },
+  {
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 5300,
+   "rule": "MEM12-C",
+   "desc": "Second instance of the same early-return-skips-cleanup shape as line 5289 (wpa_ctrl_attach failure path).",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 5,
+  "fp": 145,
+  "fn": 2
+ }
+}

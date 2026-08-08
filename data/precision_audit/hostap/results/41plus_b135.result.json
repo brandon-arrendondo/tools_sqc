@@ -1,0 +1,1219 @@
+{
+ "labels": [
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 147,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr) inside alloc call misidentified as a real dereference; sizeof doesn't evaluate operand."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 152,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "config->ipaddr is a pointer struct member (const struct hostapd_ip_addr *); sizeof(*config->ipaddr) is the correct idiom, not a decayed-array mistake."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 176,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C confuses local pointer *variable* with local *storage*; pointee is heap (os_zalloc/wpabuf_alloc) or list-owned, not stack."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 184,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain static/internal helper param, genuinely unmodified; real but low-value/low-severity const opportunity."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 194,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C confuses local pointer *variable* with local *storage*; pointee is heap (os_zalloc/wpabuf_alloc) or list-owned, not stack."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 214,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C confuses local pointer *variable* with local *storage*; pointee is heap (os_zalloc/wpabuf_alloc) or list-owned, not stack."
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 232,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in this codebase; hostap's eloop is single-threaded, so no concurrent-access hazard exists."
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 239,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in this codebase; hostap's eloop is single-threaded, so no concurrent-access hazard exists."
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 257,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Genuine synchronous call cycle (not only via eloop async dispatch); real structural recursion, though state flags bound each traversal."
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 263,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in this codebase; hostap's eloop is single-threaded, so no concurrent-access hazard exists."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 271,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 271,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 285,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in this codebase; hostap's eloop is single-threaded, so no concurrent-access hazard exists."
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 294,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in this codebase; hostap's eloop is single-threaded, so no concurrent-access hazard exists."
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 298,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in this codebase; hostap's eloop is single-threaded, so no concurrent-access hazard exists."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 308,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Guard-clause chain intentionally no-ops (return 0) when no completion flag is set; missing final else is stylistic pedantry, not a bug."
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 309,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in this codebase; hostap's eloop is single-threaded, so no concurrent-access hazard exists."
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 317,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Genuine synchronous call cycle (not only via eloop async dispatch); real structural recursion, though state flags bound each traversal."
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 329,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "dpp_tcp_send() has a documented tri-state contract (-1/0/1); ==1 checks the specific 'partial send' value, not boolean-like usage."
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 335,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in this codebase; hostap's eloop is single-threaded, so no concurrent-access hazard exists."
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 343,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Genuine synchronous call cycle (not only via eloop async dispatch); real structural recursion, though state flags bound each traversal."
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 365,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Genuine synchronous call cycle (not only via eloop async dispatch); real structural recursion, though state flags bound each traversal."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 392,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Param matches fixed eloop_timeout_handler/eloop_sock_handler dispatch-contract signature; not a real const opportunity."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 401,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "addr is the function's whole purpose to WRITE (cast to sockaddr_in*/in6* and populated); finding factually wrong that it's unmodified."
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 411,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "#ifdef/#endif wraps the next case entirely; established preprocessor-conditional-blind fallthrough misfire, not a real gap."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 412,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Parameter is not const-qualified to begin with (plain struct sockaddr *); nothing is being cast away."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 421,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Parameter is not const-qualified to begin with (plain struct sockaddr *); nothing is being cast away."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 438,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Param matches fixed eloop_timeout_handler/eloop_sock_handler dispatch-contract signature; not a real const opportunity."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 467,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr) inside alloc call misidentified as a real dereference; sizeof doesn't evaluate operand."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 486,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 486,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 493,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 493,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 506,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in this codebase; hostap's eloop is single-threaded, so no concurrent-access hazard exists."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 512,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C confuses local pointer *variable* with local *storage*; pointee is heap (os_zalloc/wpabuf_alloc) or list-owned, not stack."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 513,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto fail: label reached via earlier goto; sqc's CFG doesn't connect goto to label, misreports code after return as unreachable."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 531,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C confuses local pointer *variable* with local *storage*; pointee is heap (os_zalloc/wpabuf_alloc) or list-owned, not stack."
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 545,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Freed pointer is reassigned to a new value on the very next line/statement before the flagged check/use; not a real UAF."
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 553,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in this codebase; hostap's eloop is single-threaded, so no concurrent-access hazard exists."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 567,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C confuses local pointer *variable* with local *storage*; pointee is heap (os_zalloc/wpabuf_alloc) or list-owned, not stack."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 576,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C confuses local pointer *variable* with local *storage*; pointee is heap (os_zalloc/wpabuf_alloc) or list-owned, not stack."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 584,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only DPP API; param always non-NULL at its actual call sites within hostapd/wpa_supplicant core."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 584,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only DPP API; param always non-NULL at its actual call sites within hostapd/wpa_supplicant core."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 587,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic ptr+len (or companion size) parameter pair; not a real conformant-array-syntax gap."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 665,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C confuses local pointer *variable* with local *storage*; pointee is heap (os_zalloc/wpabuf_alloc) or list-owned, not stack."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 672,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only DPP API; param always non-NULL at its actual call sites within hostapd/wpa_supplicant core."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 672,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only DPP API; param always non-NULL at its actual call sites within hostapd/wpa_supplicant core."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 672,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only DPP API; param always non-NULL at its actual call sites within hostapd/wpa_supplicant core."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 672,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "data_len comes from a bounded 802.11 GAS frame (far from SIZE_MAX); 4+1+data_len cannot realistically overflow size_t."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 676,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conn=NULL's value is read right after the loop via 'if (!conn && dpp->tmp_controller)'; not actually dead."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 711,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Finding is factually wrong: body is 'return dpp && dl_list_len(&dpp->controllers) > 0;' -- dpp is short-circuit-checked before deref."
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 827,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in this codebase; hostap's eloop is single-threaded, so no concurrent-access hazard exists."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 858,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Param matches fixed eloop_timeout_handler/eloop_sock_handler dispatch-contract signature; not a real const opportunity."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 916,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain static/internal helper param, genuinely unmodified; real but low-value/low-severity const opportunity."
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 922,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "u8 ssid[SSID_MAX_LEN] fixed buffer; zero getenv() calls anywhere in this file. Established ENV01-C wholesale misfire."
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1378,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in this codebase; hostap's eloop is single-threaded, so no concurrent-access hazard exists."
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1437,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in this codebase; hostap's eloop is single-threaded, so no concurrent-access hazard exists."
+  },
+  {
+   "rule": "STR05-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1443,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Genuine (low-severity) TP: char * assigned a string-literal without const, matching the established STR05-C class with no FP counter-pattern."
+  },
+  {
+   "rule": "STR05-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1446,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Genuine (low-severity) TP: char * assigned a string-literal without const, matching the established STR05-C class with no FP counter-pattern."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1466,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-literal ('\\0') assignment to a char*, no widening/sign-extension involved; established plain-char-assignment misfire."
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1483,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in this codebase; hostap's eloop is single-threaded, so no concurrent-access hazard exists."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1533,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Param matches fixed eloop_timeout_handler/eloop_sock_handler dispatch-contract signature; not a real const opportunity."
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1545,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Freed pointer is reassigned to a new value on the very next line/statement before the flagged check/use; not a real UAF."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1555,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Param matches fixed eloop_timeout_handler/eloop_sock_handler dispatch-contract signature; not a real const opportunity."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1607,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "auth==NULL forces res=-1 on this path, which is caught by an earlier 'if (res < 0) return -1;' guard; auth is non-NULL by the flagged line."
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1616,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in this codebase; hostap's eloop is single-threaded, so no concurrent-access hazard exists."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1626,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Param matches fixed eloop_timeout_handler/eloop_sock_handler dispatch-contract signature; not a real const opportunity."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1717,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Buffer's ownership is transferred into the callee (which frees or the caller frees explicitly on every path); interprocedural free not tracked."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1739,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Param matches fixed eloop_timeout_handler/eloop_sock_handler dispatch-contract signature; not a real const opportunity."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1755,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1755,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1768,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "recv() count param is bounded to <=4 total octets; conn->msg_len_octets can never wrap. Proven-safe bounded-loop FP class."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1786,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Struct field is freed by dpp_connection_free/dpp_connection_remove elsewhere; sqc's per-function leak check misses the interprocedural free."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1799,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpabuf_put(buf,0) writes buf->used (even though +0) while wpabuf_tailroom(buf) reads it in the same unsequenced call; literally true per rule text, but harmless (+0)."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1801,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1801,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1803,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_connection_remove(conn) is called on the immediately preceding line, which frees conn->msg via dpp_connection_free; not a leak."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1808,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_connection_remove(conn) is called on the immediately preceding line, which frees conn->msg via dpp_connection_free; not a leak."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1817,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "This is the 'need more data, wait for next recv' partial-buffer path; conn->msg is intentionally retained for the next call, not leaked."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1824,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_connection_remove(conn) is called on the immediately preceding line, which frees conn->msg via dpp_connection_free; not a leak."
+  },
+  {
+   "rule": "CON43-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1828,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "switch on a dereferenced pointer into caller-owned, non-shared memory in a single-threaded (no pthread) codebase; no concurrent modifier exists."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1859,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Param matches fixed eloop_timeout_handler/eloop_sock_handler dispatch-contract signature; not a real const opportunity."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1873,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1873,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1876,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Both call args are pure reads (no shared mutable state between them); established pure-accessor-args EXP30-C misfire."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1877,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1877,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Variable is populated via accept()'s output pointer parameter just before use; sqc's def-use tracking misses writes through address-of syscalls."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1879,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr) inside alloc call misidentified as a real dereference; sizeof doesn't evaluate operand."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1894,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1894,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "CON32-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1901,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in this codebase; hostap's eloop is single-threaded, so no concurrent-access hazard exists."
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1901,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in this codebase; hostap's eloop is single-threaded, so no concurrent-access hazard exists."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1908,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto fail: label reached via earlier goto; sqc's CFG doesn't connect goto to label, misreports code after return as unreachable."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1914,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pkex_done is only stored (conn->pkex_done=pkex_done) here, never dereferenced; the real call site later checks 'if (!conn->pkex_done) return -1;' first."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1934,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr) inside alloc call misidentified as a real dereference; sizeof doesn't evaluate operand."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1951,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1951,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1958,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1958,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "CON32-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1971,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in this codebase; hostap's eloop is single-threaded, so no concurrent-access hazard exists."
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1971,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in this codebase; hostap's eloop is single-threaded, so no concurrent-access hazard exists."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1986,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto fail: label reached via earlier goto; sqc's CFG doesn't connect goto to label, misreports code after return as unreachable."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 1993,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain static/internal helper param, genuinely unmodified; real but low-value/low-severity const opportunity."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2009,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Finding is factually wrong: the parameter IS checked (ternary default, short-circuit &&, or guarded before use) in this very function."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2009,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "process_conf_obj is only stored on conn, never called here; the real call site checks 'if (conn->process_conf_obj)' first."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2009,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tcp_msg_sent is only stored on conn, never called here; the real call site checks 'conn->tcp_msg_sent &&' first."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2033,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr) inside alloc call misidentified as a real dereference; sizeof doesn't evaluate operand."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2059,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2059,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2066,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2066,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "CON32-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2079,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in this codebase; hostap's eloop is single-threaded, so no concurrent-access hazard exists."
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2079,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in this codebase; hostap's eloop is single-threaded, so no concurrent-access hazard exists."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2088,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto fail: label reached via earlier goto; sqc's CFG doesn't connect goto to label, misreports code after return as unreachable."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2094,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Finding is factually wrong: the parameter IS checked (ternary default, short-circuit &&, or guarded before use) in this very function."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2094,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mud_url is ternary-checked: 'mud_url ? os_strdup(mud_url) : NULL' -- finding factually wrong."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2094,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "extra_conf_req_name is ternary-checked before use -- finding factually wrong."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2094,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "extra_conf_req_value is ternary-checked before use -- finding factually wrong."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2094,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "process_conf_obj is only stored on conn, never called here; guarded at its real call site."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2094,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tcp_msg_sent is only stored on conn, never called here; guarded at its real call site."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2094,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain static/internal helper param, genuinely unmodified; real but low-value/low-severity const opportunity."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2141,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr) inside alloc call misidentified as a real dereference; sizeof doesn't evaluate operand."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2165,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2165,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2171,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2171,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "POS02-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2181,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Codebase-wide no-privilege-separation FP: hostapd/wpa_supplicant never do setuid/setgid privilege dropping anywhere; not this call's bug."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2184,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2184,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "POS02-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2187,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Codebase-wide no-privilege-separation FP: hostapd/wpa_supplicant never do setuid/setgid privilege dropping anywhere; not this call's bug."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2196,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto fail: label reached via earlier goto; sqc's CFG doesn't connect goto to label, misreports code after return as unreachable."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2234,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain static/internal helper param, genuinely unmodified; real but low-value/low-severity const opportunity."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2241,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain static/internal helper param, genuinely unmodified; real but low-value/low-severity const opportunity."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2264,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only DPP API; param always non-NULL at its actual call sites within hostapd/wpa_supplicant core."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2282,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only DPP API; param always non-NULL at its actual call sites within hostapd/wpa_supplicant core."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2282,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain static/internal helper param, genuinely unmodified; real but low-value/low-severity const opportunity."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2304,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only DPP API; param always non-NULL at its actual call sites within hostapd/wpa_supplicant core."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2304,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "code is ternary-checked: 'code ? os_strdup(code) : NULL' -- finding factually wrong."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2304,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "identifier is ternary-checked: 'identifier ? os_strdup(identifier) : NULL' -- finding factually wrong."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2304,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain static/internal helper param, genuinely unmodified; real but low-value/low-severity const opportunity."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2321,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only DPP API; param always non-NULL at its actual call sites within hostapd/wpa_supplicant core."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2420,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Param matches fixed eloop_timeout_handler/eloop_sock_handler dispatch-contract signature; not a real const opportunity."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2435,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2435,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2438,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Both call args are pure reads (no shared mutable state between them); established pure-accessor-args EXP30-C misfire."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2439,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2439,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Variable is populated via accept()'s output pointer parameter just before use; sqc's def-use tracking misses writes through address-of syscalls."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2493,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2493,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror()/inet_ntoa() thread-safety flagged in a single-threaded (no pthread) codebase; established FP class."
+  },
+  {
+   "rule": "CON32-C",
+   "file": "src/common/dpp_tcp.c",
+   "line": 2500,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in this codebase; hostap's eloop is single-threaded, so no concurrent-access hazard exists."
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/common/dpp_tcp.c",
+   "line": 1454,
+   "rule": "STR31-C",
+   "desc": "printf_encode(buf, len*4+1, auth->e_name, e_len) in dpp_controller_rx_gas_req passes the outer function's unrelated 'len' param as maxlen instead of 'e_len' (buf was sized e_len*4+1); currently harmless since printf_encode's write count is bounded by the correctly-passed e_len, but latent/miscalibrated if that relationship ever inverts.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 15,
+  "fp": 135,
+  "fn": 1
+ }
+}

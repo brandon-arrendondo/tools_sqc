@@ -1,0 +1,1226 @@
+{
+ "labels": [
+  {
+   "rule": "CON03-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 63,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread/threading anywhere in this single-process, blocking-loop file; matches confirmed no-pthread CON0x-C FP class."
+  },
+  {
+   "rule": "CON03-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 64,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread/threading anywhere in this single-process, blocking-loop file; matches confirmed no-pthread CON0x-C FP class."
+  },
+  {
+   "rule": "CON03-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 65,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread/threading anywhere in this single-process, blocking-loop file; matches confirmed no-pthread CON0x-C FP class."
+  },
+  {
+   "rule": "CON03-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 66,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread/threading anywhere in this single-process, blocking-loop file; matches confirmed no-pthread CON0x-C FP class."
+  },
+  {
+   "rule": "CON03-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 67,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread/threading anywhere in this single-process, blocking-loop file; matches confirmed no-pthread CON0x-C FP class."
+  },
+  {
+   "rule": "CON03-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 68,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread/threading anywhere in this single-process, blocking-loop file; matches confirmed no-pthread CON0x-C FP class."
+  },
+  {
+   "rule": "CON03-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 69,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread/threading anywhere in this single-process, blocking-loop file; matches confirmed no-pthread CON0x-C FP class."
+  },
+  {
+   "rule": "CON02-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 69,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'stop' only ever set from the normal request-handling path (TERMINATE cmd), never from a signal handler; No pthread/threading anywhere in this single-process, blocking-loop file; matches confirmed no-pthread CON0x-C FP class."
+  },
+  {
+   "rule": "CON03-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 80,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread/threading anywhere in this single-process, blocking-loop file; matches confirmed no-pthread CON0x-C FP class."
+  },
+  {
+   "rule": "CON03-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 94,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread/threading anywhere in this single-process, blocking-loop file; matches confirmed no-pthread CON0x-C FP class."
+  },
+  {
+   "rule": "CON03-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 109,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread/threading anywhere in this single-process, blocking-loop file; matches confirmed no-pthread CON0x-C FP class."
+  },
+  {
+   "rule": "FIO23-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 117,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Misattributed: cited line is inside db_table_exists, not main(); exit() flushes stdout regardless per C std."
+  },
+  {
+   "rule": "DCL11-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 136,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'err' is genuinely char*; no type mismatch. NULL-value concern (not type) is EXP34-C's territory."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 136,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "err stays NULL unless sqlite3_exec populates errmsg on this failure path; no guard before %s use in printf (theoretical UB, low real-world odds)."
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 150,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Phantom-directive misfire on a plain multi-line printf() call; no #if/#define token anywhere in the call (confirmed hostap PRE32-C FP class)."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 162,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'db' is a local pointer VARIABLE but points to the heap-managed sqlite3 handle from sqlite3_open(), not automatic storage (confirmed DCL30-C heap-vs-stack-confusion class)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 166,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "get_milenage_cb matches sqlite3_exec's fixed callback typedef int(*)(void*,int,char**,char**); signature pinned by external dispatch contract (confirmed class, extends to sqlite3_exec callbacks)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 166,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same sqlite3_exec callback dispatch-contract FP as 'argv' above."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 199,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi(argv[i]) in the DB row callback has no validation at this call site."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 199,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Same atoi() call, no error detection at this site."
+  },
+  {
+   "rule": "CON07-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 207,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread/threading anywhere in this single-process, blocking-loop file; matches confirmed no-pthread CON0x-C FP class."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 213,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoll(imsi_txt) is unchecked; used only for reformatting, low severity but a real gap."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 213,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Same atoll() call, no error detection."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 228,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "db_update_milenage_sqn's 'm' param is genuinely never modified in this static internal-only helper (no vtable/callback contract binds it) \u2014 real if low-value."
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 236,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_snprintf_hex() is not sprintf(); name-substring misidentification (confirmed hostap ERR02-C FP class)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 237,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'pos' derives from the fixed local array 'val[13]' via pointer arithmetic; never NULL."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 237,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'*pos = \\0;' is a plain char-literal write, not a widening char-read (confirmed STR34-C FP class)."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 240,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'val' is fully populated via pos=val; pos+=wpa_snprintf_hex(...); *pos='\\0'; before use \u2014 write-through-alias not tracked (confirmed EXP33-C alias class)."
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 242,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Phantom-directive misfire on a plain multi-line printf() call; no #if/#define token anywhere in the call (confirmed hostap PRE32-C FP class)."
+  },
+  {
+   "rule": "POS02-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 266,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostap runs as root for its entire lifetime by design (no setuid/privilege-separation model anywhere in the tree); confirmed codebase-wide POS02-C FP class."
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 283,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic ad-hoc-NULL-check pedantry (confirmed MEM10-C FP class); the check is present and correct."
+  },
+  {
+   "rule": "FIO05-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 286,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'fname' is an admin-supplied local CLI path (-g option), not adversarial input (confirmed FIO05-C admin-config-path FP class)."
+  },
+  {
+   "rule": "WIN03-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 286,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "File is POSIX/UNIX-domain-socket + signal()-based; never built on Windows (uses <sys/un.h>, SIGTERM/SIGINT)."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 293,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fabricated: cited line is 'while (fgets(buf, sizeof(buf), f))', a bounded fixed-buffer read loop \u2014 no 'pos' pointer increment exists here at all."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 293,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fabricated: 'f' is a FILE*; there is no cast of any kind on this line."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 304,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'*pos = \\0;' plain char-literal write (confirmed STR34-C FP class)."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 352,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "g/m are local pointer variables to heap objects allocated via os_zalloc() in read_gsm_triplets/read_milenage, not automatic-storage objects (confirmed DCL30-C class)."
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 352,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Extends the DCL30-C heap-vs-stack-confusion class to MEM30-C: the pointer being stored into the global points to an os_zalloc()'d heap list node, not a stack array/VLA."
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 357,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "fclose() return value is genuinely never checked at this call site."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 369,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "gsm_db_pos is a persistent static global whose value is read on the *next* call to get_gsm_triplet \u2014 cross-call significance, not a dead store (confirmed MSC13-C static/global class)."
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 369,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Extends the DCL30-C heap-vs-stack-confusion class to MEM30-C: the pointer being stored into the global points to an os_zalloc()'d heap list node, not a stack array/VLA."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 370,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Returns 'g', a local pointer to a heap-allocated (os_zalloc) list node reached via the gsm_db list \u2014 not an automatic-storage object."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 378,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "gsm_db_pos is a persistent static global whose value is read on the *next* call to get_gsm_triplet \u2014 cross-call significance, not a dead store (confirmed MSC13-C static/global class)."
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 378,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Extends the DCL30-C heap-vs-stack-confusion class to MEM30-C: the pointer being stored into the global points to an os_zalloc()'d heap list node, not a stack array/VLA."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 379,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Returns 'g', a local pointer to a heap-allocated (os_zalloc) list node reached via the gsm_db list \u2014 not an automatic-storage object."
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 395,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same ad-hoc-NULL-check stylistic class as line 283."
+  },
+  {
+   "rule": "FIO05-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 398,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same admin-config-path class, -m option file."
+  },
+  {
+   "rule": "WIN03-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 398,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "File is POSIX/UNIX-domain-socket + signal()-based; never built on Windows (uses <sys/un.h>, SIGTERM/SIGINT)."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 405,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fabricated: cited line is 'while (fgets(buf, sizeof(buf), f))', a bounded fixed-buffer read loop \u2014 no 'pos' pointer increment exists here at all."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 405,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fabricated: 'f' is a FILE*; there is no cast of any kind on this line."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 416,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same plain char-literal-write class."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 474,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "atoi() result is immediately range-checked in the very next lines (confirmed 'immediately range-checked' ERR07/34-C judgment-call class)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 474,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same immediately-range-checked class."
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 478,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Phantom-directive misfire on a plain multi-line printf() call; no #if/#define token anywhere in the call (confirmed hostap PRE32-C FP class)."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 486,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "g/m are local pointer variables to heap objects allocated via os_zalloc() in read_gsm_triplets/read_milenage, not automatic-storage objects (confirmed DCL30-C class)."
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 486,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Extends the DCL30-C heap-vs-stack-confusion class to MEM30-C: the pointer being stored into the global points to an os_zalloc()'d heap list node, not a stack array/VLA."
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 491,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "fclose() return value is genuinely never checked at this call site."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 501,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'buf + sizeof(buf)' is pointer arithmetic on the array's address, not a read of its contents \u2014 not a dereference."
+  },
+  {
+   "rule": "WIN03-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 505,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "File is POSIX/UNIX-domain-socket + signal()-based; never built on Windows (uses <sys/un.h>, SIGTERM/SIGINT)."
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 511,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "snprintf() return genuinely unchecked; 'name[500]' is not provably sized to fit an arbitrary CLI-supplied fname."
+  },
+  {
+   "rule": "STR03-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 511,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Same unchecked/generically-sized snprintf, real (low-severity) truncation gap."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 511,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No cast at all exists on 'name' in this snprintf() call \u2014 fabricated (confirmed EXP05-C no-actual-cast pile-on class)."
+  },
+  {
+   "rule": "FIO03-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 512,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "fopen(name, \"w\") has no O_EXCL-equivalent exclusivity for this data-file rewrite."
+  },
+  {
+   "rule": "FIO06-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 512,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "fopen() cannot set explicit permissions; low severity for a local admin-owned data file."
+  },
+  {
+   "rule": "WIN03-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 512,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "File is POSIX/UNIX-domain-socket + signal()-based; never built on Windows (uses <sys/un.h>, SIGTERM/SIGINT)."
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 515,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "fclose() return value is genuinely never checked at this call site."
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 516,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'f2' is NULL in exactly this branch (the fopen() failure branch) \u2014 nothing was allocated, nothing to leak."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 519,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fabricated: cited line is 'while (fgets(buf, sizeof(buf), f))', a bounded fixed-buffer read loop \u2014 no 'pos' pointer increment exists here at all."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 519,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fabricated: 'f' is a FILE*; there is no cast of any kind on this line."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 531,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'imsi_len' is bounded by 'pos - buf >= 20' guarded a few lines earlier (goto no_update), so imsi_len < 20 == sizeof(m->imsi); rule doesn't see the earlier same-function guard."
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 539,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos += snprintf(pos, end-pos, \"%s \", m->imsi) is provably bounded: m->imsi is a fixed char[20] field and end-pos is ~500 bytes at this first write \u2014 truncation is impossible by construction."
+  },
+  {
+   "rule": "STR03-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 539,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same provably-bounded snprintf as above."
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 540,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_snprintf_hex() misidentified as sprintf() (confirmed ERR02-C name-substring FP class)."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 541,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-literal write through *pos/*rpos (space/colon/newline/NUL), not a widening read (confirmed STR34-C FP class)."
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 542,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_snprintf_hex() misidentified as sprintf() (confirmed ERR02-C name-substring FP class)."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 543,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-literal write through *pos/*rpos (space/colon/newline/NUL), not a widening read (confirmed STR34-C FP class)."
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 544,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_snprintf_hex() misidentified as sprintf() (confirmed ERR02-C name-substring FP class)."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 545,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-literal write through *pos/*rpos (space/colon/newline/NUL), not a widening read (confirmed STR34-C FP class)."
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 546,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_snprintf_hex() misidentified as sprintf() (confirmed ERR02-C name-substring FP class)."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 547,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-literal write through *pos/*rpos (space/colon/newline/NUL), not a widening read (confirmed STR34-C FP class)."
+  },
+  {
+   "rule": "FIO39-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 550,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'f' (input) and 'f2' (output) are two entirely different FILE* streams; the rule's same-stream-repositioning concern doesn't apply across distinct handles."
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 550,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'buf' is 'char buf[500]', a string \u2014 not an Integer; type-classification bug."
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 553,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "fclose() return value is genuinely never checked at this call site."
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 553,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "fclose() return value is genuinely never checked at this call site (duplicate of the ERR00-C finding on the same line)."
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 554,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "fclose() return value is genuinely never checked at this call site."
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 554,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "fclose() return value is genuinely never checked at this call site (duplicate of the ERR00-C finding on the same line)."
+  },
+  {
+   "rule": "FIO24-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 554,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "The two fclose(f) calls (line 515 and line 554) sit on mutually-exclusive branches (515 is inside the f2==NULL failure branch, which returns immediately); never both execute (confirmed FIO24-C branch-blind double-close class)."
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 556,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "snprintf() return genuinely unchecked; 'name[500]' is not provably sized to fit an arbitrary CLI-supplied fname."
+  },
+  {
+   "rule": "STR03-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 556,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Same unchecked/generically-sized snprintf, real (low-severity) truncation gap."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 556,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No cast at all exists on 'name' in this snprintf() call \u2014 fabricated (confirmed EXP05-C no-actual-cast pile-on class)."
+  },
+  {
+   "rule": "FIO10-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 557,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate POSIX rename()-based backup-rotation idiom; program is never built for Windows."
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 562,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "snprintf() return genuinely unchecked; 'name[500]' is not provably sized to fit an arbitrary CLI-supplied fname."
+  },
+  {
+   "rule": "STR03-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 562,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Same unchecked/generically-sized snprintf, real (low-severity) truncation gap."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 562,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No cast at all exists on 'name' in this snprintf() call \u2014 fabricated (confirmed EXP05-C no-actual-cast pile-on class)."
+  },
+  {
+   "rule": "FIO10-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 563,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate POSIX rename()-based backup-rotation idiom; program is never built for Windows."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 586,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "get_milenage() returns 'm' from the heap-allocated milenage_db list or the static db_tmp_milenage \u2014 never an automatic-storage object."
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 590,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic NUL-terminated char* string param (imsi) / ptr+len pair (resp, resp_len); confirmed API05-C FP class."
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 590,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic NUL-terminated char* string param (imsi) / ptr+len pair (resp, resp_len); confirmed API05-C FP class."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 602,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-literal write through *pos/*rpos (space/colon/newline/NUL), not a widening read (confirmed STR34-C FP class)."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 603,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "atoi() result is immediately range-checked in the very next lines (confirmed 'immediately range-checked' ERR07/34-C judgment-call class)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 603,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same immediately-range-checked class."
+  },
+  {
+   "rule": "STR03-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 611,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Return value IS checked on the very next line (ret<0 || ret>=rend-rpos); truncation is caught."
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 618,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'_rand' is declared inside a block/function scope, not file scope; DCL37-C's underscore restriction applies only at file scope (confirmed class)."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 623,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-literal write through *pos/*rpos (space/colon/newline/NUL), not a widening read (confirmed STR34-C FP class)."
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 624,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_snprintf_hex() misidentified as sprintf() (confirmed ERR02-C name-substring FP class)."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 625,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-literal write through *pos/*rpos (space/colon/newline/NUL), not a widening read (confirmed STR34-C FP class)."
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 626,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_snprintf_hex() misidentified as sprintf() (confirmed ERR02-C name-substring FP class)."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 627,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-literal write through *pos/*rpos (space/colon/newline/NUL), not a widening read (confirmed STR34-C FP class)."
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 628,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_snprintf_hex() misidentified as sprintf() (confirmed ERR02-C name-substring FP class)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 630,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'rpos'/'pos' derive from the caller-supplied 'resp' buffer (always valid); never NULL."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 630,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-literal write through *pos/*rpos (space/colon/newline/NUL), not a widening read (confirmed STR34-C FP class)."
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 635,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Assignment is already parenthesized: '(g = get_gsm_triplet(imsi))' (confirmed already-parenthesized EXP45-C FP class)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 636,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'g' is guaranteed non-NULL inside the loop body: the while condition's short-circuited '(g = get_gsm_triplet(imsi))' already tested truthiness before entering the body."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 640,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-literal write through *pos/*rpos (space/colon/newline/NUL), not a widening read (confirmed STR34-C FP class)."
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 641,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_snprintf_hex() misidentified as sprintf() (confirmed ERR02-C name-substring FP class)."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 643,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-literal write through *pos/*rpos (space/colon/newline/NUL), not a widening read (confirmed STR34-C FP class)."
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 644,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_snprintf_hex() misidentified as sprintf() (confirmed ERR02-C name-substring FP class)."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 646,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-literal write through *pos/*rpos (space/colon/newline/NUL), not a widening read (confirmed STR34-C FP class)."
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 647,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_snprintf_hex() misidentified as sprintf() (confirmed ERR02-C name-substring FP class)."
+  },
+  {
+   "rule": "INT00-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 652,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'imsi' here is the function's char* parameter; sqc appears to conflate it with the unrelated 'unsigned long long imsi' local in db_get_milenage() (different function/scope, same identifier name) \u2014 new cross-function name-conflation pattern."
+  },
+  {
+   "rule": "DCL11-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 652,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same cross-function 'imsi' name-conflation bug; the actual argument is char* and matches %s exactly."
+  },
+  {
+   "rule": "STR03-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 653,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Return value IS checked on the very next line (ret<0 || ret>=rend-rpos); truncation is caught."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 656,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Final 'rpos += ret;' write is never read again before the function returns \u2014 genuine (harmless) dead store."
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 663,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic NUL-terminated char* string param (imsi) / ptr+len pair (resp, resp_len); confirmed API05-C FP class."
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 663,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic NUL-terminated char* string param (imsi) / ptr+len pair (resp, resp_len); confirmed API05-C FP class."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 674,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-literal write through *pos/*rpos (space/colon/newline/NUL), not a widening read (confirmed STR34-C FP class)."
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 685,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'_rand' is declared inside a block/function scope, not file scope; DCL37-C's underscore restriction applies only at file scope (confirmed class)."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 690,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-literal write through *pos/*rpos (space/colon/newline/NUL), not a widening read (confirmed STR34-C FP class)."
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 691,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_snprintf_hex() misidentified as sprintf() (confirmed ERR02-C name-substring FP class)."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 692,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-literal write through *pos/*rpos (space/colon/newline/NUL), not a widening read (confirmed STR34-C FP class)."
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 693,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_snprintf_hex() misidentified as sprintf() (confirmed ERR02-C name-substring FP class)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 699,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'rpos'/'pos' derive from the caller-supplied 'resp' buffer (always valid); never NULL."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 699,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-literal write through *pos/*rpos (space/colon/newline/NUL), not a widening read (confirmed STR34-C FP class)."
+  },
+  {
+   "rule": "INT00-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 703,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'imsi' here is the function's char* parameter; sqc appears to conflate it with the unrelated 'unsigned long long imsi' local in db_get_milenage() (different function/scope, same identifier name) \u2014 new cross-function name-conflation pattern."
+  },
+  {
+   "rule": "DCL11-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 703,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same cross-function 'imsi' name-conflation bug; the actual argument is char* and matches %s exactly."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 707,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Final 'rpos += ret;' write is never read again before the function returns \u2014 genuine (harmless) dead store."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 726,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch (confirmed INT14-C FP class): 'sqn' is a u8* buffer, and the CERT INT14-C concern is bitwise-on-signed, not applicable here."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 727,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch; 'ind_len' is int but only ever used as a small shift/mask amount, no signed-bitwise hazard."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 727,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch; 'val' is u64 (unsigned) \u2014 CERT INT14-C's concern is bitwise-on-*signed* operands."
+  },
+  {
+   "rule": "INT34-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 727,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'val' is u64; shifting by ind_len<=32 (bounds-checked in main(), 0..32) is always within a 64-bit type's width."
+  },
+  {
+   "rule": "INT34-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 728,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'1 << ind_len': the literal '1' is type int (32-bit); main()'s bound allows ind_len up to 32, and shifting a 32-bit int by exactly 32 is undefined behavior."
+  },
+  {
+   "rule": "INT34-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 729,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'seq' is u64; shifting by ind_len<=32 is safely within a 64-bit type's width."
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 735,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic NUL-terminated char* string param (imsi) / ptr+len pair (resp, resp_len); confirmed API05-C FP class."
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 735,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic NUL-terminated char* string param (imsi) / ptr+len pair (resp, resp_len); confirmed API05-C FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 735,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'resp' IS written through the 'pos = resp' alias later in the function; const would break the write (confirmed pos=buf alias-miss DCL13-C class)."
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 739,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'_rand' is declared inside a block/function scope, not file scope; DCL37-C's underscore restriction applies only at file scope (confirmed class)."
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 743,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No getenv() call anywhere in this function or file (confirmed ENV01-C wholesale-misfire-on-fixed-buffer class)."
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 760,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Phantom-directive misfire on a plain multi-line printf() call; no #if/#define token anywhere in the call (confirmed hostap PRE32-C FP class)."
+  },
+  {
+   "rule": "INT00-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 771,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'imsi' here is the function's char* parameter; sqc appears to conflate it with the unrelated 'unsigned long long imsi' local in db_get_milenage() (different function/scope, same identifier name) \u2014 new cross-function name-conflation pattern."
+  },
+  {
+   "rule": "DCL11-C",
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 771,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same cross-function 'imsi' name-conflation bug; the actual argument is char* and matches %s exactly."
+  }
+ ],
+ "fns": [
+  {
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 980,
+   "rule": "SIG30-C",
+   "desc": "handle_term() (SIGTERM/SIGINT handler) calls cleanup(), which calls printf/fclose/sqlite3_close/unlink/close and the os_free/malloc family - none async-signal-safe. Classic signal-handler-safety violation.",
+   "upstream_present": "unknown"
+  },
+  {
+   "file": "hostapd/hlr_auc_gw.c",
+   "line": 1084,
+   "rule": "MEM12-C",
+   "desc": "main()'s error paths (read_gsm_triplets failure at :1084, read_milenage failure at :1087, open_socket failure at :1092) return -1 directly instead of calling cleanup(), leaking any gsm_db/milenage_db list nodes already linked (and the open sqlite_db handle) from earlier successful steps. Low real-world severity (process exit reclaims memory) but a genuine resource-release gap per rule text.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 24,
+  "fp": 126,
+  "fn": 2
+ }
+}

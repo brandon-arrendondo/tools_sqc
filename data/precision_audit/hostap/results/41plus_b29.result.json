@@ -1,0 +1,1211 @@
+{
+ "labels": [
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3953,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const's message param is const char* (dbus-errors.h); const-qualifier disproves finding, matches confirmed STR30-C rule-logic-bug pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3970,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iter/error/property_desc supplied only by the internal dbus property dispatcher (dbus_new.c), never externally nullable; internal-only-API API00-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3970,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iter/error/property_desc supplied only by the internal dbus property dispatcher (dbus_new.c), never externally nullable; internal-only-API API00-C FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3970,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_dbus_getter/setter_* referenced externally via DECLARE_ACCESSOR in dbus_new_handlers.h and registered in dbus_new.c's property table; extern linkage genuinely required, extends confirmed wpa_driver_*_ops DCL15-C FP pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3972,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data is 4th param of the fixed WPADBusPropertyAccessor signature (DECLARE_ACCESSOR contract, dispatched from dbus_new.c property table); dispatch-contract DCL13-C FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3991,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_dbus_getter/setter_* referenced externally via DECLARE_ACCESSOR in dbus_new_handlers.h and registered in dbus_new.c's property table; extern linkage genuinely required, extends confirmed wpa_driver_*_ops DCL15-C FP pattern"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4003,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const's message param is const char* (dbus-errors.h); const-qualifier disproves finding, matches confirmed STR30-C rule-logic-bug pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4020,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iter/error/property_desc supplied only by the internal dbus property dispatcher (dbus_new.c), never externally nullable; internal-only-API API00-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4020,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iter/error/property_desc supplied only by the internal dbus property dispatcher (dbus_new.c), never externally nullable; internal-only-API API00-C FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4020,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_dbus_getter/setter_* referenced externally via DECLARE_ACCESSOR in dbus_new_handlers.h and registered in dbus_new.c's property table; extern linkage genuinely required, extends confirmed wpa_driver_*_ops DCL15-C FP pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4022,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data is 4th param of the fixed WPADBusPropertyAccessor signature (DECLARE_ACCESSOR contract, dispatched from dbus_new.c property table); dispatch-contract DCL13-C FP class"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4026,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char *str = country; country is plain char[3], not const-qualified; fabricated-const EXP40-C rule bug (wmm.c:104 pattern)"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4046,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_dbus_getter/setter_* referenced externally via DECLARE_ACCESSOR in dbus_new_handlers.h and registered in dbus_new.c's property table; extern linkage genuinely required, extends confirmed wpa_driver_*_ops DCL15-C FP pattern"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4057,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "country set by wpas_dbus_simple_property_setter via dbus_message_iter_get_basic on a validated DBUS_TYPE_STRING arg -> guaranteed non-NULL on success; callee-guarantees-non-null EXP34-C FP class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4058,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const's message param is const char* (dbus-errors.h); const-qualifier disproves finding, matches confirmed STR30-C rule-logic-bug pattern"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4065,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const's message param is const char* (dbus-errors.h); const-qualifier disproves finding, matches confirmed STR30-C rule-logic-bug pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4085,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iter/error/property_desc supplied only by the internal dbus property dispatcher (dbus_new.c), never externally nullable; internal-only-API API00-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4085,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iter/error/property_desc supplied only by the internal dbus property dispatcher (dbus_new.c), never externally nullable; internal-only-API API00-C FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4085,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_dbus_getter/setter_* referenced externally via DECLARE_ACCESSOR in dbus_new_handlers.h and registered in dbus_new.c's property table; extern linkage genuinely required, extends confirmed wpa_driver_*_ops DCL15-C FP pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4087,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data is 4th param of the fixed WPADBusPropertyAccessor signature (DECLARE_ACCESSOR contract, dispatched from dbus_new.c property table); dispatch-contract DCL13-C FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4106,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_dbus_getter/setter_* referenced externally via DECLARE_ACCESSOR in dbus_new_handlers.h and registered in dbus_new.c's property table; extern linkage genuinely required, extends confirmed wpa_driver_*_ops DCL15-C FP pattern"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4118,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const's message param is const char* (dbus-errors.h); const-qualifier disproves finding, matches confirmed STR30-C rule-logic-bug pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4135,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iter/error/property_desc supplied only by the internal dbus property dispatcher (dbus_new.c), never externally nullable; internal-only-API API00-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4135,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iter/error/property_desc supplied only by the internal dbus property dispatcher (dbus_new.c), never externally nullable; internal-only-API API00-C FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4135,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_dbus_getter/setter_* referenced externally via DECLARE_ACCESSOR in dbus_new_handlers.h and registered in dbus_new.c's property table; extern linkage genuinely required, extends confirmed wpa_driver_*_ops DCL15-C FP pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4137,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data is 4th param of the fixed WPADBusPropertyAccessor signature (DECLARE_ACCESSOR contract, dispatched from dbus_new.c property table); dispatch-contract DCL13-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4154,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iter/error/property_desc supplied only by the internal dbus property dispatcher (dbus_new.c), never externally nullable; internal-only-API API00-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4154,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iter/error/property_desc supplied only by the internal dbus property dispatcher (dbus_new.c), never externally nullable; internal-only-API API00-C FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4154,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_dbus_getter/setter_* referenced externally via DECLARE_ACCESSOR in dbus_new_handlers.h and registered in dbus_new.c's property table; extern linkage genuinely required, extends confirmed wpa_driver_*_ops DCL15-C FP pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4156,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data is 4th param of the fixed WPADBusPropertyAccessor signature (DECLARE_ACCESSOR contract, dispatched from dbus_new.c property table); dispatch-contract DCL13-C FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4163,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus function declared in <dbus/dbus.h>, unresolved-external-header DCL31-C FP class (dbus_common.c pattern)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4163,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const's message param is const char* (dbus-errors.h); const-qualifier disproves finding, matches confirmed STR30-C rule-logic-bug pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4182,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iter/error/property_desc supplied only by the internal dbus property dispatcher (dbus_new.c), never externally nullable; internal-only-API API00-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4182,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iter/error/property_desc supplied only by the internal dbus property dispatcher (dbus_new.c), never externally nullable; internal-only-API API00-C FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4182,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_dbus_getter/setter_* referenced externally via DECLARE_ACCESSOR in dbus_new_handlers.h and registered in dbus_new.c's property table; extern linkage genuinely required, extends confirmed wpa_driver_*_ops DCL15-C FP pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4184,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data is 4th param of the fixed WPADBusPropertyAccessor signature (DECLARE_ACCESSOR contract, dispatched from dbus_new.c property table); dispatch-contract DCL13-C FP class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4187,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "path_buf IS used -- it's the initializer of the alias pointer (bss_obj_path/net_obj_path) that is written via os_snprintf and passed by address; name-alias-blindness MSC13-C misfire, not a real unused variable"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4187,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary fixed-size local buffer (path_buf/eap_mode_buf), no getenv() call anywhere in file; wholesale ENV01-C misfire pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4210,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iter/error/property_desc supplied only by the internal dbus property dispatcher (dbus_new.c), never externally nullable; internal-only-API API00-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4210,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iter/error/property_desc supplied only by the internal dbus property dispatcher (dbus_new.c), never externally nullable; internal-only-API API00-C FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4210,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_dbus_getter/setter_* referenced externally via DECLARE_ACCESSOR in dbus_new_handlers.h and registered in dbus_new.c's property table; extern linkage genuinely required, extends confirmed wpa_driver_*_ops DCL15-C FP pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4212,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data is 4th param of the fixed WPADBusPropertyAccessor signature (DECLARE_ACCESSOR contract, dispatched from dbus_new.c property table); dispatch-contract DCL13-C FP class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4215,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "path_buf IS used -- it's the initializer of the alias pointer (bss_obj_path/net_obj_path) that is written via os_snprintf and passed by address; name-alias-blindness MSC13-C misfire, not a real unused variable"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4215,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary fixed-size local buffer (path_buf/eap_mode_buf), no getenv() call anywhere in file; wholesale ENV01-C misfire pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4238,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iter/error/property_desc supplied only by the internal dbus property dispatcher (dbus_new.c), never externally nullable; internal-only-API API00-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4238,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iter/error/property_desc supplied only by the internal dbus property dispatcher (dbus_new.c), never externally nullable; internal-only-API API00-C FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4238,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_dbus_getter/setter_* referenced externally via DECLARE_ACCESSOR in dbus_new_handlers.h and registered in dbus_new.c's property table; extern linkage genuinely required, extends confirmed wpa_driver_*_ops DCL15-C FP pattern"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4245,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary fixed-size local buffer (path_buf/eap_mode_buf), no getenv() call anywhere in file; wholesale ENV01-C misfire pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4277,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iter/error/property_desc supplied only by the internal dbus property dispatcher (dbus_new.c), never externally nullable; internal-only-API API00-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4277,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iter/error/property_desc supplied only by the internal dbus property dispatcher (dbus_new.c), never externally nullable; internal-only-API API00-C FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4277,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_dbus_getter/setter_* referenced externally via DECLARE_ACCESSOR in dbus_new_handlers.h and registered in dbus_new.c's property table; extern linkage genuinely required, extends confirmed wpa_driver_*_ops DCL15-C FP pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4279,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data is 4th param of the fixed WPADBusPropertyAccessor signature (DECLARE_ACCESSOR contract, dispatched from dbus_new.c property table); dispatch-contract DCL13-C FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4288,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_dbus_getter/setter_* referenced externally via DECLARE_ACCESSOR in dbus_new_handlers.h and registered in dbus_new.c's property table; extern linkage genuinely required, extends confirmed wpa_driver_*_ops DCL15-C FP pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4334,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iter/error/property_desc supplied only by the internal dbus property dispatcher (dbus_new.c), never externally nullable; internal-only-API API00-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4334,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iter/error/property_desc supplied only by the internal dbus property dispatcher (dbus_new.c), never externally nullable; internal-only-API API00-C FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4334,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_dbus_getter/setter_* referenced externally via DECLARE_ACCESSOR in dbus_new_handlers.h and registered in dbus_new.c's property table; extern linkage genuinely required, extends confirmed wpa_driver_*_ops DCL15-C FP pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4336,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data is 4th param of the fixed WPADBusPropertyAccessor signature (DECLARE_ACCESSOR contract, dispatched from dbus_new.c property table); dispatch-contract DCL13-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4353,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iter/error/property_desc supplied only by the internal dbus property dispatcher (dbus_new.c), never externally nullable; internal-only-API API00-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4353,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iter/error/property_desc supplied only by the internal dbus property dispatcher (dbus_new.c), never externally nullable; internal-only-API API00-C FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4353,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_dbus_getter/setter_* referenced externally via DECLARE_ACCESSOR in dbus_new_handlers.h and registered in dbus_new.c's property table; extern linkage genuinely required, extends confirmed wpa_driver_*_ops DCL15-C FP pattern"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4364,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus function declared in <dbus/dbus.h>, unresolved-external-header DCL31-C FP class (dbus_common.c pattern)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4364,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const's message param is const char* (dbus-errors.h); const-qualifier disproves finding, matches confirmed STR30-C rule-logic-bug pattern"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4371,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const's message param is const char* (dbus-errors.h); const-qualifier disproves finding, matches confirmed STR30-C rule-logic-bug pattern"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4379,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const's message param is const char* (dbus-errors.h); const-qualifier disproves finding, matches confirmed STR30-C rule-logic-bug pattern"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4396,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "while (i) os_free(paths[--i]); guards decrement with the same i, unsigned wrap impossible; extends confirmed proven-safe-bounded-loop INT30-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4411,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iter/error/property_desc supplied only by the internal dbus property dispatcher (dbus_new.c), never externally nullable; internal-only-API API00-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4411,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iter/error/property_desc supplied only by the internal dbus property dispatcher (dbus_new.c), never externally nullable; internal-only-API API00-C FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4411,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_dbus_getter/setter_* referenced externally via DECLARE_ACCESSOR in dbus_new_handlers.h and registered in dbus_new.c's property table; extern linkage genuinely required, extends confirmed wpa_driver_*_ops DCL15-C FP pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4413,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data is 4th param of the fixed WPADBusPropertyAccessor signature (DECLARE_ACCESSOR contract, dispatched from dbus_new.c property table); dispatch-contract DCL13-C FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4422,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus function declared in <dbus/dbus.h>, unresolved-external-header DCL31-C FP class (dbus_common.c pattern)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4422,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const's message param is const char* (dbus-errors.h); const-qualifier disproves finding, matches confirmed STR30-C rule-logic-bug pattern"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4433,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus function declared in <dbus/dbus.h>, unresolved-external-header DCL31-C FP class (dbus_common.c pattern)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4433,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const's message param is const char* (dbus-errors.h); const-qualifier disproves finding, matches confirmed STR30-C rule-logic-bug pattern"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4443,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus function declared in <dbus/dbus.h>, unresolved-external-header DCL31-C FP class (dbus_common.c pattern)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4443,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const's message param is const char* (dbus-errors.h); const-qualifier disproves finding, matches confirmed STR30-C rule-logic-bug pattern"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4460,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "while (i) os_free(paths[--i]); guards decrement with the same i, unsigned wrap impossible; extends confirmed proven-safe-bounded-loop INT30-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4475,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iter/error/property_desc supplied only by the internal dbus property dispatcher (dbus_new.c), never externally nullable; internal-only-API API00-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4475,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iter/error/property_desc supplied only by the internal dbus property dispatcher (dbus_new.c), never externally nullable; internal-only-API API00-C FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4475,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_dbus_getter/setter_* referenced externally via DECLARE_ACCESSOR in dbus_new_handlers.h and registered in dbus_new.c's property table; extern linkage genuinely required, extends confirmed wpa_driver_*_ops DCL15-C FP pattern"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4475,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "#ifndef/#else/#endif branches each return explicitly; preprocessor-branch-blind MSC37-C FP class (dbus_common.c:341 pattern)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4477,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data is 4th param of the fixed WPADBusPropertyAccessor signature (DECLARE_ACCESSOR contract, dispatched from dbus_new.c property table); dispatch-contract DCL13-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4503,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iter/error/property_desc supplied only by the internal dbus property dispatcher (dbus_new.c), never externally nullable; internal-only-API API00-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4503,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iter/error/property_desc supplied only by the internal dbus property dispatcher (dbus_new.c), never externally nullable; internal-only-API API00-C FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4503,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_dbus_getter/setter_* referenced externally via DECLARE_ACCESSOR in dbus_new_handlers.h and registered in dbus_new.c's property table; extern linkage genuinely required, extends confirmed wpa_driver_*_ops DCL15-C FP pattern"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4503,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "#ifndef/#else/#endif branches each return explicitly; preprocessor-branch-blind MSC37-C FP class (dbus_common.c:341 pattern)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4505,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data is 4th param of the fixed WPADBusPropertyAccessor signature (DECLARE_ACCESSOR contract, dispatched from dbus_new.c property table); dispatch-contract DCL13-C FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4530,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_dbus_getter/setter_* referenced externally via DECLARE_ACCESSOR in dbus_new_handlers.h and registered in dbus_new.c's property table; extern linkage genuinely required, extends confirmed wpa_driver_*_ops DCL15-C FP pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4532,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data is 4th param of the fixed WPADBusPropertyAccessor signature (DECLARE_ACCESSOR contract, dispatched from dbus_new.c property table); dispatch-contract DCL13-C FP class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4542,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const's message param is const char* (dbus-errors.h); const-qualifier disproves finding, matches confirmed STR30-C rule-logic-bug pattern"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4562,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus function declared in <dbus/dbus.h>, unresolved-external-header DCL31-C FP class (dbus_common.c pattern)"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4564,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus function declared in <dbus/dbus.h>, unresolved-external-header DCL31-C FP class (dbus_common.c pattern)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4566,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const's message param is const char* (dbus-errors.h); const-qualifier disproves finding, matches confirmed STR30-C rule-logic-bug pattern"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4574,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus function declared in <dbus/dbus.h>, unresolved-external-header DCL31-C FP class (dbus_common.c pattern)"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4575,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus function declared in <dbus/dbus.h>, unresolved-external-header DCL31-C FP class (dbus_common.c pattern)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4576,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const's message param is const char* (dbus-errors.h); const-qualifier disproves finding, matches confirmed STR30-C rule-logic-bug pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4584,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iter/error/property_desc supplied only by the internal dbus property dispatcher (dbus_new.c), never externally nullable; internal-only-API API00-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4584,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iter/error/property_desc supplied only by the internal dbus property dispatcher (dbus_new.c), never externally nullable; internal-only-API API00-C FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4584,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_dbus_getter/setter_* referenced externally via DECLARE_ACCESSOR in dbus_new_handlers.h and registered in dbus_new.c's property table; extern linkage genuinely required, extends confirmed wpa_driver_*_ops DCL15-C FP pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4586,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data is 4th param of the fixed WPADBusPropertyAccessor signature (DECLARE_ACCESSOR contract, dispatched from dbus_new.c property table); dispatch-contract DCL13-C FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4594,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus function declared in <dbus/dbus.h>, unresolved-external-header DCL31-C FP class (dbus_common.c pattern)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4594,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const's message param is const char* (dbus-errors.h); const-qualifier disproves finding, matches confirmed STR30-C rule-logic-bug pattern"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4603,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*p = '\\0'; assigns a char literal through char*, never a widening conversion; confirmed massive STR34-C literal-char-assignment FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4610,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iter/error/property_desc supplied only by the internal dbus property dispatcher (dbus_new.c), never externally nullable; internal-only-API API00-C FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4610,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_dbus_getter/setter_* referenced externally via DECLARE_ACCESSOR in dbus_new_handlers.h and registered in dbus_new.c's property table; extern linkage genuinely required, extends confirmed wpa_driver_*_ops DCL15-C FP pattern"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4625,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "new_value set by wpas_dbus_simple_property_setter via dbus_message_iter_get_basic on validated DBUS_TYPE_STRING -> guaranteed non-NULL on success (same reasoning as country getter/setter); callee-guarantees-non-null EXP34-C FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4628,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus function declared in <dbus/dbus.h>, unresolved-external-header DCL31-C FP class (dbus_common.c pattern)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4628,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const's message param is const char* (dbus-errors.h); const-qualifier disproves finding, matches confirmed STR30-C rule-logic-bug pattern"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4634,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "new_value set by wpas_dbus_simple_property_setter via dbus_message_iter_get_basic on validated DBUS_TYPE_STRING -> guaranteed non-NULL on success (same reasoning as country getter/setter); callee-guarantees-non-null EXP34-C FP class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4643,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_sm_param pre-set to -1 and checked via if (wpa_sm_param != -1) after chain; deliberate default, no-final-else MSC01-C stylistic-pedantry FP class"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4650,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "strtol(new_value,&end,0) checked for trailing garbage via *end but never guards ERANGE overflow; partially-validated-but-no-ERANGE-check pattern judged TP (low severity)"
+  },
+  {
+   "rule": "ERR01-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4650,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "strtol() result partially validated (trailing-char check) but errno/ERANGE never checked; matches confirmed partially-validated-strtoul TP pattern"
+  },
+  {
+   "rule": "ERR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4650,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "errno not reset before strtol() call and never checked after; same partially-validated-but-no-ERANGE-check TP pattern as ERR33-C/ERR01-C here"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4651,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strtol() always writes a valid pointer into *endptr; extends confirmed strtoul()-endptr-guaranteed-non-NULL EXP34-C FP class (ctrl_iface.c:8900)"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4652,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus function declared in <dbus/dbus.h>, unresolved-external-header DCL31-C FP class (dbus_common.c pattern)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4652,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const's message param is const char* (dbus-errors.h); const-qualifier disproves finding, matches confirmed STR30-C rule-logic-bug pattern"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4659,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus function declared in <dbus/dbus.h>, unresolved-external-header DCL31-C FP class (dbus_common.c pattern)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4659,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const's message param is const char* (dbus-errors.h); const-qualifier disproves finding, matches confirmed STR30-C rule-logic-bug pattern"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4669,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus function declared in <dbus/dbus.h>, unresolved-external-header DCL31-C FP class (dbus_common.c pattern)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4669,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const's message param is const char* (dbus-errors.h); const-qualifier disproves finding, matches confirmed STR30-C rule-logic-bug pattern"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4677,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus function declared in <dbus/dbus.h>, unresolved-external-header DCL31-C FP class (dbus_common.c pattern)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4677,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const's message param is const char* (dbus-errors.h); const-qualifier disproves finding, matches confirmed STR30-C rule-logic-bug pattern"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4681,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ret>0 case intentionally falls through to `return TRUE` with no action needed; no-final-else MSC01-C stylistic-pedantry FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4697,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iter/error/property_desc supplied only by the internal dbus property dispatcher (dbus_new.c), never externally nullable; internal-only-API API00-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4697,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iter/error/property_desc supplied only by the internal dbus property dispatcher (dbus_new.c), never externally nullable; internal-only-API API00-C FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4697,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_dbus_getter/setter_* referenced externally via DECLARE_ACCESSOR in dbus_new_handlers.h and registered in dbus_new.c's property table; extern linkage genuinely required, extends confirmed wpa_driver_*_ops DCL15-C FP pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4699,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data is 4th param of the fixed WPADBusPropertyAccessor signature (DECLARE_ACCESSOR contract, dispatched from dbus_new.c property table); dispatch-contract DCL13-C FP class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4703,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "paths = NULL initializer is unconditionally overwritten by os_calloc() 20 lines later before any goto/return can read it as NULL; genuinely dead initial assignment"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4708,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus function declared in <dbus/dbus.h>, unresolved-external-header DCL31-C FP class (dbus_common.c pattern)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4708,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const's message param is const char* (dbus-errors.h); const-qualifier disproves finding, matches confirmed STR30-C rule-logic-bug pattern"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4725,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const's message param is const char* (dbus-errors.h); const-qualifier disproves finding, matches confirmed STR30-C rule-logic-bug pattern"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4733,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const's message param is const char* (dbus-errors.h); const-qualifier disproves finding, matches confirmed STR30-C rule-logic-bug pattern"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4750,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "while (i) os_free(paths[--i]); guards decrement with the same i, unsigned wrap impossible; extends confirmed proven-safe-bounded-loop INT30-C FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4766,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_dbus_getter/setter_* referenced externally via DECLARE_ACCESSOR in dbus_new_handlers.h and registered in dbus_new.c's property table; extern linkage genuinely required, extends confirmed wpa_driver_*_ops DCL15-C FP pattern"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4773,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "rand_type = 0 initializer is always overwritten inside the loop before any use (lines 4810-4840); genuinely dead initial assignment"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4780,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const's message param is const char* (dbus-errors.h); const-qualifier disproves finding, matches confirmed STR30-C rule-logic-bug pattern"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4790,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus function declared in <dbus/dbus.h>, unresolved-external-header DCL31-C FP class (dbus_common.c pattern)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4790,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const's message param is const char* (dbus-errors.h); const-qualifier disproves finding, matches confirmed STR30-C rule-logic-bug pattern"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4795,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus function declared in <dbus/dbus.h>, unresolved-external-header DCL31-C FP class (dbus_common.c pattern)"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4800,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus function declared in <dbus/dbus.h>, unresolved-external-header DCL31-C FP class (dbus_common.c pattern)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4800,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const's message param is const char* (dbus-errors.h); const-qualifier disproves finding, matches confirmed STR30-C rule-logic-bug pattern"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4816,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus function declared in <dbus/dbus.h>, unresolved-external-header DCL31-C FP class (dbus_common.c pattern)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4816,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const's message param is const char* (dbus-errors.h); const-qualifier disproves finding, matches confirmed STR30-C rule-logic-bug pattern"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4823,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus function declared in <dbus/dbus.h>, unresolved-external-header DCL31-C FP class (dbus_common.c pattern)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4823,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const's message param is const char* (dbus-errors.h); const-qualifier disproves finding, matches confirmed STR30-C rule-logic-bug pattern"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4831,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus function declared in <dbus/dbus.h>, unresolved-external-header DCL31-C FP class (dbus_common.c pattern)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4831,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const's message param is const char* (dbus-errors.h); const-qualifier disproves finding, matches confirmed STR30-C rule-logic-bug pattern"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4841,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus function declared in <dbus/dbus.h>, unresolved-external-header DCL31-C FP class (dbus_common.c pattern)"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4846,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus function declared in <dbus/dbus.h>, unresolved-external-header DCL31-C FP class (dbus_common.c pattern)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4846,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const's message param is const char* (dbus-errors.h); const-qualifier disproves finding, matches confirmed STR30-C rule-logic-bug pattern"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4856,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_dbus_getter/setter_* referenced externally via DECLARE_ACCESSOR in dbus_new_handlers.h and registered in dbus_new.c's property table; extern linkage genuinely required, extends confirmed wpa_driver_*_ops DCL15-C FP pattern"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 5,
+  "fp": 145,
+  "fn": 0
+ }
+}

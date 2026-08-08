@@ -1,0 +1,722 @@
+[
+ {
+  "rule": "FIO03-C",
+  "file": "wpa_supplicant/bgscan_learn.c",
+  "line": 172,
+  "verdict": "TP",
+  "reason": "fopen(fname,\"w\") data-file rewrite with no exclusive-creation flag; established low-severity data-file-rewrite TP.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "FIO03-C",
+  "file": "wpa_supplicant/config_file.c",
+  "line": 1855,
+  "verdict": "TP",
+  "reason": "Genuine (low-severity) data-file-rewrite-with-no-O_EXCL-equivalent, matches hlr_auc_gw.c:512 precedent.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "FIO03-C",
+  "file": "wpa_supplicant/eapol_test.c",
+  "line": 1414,
+  "verdict": "TP",
+  "reason": "fopen(optarg,\"w\") no O_EXCL-equivalent; matches confirmed data-file-rewrite genuine-low-sev TP class",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "FIO05-C",
+  "file": "src/crypto/crypto_openssl.c",
+  "line": 4599,
+  "verdict": "TP",
+  "reason": "real (low-priority) defensive-coding gap: the RSA key file path is opened without an fstat ownership check; file is config-supplied (not remotely attacker-controlled) so severity is low",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "FIO05-C",
+  "file": "src/utils/wpa_debug.c",
+  "line": 579,
+  "verdict": "TP",
+  "reason": "open() by filename with no fstat/st_dev/st_ino verification against later reuse; literal rule text applies, low real risk for admin-configured log path.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "FIO06-C",
+  "file": "hostapd/hlr_auc_gw.c",
+  "line": 512,
+  "verdict": "TP",
+  "reason": "fopen() cannot set explicit permissions; low severity for a local admin-owned data file.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "FIO06-C",
+  "file": "src/ap/wps_hostapd.c",
+  "line": 548,
+  "verdict": "TP",
+  "reason": "literal FIO06-C gap - fopen cannot set explicit perms",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "FIO06-C",
+  "file": "src/crypto/random.c",
+  "line": 404,
+  "verdict": "TP",
+  "reason": "fopen() cannot set explicit permissions; same low-severity data-file-rewrite TP class.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "FIO06-C",
+  "file": "src/eap_peer/eap_fast_pac.c",
+  "line": 554,
+  "verdict": "TP",
+  "reason": "No explicit permission control on a file that stores PAC-Key secret material; matches established precedent",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "FIO06-C",
+  "file": "src/utils/edit.c",
+  "line": 300,
+  "verdict": "TP",
+  "reason": "fopen(w) with no explicit permissions on a file that may carry sensitive typed commands, low severity",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "FIO06-C",
+  "file": "src/utils/http_curl.c",
+  "line": 660,
+  "verdict": "TP",
+  "reason": "fopen() cannot set explicit permissions on the downloaded file; same data-file-rewrite precedent as the paired FIO03-C finding",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "FIO06-C",
+  "file": "src/utils/os_unix.c",
+  "line": 238,
+  "verdict": "TP",
+  "reason": "same rewrite provides no explicit permission specification",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "FIO06-C",
+  "file": "src/utils/xml-utils.c",
+  "line": 178,
+  "verdict": "TP",
+  "reason": "fopen(\"w\") rewrite with no explicit permission spec; same TP class as FIO03.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "FIO06-C",
+  "file": "wpa_supplicant/config_file.c",
+  "line": 1855,
+  "verdict": "TP",
+  "reason": "wpa_supplicant.conf carries PSK/passphrase secrets and fopen can't set explicit permissions; matches the hlr_auc_gw.c FIO03-C/FIO06-C sensitive-rewrite precedent (low severity).",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "FIO06-C",
+  "file": "wpa_supplicant/eapol_test.c",
+  "line": 1414,
+  "verdict": "TP",
+  "reason": "fopen \"w\" doesn't set explicit perms; same precedent class as FIO03-C sibling",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "FIO17-C",
+  "file": "src/utils/os_win32.c",
+  "line": 212,
+  "verdict": "TP",
+  "reason": "No NUL terminator appended; at least one real caller (src/eap_server/tncs.c:1025 TNC config read) treats the returned buffer as a NUL-terminated string, a genuine latent gap",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "FLP32-C",
+  "file": "src/ap/acs.c",
+  "line": 393,
+  "verdict": "TP",
+  "reason": "pow(10,nf/5.0L): domain error impossible (base>0) but range/ERANGE theoretically possible if driver reports extreme s8 nf; unchecked",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "FLP32-C",
+  "file": "src/ap/acs.c",
+  "line": 395,
+  "verdict": "TP",
+  "reason": "pow(2,...) exponent can overflow double if nf/min_nf near s8 extremes; unchecked domain/range",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "FLP32-C",
+  "file": "src/ap/acs.c",
+  "line": 396,
+  "verdict": "TP",
+  "reason": "pow(10, min_nf/10.0L): same unchecked-range reasoning as line 395",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT05-C",
+  "file": "src/ap/ctrl_iface_ap.c",
+  "line": 1521,
+  "verdict": "TP",
+  "reason": "sscanf's %d conversions don't reliably signal overflow via errno; real (low-severity) gap even though the count is checked.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT05-C",
+  "file": "src/ap/ctrl_iface_ap.c",
+  "line": 1586,
+  "verdict": "TP",
+  "reason": "No ERANGE check on sscanf's %d conversion; real low-severity gap.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT05-C",
+  "file": "src/ap/ctrl_iface_ap.c",
+  "line": 1765,
+  "verdict": "TP",
+  "reason": "No ERANGE check on the %u conversions; real low-severity gap.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT05-C",
+  "file": "src/common/dpp.c",
+  "line": 2760,
+  "verdict": "TP",
+  "reason": "sscanf's %u conversions don't reliably signal ERANGE via errno; low-severity but real",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT05-C",
+  "file": "src/tls/x509v3.c",
+  "line": 545,
+  "verdict": "TP",
+  "reason": "sscanf numeric conversion has no reliable overflow/ERANGE signal; genuine low-severity per literal rule text (per prior split disposition vs sibling ERR34/FIO47/MSC24).",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT05-C",
+  "file": "src/tls/x509v3.c",
+  "line": 563,
+  "verdict": "TP",
+  "reason": "same genuine low-severity errno/ERANGE gap as :545.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT05-C",
+  "file": "wpa_supplicant/ctrl_iface.c",
+  "line": 6307,
+  "verdict": "TP",
+  "reason": "INT05-C: sscanf's numeric conversions don't reliably signal overflow via errno like strtol does; per categorical_patterns.md 41plus_b6 this is judged TP (real, low-severity) even on validated calls, unlike the ERR34/FIO47/MSC24 siblings",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT05-C",
+  "file": "wpa_supplicant/ctrl_iface.c",
+  "line": 6318,
+  "verdict": "TP",
+  "reason": "INT05-C: same as :6307 -- judged TP per categorical_patterns.md 41plus_b6 disposition",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT05-C",
+  "file": "wpa_supplicant/ctrl_iface.c",
+  "line": 6788,
+  "verdict": "TP",
+  "reason": "INT05-C: same as :6307/:6318 -- judged TP per categorical_patterns.md 41plus_b6 disposition",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT05-C",
+  "file": "wpa_supplicant/ctrl_iface.c",
+  "line": 6846,
+  "verdict": "TP",
+  "reason": "sscanf() numeric conversion has no errno/ERANGE check on overflow, unlike strtol - literal INT05-C violation, though low severity for local ctrl_iface input",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT05-C",
+  "file": "wpa_supplicant/ctrl_iface.c",
+  "line": 7009,
+  "verdict": "TP",
+  "reason": "sscanf() numeric conversion has no errno/ERANGE check on overflow, unlike strtol - literal INT05-C violation, though low severity for local ctrl_iface input",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT05-C",
+  "file": "wpa_supplicant/ctrl_iface.c",
+  "line": 7022,
+  "verdict": "TP",
+  "reason": "sscanf() numeric conversion has no errno/ERANGE check on overflow, unlike strtol - literal INT05-C violation, though low severity for local ctrl_iface input",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT05-C",
+  "file": "wpa_supplicant/ctrl_iface.c",
+  "line": 7031,
+  "verdict": "TP",
+  "reason": "sscanf() numeric conversion has no errno/ERANGE check on overflow, unlike strtol - literal INT05-C violation, though low severity for local ctrl_iface input",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT05-C",
+  "file": "wpa_supplicant/ctrl_iface.c",
+  "line": 7159,
+  "verdict": "TP",
+  "reason": "sscanf() numeric conversion has no errno/ERANGE check on overflow, unlike strtol - literal INT05-C violation, though low severity for local ctrl_iface input",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT05-C",
+  "file": "wpa_supplicant/ctrl_iface.c",
+  "line": 7394,
+  "verdict": "TP",
+  "reason": "sscanf() numeric conversion has no errno/ERANGE check on overflow, unlike strtol - literal INT05-C violation, though low severity for local ctrl_iface input",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT05-C",
+  "file": "wpa_supplicant/ctrl_iface.c",
+  "line": 7395,
+  "verdict": "TP",
+  "reason": "sscanf() numeric conversion has no errno/ERANGE check on overflow, unlike strtol - literal INT05-C violation, though low severity for local ctrl_iface input",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT05-C",
+  "file": "wpa_supplicant/ctrl_iface.c",
+  "line": 7396,
+  "verdict": "TP",
+  "reason": "sscanf() numeric conversion has no errno/ERANGE check on overflow, unlike strtol - literal INT05-C violation, though low severity for local ctrl_iface input",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT05-C",
+  "file": "wpa_supplicant/ctrl_iface.c",
+  "line": 7397,
+  "verdict": "TP",
+  "reason": "sscanf() numeric conversion has no errno/ERANGE check on overflow, unlike strtol - literal INT05-C violation, though low severity for local ctrl_iface input",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT05-C",
+  "file": "wpa_supplicant/ctrl_iface.c",
+  "line": 7403,
+  "verdict": "TP",
+  "reason": "sscanf() numeric conversion has no errno/ERANGE check on overflow, unlike strtol - literal INT05-C violation, though low severity for local ctrl_iface input",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT05-C",
+  "file": "wpa_supplicant/ctrl_iface.c",
+  "line": 8027,
+  "verdict": "TP",
+  "reason": "sscanf's %d conversion has UB on overflow with no errno/range check anywhere after the call; genuine if low-impact (local P2P testing command)",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT05-C",
+  "file": "wpa_supplicant/ctrl_iface.c",
+  "line": 10636,
+  "verdict": "TP",
+  "reason": "sscanf %llu conversion overflow behavior is unspecified/UB with no errno/ERANGE check on attacker-adjacent twt value",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT05-C",
+  "file": "wpa_supplicant/ctrl_iface.c",
+  "line": 11229,
+  "verdict": "TP",
+  "reason": "sscanf %d conversions have no errno/ERANGE overflow check beyond the count check",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT05-C",
+  "file": "wpa_supplicant/eapol_test.c",
+  "line": 1042,
+  "verdict": "TP",
+  "reason": "per confirmed precedent: real if low-severity, sscanf errno/ERANGE not reliably signaled",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT05-C",
+  "file": "wpa_supplicant/mbo.c",
+  "line": 402,
+  "verdict": "TP",
+  "reason": "Same underlying no-errno-check-on-%u-overflow issue as ERR34-C; low severity, local input",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT15-C",
+  "file": "wpa_supplicant/win_if_list.c",
+  "line": 64,
+  "verdict": "TP",
+  "reason": "GetLastError() (DWORD) cast to int rather than (u)intmax_t for %d, low practical impact on Win32",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT34-C",
+  "file": "hostapd/hlr_auc_gw.c",
+  "line": 728,
+  "verdict": "TP",
+  "reason": "'1 << ind_len': the literal '1' is type int (32-bit); main()'s bound allows ind_len up to 32, and shifting a 32-bit int by exactly 32 is undefined behavior.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT34-C",
+  "file": "src/common/proximity_ranging.c",
+  "line": 1635,
+  "verdict": "TP",
+  "reason": "flen is bounded only by the self-referential while-loop, not checked against the 32-bit width of capab; if capab's top byte were ever set this reaches a shift-by-32 (UB), currently unexercised given capab's small bit range but not statically proven safe like the macro-constant shifts above.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT34-C",
+  "file": "src/crypto/aes_i.h",
+  "line": 72,
+  "verdict": "TP",
+  "reason": "rotr(u32 val,int bits) never validates 0<=bits<32; all call sites happen to be safe literals but function itself is unguarded",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT34-C",
+  "file": "src/crypto/random.c",
+  "line": 74,
+  "verdict": "TP",
+  "reason": "Guard only excludes y==0, not y&31==0 (y=32 would shift by 32/UB); sole call site pre-masks so unreachable today, latent gap.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT36-C",
+  "file": "src/ap/eap_user_db.c",
+  "line": 89,
+  "verdict": "TP",
+  "reason": "user->next=(void*)1 is a literal int-to-pointer sentinel cast (never dereferenced); matches the literal CERT INT36-C anti-pattern even though practically benign here",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT36-C",
+  "file": "src/ap/eap_user_db.c",
+  "line": 124,
+  "verdict": "TP",
+  "reason": "same (void*)1 sentinel int-to-pointer cast pattern as line 89, in get_wildcard_cb",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT36-C",
+  "file": "src/common/ptksa_cache.c",
+  "line": 352,
+  "verdict": "TP",
+  "reason": "literal int-to-pointer conversion per rule text, though value is a never-dereferenced sentinel so harmless in practice",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT36-C",
+  "file": "src/crypto/tls_none.c",
+  "line": 16,
+  "verdict": "TP",
+  "reason": "(void*)1 sentinel handle idiom, never dereferenced; matches eap_user_db.c precedent (literal rule violation, benign)",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT36-C",
+  "file": "src/eapol_supp/eapol_supp_sm.h",
+  "line": 381,
+  "verdict": "TP",
+  "reason": "Genuine int-to-pointer sentinel cast (struct eapol_sm*)1, though never dereferenced by any caller",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT36-C",
+  "file": "src/rsn_supp/pmksa_cache.c",
+  "line": 884,
+  "verdict": "TP",
+  "reason": "(void*)-1 non-NULL sentinel idiom, never dereferenced in this stub build (categorical: INT36-C sentinel-idiom TP-low)",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT36-C",
+  "file": "src/rsn_supp/wpa.h",
+  "line": 294,
+  "verdict": "TP",
+  "reason": "(struct wpa_sm*)1 non-NULL sentinel, never dereferenced; established INT36-C low-conf TP class",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT36-C",
+  "file": "wpa_supplicant/ctrl_iface.h",
+  "line": 132,
+  "verdict": "TP",
+  "reason": "(void*)-1 is a non-NULL error sentinel, never dereferenced, matching the established sentinel-idiom convention",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT36-C",
+  "file": "wpa_supplicant/ctrl_iface.h",
+  "line": 155,
+  "verdict": "TP",
+  "reason": "(void*)1 non-NULL sentinel, same convention as line 132",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT36-C",
+  "file": "wpa_supplicant/wps_supplicant.c",
+  "line": 78,
+  "verdict": "TP",
+  "reason": "(void *)1 / (void *)0 used as an opaque sentinel flag for timeout_ctx, never dereferenced -- matches the eap_user_db.c precedent graded TP (low) as the literal violation shape CERT targets, though practically benign",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "INT36-C",
+  "file": "wpa_supplicant/wps_supplicant.c",
+  "line": 174,
+  "verdict": "TP",
+  "reason": "(void *)1 / (void *)0 used as an opaque sentinel flag for timeout_ctx, never dereferenced -- matches the eap_user_db.c precedent graded TP (low) as the literal violation shape CERT targets, though practically benign",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MEM10-C",
+  "file": "src/eap_peer/eap_fast_pac.c",
+  "line": 236,
+  "verdict": "TP",
+  "reason": "Ad-hoc NULL check stylistic pedantry; literal rule-text match",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MEM10-C",
+  "file": "src/eap_peer/eap_fast_pac.c",
+  "line": 420,
+  "verdict": "TP",
+  "reason": "Ad-hoc NULL check stylistic pedantry",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MEM10-C",
+  "file": "src/eap_peer/eap_fast_pac.c",
+  "line": 626,
+  "verdict": "TP",
+  "reason": "Ad-hoc NULL check stylistic pedantry",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MEM10-C",
+  "file": "src/eap_peer/eap_fast_pac.c",
+  "line": 758,
+  "verdict": "TP",
+  "reason": "Ad-hoc NULL check stylistic pedantry",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/ap/airtime_policy.c",
+  "line": 126,
+  "verdict": "TP",
+  "reason": "if/else-if genuinely lacks a final else clause",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/ap/dfs.c",
+  "line": 1254,
+  "verdict": "TP",
+  "reason": "literal no-final-else match; implicit fallthrough is intentional design but rule text is satisfied.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/ap/dfs.c",
+  "line": 1585,
+  "verdict": "TP",
+  "reason": "literal no-final-else match, same as line 1254.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/ap/drv_callbacks.c",
+  "line": 760,
+  "verdict": "TP",
+  "reason": "if(wpa)/else-if(wps_state) chain has no final else; stylistic, harmless (falls through to skip_wpa_check)",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/ap/drv_callbacks.c",
+  "line": 1118,
+  "verdict": "TP",
+  "reason": "'else if (!sta->mld_info.mld_sta)' has no final else; stylistic, intentional fallthrough to legacy handling",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/ap/drv_callbacks.c",
+  "line": 1317,
+  "verdict": "TP",
+  "reason": "if/else-if chain (cf1==5935/>5950/>5000) has no final else; seg0_idx keeps its line-1251 initializer of 0 by design",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/ap/drv_callbacks.c",
+  "line": 1324,
+  "verdict": "TP",
+  "reason": "Same cf2 seg1_idx chain, initializer-default-on-no-match design",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/ap/drv_callbacks.c",
+  "line": 1342,
+  "verdict": "TP",
+  "reason": "ch_switch_vht_config bitmask if/else-if has no final else; no-op when neither bit set is intentional",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/ap/drv_callbacks.c",
+  "line": 1355,
+  "verdict": "TP",
+  "reason": "ch_switch_he_config bitmask if/else-if has no final else; intentional no-op",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/ap/drv_callbacks.c",
+  "line": 1369,
+  "verdict": "TP",
+  "reason": "ch_switch_eht_config bitmask if/else-if has no final else; intentional no-op",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/ap/drv_callbacks.c",
+  "line": 1382,
+  "verdict": "TP",
+  "reason": "width if/else-if for ht_capab bit has no final else; other widths intentionally leave the bit unchanged",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/ap/drv_callbacks.c",
+  "line": 1403,
+  "verdict": "TP",
+  "reason": "chwidth if/else-if for vht_capab bits has no final else; other widths intentionally unchanged",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/ap/drv_callbacks.c",
+  "line": 1438,
+  "verdict": "TP",
+  "reason": "csa_in_progress/DFS_OFFLOAD/is_dfs 3-way if/else-if has no final else; no-op default is intentional",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/ap/drv_callbacks.c",
+  "line": 1480,
+  "verdict": "TP",
+  "reason": "switch(reason_code) has no default; unhandled reason codes are silently ignored by design",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/ap/drv_callbacks.c",
+  "line": 1606,
+  "verdict": "TP",
+  "reason": "ch_width 40/80/160 if/else-if has no final else; CONF_OPER_CHWIDTH_USE_HT default already set at line 1586",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/ap/drv_callbacks.c",
+  "line": 2184,
+  "verdict": "TP",
+  "reason": "dl_list_empty/else-if(survey->nf<chan->min_nf) has no final else; correct semantics is 'keep the smaller min_nf', no update needed otherwise",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/ap/drv_callbacks.c",
+  "line": 2517,
+  "verdict": "TP",
+  "reason": "hapd->disabled&&started / else-if(disabled&&cac_started) has no final else; intentional no-op otherwise",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/ap/wnm_ap.c",
+  "line": 617,
+  "verdict": "TP",
+  "reason": "switch(type) has no default; other similar switches in this file do log unrecognized values.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/ap/wps_hostapd.c",
+  "line": 425,
+  "verdict": "TP",
+  "reason": "guard-clause pedantry: real if/else-if w/o final else, deliberate (unmatched key length silently skipped)",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/ap/wps_hostapd.c",
+  "line": 772,
+  "verdict": "TP",
+  "reason": "guard-clause pedantry: deliberate no-op path (skip lockout scheduling entirely once setup is permanently locked)",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/ap/wps_hostapd.c",
+  "line": 775,
+  "verdict": "TP",
+  "reason": "guard-clause pedantry: nested lockout-time chain, no final else, deliberate",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/ap/wps_hostapd.c",
+  "line": 1240,
+  "verdict": "TP",
+  "reason": "guard-clause pedantry: deliberate no-op for an unmatched WEP branch",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/ap/wps_hostapd.c",
+  "line": 1284,
+  "verdict": "TP",
+  "reason": "guard-clause pedantry: multi_ap backhaul key-selection chain",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/ap/wps_hostapd.c",
+  "line": 1409,
+  "verdict": "TP",
+  "reason": "guard-clause pedantry",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/ap/wps_hostapd.c",
+  "line": 1490,
+  "verdict": "TP",
+  "reason": "guard-clause pedantry",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/common/hw_features_common.c",
+  "line": 744,
+  "verdict": "TP",
+  "reason": "channel>177 leaves center_segment0=0, silently yielding bogus 5000MHz center_freq1 instead of erroring",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "MSC01-C",
+  "file": "src/common/proximity_ranging.c",
+  "line": 2292,
+  "verdict": "TP",
+  "reason": "Real gap: if op_mode.protocol_type matches neither NTB nor EDCA bits, all role/channel-intersection validation is skipped and the function still proceeds to set dev->final_op_channel/final_op_class directly from unvalidated peer-supplied op_mode fields at :2307-2313 -- no downstream re-validation exists here unlike the pr_pasn_get_best_op_mode precedent at :2154.",
+  "set": "RISKY_TP"
+ }
+]

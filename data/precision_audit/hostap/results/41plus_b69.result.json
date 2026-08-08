@@ -1,0 +1,1213 @@
+{
+ "labels": [
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3733,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class: bssid only ever supplied by internal scan-result dispatch, never externally nullable"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3733,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class: ies supplied only via internal scan pipeline"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3780,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3826,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain read-only accessor (p2p->wfd_ie_probe_req/vendor_elem), never forwarded to a non-const call (16-40_b6 clarification)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3843,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class: p2p_ie_text just forwards to p2p_attr_text"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3843,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3843,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3866,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C guard-clause fallthrough FP class (deliberate no-op on unhandled combos)"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3898,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT32-C: r%100000 bounded [0,99999], timeout starts <=500000; no realistic overflow (protocol-bound arithmetic FP class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3898,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C FP: r is initialized on both branches (os_get_random sets it, else r=0) before use"
+  },
+  {
+   "rule": "INT10-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3898,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT10-C FP: r is declared 'unsigned int', not signed, rule misidentified type"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3964,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C confirmed pure-accessor-args FP class (wpabuf_head/wpabuf_len)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4004,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class: p2p_send_action_cb is an internal TX-status callback"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4004,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4004,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4004,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4011,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C confirmed macro-arg FP class (MAC2STR is a pure read)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4018,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C FP: switch covers every enum p2p_pending_action_state value, exhaustive dispatch needs no default"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4130,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C guard-clause fallthrough FP class: trailing 'return 0;' covers the unhandled case"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4373,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C confirmed eloop_timeout_handler dispatch-contract FP class (void*,void*) signature"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4386,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C FP: switch(p2p->state) covers every enum value, exhaustive"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4450,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4503,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4526,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4526,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class; buflen only used to bound os_snprintf, no arithmetic overflow risk"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4527,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C confirmed idiomatic ptr+size-pair FP class (buf,buflen)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4527,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C miss: buf's pointee is written via aliased local 'pos = buf; os_snprintf(pos,...)' (ctrl_iface.c:129-style aliased-write miss)"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4534,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C confirmed stylistic-pedantry FP class (check IS present)"
+  },
+  {
+   "rule": "EXP08-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4537,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "EXP08-C: code already casts to (u8*) [uint8_t, byte-sized] before offset arithmetic, satisfying the rule's own suggestion; new instance, watch for recurrence"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4537,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP05-C confirmed FP class: cast-away-const read-only overlay, dev fields only read afterward, never written"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4544,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C confirmed pure-accessor-args FP class"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4561,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT14-C confirmed base-identifier-conflation FP class: different struct members used bitwise vs arithmetic"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4638,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ERR02-C confirmed misidentification of wpa_snprintf_hex() as sprintf() FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4638,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C confirmed pure-accessor-args FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4703,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C confirmed FP class: req is heap memory from wpabuf_alloc(), not automatic storage"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4707,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4707,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4707,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4714,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C confirmed macro-arg FP class (MAC2STR)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4726,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C confirmed pure-accessor-args FP class (wpabuf_head/len)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4758,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C confirmed FP class: resp is heap memory from wpabuf_alloc()"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4777,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C confirmed FP class: g is initialized in the for-loop's own init clause (g = 0)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4811,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "EXP33-C FP: noa is only read when noa_len>0, gating consumption to the portion the get_noa callback contract fills (write-only output-param class extended to callback)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4820,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C confirmed pure-accessor-args FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4866,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C confirmed eloop callback dispatch-contract FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 4912,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5006,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5015,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5022,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5029,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5046,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5070,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5070,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5114,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5114,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain read-only accessor (returns p2p->cfg->channel), never forwarded to a non-const call"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5123,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C confirmed stylistic-pedantry FP class"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5127,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR01-C confirmed FP class: ssid_postfix is a genuine fixed-size array struct field reached via ->, not a decayed pointer"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5150,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-API FP class extended to integer overflow: num_pref_chan sourced from local wpa_supplicant config (p2p_pref_chan), not attacker/network-controlled data"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5196,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5212,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5250,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5271,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5271,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5290,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5303,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5303,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5303,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5334,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5341,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C FP: rule's own premise is false, function writes p2p->own_freq_preference = freq (gas_query.c:803-style wrong-premise class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5349,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5390,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain read-only accessor (p2p->state checks only), never forwarded to a non-const call"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5392,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C confirmed stylistic-pedantry FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5412,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Static internal helper, p2p only read (num_groups/groups[]), never forwarded to a non-const call"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5417,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C confirmed FP class: g initialized in the for-loop's own init clause"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5424,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5424,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5433,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5433,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5441,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5441,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5450,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5450,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5458,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5458,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5466,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5466,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5474,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5474,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5482,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5482,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5490,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5495,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM30-C reassign-then-check FP class (p2p_sd.c:450 precedent): wpabuf_free() immediately followed by unconditional reassignment, the NULL-check reads the *new* value, not the freed one"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5504,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5509,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM30-C reassign-then-check FP class, same shape as :5495"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5518,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5523,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM30-C reassign-then-check FP class, same shape as :5495"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5532,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5538,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM30-C reassign-then-check FP class, same shape as :5495"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5549,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5565,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL15-C confirmed cross-file-linkage FP class: p2p_dbg declared in p2p_i.h, called from other src/p2p/*.c translation units"
+  },
+  {
+   "rule": "DCL19-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5565,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL19-C confirmed cross-file-linkage FP class, same as :99"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5565,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain read of p2p->cfg fields, never forwarded to a non-const call"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5574,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ERR33-C: vsnprintf's return value is genuinely never consulted anywhere in the function (batch-local pattern, recurs 3x: p2p_dbg/p2p_info/p2p_err)"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5581,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL15-C confirmed cross-file-linkage FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5581,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain read of p2p->cfg fields, never forwarded to a non-const call"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5590,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ERR33-C: vsnprintf return value never consulted, same as :5574"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5597,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL15-C confirmed cross-file-linkage FP class"
+  },
+  {
+   "rule": "DCL19-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5597,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL19-C confirmed cross-file-linkage FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5597,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain read of p2p->cfg fields, never forwarded to a non-const call"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5606,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ERR33-C: vsnprintf return value never consulted, same as :5574"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5613,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5613,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5621,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C confirmed FP class: peer_callback is a function-pointer *variable* being invoked, not an implicitly-declared bare function"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5658,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C guard-clause fallthrough FP class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5676,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C guard-clause fallthrough FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5686,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C confirmed FP class: buf is heap memory from wpabuf_alloc()"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5690,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5690,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5700,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5700,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5836,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5836,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5866,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5866,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5872,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C confirmed eloop callback dispatch-contract FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5882,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5900,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5908,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5912,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ARR02-C literal match: local array 'addr[]' sized only by its initializer, not a function-param/ifdef-variant shape (those are the confirmed FP sub-classes) - genuine if trivial instance"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5935,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C confirmed FP class: buf is heap memory from wpabuf_alloc()"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5939,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5951,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5964,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain read-only accessor (p2p->p2p_6ghz_capable), never forwarded to a non-const call"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5970,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5970,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC37-C confirmed preprocessor-branch-blind FP class: both #ifdef and #else branches end in return"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5970,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "#ifdef stub pattern: p2p unused in #else branch, only read in #ifdef branch, never forwarded to a non-const call"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5980,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5980,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5980,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC37-C confirmed preprocessor-branch-blind FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5993,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5993,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain read-only accessor (p2p->allow_6ghz), never forwarded to a non-const call"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 5999,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 6005,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C FP: rule's own premise is false, function writes through dev_ik alias derived from &p2p->pairing_info->dev_ik (aliased-pointer-write miss class)"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 6008,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ENV01-C confirmed rule-logic-bug FP class: no getenv/environment-variable code anywhere in this function"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/p2p/p2p.c",
+   "line": 6009,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM05-C confirmed FP class: fixed-size array, bound is a sum of #define'd integer constants, not a VLA"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 6063,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "dev is only read (dev->info.p2p_device_addr passed to a const u8* callback param); dev itself never forwarded to a non-const call"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 6159,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C confirmed FP class: buf is heap memory from wpabuf_alloc()"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 6251,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 6251,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 6265,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C FP: rule's own premise is false, function writes through p2p via os_memset(p2p->dev_sae_password, ...)"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "src/p2p/p2p.c (lines ~3700-6300, part2of3 region)"
+ ],
+ "summary": {
+  "tp": 15,
+  "fp": 135,
+  "fn": 0
+ }
+}

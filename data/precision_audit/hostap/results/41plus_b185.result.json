@@ -1,0 +1,845 @@
+{
+  "labels": [
+    {
+      "rule": "API01-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 120,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Categorical FP: dot1xSuppLastEapolFrameSource[6] only ever written via os_memcpy(...,ETH_ALEN) at :1314, exactly bounded to field size."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 203,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "eapol_sm_confirm_auth is a plain internal static helper (not a callback/vtable slot); sm only read."
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 365,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "SM_STEP(SUPP_PAE) macro-expands to `static void sm_SUPP_PAE_Step(...)` (state_machine.h:126); sqc doesn't see the void return type hidden in the macro."
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 403,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "if/else-if inside SM_STEP(SUPP_PAE) case SUPP_PAE_CONNECTING; missing else correctly means 'no state transition'."
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 425,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same SM_STEP no-else-means-no-transition pattern, case SUPP_PAE_AUTHENTICATING."
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 431,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same SM_STEP no-else-means-no-transition pattern, case SUPP_PAE_HELD."
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 437,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same SM_STEP no-else-means-no-transition pattern, case SUPP_PAE_AUTHENTICATED."
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 466,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "SM_STEP(KEY_RX) macro-hidden void return type, same as :365."
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 470,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "switch(sm->KEY_RX_state) exhaustively covers all 3 enum values (UNKNOWN/NO_KEY_RECEIVE/KEY_RECEIVE); no default needed."
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 592,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "SM_STEP(SUPP_BE) macro-hidden void return type, same as :365."
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 624,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "if/else-if inside SM_STEP(SUPP_BE) case SUPP_BE_REQUEST; missing else means 'stay in REQUEST', intentional."
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 644,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same pattern, case SUPP_BE_IDLE."
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 657,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same pattern, case SUPP_BE_RECEIVE."
+    },
+    {
+      "rule": "MEM05-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 702,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ekey[IEEE8021X_KEY_IV_LEN + IEEE8021X_ENCR_KEY_LEN] is sized from two #define constants, not a runtime-sized VLA."
+    },
+    {
+      "rule": "INT14-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 719,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "Bitwise use is on key->key_index (a struct member, e.g. :840-852), misattributed to the `key` pointer variable itself."
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 719,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*hdr) is a compile-time type-size query, not a dereference of hdr."
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 719,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*key) is a compile-time type-size query, not a dereference of key."
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 753,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "keydata.encr_key is populated by eapol_sm_get_key(sm,&keydata,16) at :745 (output-param write) before this use; sqc doesn't track the callee's write-through."
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 754,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "if/else-if with no final else; the unhandled case (res==0, success) intentionally falls through to continue processing."
+    },
+    {
+      "rule": "MSC41-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 826,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Flagged content is the descriptive wpa_hexdump_key() label string 'material data encryption key', not an embedded secret literal; datakey is real key bytes correctly passed to the redacting hexdump_key() helper."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 874,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "eapol_sm_getSuppRsp is a plain static SM_STATE helper invoked directly (not via a function-pointer table); sm unused/read-only."
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 910,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpabuf_head(resp)/wpabuf_len(resp) are pure accessors, no side effects to unsequence."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 941,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eapol_sm_step_timeout's eloop_ctx matches the fixed eloop_timeout_handler dispatch contract (registered via eloop_register_timeout/eloop_cancel_timeout at :1008-1009,2190)."
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 979,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "eapol_sm_step's sm is internal-only; every caller (eapol_port_timers_tick, eapol_sm_step_timeout, all eapol_sm_notify_* wrappers) already NULL-checks sm before calling it."
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1116,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Direct `if (sm == NULL) return;` NULL check is idiomatic C, not a CERT-C violation."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1134,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "eapol_sm_get_method_name is a plain public accessor, not a callback/vtable slot; sm only read."
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1158,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "buflen overflow is already guarded: the prior os_snprintf_error(buflen,len) check (:1170) returns early unless len<buflen, so the later buflen-len arithmetic can't underflow."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1158,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "eapol_sm_get_status is a plain public accessor, not a callback/vtable slot; sm only read."
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1158,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Categorical FP: idiomatic `char *buf, size_t buflen` pointer+size pair."
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1162,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Direct `if (sm == NULL) return 0;` NULL check is idiomatic, not a CERT-C violation."
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1165,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eapol_supp_pae_state()/eapol_port_status() are pure lookup functions with no side effects."
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1174,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eapol_port_control()/eapol_supp_be_state() are pure lookup functions with no side effects."
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1217,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "Same os_snprintf_error(buflen,len) guard pattern as :1158 protects the later buflen-len arithmetic."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1217,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "eapol_sm_get_mib is a plain public accessor, not a callback/vtable slot; sm only read."
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1217,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Categorical FP: idiomatic `char *buf, size_t buflen` pointer+size pair."
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1222,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Direct `if (sm == NULL) return 0;` NULL check is idiomatic, not a CERT-C violation."
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1288,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "eapol_sm_rx_eapol's src is internal-only: all 5 call sites (wpa_supplicant.c:6192, preauth.c:79, eapol_test.c, fuzzer harness) pass a real MAC-address buffer, never NULL."
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1288,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "eapol_sm_rx_eapol's buf is internal-only: all call sites pass a real received-frame buffer, never NULL."
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1297,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Direct `if (sm == NULL) return 0;` NULL check is idiomatic, not a CERT-C violation."
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1308,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*hdr) is a compile-time type-size query, not a dereference of hdr."
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1385,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpabuf_mhead_u8(sm->eapReqData)/wpabuf_len(sm->eapReqData) are pure accessors, no side effects."
+    },
+    {
+      "rule": "MSC17-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1396,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "An unconditional `break;` exists directly above at :1395; there is no real fallthrough into the EAPOL_KEY case (likely confused by the nested #ifdef CONFIG_EAP_PROXY block above it)."
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1397,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*key) is a compile-time type-size query, not a dereference of key."
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1468,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Direct `if (sm == NULL) return;` NULL check is idiomatic, not a CERT-C violation."
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1488,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Direct `if (sm == NULL) return;` NULL check is idiomatic, not a CERT-C violation."
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1510,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Direct `if (sm == NULL) return;` NULL check is idiomatic, not a CERT-C violation."
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1532,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Direct `if (sm == NULL) return;` NULL check is idiomatic, not a CERT-C violation."
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1554,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "config is documented '%NULL to clear the stored pointer' and is only ever stored (sm->config = config), never dereferenced in this function."
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1558,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Direct `if (sm == NULL) return;` NULL check is idiomatic, not a CERT-C violation."
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1566,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Direct `if (sm == NULL) return;` NULL check is idiomatic, not a CERT-C violation."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1600,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "eapol_sm_get_key is a plain public accessor, not a callback/vtable slot; sm only read."
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1654,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "eapol_sm_get_session_id's len is internal-only: all 3 call sites pass &local_variable, never NULL."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1654,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "eapol_sm_get_session_id is a plain public accessor, not a callback/vtable slot; sm only read."
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1693,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Direct `if (sm == NULL) return;` NULL check is idiomatic, not a CERT-C violation."
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1710,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Direct `if (sm == NULL) return;` NULL check is idiomatic, not a CERT-C violation."
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1721,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Direct `if (sm == NULL) return;` NULL check is idiomatic, not a CERT-C violation."
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1763,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Direct `if (sm == NULL) return;` NULL check is idiomatic, not a CERT-C violation."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1779,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "eapol_sm_notify_ctrl_attached is a plain public wrapper, not a callback/vtable slot; sm only read."
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1781,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Direct `if (sm == NULL) return;` NULL check is idiomatic, not a CERT-C violation."
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1796,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Direct `if (sm == NULL) return;` NULL check is idiomatic, not a CERT-C violation."
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1836,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Direct `if (sm == NULL) return;` NULL check is idiomatic, not a CERT-C violation."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1848,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "eapol_sm_invalidate_cached_session is a plain public wrapper, not a callback/vtable slot; sm only read."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1855,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eapol_sm_get_config is assigned into the fixed-signature `eapol_cb` struct eapol_callbacks vtable (:2089), a 3rd dispatch-table shape alongside eloop/EAP-method-table."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1862,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eapol_sm_get_eapReqData is an eapol_callbacks vtable slot (:2094); ctx pinned by the dispatch contract."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1872,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eapol_sm_get_bool is an eapol_callbacks vtable slot (:2090); ctx pinned by the dispatch contract."
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1909,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "switch(variable) in eapol_sm_set_bool exhaustively covers all 10 enum eapol_bool_var values (eap.h:36-102)."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1944,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eapol_sm_get_int is an eapol_callbacks vtable slot (:2092); ctx pinned by the dispatch contract."
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1963,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "switch(variable) in eapol_sm_set_int exhaustively covers the sole enum eapol_int_var value (EAPOL_idleWhile, eap.h:116-125)."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1973,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eapol_sm_set_config_blob is an eapol_callbacks vtable slot (:2095); ctx pinned by the dispatch contract."
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1983,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Both #ifdef CONFIG_NO_CONFIG_BLOBS branches of eapol_sm_get_config_blob return unconditionally; ifdef-branch-blind misfire."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 1984,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eapol_sm_get_config_blob is an eapol_callbacks vtable slot (:2096); ctx pinned by the dispatch contract."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 2014,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eapol_sm_eap_param_needed is an eapol_callbacks vtable slot (:2098); ctx pinned by the dispatch contract."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 2026,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eapol_sm_notify_cert is an eapol_callbacks vtable slot (:2099); ctx pinned by the dispatch contract."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 2035,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eapol_sm_notify_status is an eapol_callbacks vtable slot (:2100); ctx pinned by the dispatch contract."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 2045,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eapol_sm_notify_eap_error is an eapol_callbacks vtable slot (:2101); ctx pinned by the dispatch contract."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 2056,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eapol_sm_eap_proxy_cb is an eapol_callbacks vtable slot (:2103); ctx pinned by the dispatch contract."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 2066,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eapol_sm_eap_proxy_notify_sim_status is an eapol_callbacks vtable slot (:2104); ctx pinned by the dispatch contract."
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 2078,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Categorical FP: idiomatic `const u8 *id, size_t len` pointer+size pair."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 2078,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eapol_sm_set_anon_id is an eapol_callbacks vtable slot (:2107); ctx pinned by the dispatch contract."
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 2119,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "eapol_sm_init's ctx is internal-only: all callers (wpas_glue.c, preauth.c, eapol_test.c) always pass a freshly os_zalloc'd, non-NULL struct."
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 2123,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*sm) at `sm = os_zalloc(sizeof(*sm));` is a compile-time type-size query, not a dereference; sm is also NULL-checked immediately after (:2124)."
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 2176,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sm is a local pointer *variable* pointing to heap storage from os_zalloc() (:2123), not an object with automatic storage duration."
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 2188,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Direct `if (sm == NULL) return;` NULL check is idiomatic, not a CERT-C violation."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 2203,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "eapol_sm_set_ext_pw_ctx is a plain public wrapper, not a callback/vtable slot; sm only read."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 2211,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "eapol_sm_failed is a plain public accessor, not a callback/vtable slot; sm only read."
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 2213,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Direct `if (sm == NULL) return 0;` NULL check is idiomatic, not a CERT-C violation."
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 2220,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "eapol_sm_get_eap_proxy_imsi's imsi is an eapol_callbacks vtable slot param (get_eap_proxy_imsi, :2105); always a real EAP-proxy-provided buffer."
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 2220,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Categorical FP: idiomatic `char *imsi, size_t *len` pointer+size-out pair."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 2220,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eapol_sm_get_eap_proxy_imsi is an eapol_callbacks vtable slot (:2105); ctx pinned by the dispatch contract."
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 2220,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "Second flagged pointer param in the same idiomatic ptr+size vtable-callback signature."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 2231,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "eapol_sm_erp_flush is a plain public wrapper, not a callback/vtable slot; sm only read."
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 2238,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Both #ifdef CONFIG_ERP / #else branches of eapol_sm_build_erp_reauth_start return unconditionally; ifdef-branch-blind misfire."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 2238,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "eapol_sm_build_erp_reauth_start is a plain public wrapper, not a callback/vtable slot; sm only read (!sm / sm->eap)."
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 2250,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "eapol_sm_process_erp_finish's buf is internal-only: both call sites (pasn_initiator.c:459, wpa.c:6393) pass a real non-NULL buffer."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 2250,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "eapol_sm_process_erp_finish is a plain public wrapper, not a callback/vtable slot; sm only read."
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 2261,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Both #ifdef CONFIG_ERP / #else branches of eapol_sm_update_erp_next_seq_num return unconditionally; ifdef-branch-blind misfire."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 2261,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "eapol_sm_update_erp_next_seq_num is a plain public wrapper, not a callback/vtable slot; sm only read."
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 2273,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "eapol_sm_get_erp_info's config is internal-only: all 4 call sites pass &ssid->eap, never NULL."
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 2273,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "eapol_sm_get_erp_info's username is internal-only: all call sites pass &local_variable, never NULL."
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 2273,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "eapol_sm_get_erp_info's realm is internal-only: all call sites pass &local_variable, never NULL."
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 2273,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "eapol_sm_get_erp_info's erp_next_seq_num is internal-only: all call sites pass &local_variable, never NULL."
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 2273,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "eapol_sm_get_erp_info's rrk is internal-only: all call sites pass &local_variable, never NULL."
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 2273,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Both #ifdef CONFIG_ERP / #else branches of eapol_sm_get_erp_info return unconditionally; ifdef-branch-blind misfire."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eapol_supp/eapol_supp_sm.c",
+      "line": 2273,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "eapol_sm_get_erp_info is a plain public wrapper, not a callback/vtable slot; sm only read."
+    }
+  ],
+  "fns": [],
+  "files_clean_for_fn": [
+    "src/eapol_supp/eapol_supp_sm.c"
+  ],
+  "summary": {
+    "tp": 16,
+    "fp": 88,
+    "fn": 0
+  }
+}

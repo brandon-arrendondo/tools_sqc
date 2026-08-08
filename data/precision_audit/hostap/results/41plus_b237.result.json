@@ -1,0 +1,579 @@
+{
+ "labels": [
+  {
+   "rule": "EXP30-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 87,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_aka_state_txt is a pure switch-return, no side effects to sequence"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 100,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*data) never evaluates the dereference; standard idiom"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 128,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fall-through only reached when earlier free+return branches were not taken"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 134,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same mutually-exclusive-branch confusion as :128"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 150,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data is heap (os_zalloc), not automatic storage"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 150,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reachable only via the non-freed fall-through path"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 161,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data is a passthrough of eap_aka_init's heap return value"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 166,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data genuinely mutated via os_memset(data->field,...) writes, tool misses pointer-target writes"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 181,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_aka_deinit is a struct eap_method vtable slot (eap->deinit); signature pinned by dispatch contract"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 199,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal helper, data read-only, not a vtable member; low-value but genuine"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 206,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "plain os_snprintf return consumed via pos+= with no negative-return check"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 207,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "same unchecked os_snprintf pattern"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 208,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_snprintf_hex() never returns an error value, unlike os_snprintf"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 209,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "plain os_snprintf return consumed via pos+= with no negative-return check"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 217,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sm genuinely unused, plain internal helper not a vtable slot"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 275,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "invalid: is a goto target reached from 7 earlier goto statements, not unreachable"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 277,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "4 mutually exclusive returns each free resp exactly once"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 277,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same mutually-exclusive-exit-path confusion as MEM30-C above"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 282,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ifdef-branch-blind: every CONFIG_USIM_SIMULATOR/HARDCODED/#else path already returns"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 408,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "identity=NULL initializer unconditionally overwritten at :419 before any read"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 484,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "deliberate fallthrough to shared wpabuf_put_buf code, no final else needed"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 496,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal helper, data read-only, not a vtable member"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 531,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal helper, data read-only, not a vtable member"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 539,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL check stylistic pedantry, not a real defect"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 617,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal helper, attr read-only, not a vtable member"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 648,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "identity/identity_len is the standard ptr+size companion-param idiom"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 665,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/wpabuf_len are pure accessors, no side effects to sequence"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 685,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/wpabuf_len pure-accessor misfire, same as :665"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 688,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "enc is heap (wpabuf_alloc), not automatic storage"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 717,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "deliberate fallthrough leaving identity NULL when no branch matches"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 778,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "deliberate no-op fallthrough when enc_identity was already set"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 858,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal helper, data read-only, not a vtable member"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 895,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal helper, attr read-only, not a vtable member"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 942,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is the heap wpabuf returned by eap_aka_response_identity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 946,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal helper, data read-only, not a vtable member"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 997,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal helper, data read-only, not a vtable member"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 998,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal helper, attr read-only, not a vtable member"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1104,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "deliberate fallthrough continues processing when res==1 (valid)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1153,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "deliberate fallthrough continues processing when res==0 (success)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1238,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal helper, data read-only, not a vtable member"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1239,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal helper, attr read-only, not a vtable member"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1300,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sm only read (sm->msg_ctx), plain internal helper not a vtable member"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1318,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "attr is a struct pointer; the bitwise op is on attr->notification, not attr itself"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1328,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "deliberate no-op fallthrough when neither notification condition matches"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1337,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal helper, attr read-only, not a vtable member"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1552,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "deliberate no-op fallthrough for CONTINUE state, methodState already defaulted"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1559,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "res is one of several heap wpabufs returned by the process_* helpers"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1563,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_aka_has_reauth_data is a vtable slot (eap->has_reauth_data), sm param"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1563,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_aka_has_reauth_data is a vtable slot (eap->has_reauth_data), priv param"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1570,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_aka_deinit_for_reauth is a vtable slot (eap->deinit_for_reauth)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1601,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv is the original heap object passed through unchanged, not a fresh local"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1605,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_aka_init_for_reauth is a vtable slot (eap->init_for_reauth), sm param"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1605,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv is an opaque void* handle, not an array-semantics param"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1605,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_aka_init_for_reauth is a vtable slot (eap->init_for_reauth), priv param"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1624,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_aka_get_identity is a vtable slot (eap->get_identity), sm param"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1624,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_aka_get_identity is a vtable slot (eap->get_identity), priv param"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1631,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_aka_isKeyAvailable is a vtable slot (eap->isKeyAvailable), sm param"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1631,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv is an opaque void* handle, not an array-semantics param"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1631,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_aka_isKeyAvailable is a vtable slot (eap->isKeyAvailable), priv param"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1645,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "key is heap (os_memdup of data->msk)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1649,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_aka_getKey is a vtable slot (eap->getKey), sm param"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1649,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv is an opaque void* handle, not an array-semantics param"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1649,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_aka_getKey is a vtable slot (eap->getKey), priv param"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1677,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "id is heap (os_malloc)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1681,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_aka_get_session_id is a vtable slot (eap->getSessionId), sm param"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1681,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv is an opaque void* handle, not an array-semantics param"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1681,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_aka_get_session_id is a vtable slot (eap->getSessionId), priv param"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1695,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "key is heap (os_memdup of data->emsk)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1720,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap is passed to eap_peer_method_register(eap) which takes ownership"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 1747,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same ownership-transfer-to-registration-API FP as :1720"
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/eap_peer/eap_aka.c",
+   "line": 146,
+   "rule": "EXP34-C",
+   "desc": "os_memdup(sm->identity,...) into data->mk_identity is unchecked while mk_identity_len is set unconditionally; on OOM mk_identity stays NULL with nonzero len, later fed to eap_aka_derive_mk/eap_aka_prime_derive_keys -> sha1_vector/sha256_vector which would read from a NULL pointer. Same unchecked shape recurs at :752-753, :774-777, :781-784 (eap_aka_response_identity) and :1594-1595 (eap_aka_init_for_reauth).",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 18,
+  "fp": 52,
+  "fn": 1
+ }
+}

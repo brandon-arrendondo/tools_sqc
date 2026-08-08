@@ -1,0 +1,1233 @@
+{
+ "labels": [
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2179,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cn/pos assigned unconditionally right before every use in this loop iteration (continue on failure); no path reaches use unset"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2326,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C conformant-array-syntax FP class: idiomatic T*+size_t companion pair"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2349,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL exact-1/0-contract EXP20-C FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2369,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cn/pos assigned unconditionally right before every use in this loop iteration (continue on failure); no path reaches use unset"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2382,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL exact-1/0-contract EXP20-C FP class"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2397,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC37-C preprocessor-branch-blind FP class: both #ifdef/#else branches (or all real paths) already return"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2459,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C system-header FP class: OpenSSL API declared in <openssl/*.h>"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2468,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C system-header FP class: OpenSSL API declared in <openssl/*.h>"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2469,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C confuses local pointer *variable* with storage: buf/store is heap via wpabuf_alloc/X509_STORE_new, not stack"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2473,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "static/internal function, param genuinely read-only; real (if low-value) const opportunity per established static-vs-vtable DCL13-C distinction"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2479,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "MSC13-C TP: initial '= NULL' is unconditionally overwritten by get_x509_cert() before any use on the path that reaches it"
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2487,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP39-C cross-function local-variable/union conflation FP class: this function memsets 'ev' fully and never writes 'alert' at all"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2520,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C guard-clause no-final-else FP class: no action needed when none of the conditions hold"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2529,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "static/internal function, param genuinely read-only; real (if low-value) const opportunity per established static-vs-vtable DCL13-C distinction"
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2554,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP39-C cross-function local-variable/union conflation FP class: this function memsets 'ev' fully and never writes 'alert' at all"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2558,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR31-C misapplied-to-non-char-array FP class (addr[]/len[]/nid[]/sigalgs[] are not char/string arrays)"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2559,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR31-C misapplied-to-non-char-array FP class (addr[]/len[]/nid[]/sigalgs[] are not char/string arrays)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2573,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor-args FP class: both calls are side-effect-free reads"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2581,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cn/pos assigned unconditionally right before every use in this loop iteration (continue on failure); no path reaches use unset"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2613,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "STR34-C misattribution FP: line writes '\\0' into *pos, no char-widening read/conversion occurs here"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2694,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C guard-clause no-final-else FP class: no action needed when none of the conditions hold"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2705,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C system-header FP class: OpenSSL API declared in <openssl/*.h>"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2711,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C guard-clause no-final-else FP class: no action needed when none of the conditions hold"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2711,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C system-header FP class: OpenSSL API declared in <openssl/*.h>"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2758,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR31-C misapplied-to-non-char-array FP class (addr[]/len[]/nid[]/sigalgs[] are not char/string arrays)"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2759,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR31-C misapplied-to-non-char-array FP class (addr[]/len[]/nid[]/sigalgs[] are not char/string arrays)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2767,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C guard-clause no-final-else FP class: no action needed when none of the conditions hold"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2790,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C FP: STACK_OF(X509) is an OpenSSL macro-generated type sqc doesn't expand, not a missing type specifier"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2854,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C guard-clause no-final-else FP class: no action needed when none of the conditions hold"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2915,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C guard-clause no-final-else FP class: no action needed when none of the conditions hold"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2939,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "static/internal function, param genuinely read-only; real (if low-value) const opportunity per established static-vs-vtable DCL13-C distinction"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2945,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor-args FP class: both calls are side-effect-free reads"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2975,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL exact-1/0-contract EXP20-C FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2998,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C conformant-array-syntax FP class: idiomatic T*+size_t companion pair"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2999,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C conformant-array-syntax FP class: idiomatic T*+size_t companion pair"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3008,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C FP: 'store' ownership is transferred to ssl_ctx via SSL_CTX_set_cert_store() immediately after allocation; freed when ssl_ctx is freed, not a leak"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3017,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread-anywhere-in-hostap FP class (CON32-C/CON03-C/CON07-C/POS49-C): codebase has no pthread_create/mutex use"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3022,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread-anywhere-in-hostap FP class (CON32-C/CON03-C/CON07-C/POS49-C): codebase has no pthread_create/mutex use"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3023,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread-anywhere-in-hostap FP class (CON32-C/CON03-C/CON07-C/POS49-C): codebase has no pthread_create/mutex use"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3024,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C FP: 'store' ownership is transferred to ssl_ctx via SSL_CTX_set_cert_store() immediately after allocation; freed when ssl_ctx is freed, not a leak"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3027,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP34-C FP: 'ca_cert' is guarded by 'ca_cert &&' immediately before this os_strncmp call"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3033,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C FP: 'store' ownership is transferred to ssl_ctx via SSL_CTX_set_cert_store() immediately after allocation; freed when ssl_ctx is freed, not a leak"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3039,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C FP: 'store' ownership is transferred to ssl_ctx via SSL_CTX_set_cert_store() immediately after allocation; freed when ssl_ctx is freed, not a leak"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3044,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C FP: 'store' ownership is transferred to ssl_ctx via SSL_CTX_set_cert_store() immediately after allocation; freed when ssl_ctx is freed, not a leak"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3046,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread-anywhere-in-hostap FP class (CON32-C/CON03-C/CON07-C/POS49-C): codebase has no pthread_create/mutex use"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3049,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C FP: 'store' ownership is transferred to ssl_ctx via SSL_CTX_set_cert_store() immediately after allocation; freed when ssl_ctx is freed, not a leak"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3053,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C FP: 'store' ownership is transferred to ssl_ctx via SSL_CTX_set_cert_store() immediately after allocation; freed when ssl_ctx is freed, not a leak"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3063,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C system-header FP class: OpenSSL API declared in <openssl/*.h>"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3068,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C system-header FP class: OpenSSL API declared in <openssl/*.h>"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3069,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C FP: 'store' ownership is transferred to ssl_ctx via SSL_CTX_set_cert_store() immediately after allocation; freed when ssl_ctx is freed, not a leak"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3075,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C system-header FP class: OpenSSL API declared in <openssl/*.h>"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3076,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C FP: 'store' ownership is transferred to ssl_ctx via SSL_CTX_set_cert_store() immediately after allocation; freed when ssl_ctx is freed, not a leak"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3082,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C system-header FP class: OpenSSL API declared in <openssl/*.h>"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3091,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP34-C FP: the pointer is guarded non-NULL by the enclosing '&&'/while-loop condition at the same call site"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3092,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C system-header FP class: OpenSSL API declared in <openssl/*.h>"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3094,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C FP: 'store' ownership is transferred to ssl_ctx via SSL_CTX_set_cert_store() immediately after allocation; freed when ssl_ctx is freed, not a leak"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3096,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C system-header FP class: OpenSSL API declared in <openssl/*.h>"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3104,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C FP: 'store' ownership is transferred to ssl_ctx via SSL_CTX_set_cert_store() immediately after allocation; freed when ssl_ctx is freed, not a leak"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3113,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C FP: 'store' ownership is transferred to ssl_ctx via SSL_CTX_set_cert_store() immediately after allocation; freed when ssl_ctx is freed, not a leak"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3121,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C FP: 'store' ownership is transferred to ssl_ctx via SSL_CTX_set_cert_store() immediately after allocation; freed when ssl_ctx is freed, not a leak"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3126,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP34-C FP: 'ca_cert' guarded by 'ca_cert &&' immediately before this os_strncmp call"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3131,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C FP: 'store' ownership is transferred to ssl_ctx via SSL_CTX_set_cert_store() immediately after allocation; freed when ssl_ctx is freed, not a leak"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3135,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP34-C FP: 'ca_cert' guarded by 'ca_cert &&' immediately before this os_strncmp call"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3160,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C FP: 'store' ownership is transferred to ssl_ctx via SSL_CTX_set_cert_store() immediately after allocation; freed when ssl_ctx is freed, not a leak"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3169,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C FP: 'store' ownership is transferred to ssl_ctx via SSL_CTX_set_cert_store() immediately after allocation; freed when ssl_ctx is freed, not a leak"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3185,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C FP: 'store' ownership is transferred to ssl_ctx via SSL_CTX_set_cert_store() immediately after allocation; freed when ssl_ctx is freed, not a leak"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3194,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C FP: 'store' ownership is transferred to ssl_ctx via SSL_CTX_set_cert_store() immediately after allocation; freed when ssl_ctx is freed, not a leak"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3199,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread-anywhere-in-hostap FP class (CON32-C/CON03-C/CON07-C/POS49-C): codebase has no pthread_create/mutex use"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3202,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C FP: 'store' ownership is transferred to ssl_ctx via SSL_CTX_set_cert_store() immediately after allocation; freed when ssl_ctx is freed, not a leak"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3313,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C FP: fixed external OpenSSL callback-contract signature (cert_cb/verify_cb), same class as eloop/EAP-method-table/ssl_info_cb precedent"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3313,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C FP: fixed external OpenSSL callback-contract signature (cert_cb/verify_cb), same class as eloop/EAP-method-table/ssl_info_cb precedent"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3348,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT13-C type-detection-simply-wrong FP class: 'flags' is already declared 'unsigned int' in this function's signature"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3355,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT13-C type-detection-simply-wrong FP class: 'flags' is already declared 'unsigned int' in this function's signature"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3360,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT13-C type-detection-simply-wrong FP class: 'flags' is already declared 'unsigned int' in this function's signature"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3366,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT13-C type-detection-simply-wrong FP class: 'flags' is already declared 'unsigned int' in this function's signature"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3372,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT13-C type-detection-simply-wrong FP class: 'flags' is already declared 'unsigned int' in this function's signature"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3378,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT13-C type-detection-simply-wrong FP class: 'flags' is already declared 'unsigned int' in this function's signature"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3384,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT13-C type-detection-simply-wrong FP class: 'flags' is already declared 'unsigned int' in this function's signature"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3391,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT13-C type-detection-simply-wrong FP class: 'flags' is already declared 'unsigned int' in this function's signature"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3393,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT13-C type-detection-simply-wrong FP class: 'flags' is already declared 'unsigned int' in this function's signature"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3395,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C guard-clause no-final-else FP class: no action needed when none of the conditions hold"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3395,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT13-C type-detection-simply-wrong FP class: 'flags' is already declared 'unsigned int' in this function's signature"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3420,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT13-C type-detection-simply-wrong FP class: 'flags' is already declared 'unsigned int' in this function's signature"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3441,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT13-C type-detection-simply-wrong FP class: 'flags' is already declared 'unsigned int' in this function's signature"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3455,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C guard-clause no-final-else FP class: no action needed when none of the conditions hold"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3455,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT13-C type-detection-simply-wrong FP class: 'flags' is already declared 'unsigned int' in this function's signature"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3461,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR31-C misapplied-to-non-char-array FP class (addr[]/len[]/nid[]/sigalgs[] are not char/string arrays)"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3499,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT13-C type-detection-simply-wrong FP class: 'flags' is already declared 'unsigned int' in this function's signature"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3504,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT13-C type-detection-simply-wrong FP class: 'flags' is already declared 'unsigned int' in this function's signature"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3523,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT13-C type-detection-simply-wrong FP class: 'flags' is already declared 'unsigned int' in this function's signature"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3539,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR31-C misapplied-to-non-char-array FP class (addr[]/len[]/nid[]/sigalgs[] are not char/string arrays)"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3540,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR31-C misapplied-to-non-char-array FP class (addr[]/len[]/nid[]/sigalgs[] are not char/string arrays)"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3556,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT13-C type-detection-simply-wrong FP class: 'flags' is already declared 'unsigned int' in this function's signature"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3573,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT13-C type-detection-simply-wrong FP class: 'flags' is already declared 'unsigned int' in this function's signature"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3611,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread FP class extended to CON03-C/CON07-C on a plain static local counter, no synchronization needed anywhere in this single-threaded codebase"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3611,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C conformant-array-syntax FP class: idiomatic T*+size_t companion pair"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3611,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C FP: public multi-backend src/crypto/tls.h interface function, signature shared verbatim across all TLS backends (established tls.h public-API DCL13-C FP class)"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3615,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread FP class extended to CON03-C/CON07-C on a plain static local counter, no synchronization needed anywhere in this single-threaded codebase"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3618,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic-pedantry FP class: plain NULL check already present"
+  },
+  {
+   "rule": "CON32-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3622,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread-anywhere-in-hostap FP class (CON32-C/CON03-C/CON07-C/POS49-C): codebase has no pthread_create/mutex use"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3622,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread-anywhere-in-hostap FP class (CON32-C/CON03-C/CON07-C/POS49-C): codebase has no pthread_create/mutex use"
+  },
+  {
+   "rule": "CON32-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3626,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread-anywhere-in-hostap FP class (CON32-C/CON03-C/CON07-C/POS49-C): codebase has no pthread_create/mutex use"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3626,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread-anywhere-in-hostap FP class (CON32-C/CON03-C/CON07-C/POS49-C): codebase has no pthread_create/mutex use"
+  },
+  {
+   "rule": "CON32-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3631,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread-anywhere-in-hostap FP class (CON32-C/CON03-C/CON07-C/POS49-C): codebase has no pthread_create/mutex use"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3631,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread-anywhere-in-hostap FP class (CON32-C/CON03-C/CON07-C/POS49-C): codebase has no pthread_create/mutex use"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3651,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C guard-clause no-final-else FP class: no action needed when none of the conditions hold"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3660,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "static/internal function, param genuinely read-only; real (if low-value) const opportunity per established static-vs-vtable DCL13-C distinction"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3661,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C conformant-array-syntax FP class: idiomatic T*+size_t companion pair"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3680,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL exact-1/0-contract EXP20-C FP class"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3680,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP05-C read-only cast-away-const FP class: cast pointer is only read via SSL_use_certificate_ASN1, never written through"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3685,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C guard-clause no-final-else FP class: no action needed when none of the conditions hold"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3695,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C FP: bio is freed on every reachable path (error path at BIO_free+return, success path falls through to BIO_free before return)"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3718,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic-pedantry FP class: plain NULL check already present"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3730,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL exact-1/0-contract EXP20-C FP class"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3751,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL exact-1/0-contract EXP20-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3755,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MEM31-C FP: preprocessor-branch-blind phantom allocation - no 'bio' variable exists at/near this line in the actual source; this line is inside a different, bio-free #ifndef OPENSSL_NO_STDIO block"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3760,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL exact-1/0-contract EXP20-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3764,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MEM31-C FP: preprocessor-branch-blind phantom allocation - no 'bio' variable exists at/near this line in the actual source; this line is inside a different, bio-free #ifndef OPENSSL_NO_STDIO block"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3767,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL exact-1/0-contract EXP20-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3772,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MEM31-C FP: preprocessor-branch-blind phantom allocation - no 'bio' variable exists at/near this line in the actual source; this line is inside a different, bio-free #ifndef OPENSSL_NO_STDIO block"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3782,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MEM31-C FP: preprocessor-branch-blind phantom allocation - no 'bio' variable exists at/near this line in the actual source; this line is inside a different, bio-free #ifndef OPENSSL_NO_STDIO block"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3786,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC37-C preprocessor-branch-blind FP class: both #ifdef/#else branches (or all real paths) already return"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3786,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "static/internal function, param genuinely read-only; real (if low-value) const opportunity per established static-vs-vtable DCL13-C distinction"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3792,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic-pedantry FP class: plain NULL check already present"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3806,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic-pedantry FP class: plain NULL check already present"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3881,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C/MEM30-C mutually-exclusive-branch double-free FP class: the break/return branch that frees runs at most once per iteration/call, never both"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3884,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C/MEM30-C mutually-exclusive-branch double-free FP class: the break/return branch that frees runs at most once per iteration/call, never both"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3904,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C guard-clause no-final-else FP class: no action needed when none of the conditions hold"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3927,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C/MEM30-C mutually-exclusive-branch double-free FP class: the break/return branch that frees runs at most once per iteration/call, never both"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3932,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C FP: 'certs' stack items were already popped via sk_X509_pop() in the preceding loop; sk_X509_pop_free() at this line frees only the empty container, not a double free"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3932,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C FP (new): the analyzer treats the 'X509_free' callback-pointer argument to sk_X509_pop_free() itself as a variable being double-freed - a function pointer mistaken for a freed object"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3946,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC37-C preprocessor-branch-blind FP class: both #ifdef/#else branches (or all real paths) already return"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3953,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ERR33-C/ERR00-C FP: fopen() return value IS checked, on the very next line ('if (f == NULL) return -1;')"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3953,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ERR33-C/ERR00-C FP: fopen() return value IS checked, on the very next line ('if (f == NULL) return -1;')"
+  },
+  {
+   "rule": "FIO05-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3953,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "FIO05-C FP: private_key path is an hostapd/wpa_supplicant admin-supplied local config path, not adversarial network input (established internal-config-path FIO05-C FP class)"
+  },
+  {
+   "rule": "WIN03-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3953,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "WIN03-C TP (low): mode string \"rb\" genuinely lacks the 'N' no-inherit flag; this file is compiled on native Windows builds too (CONFIG_NATIVE_WINDOWS paths elsewhere in file)"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3958,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ERR00-C/ERR33-C TP (low): fclose(f)'s return value is genuinely discarded, no error check anywhere nearby"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3958,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ERR00-C/ERR33-C TP (low): fclose(f)'s return value is genuinely discarded, no error check anywhere nearby"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3976,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC37-C preprocessor-branch-blind FP class: both #ifdef/#else branches (or all real paths) already return"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3977,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C conformant-array-syntax FP class: idiomatic T*+size_t companion pair"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4000,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "static/internal function, param genuinely read-only; real (if low-value) const opportunity per established static-vs-vtable DCL13-C distinction"
+  },
+  {
+   "rule": "INT07-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4023,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT07-C wrong-type-lookup FP class: 'params' is a local anonymous struct instance, not a char variable at all"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4034,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC37-C preprocessor-branch-blind FP class: both #ifdef/#else branches (or all real paths) already return"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4065,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC37-C preprocessor-branch-blind FP class: both #ifdef/#else branches (or all real paths) already return"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4065,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "static/internal function, param genuinely read-only; real (if low-value) const opportunity per established static-vs-vtable DCL13-C distinction"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4084,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C FP: 'store' ownership is transferred to ssl_ctx via SSL_CTX_set_cert_store() immediately after allocation; freed when ssl_ctx is freed, not a leak"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4104,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C FP: 'store' ownership is transferred to ssl_ctx via SSL_CTX_set_cert_store() immediately after allocation; freed when ssl_ctx is freed, not a leak"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4107,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C/MEM30-C mutually-exclusive-branch double-free FP class: the break/return branch that frees runs at most once per iteration/call, never both"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4112,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread-anywhere-in-hostap FP class (CON32-C/CON03-C/CON07-C/POS49-C): codebase has no pthread_create/mutex use"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4114,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C FP: 'store' ownership is transferred to ssl_ctx via SSL_CTX_set_cert_store() immediately after allocation; freed when ssl_ctx is freed, not a leak"
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2591,
+   "rule": "EXP34-C",
+   "desc": "openssl_tls_cert_event: gen->d.ia5 (from a peer-certificate GENERAL_NAME) is dereferenced via gen->d.ia5->length without a NULL check on gen->d.ia5 itself, on attacker-supplied subjectAltName data",
+   "upstream_present": "unknown"
+  },
+  {
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3699,
+   "rule": "ERR34-C",
+   "desc": "tls_connection_client_cert: BIO_write(bio, client_cert_blob, client_cert_blob_len) return value not checked; a short write would silently produce a truncated/garbage cert parse rather than an error",
+   "upstream_present": "unknown"
+  },
+  {
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3957,
+   "rule": "EXP34-C",
+   "desc": "tls_read_pkcs12: d2i_PKCS12_fp(f, NULL) result assigned to p12 without checking f's underlying read actually succeeded (partial/short PKCS12 file); p12==NULL check exists but no distinct handling for I/O vs parse failure",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 11,
+  "fp": 139,
+  "fn": 3
+ }
+}

@@ -1,0 +1,1219 @@
+{
+ "labels": [
+  {
+   "rule": "ERR00-C",
+   "file": "hostapd/config_file.c",
+   "line": 38,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fopen() return IS checked via `if (!f)` on the very next line"
+  },
+  {
+   "rule": "FIO05-C",
+   "file": "hostapd/config_file.c",
+   "line": 38,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "hostapd VLAN/maclist/eap-user/rxkh files are admin-supplied local config paths, not adversarial input; fstat ownership check pattern"
+  },
+  {
+   "rule": "WIN03-C",
+   "file": "hostapd/config_file.c",
+   "line": 38,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "literal rule match (no 'N' flag); low real-world impact, pedantic per WIN-rules-need-oracle note"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "hostapd/config_file.c",
+   "line": 44,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misattributed: line 44 is the `while (fgets(...))` header, not the 'pos' scan loop below; new outer-fgets-while misattribution pattern"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "hostapd/config_file.c",
+   "line": 44,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bogus: no cast of 'f' occurs anywhere in this function; recurring misattribution bug paired with the fgets-while ARR30-C miss"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "hostapd/config_file.c",
+   "line": 50,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bounded scan: pos walks buf[128] which fgets() NUL-terminates within bounds; provably-bounded NUL scan FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 52,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`*pos='\\0'` is a literal-constant char assignment, no widening/sign-extension occurs; confirmed STR34-C plain-assignment FP class"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "hostapd/config_file.c",
+   "line": 62,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`pos = buf + 1` is pointer arithmetic on a fixed local array (buf[128]), not integer addition; INT32-C category error on pointer arithmetic"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "hostapd/config_file.c",
+   "line": 64,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "strtol result is checked immediately (buf==pos / range vs MAX_VLAN_ID at next line) even though errno itself isn't checked"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "hostapd/config_file.c",
+   "line": 64,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same: return value is checked at the following line"
+  },
+  {
+   "rule": "ERR01-C",
+   "file": "hostapd/config_file.c",
+   "line": 64,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "range check on vlan_id substitutes for errno check in practice; overflow would fail the MAX_VLAN_ID bound"
+  },
+  {
+   "rule": "ERR30-C",
+   "file": "hostapd/config_file.c",
+   "line": 64,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same errno-reset pedantry; downstream range check covers the practical risk"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "hostapd/config_file.c",
+   "line": 69,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "fclose() on a read-only stream with unchecked return: no data-loss risk, not actionable; recurring pattern in this file"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 81,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`*(pos2++)='\\0'` literal constant assignment, confirmed STR34-C FP class"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "hostapd/config_file.c",
+   "line": 86,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "fclose() on read-only stream, unchecked return not actionable"
+  },
+  {
+   "rule": "FIO24-C",
+   "file": "hostapd/config_file.c",
+   "line": 86,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mutually-exclusive early-return branches (each closes+returns independently); same class as confirmed MEM31-C/mutually-exclusive-branch FPs"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 95,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`*pos3='\\0'` literal constant assignment"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "hostapd/config_file.c",
+   "line": 97,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`os_zalloc(sizeof(*vlan))` \u2014 sizeof never evaluates its operand; confirmed EXP33-C sizeof(*ptr) FP class"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "hostapd/config_file.c",
+   "line": 101,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "fclose() on read-only stream, unchecked return not actionable"
+  },
+  {
+   "rule": "FIO24-C",
+   "file": "hostapd/config_file.c",
+   "line": 101,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mutually-exclusive early-return branches, not a real double close"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "hostapd/config_file.c",
+   "line": 114,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "fclose() on read-only stream, unchecked return not actionable"
+  },
+  {
+   "rule": "FIO24-C",
+   "file": "hostapd/config_file.c",
+   "line": 114,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mutually-exclusive early-return branches (114 is the only-reached success-path close), not a real double close"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "hostapd/config_file.c",
+   "line": 130,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fopen() checked via `if (!f)` next line"
+  },
+  {
+   "rule": "FIO05-C",
+   "file": "hostapd/config_file.c",
+   "line": 130,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "admin-config-file trust pattern (see L38)"
+  },
+  {
+   "rule": "WIN03-C",
+   "file": "hostapd/config_file.c",
+   "line": 130,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "literal rule match, pedantic (see L38)"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "hostapd/config_file.c",
+   "line": 136,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misattributed to fgets-while header, not the actual pos-scan loop; recurring misattribution pattern"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "hostapd/config_file.c",
+   "line": 136,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bogus cast-away-const 'f' claim, no such cast exists; recurring pattern"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "hostapd/config_file.c",
+   "line": 144,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bounded NUL-terminated scan over fgets-populated buf[128]"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 146,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`*pos='\\0'` literal constant assignment"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "hostapd/config_file.c",
+   "line": 162,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "fclose() on read-only stream, unchecked return not actionable"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 177,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "vlan_id = atoi(pos) has no downstream validation at all (unlike the FP precedent where atoi is immediately range-checked)"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 177,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "same: no error/range check follows atoi() here"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "hostapd/config_file.c",
+   "line": 180,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "fclose() on read-only stream, unchecked return not actionable"
+  },
+  {
+   "rule": "FIO24-C",
+   "file": "hostapd/config_file.c",
+   "line": 180,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mutually-exclusive early-return branches, not a real double close"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "hostapd/config_file.c",
+   "line": 185,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "fclose() on read-only stream, unchecked return not actionable"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "hostapd/config_file.c",
+   "line": 185,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same fclose-return pedantry"
+  },
+  {
+   "rule": "FIO24-C",
+   "file": "hostapd/config_file.c",
+   "line": 185,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mutually-exclusive early-return branches, not a real double close"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "hostapd/config_file.c",
+   "line": 188,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`sizeof(**acl)` on `struct mac_acl_entry **acl` correctly yields the element size for qsort's elemsize arg; this is the required idiom, not decay"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/config_file.c",
+   "line": 197,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`const char *hash, size_t len` is the confirmed pointer+size idiom FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/config_file.c",
+   "line": 198,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`char **pos` output param has no fixed-size array concept at all; conformant-array-syntax doesn't apply"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/config_file.c",
+   "line": 199,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`const char *fname` is a NUL-terminated string, not a sized buffer; conformant-array-syntax inapplicable"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "hostapd/config_file.c",
+   "line": 201,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "actual code is `char *pos2 = *pos;` (decl+init, `pos` is `char **`), not `*pos2=*pos`; no const involved at all \u2014 type-confusion/misparse"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 201,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`*pos` here is `char*` (pos is `char **pos` param), not char type; cross-function name conflation with unrelated `char *pos` vars elsewhere in file"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "hostapd/config_file.c",
+   "line": 204,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pos2 is an ordinary scan pointer into the caller's buffer, standard idiomatic string-scan increment, not a 'non-array' pointer"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 228,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`*pos += 2*len` \u2014 pos is `char **pos`, so `*pos` is a pointer, not char; same cross-function 'pos' type-conflation bug as L201"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "hostapd/config_file.c",
+   "line": 236,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user->password/salt ownership is transferred to `user` struct; caller's `failed:` label calls hostapd_config_free_eap_user(user) which frees both fields (verified in ap_config.c)"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "hostapd/config_file.c",
+   "line": 243,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same ownership-transfer-to-caller-cleanup reasoning as L236"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "hostapd/config_file.c",
+   "line": 246,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos2 is a local pointer VARIABLE pointing into the caller-owned buffer (not this function's stack storage); confirmed DCL30-C local-var-vs-local-storage FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 246,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`*pos = pos2` \u2014 pos is char**, so *pos is a pointer assignment, not a char sign-extension case; same cross-function conflation bug"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "hostapd/config_file.c",
+   "line": 247,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "line 247 is the SUCCESS return `return 0;` \u2014 password/salt are the intended output, retained on `user`, not leaked"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "hostapd/config_file.c",
+   "line": 271,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fopen() checked via `if (!f)` next line"
+  },
+  {
+   "rule": "FIO05-C",
+   "file": "hostapd/config_file.c",
+   "line": 271,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "admin-config-file trust pattern"
+  },
+  {
+   "rule": "WIN03-C",
+   "file": "hostapd/config_file.c",
+   "line": 271,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "literal rule match, pedantic"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "hostapd/config_file.c",
+   "line": 278,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misattributed to fgets-while header (3rd instance), not the real pos-scan loop"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "hostapd/config_file.c",
+   "line": 278,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bogus cast-away-const 'f' (3rd instance of this recurring pair)"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "hostapd/config_file.c",
+   "line": 284,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bounded NUL-terminated scan over fgets-populated buf[512]"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 286,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`*pos='\\0'` literal constant assignment"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "hostapd/config_file.c",
+   "line": 296,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "flags the bare declaration line `struct hostapd_radius_attr *attr, *a;` itself as an 'uninitialized use'; attr is assigned before any use (line 297)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "hostapd/config_file.c",
+   "line": 296,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same: 'a' is always assigned (line 307) before its use at 308-310; declaration-line misattribution"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "hostapd/config_file.c",
+   "line": 297,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`buf + 19` is pointer arithmetic on a fixed local array (buf[512], prefix already verified 19+ chars via strncmp), not integer addition; extends L62 pattern"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "hostapd/config_file.c",
+   "line": 300,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same `buf + 19` pointer-arithmetic category error"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "hostapd/config_file.c",
+   "line": 334,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`pos = buf + 1` pointer arithmetic on fixed local buf[512], same category error (4th instance in this file)"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "hostapd/config_file.c",
+   "line": 345,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no bitwise op on 'pos' occurs at/near this line; the only bitwise use of a pos-difference in this function is `(pos2-pos)&1` at line 525 (parity check on the computed length, not on pos itself) \u2014 extends confirmed INT14-C pedantry-mismatch class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 374,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`*pos='\\0'` literal constant assignment"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "hostapd/config_file.c",
+   "line": 378,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "misattributed: line 378 is `while (*start)` header; no 'pos3' pointer-increment loop exists at/near this line"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "hostapd/config_file.c",
+   "line": 378,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "the `while(*start)` loop parses comma-separated EAP method tokens via os_strchr, not a manual char-by-char string copy"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "hostapd/config_file.c",
+   "line": 379,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`char *pos3 = os_strchr(start, ',');` is a declaration WITH initializer on this very line; flagging it as 'used uninitialized' at its own init site is bogus"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 381,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`*pos3++='\\0'` literal constant assignment"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "hostapd/config_file.c",
+   "line": 483,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same as L345: bitwise use is on `(pos2-pos)&1` at line 525, not on pos2 itself; extends confirmed INT14-C pedantry-mismatch class"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "hostapd/config_file.c",
+   "line": 561,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`failed:` is a real goto target (reached via numerous `goto failed;` throughout the function); confirmed MSC07-C goto-target-label FP class"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "hostapd/config_file.c",
+   "line": 568,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "fclose() unchecked-return pattern, not actionable"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "hostapd/config_file.c",
+   "line": 568,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same fclose-return pedantry"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "hostapd/config_file.c",
+   "line": 574,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd_config_free_eap_users() is NULL-safe (`while(user){...}` loop, verified in src/ap/ap_config.c:695); confirmed os_free(NULL)-style safe-on-NULL FP class"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "hostapd/config_file.c",
+   "line": 577,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misattributed to closing brace after `return ret;`; failed: label frees the in-progress user, and free_eap_users(new_user) frees the accumulated list on failure \u2014 no real leak"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "hostapd/config_file.c",
+   "line": 584,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd core has no pthread usage (verified via grep); server_index static counter used only during single-threaded config parsing; extends confirmed CON32-C/POS49-C single-threaded FP class"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "hostapd/config_file.c",
+   "line": 591,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same: no concurrent threads exist in hostapd's config-parsing path"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "hostapd/config_file.c",
+   "line": 593,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`*server` is realloc's own INPUT argument (first use, nothing freed it); analyzer bug treats os_realloc_array's input pointer as already-freed"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "hostapd/config_file.c",
+   "line": 593,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`sizeof(*nserv)` \u2014 sizeof never evaluates its operand; confirmed EXP33-C sizeof(*ptr) FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "hostapd/config_file.c",
+   "line": 597,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nserv holds the HEAP pointer returned by os_realloc_array, not local automatic storage; confirmed DCL30-C FP class"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "hostapd/config_file.c",
+   "line": 597,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same realloc-input-misflagged-as-freed analyzer bug as L593 (writing `*server = nserv` right after a successful realloc, not a UAF)"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "hostapd/config_file.c",
+   "line": 598,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "nserv legitimately points to a heap array allocated with count=*num_server+1 by os_realloc_array; subscripting it is correct array access, not a 'non-array pointer'"
+  },
+  {
+   "rule": "MEM03-C",
+   "file": "hostapd/config_file.c",
+   "line": 614,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'secret' is a pointer ALIAS into the caller-owned `val` buffer, not a locally-owned sensitive buffer this function should clear; the persistent copy (os_strdup'd into bss->radius_das_shared_secret) is the actual data of concern"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 620,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`*secret++='\\0'` literal constant assignment"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "hostapd/config_file.c",
+   "line": 646,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "`while (pos) { pos = os_strchr(pos,' '); ... }` is bounded by strchr's own NUL-terminated-string semantics, not an unbounded raw pointer walk"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 655,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`*pos++=','` literal constant assignment"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "hostapd/config_file.c",
+   "line": 658,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "confirmed MSC01-C stylistic-pedantry class: exhaustiveness isn't semantically required here"
+  },
+  {
+   "rule": "INT10-C",
+   "file": "hostapd/config_file.c",
+   "line": 725,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no modulo operator exists at this line at all (`wpa_printf(MSG_ERROR, \"Line %d: invalid key_mgmt '%s'\", ...)`); rule appears to misparse '%d'/'%s' format specifiers inside the string literal as a modulo operator"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "hostapd/config_file.c",
+   "line": 736,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mutually-exclusive: os_free(buf) at line 727 always returns immediately after; line 736's os_free(buf) is only reached when the loop completes WITHOUT hitting the error branch \u2014 never both"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "hostapd/config_file.c",
+   "line": 736,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same mutually-exclusive-branch reasoning as the MEM30-C finding on this line"
+  },
+  {
+   "rule": "INT33-C",
+   "file": "hostapd/config_file.c",
+   "line": 738,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'configured' is not a variable \u2014 it's a fragment of the split string literal \"...values \" \"configured.\"; rule misparses string-literal text as a divisor identifier"
+  },
+  {
+   "rule": "INT10-C",
+   "file": "hostapd/config_file.c",
+   "line": 738,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same string-literal misparse bug: '%d' format specifier in the literal misread as modulo"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 768,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`size_t len = os_strlen(val)` \u2014 val is `char *val` (pointer arg to os_strlen), not a char being converted; cross-function conflation with an unrelated `int val` elsewhere in the file (hostapd_config_parse_key_mgmt)"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "hostapd/config_file.c",
+   "line": 792,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`len & 1` at line 800 is a legitimate odd/even parity check on a size_t, followed by ordinary arithmetic (len-=2, len/=2) elsewhere; confirmed INT14-C parity-check pedantry-mismatch class"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "hostapd/config_file.c",
+   "line": 824,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "`while (pos) { pos = os_strchr(pos,' '); ...}` bounded by strchr's NUL-terminated-string semantics, same as L646"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 827,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`*pos++=','` literal constant assignment"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/config_file.c",
+   "line": 836,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'val' here is `int val` accumulator in hostapd_config_parse_key_mgmt used as a bitmask via `val |= ...` inside a loop; not a pointer at all (finding is a misattribution to an unrelated identifier)"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "hostapd/config_file.c",
+   "line": 847,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bounded NUL-terminated scan (`while(*pos!='\\0')`) over the caller-supplied val string"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 861,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`*end='\\0'` literal constant assignment"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 863,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "`list[count++] = atoi(pos)` has no downstream range/error validation of the parsed int at all"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 863,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "same: unvalidated atoi() result"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "hostapd/config_file.c",
+   "line": 870,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`*int_list = list` \u2014 list is heap memory from os_malloc, not local automatic storage; confirmed DCL30-C FP class"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "hostapd/config_file.c",
+   "line": 882,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_realloc_array is a single-pointer reallocation, not two overlapping restrict-qualified buffers; confirmed EXP43-C non-restrict-function FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "hostapd/config_file.c",
+   "line": 891,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`os_zalloc(sizeof(*bss))` \u2014 sizeof(*ptr) idiom, confirmed FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/config_file.c",
+   "line": 915,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`u8 *key, size_t key_len` is the confirmed pointer+size idiom FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/config_file.c",
+   "line": 934,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "value's pointee IS mutated (via aliased `next`/`pos` pointers, e.g. `*next++='\\0'`); 'not modified' premise is wrong because the rule doesn't track aliasing \u2014 extends confirmed gas_query.c DCL13-C FP sub-class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "hostapd/config_file.c",
+   "line": 939,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`os_zalloc(sizeof(*r0kh))` \u2014 sizeof(*ptr) idiom, confirmed FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 947,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`*next++='\\0'` literal constant assignment"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 957,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`*next++='\\0'` literal constant assignment"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/config_file.c",
+   "line": 980,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same aliased-mutation DCL13-C FP as L934 (add_r1kh's value param)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "hostapd/config_file.c",
+   "line": 985,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`os_zalloc(sizeof(*r1kh))` \u2014 sizeof(*ptr) idiom, confirmed FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 994,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`*next++='\\0'` literal constant assignment"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 1004,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`*next++='\\0'` literal constant assignment"
+  },
+  {
+   "rule": "FIO05-C",
+   "file": "hostapd/config_file.c",
+   "line": 1035,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "admin-config-file trust pattern (rxkh file)"
+  },
+  {
+   "rule": "WIN03-C",
+   "file": "hostapd/config_file.c",
+   "line": 1035,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "literal rule match, pedantic"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "hostapd/config_file.c",
+   "line": 1041,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misattributed to fgets-while header (4th instance), not the real pos-scan loop"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "hostapd/config_file.c",
+   "line": 1041,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bogus cast-away-const 'f' (4th confirmed instance of this recurring pair)"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "hostapd/config_file.c",
+   "line": 1047,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bounded NUL-terminated scan over fgets-populated buf[256]"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 1049,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`*pos='\\0'` literal constant assignment"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 1064,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`*pos='\\0'` literal constant assignment"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "hostapd/config_file.c",
+   "line": 1074,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "confirmed MSC01-C stylistic-pedantry class; unmatched keys are validly silently skipped"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "hostapd/config_file.c",
+   "line": 1084,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "fclose() unchecked-return pattern, not actionable"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "hostapd/config_file.c",
+   "line": 1084,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same fclose-return pedantry"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "hostapd/config_file.c",
+   "line": 1220,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "confirmed MSC01-C stylistic-pedantry class: capab string legitimately may match none of the mutually-exclusive EXP tags"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "hostapd/config_file.c",
+   "line": 1244,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'val' is declared `u8 val` (find_bit_offset's param), not 'int' as claimed \u2014 confirmed INT13-C wrong-type-detection FP class"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "hostapd/config_file.c",
+   "line": 1255,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "the '&' operand is `mask` (u8), not `val`; val is only left-shifted, not the bitwise-AND operand \u2014 misattribution"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "hostapd/config_file.c",
+   "line": 1255,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "deliberate protocol bit-field construction via shift, not an arithmetic-optimization substitute; extends confirmed bit-packing FP theme"
+  },
+  {
+   "rule": "INT34-C",
+   "file": "hostapd/config_file.c",
+   "line": 1255,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "find_bit_offset(mask) is a u8-bounded helper provably returning 0-7 (loop over an 8-bit mask); shift amount is always in-range"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/config_file.c",
+   "line": 1259,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "val's pointee is mutated via aliased pos/end pointers (`*end='\\0'`); same aliasing-blind DCL13-C FP class as L934/980"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 1269,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`*end='\\0'` literal constant assignment"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 1271,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "`bitpos=atoi(pos)` IS immediately range-checked (`bitpos<0||bitpos>64`) next line; confirmed atoi-immediately-checked FP class"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 1271,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same: immediate downstream range check present"
+  },
+  {
+   "rule": "INT10-C",
+   "file": "hostapd/config_file.c",
+   "line": 1275,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitpos is already validated non-negative by the guard two lines above; confirmed 'rule doesn't see earlier same-function guard' FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 1291,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`size_t len = os_strlen(pos)` \u2014 pos is `char *pos` (pointer arg), not a char being converted; same os_strlen-argument conflation bug as L768"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "hostapd/config_file.c",
+   "line": 1292,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`u8 oi[MAX_ROAMING_CONSORTIUM_LEN]` is an ordinary fixed-size local array; no getenv/env-var code anywhere in this function; confirmed ENV01-C wholesale-misfire FP class"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "hostapd/config_file.c",
+   "line": 1296,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`len & 1` parity check plus ordinary arithmetic (len<2*3, len/2) on the same size_t; confirmed INT14-C parity-check pedantry-mismatch class"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "hostapd/config_file.c",
+   "line": 1304,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_realloc_array single-pointer reallocation, not restrict-qualified overlapping buffers; confirmed FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 1338,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`*sep++='\\0'` literal constant assignment"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "hostapd/config_file.c",
+   "line": 1341,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`sizeof(ls->lang)` \u2014 sizeof of a struct member's type never evaluates the ls pointer; extends confirmed EXP33-C sizeof-non-evaluation class to the ptr->member form"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "hostapd/config_file.c",
+   "line": 1347,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`os_realloc_array(*array, ...)` \u2014 *array is realloc's own input argument; analyzer treats it as already-freed (same bug as L593/597)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "hostapd/config_file.c",
+   "line": 1352,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ls holds the HEAP pointer from os_realloc_array, not local automatic storage; confirmed DCL30-C FP class"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "hostapd/config_file.c",
+   "line": 1352,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same realloc-input-misflagged-as-freed bug: `*array=ls` is the reassignment restoring validity, not a write to freed memory"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "hostapd/config_file.c",
+   "line": 1353,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`&(*array)[*count]` reads *array AFTER it was reassigned to the fresh realloc'd block at the previous line; not freed"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "hostapd/config_file.c",
+   "line": 1353,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same: analyzer never recognizes the `*array=ls` reassignment as restoring *array to valid (non-freed) memory"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 1391,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`*sep++='\\0'` literal constant assignment"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "hostapd/config_file.c",
+   "line": 1397,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_realloc_array single-pointer reallocation, confirmed FP class"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 1405,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "`url->venue_number = atoi(pos)` has no downstream validation at all"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 1405,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "same: unvalidated atoi() result stored directly"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "hostapd/config_file.c",
+   "line": 1450,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "misattributed to 'mnc' (a fresh per-iteration local, not accumulated); loop is bounded by os_strchr(...,';') semantics on a NUL-terminated string"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 1458,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`*mnc++='\\0'` literal constant assignment"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 1461,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`*pos++='\\0'` literal constant assignment"
+  }
+ ],
+ "fns": [
+  {
+   "file": "hostapd/config_file.c",
+   "line": 1272,
+   "rule": "ARR30-C",
+   "desc": "hostapd_parse_he_srg_bitmap(): guard allows bitpos==64 (`bitpos<0||bitpos>64` only rejects >64), but bitmap[] is declared u8[8] (ap_config.h:1032-1033) so valid indices are 0-7; bitpos=64 causes `bitmap[64/8]=bitmap[8]` \u2014 a genuine 1-byte out-of-bounds write. Off-by-one should be `bitpos > 63`. Reachable via he_spr_srg_bss_colors/he_spr_srg_partial_bssid config directives.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 10,
+  "fp": 140,
+  "fn": 1
+ }
+}

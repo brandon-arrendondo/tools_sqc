@@ -1,0 +1,1354 @@
+{
+ "hostapd/ctrl_iface.c#part2of4": [
+  {
+   "column": 6,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1718,
+   "message": "Variable 'len' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1732,
+   "message": "Accessing union 'event' member 'rx_mgmt' after writing to 'channel_list_changed' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 6,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1765,
+   "message": "Variable 'len' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 6,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1811,
+   "message": "Variable 'len' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 11,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1817,
+   "message": "Passing null pointer 'buf' to 'os_free' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'buf' is not NULL before passing to 'os_free'"
+  },
+  {
+   "column": 41,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1831,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1838,
+   "message": "Variable 'sum' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 39,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1850,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 39,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1850,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 19,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1860,
+   "message": "Dereference of uninitialized pointer 'eth'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'eth' before dereferencing"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1869,
+   "message": "Array subscript with scaled integer: 'buf[sizeof(*eth) + sizeof(ip)]'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Use unscaled index or element count instead of sizeof()"
+  },
+  {
+   "column": 14,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1878,
+   "message": "Loop condition uses scaled pointer arithmetic with sizeof(), causing double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Use array element count instead of sizeof() in pointer arithmetic"
+  },
+  {
+   "column": 18,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1878,
+   "message": "Unsigned integer subtraction 'ntohs(ip.ip_len) - sizeof(ip)' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1884,
+   "message": "Increment/decrement operation 'pos++' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1890,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 16,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1898,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 16,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1898,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 21,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1898,
+   "message": "'cmd' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 64,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1938,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 76,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1938,
+   "message": "Pointer parameter 'cmd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *cmd'"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1945,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1969,
+   "message": "Return value of 'strtol' assigned to 'val' but not checked for errors: 'strtol(pos, &pos2, 0)' - Sets errno on overflow/underflow, uses endptr for parsing errors",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check errno and endptr: errno = 0; val = strtol(str, &endptr, base); if (errno != 0 || endptr == str) handle_error();"
+  },
+  {
+   "column": 8,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1969,
+   "message": "strtol() can set errno but errno is not checked after the call",
+   "rule_id": "ERR01-C",
+   "severity": "Low",
+   "suggestion": "Set errno to 0 before calling strtol() and check errno afterward to detect errors"
+  },
+  {
+   "column": 8,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1969,
+   "message": "In-band function 'strtol' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+   "rule_id": "ERR30-C",
+   "severity": "Medium",
+   "suggestion": "Set errno before call: 'errno = 0; val = strtol(...); if (errno == ERANGE) { ... }'"
+  },
+  {
+   "column": 7,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1976,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 7,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1976,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 18,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1977,
+   "message": "Dereference of uninitialized pointer 'ip'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ip' before dereferencing"
+  },
+  {
+   "column": 33,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1982,
+   "message": "Reading from 'buf' which may contain uninitialized data",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize the contents of 'buf' before reading"
+  },
+  {
+   "column": 30,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1983,
+   "message": "Variable 'dst' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'dst' before use, e.g., at its declaration"
+  },
+  {
+   "column": 30,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1984,
+   "message": "Variable 'src' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'src' before use, e.g., at its declaration"
+  },
+  {
+   "column": 22,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1986,
+   "message": "Pointer arithmetic on non-array pointer 'eth'. Only perform arithmetic on array pointers",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 14,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1998,
+   "message": "Loop condition uses scaled pointer arithmetic with sizeof(), causing double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Use array element count instead of sizeof() in pointer arithmetic"
+  },
+  {
+   "column": 18,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1998,
+   "message": "Scaled integer arithmetic with pointer: 'send_len - sizeof(*ip)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2005,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 6,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2027,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2029,
+   "message": "Pointer dereference '*cmd++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 6,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2033,
+   "message": "Variable 'len' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2067,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2185,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 8,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2190,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 8,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2190,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 8,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2201,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 8,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2201,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 11,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2206,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 11,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2206,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 13,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2227,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 13,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2227,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 41,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2238,
+   "message": "Pointer parameter 'ctx2' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx2'"
+  },
+  {
+   "column": 24,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2259,
+   "message": "'cmd' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 22,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2280,
+   "message": "Hard-coded sensitive information detected passed to `wpa_auth_resend_m1`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"change-anonce\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 24,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2289,
+   "message": "'cmd' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 24,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2319,
+   "message": "'cmd' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 59,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2362,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 16,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2363,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 71,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2375,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 10,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2376,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2412,
+   "message": "Return value of 'strtol' assigned to 'type' but not checked for errors: 'strtol(cmd, &pos, 16)' - Sets errno on overflow/underflow, uses endptr for parsing errors",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check errno and endptr: errno = 0; val = strtol(str, &endptr, base); if (errno != 0 || endptr == str) handle_error();"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2412,
+   "message": "strtol() can set errno but errno is not checked after the call",
+   "rule_id": "ERR01-C",
+   "severity": "Low",
+   "suggestion": "Set errno to 0 before calling strtol() and check errno afterward to detect errors"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2412,
+   "message": "In-band function 'strtol' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+   "rule_id": "ERR30-C",
+   "severity": "Medium",
+   "suggestion": "Set errno before call: 'errno = 0; val = strtol(...); if (errno == ERANGE) { ... }'"
+  },
+  {
+   "column": 6,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2413,
+   "message": "Potential null pointer dereference of variable 'pos'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'pos' is not NULL before dereferencing"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2433,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2555,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2567,
+   "message": "Return value of 'strtol' assigned to 'color' but not checked for errors: 'strtol(pos, &end, 10)' - Sets errno on overflow/underflow, uses endptr for parsing errors",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check errno and endptr: errno = 0; val = strtol(str, &endptr, base); if (errno != 0 || endptr == str) handle_error();"
+  },
+  {
+   "column": 10,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2567,
+   "message": "Return value from strtol() should be checked for errors",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Check if strtol() returned an error value (NULL, -1, etc.)"
+  },
+  {
+   "column": 10,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2567,
+   "message": "strtol() can set errno but errno is not checked after the call",
+   "rule_id": "ERR01-C",
+   "severity": "Low",
+   "suggestion": "Set errno to 0 before calling strtol() and check errno afterward to detect errors"
+  },
+  {
+   "column": 10,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2567,
+   "message": "In-band function 'strtol' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+   "rule_id": "ERR30-C",
+   "severity": "Medium",
+   "suggestion": "Set errno before call: 'errno = 0; val = strtol(...); if (errno == ERANGE) { ... }'"
+  },
+  {
+   "column": 46,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2647,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 69,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2647,
+   "message": "Pointer parameter 'sta' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sta'"
+  },
+  {
+   "column": 10,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2681,
+   "message": "Variable 'i' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 11,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2681,
+   "message": "Variable 'mcs_map' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'mcs_map' before use, e.g., at its declaration"
+  },
+  {
+   "column": 11,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2681,
+   "message": "Shift operation 'mcs_map >> (2 * i)' by '(2 * i)' without validating shift amount is non-negative and within type width",
+   "rule_id": "INT34-C",
+   "severity": "Medium",
+   "suggestion": "Check that '(2 * i)' is >= 0 and < the bit width of the operand before shifting"
+  },
+  {
+   "column": 7,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2749,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 7,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2749,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 8,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2778,
+   "message": "Variable 'sta' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2797,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 55,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2847,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 70,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2860,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 15,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2861,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2875,
+   "message": "Return value of 'strtoul' assigned to 'vendor_id' but not checked for errors: 'strtoul(cmd, &pos, 16)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  },
+  {
+   "column": 14,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2875,
+   "message": "Return value from strtoul() should be checked for errors",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Check if strtoul() returned an error value (NULL, -1, etc.)"
+  },
+  {
+   "column": 14,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2875,
+   "message": "strtoul() can set errno but errno is not checked after the call",
+   "rule_id": "ERR01-C",
+   "severity": "Low",
+   "suggestion": "Set errno to 0 before calling strtoul() and check errno afterward to detect errors"
+  },
+  {
+   "column": 14,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2875,
+   "message": "In-band function 'strtoul' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+   "rule_id": "ERR30-C",
+   "severity": "Medium",
+   "suggestion": "Set errno before call: 'errno = 0; val = strtoul(...); if (errno == ERANGE) { ... }'"
+  },
+  {
+   "column": 31,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2876,
+   "message": "Potential null pointer dereference of variable 'pos'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'pos' is not NULL before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2879,
+   "message": "Return value of 'strtoul' assigned to 'subcmd' but not checked for errors: 'strtoul(pos, &pos, 10)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  },
+  {
+   "column": 11,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2879,
+   "message": "Return value from strtoul() should be checked for errors",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Check if strtoul() returned an error value (NULL, -1, etc.)"
+  },
+  {
+   "column": 11,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2879,
+   "message": "strtoul() can set errno but errno is not checked after the call",
+   "rule_id": "ERR01-C",
+   "severity": "Low",
+   "suggestion": "Set errno to 0 before calling strtoul() and check errno afterward to detect errors"
+  },
+  {
+   "column": 11,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2879,
+   "message": "In-band function 'strtoul' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+   "rule_id": "ERR30-C",
+   "severity": "Medium",
+   "suggestion": "Set errno before call: 'errno = 0; val = strtoul(...); if (errno == ERANGE) { ... }'"
+  },
+  {
+   "column": 31,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2886,
+   "message": "Pointer subtraction between pointers from different arrays: 'pos' and 'param:cmd'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 22,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2905,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 22,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2905,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2918,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 7,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2950,
+   "message": "Pointer to const assigned to non-const pointer without cast: *pos = cmd: '*pos = cmd'",
+   "rule_id": "EXP40-C",
+   "severity": "Low",
+   "suggestion": "Either remove const qualifier if the object should be modifiable, or use explicit casts to show intentional const removal"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2959,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 61,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2969,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 73,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2969,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 11,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2970,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 4,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2984,
+   "message": "Variable 'ret' of type char used in numeric operation. Use explicit 'signed char' or 'unsigned char' for numeric values.",
+   "rule_id": "INT07-C",
+   "severity": "Medium",
+   "suggestion": "Change declaration of 'ret' from 'char' to 'signed char' or 'unsigned char'"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2994,
+   "message": "Pointer dereference '*stamp++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 34,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3001,
+   "message": "'cmd' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 25,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3008,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 25,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3008,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 66,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3017,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 16,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3018,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 16,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3018,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 13,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3053,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 13,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3053,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3101,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3101,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 20,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3115,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 20,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3115,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 11,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3123,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 11,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3123,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 26,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3135,
+   "message": "Variable 'responders' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'responders' before use, e.g., at its declaration"
+  },
+  {
+   "column": 18,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3156,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 29,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3156,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 22,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3172,
+   "message": "'pos' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 21,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3196,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 32,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3196,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 15,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3216,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3270,
+   "message": "Pointer dereference '*buf++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 4,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3286,
+   "message": "Pointer dereference '*buf++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 4,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3302,
+   "message": "Pointer dereference '*buf++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 20,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3319,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 20,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3319,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 59,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3367,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 72,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3367,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 14,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3378,
+   "message": "Variable 'ret' of type char used in numeric operation. Use explicit 'signed char' or 'unsigned char' for numeric values.",
+   "rule_id": "INT07-C",
+   "severity": "Medium",
+   "suggestion": "Change declaration of 'ret' from 'char' to 'signed char' or 'unsigned char'"
+  },
+  {
+   "column": 27,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3382,
+   "message": "Shift operation '1LLU << i' by 'i' without validating shift amount is non-negative and within type width",
+   "rule_id": "INT34-C",
+   "severity": "Medium",
+   "suggestion": "Check that 'i' is >= 0 and < the bit width of the operand before shifting"
+  },
+  {
+   "column": 30,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3384,
+   "message": "Shift operation '1LLU << i' by 'i' without validating shift amount is non-negative and within type width",
+   "rule_id": "INT34-C",
+   "severity": "Medium",
+   "suggestion": "Check that 'i' is >= 0 and < the bit width of the operand before shifting"
+  },
+  {
+   "column": 60,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3395,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 73,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3395,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 14,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3406,
+   "message": "Variable 'ret' of type char used in numeric operation. Use explicit 'signed char' or 'unsigned char' for numeric values.",
+   "rule_id": "INT07-C",
+   "severity": "Medium",
+   "suggestion": "Change declaration of 'ret' from 'char' to 'signed char' or 'unsigned char'"
+  },
+  {
+   "column": 28,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3410,
+   "message": "Shift operation '1LLU << i' by 'i' without validating shift amount is non-negative and within type width",
+   "rule_id": "INT34-C",
+   "severity": "Medium",
+   "suggestion": "Check that 'i' is >= 0 and < the bit width of the operand before shifting"
+  },
+  {
+   "column": 31,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3412,
+   "message": "Shift operation '1LLU << i' by 'i' without validating shift amount is non-negative and within type width",
+   "rule_id": "INT34-C",
+   "severity": "Medium",
+   "suggestion": "Check that 'i' is >= 0 and < the bit width of the operand before shifting"
+  },
+  {
+   "column": 66,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3423,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 22,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3424,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 35,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3424,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 74,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3454,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 12,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3455,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 4,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3463,
+   "message": "Variable 'ret' of type char used in numeric operation. Use explicit 'signed char' or 'unsigned char' for numeric values.",
+   "rule_id": "INT07-C",
+   "severity": "Medium",
+   "suggestion": "Change declaration of 'ret' from 'char' to 'signed char' or 'unsigned char'"
+  },
+  {
+   "column": 63,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3472,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 60,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3498,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 75,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3549,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 75,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3549,
+   "message": "Pointer parameter 'cmd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *cmd'"
+  },
+  {
+   "column": 13,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3550,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 14,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3553,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 14,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3553,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 4,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3562,
+   "message": "Variable 'ret' of type char used in numeric operation. Use explicit 'signed char' or 'unsigned char' for numeric values.",
+   "rule_id": "INT07-C",
+   "severity": "Medium",
+   "suggestion": "Change declaration of 'ret' from 'char' to 'signed char' or 'unsigned char'"
+  },
+  {
+   "column": 4,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3564,
+   "message": "Variable 'ret' of type char used in numeric operation. Use explicit 'signed char' or 'unsigned char' for numeric values.",
+   "rule_id": "INT07-C",
+   "severity": "Medium",
+   "suggestion": "Change declaration of 'ret' from 'char' to 'signed char' or 'unsigned char'"
+  },
+  {
+   "column": 69,
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3575,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ]
+}

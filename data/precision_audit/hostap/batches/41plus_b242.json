@@ -1,0 +1,607 @@
+{
+ "src/rsn_supp/pmksa_cache.c": [
+  {
+   "column": 24,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 41,
+   "message": "sizeof applied to pointer/array parameter 'entry' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*entry)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 61,
+   "message": "Function 'pmksa_cache_remove' does not validate pointer parameter 'pmksa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pmksa' at the start of the function, e.g., 'if (!pmksa) { return error_code; }'"
+  },
+  {
+   "column": 54,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 89,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 54,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 128,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 10,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 184,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 231,
+   "message": "Function 'pmksa_cache_add' does not validate pointer parameter 'pmksa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pmksa' at the start of the function, e.g., 'if (!pmksa) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 231,
+   "message": "Function 'pmksa_cache_add' does not validate pointer parameter 'aa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'aa' at the start of the function, e.g., 'if (!aa) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 231,
+   "message": "Function 'pmksa_cache_add' does not validate pointer parameter 'spa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'spa' at the start of the function, e.g., 'if (!spa) { return error_code; }'"
+  },
+  {
+   "column": 37,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 234,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 27,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 251,
+   "message": "Dereference of uninitialized pointer 'entry'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'entry' before dereferencing"
+  },
+  {
+   "column": 62,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 298,
+   "message": "Pointer parameter 'pmksa' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pmksa'"
+  },
+  {
+   "column": 40,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 299,
+   "message": "Pointer parameter 'entry' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *entry'"
+  },
+  {
+   "column": 31,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 317,
+   "message": "Floating-point division without error checking (consider using feclearexcept/fetestexcept)",
+   "rule_id": "FLP03-C",
+   "severity": "Low",
+   "suggestion": "Use feclearexcept(FE_ALL_EXCEPT) before and fetestexcept(FE_ALL_EXCEPT) after floating-point operations"
+  },
+  {
+   "column": 31,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 317,
+   "message": "Division or modulo by 'remaining_lifetime' without checking for zero",
+   "rule_id": "INT33-C",
+   "severity": "High",
+   "suggestion": "Check if 'remaining_lifetime' is not zero before division"
+  },
+  {
+   "column": 5,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 353,
+   "message": "Function returns pointer to local variable 'pos' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 425,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 451,
+   "message": "Function 'pmksa_cache_flush' does not validate pointer parameter 'pmksa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pmksa' at the start of the function, e.g., 'if (!pmksa) { return error_code; }'"
+  },
+  {
+   "column": 60,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 451,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 60,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 451,
+   "message": "Pointer parameter 'network_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *network_ctx'"
+  },
+  {
+   "column": 5,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 493,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 71,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 517,
+   "message": "Pointer parameter 'pmksa' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pmksa'"
+  },
+  {
+   "column": 4,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 531,
+   "message": "Function returns pointer to local variable 'entry' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 568,
+   "message": "Function returns pointer to local variable 'new_entry' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 584,
+   "message": "Function 'pmksa_cache_get_opportunistic' does not validate pointer parameter 'pmksa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pmksa' at the start of the function, e.g., 'if (!pmksa) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 584,
+   "message": "Function 'pmksa_cache_get_opportunistic' does not validate pointer parameter 'aa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'aa' at the start of the function, e.g., 'if (!aa) { return error_code; }'"
+  },
+  {
+   "column": 67,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 585,
+   "message": "Pointer parameter 'network_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *network_ctx'"
+  },
+  {
+   "column": 5,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 591,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 4,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 616,
+   "message": "Function returns pointer to local variable 'entry' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 54,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 625,
+   "message": "Pointer parameter 'pmksa' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pmksa'"
+  },
+  {
+   "column": 4,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 635,
+   "message": "Function returns pointer to local variable 'entry' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 70,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 647,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 5,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 649,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 661,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 682,
+   "message": "Function 'pmksa_cache_set_current' does not validate pointer parameter 'network_ctx' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'network_ctx' at the start of the function, e.g., 'if (!network_ctx) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 767,
+   "message": "Function 'pmksa_cache_list' does not validate pointer parameter 'pmksa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pmksa' at the start of the function, e.g., 'if (!pmksa) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 767,
+   "message": "Function 'pmksa_cache_list' does not validate integer parameter 'len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 45,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 767,
+   "message": "Pointer parameter 'pmksa' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pmksa'"
+  },
+  {
+   "column": 58,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 767,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 3,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 799,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 825,
+   "message": "Function 'pmksa_cache_head' does not validate pointer parameter 'pmksa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pmksa' at the start of the function, e.g., 'if (!pmksa) { return error_code; }'"
+  },
+  {
+   "column": 72,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 825,
+   "message": "Pointer parameter 'pmksa' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pmksa'"
+  },
+  {
+   "column": 27,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 849,
+   "message": "Dereference of uninitialized pointer 'pmksa'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'pmksa' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 858,
+   "message": "Function returns pointer to local variable 'pmksa' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 9,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 882,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 29,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 882,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 9,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 884,
+   "message": "Unsafe integer-to-pointer conversion from '-1' (may result in misalignment or invalid pointer)",
+   "rule_id": "INT36-C",
+   "severity": "Low",
+   "suggestion": "Use uintptr_t/intptr_t for integer values, or ensure value is obtained from a valid pointer"
+  },
+  {
+   "column": 48,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 888,
+   "message": "Pointer parameter 'pmksa' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pmksa'"
+  },
+  {
+   "column": 40,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 894,
+   "message": "Pointer parameter 'pmksa' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pmksa'"
+  },
+  {
+   "column": 39,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 902,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 45,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 908,
+   "message": "Pointer parameter 'pmksa' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pmksa'"
+  },
+  {
+   "column": 58,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 908,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 58,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 908,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 41,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 915,
+   "message": "Pointer parameter 'pmksa' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pmksa'"
+  },
+  {
+   "column": 46,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 922,
+   "message": "Pointer parameter 'pmksa' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pmksa'"
+  },
+  {
+   "column": 38,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 923,
+   "message": "Pointer parameter 'entry' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *entry'"
+  },
+  {
+   "column": 40,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 930,
+   "message": "Pointer parameter 'pmksa' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pmksa'"
+  },
+  {
+   "column": 37,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 932,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 37,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 932,
+   "message": "Pointer parameter 'network_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *network_ctx'"
+  },
+  {
+   "column": 46,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 939,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 43,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 944,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 13,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 945,
+   "message": "Pointer parameter 'network_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *network_ctx'"
+  },
+  {
+   "column": 47,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 952,
+   "message": "Pointer parameter 'pmksa' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pmksa'"
+  },
+  {
+   "column": 60,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 952,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 60,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 952,
+   "message": "Pointer parameter 'network_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *network_ctx'"
+  },
+  {
+   "column": 48,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 958,
+   "message": "Pointer parameter 'pmksa' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pmksa'"
+  },
+  {
+   "column": 33,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 959,
+   "message": "Pointer parameter 'entry' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *entry'"
+  },
+  {
+   "column": 50,
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 964,
+   "message": "Pointer parameter 'pmksa' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pmksa'"
+  }
+ ]
+}

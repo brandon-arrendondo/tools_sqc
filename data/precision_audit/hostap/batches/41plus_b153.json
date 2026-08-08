@@ -1,0 +1,1354 @@
+{
+ "src/ap/ieee802_1x.c": [
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 19,
+   "message": "Header file 'ieee802_11_defs.h' has the same first 8 characters (case-insensitive) as 'ieee802_11.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_defs.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 19,
+   "message": "Header file 'ieee802_11_defs.h' has the same first 8 characters (case-insensitive) as 'ieee802_1x.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_defs.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 24,
+   "message": "Header file 'eapol_auth_sm.h' has the same first 8 characters (case-insensitive) as 'eapol_auth_sm_i.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'eapol_auth_sm.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 30,
+   "message": "Header file 'wpa_auth.h' has the same first 8 characters (case-insensitive) as 'wpa_auth_kay.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'wpa_auth.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 38,
+   "message": "Header file 'ieee802_11.h' has the same first 8 characters (case-insensitive) as 'ieee802_1x.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11.h' -> unique name)"
+  },
+  {
+   "column": 15,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 59,
+   "message": "Dereference of uninitialized pointer 'xhdr'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'xhdr' before dereferencing"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 134,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 27,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 148,
+   "message": "Pointer parameter 'sta' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sta'"
+  },
+  {
+   "column": 20,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 165,
+   "message": "Variable 'tmp_sta' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tmp_sta' before use, e.g., at its declaration"
+  },
+  {
+   "column": 25,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 166,
+   "message": "Variable 'link' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'link' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 200,
+   "message": "Function 'ieee802_1x_set_sta_authorized' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 226,
+   "message": "Unsigned integer addition 'sizeof(*key) + key_len' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }"
+  },
+  {
+   "column": 15,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 226,
+   "message": "Dereference of uninitialized pointer 'key'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'key' before dereferencing"
+  },
+  {
+   "column": 18,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 227,
+   "message": "Unsigned integer addition 'sizeof(*hdr) + len' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }"
+  },
+  {
+   "column": 25,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 227,
+   "message": "Dereference of uninitialized pointer 'hdr'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'hdr' before dereferencing"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 284,
+   "message": "Unsigned integer addition 'ekey + sizeof(key->key_iv)' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }"
+  },
+  {
+   "column": 49,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 297,
+   "message": "Unsigned integer addition 'sizeof(*hdr) + len' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 343,
+   "message": "Passing null pointer 'ikey' to 'os_free' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'ikey' is not NULL before passing to 'os_free'"
+  },
+  {
+   "column": 30,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 347,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Individual WEP key\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 49,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 372,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 388,
+   "message": "Function 'radius_sta_rate' does not validate pointer parameter 'sta' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sta' at the start of the function, e.g., 'if (!sta) { return error_code; }'"
+  },
+  {
+   "column": 41,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 388,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 64,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 388,
+   "message": "Pointer parameter 'sta' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sta'"
+  },
+  {
+   "column": 18,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 393,
+   "message": "Potential null pointer dereference in member access of variable 'sta'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'sta' is not NULL before member access"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 427,
+   "message": "Use-after-free: accessing freed pointer 'sm->identity'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 52,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 434,
+   "message": "Use-after-free: accessing freed pointer 'sm->identity'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 63,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 439,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 24,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 441,
+   "message": "Pointer parameter 'sta' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sta'"
+  },
+  {
+   "column": 33,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 447,
+   "message": "Potential null pointer dereference in member access of variable 'sta'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'sta' is not NULL before member access"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 515,
+   "message": "Potential null pointer dereference in member access of variable 'sta'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'sta' is not NULL before member access"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 530,
+   "message": "Variable 'sta' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 535,
+   "message": "Variable 'radius_sta_rate' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 535,
+   "message": "Variable 'hapd' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 603,
+   "message": "Variable 'len' should be declared volatile - modified around function calls that may have external side effects",
+   "rule_id": "DCL22-C",
+   "severity": "Low",
+   "suggestion": "Declare as 'volatile' to prevent compiler optimizations that assume variable state is unchanged across function calls"
+  },
+  {
+   "column": 13,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 637,
+   "message": "Potentially unsafe array access with variable index 'len': Buffer 'buf' with size 128 (allocated at line 601)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 8,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 676,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 688,
+   "message": "Function 'add_sqlite_radius_attr' does not validate pointer parameter 'sta' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sta' at the start of the function, e.g., 'if (!sta) { return error_code; }'"
+  },
+  {
+   "column": 48,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 688,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 71,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 688,
+   "message": "Pointer parameter 'sta' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sta'"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 693,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 56,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 700,
+   "message": "Potential null pointer dereference in member access of variable 'sta'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'sta' is not NULL before member access"
+  },
+  {
+   "column": 27,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 713,
+   "message": "Variable 'hdr' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'hdr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 725,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 745,
+   "message": "Function 'ieee802_1x_encapsulate_radius' does not validate pointer parameter 'eap' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'eap' at the start of the function, e.g., 'if (!eap) { return error_code; }'"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 769,
+   "message": "Potential memory leak: 'msg' allocated with 'radius_msg_new' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'msg' is freed before this goto or at the target label"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 779,
+   "message": "Potential memory leak: 'msg' allocated with 'radius_msg_new' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'msg' is freed before this goto or at the target label"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 796,
+   "message": "Potential memory leak: 'msg' allocated with 'radius_msg_new' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'msg' is freed before this goto or at the target label"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 801,
+   "message": "Potential memory leak: 'msg' allocated with 'radius_msg_new' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'msg' is freed before this goto or at the target label"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 814,
+   "message": "Potential memory leak: 'msg' allocated with 'radius_msg_new' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'msg' is freed before this goto or at the target label"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 835,
+   "message": "Potential memory leak: 'msg' allocated with 'radius_msg_new' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'msg' is freed before this goto or at the target label"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 848,
+   "message": "Potential memory leak: 'msg' allocated with 'radius_msg_new' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'msg' is freed before this goto or at the target label"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 851,
+   "message": "Potential null pointer dereference in member access of variable 'sta'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'sta' is not NULL before member access"
+  },
+  {
+   "column": 13,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 857,
+   "message": "Variable 'pos' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 14,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 857,
+   "message": "Potential null pointer dereference of variable 'pos'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'pos' is not NULL before dereferencing"
+  },
+  {
+   "column": 5,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 870,
+   "message": "Potential memory leak: 'msg' allocated with 'radius_msg_new' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'msg' is freed before this goto or at the target label"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 875,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 881,
+   "message": "Potential memory leak: 'msg' allocated with 'radius_msg_new' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'msg' is freed before this goto or at the target label"
+  },
+  {
+   "column": 5,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 894,
+   "message": "Potential memory leak: 'msg' allocated with 'radius_msg_new' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'msg' is freed before this goto or at the target label"
+  },
+  {
+   "column": 5,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 905,
+   "message": "Potential memory leak: 'msg' allocated with 'radius_msg_new' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'msg' is freed before this goto or at the target label"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 914,
+   "message": "Memory leak: 'msg' allocated with 'radius_msg_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'msg' before this return statement"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 916,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 21,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 923,
+   "message": "Pointer parameter 'sta' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sta'"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 934,
+   "message": "sizeof applied to pointer/array parameter 'eap' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*eap)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 941,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 21,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 956,
+   "message": "Pointer parameter 'sta' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sta'"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 966,
+   "message": "sizeof applied to pointer/array parameter 'eap' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*eap)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 13,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1012,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 19,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1017,
+   "message": "Dereference of uninitialized pointer 'eap'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'eap' before dereferencing"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1035,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1041,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1052,
+   "message": "Function 'ieee802_1x_alloc_eapol_sm' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 47,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1053,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 14,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1077,
+   "message": "sizeof applied to pointer/array parameter 'sta' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*sta->pending_eapol_rx)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 57,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1094,
+   "message": "Pointer parameter 'sta' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sta'"
+  },
+  {
+   "column": 19,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1152,
+   "message": "Dereference of uninitialized pointer 'hdr'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'hdr' before dereferencing"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1157,
+   "message": "Do not cast away const qualification: '(struct ieee802_1x_hdr *) buf'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1206,
+   "message": "Implicit boolean test on 'ieee802_1x_check_encryption(sta, encrypted, hdr->type)'. May be unclear what constitutes success or failure.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Use explicit test: ieee802_1x_check_encryption(sta, encrypted, hdr->type) == 0 or ieee802_1x_check_encryption(sta, encrypted, hdr->type) != 0 depending on success convention"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1294,
+   "message": "Unreachable code after unconditional 'break'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1315,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 50,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1495,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 24,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1521,
+   "message": "Pointer parameter 'sta' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sta'"
+  },
+  {
+   "column": 31,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1550,
+   "message": "Dereference of uninitialized pointer 'hdr'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'hdr' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1584,
+   "message": "Out-of-bounds array access: 'sizeof(buf) - 1' evaluates to 127: Buffer 'buf' with size 64 (allocated at line 1526)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 53,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1597,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 21,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1598,
+   "message": "Pointer parameter 'sta' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sta'"
+  },
+  {
+   "column": 30,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1616,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"MS-MPPE-Send-Key\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 30,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1618,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"MS-MPPE-Recv-Key\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 7,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1634,
+   "message": "Passing null pointer 'keys' to 'wpa_printf' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'keys' is not NULL before passing to 'wpa_printf'"
+  },
+  {
+   "column": 63,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1660,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 24,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1661,
+   "message": "Pointer parameter 'sta' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sta'"
+  },
+  {
+   "column": 25,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1716,
+   "message": "Pointer parameter 'sta' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sta'"
+  },
+  {
+   "column": 59,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1747,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 27,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1748,
+   "message": "Pointer parameter 'sta' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sta'"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1783,
+   "message": "Unsigned integer subtraction 'len - 3' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 32,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1808,
+   "message": "Pointer parameter 'pos' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pos'"
+  },
+  {
+   "column": 33,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1851,
+   "message": "Pointer parameter 'pos' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pos'"
+  },
+  {
+   "column": 57,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1863,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1871,
+   "message": "Array subscript uses function parameter 'len' without bounds checking. Caller could pass invalid index.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Add bounds checking for 'len' before using it as an array index"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1871,
+   "message": "Potentially unsafe array access with unvalidated function parameter index 'len'",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking for function parameter before using as array index."
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1912,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  },
+  {
+   "column": 68,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1938,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 29,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1939,
+   "message": "Pointer parameter 'sta' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sta'"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2017,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 22,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2019,
+   "message": "Pointer to const assigned to non-const pointer without cast: *hapd = data: '*hapd = data'",
+   "rule_id": "EXP40-C",
+   "severity": "Low",
+   "suggestion": "Either remove const qualifier if the object should be modifiable, or use explicit casts to show intentional const removal"
+  },
+  {
+   "column": 49,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2028,
+   "message": "Potential null pointer dereference in member access of variable 'hdr'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'hdr' is not NULL before member access"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2061,
+   "message": "Value assigned to 'termination_action' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2121,
+   "message": "Unreachable code after unconditional 'break'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2177,
+   "message": "Function 'ieee802_1x_abort_auth' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2177,
+   "message": "Function 'ieee802_1x_abort_auth' does not validate pointer parameter 'sta' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sta' at the start of the function, e.g., 'if (!sta) { return error_code; }'"
+  },
+  {
+   "column": 59,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2210,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 61,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2236,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 33,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2237,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 52,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2247,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 40,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2297,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 51,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2297,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 38,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2328,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 49,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2328,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 41,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2355,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 21,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2368,
+   "message": "sizeof applied to pointer/array parameter 'user' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*user)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 41,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2475,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 52,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2475,
+   "message": "Pointer parameter 'sta_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sta_ctx'"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2481,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2503,
+   "message": "Function returns pointer to local variable 'erp' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2521,
+   "message": "Recursive function can cause excessive stack allocation",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Consider iterative approach or limit recursion depth"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2618,
+   "message": "Function 'ieee802_1x_erp_flush' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 16,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2624,
+   "message": "Potential null pointer dereference in member access of variable 'erp'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'erp' is not NULL before member access"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2657,
+   "message": "Function 'ieee802_1x_tx_status' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2657,
+   "message": "Function 'ieee802_1x_tx_status' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  },
+  {
+   "column": 19,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2667,
+   "message": "Dereference of uninitialized pointer 'hdr'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'hdr' before dereferencing"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2670,
+   "message": "Do not cast away const qualification: '(struct ieee80211_hdr *) buf'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2684,
+   "message": "Function 'ieee802_1x_eapol_tx_status' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 18,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2689,
+   "message": "Scaled integer arithmetic with pointer: 'buf + sizeof(*xhdr)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2694,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 14,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2727,
+   "message": "Variable 'key' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 27,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2727,
+   "message": "Dereference of uninitialized pointer 'key'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'key' before dereferencing"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2728,
+   "message": "Do not cast away const qualification: '(struct ieee802_1x_eapol_key *) pos'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 57,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2749,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 61,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2759,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 70,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2771,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 58,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2779,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 65,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2791,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 44,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2840,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 56,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2840,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 56,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2840,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2847,
+   "message": "Function 'ieee802_1x_get_mib_sta' does not validate integer parameter 'buflen' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'buflen' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 48,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2847,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2848,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2848,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2874,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2874,
+   "message": "Function 'os_snprintf' called with overlapping memory regions. If parameters are restrict-qualified, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure memory regions do not overlap when using restrict pointers"
+  }
+ ]
+}

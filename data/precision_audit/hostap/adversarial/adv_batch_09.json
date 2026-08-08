@@ -1,0 +1,722 @@
+[
+ {
+  "rule": "MEM04-C",
+  "file": "src/utils/os_win32.c",
+  "line": 239,
+  "verdict": "FP",
+  "reason": "num is the literal 1 (never zero); os_zalloc is a generic data-agnostic wrapper, same class as the established os_malloc/os_realloc MEM04-C misfire",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM04-C",
+  "file": "wpa_supplicant/win_if_list.c",
+  "line": 84,
+  "verdict": "FP",
+  "reason": "blen = sizeof(*b) + 1024 is provably always > 0",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM06-C",
+  "file": "hostapd/hostapd_cli.c",
+  "line": 129,
+  "verdict": "FP",
+  "reason": "cfile only ever holds a directory/socket path string, not sensitive data (password/key material)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM06-C",
+  "file": "src/utils/os_internal.c",
+  "line": 269,
+  "verdict": "FP",
+  "reason": "os_malloc is the codebase's generic allocator with no knowledge of what data will be stored; sensitive-data concerns belong at specific call sites, not the universal allocator wrapper",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM06-C",
+  "file": "src/utils/os_internal.c",
+  "line": 275,
+  "verdict": "FP",
+  "reason": "generic allocator wrapper, same reasoning as MEM06-C on os_malloc",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM06-C",
+  "file": "src/utils/os_unix.c",
+  "line": 486,
+  "verdict": "FP",
+  "reason": "os_zalloc is a generic allocator, not specific to sensitive data",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM06-C",
+  "file": "src/utils/os_unix.c",
+  "line": 726,
+  "verdict": "FP",
+  "reason": "os_malloc is a completely generic allocator, not specific to sensitive data",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM06-C",
+  "file": "src/utils/os_win32.c",
+  "line": 206,
+  "verdict": "FP",
+  "reason": "os_readfile is a generic, data-agnostic file-read buffer; MEM06-C misapplied to the generic allocator call site rather than a specific sensitive-data path",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM06-C",
+  "file": "src/utils/os_win32.c",
+  "line": 239,
+  "verdict": "FP",
+  "reason": "os_zalloc is a generic allocator wrapper, not a sensitive-data-specific call site; established generic-allocator MEM06-C FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM06-C",
+  "file": "src/utils/trace.c",
+  "line": 123,
+  "verdict": "FP",
+  "reason": "syms holds bfd symbol-table entries for backtrace symbolication, not sensitive user data",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM06-C",
+  "file": "src/utils/trace.c",
+  "line": 448,
+  "verdict": "FP",
+  "reason": "entry holds a debug btrace context label string, not sensitive user data",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM06-C",
+  "file": "wpa_supplicant/win_if_list.c",
+  "line": 84,
+  "verdict": "FP",
+  "reason": "Buffer holds network interface binding names, not sensitive secret data",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM07-C",
+  "file": "src/utils/os_unix.c",
+  "line": 486,
+  "verdict": "FP",
+  "reason": "count fixed to literal 1; no wrap possible on multiplication",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM07-C",
+  "file": "src/utils/os_win32.c",
+  "line": 239,
+  "verdict": "FP",
+  "reason": "num is the literal 1; 1*size cannot wrap",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM33-C",
+  "file": "hostapd/sae_pk_gen.c",
+  "line": 140,
+  "verdict": "FP",
+  "reason": "'*pos++ = *src;' is a plain char-to-char dereference assignment; no struct/flexible-array-member instance is being assigned at all",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM33-C",
+  "file": "src/ap/pmksa_cache_auth.c",
+  "line": 174,
+  "verdict": "FP",
+  "reason": "struct vlan_description has no flexible array member (fixed int tagged[32]); whole-struct assign is safe",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM33-C",
+  "file": "src/ap/pmksa_cache_auth.c",
+  "line": 434,
+  "verdict": "FP",
+  "reason": "struct vlan_description has no flexible array member; plain struct assignment is safe",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM33-C",
+  "file": "src/ap/wpa_auth_ft.c",
+  "line": 1376,
+  "verdict": "FP",
+  "reason": "struct vlan_description has no flexible array member (fixed int tagged[MAX_NUM_TAGGED_VLAN]); whole-struct assignment is an ordinary safe copy",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM33-C",
+  "file": "src/ap/wpa_auth_ft.c",
+  "line": 1465,
+  "verdict": "FP",
+  "reason": "struct vlan_description has no flexible array member (fixed int tagged[MAX_NUM_TAGGED_VLAN]); whole-struct assignment is an ordinary safe copy",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM33-C",
+  "file": "src/ap/wpa_auth_ft.c",
+  "line": 1520,
+  "verdict": "FP",
+  "reason": "struct vlan_description has no flexible array member (fixed int tagged[MAX_NUM_TAGGED_VLAN]); whole-struct assignment is an ordinary safe copy",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM33-C",
+  "file": "src/ap/wpa_auth_ft.c",
+  "line": 3108,
+  "verdict": "FP",
+  "reason": "struct vlan_description has no flexible array member (fixed int tagged[32]); confirmed MEM33 rule-engine-bug class fires on plain struct assignment",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM33-C",
+  "file": "src/ap/wpa_auth_glue.c",
+  "line": 1358,
+  "verdict": "FP",
+  "reason": "vlan_description.tagged[32] is a fixed-size array, not a C99 flexible array member",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM33-C",
+  "file": "src/common/ieee802_11_common.c",
+  "line": 242,
+  "verdict": "FP",
+  "reason": "MEM33-C misfires: not a flexible-array struct assignment, just '*total_len = &elems->X_len' (size_t* assignment), category error",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MEM33-C",
+  "file": "src/common/ieee802_11_common.c",
+  "line": 247,
+  "verdict": "FP",
+  "reason": "MEM33-C misfires: not a flexible-array struct assignment, just '*total_len = &elems->X_len' (size_t* assignment), category error",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC06-C",
+  "file": "hostapd/hlr_auc_gw.c",
+  "line": 774,
+  "verdict": "FP",
+  "reason": "memset writes fixed test values used later (hex-encoded at 798-806), not cleared-before-scope-exit",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC06-C",
+  "file": "hostapd/hlr_auc_gw.c",
+  "line": 775,
+  "verdict": "FP",
+  "reason": "memset writes fixed test values used later, not cleared-before-scope-exit",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC06-C",
+  "file": "hostapd/hlr_auc_gw.c",
+  "line": 776,
+  "verdict": "FP",
+  "reason": "memset writes fixed test values used later, not cleared-before-scope-exit",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC06-C",
+  "file": "hostapd/hlr_auc_gw.c",
+  "line": 777,
+  "verdict": "FP",
+  "reason": "memset writes fixed test values used later, not cleared-before-scope-exit",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC06-C",
+  "file": "hostapd/hlr_auc_gw.c",
+  "line": 778,
+  "verdict": "FP",
+  "reason": "memset writes fixed test value used later at line 806, not cleared-before-scope-exit",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC12-C",
+  "file": "src/ap/ctrl_iface_ap.c",
+  "line": 1823,
+  "verdict": "FP",
+  "reason": "misattribution - fail: label has real code following (os_free/return) once #ifdef CONFIG_MBO/#endif is preprocessed away",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC12-C",
+  "file": "src/ap/drv_callbacks.c",
+  "line": 2614,
+  "verdict": "FP",
+  "reason": "misattribution - case EVENT_SCAN_RESULTS has substantial real code below (scan_cb dispatch",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC12-C",
+  "file": "src/ap/gas_serv.c",
+  "line": 1439,
+  "verdict": "FP",
+  "reason": "default: has wpa_printf(...) call + break -- not empty, misattributed.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC12-C",
+  "file": "src/ap/ieee802_11_eht.c",
+  "line": 1062,
+  "verdict": "FP",
+  "reason": "case WLAN_AUTH_OPEN: groups with WLAN_AUTH_EPPKE: into return pos; -- standard grouping.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC12-C",
+  "file": "src/ap/ieee802_11_he.c",
+  "line": 441,
+  "verdict": "FP",
+  "reason": "default: has a real assignment (mcs_count = 1;) + break -- not empty, misattributed.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC12-C",
+  "file": "src/ap/wps_hostapd.c",
+  "line": 925,
+  "verdict": "FP",
+  "reason": "deliberate empty case",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC12-C",
+  "file": "src/common/hw_features_common.c",
+  "line": 941,
+  "verdict": "FP",
+  "reason": "case 2/4/8/16 group to return num_chans * 20; -- standard grouping.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC12-C",
+  "file": "src/common/ieee802_11_common.c",
+  "line": 128,
+  "verdict": "FP",
+  "reason": "case OWE_OUI_TYPE: has an explanatory comment + break -- not empty, misattributed.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC12-C",
+  "file": "src/common/ieee802_11_common.c",
+  "line": 131,
+  "verdict": "FP",
+  "reason": "deliberate empty case (DPP_CC_OUI_TYPE) with comment - recognized-but-currently-unused sub-element type",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC12-C",
+  "file": "src/common/ieee802_11_common.c",
+  "line": 1281,
+  "verdict": "FP",
+  "reason": "default: return NULL; has a return statement -- not empty, misattributed.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC17-C",
+  "file": "hostapd/hlr_auc_gw.c",
+  "line": 1037,
+  "verdict": "FP",
+  "reason": "case 'D' has a real break;/return -1; inside #ifdef CONFIG_SQLITE/#else; #ifdef-intervening fallthrough misfire",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC17-C",
+  "file": "hostapd/hostapd_cli.c",
+  "line": 2296,
+  "verdict": "FP",
+  "reason": "case 's': has an explicit break two lines later (line 2298) - flatly incorrect fallthrough claim, no adjacent #ifdef either",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC17-C",
+  "file": "hostapd/main.c",
+  "line": 900,
+  "verdict": "FP",
+  "reason": "case 't' has an explicit break two lines below; preprocessor-adjacent #ifdef confuses the rule",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC17-C",
+  "file": "hostapd/main.c",
+  "line": 908,
+  "verdict": "FP",
+  "reason": "case 'v' terminates via exit(1), which never returns; not a real fallthrough",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC17-C",
+  "file": "hostapd/main.c",
+  "line": 919,
+  "verdict": "FP",
+  "reason": "case 'b' has an explicit break; #ifdef-adjacent misfire",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC17-C",
+  "file": "hostapd/main.c",
+  "line": 933,
+  "verdict": "FP",
+  "reason": "case 'S' has an explicit break; #ifdef-adjacent misfire",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC17-C",
+  "file": "hostapd/main.c",
+  "line": 945,
+  "verdict": "FP",
+  "reason": "case 'q' has an explicit break; rule simply wrong here",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC17-C",
+  "file": "src/ap/ap_drv_ops.c",
+  "line": 960,
+  "verdict": "FP",
+  "reason": "case ends in a nested switch that returns true/false on every path incl. default; cannot fall through",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC17-C",
+  "file": "src/ap/ap_drv_ops.c",
+  "line": 970,
+  "verdict": "FP",
+  "reason": "case ends in a nested switch that returns true/false on every path incl. default; cannot fall through",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC17-C",
+  "file": "src/ap/dpp_hostapd.c",
+  "line": 3037,
+  "verdict": "FP",
+  "reason": "Case has its own unconditional break; next case's label merely sits behind #ifdef",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC21-C",
+  "file": "src/ap/ap_config.c",
+  "line": 1147,
+  "verdict": "FP",
+  "reason": "misapplied to pointer/linked-list traversal terminated by NULL, not a step",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC21-C",
+  "file": "src/crypto/tls_openssl.c",
+  "line": 5903,
+  "verdict": "FP",
+  "reason": "'res' is a function-return status code reassigned each iteration (SSL_CTX_set_current_cert), not an incremented counter; == 1 is the only correct test.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC21-C",
+  "file": "src/drivers/driver_bsd.c",
+  "line": 647,
+  "verdict": "FP",
+  "reason": "do-while polls read()'s return value (n != -1); not a numeric counter loop with a step at all, rule misapplied",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC21-C",
+  "file": "src/drivers/driver_bsd.c",
+  "line": 683,
+  "verdict": "FP",
+  "reason": "for(ifa=ifaddrs; ifa!=NULL; ifa=ifa->ifa_next) is a linked-list pointer walk, not an arithmetic counter with a non-unit step",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC21-C",
+  "file": "src/drivers/driver_nl80211_capa.c",
+  "line": 1767,
+  "verdict": "FP",
+  "reason": "cw2ecw's cw>>=1 monotonically approaches 1 and cannot skip over it; != termination is safe despite non-+-1-looking step",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC21-C",
+  "file": "src/fst/fst_ctrl_iface.c",
+  "line": 543,
+  "verdict": "FP",
+  "reason": "MSC21-C: loop terminates on addr!=NULL (pointer/cursor sentinel via fst_iface_get_peer_next), not an arithmetic counter with a skippable step - rule precondition doesn't apply",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC21-C",
+  "file": "src/fst/fst_iface.c",
+  "line": 58,
+  "verdict": "FP",
+  "reason": "NULL-terminated pointer walk, not a numeric counter with a step",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC21-C",
+  "file": "src/utils/list.h",
+  "line": 58,
+  "verdict": "FP",
+  "reason": "Standard circular-linked-list traversal (item = item->next until back at list); != is the only correct termination test, not a numeric step.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC21-C",
+  "file": "wpa_supplicant/events.c",
+  "line": 5165,
+  "verdict": "FP",
+  "reason": "Loop walks a linked list; '!=' against a fixed sentinel/traversal pointer is the correct termination test for this idiom, not an off-by-step risk",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC21-C",
+  "file": "wpa_supplicant/ibss_rsn.c",
+  "line": 685,
+  "verdict": "FP",
+  "reason": "pointer/cursor loop (peer!=NULL, step peer=peer->next), not an arithmetic counter that can skip",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC30-C",
+  "file": "src/drivers/driver_ndis.c",
+  "line": 716,
+  "verdict": "FP",
+  "reason": "rand() picks junk SSID bytes purely to force driver disconnect, non-cryptographic/non-adversarial use; established batch-local FP (driver_wext.c twin)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC30-C",
+  "file": "src/drivers/driver_wext.c",
+  "line": 1893,
+  "verdict": "FP",
+  "reason": "rand() picks non-cryptographic junk SSID bytes to force disconnect; no adversarial/security stake.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC30-C",
+  "file": "src/eap_server/eap_server.c",
+  "line": 1602,
+  "verdict": "FP",
+  "reason": "rand()&0xff is a non-cryptographic EAP Identifier correlation value, not adversarial-security-relevant",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC30-C",
+  "file": "src/utils/os_win32.c",
+  "line": 150,
+  "verdict": "FP",
+  "reason": "Every verified os_random() call site (bss_color, retry fuzz/jitter, padding length, UPnP timeout) is non-security jitter, not adversarial; extends established rand()-quality FP-by-context class to the wrapper definition",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC30-C",
+  "file": "wpa_supplicant/mesh_rsn.c",
+  "line": 428,
+  "verdict": "FP",
+  "reason": "rand()%%MESH_AUTH_TIMEOUT is non-adversarial retry jitter, not security-relevant",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC41-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 199,
+  "verdict": "FP",
+  "reason": "'WPS_CHECK_PIN' is a debug-log title/label passed to wpa_hexdump_ascii_key, not the secret itself (cmd is); matches confirmed MSC41-C debug-label FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC41-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 2280,
+  "verdict": "FP",
+  "reason": "Rule pattern-matches a security-sounding substring in a plain control-flag string literal, not real secret material; matches ctrl_iface event-tag MSC41-C FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC41-C",
+  "file": "src/ap/ap_config.c",
+  "line": 481,
+  "verdict": "FP",
+  "reason": "hexdump title string is a log label, not the embedded secret",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC41-C",
+  "file": "src/ap/ap_config.c",
+  "line": 490,
+  "verdict": "FP",
+  "reason": "hexdump title string is a log label, not the embedded secret",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC41-C",
+  "file": "src/ap/ieee802_11.c",
+  "line": 454,
+  "verdict": "FP",
+  "reason": "The flagged string is a debug-log dbg/state-label tag passed to send_auth_reply/sae_set_state (e.g. \"auth-ft-finish\", \"sae-send-commit\"), not actual secret material; extends confirmed MSC41-C debug-label FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC41-C",
+  "file": "src/ap/ieee802_11.c",
+  "line": 997,
+  "verdict": "FP",
+  "reason": "The flagged string is a debug-log dbg/state-label tag passed to send_auth_reply/sae_set_state (e.g. \"auth-ft-finish\", \"sae-send-commit\"), not actual secret material; extends confirmed MSC41-C debug-label FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC41-C",
+  "file": "src/ap/ieee802_11.c",
+  "line": 1018,
+  "verdict": "FP",
+  "reason": "The flagged string is a debug-log dbg/state-label tag passed to send_auth_reply/sae_set_state (e.g. \"auth-ft-finish\", \"sae-send-commit\"), not actual secret material; extends confirmed MSC41-C debug-label FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC41-C",
+  "file": "src/ap/ieee802_11.c",
+  "line": 1669,
+  "verdict": "FP",
+  "reason": "The flagged string is a debug-log dbg/state-label tag passed to send_auth_reply/sae_set_state (e.g. \"auth-ft-finish\", \"sae-send-commit\"), not actual secret material; extends confirmed MSC41-C debug-label FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC41-C",
+  "file": "src/ap/ieee802_11.c",
+  "line": 1681,
+  "verdict": "FP",
+  "reason": "The flagged string is a debug-log dbg/state-label tag passed to send_auth_reply/sae_set_state (e.g. \"auth-ft-finish\", \"sae-send-commit\"), not actual secret material; extends confirmed MSC41-C debug-label FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "MSC41-C",
+  "file": "src/ap/ieee802_11.c",
+  "line": 1974,
+  "verdict": "FP",
+  "reason": "The flagged string is a debug-log dbg/state-label tag passed to send_auth_reply/sae_set_state (e.g. \"auth-ft-finish\", \"sae-send-commit\"), not actual secret material; extends confirmed MSC41-C debug-label FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "POS02-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 4899,
+  "verdict": "FP",
+  "reason": "bind() without privilege-drop - confirmed categorical FP: hostapd runs as root for its whole lifetime by design, no privsep model in this codebase (except #ifdef ANDROID capset)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "POS02-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 4910,
+  "verdict": "FP",
+  "reason": "same confirmed categorical POS02-C FP (no privsep model)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "POS02-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 4931,
+  "verdict": "FP",
+  "reason": "chmod() flagged same as bind() instances - confirmed categorical FP",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "POS02-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 5103,
+  "verdict": "FP",
+  "reason": "confirmed categorical POS02-C FP (no privsep model)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "POS02-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 5190,
+  "verdict": "FP",
+  "reason": "confirmed categorical POS02-C FP (no privsep model)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "POS02-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 5221,
+  "verdict": "FP",
+  "reason": "confirmed categorical POS02-C FP (no privsep model)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "POS02-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 5234,
+  "verdict": "FP",
+  "reason": "confirmed categorical POS02-C FP (no privsep model)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "POS02-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 5269,
+  "verdict": "FP",
+  "reason": "confirmed categorical POS02-C FP (no privsep model)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "POS02-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 5930,
+  "verdict": "FP",
+  "reason": "Confirmed whole-codebase POS02-C FP: hostapd has no privilege-separation model, runs as root by design (no setuid/setgid anywhere non-Android).",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "POS02-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 6005,
+  "verdict": "FP",
+  "reason": "Confirmed whole-codebase POS02-C FP; no privilege-drop model in this daemon.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "POS30-C",
+  "file": "src/drivers/driver_nl80211.c",
+  "line": 2532,
+  "verdict": "FP",
+  "reason": "code already guards with 'len > 0 && (size_t) len < sizeof(buf)' before writing buf[len]='\\0', correctly reserving room for the terminator and rejecting the exactly-full case",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "POS30-C",
+  "file": "src/drivers/linux_ioctl.c",
+  "line": 213,
+  "verdict": "FP",
+  "reason": "res>=sizeof(brlink) is explicitly rejected before brlink[res]='\\0', so the accepted range 0<=res<sizeof(brlink) always leaves room for the manual terminator.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "POS30-C",
+  "file": "src/drivers/linux_ioctl.c",
+  "line": 234,
+  "verdict": "FP",
+  "reason": "same guarded manual-NUL-termination pattern as line 213.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "POS49-C",
+  "file": "src/ap/gas_query_ap.c",
+  "line": 323,
+  "verdict": "FP",
+  "reason": "POS49-C: same single-threaded-eloop reasoning",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "POS49-C",
+  "file": "src/ap/gas_query_ap.c",
+  "line": 326,
+  "verdict": "FP",
+  "reason": "POS49-C: same single-threaded-eloop reasoning",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "POS49-C",
+  "file": "src/ap/gas_query_ap.c",
+  "line": 380,
+  "verdict": "FP",
+  "reason": "POS49-C: same single-threaded-eloop reasoning",
+  "set": "SAFE_FP"
+ }
+]

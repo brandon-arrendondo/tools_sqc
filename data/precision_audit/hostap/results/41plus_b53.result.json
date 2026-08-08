@@ -1,0 +1,1211 @@
+{
+ "labels": [
+  {
+   "rule": "MSC17-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 2537,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: MSC17-C #ifdef/#endif-intervening-case fallthrough misfire; both branches end in return/break"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 2571,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: ARR01-C sizeof(ptr->member) on real fixed-size struct field, not decayed array"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 2652,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sm/wpa_auth genuinely never modified in this internal helper; not a callback contract"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 2653,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "group param never modified in this internal helper"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 2770,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "u8 msk[2*PMK_LEN] is a fixed compile-time-constant array, not a VLA"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 2905,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: small compile-time-bounded buf_len accumulation, far from SIZE_MAX"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 2909,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf_len += wpabuf_len(config element); hostapd-config-bounded, not attacker input"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 2917,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: MSC41-C security-substring misfire on plain debug log text, no real secret"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 2994,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: EXP30-C pure-accessor args (wpa_auth_get_aa/get_spa), no real side effects"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3014,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: small compile-time-bounded kde_len accumulation"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3020,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: EXP30-C pure-accessor args (wpabuf_head/wpabuf_len)"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3022,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "kde_len += wpabuf_len(config element); config-bounded, not realistic wrap"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3058,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: EXP30-C pure-accessor args (wpa_auth_get_spa/get_aa)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3101,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: EXP30-C pure-accessor args (wpa_auth_get_aa/get_spa)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3127,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Pattern: API00-C mostly-FP on internal-only APIs, fixed small caller set"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3127,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Pattern: API00-C mostly-FP on internal-only APIs, fixed small caller set"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3127,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Pattern: API00-C mostly-FP on internal-only APIs, fixed small caller set"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3127,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Pattern: API00-C mostly-FP on internal-only APIs, fixed small caller set"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3127,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Pattern: API00-C mostly-FP on internal-only APIs, fixed small caller set"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3127,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Pattern: API00-C mostly-FP on internal-only APIs, fixed small caller set"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3127,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Pattern: API00-C mostly-FP on internal-only APIs, fixed small caller set"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3132,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: ENV01-C misfires on plain fixed crypto buffer; no getenv() anywhere near"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3135,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: ENV01-C misfire, fixed crypto key buffer, no getenv() involved"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3145,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: EXP30-C pure-accessor args (wpa_auth_get_spa/get_aa)"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3173,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: ENV01-C misfire on fixed pmk_r0/pmk_r0_name crypto buffers, no getenv"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3200,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: EXP30-C pure-accessor args (wpa_auth_get_spa/get_aa)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3220,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ptk param only read (ptk->kek/kek_len), never modified"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3221,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: DCL13-C buf aliased via pos=(u8*)(key+1) then written through alias"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3228,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: STR31-C misapplied to non-char array `const u8 *aad[1]` (pointer array)"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3229,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: STR31-C misapplied to non-char array `size_t aad_len[1]`"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3236,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: ARR39-C misfires on sizeof() in a pure bounds-check subtraction, no pointer scaling"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3236,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: ARR39-C misfires on sizeof() in a pure bounds-check subtraction, no pointer scaling"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3260,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: ARR39-C misfire; key_data_len -= AES_BLOCK_SIZE is plain integer arithmetic"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3275,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Pattern: API00-C mostly-FP on internal-only wpa_fils_validate_fils_session API"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3275,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Pattern: API00-C mostly-FP on internal-only wpa_fils_validate_fils_session API"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3275,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sm only read (sm->wpa_key_mgmt), never modified"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3329,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sm only read in wpa_fils_validate_key_confirm, never modified"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3340,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: EXP33-C output-param misfire; elems fully populated by ieee802_11_parse_elems or function returns early"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3372,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Pattern: API00-C mostly-FP on internal-only fils_decrypt_assoc API"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3372,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Pattern: API00-C mostly-FP on internal-only fils_decrypt_assoc API"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3443,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: ARR36-C pos/end family; crypt/aad[4] both derive from same mgmt frame buffer"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3460,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Pattern: API00-C mostly-FP on internal-only fils_encrypt_assoc API"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3460,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Pattern: API00-C mostly-FP on internal-only fils_encrypt_assoc API"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3460,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Pattern: API00-C mostly-FP on internal-only fils_encrypt_assoc API"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3478,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf param is plain non-const u8*; no const qualifier exists to cast away"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3503,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: sqc mistakes call to static function fils_prepare_plainbuf for a variable read; no such variable exists"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3509,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pos + wpabuf_len(plain) + AES_BLOCK_SIZE is ordinary bounds-check pointer arithmetic, no double scaling"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3519,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: EXP30-C pure-accessor args (wpabuf_head/wpabuf_len)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3534,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "current_len is a size_t scalar, not a pointer; DCL30-C misapplied to non-pointer return"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3580,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: INT14-C conflates gsm->GN bitwise use (&0x03) with unrelated arithmetic use (-1) on same field"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3602,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: sqc mistakes call to static function ieee80211w_kde_add for a variable read"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3643,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: plain heap-allocated via wpabuf_alloc, not automatic/stack storage"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3693,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Pattern: API00-C mostly-FP on internal-only hostapd_eid_assoc_fils_session API"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3693,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Pattern: API00-C mostly-FP on internal-only hostapd_eid_assoc_fils_session API"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3693,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Pattern: API00-C mostly-FP on internal-only hostapd_eid_assoc_fils_session API"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3706,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: sqc mistakes call to static function fils_prepare_plainbuf for a variable read"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3712,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: EXP30-C pure-accessor args (wpabuf_head/wpabuf_len)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3719,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: DCL30-C pos/end family; pos aliases the buf parameter, not local automatic storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3726,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sm only read in wpa_auth_validate_ml_kdes_m2, never modified"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3740,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sm only read, never modified"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3741,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "kde param only read (kde->mac_addr/valid_mlo_links/etc), never modified"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3766,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: for_each_link(links,i) loop-header-macro fully initializes i; not a real uninitialized use"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3784,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR macro args are pure byte reads, no side effects to unsequence"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3824,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: ENV01-C misfire on fixed pmk_r0/pmk_r0_name crypto buffers, no getenv"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3825,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: ENV01-C misfire on fixed pmk_r1 crypto buffer, no getenv"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3965,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: ARR39-C misfire on sizeof() in bounds-check subtraction, no pointer scaling"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3965,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Comment states last_rx_eapol_key_len already validated in wpa_receive(); no realistic underflow"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3965,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Comment states last_rx_eapol_key_len already validated in wpa_receive(); no realistic underflow"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3965,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Comment states last_rx_eapol_key_len already validated in wpa_receive(); no realistic underflow"
+  },
+  {
+   "rule": "INT10-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 3979,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "key_data_length is u16 (always non-negative); promoted-to-int modulo can't be negative in practice"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4003,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: MSC41-C security-substring misfire on plain debug log text"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4018,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: MSC41-C security-substring misfire on plain log text"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4036,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: MSC41-C security-substring misfire on plain log text"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4072,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: MSC41-C security-substring misfire on plain log text"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4074,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: MSC01-C stylistic pedantry; missing branch is the correct OCV-success default"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4108,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: MSC41-C security-substring misfire on plain log text"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4216,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sm only read in ieee80211w_kde_len, never modified"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4237,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sm only read in ieee80211w_kde_add, never modified"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4255,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "igtk struct fully populated field-by-field before the bounded WPA_IGTK_KDE_PREFIX_LEN+len bytes are read"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4291,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bigtk struct fully populated field-by-field before the bounded bytes are read"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4318,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: MSC37-C preprocessor-branch-blind; both CONFIG_OCV arms return on every path"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4349,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: API05-C misfire on idiomatic T*ptr,size_t len paired params (old_buf/ie with len/ie_len)"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4366,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "elem aliases buf, a plain non-const heap buffer this function itself malloc'd; get_ie's const return type is conservative, object isn't truly const"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4375,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: buf is heap-allocated via os_malloc, not automatic storage"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4397,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "wpa_select_vlan_wpa_group always falls back to its non-NULL input gsm if no match; provably never NULL here"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4397,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: INT14-C conflates gsm->GN bitwise use with unrelated arithmetic use on same field"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4402,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: ARR01-C sizeof(ptr->member) on real fixed-size struct field info->pn"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4404,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: ARR01-C sizeof(ptr->member) misfire"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4414,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: ARR01-C sizeof(ptr->member) misfire on info->ipn"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4416,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: ARR01-C sizeof(ptr->member) misfire"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4435,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: ARR01-C sizeof(ptr->member) misfire on info->bipn"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4437,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: ARR01-C sizeof(ptr->member) misfire"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4441,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_auth only read in wpa_auth_get_ml_key_info, never modified"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4452,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sm only read in wpa_auth_ml_group_kdes_len, never modified"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4503,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Pattern: API00-C mostly-FP on internal-only wpa_auth_ml_group_kdes API"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4549,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: INT14-C conflates ml_key_info struct-field bitwise use with unrelated arithmetic/index use"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4549,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: INT14-C conflates ml_key_info struct-field bitwise use with unrelated arithmetic/index use"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4568,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: DCL30-C pos/start family; pos aliases the pos parameter, not local automatic storage"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4585,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: ARR39-C misfire on sizeof() inside plain additive length expression"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4611,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: DCL30-C pos/start family; pos aliases the parameter"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4629,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: ARR39-C misfire on sizeof() inside plain additive length expression"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4653,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: DCL30-C pos/start family; pos aliases the parameter"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4675,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ie is unconditionally assigned via get_ie() before any read in every loop iteration"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4738,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "rsne/rsnxe/rsnoe/rsno2e/rsnxoe all unconditionally assigned before any read in every path"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4738,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "rsne/rsnxe/rsnoe/rsno2e/rsnxoe all unconditionally assigned before any read in every path"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4738,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "rsne/rsnxe/rsnoe/rsno2e/rsnxoe all unconditionally assigned before any read in every path"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4738,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "rsne/rsnxe/rsnoe/rsno2e/rsnxoe all unconditionally assigned before any read in every path"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4738,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "rsne/rsnxe/rsnoe/rsno2e/rsnxoe all unconditionally assigned before any read in every path"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4843,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: ARR00-C pos/start family; pos and start both derive from the same function-param buffer"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4852,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sm only read in add_sae_pw_ids, never modified"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4852,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sm only read in add_sae_pw_ids, never modified"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4872,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: ARR36-C pos/end family; end and pos both trace to the same caller buffer"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4904,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: ARR36-C pos/end family"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4927,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: ARR00-C pos/start family; pos is not yet NULL at this point (assigned after), same buffer as start"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4935,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: ARR00-C pos/start family; success-path pos-start on same buffer, pos never NULL here"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4939,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: DCL30-C pos/start family; pos aliases the parameter"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4986,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_ie[1] is a u8 field (max 255); +2U can't realistically wrap"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4993,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_ie[1] is a u8 field (max 255); +2 can't realistically overflow int"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 4999,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: ARR02-C misfire; ids[] size is exactly the 4-element initializer list, no real bound ambiguity"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5019,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ie[1] is a u8 field (max 255); +2 can't realistically overflow int"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5022,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_ie_len/ie_len are size_t (unsigned); INT32-C signed-overflow rule misapplied, and ie_len is bounded by wpa_ie_len by construction"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5049,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: MSC41-C security-substring misfire on plain log text"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5052,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: EXP30-C pure-accessor args (wpa_cipher_to_alg/wpa_cipher_key_len)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5064,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: EXP30-C pure-accessor args (wpa_cipher_to_alg/wpa_cipher_key_len)"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5134,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: small compile-time-bounded kde_len accumulation for msg 3/4 KDE sizing"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5137,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: small compile-time-bounded kde_len accumulation"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5137,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: small compile-time-bounded kde_len accumulation"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5140,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: small compile-time-bounded kde_len accumulation"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5141,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: small compile-time-bounded kde_len accumulation"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5146,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: small compile-time-bounded kde_len accumulation"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5150,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: small compile-time-bounded kde_len accumulation"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5154,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: small compile-time-bounded kde_len accumulation"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5157,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "kde_len += wpa_auth_ml_kdes_len(sm); protocol/config-bounded, not realistic wrap"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5160,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conf->ssid_len is bounded to 32 (SSID_MAX_LEN); no realistic wrap"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5160,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conf->ssid_len is bounded to 32 (SSID_MAX_LEN); no realistic wrap"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5168,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: small compile-time-bounded kde_len accumulation (2+255 max)"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5175,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "kde_len += wpabuf_len(config element); config-bounded, not realistic wrap"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5226,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sm->assoc_resp_ftie[1] is a u8 field (max 255); +2 can't realistically overflow int"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5227,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sm->assoc_resp_ftie[1] is a u8 field (max 255); +2 can't realistically overflow int"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5261,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "u8 addr[3*4] is a fixed compile-time-constant array (12 bytes), not a VLA"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5282,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: MSC01-C stylistic pedantry; missing branch (dpp_pfs disabled) is the correct no-flags default"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5322,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: EXP30-C pure-accessor args (wpabuf_head/wpabuf_len)"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5332,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "secure is only the ternary's condition, not itself a bitwise '|' operand; rule misattributes the operand"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5370,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: ARR39-C misfire on sizeof() in bounds-check subtraction"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5377,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: MSC41-C security-substring misfire on plain log text"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5458,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sm->keycount++ sits inside `if (0 /* IBSS == TRUE */)` dead code, never executes"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5488,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "SM_STEP macro expands to `static void sm_WPA_PTK_Step(...)`; function genuinely is void, rule misreads hidden signature"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5533,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: MSC01-C stylistic pedantry; missing branch means state machine stays in current state (correct default)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5586,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: MSC01-C stylistic pedantry; missing branch means no transition (correct default)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5595,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pattern: MSC01-C stylistic pedantry; missing branch means no transition (correct default)"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 14,
+  "fp": 136,
+  "fn": 0
+ }
+}

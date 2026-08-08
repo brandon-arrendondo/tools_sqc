@@ -1,0 +1,748 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+ARR01-C,hostap,src/eap_common/eap_sake_common.c,165,FP,"ARR01-C: attr is a struct pointer param, never an array; sizeof(*attr) is a correct dereference, not decayed-array sizing (eap_pax.c-style ARR01-C misclassification)",16-40_b18,high
+INT30-C,hostap,src/eap_common/eap_sake_common.c,193,FP,"INT30-C: pos is const u8* (pointer), not an unsigned integer; rule mislabels pointer arithmetic as integer overflow. Also already bounded by 'attr_len > end - pos' check just above",16-40_b18,high
+API05-C,hostap,src/eap_common/eap_sake_common.c,216,FP,API05-C: key/data/data2/buf each already paired with own *_len param (key_len/data_len/data2_len/buf_len) - confirmed paired-len idiom FP,16-40_b18,high
+STR34-C,hostap,src/eap_common/eap_sake_common.c,224,FP,"STR34-C: no char-to-int conversion occurs at this line; label is used only as a pointer arg to os_strlen(), rule fired without an actual widening conversion",16-40_b18,high
+EXP05-C,hostap,src/eap_common/eap_sake_common.c,228,FP,"EXP05-C: cast-away-const with no write-through; result stored into addr[0] which is itself const-qualified (const unsigned char *addr[4]), only ever read by hmac_sha1_vector",16-40_b18,high
+INT30-C,hostap,src/eap_common/eap_sake_common.c,244,FP,"INT30-C bounded-loop FP: pos here is a size_t loop index in eap_sake_kdf, only incremented when plen>=SHA1_MAC_LEN i.e. buf_len-pos>=SHA1_MAC_LEN, so pos+SHA1_MAC_LEN<=buf_len always - matches confirmed bounded-loop INT30-C FP class",16-40_b18,high
+API00-C,hostap,src/eap_common/eap_sake_common.c,272,FP,"API00-C: eap_sake_derive_keys is an internal EAP-SAKE crypto helper, msk always a caller-owned fixed buffer at closed call sites - internal-only API FP class",16-40_b18,med
+API00-C,hostap,src/eap_common/eap_sake_common.c,272,FP,"API00-C: same reasoning, emsk always a caller-owned fixed buffer at closed call sites",16-40_b18,med
+MEM05-C,hostap,src/eap_common/eap_sake_common.c,278,FP,"MEM05-C: key_buf sized by EAP_MSK_LEN+EAP_EMSK_LEN, both compile-time #define constants; not a VLA at all - confirmed macro-sized-array MEM05-C FP class",16-40_b18,high
+EXP33-C,hostap,src/eap_common/eap_sake_common.c,311,FP,"EXP33-C: key_buf is written by eap_sake_kdf(...,key_buf,sizeof(key_buf)) at line 307-309 (output-param write) before this read at line 311 - sqc misses the cross-call write, same as WPS-parse output-param FP class",16-40_b18,high
+API00-C,hostap,src/eap_common/eap_sake_common.c,335,FP,API00-C: eap_sake_compute_mic is an internal EAP-SAKE crypto helper called only with fixed valid tek_auth - internal-only API FP class,16-40_b18,med
+API00-C,hostap,src/eap_common/eap_sake_common.c,335,FP,"API00-C: same, eap always a valid EAP packet pointer supplied by internal caller",16-40_b18,med
+API00-C,hostap,src/eap_common/eap_sake_common.c,335,FP,"API00-C: serverid_len is sourced from a u8 attr_len field (<=255) in eap_sake_parse_add_attr; protocol-bounded, tmplen arithmetic cannot overflow size_t",16-40_b18,med
+API00-C,hostap,src/eap_common/eap_sake_common.c,335,FP,"API00-C: peerid_len likewise bounded by u8 attr_len (<=255) from wire parsing; protocol-bounded, no realistic overflow",16-40_b18,med
+API00-C,hostap,src/eap_common/eap_sake_common.c,335,FP,API00-C: 'peer' is a boolean 0/1 flag only ever used in 'if (peer)' - never used in arithmetic at all; rule bug flagging a non-arithmetic boolean as needing overflow validation,16-40_b18,high
+API00-C,hostap,src/eap_common/eap_sake_common.c,335,FP,"API00-C: eap_len is a real EAP packet length, bounded by realistic EAP frame size; same protocol-bounded reasoning as serverid_len/peerid_len",16-40_b18,med
+MEM05-C,hostap,src/eap_common/eap_sake_common.c,342,FP,"MEM05-C: _rand sized 2*EAP_SAKE_RAND_LEN, a compile-time macro constant; not a VLA - confirmed macro-sized-array FP class",16-40_b18,high
+DCL37-C,hostap,src/eap_common/eap_sake_common.c,342,FP,"DCL37-C: _rand is a block-scope local inside eap_sake_compute_mic, not a file-scope identifier; per C 7.1.3 the single-underscore reserved-identifier rule only applies at file scope - confirmed misapplication pattern",16-40_b18,high
+INT30-C,hostap,src/eap_common/eap_sake_common.c,355,FP,"INT30-C: pos is u8* (pointer) here, not an unsigned integer; mislabeled pointer arithmetic. Also bounded by tmplen = serverid_len+1+peerid_len+1+eap_len, the exact size tmp was malloc'd with",16-40_b18,high
+INT30-C,hostap,src/eap_common/eap_sake_common.c,357,FP,INT30-C: same pointer-mislabel + bounded-by-allocation reasoning,16-40_b18,high
+INT30-C,hostap,src/eap_common/eap_sake_common.c,360,FP,INT30-C: same pointer-mislabel + bounded-by-allocation reasoning,16-40_b18,high
+INT30-C,hostap,src/eap_common/eap_sake_common.c,362,FP,INT30-C: same pointer-mislabel + bounded-by-allocation reasoning,16-40_b18,high
+INT30-C,hostap,src/eap_common/eap_sake_common.c,370,FP,INT30-C: same pointer-mislabel + bounded-by-allocation reasoning,16-40_b18,high
+INT30-C,hostap,src/eap_common/eap_sake_common.c,372,FP,INT30-C: same pointer-mislabel + bounded-by-allocation reasoning,16-40_b18,high
+INT30-C,hostap,src/eap_common/eap_sake_common.c,375,FP,INT30-C: same pointer-mislabel + bounded-by-allocation reasoning,16-40_b18,high
+INT30-C,hostap,src/eap_common/eap_sake_common.c,377,FP,INT30-C: same pointer-mislabel + bounded-by-allocation reasoning,16-40_b18,high
+INT30-C,hostap,src/eap_common/eap_sake_common.c,385,FP,"INT30-C: pos+(mic_pos-eap) is pointer arithmetic (pos is u8*), mislabeled as unsigned-int overflow; also bounded by tmplen allocation",16-40_b18,high
+ARR36-C,hostap,src/eap_common/eap_sake_common.c,385,FP,"ARR36-C: verified via caller (eap_server_sake.c:200-203) that mic_pos and eap both derive from the same wpabuf (eap=wpabuf_head(msg), mic_pos=mic=wpabuf_put(msg,...)) - same underlying buffer, provenance lost interprocedurally",16-40_b18,high
+API00-C,hostap,src/eap_common/eap_sake_common.c,398,FP,"API00-C: len in eap_sake_add_attr is an internal-only attribute length, protocol-bounded (<256 per attribute), and stored via wpabuf_put_u8 which itself bounds-checks",16-40_b18,med
+FLP03-C,hostap,src/ap/gas_query_ap.c,85,FP,FLP03-C: res.sec*1000 + res.usec/1000 operates on plain int fields of struct os_reltime; no floating-point operation exists at this line,16-40_b18,high
+API00-C,hostap,src/ap/gas_query_ap.c,94,FP,API00-C: gas_query_ap_init has one call site (hostapd.c:1682) always passing a valid hapd - internal-only API FP class,16-40_b18,med
+EXP33-C,hostap,src/ap/gas_query_ap.c,99,FP,"EXP33-C: os_zalloc(sizeof(*gas)) - sizeof never evaluates its operand for a non-VLA type, not a real dereference",16-40_b18,high
+DCL30-C,hostap,src/ap/gas_query_ap.c,107,FP,"DCL30-C: gas points to heap memory from os_zalloc(), not automatic storage; rule confuses local pointer variable with local storage duration",16-40_b18,high
+EXP30-C,hostap,src/ap/gas_query_ap.c,148,FP,"EXP30-C: MAC2STR(query->addr) is a pure array-read macro, no side effects to unsequence with the sibling args",16-40_b18,med
+MEM10-C,hostap,src/ap/gas_query_ap.c,172,FP,"MEM10-C: fires on an ordinary 'if (ptr == NULL)' guard - the check IS present, purely stylistic",16-40_b18,med
+DCL30-C,hostap,src/ap/gas_query_ap.c,190,FP,"DCL30-C: q is a traversal pointer into heap-allocated gas_query_pending nodes (linked via dl_list), not automatic-storage local; same pointer-var-vs-storage misclassification",16-40_b18,high
+DCL13-C,hostap,src/ap/gas_query_ap.c,260,TP,DCL13-C: gas_query_tx is a plain static internal helper (not an eloop/EAP-method dispatch callback); gas is only ever read (gas->hapd) and never forwarded itself to a vtable call - genuine low-severity const opportunity per the established 'plain internal helper' distinction,16-40_b18,med
+EXP30-C,hostap,src/ap/gas_query_ap.c,266,FP,"EXP30-C: MAC2STR/wpabuf_len are pure accessor calls, no unsequenced side effects",16-40_b18,med
+EXP34-C,hostap,src/ap/gas_query_ap.c,272,FP,EXP34-C: categ = wpabuf_mhead_u8(req) where req is the same wpabuf already used via wpabuf_len(req) earlier in this function without incident - no realistic NULL path for a valid allocated wpabuf's internal pointer,16-40_b18,med
+EXP30-C,hostap,src/ap/gas_query_ap.c,275,FP,"EXP30-C: wpabuf_head(req)/wpabuf_len(req) are pure accessor calls, no unsequenced side effects",16-40_b18,med
+CON32-C,hostap,src/ap/gas_query_ap.c,315,FP,CON32-C: gas_query_rx_comeback_timeout runs only via the single-threaded eloop callback model; no pthread usage anywhere in hostapd's ap/ core - confirmed CON32/POS49 categorical FP for hostap core,16-40_b18,high
+CON32-C,hostap,src/ap/gas_query_ap.c,316,FP,CON32-C: same single-threaded-eloop reasoning,16-40_b18,high
+CON32-C,hostap,src/ap/gas_query_ap.c,323,FP,CON32-C: same single-threaded-eloop reasoning,16-40_b18,high
+POS49-C,hostap,src/ap/gas_query_ap.c,323,FP,POS49-C: same single-threaded-eloop reasoning,16-40_b18,high
+CON32-C,hostap,src/ap/gas_query_ap.c,326,FP,"CON32-C: same single-threaded-eloop reasoning, wait_comeback bitfield",16-40_b18,high
+POS49-C,hostap,src/ap/gas_query_ap.c,326,FP,POS49-C: same single-threaded-eloop reasoning,16-40_b18,high
+POS49-C,hostap,src/ap/gas_query_ap.c,380,FP,POS49-C: same single-threaded-eloop reasoning,16-40_b18,high
+EXP30-C,hostap,src/ap/gas_query_ap.c,409,FP,EXP30-C: MAC2STR pure accessor macro args,16-40_b18,med
+API00-C,hostap,src/ap/gas_query_ap.c,468,FP,"API00-C: sa is mgmt->sa, a fixed-size array field of a received management frame struct (always present, never NULL) - internal-only API FP class",16-40_b18,med
+EXP30-C,hostap,src/ap/gas_query_ap.c,507,FP,EXP30-C: ms_from_time()/MAC2STR(sa) are effectively side-effect-free w.r.t. observable program state for this ordering concern,16-40_b18,med
+INT14-C,hostap,src/ap/gas_query_ap.c,525,FP,"INT14-C: bitwise ops (*pos & 0x7f, *pos & 0x80) apply to the dereferenced byte value, while pos++ is separate pointer arithmetic on the pointer itself - conflates dereferenced-value bitwise use with pointer-itself arithmetic, same as the confirmed member/deref-conflation INT14-C class",16-40_b18,high
+MSC01-C,hostap,src/ap/gas_query_ap.c,530,FP,"MSC01-C: standard guard-clause if/else-if chain where falling through to the code after the chain IS the correct handling of the remaining case (success path) - stylistic pedantry, not a missing case",16-40_b18,med
+CON03-C,hostap,src/ap/gas_query_ap.c,659,FP,CON03-C: next_start is a static local only ever touched from the single-threaded eloop context; no pthread usage in this codebase area - same reasoning as CON32/POS49,16-40_b18,high
+MSC13-C,hostap,src/ap/gas_query_ap.c,670,FP,MSC13-C: next_start is a static local whose value is read on the *next* invocation of gas_query_new_dialog_token (line 664); intra-function liveness view misses cross-call significance - confirmed static/global MSC13-C FP class,16-40_b18,high
+API00-C,hostap,src/ap/gas_query_ap.c,686,FP,API00-C: dst always a valid MAC address buffer at the one production call site (dpp_hostapd.c) - internal-only API FP class,16-40_b18,med
+API00-C,hostap,src/ap/gas_query_ap.c,686,FP,"API00-C: cb is always a fixed, non-null function pointer supplied by internal callers - internal-only API FP class",16-40_b18,med
+EXP33-C,hostap,src/ap/gas_query_ap.c,704,FP,"EXP33-C: os_zalloc(sizeof(*query)) - sizeof never evaluates its operand, not a real dereference",16-40_b18,high
+PRE08-C,hostap,src/ap/wmm.c,14,FP,"PRE08-C: legacy 8.3-filesystem header-name-collision concern, not applicable to this modern POSIX/embedded codebase - confirmed categorical FP for hostap",16-40_b18,high
+PRE08-C,hostap,src/ap/wmm.c,14,FP,PRE08-C: same reasoning,16-40_b18,high
+PRE08-C,hostap,src/ap/wmm.c,15,FP,PRE08-C: same reasoning,16-40_b18,high
+INT14-C,hostap,src/ap/wmm.c,27,FP,"INT14-C: aifsn is an int but config-validated to a small non-negative WMM AIFSN value; shift used for standard 802.11 WMM field bit-packing, extends the confirmed EXP07-C 'deliberate protocol bit-packing' FP reasoning to this INT14-C signed-shift variant",16-40_b18,med
+INT14-C,hostap,src/ap/wmm.c,30,FP,INT14-C: aci likewise config-validated small non-negative value used for protocol bit-packing,16-40_b18,med
+INT14-C,hostap,src/ap/wmm.c,37,FP,INT14-C: ecwmin likewise config-validated small non-negative value used for protocol bit-packing,16-40_b18,med
+INT14-C,hostap,src/ap/wmm.c,38,FP,INT14-C: ecwmax likewise config-validated small non-negative value used for protocol bit-packing,16-40_b18,med
+ARR01-C,hostap,src/ap/wmm.c,71,FP,"ARR01-C: hapd->iconf->wmm_ac_params is a genuine fixed-size array FIELD (int[4]) reached through the hapd pointer, not a decayed parameter array - confirmed ARR01-C misclassification-of-struct-field-array pattern",16-40_b18,high
+ARR01-C,hostap,src/ap/wmm.c,90,FP,ARR01-C: same reasoning,16-40_b18,high
+ARR01-C,hostap,src/ap/wmm.c,92,FP,ARR01-C: same reasoning,16-40_b18,high
+API00-C,hostap,src/ap/wmm.c,102,FP,"API00-C: hostapd_eid_wmm's hapd is always supplied internally by beacon/probe-response IE builders, non-null by construction - internal-only API FP class",16-40_b18,med
+EXP40-C,hostap,src/ap/wmm.c,104,FP,"EXP40-C: rule bug - eid is declared 'u8 *eid' (NOT const-qualified) in this function's own signature; 'pos = eid' assigns a non-const pointer to a non-const pointer, no const is involved at all",16-40_b18,high
+DCL30-C,hostap,src/ap/wmm.c,113,FP,"DCL30-C: eid is this function's own parameter pointing to the caller's buffer, not automatic storage of this function - confirmed DCL30-C-on-parameter misclassification",16-40_b18,high
+DCL30-C,hostap,src/ap/wmm.c,145,FP,"DCL30-C: pos is a local alias of the eid parameter (pos = eid), same caller-owned-buffer reasoning",16-40_b18,high
+API00-C,hostap,src/ap/wmm.c,154,FP,"API00-C: hostapd_eid_wmm_valid's hapd is always supplied internally, non-null by construction - internal-only API FP class",16-40_b18,med
+DCL13-C,hostap,src/ap/wmm.c,154,TP,"DCL13-C: hapd is a completely unused parameter in hostapd_eid_wmm_valid's body (function never references it) - trivially real, if low-value, const opportunity; plain internal helper, not a dispatch-bound signature",16-40_b18,low
+EXP05-C,hostap,src/ap/wmm.c,166,FP,EXP05-C: cast-away-const on eid with no write through wmm afterward - only oui/oui_subtype/version/qos_info fields are read - confirmed 'cast-away-const with no write follows' FP class,16-40_b18,high
+EXP33-C,hostap,src/ap/wmm.c,186,FP,"EXP33-C: (struct ieee80211_mgmt *) buf only takes the array's address (equivalent to &buf[0]), it does not read buf's contents; buf is os_memset to 0 at line 194 before any content is used - not a real uninitialized-use",16-40_b18,high
+DCL22-C,hostap,src/ap/wmm.c,217,FP,"DCL22-C: val (u16 val, surplus;) is an ordinary local used only for protocol-field bookkeeping in wmm_process_tspec; no setjmp/longjmp or signal-handler context anywhere in the function - confirmed DCL22-C-with-no-setjmp-context FP class (4th instance)",16-40_b18,med
+INT14-C,hostap,src/ap/wmm.c,219,FP,"INT14-C: tspec is a struct pointer whose *member* ts_info[1] is used bitwise (>>3 &0x07), while pointer arithmetic on tspec itself happens elsewhere (tspec+1 at line 295) - conflates member bitwise-use with pointer-itself arithmetic, confirmed pattern",16-40_b18,high
+INT14-C,hostap,src/ap/wmm.c,227,FP,"INT14-C: val (u16) is genuinely used for bitmask-extract (val & 0x7fff/0x8000) and later plain arithmetic (val-1, /val) - matches the confirmed stylistic-pedantry INT14-C FP class (parity/bitfield-extract followed by unrelated arithmetic), not a real defect",16-40_b18,med
+EXP07-C,hostap,src/ap/wmm.c,234,FP,"EXP07-C: val >> 13 is deliberate fixed-point protocol bit-packing (surplus bandwidth allowance format, documented in the comment above) on a width-explicit u16 - confirmed EXP07-C bit-packing FP class",16-40_b18,high
+INT14-C,hostap,src/ap/wmm.c,251,FP,"INT14-C: rule bug - flags 'le_to_host16', the callee function/macro name, as if it were a variable used with both bitwise and arithmetic operations; the actual variable is 'val'",16-40_b18,high
+INT33-C,hostap,src/ap/wmm.c,251,FP,"INT33-C: minimum_phy_rate is guarded 'if (le_to_host32(tspec->minimum_phy_rate) < 1000000) return ...' a few lines earlier in the same function, guaranteeing the divisor (.../1000000) is >=1 - confirmed earlier-same-function-guard INT33-C FP class",16-40_b18,high
+API00-C,hostap,src/ap/wmm.c,314,FP,API00-C: hostapd_wmm_action's hapd always supplied internally from the single dispatch call site in ieee802_11.c - internal-only API FP class,16-40_b18,med
+API00-C,hostap,src/ap/wmm.c,314,FP,"API00-C: mgmt is the received management-frame buffer, always non-null at the point of dispatch - internal-only API FP class",16-40_b18,med
+API00-C,hostap,src/ap/wmm.c,314,FP,API00-C: len is checked immediately (int left = len - IEEE80211_HDRLEN - 4; if (left<0) return;) right after use - defensive check already present,16-40_b18,med
+EXP33-C,hostap,src/ap/wmm.c,349,FP,"EXP33-C: elems is written by ieee802_11_parse_elems() which does os_memset(elems,0,sizeof(*elems)) as its unconditional first statement before this read - confirmed write-first-output-param FP class (same as WPS attr_parse pattern)",16-40_b18,high
+API01-C,hostap,src/common/dpp.h,357,FP,"API01-C: the flagged 'buffer' is a whole nested struct type (dpp_config_obj) containing char*/wpabuf* fields after its own u8 ssid[]/char passphrase[] arrays, not a single overflowable buffer directly adjacent to conf_key_pkg in memory; every buffer field inside is written via bounded os_memcpy/os_strlcpy-style calls in dpp.c - confirmed categorical API01-C FP (fires on layout only, not real write paths)",16-40_b18,med
+STR00-C,hostap,src/common/dpp.h,357,FP,"STR00-C: rule bug - no 'signed char' field exists anywhere in struct dpp_config_obj; ssid is u8 (uint8_t, unsigned), the finding names a field type that isn't present in the struct",16-40_b18,high
+DCL40-C,hostap,src/common/dpp.h,577,FP,"DCL40-C: dpp_pkex_ephemeral_key_override_len is literally a '_len' suffix of dpp_pkex_ephemeral_key_override; technically shares 31 chars per rule text, but all modern toolchains (GCC/Clang/MSVC) support far more than 31 significant external characters and this codebase never targets legacy C89-strict linkers - not practically actionable, same reasoning as the confirmed PRE08-C 'technically true, not applicable' class",16-40_b18,med
+ENV01-C,hostap,src/common/dpp.h,580,FP,ENV01-C: dpp_nonce_override is a plain fixed-size testing-override buffer with zero getenv/putenv anywhere in this header or its use sites - confirmed ENV01-C wholesale-misfire-on-fixed-buffers FP class,16-40_b18,high
+API05-C,hostap,src/common/dpp.h,604,FP,"API05-C: auth (struct dpp_authentication *) is a single opaque object handle, not an array - API05-C conformant-array-syntax concern is inapplicable to a single-object pointer",16-40_b18,med
+API02-C,hostap,src/common/dpp.h,614,FP,"API02-C: opclasses is a self-terminating int array (consumed via int_array_len() in dpp.c:995, sentinel-terminated like similar hostap int-array idioms), no separate size param needed by design",16-40_b18,med
+API02-C,hostap,src/common/dpp.h,653,FP,API02-C: ssid is immediately paired with its own size_t *ssid_len output param right after it - confirmed paired-len-idiom FP class,16-40_b18,high
+API02-C,hostap,src/common/dpp.h,653,FP,"API02-C: channel_list is a char** out-param (single string reference), not an array requiring a size - confirmed T**-out-param FP class",16-40_b18,med
+API05-C,hostap,src/common/dpp.h,658,FP,API05-C: ssid immediately paired with ssid_len right after it - confirmed paired-len-idiom FP class,16-40_b18,high
+API05-C,hostap,src/common/dpp.h,662,FP,"API05-C: channel_list is a plain NUL-terminated C string parameter - standard string convention, no separate length needed",16-40_b18,med
+API05-C,hostap,src/common/dpp.h,670,FP,API05-C: buf immediately paired with size_t buflen right after it - confirmed paired-len-idiom FP class,16-40_b18,high
+API05-C,hostap,src/common/dpp.h,676,FP,API05-C: net_access_key/csign_key/peer_connector are each immediately paired with their own _len params - confirmed paired-len-idiom FP class,16-40_b18,high
+API05-C,hostap,src/common/dpp.h,676,FP,API05-C: same paired-len-idiom reasoning for the second flagged pointer in this signature,16-40_b18,high
+API05-C,hostap,src/common/dpp.h,683,FP,"API05-C: own_mac is a fixed 6-byte ETH_ALEN MAC address, a well-known fixed-size convention throughout hostap requiring no separate length param",16-40_b18,med
+API05-C,hostap,src/common/dpp.h,685,FP,"API05-C: identifier is a plain NUL-terminated string parameter - standard convention, no length needed",16-40_b18,med
+API05-C,hostap,src/common/dpp.h,685,FP,API05-C: code is immediately paired with size_t code_len right after it - confirmed paired-len-idiom FP class,16-40_b18,high
+API05-C,hostap,src/common/dpp.h,687,FP,"API05-C: msg_ctx is an opaque void* context handle, never treated as an array - confirmed opaque-handle API05-C FP class",16-40_b18,med
+API05-C,hostap,src/common/dpp.h,691,FP,API05-C: identifier is a plain NUL-terminated string parameter - standard convention,16-40_b18,med
+API05-C,hostap,src/common/dpp.h,692,FP,API05-C: code immediately paired with size_t code_len right after it - confirmed paired-len-idiom FP class,16-40_b18,high
+API05-C,hostap,src/common/dpp.h,753,FP,API05-C: buf immediately paired with size_t buflen right after it - confirmed paired-len-idiom FP class,16-40_b18,high
+API05-C,hostap,src/common/dpp.h,768,FP,API05-C: cb_ctx is an opaque void* context handle - confirmed opaque-handle FP class,16-40_b18,med
+API02-C,hostap,src/common/dpp.h,782,FP,"API02-C: pkex_done is a function-pointer callback parameter, not an array at all - confirmed callback-param API02-C misfire class",16-40_b18,high
+API02-C,hostap,src/common/dpp.h,787,FP,"API02-C: process_conf_obj is a function-pointer callback parameter, not an array - confirmed callback-param API02-C misfire class",16-40_b18,high
+API02-C,hostap,src/common/dpp.h,798,FP,"API02-C: process_conf_obj is a function-pointer callback parameter, not an array - confirmed callback-param API02-C misfire class",16-40_b18,high
+API05-C,hostap,src/common/dpp.h,811,FP,"API05-C: channel_list is a plain NUL-terminated C string parameter - standard convention, no length needed",16-40_b18,med
+API05-C,hostap,src/common/dpp.h,841,FP,API05-C: msg_ctx is an opaque void* context handle - confirmed opaque-handle FP class,16-40_b18,med
+API05-C,hostap,src/common/dpp.h,846,FP,API05-C: msg_ctx is an opaque void* context handle - confirmed opaque-handle FP class,16-40_b18,med
+API05-C,hostap,src/common/dpp.h,847,FP,"API05-C: own_connector is a plain NUL-terminated connector-string parameter - standard string convention, no length needed",16-40_b18,med
+API00-C,hostap,src/eap_server/eap_server_tls_common.c,102,FP,"Internal-only API, sm always valid at call sites; API00-C internal-API FP pattern.",16-40_b19,high
+DCL13-C,hostap,src/eap_server/eap_server_tls_common.c,102,TP,"sm only read (sm->cfg->ssl_ctx); plain internal helper, genuine const opportunity.",16-40_b19,med
+DCL13-C,hostap,src/eap_server/eap_server_tls_common.c,111,TP,"sm only read to reach sm->cfg->ssl_ctx field; genuine const opportunity, not vtable-bound.",16-40_b19,med
+DCL13-C,hostap,src/eap_server/eap_server_tls_common.c,111,TP,data only read to forward data->conn field; data itself never written.,16-40_b19,med
+API05-C,hostap,src/eap_server/eap_server_tls_common.c,112,FP,context immediately followed by context_len; confirmed ptr+len-pair API05-C FP idiom.,16-40_b19,high
+DCL30-C,hostap,src/eap_server/eap_server_tls_common.c,127,FP,"out=os_malloc(len), heap-allocated not automatic storage; confirmed DCL30-C heap-vs-stack FP.",16-40_b19,high
+API00-C,hostap,src/eap_server/eap_server_tls_common.c,144,FP,"len is an internal out-param, always the address of a caller local; API00-C internal-API FP pattern.",16-40_b19,med
+ARR02-C,hostap,src/eap_server/eap_server_tls_common.c,153,FP,const u8 context[]={eap_type} is a trivially-safe 1-byte initialized local array; no real bounds hazard.,16-40_b19,low
+MSC41-C,hostap,src/eap_server/eap_server_tls_common.c,164,FP,"""EXPORTER_EAP_TLS_Method-Id"" is an RFC9190 TLS-Exporter label constant, not a secret; extends confirmed MSC41-C security-word misfire.",16-40_b19,high
+ARR00-C,hostap,src/eap_server/eap_server_tls_common.c,169,FP,os_free(id) only happens in the sibling !method_id branch that returns; id never freed on this reached path. Mutually-exclusive-branch FP family.,16-40_b19,high
+MEM12-C,hostap,src/eap_server/eap_server_tls_common.c,184,FP,"out is NULL here (malloc failed, nothing to free); id is out of scope (declared only inside the earlier tls_v13 block). MEM12-C false-leak-on-NULL pattern.",16-40_b19,high
+DCL30-C,hostap,src/eap_server/eap_server_tls_common.c,192,FP,"out=os_malloc(*len), heap not automatic storage; confirmed DCL30-C heap FP.",16-40_b19,high
+MEM12-C,hostap,src/eap_server/eap_server_tls_common.c,192,FP,return out transfers ownership to caller (not a leak); id is out of scope here. MEM12-C false-leak-on-return pattern.,16-40_b19,high
+DCL30-C,hostap,src/eap_server/eap_server_tls_common.c,252,FP,"req from eap_tls_msg_alloc is heap-backed wpabuf, not automatic storage.",16-40_b19,high
+DCL30-C,hostap,src/eap_server/eap_server_tls_common.c,265,FP,"req from eap_tls_msg_alloc is heap-backed wpabuf, not automatic storage.",16-40_b19,high
+DCL13-C,hostap,src/eap_server/eap_server_tls_common.c,269,TP,data never reassigned; only data->tls_in field forwarded into wpabuf_put_data. Genuine const opportunity.,16-40_b19,med
+MEM30-C,hostap,src/eap_server/eap_server_tls_common.c,342,FP,"WPA_ASSERT(data->tls_out==NULL) only compares the pointer value, no dereference occurs; not a real UAF.",16-40_b19,med
+MEM30-C,hostap,src/eap_server/eap_server_tls_common.c,348,FP,data->tls_out was unconditionally reassigned by tls_connection_server_handshake() just above; sqc's free-tracking bled past the reassignment.,16-40_b19,high
+MEM30-C,hostap,src/eap_server/eap_server_tls_common.c,412,FP,"data->tls_out holds the valid value set earlier in eap_server_tls_phase1, never freed since; same reassignment-blind tracking bug.",16-40_b19,high
+MEM30-C,hostap,src/eap_server/eap_server_tls_common.c,419,FP,Reached only after wpabuf_resize succeeds (no free on that path); same reassignment-blind tracking bug.,16-40_b19,high
+API00-C,hostap,src/eap_server/eap_server_tls_common.c,508,FP,"Internal-only API, sm always valid at call sites; API00-C internal-API FP pattern.",16-40_b19,high
+DCL13-C,hostap,src/eap_server/eap_server_tls_common.c,508,TP,sm only read to reach sm->cfg->ssl_ctx; genuine const opportunity.,16-40_b19,med
+DCL13-C,hostap,src/eap_server/eap_server_tls_common.c,509,TP,data only read to forward data->conn field into tls_connection_encrypt; data itself never written.,16-40_b19,med
+DCL30-C,hostap,src/eap_server/eap_server_tls_common.c,520,FP,"buf returned from tls_connection_encrypt is heap-backed, not automatic storage.",16-40_b19,high
+API00-C,hostap,src/eap_server/eap_server_tls_common.c,524,FP,Internal-only API; respData already validated by earlier frame processing before this call. API00-C internal-API FP pattern.,16-40_b19,med
+DCL31-C,hostap,src/eap_server/eap_server_tls_common.c,551,FP,"proc_version is a function-pointer parameter being called, not an implicitly-declared bare function. Confirmed DCL31-C function-pointer-variable-call FP pattern.",16-40_b19,high
+MSC01-C,hostap,src/eap_server/eap_server_tls_common.c,558,FP,"Deliberate guard-clause if/else-if; the omitted case (ret==0) means ""no error, continue normally"". Confirmed MSC01-C stylistic-pedantry FP.",16-40_b19,med
+DCL31-C,hostap,src/eap_server/eap_server_tls_common.c,562,FP,"proc_msg is a function-pointer parameter being called, same DCL31-C FP pattern as proc_version.",16-40_b19,high
+EXP30-C,hostap,src/eap_server/eap_server_tnc.c,66,FP,eap_tnc_state_txt() args are pure side-effect-free accessor calls; confirmed EXP30-C pure-accessor FP pattern.,16-40_b19,high
+DCL13-C,hostap,src/eap_server/eap_server_tnc.c,73,FP,eap_tnc_init is wired as eap->init; sm bound by the fixed EAP-method dispatch-table signature. Confirmed dispatch-contract FP.,16-40_b19,high
+EXP33-C,hostap,src/eap_server/eap_server_tnc.c,77,FP,sizeof(*data) never evaluates its operand at runtime; confirmed sizeof(*ptr) FP idiom.,16-40_b19,high
+DCL30-C,hostap,src/eap_server/eap_server_tnc.c,90,FP,"data=os_zalloc(...) is heap-allocated, not automatic storage.",16-40_b19,high
+DCL13-C,hostap,src/eap_server/eap_server_tnc.c,94,FP,"eap_tnc_reset is wired as eap->reset; sm unused, bound by the fixed dispatch-table signature. Confirmed FP.",16-40_b19,high
+DCL13-C,hostap,src/eap_server/eap_server_tnc.c,104,TP,eap_tnc_build_start is a plain internal helper (not itself a dispatch slot); sm param is completely unused. Genuine trivial const opportunity.,16-40_b19,low
+DCL30-C,hostap,src/eap_server/eap_server_tnc.c,122,FP,"req from eap_msg_alloc is heap-backed, not automatic storage.",16-40_b19,high
+MSC01-C,hostap,src/eap_server/eap_server_tnc.c,262,FP,if(was_fail)/else if(was_done) deliberately no-ops when neither flag is set; confirmed MSC01-C stylistic-pedantry FP.,16-40_b19,med
+POS49-C,hostap,src/eap_server/eap_server_tnc.c,270,FP,"eap_server core is single-threaded/eloop-driven, no pthread usage; confirmed CON32/POS49-C no-pthread-in-hostap-core FP.",16-40_b19,high
+MSC01-C,hostap,src/eap_server/eap_server_tnc.c,271,FP,if(state==FAIL)/else if(state==DONE) deliberately no-ops otherwise; same stylistic-pedantry FP.,16-40_b19,med
+POS49-C,hostap,src/eap_server/eap_server_tnc.c,272,FP,Same no-pthread-in-eap-server-core FP as line 270.,16-40_b19,high
+DCL30-C,hostap,src/eap_server/eap_server_tnc.c,276,FP,"req from eap_msg_alloc is heap-backed, not automatic storage.",16-40_b19,high
+DCL13-C,hostap,src/eap_server/eap_server_tnc.c,323,FP,eap_tnc_check wired as eap->check; sm/priv bound by fixed dispatch-table signature (sm unused entirely).,16-40_b19,high
+DCL13-C,hostap,src/eap_server/eap_server_tnc.c,323,FP,priv likewise pinned by the eap->check callback signature.,16-40_b19,high
+EXP30-C,hostap,src/eap_server/eap_server_tnc.c,364,FP,wpabuf_head(inbuf)/wpabuf_len(inbuf) are pure accessors; confirmed EXP30-C pure-accessor FP.,16-40_b19,high
+DCL13-C,hostap,src/eap_server/eap_server_tnc.c,446,FP,eap_tnc_process wired as eap->process; sm bound by fixed dispatch-table signature.,16-40_b19,high
+MSC01-C,hostap,src/eap_server/eap_server_tnc.c,519,FP,if(MORE_FRAGMENTS)/else if(state==FRAG_ACK) falls through to normal continued processing when neither holds; guard-clause FP.,16-40_b19,med
+EXP30-C,hostap,src/eap_server/eap_server_tnc.c,530,FP,wpabuf_head(data->in_buf)/wpabuf_len(data->in_buf) are pure accessors; confirmed FP.,16-40_b19,high
+DCL13-C,hostap,src/eap_server/eap_server_tnc.c,540,FP,eap_tnc_isDone wired as eap->isDone; sm/priv bound by fixed dispatch-table signature.,16-40_b19,high
+DCL13-C,hostap,src/eap_server/eap_server_tnc.c,540,FP,priv likewise pinned by the eap->isDone callback signature.,16-40_b19,high
+DCL13-C,hostap,src/eap_server/eap_server_tnc.c,547,FP,eap_tnc_isSuccess wired as eap->isSuccess; sm bound by fixed dispatch-table signature.,16-40_b19,high
+DCL13-C,hostap,src/eap_server/eap_server_tnc.c,547,FP,priv likewise pinned by the eap->isSuccess callback signature.,16-40_b19,high
+MEM31-C,hostap,src/eap_server/eap_server_tnc.c,558,FP,"eap passed to eap_server_method_register(eap), the confirmed ownership-transfer register() consumer pattern.",16-40_b19,high
+PRE08-C,hostap,src/fst/fst_group.c,12,FP,ieee802_11_defs.h/ieee802_11_common.h 8-char-prefix collision; confirmed PRE08-C not-applicable-for-hostap FP.,16-40_b19,high
+EXP33-C,hostap,src/fst/fst_group.c,63,FP,sizeof(*mbie) never evaluated at runtime; confirmed sizeof(*ptr) FP idiom.,16-40_b19,high
+EXP30-C,hostap,src/fst/fst_group.c,106,FP,fst_iface_get_addr(f)/fst_hw_mode_to_band(hw_mode) are pure accessor/conversion calls; confirmed EXP30-C FP.,16-40_b19,high
+MEM05-C,hostap,src/fst/fst_group.c,111,FP,"bands[MB_BAND_ID_WIFI_60GHZ+1] is a compile-time-constant-sized fixed array, not a VLA; confirmed MEM05-C FP.",16-40_b19,high
+EXP33-C,hostap,src/fst/fst_group.c,118,FP,"modes is set via the out-param fst_iface_get_hw_modes(f,&modes), which unconditionally assigns *modes; not actually uninitialized.",16-40_b19,med
+EXP34-C,hostap,src/fst/fst_group.c,118,FP,"Same out-param write; modes non-NULL whenever num_modes>0 is an invariant maintained by driver-capability init elsewhere, not this function's concern.",16-40_b19,med
+MEM31-C,hostap,src/fst/fst_group.c,169,FP,"buf is returned on both branches (NULL after free, or the real buffer for caller ownership); not a leak, extends MEM12-C ownership-transfer-on-return FP to MEM31-C.",16-40_b19,high
+EXP30-C,hostap,src/fst/fst_group.c,175,FP,fst_group_get_id(g)/fst_iface_get_name(i) are pure accessors; confirmed EXP30-C FP.,16-40_b19,high
+DCL30-C,hostap,src/fst/fst_group.c,179,FP,"buf=wpabuf_alloc(...) is heap-allocated, not automatic storage.",16-40_b19,high
+INT14-C,hostap,src/fst/fst_group.c,192,FP,mbie->mb_ctrl (bitwise) and mbie->len (arithmetic) are two different struct fields conflated as one 'mbie' variable; confirmed INT14-C member-conflation FP.,16-40_b19,high
+ARR01-C,hostap,src/fst/fst_group.c,193,FP,"mbie is a pointer param (never an array); sizeof(*mbie) is a correct dereference-sizeof, no decay bug exists. Confirmed ARR01-C misapplication FP.",16-40_b19,high
+DCL30-C,hostap,src/fst/fst_group.c,246,FP,"f is a foreach_fst_group_iface loop variable pointing to a long-lived list-linked struct, not this function's automatic storage.",16-40_b19,med
+API00-C,hostap,src/fst/fst_group.c,253,FP,Internal-only API; g always valid at call sites. API00-C internal-API FP pattern.,16-40_b19,med
+API00-C,hostap,src/fst/fst_group.c,262,FP,Internal-only API; g always valid at call sites. Same FP pattern.,16-40_b19,med
+DCL30-C,hostap,src/fst/fst_group.c,315,FP,"other_iface is a foreach loop variable over the group's iface list, not local automatic storage.",16-40_b19,med
+DCL30-C,hostap,src/fst/fst_group.c,370,FP,Same foreach-loop-variable-vs-automatic-storage confusion as line 315/246.,16-40_b19,med
+API00-C,hostap,src/fst/fst_group.c,394,FP,Internal-only API; peer_addr always valid at call sites. FP.,16-40_b19,med
+EXP30-C,hostap,src/fst/fst_group.c,401,FP,fst_iface_get_name(iface)/MAC2STR(peer_addr) are pure accessor/macro reads; confirmed EXP30-C FP.,16-40_b19,high
+EXP30-C,hostap,src/fst/fst_group.c,416,FP,fst_iface_get_name(other_iface)/MAC2STR(other_peer_addr) pure accessors; confirmed FP.,16-40_b19,high
+DCL30-C,hostap,src/fst/fst_group.c,419,FP,"other_iface is a foreach loop variable, not local automatic storage.",16-40_b19,med
+EXP30-C,hostap,src/fst/fst_group.c,426,FP,Same pure-accessor MAC2STR/get_name FP as lines 401/416.,16-40_b19,high
+DCL30-C,hostap,src/fst/fst_group.c,429,FP,"other_iface is a foreach loop variable, not local automatic storage.",16-40_b19,med
+API00-C,hostap,src/fst/fst_group.c,437,FP,Internal-only API; group_id always valid at call sites. FP.,16-40_b19,med
+EXP33-C,hostap,src/fst/fst_group.c,441,FP,sizeof(*g) never evaluated at runtime; confirmed sizeof(*ptr) FP idiom.,16-40_b19,high
+DCL30-C,hostap,src/fst/fst_group.c,455,FP,"g=os_zalloc(...) is heap-allocated, not automatic storage.",16-40_b19,high
+MSC13-C,hostap,src/fst/fst_group.c,461,FP,"list's initial value (&g->ifaces) is read at dl_list_add(list,...) whenever the loop body never executes (empty iface list); not dead.",16-40_b19,med
+API00-C,hostap,src/fst/fst_group.c,480,FP,Internal-only API; i always valid at call sites. FP.,16-40_b19,med
+DCL13-C,hostap,src/fst/fst_group.c,480,TP,g is completely unused in the function body; genuine (trivial) const/removal opportunity.,16-40_b19,med
+DCL13-C,hostap,wpa_supplicant/wifi_display.c,39,TP,"global only ever read (global->p2p, global->wfd_subelem[i] forwarded as const src arg); genuine const opportunity, not vtable-bound.",16-40_b19,med
+DCL30-C,hostap,wpa_supplicant/wifi_display.c,63,FP,"ie=wpabuf_alloc(len) is heap-allocated, not automatic storage.",16-40_b19,high
+DCL13-C,hostap,wpa_supplicant/wifi_display.c,67,TP,"global is only read throughout wifi_display_update_wfd_ie, never assigned; genuine const opportunity.",16-40_b19,med
+API00-C,hostap,wpa_supplicant/wifi_display.c,229,FP,Internal-only API; global always valid at call sites. FP.,16-40_b19,med
+API00-C,hostap,wpa_supplicant/wifi_display.c,238,FP,Internal-only API (ctrl_iface command handler); global always valid. FP.,16-40_b19,med
+STR34-C,hostap,wpa_supplicant/wifi_display.c,248,FP,"*pos++='\0' is a plain char-to-char assignment, no widening conversion; confirmed STR34-C plain-char FP.",16-40_b19,high
+INT14-C,hostap,wpa_supplicant/wifi_display.c,251,FP,len&1 parity check followed by len/=2 is the standard even/odd-then-halve idiom; confirmed INT14-C parity-test FP.,16-40_b19,high
+MEM31-C,hostap,wpa_supplicant/wifi_display.c,258,FP,"e is freed on every reachable path (early-NULL-return has nothing to free, else freed at line 262 or 266); no leak.",16-40_b19,med
+ERR07-C,hostap,wpa_supplicant/wifi_display.c,270,FP,atoi(cmd) result is immediately range-checked (subelem<0||>=MAX_WFD_SUBELEMS) before use; matches the atoi-immediately-range-checked FP judgment call.,16-40_b19,low
+ERR34-C,hostap,wpa_supplicant/wifi_display.c,270,FP,Same immediate range-check on the atoi() result.,16-40_b19,low
+STR00-C,hostap,wpa_supplicant/wifi_display.c,290,FP,"subelem is declared 'int', not 'char' (rule's type claim is factually wrong); also already range-checked before use as index.",16-40_b19,high
+STR00-C,hostap,wpa_supplicant/wifi_display.c,291,FP,"Same: subelem is int, not char, and range-checked at line 271.",16-40_b19,high
+STR00-C,hostap,wpa_supplicant/wifi_display.c,328,FP,"subelem is declared 'unsigned int' here, not char; also guarded by subelem<MAX_WFD_SUBELEMS on the same line.",16-40_b19,high
+STR00-C,hostap,wpa_supplicant/wifi_display.c,333,FP,"subelem is unsigned int, bounds-checked at line 328 before reaching this use.",16-40_b19,high
+STR00-C,hostap,wpa_supplicant/wifi_display.c,334,FP,"Same: unsigned int, bounds-checked at line 328.",16-40_b19,high
+STR00-C,hostap,wpa_supplicant/wifi_display.c,335,FP,"Same: unsigned int, bounds-checked at line 328.",16-40_b19,high
+STR00-C,hostap,wpa_supplicant/wifi_display.c,342,FP,"subelem is the for-loop counter (unsigned int, bounded < MAX_WFD_SUBELEMS), not char.",16-40_b19,high
+STR00-C,hostap,wpa_supplicant/wifi_display.c,343,FP,Same bounded unsigned int for-loop counter.,16-40_b19,high
+STR00-C,hostap,wpa_supplicant/wifi_display.c,344,FP,Same bounded unsigned int for-loop counter.,16-40_b19,high
+API00-C,hostap,wpa_supplicant/wifi_display.c,352,FP,Internal-only ctrl_iface API; buf always valid at call sites. FP.,16-40_b19,med
+API05-C,hostap,wpa_supplicant/wifi_display.c,352,FP,"cmd is a plain NUL-terminated C string, the standard idiom, not an array needing a paired size.",16-40_b19,med
+API05-C,hostap,wpa_supplicant/wifi_display.c,353,FP,buf is immediately followed by buflen; confirmed ptr+len-pair API05-C FP idiom.,16-40_b19,high
+EXP30-C,hostap,wpa_supplicant/wifi_display.c,364,FP,wpabuf_head(ie)/wpabuf_len(ie) are pure accessors passed as sibling args; confirmed EXP30-C FP.,16-40_b19,high
+ERR07-C,hostap,wpa_supplicant/wifi_display.c,370,FP,Same atoi()-then-immediate-range-check idiom as line 270.,16-40_b19,low
+ERR34-C,hostap,wpa_supplicant/wifi_display.c,370,FP,Same atoi()-then-immediate-range-check idiom as line 270.,16-40_b19,low
+STR00-C,hostap,wpa_supplicant/wifi_display.c,374,FP,"subelem is declared int, not char, and range-checked at line 371 before this use.",16-40_b19,high
+STR00-C,hostap,wpa_supplicant/wifi_display.c,378,FP,"Same: int, range-checked at line 371.",16-40_b19,high
+STR00-C,hostap,wpa_supplicant/wifi_display.c,380,FP,"Same: int, range-checked at line 371.",16-40_b19,high
+EXP30-C,hostap,src/ap/nan_usd_ap.c,26,FP,"wpa_printf args are MAC2STR/wpabuf_len, pure accessors - confirmed EXP30-C accessor-arg pattern",16-40_b20,high
+EXP30-C,hostap,src/ap/nan_usd_ap.c,32,FP,"wpabuf_head/wpabuf_len args are pure accessors, no side effects - confirmed pattern",16-40_b20,high
+DCL13-C,hostap,src/ap/nan_usd_ap.c,39,FP,ctx fixed by nan_callbacks.tx function-pointer typedef - dispatch-bound callback FP family,16-40_b20,high
+API05-C,hostap,src/ap/nan_usd_ap.c,47,FP,ssi/ssi_len idiomatic ptr+len pair - confirmed API05-C FP class,16-40_b20,high
+DCL13-C,hostap,src/ap/nan_usd_ap.c,47,FP,ctx matches nan_callbacks.discovery_result signature - dispatch-bound callback FP,16-40_b20,high
+API05-C,hostap,src/ap/nan_usd_ap.c,71,FP,ssi/ssi_len idiomatic pair - confirmed API05-C FP class,16-40_b20,high
+DCL13-C,hostap,src/ap/nan_usd_ap.c,71,FP,ctx matches nan_callbacks.replied signature - dispatch-bound callback FP,16-40_b20,high
+DCL13-C,hostap,src/ap/nan_usd_ap.c,108,FP,ctx matches nan_callbacks.publish_terminated signature - dispatch-bound callback FP,16-40_b20,high
+DCL13-C,hostap,src/ap/nan_usd_ap.c,119,FP,ctx matches nan_callbacks.subscribe_terminated signature - dispatch-bound callback FP,16-40_b20,high
+API05-C,hostap,src/ap/nan_usd_ap.c,130,FP,ssi/ssi_len idiomatic pair - confirmed API05-C FP class,16-40_b20,high
+DCL13-C,hostap,src/ap/nan_usd_ap.c,130,FP,ctx matches nan_callbacks.receive signature - dispatch-bound callback FP,16-40_b20,high
+API00-C,hostap,src/ap/nan_usd_ap.c,177,FP,src/a3/buf come from validated mgmt frame fields (ieee802_11.c caller) - internal-only API FP class,16-40_b20,high
+API00-C,hostap,src/ap/nan_usd_ap.c,177,FP,"internal-only API, a3 always mgmt->bssid from RX path",16-40_b20,high
+API00-C,hostap,src/ap/nan_usd_ap.c,177,FP,"internal-only API, buf always mgmt frame payload from RX path",16-40_b20,high
+DCL13-C,hostap,src/ap/nan_usd_ap.c,177,TP,"hapd only forwards hapd->nan_de field, never written itself - genuine low-severity const opportunity",16-40_b20,med
+DCL13-C,hostap,src/ap/nan_usd_ap.c,187,TP,"hostapd_nan_usd_flush only reads hapd->nan_de, never writes hapd",16-40_b20,med
+API00-C,hostap,src/ap/nan_usd_ap.c,195,FP,"ssi is forwarded unchecked, NULL is a legitimate no-SSI case handled downstream by nan_de_publish",16-40_b20,high
+DCL13-C,hostap,src/ap/nan_usd_ap.c,195,TP,"hapd only forwards hapd->nan_de field, never written itself",16-40_b20,med
+DCL13-C,hostap,src/ap/nan_usd_ap.c,213,TP,"hapd only forwards hapd->nan_de field, never written itself",16-40_b20,med
+DCL13-C,hostap,src/ap/nan_usd_ap.c,221,TP,"hostapd_nan_usd_cancel_publish only reads hapd->nan_de, never writes hapd",16-40_b20,med
+API00-C,hostap,src/ap/nan_usd_ap.c,233,FP,"ssi forwarded unchecked, NULL legitimate, matches internal-API FP class",16-40_b20,high
+DCL13-C,hostap,src/ap/nan_usd_ap.c,233,TP,"hapd only forwards hapd->nan_de field, never written itself",16-40_b20,med
+DCL13-C,hostap,src/ap/nan_usd_ap.c,252,TP,"hapd only forwards hapd->nan_de field, never written itself",16-40_b20,med
+API00-C,hostap,src/ap/nan_usd_ap.c,261,FP,"ssi forwarded unchecked, no deref in this function",16-40_b20,high
+API00-C,hostap,src/ap/nan_usd_ap.c,261,FP,"elems is explicitly passed NULL by a real caller (ctrl_iface.c:3861) - proven legitimate value, forwarded not dereferenced",16-40_b20,high
+API00-C,hostap,src/ap/nan_usd_ap.c,261,FP,"peer_addr forwarded unchecked, internal-only API",16-40_b20,high
+DCL13-C,hostap,src/ap/nan_usd_ap.c,261,TP,"hapd only forwards hapd->nan_de field, never written itself",16-40_b20,med
+PRE08-C,hostap,src/pasn/pasn_common.c,17,FP,8.3-legacy-filesystem header collision - confirmed categorical FP for hostap,16-40_b20,high
+API00-C,hostap,src/pasn/pasn_common.c,43,FP,"send_mgmt callback pointer merely stored, not dereferenced; internal registration API, NULL is a valid disable value",16-40_b20,high
+API00-C,hostap,src/pasn/pasn_common.c,43,FP,"validate_custom_pmkid callback pointer merely stored, internal-only API",16-40_b20,high
+API00-C,hostap,src/pasn/pasn_common.c,43,FP,"eppke_set_key callback pointer merely stored, internal-only API",16-40_b20,high
+DCL13-C,hostap,src/pasn/pasn_common.c,102,FP,"os_memcpy(pasn->own_addr,...) genuinely writes through pasn - rule wrongly claims not modified",16-40_b20,high
+DCL13-C,hostap,src/pasn/pasn_common.c,111,FP,"os_memcpy(pasn->mld_addr,...) genuinely writes through pasn",16-40_b20,high
+DCL13-C,hostap,src/pasn/pasn_common.c,120,FP,"os_memcpy(pasn->peer_addr,...) genuinely writes through pasn",16-40_b20,high
+DCL13-C,hostap,src/pasn/pasn_common.c,128,FP,"os_memcpy(pasn->bssid,...) genuinely writes through pasn",16-40_b20,high
+API00-C,hostap,src/pasn/pasn_common.c,136,FP,"pt setter, NULL forwarded as a value not dereferenced, internal-only API",16-40_b20,high
+MSC37-C,hostap,src/pasn/pasn_common.c,136,FP,every #ifdef/#else branch returns a value (0 or -1); preprocessor-branch-blind misfire,16-40_b20,high
+API00-C,hostap,src/pasn/pasn_common.c,149,FP,"password setter, internal-only API, NULL is a legitimate clear value",16-40_b20,high
+MEM30-C,hostap,src/pasn/pasn_common.c,205,FP,"line is the os_free() call itself freeing pasn->extra_ies for the first time in this function - not an access after free, looks like a rule engine misfire",16-40_b20,med
+DCL13-C,hostap,src/pasn/pasn_common.c,228,TP,"pasn_get_akmp only reads pasn->akmp, genuine (if low-value) const opportunity",16-40_b20,med
+DCL13-C,hostap,src/pasn/pasn_common.c,236,TP,pasn_get_cipher only reads pasn->cipher,16-40_b20,med
+DCL13-C,hostap,src/pasn/pasn_common.c,244,TP,pasn_get_pmk_len only reads pasn->pmk_len,16-40_b20,med
+DCL13-C,hostap,src/pasn/pasn_common.c,252,TP,pasn_get_pmk only reads/returns pasn->pmk,16-40_b20,med
+DCL13-C,hostap,src/pasn/pasn_common.c,260,TP,pasn_get_ptk only reads/returns &pasn->ptk,16-40_b20,med
+API00-C,hostap,src/pasn/pasn_common.c,268,FP,"data_len has one caller (p2p.c:6912) sized from a locally-built P2P2 IE, realistically bounded far below size_t overflow range - protocol-bounds FP family",16-40_b20,med
+DCL13-C,hostap,src/pasn/pasn_common.c,268,TP,"pasn_add_encrypted_data only reads pasn->ptk fields, never writes pasn",16-40_b20,med
+MSC13-C,hostap,src/pasn/pasn_common.c,274,TP,pad_len's initial =0 is unconditionally overwritten by the very next statement (pad_len = data_len % 8) before any read - genuine dead init,16-40_b20,med
+ARR30-C,hostap,src/pasn/pasn_common.c,289,FP,"padded_data[data_len] is within the just-allocated data_len+pad_len buffer; data_len is protocol-bounded (see API00-C 268 note), not attacker-arbitrary",16-40_b20,med
+DCL13-C,hostap,src/pasn/pasn_common.c,328,TP,"pasn_parse_encrypted_data only reads pasn fields (ptk.kek, parse_data_element, cb_ctx), never writes pasn",16-40_b20,med
+MSC13-C,hostap,src/pasn/pasn_common.c,331,TP,"ret's initial =-1 is never read - every early path returns a literal, and the only path reaching further unconditionally reassigns ret via aes_unwrap",16-40_b20,med
+EXP36-C,hostap,src/pasn/pasn_common.c,336,TP,casts a raw wire byte buffer (const u8*) to a struct pointer of higher alignment requirement without ensuring alignment - real (if idiomatic) CERT violation,16-40_b20,low
+EXP08-C,hostap,src/pasn/pasn_common.c,340,FP,"flagged expression is len - offsetof(...), plain size_t subtraction, not struct-pointer arithmetic at all - category error",16-40_b20,high
+EXP33-C,hostap,src/pasn/pasn_common.c,348,FP,"elems is unconditionally os_memset(elems,0,sizeof(*elems)) as the first statement of ieee802_11_parse_elems (write-only output param) - extends confirmed wps_parse_msg-style FP",16-40_b20,high
+MSC01-C,hostap,src/pasn/pasn_common.c,364,FP,if(ret).../else if(cond)... guard-clause chain where the omitted case is an intentional no-op (ret already 0) - confirmed MSC01-C guard-clause FP,16-40_b20,high
+API02-C,hostap,wpa_supplicant/wps_supplicant.h,48,FP,"pos/end is the classic buf/end bounds-pair idiom, functionally equivalent to a size companion - confirmed API02-C FP class",16-40_b20,high
+API02-C,hostap,wpa_supplicant/wps_supplicant.h,48,FP,same pos/end bounds-pair idiom for the 'end' parameter,16-40_b20,high
+API05-C,hostap,wpa_supplicant/wps_supplicant.h,48,FP,pos of the buf/end pair - confirmed API05-C FP class,16-40_b20,high
+API05-C,hostap,wpa_supplicant/wps_supplicant.h,49,FP,end of the buf/end pair - confirmed API05-C FP class,16-40_b20,high
+DCL13-C,hostap,wpa_supplicant/wps_supplicant.h,95,TP,"#ifdef/#else no-op stub, wpa_s genuinely unused in stub body - confirmed no-op-stub DCL13-C TP class",16-40_b20,med
+DCL13-C,hostap,wpa_supplicant/wps_supplicant.h,100,TP,"no-op stub, wpa_s unused",16-40_b20,med
+DCL13-C,hostap,wpa_supplicant/wps_supplicant.h,104,TP,"no-op stub, wpa_s unused",16-40_b20,med
+DCL40-C,hostap,wpa_supplicant/wps_supplicant.h,109,FP,"real prototype (line 31) and #else stub (line 109) are mutually exclusive #ifdef/#else declarations, never both visible - preprocessor-branch-blind, 2nd confirmed instance of the x_snoop.h pattern",16-40_b20,high
+DCL13-C,hostap,wpa_supplicant/wps_supplicant.h,109,TP,"no-op stub, ssid unused",16-40_b20,med
+DCL13-C,hostap,wpa_supplicant/wps_supplicant.h,114,TP,"no-op stub, wpa_s unused",16-40_b20,med
+DCL13-C,hostap,wpa_supplicant/wps_supplicant.h,115,TP,"no-op stub, ssid unused",16-40_b20,med
+DCL13-C,hostap,wpa_supplicant/wps_supplicant.h,116,TP,"no-op stub, bss unused",16-40_b20,med
+DCL13-C,hostap,wpa_supplicant/wps_supplicant.h,121,TP,"no-op stub, wpa_s unused",16-40_b20,med
+DCL13-C,hostap,wpa_supplicant/wps_supplicant.h,122,TP,"no-op stub, ssid unused",16-40_b20,med
+DCL13-C,hostap,wpa_supplicant/wps_supplicant.h,123,TP,"no-op stub, bss unused",16-40_b20,med
+DCL13-C,hostap,wpa_supplicant/wps_supplicant.h,128,TP,"no-op stub, wpa_s unused",16-40_b20,med
+DCL13-C,hostap,wpa_supplicant/wps_supplicant.h,129,TP,"no-op stub, selected unused",16-40_b20,med
+DCL13-C,hostap,wpa_supplicant/wps_supplicant.h,130,TP,"no-op stub, ssid unused",16-40_b20,med
+DCL13-C,hostap,wpa_supplicant/wps_supplicant.h,135,TP,"no-op stub, wpa_s unused",16-40_b20,med
+DCL13-C,hostap,wpa_supplicant/wps_supplicant.h,139,TP,"no-op stub, wpa_s unused",16-40_b20,med
+DCL13-C,hostap,wpa_supplicant/wps_supplicant.h,144,TP,"no-op stub, wpa_s unused",16-40_b20,med
+DCL13-C,hostap,wpa_supplicant/wps_supplicant.h,145,TP,"no-op stub, scan_res unused",16-40_b20,med
+DCL13-C,hostap,wpa_supplicant/wps_supplicant.h,149,TP,"no-op stub, wpa_s unused",16-40_b20,med
+DCL13-C,hostap,wpa_supplicant/wps_supplicant.h,155,TP,"no-op stub, wpa_s unused",16-40_b20,med
+DCL13-C,hostap,wpa_supplicant/wps_supplicant.h,160,TP,"no-op stub, wpa_s unused",16-40_b20,med
+DCL13-C,hostap,wpa_supplicant/wps_supplicant.h,166,TP,"no-op stub, wpa_s unused",16-40_b20,med
+DCL13-C,hostap,wpa_supplicant/wps_supplicant.h,171,TP,"no-op stub, wpa_s unused",16-40_b20,med
+PRE08-C,hostap,src/ap/accounting.c,13,FP,"8.3-legacy-filesystem header collision, confirmed FP for hostap",16-40_b20,high
+EXP34-C,hostap,src/ap/accounting.c,47,FP,"hapd is the core hostapd context, always non-NULL from internal callers - internal-API FP class",16-40_b20,high
+MEM31-C,hostap,src/ap/accounting.c,56,FP,goto fail; target label frees msg (radius_msg_free at line 165) - confirmed goto-target-does-free FP pattern,16-40_b20,high
+MEM31-C,hostap,src/ap/accounting.c,68,FP,goto fail; target frees msg - same pattern,16-40_b20,high
+MEM31-C,hostap,src/ap/accounting.c,92,FP,goto fail; target frees msg - same pattern,16-40_b20,high
+MEM31-C,hostap,src/ap/accounting.c,113,FP,goto fail; target frees msg - same pattern,16-40_b20,high
+EXP30-C,hostap,src/ap/accounting.c,119,FP,wpabuf_head(b)/wpabuf_len(b) are pure accessors - confirmed EXP30-C accessor-arg FP,16-40_b20,high
+MEM31-C,hostap,src/ap/accounting.c,123,FP,goto fail; target frees msg - same pattern,16-40_b20,high
+MEM31-C,hostap,src/ap/accounting.c,132,FP,goto fail; target frees msg - same pattern,16-40_b20,high
+MEM31-C,hostap,src/ap/accounting.c,141,FP,goto fail; target frees msg - same pattern,16-40_b20,high
+MEM31-C,hostap,src/ap/accounting.c,150,FP,goto fail; target frees msg - same pattern,16-40_b20,high
+MEM31-C,hostap,src/ap/accounting.c,159,FP,goto fail; target frees msg - same pattern,16-40_b20,high
+DCL30-C,hostap,src/ap/accounting.c,162,FP,"msg is a local pointer VARIABLE pointing to radius_msg_new()'s heap allocation, not automatic-storage memory - confirmed DCL30-C FP class",16-40_b20,high
+MSC07-C,hostap,src/ap/accounting.c,164,FP,"'fail:' is a goto target reached from multiple earlier goto fail; statements, not unreachable - confirmed goto-target-label FP class",16-40_b20,high
+EXP33-C,hostap,src/ap/accounting.c,212,FP,data is filled through hostapd_drv_read_sta_data -> driver vtable call; the registered nl80211 backend memsets the struct before conditional netlink fills - interprocedural-through-vtable extension of the output-param FP family,16-40_b20,med
+EXP34-C,hostap,src/ap/accounting.c,274,FP,"hapd is always non-NULL, internal-only API",16-40_b20,high
+EXP33-C,hostap,src/ap/accounting.c,296,FP,"same accounting_sta_update_stats output-param path as line 212, memset by the real driver vtable implementation",16-40_b20,med
+MSC07-C,hostap,src/ap/accounting.c,358,FP,"'fail:' goto target reached from earlier goto fail; statements, not unreachable",16-40_b20,high
+API00-C,hostap,src/ap/accounting.c,381,FP,"sta always valid, internal-only API",16-40_b20,high
+API00-C,hostap,src/ap/accounting.c,395,FP,"sta always valid, internal-only API",16-40_b20,high
+DCL13-C,hostap,src/ap/accounting.c,395,TP,hapd is entirely unused in accounting_sta_get_id - genuine (trivial) const opportunity,16-40_b20,med
+DCL13-C,hostap,src/ap/accounting.c,395,FP,"&sta->acct_session_id is passed to radius_gen_session_id which writes the session id bytes through it - sta IS modified, rule wrong",16-40_b20,high
+ARR01-C,hostap,src/ap/accounting.c,398,FP,"sta->acct_session_id is a fixed-size struct member accessed via ->, does not decay - confirmed ARR01-C misclassification FP",16-40_b20,high
+API05-C,hostap,src/ap/accounting.c,414,FP,"data is an opaque void* callback-context param with no array/size pairing at all, fixed by the RadiusRxResult callback signature - category error",16-40_b20,high
+DCL13-C,hostap,src/ap/accounting.c,414,FP,data param is bound by the RadiusRxResult callback signature registered via radius_client_register - dispatch-bound callback FP family,16-40_b20,high
+ARR01-C,hostap,src/ap/accounting.c,525,FP,"hapd->acct_session_id is a fixed-size struct member accessed via ->, does not decay",16-40_b20,high
+DCL40-C,hostap,src/ap/wpa_auth.h,92,FP,"STRUCT_PACKED anon-struct misparse as redeclared object, confirmed pattern",16-40_b21,high
+DCL40-C,hostap,src/ap/wpa_auth.h,98,FP,"STRUCT_PACKED anon-struct misparse as redeclared object, confirmed pattern",16-40_b21,high
+API05-C,hostap,src/ap/wpa_auth.h,497,FP,"idiomatic char*buf+size_t buflen pair, confirmed API05-C FP pattern",16-40_b21,high
+API05-C,hostap,src/ap/wpa_auth.h,498,FP,"idiomatic char*buf+size_t buflen pair, confirmed API05-C FP pattern",16-40_b21,high
+API02-C,hostap,src/ap/wpa_auth.h,502,FP,"int *len is output length param, not array needing a size; confirmed API02-C FP class",16-40_b21,high
+API02-C,hostap,src/ap/wpa_auth.h,515,FP,"size_t *len is the output length itself, no capacity needed; confirmed API02-C FP class",16-40_b21,high
+API05-C,hostap,src/ap/wpa_auth.h,534,FP,"idiomatic char*buf+size_t len pair, confirmed API05-C FP pattern",16-40_b21,high
+API05-C,hostap,src/ap/wpa_auth.h,538,FP,"idiomatic char*buf+size_t len pair, confirmed API05-C FP pattern",16-40_b21,high
+API02-C,hostap,src/ap/wpa_auth.h,550,FP,size_t *pmk_len already paired with const u8 **pmk; confirmed API02-C FP class,16-40_b21,high
+API02-C,hostap,src/ap/wpa_auth.h,556,FP,size_t *pmk_len already paired with u8 *pmk; confirmed API02-C FP class,16-40_b21,high
+API05-C,hostap,src/ap/wpa_auth.h,575,FP,const u8*/size_t companion idiom on wpa_ft_process_auth callback params; confirmed API05-C FP class,16-40_b21,med
+API02-C,hostap,src/ap/wpa_auth.h,587,FP,"int *session_timeout is scalar out-param, not an array; confirmed API02-C FP class",16-40_b21,high
+API02-C,hostap,src/ap/wpa_auth.h,587,FP,"int *session_timeout is scalar out-param, not an array; confirmed API02-C FP class",16-40_b21,high
+API02-C,hostap,src/ap/wpa_auth.h,587,FP,"int *session_timeout is scalar out-param, not an array; confirmed API02-C FP class",16-40_b21,high
+API05-C,hostap,src/ap/wpa_auth.h,589,FP,u8 *pmk_r1 paired with immediately-following size_t *pmk_r1_len; confirmed API05-C FP class,16-40_b21,high
+API05-C,hostap,src/ap/wpa_auth.h,593,FP,"int *session_timeout is a scalar out-param, not an array; API05-C category error",16-40_b21,high
+API02-C,hostap,src/ap/wpa_auth.h,635,FP,"int *seg1_idx is scalar out-param, not an array; confirmed API02-C FP class",16-40_b21,high
+API02-C,hostap,src/ap/wpa_auth.h,641,FP,size_t *fils_kek_len already paired with u8 *fils_kek; confirmed API02-C FP class,16-40_b21,high
+API05-C,hostap,src/ap/wpa_auth.h,683,FP,"const u8 *addr is a fixed ETH_ALEN MAC address, no array-size param needed",16-40_b21,med
+PRE00-C,hostap,src/ap/wpa_auth.h,718,FP,"for_each_sm_auth's sm arg is always a plain variable at all 7 call sites, no side-effect hazard",16-40_b21,med
+PRE01-C,hostap,src/ap/wpa_auth.h,718,FP,"link_id is the for-loop lvalue assignment target; cannot be parenthesized, dl_list-style FP class",16-40_b21,high
+PRE01-C,hostap,src/ap/wpa_auth.h,718,FP,"link_id is the for-loop lvalue assignment target; cannot be parenthesized, dl_list-style FP class",16-40_b21,high
+PRE02-C,hostap,src/ap/wpa_auth.h,718,FP,"macro body is a for-loop+if statement, not an expression; wrapping in parens is invalid C (dl_list-style FP class)",16-40_b21,high
+PRE10-C,hostap,src/ap/wpa_auth.h,718,FP,"statement/loop-header macro meant to be followed by a loop body, do-while(0) wrap inapplicable (dl_list-style FP class)",16-40_b21,high
+PRE12-C,hostap,src/ap/wpa_auth.h,718,FP,"sm arg is always a plain variable at call sites, no real multiple-evaluation hazard",16-40_b21,med
+DCL13-C,hostap,src/ap/wpa_auth.h,724,TP,"conf only read in wpa_auth_pmf_enabled, plain internal helper not bound to callback contract",16-40_b21,med
+MSC41-C,hostap,src/common/wpa_ctrl.h,34,FP,"macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary",16-40_b21,high
+MSC41-C,hostap,src/common/wpa_ctrl.h,38,FP,"macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary",16-40_b21,high
+MSC41-C,hostap,src/common/wpa_ctrl.h,109,FP,"macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary",16-40_b21,high
+MSC41-C,hostap,src/common/wpa_ctrl.h,161,FP,"macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary",16-40_b21,high
+MSC41-C,hostap,src/common/wpa_ctrl.h,164,FP,"macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary",16-40_b21,high
+MSC41-C,hostap,src/common/wpa_ctrl.h,199,FP,"macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary",16-40_b21,high
+MSC41-C,hostap,src/common/wpa_ctrl.h,200,FP,"macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary",16-40_b21,high
+MSC41-C,hostap,src/common/wpa_ctrl.h,204,FP,"macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary",16-40_b21,high
+MSC41-C,hostap,src/common/wpa_ctrl.h,212,FP,"macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary",16-40_b21,high
+MSC41-C,hostap,src/common/wpa_ctrl.h,216,FP,"macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary",16-40_b21,high
+MSC41-C,hostap,src/common/wpa_ctrl.h,217,FP,"macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary",16-40_b21,high
+MSC41-C,hostap,src/common/wpa_ctrl.h,218,FP,"macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary",16-40_b21,high
+MSC41-C,hostap,src/common/wpa_ctrl.h,257,FP,"macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary",16-40_b21,high
+MSC41-C,hostap,src/common/wpa_ctrl.h,258,FP,"macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary",16-40_b21,high
+MSC41-C,hostap,src/common/wpa_ctrl.h,283,FP,"macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary",16-40_b21,high
+MSC41-C,hostap,src/common/wpa_ctrl.h,285,FP,"macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary",16-40_b21,high
+MSC41-C,hostap,src/common/wpa_ctrl.h,361,FP,"macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary",16-40_b21,high
+MSC41-C,hostap,src/common/wpa_ctrl.h,366,FP,"macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary",16-40_b21,high
+MSC41-C,hostap,src/common/wpa_ctrl.h,367,FP,"macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary",16-40_b21,high
+MSC41-C,hostap,src/common/wpa_ctrl.h,368,FP,"macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary",16-40_b21,high
+MSC41-C,hostap,src/common/wpa_ctrl.h,473,FP,"macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary",16-40_b21,high
+API02-C,hostap,src/common/wpa_ctrl.h,601,FP,reply_len is already the paired size/output-length arg for reply; confirmed API02-C FP class,16-40_b21,high
+API05-C,hostap,src/common/wpa_ctrl.h,601,FP,cmd/cmd_len and reply/reply_len are idiomatic ptr+len pairs; confirmed API05-C FP class,16-40_b21,high
+API05-C,hostap,src/common/wpa_ctrl.h,602,FP,reply paired with reply_len immediately after; confirmed API05-C FP class,16-40_b21,high
+API02-C,hostap,src/common/wpa_ctrl.h,645,FP,reply_len already the paired size/output-length arg for reply; confirmed API02-C FP class,16-40_b21,high
+API05-C,hostap,src/common/wpa_ctrl.h,645,FP,reply paired with reply_len; confirmed API05-C FP class,16-40_b21,high
+PRE08-C,hostap,src/ap/mbo_ap.c,12,FP,8.3-legacy filename-collision rule inapplicable to modern POSIX build; confirmed PRE08-C FP pattern,16-40_b21,high
+API00-C,hostap,src/ap/mbo_ap.c,19,FP,sta always non-null at all internal call sites; confirmed API00-C internal-only-API FP class,16-40_b21,high
+EXP33-C,hostap,src/ap/mbo_ap.c,45,FP,"sizeof(*info) is compile-time only, not a dereference; confirmed EXP33-C sizeof FP pattern",16-40_b21,high
+STR34-C,hostap,src/ap/mbo_ap.c,65,FP,"*pos='\0' is plain char-to-char assignment, no widening conversion; confirmed STR34-C FP pattern",16-40_b21,high
+STR34-C,hostap,src/ap/mbo_ap.c,70,FP,"*pos='\0' is plain char-to-char assignment, no widening conversion; confirmed STR34-C FP pattern",16-40_b21,high
+API00-C,hostap,src/ap/mbo_ap.c,83,FP,sta guaranteed non-null by all callers (ieee802_11.c/drv_callbacks.c); confirmed API00-C internal-only-API FP class,16-40_b21,high
+DCL13-C,hostap,src/ap/mbo_ap.c,83,TP,"hapd only read (mbo_enabled check), plain internal helper not bound to callback contract",16-40_b21,med
+DCL13-C,hostap,src/ap/mbo_ap.c,84,TP,"elems only read (elems->mbo/mbo_len), plain internal helper not bound to callback contract",16-40_b21,med
+MEM30-C,hostap,src/ap/mbo_ap.c,109,FP,"mbo_ap_sta_free only frees sta->non_pref_chan sub-list nodes, never sta itself; confirmed MEM30-C sub-field-vs-whole-object conflation pattern",16-40_b21,high
+API00-C,hostap,src/ap/mbo_ap.c,115,FP,"buflen always positive, no realistic overflow path in this internal API; low-value pedantry",16-40_b21,med
+API00-C,hostap,src/ap/mbo_ap.c,115,FP,"buflen always positive, no realistic overflow path in this internal API; low-value pedantry",16-40_b21,med
+DCL13-C,hostap,src/ap/mbo_ap.c,115,TP,"sta only read in mbo_ap_get_info, plain internal helper not bound to callback contract",16-40_b21,med
+API05-C,hostap,src/ap/mbo_ap.c,115,FP,char *buf paired with size_t buflen; confirmed API05-C FP class,16-40_b21,high
+EXP40-C,hostap,src/ap/mbo_ap.c,117,FP,"buf param is plain non-const char*, no const is actually being cast away; rule factually wrong",16-40_b21,high
+INT32-C,hostap,src/ap/mbo_ap.c,128,FP,"pos-buf bounded by small ctrl_iface reply buffer size, unrealistic overflow; matches protocol-bound INT32-C FP family",16-40_b21,med
+INT32-C,hostap,src/ap/mbo_ap.c,129,FP,"pos+=ret is pointer arithmetic on a char*, not signed-int arithmetic; INT32-C category error",16-40_b21,med
+EXP40-C,hostap,src/ap/mbo_ap.c,132,FP,"pos is plain non-const char*, no const is actually being cast away; rule factually wrong",16-40_b21,high
+ARR00-C,hostap,src/ap/mbo_ap.c,157,FP,"pos2==NULL already excluded by preceding 'if (!pos2) break;' in same iteration; guard-blindness FP family, plus end/pos2 both derive from the same buf array",16-40_b21,high
+ARR00-C,hostap,src/ap/mbo_ap.c,158,FP,"pos2==NULL already excluded by preceding 'if (!pos2) break;' in same iteration; guard-blindness FP family, plus end/pos2 both derive from the same buf array",16-40_b21,high
+INT32-C,hostap,src/ap/mbo_ap.c,164,FP,"pos-buf bounded by small ctrl_iface reply buffer size, unrealistic overflow; matches protocol-bound INT32-C FP family",16-40_b21,med
+API05-C,hostap,src/ap/mbo_ap.c,182,FP,char *buf paired with size_t buflen idiom; confirmed API05-C FP class,16-40_b21,high
+MEM30-C,hostap,src/ap/mbo_ap.c,194,FP,"mbo_ap_sta_free only frees sta->non_pref_chan sub-list nodes, never sta itself; confirmed MEM30-C sub-field-vs-whole-object conflation pattern",16-40_b21,high
+MEM30-C,hostap,src/ap/mbo_ap.c,197,FP,"mbo_ap_sta_free only frees sta->non_pref_chan sub-list nodes, never sta itself; confirmed MEM30-C sub-field-vs-whole-object conflation pattern",16-40_b21,high
+API00-C,hostap,src/ap/mbo_ap.c,208,FP,"buf is the WNM Notification element payload, always non-null when this function is invoked; internal-only-API FP class",16-40_b21,high
+API00-C,hostap,src/ap/mbo_ap.c,208,FP,"buf is the WNM Notification element payload, always non-null when this function is invoked; internal-only-API FP class",16-40_b21,high
+DCL13-C,hostap,src/common/gas_server.c,60,FP,eloop timeout callback matching fixed eloop_timeout_handler typedef; confirmed eloop-callback DCL13-C FP pattern,16-40_b21,high
+DCL13-C,hostap,src/common/gas_server.c,91,TP,"gas only read (gas->ctx/gas->tx) in gas_server_send_resp, plain internal helper not a callback itself",16-40_b21,med
+EXP33-C,hostap,src/common/gas_server.c,221,FP,"sizeof(*response) is compile-time only, not a dereference; confirmed EXP33-C sizeof FP pattern",16-40_b21,high
+API00-C,hostap,src/common/gas_server.c,379,FP,bssid is always populated by the driver RX path; internal-only-API FP class,16-40_b21,high
+API00-C,hostap,src/common/gas_server.c,379,FP,bssid is always populated by the driver RX path; internal-only-API FP class,16-40_b21,high
+API00-C,hostap,src/common/gas_server.c,379,FP,bssid is always populated by the driver RX path; internal-only-API FP class,16-40_b21,high
+EXP30-C,hostap,src/common/gas_server.c,401,FP,MAC2STR expands to pure byte-index reads with no side effects; confirmed EXP30-C macro-arg FP pattern,16-40_b21,high
+API00-C,hostap,src/common/gas_server.c,448,FP,"dst is a MAC address from the TX-status callback, always populated; internal-only-API FP class",16-40_b21,med
+API00-C,hostap,src/common/gas_server.c,448,FP,"dst is a MAC address from the TX-status callback, always populated; internal-only-API FP class",16-40_b21,med
+API00-C,hostap,src/common/gas_server.c,483,FP,gas always non-null by caller convention; internal-only-API FP class,16-40_b21,med
+DCL13-C,hostap,src/common/gas_server.c,483,TP,"resp_ctx used only for pointer-identity comparison, never dereferenced or modified",16-40_b21,med
+MSC13-C,hostap,src/common/gas_server.c,491,FP,response is read right after the loop in 'if (!response || response->resp)'; dl_list_for_each post-loop-read blind spot,16-40_b21,high
+DCL30-C,hostap,src/common/gas_server.c,491,FP,"response/tmp are both ordinary local variables in the same function, not global/static; DCL30-C claim is factually wrong",16-40_b21,high
+API00-C,hostap,src/common/gas_server.c,510,FP,gas always non-null by caller convention; internal-only-API FP class,16-40_b21,med
+DCL13-C,hostap,src/common/gas_server.c,510,TP,"resp_ctx used only for pointer-identity comparison, never dereferenced or modified",16-40_b21,med
+MSC13-C,hostap,src/common/gas_server.c,518,FP,response is read right after the loop in 'if (!response || response->initial_resp_sent)'; dl_list_for_each post-loop-read blind spot,16-40_b21,high
+DCL30-C,hostap,src/common/gas_server.c,518,FP,"response/tmp are both ordinary local variables in the same function, not global/static; DCL30-C claim is factually wrong",16-40_b21,high
+API00-C,hostap,src/common/gas_server.c,535,FP,gas always non-null by caller convention; internal-only-API FP class,16-40_b21,med
+DCL13-C,hostap,src/common/gas_server.c,535,TP,"resp_ctx used only for pointer-identity comparison, never dereferenced or modified",16-40_b21,med
+API00-C,hostap,src/common/gas_server.c,550,FP,tx is a function pointer supplied once at init by an internal caller; internal-only-API FP class,16-40_b21,med
+EXP33-C,hostap,src/common/gas_server.c,558,FP,"sizeof(*gas) is compile-time only, not a dereference; confirmed EXP33-C sizeof FP pattern",16-40_b21,high
+DCL30-C,hostap,src/common/gas_server.c,565,FP,"gas is a local pointer variable pointing to heap memory from os_zalloc, not automatic storage; confirmed DCL30-C confused-variable-vs-storage pattern",16-40_b21,high
+API00-C,hostap,src/common/gas_server.c,593,FP,status_cb is a function pointer supplied by internal callers; internal-only-API FP class,16-40_b21,med
+API00-C,hostap,src/common/gas_server.c,593,FP,status_cb is a function pointer supplied by internal callers; internal-only-API FP class,16-40_b21,med
+EXP33-C,hostap,src/common/gas_server.c,607,FP,"sizeof(*handler) is compile-time only, not a dereference; confirmed EXP33-C sizeof FP pattern",16-40_b21,high
+API02-C,hostap,src/crypto/crypto.h,34,FP,"num_elem+addr[]+len vector API, len already paired (confirmed aes_siv.h-class pattern)",16-40_b22,high
+ARR02-C,hostap,src/crypto/crypto.h,34,FP,"addr[] param bound conveyed by num_elem, confirmed vector-API ARR02-C FP class",16-40_b22,high
+API02-C,hostap,src/crypto/crypto.h,44,FP,same md5_vector num_elem+addr[]+len pattern,16-40_b22,high
+ARR02-C,hostap,src/crypto/crypto.h,44,FP,same vector-API ARR02-C FP class,16-40_b22,high
+API02-C,hostap,src/crypto/crypto.h,55,FP,same sha1_vector num_elem+addr[]+len pattern,16-40_b22,high
+ARR02-C,hostap,src/crypto/crypto.h,55,FP,same vector-API ARR02-C FP class,16-40_b22,high
+API02-C,hostap,src/crypto/crypto.h,81,FP,same sha256_vector num_elem+addr[]+len pattern,16-40_b22,high
+ARR02-C,hostap,src/crypto/crypto.h,81,FP,same vector-API ARR02-C FP class,16-40_b22,high
+API02-C,hostap,src/crypto/crypto.h,92,FP,same sha384_vector num_elem+addr[]+len pattern,16-40_b22,high
+ARR02-C,hostap,src/crypto/crypto.h,92,FP,same vector-API ARR02-C FP class,16-40_b22,high
+API02-C,hostap,src/crypto/crypto.h,103,FP,same sha512_vector num_elem+addr[]+len pattern,16-40_b22,high
+ARR02-C,hostap,src/crypto/crypto.h,103,FP,same vector-API ARR02-C FP class,16-40_b22,high
+API02-C,hostap,src/crypto/crypto.h,215,FP,"crypto_hash_finish already has size_t *len out-param, pkcs1-style FP class",16-40_b22,high
+API05-C,hostap,src/crypto/crypto.h,319,FP,"passwd is a NUL-terminated string, not a length-prefixed buffer needing size arg",16-40_b22,high
+API02-C,hostap,src/crypto/crypto.h,351,FP,"crypto_public_key_encrypt_pkcs1_v15 already has size_t *outlen, confirmed pkcs1 FP class",16-40_b22,high
+API02-C,hostap,src/crypto/crypto.h,368,FP,"crypto_private_key_decrypt_pkcs1_v15 already has size_t *outlen, confirmed pkcs1 FP class",16-40_b22,high
+API02-C,hostap,src/crypto/crypto.h,385,FP,"crypto_private_key_sign_pkcs1 already has size_t *outlen, confirmed pkcs1 FP class",16-40_b22,high
+API02-C,hostap,src/crypto/crypto.h,418,FP,"crypto_public_key_decrypt_pkcs1 already has size_t *plain_len, confirmed pkcs1 FP class",16-40_b22,high
+API02-C,hostap,src/crypto/crypto.h,424,FP,crypto_dh_derive_secret already has size_t *len out-param,16-40_b22,high
+DCL37-C,hostap,src/crypto/crypto.h,437,TP,"__must_check is a hostap-defined double-underscore identifier, genuine reserved-namespace violation, low severity",16-40_b22,low
+DCL37-C,hostap,src/crypto/crypto.h,437,TP,"duplicate finding, same __must_check reserved-identifier issue",16-40_b22,low
+API02-C,hostap,src/crypto/crypto.h,468,FP,crypto_mod_exp already has size_t *result_len out-param,16-40_b22,high
+API05-C,hostap,src/crypto/crypto.h,498,FP,"crypto_get_random(void *buf, size_t len) is the classic ptr+size paired idiom",16-40_b22,high
+API02-C,hostap,src/crypto/crypto.h,1279,FP,crypto_csr_get_attribute already has size_t *len out-param,16-40_b22,high
+API05-C,hostap,src/crypto/crypto.h,1281,FP,"flags a scalar int *type out-param, not an array needing conformant syntax",16-40_b22,med
+PRE08-C,hostap,src/drivers/driver_nl80211_monitor.c,19,FP,"8.3-legacy-filesystem header collision, confirmed not-applicable for hostap",16-40_b22,high
+CON03-C,hostap,src/drivers/driver_nl80211_monitor.c,28,FP,"msock_filter_insns is a fixed static initializer never mutated after init, no thread ever writes it",16-40_b22,high
+ARR02-C,hostap,src/drivers/driver_nl80211_monitor.c,28,FP,"size derived from initializer and used via ARRAY_SIZE, confirmed implicit-bounds FP class",16-40_b22,high
+CON33-C,hostap,src/drivers/driver_nl80211_monitor.c,44,FP,"no pthread usage in hostap driver code, confirmed strerror thread-safety FP class",16-40_b22,high
+CON34-C,hostap,src/drivers/driver_nl80211_monitor.c,44,FP,"same, no pthread usage",16-40_b22,high
+ERR33-C,hostap,src/drivers/driver_nl80211_monitor.c,83,FP,"buf[IFNAMSIZ-1]='\0' unconditionally terminates a few lines later, neutralizing truncation risk",16-40_b22,med
+FIO47-C,hostap,src/drivers/driver_nl80211_monitor.c,83,FP,engine mis-binds IFNAMSIZ (the size arg) to the %s spec instead of the real char* vararg,16-40_b22,high
+STR03-C,hostap,src/drivers/driver_nl80211_monitor.c,83,FP,same as ERR33-C: explicit trailing NUL-termination already handles truncation,16-40_b22,med
+MSC01-C,hostap,src/drivers/driver_nl80211_monitor.c,94,FP,"if/else-if pedantry: unhandled combination is the intentional success fallthrough, no final else needed",16-40_b22,high
+CON33-C,hostap,src/drivers/driver_nl80211_monitor.c,115,FP,"no pthread usage, confirmed strerror FP class",16-40_b22,high
+CON34-C,hostap,src/drivers/driver_nl80211_monitor.c,115,FP,same,16-40_b22,high
+POS02-C,hostap,src/drivers/driver_nl80211_monitor.c,125,FP,confirmed categorical FP: hostapd/wpa_supplicant run privileged for the daemon's entire lifetime by design,16-40_b22,high
+CON33-C,hostap,src/drivers/driver_nl80211_monitor.c,127,FP,"no pthread usage, confirmed strerror FP class",16-40_b22,high
+CON34-C,hostap,src/drivers/driver_nl80211_monitor.c,127,FP,same,16-40_b22,high
+CON33-C,hostap,src/drivers/driver_nl80211_monitor.c,135,FP,"no pthread usage, confirmed strerror FP class",16-40_b22,high
+CON34-C,hostap,src/drivers/driver_nl80211_monitor.c,135,FP,same,16-40_b22,high
+MSC07-C,hostap,src/drivers/driver_nl80211_monitor.c,140,FP,"error: is a goto-target label reached from earlier failure branches, confirmed goto-label FP class",16-40_b22,high
+API05-C,hostap,src/drivers/driver_nl80211_monitor.c,147,FP,"const void *data, size_t len classic paired idiom, confirmed FP class",16-40_b22,high
+ARR02-C,hostap,src/drivers/driver_nl80211_monitor.c,150,FP,"rtap_hdr[] size derived from its fixed byte-literal initializer, confirmed implicit-bounds FP class",16-40_b22,high
+EXP05-C,hostap,src/drivers/driver_nl80211_monitor.c,165,FP,iov_base is unconditionally non-const per POSIX struct iovec even for read-only output use; data never written,16-40_b22,high
+DCL39-C,hostap,src/drivers/driver_nl80211_monitor.c,188,FP,"msghdr is a local syscall descriptor consumed in-process, never itself serialized/transmitted to the peer",16-40_b22,high
+CON33-C,hostap,src/drivers/driver_nl80211_monitor.c,190,FP,"no pthread usage, confirmed strerror FP class",16-40_b22,high
+CON34-C,hostap,src/drivers/driver_nl80211_monitor.c,190,FP,same,16-40_b22,high
+API00-C,hostap,src/drivers/driver_nl80211_monitor.c,197,FP,"drv is an internal driver-state pointer from a closed, fixed call-site set, confirmed internal-API FP class",16-40_b22,high
+API05-C,hostap,src/drivers/driver_nl80211_monitor.c,198,FP,"const void *data, size_t len paired idiom, confirmed FP class",16-40_b22,high
+DCL13-C,hostap,src/drivers/rfkill.c,55,FP,"sock_ctx matches eloop_sock_handler typedef, confirmed eloop-callback DCL13-C FP class",16-40_b22,high
+CON33-C,hostap,src/drivers/rfkill.c,65,FP,"no pthread usage, confirmed strerror FP class",16-40_b22,high
+CON34-C,hostap,src/drivers/rfkill.c,65,FP,same,16-40_b22,high
+EXP33-C,hostap,src/drivers/rfkill.c,74,FP,event fully populated by read()'s write-through into &event before use; sqc misses syscall-initializes-buffer,16-40_b22,high
+MSC13-C,hostap,src/drivers/rfkill.c,108,TP,"phy=NULL init is always overwritten before any read, dead-default TP matching p2p_invitation.c precedent",16-40_b22,low
+MEM05-C,hostap,src/drivers/rfkill.c,109,FP,"buf sized by compile-time constants (24+IFNAMSIZ+1), not a VLA",16-40_b22,high
+MEM05-C,hostap,src/drivers/rfkill.c,110,FP,"buf2 sized by compile-time integer literals, not a VLA",16-40_b22,high
+EXP33-C,hostap,src/drivers/rfkill.c,113,FP,"sizeof(*rfkill) is a compile-time type query, not a runtime dereference, confirmed sizeof idiom FP",16-40_b22,high
+POS01-C,hostap,src/drivers/rfkill.c,126,FP,"hardcoded /dev/rfkill path, /dev not attacker-writable, no realistic symlink-race actor",16-40_b22,med
+CON33-C,hostap,src/drivers/rfkill.c,135,FP,"no pthread usage, confirmed strerror FP class",16-40_b22,high
+CON34-C,hostap,src/drivers/rfkill.c,135,FP,same,16-40_b22,high
+CON33-C,hostap,src/drivers/rfkill.c,145,FP,"no pthread usage, confirmed strerror FP class",16-40_b22,high
+CON34-C,hostap,src/drivers/rfkill.c,145,FP,same,16-40_b22,high
+EXP33-C,hostap,src/drivers/rfkill.c,154,FP,"event fully populated by read()'s write-through before use, same syscall-init gap as line 74",16-40_b22,high
+MSC13-C,hostap,src/drivers/rfkill.c,164,FP,"rfk_phy is read via os_strcmp(phy, rfk_phy) just before free(); tool misses reads inside a call argument",16-40_b22,med
+MSC01-C,hostap,src/drivers/rfkill.c,178,FP,"unhandled combo is the intentional 'stays unblocked, no state change' default, stylistic pedantry",16-40_b22,high
+MSC13-C,hostap,src/drivers/rfkill.c,188,FP,phy was read via os_strcmp earlier and is consumed by free() here; tool misses reads inside call arguments,16-40_b22,med
+DCL30-C,hostap,src/drivers/rfkill.c,191,FP,"rfkill is a local pointer variable holding os_zalloc'd heap memory, not automatic storage, confirmed FP class",16-40_b22,high
+MSC07-C,hostap,src/drivers/rfkill.c,193,FP,"fail2: is a goto-target label reached from earlier failure branches, confirmed goto-label FP class",16-40_b22,high
+MSC13-C,hostap,src/drivers/rfkill.c,198,FP,"phy's value is consumed by free(phy) on this branch, a real use, not dead",16-40_b22,med
+MEM30-C,hostap,src/drivers/rfkill.c,198,FP,"the two frees of phy (188 vs 198/fail:) sit on mutually-exclusive goto branches, confirmed branch-conflation FP class",16-40_b22,high
+MEM31-C,hostap,src/drivers/rfkill.c,198,FP,same mutually-exclusive-branch double-free conflation,16-40_b22,high
+MEM10-C,hostap,src/drivers/rfkill.c,205,FP,"stylistic ad-hoc-NULL-check pedantry, confirmed MEM10-C FP class",16-40_b22,high
+DCL13-C,hostap,src/drivers/rfkill.c,218,TP,"plain accessor, not bound to any callback/vtable contract, param genuinely const-eligible per clarification pattern",16-40_b22,low
+MEM10-C,hostap,src/drivers/rfkill.c,220,FP,"stylistic ad-hoc-NULL-check pedantry, confirmed MEM10-C FP class",16-40_b22,high
+DCL13-C,hostap,src/eap_peer/eap_proxy_dummy.c,15,TP,"dummy stub with 100% unused param, real low-value const opportunity per no-op-stub pattern",16-40_b22,low
+DCL13-C,hostap,src/eap_peer/eap_proxy_dummy.c,16,TP,"same, unused param in stub function",16-40_b22,low
+DCL13-C,hostap,src/eap_peer/eap_proxy_dummy.c,22,TP,"same, unused param in empty stub function",16-40_b22,low
+DCL13-C,hostap,src/eap_peer/eap_proxy_dummy.c,27,TP,"same, unused param in stub returning constant",16-40_b22,low
+DCL13-C,hostap,src/eap_peer/eap_proxy_dummy.c,33,TP,"same, unused sm param in stub returning NULL",16-40_b22,low
+DCL13-C,hostap,src/eap_peer/eap_proxy_dummy.c,33,TP,"same, unused len out-param in stub",16-40_b22,low
+DCL13-C,hostap,src/eap_peer/eap_proxy_dummy.c,39,TP,"same, unused sm param in stub returning NULL",16-40_b22,low
+DCL13-C,hostap,src/eap_peer/eap_proxy_dummy.c,45,TP,"same, unused sm param in stub returning 0",16-40_b22,low
+DCL13-C,hostap,src/eap_peer/eap_proxy_dummy.c,45,TP,"same, unused eap_sm param",16-40_b22,low
+DCL13-C,hostap,src/eap_peer/eap_proxy_dummy.c,52,TP,"same, unused eap_proxy param in stub",16-40_b22,low
+DCL13-C,hostap,src/eap_peer/eap_proxy_dummy.c,52,TP,"same, unused eapReqData param in stub",16-40_b22,low
+DCL13-C,hostap,src/eap_peer/eap_proxy_dummy.c,59,TP,"same, unused sm param in stub",16-40_b22,low
+API05-C,hostap,src/eap_peer/eap_proxy_dummy.c,59,FP,"char *buf, size_t buflen classic paired idiom, confirmed FP class",16-40_b22,high
+DCL13-C,hostap,src/eap_peer/eap_proxy_dummy.c,59,TP,"same, unused buf param in stub",16-40_b22,low
+DCL13-C,hostap,src/eap_peer/eap_proxy_dummy.c,66,TP,"same, unused eap_proxy param in stub",16-40_b22,low
+API05-C,hostap,src/eap_peer/eap_proxy_dummy.c,67,FP,"char *imsi_buf, size_t *imsi_len classic paired idiom, confirmed FP class",16-40_b22,high
+DCL13-C,hostap,src/eap_peer/eap_proxy_dummy.c,67,TP,"same, unused imsi_buf param in stub",16-40_b22,low
+DCL13-C,hostap,src/eap_peer/eap_proxy_dummy.c,67,TP,"same, unused imsi_len param in stub",16-40_b22,low
+DCL13-C,hostap,src/eap_peer/eap_proxy_dummy.c,73,TP,"same, unused sm param in stub",16-40_b22,low
+DCL13-C,hostap,src/eap_peer/eap_proxy_dummy.c,74,TP,"same, unused config param in stub",16-40_b22,low
+DCL13-C,hostap,src/eap_peer/eap_proxy_dummy.c,80,TP,"same, unused sm param in stub",16-40_b22,low
+DCL13-C,hostap,src/eap_peer/eap_proxy_dummy.c,80,TP,"same, unused len out-param in stub",16-40_b22,low
+DCL13-C,hostap,src/eap_peer/eap_proxy_dummy.c,86,TP,"same, unused sm param in stub",16-40_b22,low
+DCL13-C,hostap,src/eap_peer/eap_proxy_dummy.c,86,TP,"same, unused len out-param in stub",16-40_b22,low
+DCL13-C,hostap,src/eap_peer/eap_proxy_dummy.c,92,TP,"same, unused sm param in stub",16-40_b22,low
+EXP30-C,hostap,src/eap_server/eap_server_tls.c,48,FP,eap_tls_state_txt() is a pure switch-return function; extends confirmed EXP30-C side-effect-free-accessor FP class,16-40_b23,high
+DCL13-C,hostap,src/eap_server/eap_server_tls.c,57,TP,"eap_tls_valid_session: plain internal helper, sm only read (tls_session_lifetime check), genuinely const-eligible",16-40_b23,med
+DCL13-C,hostap,src/eap_server/eap_server_tls.c,57,TP,"same function, data only read (fields), never forwarded to a mutating call; real const opportunity",16-40_b23,med
+EXP33-C,hostap,src/eap_server/eap_server_tls.c,76,FP,"sizeof(*data) in os_zalloc(sizeof(*data)) - compile-time sizeof, not a dereference (confirmed sizeof pattern)",16-40_b23,high
+DCL30-C,hostap,src/eap_server/eap_server_tls.c,91,FP,"data is os_zalloc'd heap memory, not automatic storage (confirmed DCL30 local-var-vs-local-storage FP)",16-40_b23,high
+EXP33-C,hostap,src/eap_server/eap_server_tls.c,100,FP,"same sizeof(*data) pattern in eap_unauth_tls_init, confirmed FP",16-40_b23,high
+DCL30-C,hostap,src/eap_server/eap_server_tls.c,112,FP,"data is heap (os_zalloc), not automatic storage; confirmed FP",16-40_b23,high
+DCL13-C,hostap,src/eap_server/eap_server_tls.c,127,TP,"eap_tls_build_start: sm parameter is entirely unused in the body, genuinely const-eligible (trivial but real)",16-40_b23,med
+DCL30-C,hostap,src/eap_server/eap_server_tls.c,144,FP,"req allocated via eap_tls_msg_alloc -> heap wpabuf, not automatic storage; confirmed DCL30 FP class",16-40_b23,high
+DCL30-C,hostap,src/eap_server/eap_server_tls.c,202,FP,"res from eap_server_tls_build_msg -> heap wpabuf, not stack; confirmed DCL30 FP class",16-40_b23,high
+DCL13-C,hostap,src/eap_server/eap_server_tls.c,206,FP,eap_tls_check is eap->check vtable callback - fixed EAP method dispatch signature (confirmed pattern),16-40_b23,high
+DCL13-C,hostap,src/eap_server/eap_server_tls.c,206,FP,"same eap->check vtable signature, priv param pinned by dispatch contract",16-40_b23,high
+DCL13-C,hostap,src/eap_server/eap_server_tls.c,297,FP,"eap_tls_isDone is eap->isDone vtable callback, fixed dispatch signature",16-40_b23,high
+DCL13-C,hostap,src/eap_server/eap_server_tls.c,297,FP,"same eap->isDone vtable signature, priv param",16-40_b23,high
+API05-C,hostap,src/eap_server/eap_server_tls.c,304,FP,"flags void *priv, a generic opaque vtable context pointer, not an array; confirmed API05 non-array-pointer misfire",16-40_b23,high
+ARR02-C,hostap,src/eap_server/eap_server_tls.c,309,FP,"const u8 eap_tls13_context[]={EAP_TYPE_TLS} - single-element local const array self-sized by initializer, trivial/non-actionable; extends ARR02 implicit-bounds FP class to local (non-parameter) arrays",16-40_b23,med
+DCL30-C,hostap,src/eap_server/eap_server_tls.c,335,FP,"eapKeyData from eap_server_tls_derive_key (heap), not automatic storage; confirmed DCL30 FP",16-40_b23,high
+API05-C,hostap,src/eap_server/eap_server_tls.c,339,FP,same non-array vtable void *priv misfire as line 304,16-40_b23,high
+ARR02-C,hostap,src/eap_server/eap_server_tls.c,344,FP,"duplicate eap_tls13_context[] local const array in eap_tls_get_emsk, same reasoning as line 309",16-40_b23,med
+DCL30-C,hostap,src/eap_server/eap_server_tls.c,378,FP,"emsk = os_malloc(EAP_EMSK_LEN), heap not automatic storage; confirmed DCL30 FP",16-40_b23,high
+DCL13-C,hostap,src/eap_server/eap_server_tls.c,382,FP,"eap_tls_isSuccess is eap->isSuccess vtable callback, fixed dispatch signature",16-40_b23,high
+DCL13-C,hostap,src/eap_server/eap_server_tls.c,382,FP,"same eap->isSuccess vtable signature, priv param",16-40_b23,high
+API05-C,hostap,src/eap_server/eap_server_tls.c,389,FP,"eap_tls_get_session_id vtable getSessionId callback; flags a scalar out-param/void* not an array, confirmed API05 misfire family",16-40_b23,high
+MEM31-C,hostap,src/eap_server/eap_server_tls.c,405,FP,"eap consumed by eap_server_method_register(eap) which takes ownership - confirmed register()-style ownership-transfer MEM31 FP class (3rd instance, matches eap_server_psk.c:510/eap_server_ikev2)",16-40_b23,high
+MEM31-C,hostap,src/eap_server/eap_server_tls.c,430,FP,"same eap_server_method_register() ownership-transfer pattern, unauth-TLS variant",16-40_b23,high
+DCL13-C,hostap,src/tls/pkcs5.c,38,TP,"oid_is_rsadsi: oid only read, plain internal helper, genuinely const-eligible",16-40_b23,med
+ARR36-C,hostap,src/tls/pkcs5.c,109,FP,enc_alg_end and pos/hdr.payload are both offsets into the same enc_alg buffer via nested ASN.1 traversal; extends confirmed ASN.1 pos/end-same-buffer ARR36-C FP class,16-40_b23,high
+ARR01-C,hostap,src/tls/pkcs5.c,172,FP,"sizeof(params->salt) sizes a fixed struct member array (u8 salt[64]) via pointer access, not a decayed pointer; confirmed member-array-via-pointer FP class",16-40_b23,high
+ARR36-C,hostap,src/tls/pkcs5.c,213,FP,same ASN.1 same-buffer pos/end FP as line 109 (kdf_end/enc_alg_end both derived from enc_alg),16-40_b23,high
+ARR01-C,hostap,src/tls/pkcs5.c,273,FP,"sizeof(*params) correctly sizes the pointed-to struct for os_memset, not a decay issue; confirmed sizeof(*ptr) FP class",16-40_b23,high
+ARR36-C,hostap,src/tls/pkcs5.c,309,FP,"same ASN.1 same-buffer pos/enc_alg_end FP as line 109, PBES1 branch",16-40_b23,high
+ARR01-C,hostap,src/tls/pkcs5.c,320,FP,sizeof(params->salt) same fixed struct-member-array FP as line 172,16-40_b23,high
+DCL13-C,hostap,src/tls/pkcs5.c,362,TP,"pkcs5_crypto_init_pbes2: params only read, forwarded fields to read-only crypto calls, genuinely const-eligible",16-40_b23,med
+INT14-C,hostap,src/tls/pkcs5.c,393,FP,carry used with & and >> for standard multi-precision carry-propagation add; confirmed INT14-C stylistic-pedantry FP class,16-40_b23,high
+MSC13-C,hostap,src/tls/pkcs5.c,405,TP,D's initial NULL is unconditionally overwritten by os_malloc(v) on the very next line before any read; genuine (low-severity) dead assignment,16-40_b23,med
+EXP33-C,hostap,src/tls/pkcs5.c,473,FP,I is fully populated by the two preceding salt/password-copy loops (summing exactly S_len+P_len bytes) before this read; sqc misses the two-loop full-fill,16-40_b23,med
+MEM12-C,hostap,src/tls/pkcs5.c,480,FP,D/I/B are freed on the immediately preceding 3 lines (done: os_free(B); os_free(I); os_free(D);) right before this return; confirmed MEM12 no-real-leak FP class,16-40_b23,high
+DCL13-C,hostap,src/tls/pkcs5.c,489,TP,"pkcs12_crypto_init_sha1: params only read, genuinely const-eligible",16-40_b23,med
+EXP33-C,hostap,src/tls/pkcs5.c,506,FP,"WPA_PUT_BE16(&pw[2*i], passwd[i]) WRITES 2 bytes into pw; it is an output write, not a read of pw's contents",16-40_b23,high
+EXP43-C,hostap,src/tls/pkcs5.c,562,FP,"iv=hash+8 (bytes 8-15) and key=hash (bytes 0-7) are disjoint non-overlapping 8-byte sub-ranges of the 16-byte hash buffer, not actually overlapping",16-40_b23,high
+API05-C,hostap,src/tls/pkcs5.c,568,FP,passwd is a NUL-terminated string (self-delimiting) and data_len is a scalar out-param; confirmed API05 non-array-pointer misfire,16-40_b23,high
+ARR00-C,hostap,src/tls/pkcs5.c,608,FP,"eb read here is on the success path; the free() in the earlier crypto_cipher_decrypt-failure branch already returned - mutually-exclusive branches, confirmed free-tracking FP class",16-40_b23,high
+EXP33-C,hostap,src/tls/pkcs5.c,608,FP,"eb is filled by crypto_cipher_decrypt(ctx, enc_data, eb, enc_data_len) two lines above; not uninitialized",16-40_b23,high
+INT30-C,hostap,src/tls/pkcs5.c,608,FP,"enc_data_len already validated >=16 by the earlier guard (line 587); enc_data_len-1 cannot underflow, confirmed earlier-guard FP family",16-40_b23,high
+ARR00-C,hostap,src/tls/pkcs5.c,614,FP,"enc_data_len is a function parameter always supplied by the caller, not an uninitialized local; confirmed parameter-confused-with-uninitialized-local FP class",16-40_b23,high
+INT30-C,hostap,src/tls/pkcs5.c,614,FP,pad<=8 (checked at line609) and enc_data_len>=16 (checked at line587); enc_data_len-pad cannot underflow,16-40_b23,high
+ARR00-C,hostap,src/tls/pkcs5.c,615,FP,same mutually-exclusive-branch free-tracking FP as line 608 - this read is on the never-freed success path,16-40_b23,high
+INT30-C,hostap,src/tls/pkcs5.c,624,FP,"same pad<=8/enc_data_len>=16 earlier-guard reasoning, cannot underflow",16-40_b23,high
+INT30-C,hostap,src/tls/pkcs5.c,626,FP,"same pad<=8/enc_data_len>=16 earlier-guard reasoning, cannot underflow",16-40_b23,high
+DCL30-C,hostap,src/tls/pkcs5.c,627,FP,"eb = os_malloc(enc_data_len), heap not automatic storage; confirmed DCL30 FP class",16-40_b23,high
+DCL13-C,hostap,src/ap/authsrv.c,31,FP,"hostapd_sim_db_cb_sta is the ap_for_each_sta() iterator callback, fixed dispatch signature; extends confirmed callback-contract DCL13 FP class",16-40_b23,high
+DCL13-C,hostap,src/ap/authsrv.c,32,FP,"same ap_for_each_sta callback signature, sta param",16-40_b23,high
+API05-C,hostap,src/ap/authsrv.c,54,FP,"identity is immediately followed by its own size identity_len - idiomatic ptr+len pair, confirmed API05 FP class",16-40_b23,high
+MEM10-C,hostap,src/ap/authsrv.c,66,FP,plain `if (user==NULL) return 0;` guard - confirmed MEM10-C ad-hoc-NULL-check stylistic FP class,16-40_b23,high
+ARR01-C,hostap,src/ap/authsrv.c,69,FP,"sizeof(*user) sizes the pointed-to struct for os_memset, standard idiom, not decay; confirmed sizeof(*ptr) FP class",16-40_b23,high
+DCL13-C,hostap,src/ap/authsrv.c,114,FP,"hostapd_radius_log_acct_req is registered as srv.acct_req_cb, fixed radius_server_conf dispatch signature",16-40_b23,high
+MEM05-C,hostap,src/ap/authsrv.c,117,FP,"nas_id[RADIUS_MAX_ATTR_LEN+1] is a fixed-size array sized by a compile-time macro constant, not a VLA; confirmed MEM05 FP class",16-40_b23,high
+DCL00-C,hostap,src/ap/authsrv.c,118,FP,"session_id IS modified: radius_msg_get_attr(msg,...,(u8*)session_id,...) writes into it through a function call; rule doesn't see indirect writes via pointer decay to a mutating call",16-40_b23,high
+MEM05-C,hostap,src/ap/authsrv.c,118,FP,"fixed-size macro-sized array, not a VLA; confirmed MEM05 FP class",16-40_b23,high
+DCL00-C,hostap,src/ap/authsrv.c,119,FP,"username modified via radius_msg_get_attr(...,(u8*)username,...); same indirect-write-through-call FP as line 118",16-40_b23,high
+MEM05-C,hostap,src/ap/authsrv.c,119,FP,"fixed-size macro-sized array, not a VLA",16-40_b23,high
+DCL00-C,hostap,src/ap/authsrv.c,120,FP,"calling_station_id modified via radius_msg_get_attr(...,(u8*)calling_station_id,...); same indirect-write-through-call FP",16-40_b23,high
+MEM05-C,hostap,src/ap/authsrv.c,120,FP,"fixed-size macro-sized array (3*ETH_ALEN), not a VLA",16-40_b23,high
+MSC13-C,hostap,src/ap/authsrv.c,125,TP,"total_bytes_in's initial =0 is either never read (START/default branches return/break before use) or overwritten before the printf read (STOP/INTERIM branch); genuine dead init, matches confirmed MSC13 dead-default-init TP pattern",16-40_b23,med
+MSC13-C,hostap,src/ap/authsrv.c,125,TP,same dead-init reasoning for total_bytes_out,16-40_b23,med
+INT14-C,hostap,src/ap/authsrv.c,190,FP,gigawords_in<<32 combined with bytes_in is the standard RFC 2869 64-bit octet-counter reconstruction idiom; confirmed INT14-C stylistic-pedantry FP class,16-40_b23,high
+INT14-C,hostap,src/ap/authsrv.c,191,FP,same RFC 2869 gigawords/bytes 64-bit reconstruction idiom for output counters,16-40_b23,high
+DCL13-C,hostap,src/ap/authsrv.c,267,FP,"authsrv_tls_event is registered as conf.event_cb, fixed tls_config dispatch signature (tls.h:99)",16-40_b23,high
+DCL13-C,hostap,src/ap/authsrv.c,268,FP,"same tls_config event_cb dispatch signature, data param",16-40_b23,high
+MSC01-C,hostap,src/ap/authsrv.c,270,FP,switch(ev) covers all 5 values of enum tls_event (tls.h:21-27) exhaustively; no default needed,16-40_b23,high
+EXP33-C,hostap,src/ap/authsrv.c,307,FP,sizeof(*cfg) in os_zalloc(sizeof(*cfg)); confirmed sizeof(*ptr) FP class,16-40_b23,high
+DCL30-C,hostap,src/ap/authsrv.c,359,FP,"cfg = os_zalloc(...), heap not automatic storage; confirmed DCL30 FP class",16-40_b23,high
+MEM05-C,hostap,src/ap/authsrv.c,363,FP,"authsrv_init's single recursive call (to a first-BSS instance which is by definition first-bss and cannot recurse further) is hard-bounded to depth 2, no runtime-sized stack allocation involved; rule doesn't recognize the self-limiting guard",16-40_b23,med
+MSC01-C,hostap,src/ap/authsrv.c,408,FP,"two specific if/else-if conditions handled, implicit fallthrough (no CRL reload) is the intended default; confirmed MSC01 stylistic-pedantry FP class",16-40_b23,high
+ARR01-C,hostap,src/ap/eap_user_db.c,32,FP,"sizeof(user->methods) sizes a fixed struct-member array via pointer access, not decay; confirmed member-array-via-pointer FP class",16-40_b23,high
+ARR30-C,hostap,src/ap/eap_user_db.c,35,FP,pos3 traversal is bounded by os_strchr()/NUL-terminator within a heap-duplicated NUL-terminated string (buf=os_strdup(methods)); extends confirmed ARR30-C provably-bounded-NUL-scan FP class,16-40_b23,med
+STR31-C,hostap,src/ap/eap_user_db.c,35,FP,no string copying occurs here at all - just strchr tokenizing + a single NUL write; same bounded-NUL-traversal reasoning as the ARR30 finding on this line,16-40_b23,med
+STR34-C,hostap,src/ap/eap_user_db.c,38,FP,"*pos3++ = '\0' is a plain char-to-char assignment, no widening conversion; confirmed STR34-C char-to-char FP class",16-40_b23,high
+DCL13-C,hostap,src/ap/eap_user_db.c,79,FP,"get_user_cb is an sqlite3_exec() callback, fixed int(*)(void*,int,char**,char**) dispatch signature; extends confirmed callback-contract DCL13 FP class to sqlite3 callbacks",16-40_b23,high
+DCL13-C,hostap,src/ap/eap_user_db.c,79,FP,"same sqlite3_exec callback signature, col param",16-40_b23,high
+INT36-C,hostap,src/ap/eap_user_db.c,89,TP,user->next=(void*)1 is a literal int-to-pointer sentinel cast (never dereferenced); matches the literal CERT INT36-C anti-pattern even though practically benign here,16-40_b23,low
+MSC01-C,hostap,src/ap/eap_user_db.c,92,FP,unmatched SQL result columns are intentionally ignored; confirmed MSC01 stylistic-pedantry FP class,16-40_b23,high
+ERR33-C,hostap,src/ap/eap_user_db.c,93,TP,"strtol(argv[i],NULL,10) result stored with no errno/endptr check at all - genuine unchecked-conversion gap on DB-sourced config data",16-40_b23,med
+ERR00-C,hostap,src/ap/eap_user_db.c,93,TP,same unchecked strtol() return value,16-40_b23,med
+ERR01-C,hostap,src/ap/eap_user_db.c,93,TP,errno genuinely never set to 0 nor checked around this strtol() call,16-40_b23,med
+ERR30-C,hostap,src/ap/eap_user_db.c,93,TP,same errno-not-reset-before-call gap; duplicate-rule coverage of the same real strtol() issue,16-40_b23,med
+DCL13-C,hostap,src/ap/eap_user_db.c,101,FP,"get_wildcard_cb is also an sqlite3_exec() callback, fixed dispatch signature",16-40_b23,high
+DCL13-C,hostap,src/ap/eap_user_db.c,101,FP,"same sqlite3_exec callback signature, col param",16-40_b23,high
+MSC01-C,hostap,src/ap/eap_user_db.c,110,FP,same unmatched-column-intentionally-ignored MSC01 FP as line 92,16-40_b23,high
+INT36-C,hostap,src/ap/eap_user_db.c,124,TP,"same (void*)1 sentinel int-to-pointer cast pattern as line 89, in get_wildcard_cb",16-40_b23,low
+ARR30-C,hostap,src/ap/eap_user_db.c,149,FP,identity_len is bounds-checked (< sizeof(id_str)==256) by the earlier guard at line 142; confirmed earlier-same-function-guard FP family,16-40_b23,high
+ARR00-C,hostap,src/ap/eap_user_db.c,150,FP,identity_len is a function parameter always supplied by the caller; confirmed parameter-confused-with-uninitialized-local FP class,16-40_b23,high
+ARR01-C,hostap,src/ap/eap_user_db.c,170,FP,"sizeof(hapd->tmp_eap_user) sizes a real struct member (not even an array) accessed via pointer, not decay; extends confirmed member-sizeof-via-pointer FP class",16-40_b23,high
+MSC01-C,hostap,src/ap/eap_user_db.c,197,FP,leaving user==NULL when sqlite3_exec succeeds with no match is the intended fallthrough; confirmed MSC01 stylistic-pedantry FP class,16-40_b23,high
+MSC01-C,hostap,src/ap/eap_user_db.c,210,FP,same intentional no-match fallthrough as line 197,16-40_b23,high
+DCL30-C,hostap,src/ap/eap_user_db.c,223,FP,"user points to &hapd->tmp_eap_user, a field of the long-lived hapd struct, not this function's automatic storage; confirmed DCL30 local-var-vs-local-storage FP class",16-40_b23,high
+API00-C,hostap,src/ap/eap_user_db.c,229,FP,hostapd_get_eap_user is an internal-only API always called with a valid hapd; confirmed API00-C internal-API FP class,16-40_b23,high
+DCL30-C,hostap,src/ap/eap_user_db.c,287,FP,"user is either conf->eap_user (persistent config list) or &hapd->tmp_eap_user, never this function's stack storage; confirmed DCL30 FP class",16-40_b23,high
+ARR00-C,hostap,src/crypto/aes-internal-dec.c,38,FP,j initialized in the for-loop's own comma init-clause (j=4*Nr); confirmed for-loop init-clause idiom FP,16-40_b24,high
+INT14-C,hostap,src/crypto/aes-internal-dec.c,38,FP,"j only used arithmetically (i<j, j-=4); no bitwise op on j exists in this loop",16-40_b24,high
+API00-C,hostap,src/crypto/aes-internal-dec.c,59,FP,"internal-only API; len always a fixed AES key size (16/24/32) from internal callers, not attacker input",16-40_b24,med
+ARR00-C,hostap,src/crypto/aes-internal-dec.c,71,FP,free only happens on res<0 branch which returns immediately; mutually-exclusive-branch free-tracking FP,16-40_b24,high
+DCL30-C,hostap,src/crypto/aes-internal-dec.c,72,FP,"rk is a local pointer variable but points to os_malloc'd heap memory, not automatic storage; confirmed DCL30-C local-var-vs-storage confusion",16-40_b24,high
+MSC13-C,hostap,src/crypto/aes-internal-dec.c,87,FP,s0 read inside the ROUND() macro expansion at the first round; macro-blind CFG dead-assignment FP,16-40_b24,high
+MSC13-C,hostap,src/crypto/aes-internal-dec.c,88,FP,s1 read inside ROUND() macro expansion; same macro-blind CFG FP,16-40_b24,high
+MSC13-C,hostap,src/crypto/aes-internal-dec.c,89,FP,s2 read inside ROUND() macro expansion; same macro-blind CFG FP,16-40_b24,high
+MSC13-C,hostap,src/crypto/aes-internal-dec.c,90,FP,s3 read inside ROUND() macro expansion; same macro-blind CFG FP,16-40_b24,high
+PRE00-C,hostap,src/crypto/aes-internal-dec.c,92,TP,"ROUND macro genuinely evaluates i multiple times via 4*i, 4*i+1, etc, unlike pure token-paste-only macro params",16-40_b24,med
+PRE01-C,hostap,src/crypto/aes-internal-dec.c,92,TP,i used unparenthesized in 4*i arithmetic; real precedence hazard if ever called with a non-literal expression,16-40_b24,med
+PRE02-C,hostap,src/crypto/aes-internal-dec.c,92,FP,"multi-statement macro; wrapping the whole 4-statement body in parens (the suggested fix) is invalid C, real fix is do-while(0) which PRE10-C already flags",16-40_b24,high
+PRE05-C,hostap,src/crypto/aes-internal-dec.c,92,TP,"d and s params are genuinely token-pasted (d##0, s##0); real if low-severity macro-hygiene characteristic",16-40_b24,low
+PRE10-C,hostap,src/crypto/aes-internal-dec.c,92,TP,genuine multi-statement macro not wrapped in do-while(0); real macro-hygiene gap,16-40_b24,med
+PRE12-C,hostap,src/crypto/aes-internal-dec.c,92,TP,duplicate of PRE00-C finding; i genuinely evaluated multiple times in macro body,16-40_b24,med
+INT13-C,hostap,src/crypto/aes-internal-dec.c,118,TP,Nr is signed int shifted via <<; literal CERT INT13-C hit though harmless given Nr's realistic range,16-40_b24,low
+INT14-C,hostap,src/crypto/aes-internal-dec.c,118,TP,Nr<<2 is a deliberate shift-as-multiply optimization on a signed int; matches rule's literal intent,16-40_b24,low
+FIO50-C,hostap,src/crypto/aes-internal-dec.c,123,FP,"Nr is a plain int, not a FILE stream; no I/O anywhere near this line, confirmed FIO50-C non-I/O misfire family",16-40_b24,high
+FIO50-C,hostap,src/crypto/aes-internal-dec.c,123,FP,duplicate finding on same line; same non-I/O FIO50-C misfire,16-40_b24,high
+INT13-C,hostap,src/crypto/aes-internal-dec.c,123,TP,"Nr is signed int shifted via >>; literal CERT INT13-C hit, harmless in practice",16-40_b24,low
+EXP33-C,hostap,src/crypto/aes-internal-dec.c,140,FP,t0 written by the preceding ROUND() macro expansion before this read; macro-blind CFG uninitialized-use FP,16-40_b24,high
+EXP33-C,hostap,src/crypto/aes-internal-dec.c,140,FP,t3 written by the preceding ROUND() macro expansion; same macro-blind CFG FP,16-40_b24,high
+EXP33-C,hostap,src/crypto/aes-internal-dec.c,140,FP,t2 written by the preceding ROUND() macro expansion; same macro-blind CFG FP,16-40_b24,high
+EXP33-C,hostap,src/crypto/aes-internal-dec.c,140,FP,t1 written by the preceding ROUND() macro expansion; same macro-blind CFG FP,16-40_b24,high
+EXP30-C,hostap,src/eap_peer/eap_ikev2.c,51,FP,eap_ikev2_state_txt() is a pure accessor with no side effects; confirmed EXP30-C pure-accessor-args FP,16-40_b24,high
+EXP33-C,hostap,src/eap_peer/eap_ikev2.c,71,FP,"sizeof(*data) in os_zalloc(sizeof(*data)) is compile-time only, not a dereference; confirmed sizeof(*ptr) FP",16-40_b24,high
+DCL30-C,hostap,src/eap_peer/eap_ikev2.c,99,FP,"data returned is the os_zalloc'd heap object itself, not a stack local; confirmed DCL30-C heap-vs-stack FP",16-40_b24,high
+MSC07-C,hostap,src/eap_peer/eap_ikev2.c,101,FP,"failed: is a goto target reached from 3 earlier failure branches, not unreachable; confirmed goto-label FP",16-40_b24,high
+DCL13-C,hostap,src/eap_peer/eap_ikev2.c,108,FP,"eap_ikev2_deinit is assigned to eap->deinit, a fixed struct eap_method vtable slot; confirmed dispatch-contract FP",16-40_b24,high
+DCL30-C,hostap,src/eap_peer/eap_ikev2.c,240,FP,"resp comes from eap_msg_alloc (heap), not a stack local; confirmed DCL30-C heap-vs-stack FP",16-40_b24,high
+MSC01-C,hostap,src/eap_peer/eap_ikev2.c,257,FP,"falling through both conditions reaches the function's return 0, which is the intended default; stylistic MSC01-C pedantry",16-40_b24,med
+EXP34-C,hostap,src/eap_peer/eap_ikev2.c,296,FP,"ret is a required non-null struct eap_method_ret* guaranteed by the EAP core dispatch contract, never actually NULL here",16-40_b24,med
+DCL13-C,hostap,src/eap_peer/eap_ikev2.c,328,FP,eap_ikev2_process is assigned to eap->process vtable slot; confirmed dispatch-contract FP,16-40_b24,high
+DCL13-C,hostap,src/eap_peer/eap_ikev2.c,438,FP,"eap_ikev2_isKeyAvailable(sm,...) is eap->isKeyAvailable vtable slot; confirmed dispatch-contract FP",16-40_b24,high
+DCL13-C,hostap,src/eap_peer/eap_ikev2.c,438,FP,priv param of eap->isKeyAvailable vtable slot; confirmed dispatch-contract FP,16-40_b24,high
+DCL13-C,hostap,src/eap_peer/eap_ikev2.c,445,FP,"eap_ikev2_getKey(sm,...) is eap->getKey vtable slot; confirmed dispatch-contract FP",16-40_b24,high
+API05-C,hostap,src/eap_peer/eap_ikev2.c,445,FP,"priv is an opaque void* callback handle, not an array; confirmed API05-C scalar/callback-param FP",16-40_b24,high
+DCL13-C,hostap,src/eap_peer/eap_ikev2.c,445,FP,priv param of eap->getKey vtable slot; confirmed dispatch-contract FP,16-40_b24,high
+DCL30-C,hostap,src/eap_peer/eap_ikev2.c,459,FP,"key is os_malloc'd heap memory returned, not a stack local; confirmed DCL30-C heap-vs-stack FP",16-40_b24,high
+DCL13-C,hostap,src/eap_peer/eap_ikev2.c,463,FP,"eap_ikev2_get_emsk(sm,...) is eap->get_emsk vtable slot; confirmed dispatch-contract FP",16-40_b24,high
+API05-C,hostap,src/eap_peer/eap_ikev2.c,463,FP,"priv is an opaque void* callback handle, not an array; confirmed API05-C FP",16-40_b24,high
+DCL13-C,hostap,src/eap_peer/eap_ikev2.c,463,FP,priv param of eap->get_emsk vtable slot; confirmed dispatch-contract FP,16-40_b24,high
+DCL30-C,hostap,src/eap_peer/eap_ikev2.c,477,FP,"key is os_malloc'd heap memory, not stack; confirmed DCL30-C heap-vs-stack FP",16-40_b24,high
+DCL13-C,hostap,src/eap_peer/eap_ikev2.c,481,FP,"eap_ikev2_get_session_id(sm,...) is eap->getSessionId vtable slot; confirmed dispatch-contract FP",16-40_b24,high
+API05-C,hostap,src/eap_peer/eap_ikev2.c,481,FP,"priv is an opaque void* callback handle, not an array; confirmed API05-C FP",16-40_b24,high
+DCL13-C,hostap,src/eap_peer/eap_ikev2.c,481,FP,priv param of eap->getSessionId vtable slot; confirmed dispatch-contract FP,16-40_b24,high
+DCL30-C,hostap,src/eap_peer/eap_ikev2.c,507,FP,"sid is os_malloc'd heap memory, not stack; confirmed DCL30-C heap-vs-stack FP",16-40_b24,high
+MEM31-C,hostap,src/eap_peer/eap_ikev2.c,515,FP,"eap is consumed by eap_peer_method_register(eap), an ownership-transfer register()-style consumer; confirmed MEM31-C FP",16-40_b24,high
+STR31-C,hostap,src/p2p/p2p.h,298,FP,"char info[0] is a GNU flexible-array-member trailer for variable-length vendor data, not an undersized fixed buffer",16-40_b24,high
+STR31-C,hostap,src/p2p/p2p.h,354,FP,"char svc_name[0] is a flexible-array-member trailer sized 0 by design, not undersized",16-40_b24,high
+API01-C,hostap,src/p2p/p2p.h,425,FP,"device_name is fixed WPS_DEV_NAME_MAX_LEN+1, only ever bounded-copied; confirmed API01-C struct-layout FP",16-40_b24,high
+API01-C,hostap,src/p2p/p2p.h,430,FP,"manufacturer fixed-size, bounded copies only; confirmed API01-C FP",16-40_b24,high
+API01-C,hostap,src/p2p/p2p.h,435,FP,"model_name fixed-size, bounded copies only; confirmed API01-C FP",16-40_b24,high
+API01-C,hostap,src/p2p/p2p.h,440,FP,"model_number fixed-size, bounded copies only; confirmed API01-C FP",16-40_b24,high
+API01-C,hostap,src/p2p/p2p.h,445,FP,"serial_number fixed-size, bounded copies only; confirmed API01-C FP",16-40_b24,high
+API01-C,hostap,src/p2p/p2p.h,559,FP,country[3] before pref_chan pointer - exact match to already-confirmed API01-C country[3] instance in categorical_patterns.md,16-40_b24,high
+ARR02-C,hostap,src/p2p/p2p.h,1527,FP,"dev_types[][8] is a function parameter (pointer-to-array), size conveyed by companion num_dev_types; confirmed ARR02-C param FP",16-40_b24,high
+ARR02-C,hostap,src/p2p/p2p.h,1527,FP,"duplicate finding, same ARR02-C parameter FP",16-40_b24,high
+API05-C,hostap,src/p2p/p2p.h,1641,FP,"password is an idiomatic NUL-terminated const char* string param, not an array needing conformant syntax; confirmed API05-C FP",16-40_b24,high
+API05-C,hostap,src/p2p/p2p.h,1673,FP,"password string param, same idiomatic API05-C FP",16-40_b24,high
+API02-C,hostap,src/p2p/p2p.h,2219,FP,"buf/end form the classic paired-bounds-pointer idiom, both delimit one caller buffer; confirmed API02-C buf/end-pair FP",16-40_b24,high
+API02-C,hostap,src/p2p/p2p.h,2219,FP,"duplicate finding on end, same buf/end-pair FP",16-40_b24,high
+API02-C,hostap,src/p2p/p2p.h,2232,FP,buf/end pair on p2p_scan_result_text; confirmed API02-C FP,16-40_b24,high
+API02-C,hostap,src/p2p/p2p.h,2232,FP,"duplicate finding on end, same buf/end-pair FP",16-40_b24,high
+API05-C,hostap,src/p2p/p2p.h,2232,FP,"buf is part of the buf/end bounds-pair idiom, not a bare unconstrained pointer; confirmed API05-C FP",16-40_b24,high
+API05-C,hostap,src/p2p/p2p.h,2232,FP,end is part of the buf/end bounds-pair idiom; confirmed API05-C FP,16-40_b24,high
+API02-C,hostap,src/p2p/p2p.h,2288,FP,ssid already has its own companion ssid_len out-param; confirmed API02-C already-paired-companion FP,16-40_b24,high
+API05-C,hostap,src/p2p/p2p.h,2353,FP,buf is paired with buflen immediately after it; confirmed API05-C idiomatic-pair FP,16-40_b24,high
+API02-C,hostap,src/p2p/p2p.h,2410,FP,dik_data already has its own companion dik_len; confirmed API02-C already-paired-companion FP,16-40_b24,high
+API02-C,hostap,src/p2p/p2p.h,2564,FP,"group_callback is a function pointer, not an array needing a size; confirmed API02-C callback-param FP",16-40_b24,high
+API02-C,hostap,src/p2p/p2p.h,2824,FP,buf already has its own companion buf_len immediately after it; confirmed API02-C already-paired-companion FP,16-40_b24,high
+API05-C,hostap,src/p2p/p2p.h,2826,FP,buf is paired with buflen immediately after it; confirmed API05-C idiomatic-pair FP,16-40_b24,high
+PRE05-C,hostap,src/utils/state_machine.h,32,FP,"machine/state used only for compile-time name construction (sm_##machine##_##state##_Enter), never as expandable macro args; category error like dl_list type/name params",16-40_b24,high
+PRE00-C,hostap,src/utils/state_machine.h,46,FP,"machine/state only ##-pasted or #-stringized, never runtime-evaluated; category error, not real multiple-evaluation",16-40_b24,high
+PRE01-C,hostap,src/utils/state_machine.h,46,FP,parenthesizing an identifier that's about to be token-pasted/stringized is meaningless; category error like dl_list type/name FP,16-40_b24,high
+PRE02-C,hostap,src/utils/state_machine.h,46,FP,"multi-statement macro (if-block + assignment); wrapping the whole body in parens is invalid C, real fix is do-while(0)",16-40_b24,high
+PRE05-C,hostap,src/utils/state_machine.h,46,FP,"machine/state are always bare state-name tokens at call sites, never macros needing pre-expansion; extends W2S X-macro precedent",16-40_b24,high
+PRE10-C,hostap,src/utils/state_machine.h,46,TP,genuine multi-statement macro (if-block + assignment) not wrapped in do-while(0); real hazard if used unbraced,16-40_b24,med
+PRE11-C,hostap,src/utils/state_machine.h,46,TP,macro definition genuinely ends with a semicolon and callers also append one; real minor hygiene issue,16-40_b24,low
+PRE12-C,hostap,src/utils/state_machine.h,46,FP,"duplicate of PRE00-C; machine only ##-pasted, never runtime-evaluated",16-40_b24,high
+PRE00-C,hostap,src/utils/state_machine.h,65,FP,same SM_ENTRY_M token-paste-only category error as line 46,16-40_b24,high
+PRE02-C,hostap,src/utils/state_machine.h,65,FP,"multi-statement macro; invalid full-parenthesization fix, same as SM_ENTRY",16-40_b24,high
+PRE05-C,hostap,src/utils/state_machine.h,65,FP,"data/machine/_state always bare tokens at call sites, not macros needing pre-expansion",16-40_b24,high
+PRE10-C,hostap,src/utils/state_machine.h,65,TP,genuine multi-statement macro without do-while(0) wrapper,16-40_b24,med
+PRE11-C,hostap,src/utils/state_machine.h,65,TP,macro definition genuinely ends with a semicolon; real minor hygiene issue,16-40_b24,low
+PRE12-C,hostap,src/utils/state_machine.h,65,FP,"machine only ##-pasted, never runtime-evaluated; category error",16-40_b24,high
+PRE00-C,hostap,src/utils/state_machine.h,83,FP,same SM_ENTRY_MA token-paste-only category error,16-40_b24,high
+PRE02-C,hostap,src/utils/state_machine.h,83,FP,multi-statement macro; invalid full-parenthesization fix,16-40_b24,high
+PRE05-C,hostap,src/utils/state_machine.h,83,FP,data/machine/_state always bare tokens at call sites,16-40_b24,high
+PRE10-C,hostap,src/utils/state_machine.h,83,TP,genuine multi-statement macro without do-while(0) wrapper,16-40_b24,med
+PRE11-C,hostap,src/utils/state_machine.h,83,TP,macro definition genuinely ends with a semicolon,16-40_b24,low
+PRE12-C,hostap,src/utils/state_machine.h,83,FP,"machine only ##-pasted, never runtime-evaluated",16-40_b24,high
+PRE05-C,hostap,src/utils/state_machine.h,101,FP,SM_ENTER is a single-expression name-construction macro; machine/state never expandable-macro args,16-40_b24,high
+PRE05-C,hostap,src/utils/state_machine.h,114,FP,same single-expression name-construction macro pattern,16-40_b24,high
+PRE05-C,hostap,src/utils/state_machine.h,126,FP,"SM_STEP is a single-expression name-construction macro, same category error",16-40_b24,high
+PRE05-C,hostap,src/utils/state_machine.h,136,FP,"SM_STEP_RUN is a single-expression name-construction macro, same category error",16-40_b24,high
+PRE08-C,hostap,wpa_supplicant/dbus/dbus_common.c,16,TP,dbus_common.h and dbus_common_i.h genuinely share first 8 chars; literally true though largely obsolete concern on modern toolchains,16-40_b24,low
+DCL31-C,hostap,wpa_supplicant/dbus/dbus_common.c,35,FP,dbus_connection_get_dispatch_status is declared in <dbus/dbus.h> (included line 12); sqc doesn't resolve this external system header,16-40_b24,high
+DCL31-C,hostap,wpa_supplicant/dbus/dbus_common.c,37,FP,dbus_connection_dispatch declared in <dbus/dbus.h>; unresolved-system-header FP,16-40_b24,high
+DCL13-C,hostap,wpa_supplicant/dbus/dbus_common.c,51,FP,"dispatch_initial_dbus_messages(eloop_ctx,timeout_ctx) matches the fixed eloop_timeout_handler callback signature; confirmed dispatch-contract FP",16-40_b24,high
+DCL31-C,hostap,wpa_supplicant/dbus/dbus_common.c,61,FP,dbus_connection_ref declared in <dbus/dbus.h>; unresolved-system-header FP,16-40_b24,high
+MSC01-C,hostap,wpa_supplicant/dbus/dbus_common.c,69,FP,3-way if/else-if covers all 3 relevant eloop_event_type values in process_watch; stylistic MSC01-C pedantry,16-40_b24,med
+DCL31-C,hostap,wpa_supplicant/dbus/dbus_common.c,105,FP,dbus_watch_get_enabled declared in <dbus/dbus.h>; unresolved-system-header FP,16-40_b24,high
+DCL13-C,hostap,wpa_supplicant/dbus/dbus_common.c,130,FP,"add_watch(watch,data) is registered as dbus_connection_set_watch_functions' add-watch callback, a fixed DBusAddWatchFunction signature; extends dispatch-contract FP to libdbus callbacks",16-40_b24,high
+DCL31-C,hostap,wpa_supplicant/dbus/dbus_common.c,151,FP,dbus_watch_get_enabled declared in <dbus/dbus.h>; unresolved-system-header FP,16-40_b24,high
+DCL13-C,hostap,wpa_supplicant/dbus/dbus_common.c,158,FP,"process_timeout(eloop_ctx,sock_ctx) matches the fixed eloop timeout callback signature; confirmed dispatch-contract FP",16-40_b24,high
+DCL31-C,hostap,wpa_supplicant/dbus/dbus_common.c,161,FP,dbus_timeout_handle declared in <dbus/dbus.h>; unresolved-system-header FP,16-40_b24,high
+DCL31-C,hostap,wpa_supplicant/dbus/dbus_common.c,169,FP,dbus_timeout_get_enabled declared in <dbus/dbus.h>; unresolved-system-header FP,16-40_b24,high
+DCL31-C,hostap,wpa_supplicant/dbus/dbus_common.c,192,FP,dbus_timeout_get_enabled declared in <dbus/dbus.h>; unresolved-system-header FP,16-40_b24,high
+DCL13-C,hostap,wpa_supplicant/dbus/dbus_common.c,199,FP,"process_wakeup_main(sig,signal_ctx) is registered via eloop_register_signal, matching a fixed eloop signal-handler signature; dispatch-contract FP",16-40_b24,high
+DCL31-C,hostap,wpa_supplicant/dbus/dbus_common.c,206,FP,dbus_connection_get_dispatch_status declared in <dbus/dbus.h>; unresolved-system-header FP,16-40_b24,high
+DCL31-C,hostap,wpa_supplicant/dbus/dbus_common.c,211,FP,dbus_connection_ref declared in <dbus/dbus.h>; unresolved-system-header FP,16-40_b24,high
+DCL31-C,hostap,wpa_supplicant/dbus/dbus_common.c,212,FP,dbus_connection_dispatch declared in <dbus/dbus.h>; unresolved-system-header FP,16-40_b24,high
+ERR33-C,hostap,wpa_supplicant/dbus/dbus_common.c,229,TP,raise(SIGPOLL)'s return value is genuinely never checked; real if very-low-impact CERT hit,16-40_b24,low
+SIG02-C,hostap,wpa_supplicant/dbus/dbus_common.c,229,TP,"raise(SIGPOLL) is deliberately used to interrupt eloop's select() as normal control flow, exactly the pattern SIG02-C targets",16-40_b24,med
+DCL13-C,hostap,wpa_supplicant/dbus/dbus_common.c,263,FP,"disconnect_filter(conn,message,data) is registered via dbus_connection_add_filter, matching the fixed DBusHandleMessageFunction signature; dispatch-contract FP",16-40_b24,high
+MSC37-C,hostap,wpa_supplicant/dbus/dbus_common.c,341,FP,"wpas_dbus_init has explicit return NULL/return priv on every path; an #ifdef embedded inside the if-condition's ||-chain (lines 350-354) likely confuses the CFG, preprocessor-branch-blind FP",16-40_b24,high
+EXP33-C,hostap,wpa_supplicant/dbus/dbus_common.c,345,FP,"sizeof(*priv) in os_zalloc(sizeof(*priv)) is compile-time only, not a dereference; confirmed sizeof(*ptr) FP",16-40_b24,high
+DCL30-C,hostap,wpa_supplicant/dbus/dbus_common.c,359,FP,"priv is os_zalloc'd heap memory returned to caller, not a stack local; confirmed DCL30-C heap-vs-stack FP",16-40_b24,high
+MEM10-C,hostap,wpa_supplicant/dbus/dbus_common.c,365,FP,plain if(priv==NULL) guard in wpas_dbus_deinit; confirmed MEM10-C ad-hoc-null-check-is-fine stylistic FP,16-40_b24,med

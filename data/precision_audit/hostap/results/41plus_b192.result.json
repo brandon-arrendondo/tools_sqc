@@ -1,0 +1,811 @@
+{
+ "labels": [
+  {
+   "rule": "CON03-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 20,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No-pthread FP class: single global counter under hostap's eloop single-threaded model, no mutex/thread contention."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 56,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr) is a compile-time construct, not a runtime dereference (established FP class)."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 65,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer holds heap storage from os_zalloc, not local automatic storage (established FP class)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 87,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 98,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr) is a compile-time construct, not a runtime dereference (established FP class)."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 124,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer holds heap storage from os_zalloc, not local automatic storage (established FP class)."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 130,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only API; caller(s) guarantee non-null per established internal-invariant FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 130,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 139,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only API; caller(s) guarantee non-null per established internal-invariant FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 139,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 150,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 152,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Ad-hoc NULL check already validates the pointer; demanding a wrapper fn is stylistic pedantry (established FP class)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 166,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 166,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 180,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 181,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 188,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 188,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 202,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Preprocessor-branch-blind: every #ifdef/#else arm ends in an explicit return (established FP class)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 202,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 202,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 217,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Ownership transferred to a persistent object or the caller (return value), not leaked (established FP class)."
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 298,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Preprocessor-branch-blind: every #ifdef/#else arm ends in an explicit return (established FP class)."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 365,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t companion-param pair, not a real conformant-array-syntax gap (established FP class)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 365,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 365,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 377,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 377,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 392,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 406,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t companion-param pair, not a real conformant-array-syntax gap (established FP class)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 406,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 407,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t companion-param pair, not a real conformant-array-syntax gap (established FP class)."
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 413,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Block-scope local variable misclassified as file-scope identifier (established FP class)."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 447,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only API; caller(s) guarantee non-null per established internal-invariant FP class."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 447,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only API; caller(s) guarantee non-null per established internal-invariant FP class."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 447,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only API; caller(s) guarantee non-null per established internal-invariant FP class."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 447,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t companion-param pair, not a real conformant-array-syntax gap (established FP class)."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 448,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t companion-param pair, not a real conformant-array-syntax gap (established FP class)."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 456,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only API; caller(s) guarantee non-null per established internal-invariant FP class."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 456,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only API; caller(s) guarantee non-null per established internal-invariant FP class."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 456,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t companion-param pair, not a real conformant-array-syntax gap (established FP class)."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 464,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only API; caller(s) guarantee non-null per established internal-invariant FP class."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 464,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only API; caller(s) guarantee non-null per established internal-invariant FP class."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 474,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only API; caller(s) guarantee non-null per established internal-invariant FP class."
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 474,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Preprocessor-branch-blind: every #ifdef/#else arm ends in an explicit return (established FP class)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 474,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 475,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 518,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only API; caller(s) guarantee non-null per established internal-invariant FP class."
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 518,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Preprocessor-branch-blind: every #ifdef/#else arm ends in an explicit return (established FP class)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 518,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 519,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 534,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/len/mhead/size are pure accessors with no side effects to unsequence (established FP class)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 553,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 554,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 558,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-invariant-never-null: conn always validated/guaranteed by caller before this internal API (established FP class)."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 561,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Ownership transferred to a persistent object or the caller (return value), not leaked (established FP class)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 564,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/len/mhead/size are pure accessors with no side effects to unsequence (established FP class)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 583,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/len/mhead/size are pure accessors with no side effects to unsequence (established FP class)."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 599,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only API; caller(s) guarantee non-null per established internal-invariant FP class."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 599,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only API; caller(s) guarantee non-null per established internal-invariant FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 607,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 608,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 616,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-invariant-never-null: conn always validated/guaranteed by caller before this internal API (established FP class)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 617,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/len/mhead/size are pure accessors with no side effects to unsequence (established FP class)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 629,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/len/mhead/size are pure accessors with no side effects to unsequence (established FP class)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 645,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 645,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 659,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 659,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 674,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t companion-param pair, not a real conformant-array-syntax gap (established FP class)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 674,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 674,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 675,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t companion-param pair, not a real conformant-array-syntax gap (established FP class)."
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 677,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Ad-hoc NULL check already validates the pointer; demanding a wrapper fn is stylistic pedantry (established FP class)."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 687,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t companion-param pair, not a real conformant-array-syntax gap (established FP class)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 687,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 687,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 688,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t companion-param pair, not a real conformant-array-syntax gap (established FP class)."
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 690,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Ad-hoc NULL check already validates the pointer; demanding a wrapper fn is stylistic pedantry (established FP class)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 704,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 705,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 711,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t companion-param pair, not a real conformant-array-syntax gap (established FP class)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 711,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 711,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 725,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 725,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 735,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 735,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 745,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 746,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 756,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 757,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 777,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only API; caller(s) guarantee non-null per established internal-invariant FP class."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 777,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t companion-param pair, not a real conformant-array-syntax gap (established FP class)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 783,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 790,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "31-significant-char external-identifier collision, technically true but not practically actionable on modern toolchains (established convention)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 790,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 796,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_internal.c",
+   "line": 802,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "conn/tls_ctx genuinely unused or read-only in this function body; real if low-severity const opportunity, not a vtable/callback param."
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/crypto/tls_internal.c",
+   "line": 626,
+   "rule": "INT30-C",
+   "desc": "tls_connection_decrypt2 server branch: wpabuf_alloc((wpabuf_len(in_data) + 500) * 3) has no overflow guard on the multiply/add over an attacker-influenced TLS record length; low confidence since upstream record-length caps likely bound in_data elsewhere.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 50,
+  "fp": 49,
+  "fn": 1
+ }
+}

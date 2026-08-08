@@ -1,0 +1,994 @@
+{
+ "src/eap_peer/eap_fast_pac.c": [
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 50,
+   "message": "Function 'eap_fast_free_pac' does not validate pointer parameter 'pac' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pac' at the start of the function, e.g., 'if (!pac) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 69,
+   "message": "Function 'eap_fast_get_pac' does not validate pointer parameter 'pac_root' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pac_root' at the start of the function, e.g., 'if (!pac_root) { return error_code; }'"
+  },
+  {
+   "column": 60,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 69,
+   "message": "Pointer parameter 'pac_root' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pac_root'"
+  },
+  {
+   "column": 4,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 78,
+   "message": "Function returns pointer to local variable 'pac' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 138,
+   "message": "Function 'eap_fast_add_pac' does not validate pointer parameter 'pac_root' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pac_root' at the start of the function, e.g., 'if (!pac_root) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 138,
+   "message": "Function 'eap_fast_add_pac' does not validate pointer parameter 'pac_current' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pac_current' at the start of the function, e.g., 'if (!pac_current) { return error_code; }'"
+  },
+  {
+   "column": 25,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 152,
+   "message": "Dereference of uninitialized pointer 'pac'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'pac' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 173,
+   "message": "Local variable 'pac' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 194,
+   "message": "Buffer 'rc->buf' not reset after fgets() failure - buffer contents are indeterminate and must be reset",
+   "rule_id": "FIO40-C",
+   "severity": "Low",
+   "suggestion": "Reset buffer in failure branch: 'rc->buf[0] = '\\0';'"
+  },
+  {
+   "column": 7,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 194,
+   "message": "fgets() without truncation check. Input may be silently truncated.",
+   "rule_id": "FIO20-C",
+   "severity": "Medium",
+   "suggestion": "Check for newline character to detect truncation: if (strchr(buf, '\\n') == NULL) { /* handle truncation */ }"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 214,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'pos' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 4,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 216,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 224,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 225,
+   "message": "Local variable 'pos' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 225,
+   "message": "Pointer dereference '*value' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 43,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 231,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 5,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 236,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 6,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 239,
+   "message": "Bitwise operator '&' used on signed operand 'hlen' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'hlen' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 6,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 239,
+   "message": "Variable 'hlen' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 249,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 19,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 256,
+   "message": "sizeof applied to pointer/array parameter 'rc' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*rc)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 276,
+   "message": "FILE pointer 'rc->f' opened with fopen/freopen but never closed with fclose()",
+   "rule_id": "FIO42-C",
+   "severity": "High",
+   "suggestion": "Add fclose(rc->f) before function returns or program exits"
+  },
+  {
+   "column": 11,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 276,
+   "message": "File opened for reading using variable filename 'pac_file' without verifying file attributes (fstat + st_uid/st_gid check)",
+   "rule_id": "FIO05-C",
+   "severity": "Medium",
+   "suggestion": "Use fstat() to check file ownership (st_uid, st_gid) before reading untrusted files"
+  },
+  {
+   "column": 11,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 276,
+   "message": "File opened with fopen() but not closed with fclose()",
+   "rule_id": "FIO51-C",
+   "severity": "Medium",
+   "suggestion": "Call fclose() before function returns"
+  },
+  {
+   "column": 11,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 276,
+   "message": "fopen() called without 'N' flag in mode string \"rb\". On Windows, file handles are inheritable by default unless the 'N' flag is specified.",
+   "rule_id": "WIN03-C",
+   "severity": "High",
+   "suggestion": "Add 'N' flag to the mode string (e.g., \"rwN\") to disable handle inheritance on Windows."
+  },
+  {
+   "column": 4,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 282,
+   "message": "Function returns without releasing all resources. Leaked: rc->buf, rc->f. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 286,
+   "message": "Function returns without releasing all resources. Leaked: rc->buf, rc->f. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 63,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 290,
+   "message": "Pointer parameter 'rc' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *rc'"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 294,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 294,
+   "message": "Return value of 'fclose' ignored: 'fclose(rc->f)' - Returns non-zero on error",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (fclose(file) != 0) for close errors"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 322,
+   "message": "Direct assignment of flexible array structure instances. Use memcpy() for dynamic copying.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Use memcpy() to copy the structure and its flexible array member"
+  },
+  {
+   "column": 15,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 330,
+   "message": "Pointer parameter 'pos' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pos'"
+  },
+  {
+   "column": 18,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 334,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 18,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 334,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 64,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 344,
+   "message": "Pointer parameter 'pac' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pac'"
+  },
+  {
+   "column": 11,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 351,
+   "message": "Passing null pointer 'key' to 'os_free' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'key' is not NULL before passing to 'os_free'"
+  },
+  {
+   "column": 6,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 367,
+   "message": "Use-after-free: accessing freed pointer 'pac->pac_opaque'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 6,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 377,
+   "message": "Use-after-free: accessing freed pointer 'pac->a_id'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 6,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 387,
+   "message": "Use-after-free: accessing freed pointer 'pac->i_id'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 6,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 398,
+   "message": "Use-after-free: accessing freed pointer 'pac->a_id_info'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 5,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 420,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 452,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 33,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 477,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 45,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 477,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 18,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 478,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 37,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 486,
+   "message": "Pointer comparison '<' between pointers from different arrays: 'param:pos' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before comparison"
+  },
+  {
+   "column": 6,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 493,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:pos' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 27,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 494,
+   "message": "Use-after-free: dereferencing freed pointer 'buf'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access memory after freeing it."
+  },
+  {
+   "column": 4,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 497,
+   "message": "Pointer dereference '*buf' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 500,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 18,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 500,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:pos' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 25,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 500,
+   "message": "Use-after-free: dereferencing freed pointer 'buf'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access memory after freeing it."
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 501,
+   "message": "Use-after-free: writing to freed memory via 'buf'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access memory after freeing it."
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 501,
+   "message": "Pointer dereference '*buf' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 504,
+   "message": "Use-after-free: pointer arithmetic on freed pointer 'buf'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not use freed pointers in arithmetic."
+  },
+  {
+   "column": 8,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 504,
+   "message": "Use-after-free: pointer arithmetic on freed pointer 'buf'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not use freed pointers in arithmetic."
+  },
+  {
+   "column": 8,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 504,
+   "message": "Use-after-free: dereferencing freed pointer 'buf'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access memory after freeing it."
+  },
+  {
+   "column": 26,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 506,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:buf' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 24,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 507,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:buf' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 509,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 510,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 510,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 33,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 510,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:buf' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 26,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 511,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:buf' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 24,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 512,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:buf' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 514,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 27,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 517,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:buf' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 25,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 518,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:buf' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 520,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 28,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 522,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:buf' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 26,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 523,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:buf' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 4,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 525,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 27,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 527,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:buf' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 25,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 528,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:buf' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 530,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 61,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 535,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 15,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 536,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 27,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 540,
+   "message": "Dereference of uninitialized pointer 'blob'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'blob' before dereferencing"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 545,
+   "message": "Value assigned to 'buf' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 7,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 554,
+   "message": "fopen() with mode \"wb\" does not guarantee exclusive file creation. Use \"wx\" or \"w+x\" mode for exclusive creation.",
+   "rule_id": "FIO03-C",
+   "severity": "Medium",
+   "suggestion": "Use fopen() with \"wx\" or \"w+x\" mode for C11, or use open() with O_CREAT|O_EXCL for POSIX"
+  },
+  {
+   "column": 7,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 554,
+   "message": "File reopened using filename 'pac_file' without verifying file attributes (st_dev, st_ino)",
+   "rule_id": "FIO05-C",
+   "severity": "Medium",
+   "suggestion": "Use fstat() to check st_dev and st_ino before and after reopening, or avoid closing and reopening the file"
+  },
+  {
+   "column": 7,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 554,
+   "message": "fopen() cannot explicitly specify file permissions; use open() for security-sensitive files",
+   "rule_id": "FIO06-C",
+   "severity": "Medium",
+   "suggestion": "Use open(filename, O_CREAT | O_WRONLY, mode) to explicitly specify file permissions"
+  },
+  {
+   "column": 7,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 554,
+   "message": "fopen() called without 'N' flag in mode string \"wb\". On Windows, file handles are inheritable by default unless the 'N' flag is specified.",
+   "rule_id": "WIN03-C",
+   "severity": "High",
+   "suggestion": "Add 'N' flag to the mode string (e.g., \"rwN\") to disable handle inheritance on Windows."
+  },
+  {
+   "column": 7,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 560,
+   "message": "fwrite() count argument 'len' not derived from strlen(buf). May write incorrect number of bytes.",
+   "rule_id": "FIO18-C",
+   "severity": "Medium",
+   "suggestion": "For null-terminated strings, use strlen(buf) + 1 to include the null terminator but avoid writing uninitialized data."
+  },
+  {
+   "column": 4,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 563,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 567,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 567,
+   "message": "Return value of 'fclose' ignored: 'fclose(f)' - Returns non-zero on error",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (fclose(file) != 0) for close errors"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 567,
+   "message": "Resource 'f' is closed again after already being closed at line 563. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 54,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 574,
+   "message": "Pointer parameter 'pac' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pac'"
+  },
+  {
+   "column": 65,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 574,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 11,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 575,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 584,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 605,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 618,
+   "message": "Function 'eap_fast_save_pac' does not validate pointer parameter 'pac_root' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pac_root' at the start of the function, e.g., 'if (!pac_root) { return error_code; }'"
+  },
+  {
+   "column": 62,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 618,
+   "message": "Pointer parameter 'pac_root' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pac_root'"
+  },
+  {
+   "column": 5,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 626,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 632,
+   "message": "Function returns without releasing all resources. Leaked: pos, buf. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 637,
+   "message": "Function returns without releasing all resources. Leaked: pos, buf. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 4,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 645,
+   "message": "Function returns without releasing all resources. Leaked: pos, buf. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 653,
+   "message": "Function returns without releasing all resources. Leaked: pos, buf. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 659,
+   "message": "Function returns without releasing all resources. Leaked: pos, buf. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 669,
+   "message": "Function 'eap_fast_pac_list_truncate' does not validate pointer parameter 'pac_root' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pac_root' at the start of the function, e.g., 'if (!pac_root) { return error_code; }'"
+  },
+  {
+   "column": 55,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 669,
+   "message": "Pointer parameter 'pac_root' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pac_root'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 748,
+   "message": "Function 'eap_fast_load_pac_bin' does not validate pointer parameter 'pac_root' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pac_root' at the start of the function, e.g., 'if (!pac_root) { return error_code; }'"
+  },
+  {
+   "column": 5,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 758,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 4,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 841,
+   "message": "Local variable 'pac' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 853,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 857,
+   "message": "Double-free: 'buf' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 871,
+   "message": "Function 'eap_fast_save_pac_bin' does not validate pointer parameter 'pac_root' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pac_root' at the start of the function, e.g., 'if (!pac_root) { return error_code; }'"
+  },
+  {
+   "column": 66,
+   "file": "src/eap_peer/eap_fast_pac.c",
+   "line": 871,
+   "message": "Pointer parameter 'pac_root' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pac_root'"
+  }
+ ]
+}

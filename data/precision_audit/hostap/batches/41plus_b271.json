@@ -1,0 +1,951 @@
+{
+ "src/wps/http_server.c": [
+  {
+   "column": 45,
+   "file": "src/wps/http_server.c",
+   "line": 41,
+   "message": "Pointer parameter 'handle' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *handle'"
+  },
+  {
+   "column": 3,
+   "file": "src/wps/http_server.c",
+   "line": 48,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 7,
+   "file": "src/wps/http_server.c",
+   "line": 49,
+   "message": "'inet_ntoa()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'inet_ntop' instead for thread safety"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/http_server.c",
+   "line": 54,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 20,
+   "file": "src/wps/http_server.c",
+   "line": 55,
+   "message": "'inet_ntoa()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'inet_ntop' instead for thread safety"
+  },
+  {
+   "column": 25,
+   "file": "src/wps/http_server.c",
+   "line": 72,
+   "message": "Dereference of uninitialized pointer 'req'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'req' before dereferencing"
+  },
+  {
+   "column": 3,
+   "file": "src/wps/http_server.c",
+   "line": 74,
+   "message": "Resource 'fd' is closed again after already being closed at line 68. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 15,
+   "file": "src/wps/http_server.c",
+   "line": 82,
+   "message": "Memory allocated with 'httpread_create' for variable 'req->hread' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(req->hread)' before the variable goes out of scope"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/http_server.c",
+   "line": 90,
+   "message": "Function returns pointer to local variable 'req' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/http_server.c",
+   "line": 90,
+   "message": "Memory leak: 'req->hread' allocated with 'httpread_create' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'req->hread' before this return statement"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/http_server.c",
+   "line": 99,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 55,
+   "file": "src/wps/http_server.c",
+   "line": 124,
+   "message": "Pointer parameter 'req' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *req'"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/http_server.c",
+   "line": 135,
+   "message": "Function 'http_request_send' does not validate pointer parameter 'req' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'req' at the start of the function, e.g., 'if (!req) { return error_code; }'"
+  },
+  {
+   "column": 44,
+   "file": "src/wps/http_server.c",
+   "line": 135,
+   "message": "Pointer parameter 'req' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *req'"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/http_server.c",
+   "line": 139,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 6,
+   "file": "src/wps/http_server.c",
+   "line": 141,
+   "message": "'inet_ntoa()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'inet_ntop' instead for thread safety"
+  },
+  {
+   "column": 8,
+   "file": "src/wps/http_server.c",
+   "line": 144,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 7,
+   "file": "src/wps/http_server.c",
+   "line": 147,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/wps/http_server.c",
+   "line": 147,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 9,
+   "file": "src/wps/http_server.c",
+   "line": 148,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/http_server.c",
+   "line": 158,
+   "message": "Function 'http_request_send_and_deinit' does not validate pointer parameter 'req' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'req' at the start of the function, e.g., 'if (!req) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/http_server.c",
+   "line": 166,
+   "message": "Function 'http_request_get_type' does not validate pointer parameter 'req' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'req' at the start of the function, e.g., 'if (!req) { return error_code; }'"
+  },
+  {
+   "column": 66,
+   "file": "src/wps/http_server.c",
+   "line": 166,
+   "message": "Pointer parameter 'req' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *req'"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/http_server.c",
+   "line": 172,
+   "message": "Function 'http_request_get_uri' does not validate pointer parameter 'req' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'req' at the start of the function, e.g., 'if (!req) { return error_code; }'"
+  },
+  {
+   "column": 49,
+   "file": "src/wps/http_server.c",
+   "line": 172,
+   "message": "Pointer parameter 'req' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *req'"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/http_server.c",
+   "line": 178,
+   "message": "Function 'http_request_get_hdr' does not validate pointer parameter 'req' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'req' at the start of the function, e.g., 'if (!req) { return error_code; }'"
+  },
+  {
+   "column": 49,
+   "file": "src/wps/http_server.c",
+   "line": 178,
+   "message": "Pointer parameter 'req' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *req'"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/http_server.c",
+   "line": 184,
+   "message": "Function 'http_request_get_data' does not validate pointer parameter 'req' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'req' at the start of the function, e.g., 'if (!req) { return error_code; }'"
+  },
+  {
+   "column": 50,
+   "file": "src/wps/http_server.c",
+   "line": 184,
+   "message": "Pointer parameter 'req' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *req'"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/http_server.c",
+   "line": 190,
+   "message": "Function 'http_request_get_hdr_line' does not validate pointer parameter 'req' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'req' at the start of the function, e.g., 'if (!req) { return error_code; }'"
+  },
+  {
+   "column": 54,
+   "file": "src/wps/http_server.c",
+   "line": 190,
+   "message": "Pointer parameter 'req' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *req'"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/http_server.c",
+   "line": 196,
+   "message": "Function 'http_request_get_cli_addr' does not validate pointer parameter 'req' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'req' at the start of the function, e.g., 'if (!req) { return error_code; }'"
+  },
+  {
+   "column": 68,
+   "file": "src/wps/http_server.c",
+   "line": 196,
+   "message": "Pointer parameter 'req' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *req'"
+  },
+  {
+   "column": 58,
+   "file": "src/wps/http_server.c",
+   "line": 202,
+   "message": "Pointer parameter 'sock_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sock_ctx'"
+  },
+  {
+   "column": 13,
+   "file": "src/wps/http_server.c",
+   "line": 213,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 13,
+   "file": "src/wps/http_server.c",
+   "line": 213,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/http_server.c",
+   "line": 216,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 6,
+   "file": "src/wps/http_server.c",
+   "line": 217,
+   "message": "'inet_ntoa()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'inet_ntop' instead for thread safety"
+  },
+  {
+   "column": 16,
+   "file": "src/wps/http_server.c",
+   "line": 217,
+   "message": "Variable 'addr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'addr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/http_server.c",
+   "line": 229,
+   "message": "Function 'http_server_init' does not validate pointer parameter 'cb' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cb' at the start of the function, e.g., 'if (!cb) { return error_code; }'"
+  },
+  {
+   "column": 25,
+   "file": "src/wps/http_server.c",
+   "line": 238,
+   "message": "Dereference of uninitialized pointer 'srv'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'srv' before dereferencing"
+  },
+  {
+   "column": 7,
+   "file": "src/wps/http_server.c",
+   "line": 252,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/wps/http_server.c",
+   "line": 252,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 7,
+   "file": "src/wps/http_server.c",
+   "line": 269,
+   "message": "Privileged operation 'bind' without subsequent privilege dropping",
+   "rule_id": "POS02-C",
+   "severity": "Medium",
+   "suggestion": "Call setuid/setgid to drop privileges after setup"
+  },
+  {
+   "column": 24,
+   "file": "src/wps/http_server.c",
+   "line": 278,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 24,
+   "file": "src/wps/http_server.c",
+   "line": 278,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 6,
+   "file": "src/wps/http_server.c",
+   "line": 281,
+   "message": "Privileged operation 'listen' without subsequent privilege dropping",
+   "rule_id": "POS02-C",
+   "severity": "Medium",
+   "suggestion": "Call setuid/setgid to drop privileges after setup"
+  },
+  {
+   "column": 6,
+   "file": "src/wps/http_server.c",
+   "line": 288,
+   "message": "'inet_ntoa()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'inet_ntop' instead for thread safety"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/http_server.c",
+   "line": 290,
+   "message": "Function returns pointer to local variable 'srv' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/http_server.c",
+   "line": 292,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/http_server.c",
+   "line": 300,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/http_server.c",
+   "line": 312,
+   "message": "Function 'http_server_get_port' does not validate pointer parameter 'srv' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'srv' at the start of the function, e.g., 'if (!srv) { return error_code; }'"
+  },
+  {
+   "column": 45,
+   "file": "src/wps/http_server.c",
+   "line": 312,
+   "message": "Pointer parameter 'srv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *srv'"
+  }
+ ],
+ "src/ap/fils_hlp.c": [
+  {
+   "column": 36,
+   "file": "src/ap/fils_hlp.c",
+   "line": 20,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/fils_hlp.c",
+   "line": 26,
+   "message": "Variable 'sum' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 41,
+   "file": "src/ap/fils_hlp.c",
+   "line": 37,
+   "message": "Pointer parameter 'dhcpofferend' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *dhcpofferend'"
+  },
+  {
+   "column": 36,
+   "file": "src/ap/fils_hlp.c",
+   "line": 80,
+   "message": "Subtracting pointers from different arrays ('end' from 'pos' and 'pos' from 'DHCPREQUEST'). Pointer subtraction is only defined for pointers within the same array object.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Only subtract pointers that point to elements within the same array object."
+  },
+  {
+   "column": 14,
+   "file": "src/ap/fils_hlp.c",
+   "line": 106,
+   "message": "Subtracting pointers from different arrays ('end' from 'dhcpofferend' and 'pos' from 'DHCPREQUEST'). Pointer subtraction is only defined for pointers within the same array object.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Only subtract pointers that point to elements within the same array object."
+  },
+  {
+   "column": 8,
+   "file": "src/ap/fils_hlp.c",
+   "line": 132,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/fils_hlp.c",
+   "line": 137,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/fils_hlp.c",
+   "line": 137,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/fils_hlp.c",
+   "line": 140,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/fils_hlp.c",
+   "line": 142,
+   "message": "'inet_ntoa()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'inet_ntop' instead for thread safety"
+  },
+  {
+   "column": 44,
+   "file": "src/ap/fils_hlp.c",
+   "line": 150,
+   "message": "Pointer parameter 'eloop_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *eloop_ctx'"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/fils_hlp.c",
+   "line": 172,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/fils_hlp.c",
+   "line": 172,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/fils_hlp.c",
+   "line": 172,
+   "message": "strerror() should not be called in signal handlers (uses errno)",
+   "rule_id": "ERR32-C",
+   "severity": "High",
+   "suggestion": "Avoid error reporting functions in signal handlers"
+  },
+  {
+   "column": 16,
+   "file": "src/ap/fils_hlp.c",
+   "line": 172,
+   "message": "errno should not be used in signal handlers",
+   "rule_id": "ERR32-C",
+   "severity": "High",
+   "suggestion": "Save and restore errno in signal handler if needed"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/fils_hlp.c",
+   "line": 175,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/fils_hlp.c",
+   "line": 176,
+   "message": "'inet_ntoa()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'inet_ntop' instead for thread safety"
+  },
+  {
+   "column": 16,
+   "file": "src/ap/fils_hlp.c",
+   "line": 176,
+   "message": "Variable 'addr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'addr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 28,
+   "file": "src/ap/fils_hlp.c",
+   "line": 178,
+   "message": "Dereference of uninitialized pointer 'dhcp'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'dhcp' before dereferencing"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/fils_hlp.c",
+   "line": 191,
+   "message": "Potentially unsafe array access with variable index 'res': Buffer 'buf' with size 1500 (allocated at line 154)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 9,
+   "file": "src/ap/fils_hlp.c",
+   "line": 247,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 22,
+   "file": "src/ap/fils_hlp.c",
+   "line": 253,
+   "message": "Scaled integer arithmetic with pointer: '2 * ETH_ALEN + 6 + 2 +\n\t\t\t    sizeof(*iph) + sizeof(*udph)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 22,
+   "file": "src/ap/fils_hlp.c",
+   "line": 253,
+   "message": "Scaled integer arithmetic with pointer: '2 * ETH_ALEN + 6 + 2 +\n\t\t\t    sizeof(*iph)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 15,
+   "file": "src/ap/fils_hlp.c",
+   "line": 254,
+   "message": "Dereference of uninitialized pointer 'iph'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'iph' before dereferencing"
+  },
+  {
+   "column": 30,
+   "file": "src/ap/fils_hlp.c",
+   "line": 254,
+   "message": "Dereference of uninitialized pointer 'udph'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'udph' before dereferencing"
+  },
+  {
+   "column": 24,
+   "file": "src/ap/fils_hlp.c",
+   "line": 259,
+   "message": "string/character literal contains a non-ASCII byte (>= 0x80) -- not portable across locales/national ASCII variants",
+   "rule_id": "MSC09-C",
+   "severity": "Low",
+   "suggestion": "Restrict string and character literals to the portable ASCII subset (letters, digits, space, and basic punctuation)"
+  },
+  {
+   "column": 24,
+   "file": "src/ap/fils_hlp.c",
+   "line": 273,
+   "message": "Unsigned integer addition 'sizeof(*udph) + (end - pos)' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }"
+  },
+  {
+   "column": 30,
+   "file": "src/ap/fils_hlp.c",
+   "line": 278,
+   "message": "Subtracting pointers from different arrays ('end_opt' from 'pos' and 'pos' from 'buf'). Pointer subtraction is only defined for pointers within the same array object.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Only subtract pointers that point to elements within the same array object."
+  },
+  {
+   "column": 30,
+   "file": "src/ap/fils_hlp.c",
+   "line": 278,
+   "message": "Pointer subtraction between pointers from different arrays: 'pos' and 'buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 34,
+   "file": "src/ap/fils_hlp.c",
+   "line": 281,
+   "message": "Subtracting pointers from different arrays ('end' from 'buf' and 'end_opt' from 'pos'). Pointer subtraction is only defined for pointers within the same array object.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Only subtract pointers that point to elements within the same array object."
+  },
+  {
+   "column": 34,
+   "file": "src/ap/fils_hlp.c",
+   "line": 281,
+   "message": "Pointer subtraction between pointers from different arrays: 'buf' and 'pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 19,
+   "file": "src/ap/fils_hlp.c",
+   "line": 338,
+   "message": "Dereference of uninitialized pointer 'dhcp'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'dhcp' before dereferencing"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/fils_hlp.c",
+   "line": 408,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/fils_hlp.c",
+   "line": 408,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/fils_hlp.c",
+   "line": 418,
+   "message": "Privileged operation 'bind' without subsequent privilege dropping",
+   "rule_id": "POS02-C",
+   "severity": "Medium",
+   "suggestion": "Call setuid/setgid to drop privileges after setup"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/fils_hlp.c",
+   "line": 421,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/fils_hlp.c",
+   "line": 421,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/fils_hlp.c",
+   "line": 428,
+   "message": "Resource 's' is closed again after already being closed at line 422. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 7,
+   "file": "src/ap/fils_hlp.c",
+   "line": 449,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/fils_hlp.c",
+   "line": 449,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/fils_hlp.c",
+   "line": 458,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/fils_hlp.c",
+   "line": 460,
+   "message": "'inet_ntoa()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'inet_ntop' instead for thread safety"
+  },
+  {
+   "column": 19,
+   "file": "src/ap/fils_hlp.c",
+   "line": 486,
+   "message": "Dereference of uninitialized pointer 'iph'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'iph' before dereferencing"
+  },
+  {
+   "column": 34,
+   "file": "src/ap/fils_hlp.c",
+   "line": 486,
+   "message": "Dereference of uninitialized pointer 'udph'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'udph' before dereferencing"
+  },
+  {
+   "column": 11,
+   "file": "src/ap/fils_hlp.c",
+   "line": 502,
+   "message": "Unsigned integer subtraction 'ulen - sizeof(*udph)' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 19,
+   "file": "src/ap/fils_hlp.c",
+   "line": 516,
+   "message": "Dereference of uninitialized pointer 'iph'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'iph' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/fils_hlp.c",
+   "line": 545,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 21,
+   "file": "src/ap/fils_hlp.c",
+   "line": 559,
+   "message": "string/character literal contains a non-ASCII byte (>= 0x80) -- not portable across locales/national ASCII variants",
+   "rule_id": "MSC09-C",
+   "severity": "Low",
+   "suggestion": "Restrict string and character literals to the portable ASCII subset (letters, digits, space, and basic punctuation)"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/fils_hlp.c",
+   "line": 576,
+   "message": "Function 'fils_process_hlp' does not validate integer parameter 'left' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'left' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 10,
+   "file": "src/ap/fils_hlp.c",
+   "line": 630,
+   "message": "Subtracting pointers from different arrays ('end' from 'pos' and 'pos' from 'tmp'). Pointer subtraction is only defined for pointers within the same array object.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Only subtract pointers that point to elements within the same array object."
+  },
+  {
+   "column": 24,
+   "file": "src/ap/fils_hlp.c",
+   "line": 631,
+   "message": "Subtracting pointers from different arrays ('end' from 'pos' and 'pos' from 'tmp'). Pointer subtraction is only defined for pointers within the same array object.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Only subtract pointers that point to elements within the same array object."
+  },
+  {
+   "column": 1,
+   "file": "src/ap/fils_hlp.c",
+   "line": 647,
+   "message": "Function 'fils_hlp_deinit' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  }
+ ]
+}

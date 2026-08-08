@@ -1,0 +1,436 @@
+{
+ "src/radius/radius_server.c#part2of2": [
+  {
+   "column": 2,
+   "file": "src/radius/radius_server.c",
+   "line": 2009,
+   "message": "Function returns pointer to local variable 'clients' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius_server.c",
+   "line": 2009,
+   "message": "Function returns without releasing all resources. Leaked: buf. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 26,
+   "file": "src/radius/radius_server.c",
+   "line": 2034,
+   "message": "Dereference of uninitialized pointer 'data'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'data' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius_server.c",
+   "line": 2123,
+   "message": "Function returns pointer to local variable 'data' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius_server.c",
+   "line": 2123,
+   "message": "Function returns without releasing all resources. Leaked: data->eap_req_id_text, data->auth_sock, data->acct_sock. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius_server.c",
+   "line": 2124,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius_server.c",
+   "line": 2126,
+   "message": "Function returns without releasing all resources. Leaked: data->eap_req_id_text, data->auth_sock, data->acct_sock. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 5,
+   "file": "src/radius/radius_server.c",
+   "line": 2138,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 16,
+   "file": "src/radius/radius_server.c",
+   "line": 2142,
+   "message": "Potential null pointer dereference in member access of variable 'erp'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'erp' is not NULL before member access"
+  },
+  {
+   "column": 5,
+   "file": "src/radius/radius_server.c",
+   "line": 2154,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 53,
+   "file": "src/radius/radius_server.c",
+   "line": 2193,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 65,
+   "file": "src/radius/radius_server.c",
+   "line": 2193,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 65,
+   "file": "src/radius/radius_server.c",
+   "line": 2193,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 4,
+   "file": "src/radius/radius_server.c",
+   "line": 2212,
+   "message": "Floating-point division without error checking (consider using feclearexcept/fetestexcept)",
+   "rule_id": "FLP03-C",
+   "severity": "Low",
+   "suggestion": "Use feclearexcept(FE_ALL_EXCEPT) before and fetestexcept(FE_ALL_EXCEPT) after floating-point operations"
+  },
+  {
+   "column": 3,
+   "file": "src/radius/radius_server.c",
+   "line": 2221,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "src/radius/radius_server.c",
+   "line": 2260,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 8,
+   "file": "src/radius/radius_server.c",
+   "line": 2266,
+   "message": "Variable 'abuf' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'abuf' before use, e.g., at its declaration"
+  },
+  {
+   "column": 18,
+   "file": "src/radius/radius_server.c",
+   "line": 2266,
+   "message": "Variable 'mbuf' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'mbuf' before use, e.g., at its declaration"
+  },
+  {
+   "column": 21,
+   "file": "src/radius/radius_server.c",
+   "line": 2278,
+   "message": "'inet_ntoa()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'inet_ntop' instead for thread safety"
+  },
+  {
+   "column": 21,
+   "file": "src/radius/radius_server.c",
+   "line": 2279,
+   "message": "'inet_ntoa()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'inet_ntop' instead for thread safety"
+  },
+  {
+   "column": 4,
+   "file": "src/radius/radius_server.c",
+   "line": 2318,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 44,
+   "file": "src/radius/radius_server.c",
+   "line": 2328,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 0,
+   "file": "src/radius/radius_server.c",
+   "line": 2340,
+   "message": "Function 'radius_server_get_eap_user' accesses bit-field 'radius_session.macacl' without mutex protection in a multi-threaded context",
+   "rule_id": "CON32-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field accesses with mutex locks or use separate byte-sized members instead of bit-fields"
+  },
+  {
+   "column": 0,
+   "file": "src/radius/radius_server.c",
+   "line": 2340,
+   "message": "Function 'radius_server_get_eap_user' accesses bit-field 'radius_session.macacl' without mutex protection in a multi-threaded context",
+   "rule_id": "CON32-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field accesses with mutex locks or use separate byte-sized members instead of bit-fields"
+  },
+  {
+   "column": 3,
+   "file": "src/radius/radius_server.c",
+   "line": 2340,
+   "message": "Bit-field 'macacl' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 18,
+   "file": "src/radius/radius_server.c",
+   "line": 2340,
+   "message": "Bit-field 'macacl' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 60,
+   "file": "src/radius/radius_server.c",
+   "line": 2353,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 60,
+   "file": "src/radius/radius_server.c",
+   "line": 2353,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 55,
+   "file": "src/radius/radius_server.c",
+   "line": 2371,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 32,
+   "file": "src/radius/radius_server.c",
+   "line": 2381,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 43,
+   "file": "src/radius/radius_server.c",
+   "line": 2390,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 73,
+   "file": "src/radius/radius_server.c",
+   "line": 2424,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 5,
+   "file": "src/radius/radius_server.c",
+   "line": 2430,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 60,
+   "file": "src/radius/radius_server.c",
+   "line": 2474,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 74,
+   "file": "src/radius/radius_server.c",
+   "line": 2474,
+   "message": "Pointer parameter 'col' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *col'"
+  },
+  {
+   "column": 33,
+   "file": "src/radius/radius_server.c",
+   "line": 2492,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 33,
+   "file": "src/radius/radius_server.c",
+   "line": 2492,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 30,
+   "file": "src/radius/radius_server.c",
+   "line": 2494,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 30,
+   "file": "src/radius/radius_server.c",
+   "line": 2494,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 10,
+   "file": "src/radius/radius_server.c",
+   "line": 2495,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 31,
+   "file": "src/radius/radius_server.c",
+   "line": 2496,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 31,
+   "file": "src/radius/radius_server.c",
+   "line": 2496,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius_server.c",
+   "line": 2515,
+   "message": "Function 'radius_server_dac_request' does not validate pointer parameter 'req' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'req' at the start of the function, e.g., 'if (!req) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius_server.c",
+   "line": 2515,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius_server.c",
+   "line": 2523,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 6,
+   "file": "src/radius/radius_server.c",
+   "line": 2649,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 9,
+   "file": "src/radius/radius_server.c",
+   "line": 2652,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 9,
+   "file": "src/radius/radius_server.c",
+   "line": 2652,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  }
+ ]
+}

@@ -1,0 +1,658 @@
+{
+ "labels": [
+  {
+   "rule": "CON03-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 102,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No-pthread FP: wpa_supplicant/hostapd single-threaded event loop, tnc_imc static array needs no synchronization"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 236,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Ad-hoc NULL-check stylistic pedantry FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 271,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fptr holds a dlsym()/GetProcAddress() VALUE, not address of local var; heap/opaque-handle-vs-storage confusion"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 313,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "tncc_imc_resolve_funcs's imc genuinely unmodified; plain internal helper, not a callback/vtable contract"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 329,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "tncc_imc_initialize's imc unmodified; plain internal helper"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 346,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "tncc_imc_terminate's imc unmodified; plain internal helper"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 360,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "tncc_imc_provide_bind_function's imc unmodified; plain internal helper"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 379,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "tncc_imc_notify_connection_change's imc unmodified; plain internal helper"
+  },
+  {
+   "rule": "WIN00-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 408,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "LoadLibrary(imc->path) with no LOAD_LIBRARY_SEARCH_* flags; real DLL-search-order-hijack API misuse, narrow local-admin-config exposure"
+  },
+  {
+   "rule": "WIN00-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 412,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Same LoadLibrary()-without-search-flags issue, non-UNICODE branch"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 452,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "#ifdef-blind cross-branch confusion: treats Windows-only FreeLibrary() (mutually exclusive #ifdef branch) as freeing dlhandle before this dlclose(), but only one branch ever compiles/executes"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 462,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "tncc_supported_type's imc read-only; plain internal helper"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 486,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "tncc_send_to_imcs's tncc only traversed/read, never modified"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 510,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only API: tncc param always struct-field from eap_tnc.c's single internal caller, never externally nullable"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 510,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "tncc_init_connection's tncc pointer itself never modified (only imc-> fields via traversal)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 529,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only API, same tncc single-caller pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 529,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "tncc_total_send_len's tncc read-only traversal"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 540,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only API; tncc single-caller pattern (eap_tnc.c)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 540,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only API; pos is caller-owned output buffer from a single internal caller, never NULL in practice"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 540,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "tncc_copy_send_buf's tncc pointer itself never modified"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 559,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only API, single caller (eap_tnc.c), tncc always struct-field"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 580,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "tncc_notify_recommendation's tncc read-only traversal"
+  },
+  {
+   "rule": "ERR01-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 612,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "strtoul() result used for *type with no errno check; low-severity since caller only compares/logs the type value"
+  },
+  {
+   "rule": "ERR30-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 612,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Same strtoul()-without-errno-reset gap, literal rule-text violation, low real-world impact"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 617,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic char* param, no companion size/array bound expected here (tncc_get_type)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 630,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*pos2 = '\\0' is plain char-to-char assignment, no widening conversion occurs"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 633,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*pos2 = '<' is plain char-to-char assignment"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 638,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "decoded is base64_decode()'s heap-allocated return value, not address of a local/automatic object"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 667,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "duplicate report of char-to-char *pos2 assignment"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 667,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "duplicate report of char-to-char *pos2 assignment"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 668,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*pos2 = '\\0' plain char-to-char assignment"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 676,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate default: recom pre-initialized to TNCCS_RECOMMENDATION_ERROR before the if/else-if chain, unmatched case already handled"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 679,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Tool misreads *pos2 = saved (storing a char VALUE) as storing the address of local 'saved'; no address escapes"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 679,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*pos2 = saved is char-to-char, no conversion"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 685,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only API: msg comes from wpabuf_head(data->in_buf) in eap_tnc.c's single caller, always non-NULL"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 711,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*end = '\\0' plain char-to-char assignment"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 722,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi(pos) on network-derived BatchId with no error detection (downstream sequence check bounds the real-world impact)"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 722,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Same atoi()-without-error-detection gap on BatchId from the peer's IF-TNCCS message"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 757,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos + 17 is char* pointer arithmetic (skipping the 17-char '<IMC-IMV-Message>' tag), not signed integer addition"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 761,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*endpos = '<' char-to-char assignment"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 766,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*endpos = '<' char-to-char assignment"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 774,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*endpos = '<' char-to-char assignment"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 797,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "xml explicitly set to NULL at line 820 before any conditional read in the same loop iteration"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 797,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "xmlend explicitly set to NULL at line 821 before any conditional read"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 797,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "endpos always assigned at line 807 before its first read at 811/827/836"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 802,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos + 19 is char* pointer arithmetic (skipping the 19-char '<TNCC-TNCS-Message>' tag), not signed integer addition"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 806,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*end = '\\0' char-to-char assignment"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 811,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*endpos = '<' char-to-char assignment"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 827,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*endpos = '<' char-to-char assignment"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 836,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*endpos = '<' char-to-char assignment"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 845,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "decoded_len is only read when decoded!=NULL, and both are set together by the same tncc_get_base64() call"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 846,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "decoded is reset to NULL each loop iteration (line 819) and only ever freed once per iteration; not a real double free"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 853,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "xml/xmlend both derive from strstr() calls on the same buf; message's cited names 'pos2'/'pos' don't even match this line's real identifiers (known ARR36/ARR00 name-mismatch tool bug)"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 861,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "xmlend is always set together with xml at line 831-832 in the same guarded block; the `&& xml` check at 856 structurally guarantees xmlend non-NULL too"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 861,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*xmlend = '\\0' char-to-char assignment"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 863,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*xmlend = '<' char-to-char assignment"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 898,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "val assigned at line 936 (os_malloc) before every real use; declaration line misattributed as a use site"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 916,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Explicit clamp at lines 914-915 (namelen = 255-1 if >=255) caps the index at 254 before this write; index 255 unreachable"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 961,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Mutually-exclusive continue-branch double-free FP (confirmed CFG-bug pattern): os_free(val) here is reached only when the earlier os_free(val) branches (945) were not taken"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 965,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*imc) is a compile-time type size, not a runtime dereference of the not-yet-initialized imc"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 967,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same mutually-exclusive-branch double-free FP; this os_free(val) only reached via the disjoint 'imc==NULL' break path"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 977,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same mutually-exclusive-branch double-free FP; only free reached on the success path after 945/961/967 continues/breaks were not taken"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 1004,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "tncc_parse_imc's end param used only for bound comparisons, never modified; plain internal helper"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 1019,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*imc) is a compile-time type size, not a dereference of the not-yet-initialized imc"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 1038,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "start/end are a matched buffer-range pair from the same caller-supplied line (tncc_read_config passes pos+4/line_end from the same config buffer); interprocedural relationship invisible within this function alone"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 1040,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Same start/end matched-range FP, interprocedural"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 1046,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*pos2 = '\\0' char-to-char assignment"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 1051,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Same start/end matched-range FP, interprocedural"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 1064,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "imc is os_zalloc()'d heap memory, not an automatic-storage local"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 1087,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Message cites 'pos'/'config' but the flagged line actually compares line_end/end; known ARR36-C variable-name-mismatch tool bug (also both pointers are into the same config buffer regardless)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 1089,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*line_end = '\\0' char-to-char assignment"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 1094,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos + 4 is char* pointer arithmetic (skipping 'IMC ' prefix), not signed integer addition"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 1122,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*tncc) is a compile-time type size, not a dereference of the not-yet-initialized tncc"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 1144,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tncc is os_zalloc()'d heap memory, not an automatic-storage local"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 1146,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'failed:' is a goto target (used by 'goto failed;' on earlier error paths), not literally unreachable"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 1175,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "machinename is a plain char* literal never modified; could be const, genuine low-value style TP"
+  },
+  {
+   "rule": "STR05-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 1175,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "char *machinename = \"...\" assigns a string literal without const qualification, literal UB-writable-through-pointer style violation"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 1278,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is wpabuf_alloc()'d heap memory, not an automatic-storage local"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/tncc.c",
+   "line": 1282,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only API: data (epos) is caller-guarded non-NULL at eap_peap.c's single call site before this function is invoked"
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/eap_peer/tncc.c",
+   "line": 1086,
+   "rule": "ARR38-C",
+   "desc": "tncc_read_config's line-scan while(*line_end!='\\n' && *line_end!='\\r' && line_end<end) dereferences *line_end before the bounds check runs (wrong && order); 1-byte OOB read at buffer end when the last config line has no trailing newline",
+   "upstream_present": "unknown"
+  },
+  {
+   "file": "src/eap_peer/tncc.c",
+   "line": 1089,
+   "rule": "ARR30-C",
+   "desc": "Following that scan, '*line_end = NUL' writes one byte past config[config_len-1] (os_readfile() allocates exactly config_len bytes, no NUL terminator) when the TNC config file's final line lacks a trailing newline/CR",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 20,
+  "fp": 59,
+  "fn": 2
+ }
+}

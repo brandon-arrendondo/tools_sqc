@@ -1,0 +1,958 @@
+{
+ "wpa_supplicant/bss.c": [
+  {
+   "column": 26,
+   "file": "wpa_supplicant/bss.c",
+   "line": 51,
+   "message": "Dereference of uninitialized pointer 'anqp'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'anqp' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/bss.c",
+   "line": 58,
+   "message": "Function returns pointer to local variable 'anqp' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 69,
+   "file": "wpa_supplicant/bss.c",
+   "line": 67,
+   "message": "Pointer parameter 'anqp' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *anqp'"
+  },
+  {
+   "column": 23,
+   "file": "wpa_supplicant/bss.c",
+   "line": 71,
+   "message": "Dereference of uninitialized pointer 'n'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'n' before dereferencing"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/bss.c",
+   "line": 75,
+   "message": "Function-like macro 'ANQP_DUP' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/bss.c",
+   "line": 75,
+   "message": "Macro parameter 'f' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'f' in parentheses: (f) instead of f"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/bss.c",
+   "line": 75,
+   "message": "Macro evaluates parameter 'f' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/bss.c",
+   "line": 97,
+   "message": "Function returns pointer to local variable 'n' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/bss.c",
+   "line": 143,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 16,
+   "file": "wpa_supplicant/bss.c",
+   "line": 165,
+   "message": "Potential null pointer dereference in member access of variable 'elem'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'elem' is not NULL before member access"
+  },
+  {
+   "column": 76,
+   "file": "wpa_supplicant/bss.c",
+   "line": 183,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/bss.c",
+   "line": 198,
+   "message": "Function returns pointer to local variable 'cwork' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/bss.c",
+   "line": 213,
+   "message": "Function 'wpa_bss_remove' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/bss.c",
+   "line": 213,
+   "message": "Function 'wpa_bss_remove' does not validate pointer parameter 'bss' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'bss' at the start of the function, e.g., 'if (!bss) { return error_code; }'"
+  },
+  {
+   "column": 15,
+   "file": "wpa_supplicant/bss.c",
+   "line": 235,
+   "message": "Potential null pointer dereference in member access of variable 'bss'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'bss' is not NULL before member access"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/bss.c",
+   "line": 238,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 47,
+   "file": "wpa_supplicant/bss.c",
+   "line": 302,
+   "message": "Passing null pointer 'bssid' to 'ether_addr_equal' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'bssid' is not NULL before passing to 'ether_addr_equal'"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/bss.c",
+   "line": 305,
+   "message": "Function returns pointer to local variable 'bss' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 46,
+   "file": "wpa_supplicant/bss.c",
+   "line": 335,
+   "message": "Passing null pointer 'bssid' to 'ether_addr_equal' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'bssid' is not NULL before passing to 'ether_addr_equal'"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/bss.c",
+   "line": 340,
+   "message": "Function returns pointer to local variable 'bss' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/bss.c",
+   "line": 356,
+   "message": "Function returns pointer to local variable 'bss' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 59,
+   "file": "wpa_supplicant/bss.c",
+   "line": 402,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/bss.c",
+   "line": 416,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/bss.c",
+   "line": 436,
+   "message": "Double-free: 'wps_ie' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/bss.c",
+   "line": 436,
+   "message": "Double free detected: 'wps_ie' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 54,
+   "file": "wpa_supplicant/bss.c",
+   "line": 443,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 58,
+   "file": "wpa_supplicant/bss.c",
+   "line": 461,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 49,
+   "file": "wpa_supplicant/bss.c",
+   "line": 506,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 72,
+   "file": "wpa_supplicant/bss.c",
+   "line": 506,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 25,
+   "file": "wpa_supplicant/bss.c",
+   "line": 596,
+   "message": "Dereference of uninitialized pointer 'bss'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'bss' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/bss.c",
+   "line": 606,
+   "message": "Function 'os_memcpy' called with overlapping memory regions. If parameters are restrict-qualified, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure memory regions do not overlap when using restrict pointers"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/bss.c",
+   "line": 633,
+   "message": "Value assigned to 'ret' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/bss.c",
+   "line": 637,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/bss.c",
+   "line": 642,
+   "message": "Function returns pointer to local variable 'bss' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 16,
+   "file": "wpa_supplicant/bss.c",
+   "line": 685,
+   "message": "Variable 'old_ie' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'old_ie' before use, e.g., at its declaration"
+  },
+  {
+   "column": 16,
+   "file": "wpa_supplicant/bss.c",
+   "line": 686,
+   "message": "Variable 'new_ie' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'new_ie' before use, e.g., at its declaration"
+  },
+  {
+   "column": 18,
+   "file": "wpa_supplicant/bss.c",
+   "line": 706,
+   "message": "Variable 'new_res' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/bss.c",
+   "line": 714,
+   "message": "Bitwise operator '&' used on signed operand 'caps_diff' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'caps_diff' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/bss.c",
+   "line": 717,
+   "message": "Bitwise operator '&' used on signed operand 'caps_diff' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'caps_diff' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/bss.c",
+   "line": 742,
+   "message": "Function 'notify_bss_changes' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/bss.c",
+   "line": 801,
+   "message": "Variable 'bss' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/bss.c",
+   "line": 806,
+   "message": "Variable 'res' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/bss.c",
+   "line": 846,
+   "message": "Function 'os_memcpy' called with overlapping memory regions. If parameters are restrict-qualified, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure memory regions do not overlap when using restrict pointers"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/bss.c",
+   "line": 873,
+   "message": "sizeof applied to pointer/array parameter 'bss' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*bss)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/bss.c",
+   "line": 892,
+   "message": "Function 'os_memcpy' called with overlapping memory regions. If parameters are restrict-qualified, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure memory regions do not overlap when using restrict pointers"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/bss.c",
+   "line": 921,
+   "message": "Function 'wpa_bss_update_start' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1043,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1088,
+   "message": "Function 'wpa_bss_update_end' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1219,
+   "message": "Function returns pointer to local variable 'bss' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1289,
+   "message": "Function 'wpa_bss_get_id' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1294,
+   "message": "Function returns pointer to local variable 'bss' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1311,
+   "message": "Function 'wpa_bss_get_id_range' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1317,
+   "message": "Function returns pointer to local variable 'bss' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1332,
+   "message": "Function 'wpa_bss_get_ie' does not validate pointer parameter 'bss' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'bss' at the start of the function, e.g., 'if (!bss) { return error_code; }'"
+  },
+  {
+   "column": 37,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1334,
+   "message": "Potential null pointer dereference in member access of variable 'bss'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'bss' is not NULL before member access"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1372,
+   "message": "Function 'wpa_bss_get_ie_ext' does not validate pointer parameter 'bss' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'bss' at the start of the function, e.g., 'if (!bss) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1387,
+   "message": "Function 'wpa_bss_get_vendor_ie' does not validate pointer parameter 'bss' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'bss' at the start of the function, e.g., 'if (!bss) { return error_code; }'"
+  },
+  {
+   "column": 59,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1394,
+   "message": "Potential null pointer dereference in member access of variable 'bss'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'bss' is not NULL before member access"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1465,
+   "message": "Potential null pointer dereference in array access of variable 'pos'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'pos' is not NULL before array access"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1481,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1530,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1547,
+   "message": "Variable 'i' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1580,
+   "message": "Variable 'ie2' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1587,
+   "message": "Variable 'i' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1590,
+   "message": "Variable 'j' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1592,
+   "message": "Local variable 'r' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 52,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1623,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1633,
+   "message": "Variable 'ap_info' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1647,
+   "message": "sizeof applied to pointer/array parameter 'ap_info' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*ap_info)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1655,
+   "message": "Variable 'mld_params' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1662,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1706,
+   "message": "Potential null pointer dereference in member access of variable 'bss'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'bss' is not NULL before member access"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1714,
+   "message": "Variable 'elems' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'elems' before use, e.g., at its declaration"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1749,
+   "message": "Potential null pointer dereference in member access of variable 'ssid'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'ssid' is not NULL before member access"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1796,
+   "message": "Function 'wpa_bss_get_usable_links' does not validate pointer parameter 'missing_links' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'missing_links' at the start of the function, e.g., 'if (!missing_links) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1801,
+   "message": "Value assigned to 'usable_links' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1804,
+   "message": "Potential null pointer dereference in member access of variable 'bss'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'bss' is not NULL before member access"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1810,
+   "message": "Implicit boolean test on 'wpa_bss_validate_rsne_ml(wpa_s, ssid, bss, &rsne_type, &rsne)'. May be unclear what constitutes success or failure.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Use explicit test: wpa_bss_validate_rsne_ml(wpa_s, ssid, bss, &rsne_type, &rsne) == 0 or wpa_bss_validate_rsne_ml(wpa_s, ssid, bss, &rsne_type, &rsne) != 0 depending on success convention"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1821,
+   "message": "Variable 'link_id' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'link_id' before use, e.g., at its declaration"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1855,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1906,
+   "message": "Implicit boolean test on 'wpa_bss_validate_rsne_ml(wpa_s, ssid, neigh_bss,\n\t\t\t\t\t\t      &rsne_type, &rsne)'. May be unclear what constitutes success or failure.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Use explicit test: wpa_bss_validate_rsne_ml(wpa_s, ssid, neigh_bss,\n\t\t\t\t\t\t      &rsne_type, &rsne) == 0 or wpa_bss_validate_rsne_ml(wpa_s, ssid, neigh_bss,\n\t\t\t\t\t\t      &rsne_type, &rsne) != 0 depending on success convention"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1936,
+   "message": "Function 'wpa_bss_parse_basic_ml_element' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 28,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1968,
+   "message": "Variable 'elems' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'elems' before use, e.g., at its declaration"
+  },
+  {
+   "column": 18,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1979,
+   "message": "Variable 'ml_basic_common_info' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 18,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1979,
+   "message": "Variable 'eht_ml' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 25,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1979,
+   "message": "Dereference of uninitialized pointer 'eht_ml'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'eht_ml' before dereferencing"
+  },
+  {
+   "column": 43,
+   "file": "wpa_supplicant/bss.c",
+   "line": 1979,
+   "message": "Dereference of uninitialized pointer 'ml_basic_common_info'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ml_basic_common_info' before dereferencing"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/bss.c",
+   "line": 2004,
+   "message": "Value assigned to 'link_id' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 17,
+   "file": "wpa_supplicant/bss.c",
+   "line": 2113,
+   "message": "Dereference of uninitialized pointer 'ap_info'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ap_info' before dereferencing"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/bss.c",
+   "line": 2138,
+   "message": "Variable 'i' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'i' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/bss.c",
+   "line": 2144,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/bss.c",
+   "line": 2147,
+   "message": "Double-free: 'mlbuf' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/bss.c",
+   "line": 2147,
+   "message": "Double free detected: 'mlbuf' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/bss.c",
+   "line": 2157,
+   "message": "Function 'wpa_bss_parse_reconf_ml_element' does not validate pointer parameter 'bss' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'bss' at the start of the function, e.g., 'if (!bss) { return error_code; }'"
+  },
+  {
+   "column": 59,
+   "file": "wpa_supplicant/bss.c",
+   "line": 2157,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 15,
+   "file": "wpa_supplicant/bss.c",
+   "line": 2163,
+   "message": "Potential null pointer dereference in member access of variable 'bss'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'bss' is not NULL before member access"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/bss.c",
+   "line": 2172,
+   "message": "Variable 'elems' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'elems' before use, e.g., at its declaration"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/bss.c",
+   "line": 2210,
+   "message": "Loop condition uses scaled pointer arithmetic with sizeof(), causing double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Use array element count instead of sizeof() in pointer arithmetic"
+  },
+  {
+   "column": 60,
+   "file": "wpa_supplicant/bss.c",
+   "line": 2258,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 62,
+   "file": "wpa_supplicant/bss.c",
+   "line": 2284,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 24,
+   "file": "wpa_supplicant/bss.c",
+   "line": 2353,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/bss.c",
+   "line": 2386,
+   "message": "Function 'wpa_bss_get_rsne' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/bss.c",
+   "line": 2406,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 56,
+   "file": "wpa_supplicant/bss.c",
+   "line": 2406,
+   "message": "Passing null pointer 'ie' to 'wpa_bss_supported_rsne' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'ie' is not NULL before passing to 'wpa_bss_supported_rsne'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/bss.c",
+   "line": 2423,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/bss.c",
+   "line": 2441,
+   "message": "Function returns pointer to local variable 'ie' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  }
+ ]
+}

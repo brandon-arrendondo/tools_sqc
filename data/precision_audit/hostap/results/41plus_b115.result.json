@@ -1,0 +1,1211 @@
+{
+ "labels": [
+  {
+   "rule": "API00-C",
+   "file": "src/radius/radius_server.c",
+   "line": 266,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API, all callers pass live non-NULL sess (categorical: internal-only-API FP class)"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "src/radius/radius_server.c",
+   "line": 266,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "srv_log has external linkage but is used only within this file; no other file references it"
+  },
+  {
+   "rule": "DCL19-C",
+   "file": "src/radius/radius_server.c",
+   "line": 266,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as DCL15-C: file-local-only usage, should be static"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/radius/radius_server.c",
+   "line": 266,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper, sess only read (categorical: plain-internal-helper-read-only TP)"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/radius/radius_server.c",
+   "line": 280,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "2nd vsnprintf's return value truly never checked (1st call's return IS used for buflen, but this one isn't)"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 283,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sess is srv_log's param, always passed a live session by every call site; internal invariant"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/radius/radius_server.c",
+   "line": 311,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper, data/addr only read, not forwarded to non-const call"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/radius/radius_server.c",
+   "line": 311,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper, data/addr only read, not forwarded to non-const call"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/radius/radius_server.c",
+   "line": 345,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "client points into data->clients heap list (heap/list-owned), not local automatic storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/radius/radius_server.c",
+   "line": 350,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper, client only read"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/radius/radius_server.c",
+   "line": 361,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sess points into client->sessions heap list, not local automatic storage"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/radius/radius_server.c",
+   "line": 440,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*sess) is compile-time only, not a dereference (categorical sizeof(*ptr) class)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/radius/radius_server.c",
+   "line": 452,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sess is os_zalloc'd heap memory, not automatic storage"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/radius/radius_server.c",
+   "line": 461,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "atoi result dispatched via switch with safe default case; CONFIG_TESTING_OPTIONS debug-only"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 461,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: switch default handles any bad/garbage value safely"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 461,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls is a string pointer (const char*), not a char being widened; wrong-type-claim"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/radius/radius_server.c",
+   "line": 530,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "erp points into dl_list_for_each's heap-owned list node, not local storage"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/radius/radius_server.c",
+   "line": 559,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*tmp) is compile-time only, not a dereference"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/radius/radius_server.c",
+   "line": 591,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd/wpa_supplicant core has no pthread usage anywhere (categorical no-pthread class)"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/radius/radius_server.c",
+   "line": 591,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd/wpa_supplicant core has no pthread usage anywhere (categorical no-pthread class)"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/radius/radius_server.c",
+   "line": 609,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char buf[3*ETH_ALEN] is a fixed compile-time-constant-size array, not a VLA"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/radius/radius_server.c",
+   "line": 640,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sess returned is heap-allocated via os_zalloc in radius_server_new_session, not local storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/radius/radius_server.c",
+   "line": 645,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper, sess only read"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/radius/radius_server.c",
+   "line": 649,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char addr[3*ETH_ALEN] fixed-size array, not a VLA"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 653,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sess->server checked at same guard; called only with a live session"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/radius/radius_server.c",
+   "line": 685,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper, sess only read"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/radius/radius_server.c",
+   "line": 689,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char addr_txt[ETH_ALEN*3] fixed-size array, not a VLA"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 692,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sess is a live session by construction of this call site"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/radius/radius_server.c",
+   "line": 715,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper, sess only read"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/radius/radius_server.c",
+   "line": 719,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sql=NULL never read before being unconditionally overwritten by sqlite3_mprintf() later"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/radius/radius_server.c",
+   "line": 720,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "id_str=NULL never read before either branch unconditionally assigns it via os_malloc"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 725,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sess is a live session by construction"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/radius/radius_server.c",
+   "line": 741,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "return is inside the id_str==NULL (alloc-failure) branch; nothing allocated to leak (categorical NULL-resource-leak-in-its-own-failure-branch)"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/radius/radius_server.c",
+   "line": 750,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "id_str was already os_free()'d two lines earlier (line 747) before this return"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/radius/radius_server.c",
+   "line": 764,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper, data only read"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/radius/radius_server.c",
+   "line": 765,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper, client only read"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 775,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sess is a live session by construction"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 786,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr=radius_msg_get_hdr(request) returns msg->hdr, unconditionally set in radius_msg_new/parse and dereferenced everywhere in radius.c without null checks; internal invariant"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/radius/radius_server.c",
+   "line": 805,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() are pure read-only accessors, no real unsequenced side effects (categorical pure-accessor-args class)"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/radius/radius_server.c",
+   "line": 813,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char buf[2*64+1] fixed-size array, not a VLA"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/radius/radius_server.c",
+   "line": 820,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sqc cites the unrelated u8 buf[4] at line 865 as the allocation site; the actual buf in scope here is the 129-byte char buf[2*64+1] at line 813, and len is capped to <=64 just above (cross-scope buffer-name conflation)"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/radius/radius_server.c",
+   "line": 825,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f is checked via 'if (f)' on the very next line"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/radius/radius_server.c",
+   "line": 825,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same: checked on the next line"
+  },
+  {
+   "rule": "WIN03-C",
+   "file": "src/radius/radius_server.c",
+   "line": 825,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "mode string literally lacks 'N'; radius_server.o has no Windows exclusion evidence in hostapd's Makefile"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/radius/radius_server.c",
+   "line": 833,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same cross-scope buf conflation as line 820"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/radius/radius_server.c",
+   "line": 835,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "fclose on a write-mode ('a') dump file stream, close-time flush failure is unreported (write-stream distinct from read-stream FP class)"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/radius/radius_server.c",
+   "line": 835,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "same as ERR00-C at 835"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 895,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free() explicitly checks for NULL (src/utils/os_unix.c:770); categorical os_free(NULL)-is-safe class"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/radius/radius_server.c",
+   "line": 897,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "this return is inside the !url2 (alloc-failure) branch; url2 is NULL, nothing to leak"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/radius/radius_server.c",
+   "line": 912,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "url2 was os_free()'d immediately above (line 910) before this return"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/radius/radius_server.c",
+   "line": 923,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "url2 was already freed at line 914 earlier in the same straight-line function body"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/radius/radius_server.c",
+   "line": 929,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure accessor pair"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/radius/radius_server.c",
+   "line": 934,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "url2 already freed at line 914"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/radius/radius_server.c",
+   "line": 944,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "url2 already freed at line 914"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/radius/radius_server.c",
+   "line": 953,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "url2 already freed at line 914"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/radius/radius_server.c",
+   "line": 959,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg returned is heap memory from radius_msg_new(), not local automatic storage"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/radius/radius_server.c",
+   "line": 959,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "url2 already freed at line 914; flow-insensitive false leak repeated at every return (categorical MEM12-C flow-insensitive class)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/radius/radius_server.c",
+   "line": 964,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper, data only read"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/radius/radius_server.c",
+   "line": 965,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper, client only read"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/radius/radius_server.c",
+   "line": 966,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper, sess only read"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 986,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sess is a live session by construction of this call site"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1009,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr internal invariant, same as line 786"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1029,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure accessor pair"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1047,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg is heap memory from radius_msg_new(), not local storage"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1066,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr internal invariant, same as line 786"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1107,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure accessor pair"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1108,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "from is declared 'struct sockaddr *from' (non-const already); cast is a no-op, nothing is being cast away"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1108,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*from) is the correct dereference-to-get-pointee-size idiom, not a decayed-array misuse (categorical sizeof(*ptr)-correct-idiom)"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1109,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no pthread usage anywhere in hostapd/radius server code (categorical no-pthread class)"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1109,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same no-pthread class"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1156,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sess is a live session by construction (radius_server_hs20_t_c_check always called with valid sess)"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1158,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread class, same as line 591"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1169,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper, force_sess only read"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1171,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "eap=NULL is unconditionally overwritten by radius_msg_get_eap() at line 1237 with no read in between"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1222,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure accessor pair"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1224,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "from param is non-const already; no-op cast"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1227,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread class"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1227,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1252,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure accessor pair (RADIUS_DUMP macro args)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1268,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure accessor pair (RADIUS_DUMP macro args)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1296,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "db_update_last_msk's msk parameter is already 'const char *'; literal-to-const-param is always safe"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1297,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "missing else is an intentional no-op for the access-challenge-still-in-progress case (categorical no-final-else guard-clause class)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1333,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure accessor pair"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1335,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "from param is non-const already; no-op cast"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1338,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread class"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1338,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread class"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1344,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr internal invariant, same as line 786"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1366,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "data param is entirely unused in this function body, trivially const-eligible"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1379,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr internal invariant, same as line 786"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1405,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "data param only read (under CONFIG_SQLITE) / unused otherwise"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1411,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char addrtxt[3*ETH_ALEN] fixed-size array, not a VLA"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1423,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr internal invariant, same as line 786"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1476,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sock_ctx is bound to the fixed eloop_sock_handler typedef (int,void*,void*) dispatch contract, cannot be freely re-typed"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1479,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "buf=NULL never read before being unconditionally overwritten by os_malloc at line 1494"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1501,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "&from.ss is passed as recvfrom's write-destination out-parameter, not read; not a use of an uninitialized value"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1504,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread class"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1504,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread class"
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1510,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "classic sockaddr_storage/sockaddr_in6 BSD-sockets idiom (categorical precedent radius_das.c:421), unavoidable given POSIX sockets API"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1524,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread class extended to inet_ntoa"
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1524,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same sockaddr_storage/sockaddr_in idiom as line 1510"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1601,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is os_free()'d and set to NULL at lines 1548-1549 on the success path; fail: is unreached from that path, so this is a safe os_free(NULL), not a double free (categorical free-then-NULL-reset-then-goto-fail class)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1606,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sock_ctx bound to eloop_sock_handler dispatch contract"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1609,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "buf=NULL never read before being unconditionally overwritten by os_malloc at line 1627"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1634,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "&from.ss is recvfrom's write-destination out-parameter, not read"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1637,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread class"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1637,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread class"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1657,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread class extended to inet_ntoa"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1724,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr internal invariant, same as line 786"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1742,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure accessor pair"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1746,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread class"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1746,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1752,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is os_free()'d and NULL'd at lines 1681-1682 on the success path; same free-then-NULL-reset-then-goto-fail shape as line 1601"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1766,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread class"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1766,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread class"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1779,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread class"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1779,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread class"
+  },
+  {
+   "rule": "POS02-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1788,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "codebase-wide no-privilege-separation design (categorical class); root for daemon lifetime by design"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1789,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread class"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1789,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread class"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1807,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread class"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1807,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread class"
+  },
+  {
+   "rule": "POS02-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1815,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "codebase-wide no-privilege-separation class"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1816,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread class"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1816,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1827,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sessions is a traversal-head param whose pointed-to nodes are freed via radius_server_session_free inside the loop; const would misleadingly imply non-consumption (categorical traversal-then-frees FP, wps.c:535 precedent)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1841,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "clients is a traversal-head param whose pointed-to nodes are freed inside the loop; same traversal-then-frees class"
+  },
+  {
+   "rule": "FIO05-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1873,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "client_file is an admin-configured local RADIUS client-list path, not attacker-controlled (categorical admin-config-path FP class)"
+  },
+  {
+   "rule": "WIN03-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1873,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "mode string literally lacks 'N'; no Windows-build exclusion evidence for this file"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1881,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fclose on a read-mode stream; no data-loss risk from an unflushed read (categorical read-only-stream low-value class)"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1882,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "this return is inside the buf==NULL (alloc-failure) branch; nothing allocated to leak"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1886,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no cast of any kind exists on 'buf' anywhere in this function (grep confirms); apparent misattribution/hallucinated finding"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1898,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*pos='\\0' is a plain char-to-char literal assignment, no widening conversion (categorical plain-char-literal class)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1916,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*pos++='\\0' plain char-literal assignment"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1917,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "strtol's result is checked via the pos==end no-conversion guard plus an explicit range check immediately after"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1917,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same: checked via endptr+range immediately after"
+  },
+  {
+   "rule": "ERR01-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1917,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "errno is genuinely never checked after strtol, so an overflowed value's implementation-defined long->int truncation could in theory slip past the range check; low real-world severity, config file is admin-supplied"
+  },
+  {
+   "rule": "ERR30-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1917,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "errno is genuinely never reset to 0 before this strtol call"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1926,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*pos++='\\0' plain char-literal assignment"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1929,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "inet_aton is declared in <arpa/inet.h>, included transitively via includes.h (categorical DCL31-C system-header class)"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1950,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos is a running pointer walking within the NUL-terminated buf; never NULL, not a nullable pointer"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1959,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*entry) is compile-time only, not a dereference"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1975,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'i' itself is only ever used arithmetically (31-i); the actual '<<' operand is the literal 1U, not i (misattribution)"
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1975,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "i is loop-bounded 0<=i<mask<=32 (checked at line 1918-1919), so 31-i is always in [0,31]; shift amount already validated upstream"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1975,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "the '<<' operand is the unsigned literal 1U, not the signed 'i'; misattribution"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1982,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "addr6 is written inside the same 'if (ipv6 && ...)' branch that gates this read; correlated-conditional-assignment, both paths of that inner if populate addr6 before use"
+  },
+  {
+   "rule": "INT10-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1985,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mask is validated non-negative at lines 1918-1919 before this modulo; already-guarded upstream"
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1986,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "i is loop-bounded 0<=i<(mask%8)<=7, so 7-i is always in [1,7]; shift amount already validated upstream"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/radius/radius_server.c",
+   "line": 1986,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "the '<<' operand is the literal 1, not the signed 'i'; misattribution"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/radius/radius_server.c",
+   "line": 2007,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fclose on a read-mode stream; no data-loss risk (read-only-stream low-value class)"
+  },
+  {
+   "rule": "FIO24-C",
+   "file": "src/radius/radius_server.c",
+   "line": 2007,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "line 1881's fclose is in the mutually-exclusive buf-allocation-failure branch that returns immediately; this fclose is only reached via the main path, not a real double close (categorical branch-blind double-close class)"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 29,
+  "fp": 121,
+  "fn": 0
+ }
+}

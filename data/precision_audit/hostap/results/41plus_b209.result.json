@@ -1,0 +1,717 @@
+{
+ "labels": [
+  {
+   "rule": "ARR02-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 30,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "printf_tests[] sentinel-terminated ({NULL,0,NULL}), walked via for(;printf_tests[i].data;) -- no hardcoded bound ever relied on (established ARR02-C sentinel-array FP class)"
+  },
+  {
+   "rule": "MSC09-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 35,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "raw UTF-8 byte payload for printf_encode test data, not human-readable text -- established MSC09-C raw-byte-pattern-not-text FP class"
+  },
+  {
+   "rule": "MSC09-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 36,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "raw UTF-8 byte payload for printf_encode test data, not human-readable text -- established MSC09-C raw-byte-pattern-not-text FP class"
+  },
+  {
+   "rule": "MSC09-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 37,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "raw UTF-8 byte payload for printf_encode test data, not human-readable text -- established MSC09-C raw-byte-pattern-not-text FP class"
+  },
+  {
+   "rule": "MSC09-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 39,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "raw UTF-8 byte payload for printf_encode test data, not human-readable text -- established MSC09-C raw-byte-pattern-not-text FP class"
+  },
+  {
+   "rule": "MSC09-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 87,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "\\xdd byte-pattern test buffer, not text -- MSC09-C raw-byte-pattern FP class"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 224,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "0-terminated sentinel arrays consumed via int_array_len(); size never hardcoded elsewhere -- established ARR02-C sentinel-array FP class"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 225,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "0-terminated sentinel arrays consumed via int_array_len(); size never hardcoded elsewhere -- established ARR02-C sentinel-array FP class"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 226,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "0-terminated sentinel arrays consumed via int_array_len(); size never hardcoded elsewhere -- established ARR02-C sentinel-array FP class"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 227,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "0-terminated sentinel arrays consumed via int_array_len(); size never hardcoded elsewhere -- established ARR02-C sentinel-array FP class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 241,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "guard-clause: unmatched case (equal-length arrays that also memcmp equal) correctly means no error; established MSC01-C no-final-else pedantry default"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 261,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dummy fixture strings ('unknown'/'foo'/'test') in a module self-test, not real credentials -- extends established MSC41-C self-test-dummy-fixture FP class (categorical_patterns.md:6264)"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 261,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dummy fixture strings ('unknown'/'foo'/'test') in a module self-test, not real credentials -- extends established MSC41-C self-test-dummy-fixture FP class (categorical_patterns.md:6264)"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 265,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dummy fixture strings ('unknown'/'foo'/'test') in a module self-test, not real credentials -- extends established MSC41-C self-test-dummy-fixture FP class (categorical_patterns.md:6264)"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 268,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dummy fixture strings ('unknown'/'foo'/'test') in a module self-test, not real credentials -- extends established MSC41-C self-test-dummy-fixture FP class (categorical_patterns.md:6264)"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 275,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dummy fixture strings ('unknown'/'foo'/'test') in a module self-test, not real credentials -- extends established MSC41-C self-test-dummy-fixture FP class (categorical_patterns.md:6264)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 278,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'pw' reassigned at line 275 (ext_password_get(NULL,\"foo\")) before this free -- classic MEM31-C reassign-then-free FP, not a double free of the same allocation"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 311,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'res2' freshly reassigned at line 310 before this read; sqc's freed-state isn't cleared on reassignment -- established MEM31/ARR00/EXP34 reassign-then-check FP class"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 311,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'res2' freshly reassigned at line 310 before this read; sqc's freed-state isn't cleared on reassignment -- established MEM31/ARR00/EXP34 reassign-then-check FP class"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 311,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'res2' freshly reassigned at line 310 before this read; sqc's freed-state isn't cleared on reassignment -- established MEM31/ARR00/EXP34 reassign-then-check FP class"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 312,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same reassign-then-check FP: res2 was reassigned at line 310, this is a live read, not UAF"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 312,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same reassign-then-check FP: res2 was reassigned at line 310, this is a live read, not UAF"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 312,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same reassign-then-check FP: res2 was reassigned at line 310, this is a live read, not UAF"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 314,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "freeing the fresh res2 from line 310's reassignment, not the pointer freed at line 307 -- reassign-then-free FP"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 317,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'res2' reassigned at line 316 before this read -- reassign-then-check FP"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 317,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'res2' reassigned at line 316 before this read -- reassign-then-check FP"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 318,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same reassign-then-check FP, res2 live after line 316 reassignment"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 318,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same reassign-then-check FP, res2 live after line 316 reassignment"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 318,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same reassign-then-check FP, res2 live after line 316 reassignment"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 320,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "freeing the fresh res2 from line 316, not a double free -- reassign-then-free FP"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 331,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'res' reassigned at line 328 before this free (fresh base64_decode result) -- reassign-then-free FP"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 337,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'res' reassigned at line 334 before this free -- reassign-then-free FP"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 341,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'res' reassigned at line 340 before this read -- reassign-then-check FP (ARR00-C UAF + EXP34-C null-deref both misfire off stale freed-state)"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 341,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'res' reassigned at line 340 before this read -- reassign-then-check FP (ARR00-C UAF + EXP34-C null-deref both misfire off stale freed-state)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 343,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "freeing the fresh res from line 340, not a double free -- reassign-then-free FP"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 346,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'res' reassigned at line 345 before this read -- reassign-then-check FP"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 348,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "freeing the fresh res from line 345, not a double free -- reassign-then-free FP"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 456,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_calloc((size_t)-1,(size_t)-1) -- both args are the same size_t literal expression, not pointers at all; EXP43-C restrict-aliasing category error (no pointer args to alias)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 464,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'ptr' reassigned by the preceding os_calloc/os_realloc_array call (461/466/472) before each free -- reassign-then-free FP, same class as res/res2/pw above"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 469,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'ptr' reassigned by the preceding os_calloc/os_realloc_array call (461/466/472) before each free -- reassign-then-free FP, same class as res/res2/pw above"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 475,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'ptr' reassigned by the preceding os_calloc/os_realloc_array call (461/466/472) before each free -- reassign-then-free FP, same class as res/res2/pw above"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 496,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_setenv(const char *name, const char *value, int) -- both params are const char*, cannot modify the literal; exact precedent categorical_patterns.md:5569"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 496,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_setenv(const char *name, const char *value, int) -- both params are const char*, cannot modify the literal; exact precedent categorical_patterns.md:5569"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 497,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_setenv(const char *name, const char *value, int) -- both params are const char*, cannot modify the literal; exact precedent categorical_patterns.md:5569"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 497,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_setenv(const char *name, const char *value, int) -- both params are const char*, cannot modify the literal; exact precedent categorical_patterns.md:5569"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 498,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_unsetenv(const char *name) -- const param, same precedent as os_setenv (categorical_patterns.md:5569)"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 506,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'ptr' is freed on every path where it was allocated (each os_calloc/os_realloc_array call is individually null-checked and freed inline); established MEM12-C flow-insensitive false-leak class"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 509,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'ptr' is freed on every path where it was allocated (each os_calloc/os_realloc_array call is individually null-checked and freed inline); established MEM12-C flow-insensitive false-leak class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 538,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'buf' is freed via its alias 'buf2' (buf2 = wpabuf_concat(buf, NULL) returns buf itself per the very next check 'if (buf2 != buf)'; wpabuf_free(buf2) frees buf) -- alias-blindness FP"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 538,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'buf' is freed via its alias 'buf2' (buf2 = wpabuf_concat(buf, NULL) returns buf itself per the very next check 'if (buf2 != buf)'; wpabuf_free(buf2) frees buf) -- alias-blindness FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 611,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_register_read_sock/eloop_register_timeout callback signature is a fixed-signature dispatch contract (eloop.h typedefs); established DCL13-C eloop-callback dispatch-contract FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 611,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_register_read_sock/eloop_register_timeout callback signature is a fixed-signature dispatch contract (eloop.h typedefs); established DCL13-C eloop-callback dispatch-contract FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 629,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'buf' is the destination of read(sock,buf,sizeof(buf)) -- write target, not a read of uninitialized memory"
+  },
+  {
+   "rule": "INT31-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 631,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'res' is ssize_t (signed) from read(), explicitly cast (int)res; there is no unsigned value here for INT31-C's signed/unsigned conversion concern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 635,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_register_read_sock/eloop_register_timeout callback signature is a fixed-signature dispatch contract (eloop.h typedefs); established DCL13-C eloop-callback dispatch-contract FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 635,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_register_read_sock/eloop_register_timeout callback signature is a fixed-signature dispatch contract (eloop.h typedefs); established DCL13-C eloop-callback dispatch-contract FP class"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 678,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() thread-safety concern doesn't apply -- this is a single-threaded eloop-based test harness with zero pthread usage in the file; established CON33/CON34-C no-pthread FP class"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 678,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() thread-safety concern doesn't apply -- this is a single-threaded eloop-based test harness with zero pthread usage in the file; established CON33/CON34-C no-pthread FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 693,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_register_read_sock/eloop_register_timeout callback signature is a fixed-signature dispatch contract (eloop.h typedefs); established DCL13-C eloop-callback dispatch-contract FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 711,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'buf' is the destination of read(sock,buf,sizeof(buf)) -- write target, not uninitialized read (same as line 629)"
+  },
+  {
+   "rule": "INT31-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 713,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'res' is ssize_t (signed) from read(), explicitly cast (int)res; there is no unsigned value here for INT31-C's signed/unsigned conversion concern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 720,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_register_read_sock/eloop_register_timeout callback signature is a fixed-signature dispatch contract (eloop.h typedefs); established DCL13-C eloop-callback dispatch-contract FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 736,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_register_read_sock/eloop_register_timeout callback signature is a fixed-signature dispatch contract (eloop.h typedefs); established DCL13-C eloop-callback dispatch-contract FP class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 739,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "next_run=0 is unconditionally overwritten at line 766 before its only read at line 771 -- genuine dead initial-store, matches established MSC13-C dead-init-assignment TP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 781,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*t) inside os_zalloc(sizeof(*t)) does not evaluate/dereference its operand at runtime (non-VLA); t is assigned the result on the same line -- established EXP33-C sizeof-not-a-dereference FP class"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 792,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() thread-safety concern doesn't apply -- this is a single-threaded eloop-based test harness with zero pthread usage in the file; established CON33/CON34-C no-pthread FP class"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 792,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() thread-safety concern doesn't apply -- this is a single-threaded eloop-based test harness with zero pthread usage in the file; established CON33/CON34-C no-pthread FP class"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 799,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() thread-safety concern doesn't apply -- this is a single-threaded eloop-based test harness with zero pthread usage in the file; established CON33/CON34-C no-pthread FP class"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 799,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() thread-safety concern doesn't apply -- this is a single-threaded eloop-based test harness with zero pthread usage in the file; established CON33/CON34-C no-pthread FP class"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 816,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() thread-safety concern doesn't apply -- this is a single-threaded eloop-based test harness with zero pthread usage in the file; established CON33/CON34-C no-pthread FP class"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 816,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() thread-safety concern doesn't apply -- this is a single-threaded eloop-based test harness with zero pthread usage in the file; established CON33/CON34-C no-pthread FP class"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 818,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() thread-safety concern doesn't apply -- this is a single-threaded eloop-based test harness with zero pthread usage in the file; established CON33/CON34-C no-pthread FP class"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 818,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() thread-safety concern doesn't apply -- this is a single-threaded eloop-based test harness with zero pthread usage in the file; established CON33/CON34-C no-pthread FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 824,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_register_read_sock/eloop_register_timeout callback signature is a fixed-signature dispatch contract (eloop.h typedefs); established DCL13-C eloop-callback dispatch-contract FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 824,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_register_read_sock/eloop_register_timeout callback signature is a fixed-signature dispatch contract (eloop.h typedefs); established DCL13-C eloop-callback dispatch-contract FP class"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 851,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "json_test_cases[] consumed only via ARRAY_SIZE(json_test_cases) in the loop -- established ARR02-C ARRAY_SIZE-consumed FP class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 905,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "guard-clause: the unmatched case (root==NULL and test->tree==NULL, i.e. malformed JSON correctly rejected) is a legitimate no-op, not an unhandled case -- MSC01-C no-final-else pedantry default"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 929,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "const_time_*_tests[] arrays are all consumed only via ARRAY_SIZE(...) in the loop immediately below -- established ARR02-C ARRAY_SIZE-consumed FP class"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 940,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "const_time_*_tests[] arrays are all consumed only via ARRAY_SIZE(...) in the loop immediately below -- established ARR02-C ARRAY_SIZE-consumed FP class"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 953,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "const_time_*_tests[] arrays are all consumed only via ARRAY_SIZE(...) in the loop immediately below -- established ARR02-C ARRAY_SIZE-consumed FP class"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 966,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "const_time_*_tests[] arrays are all consumed only via ARRAY_SIZE(...) in the loop immediately below -- established ARR02-C ARRAY_SIZE-consumed FP class"
+  },
+  {
+   "rule": "MSC09-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 975,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "(u8*)\"\\x80\" is a raw single-byte comparison buffer for const_time_eq_bin, not text -- MSC09-C raw-byte-pattern FP class"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 983,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "const_time_*_tests[] arrays are all consumed only via ARRAY_SIZE(...) in the loop immediately below -- established ARR02-C ARRAY_SIZE-consumed FP class"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 1000,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "const_time_*_tests[] arrays are all consumed only via ARRAY_SIZE(...) in the loop immediately below -- established ARR02-C ARRAY_SIZE-consumed FP class"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 1015,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "const_time_*_tests[] arrays are all consumed only via ARRAY_SIZE(...) in the loop immediately below -- established ARR02-C ARRAY_SIZE-consumed FP class"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 1030,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "const_time_*_tests[] arrays are all consumed only via ARRAY_SIZE(...) in the loop immediately below -- established ARR02-C ARRAY_SIZE-consumed FP class"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 1044,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "const_time_*_tests[] arrays are all consumed only via ARRAY_SIZE(...) in the loop immediately below -- established ARR02-C ARRAY_SIZE-consumed FP class"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/utils/utils_module_tests.c",
+   "line": 1055,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "const_time_*_tests[] arrays are all consumed only via ARRAY_SIZE(...) in the loop immediately below -- established ARR02-C ARRAY_SIZE-consumed FP class"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "src/utils/utils_module_tests.c"
+ ],
+ "summary": {
+  "tp": 1,
+  "fp": 87,
+  "fn": 0
+ }
+}

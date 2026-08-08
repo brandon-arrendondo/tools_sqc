@@ -1,0 +1,18 @@
+{
+ "labels": [
+  {"rule": "API05-C", "file": "src/fst/fst_ctrl_iface.c", "line": 885, "verdict": "FP", "confidence": "high", "reason": "cmd is a NUL-terminated string param; confirmed API05-C idiomatic-C-param FP class."},
+  {"rule": "API05-C", "file": "src/fst/fst_ctrl_iface.c", "line": 885, "verdict": "FP", "confidence": "high", "reason": "ifname immediately paired with ifname_size; confirmed T*,size_t idiom FP class."},
+  {"rule": "ARR01-C", "file": "src/fst/fst_ctrl_iface.c", "line": 894, "verdict": "FP", "confidence": "high", "reason": "sizeof(cfg->group_id) sizes a fixed array member, not the decayed cfg pointer; confirmed sizeof(ptr->fixed_array_member) idiom."},
+  {"rule": "API00-C", "file": "src/fst/fst_ctrl_iface.c", "line": 925, "verdict": "FP", "confidence": "med", "reason": "cmd always a valid ctrl_iface command string from internal dispatch chain; never externally nullable."},
+  {"rule": "API05-C", "file": "src/fst/fst_ctrl_iface.c", "line": 925, "verdict": "FP", "confidence": "high", "reason": "cmd is a NUL-terminated string param; same confirmed idiom FP as line 885."},
+  {"rule": "API05-C", "file": "src/fst/fst_ctrl_iface.c", "line": 925, "verdict": "FP", "confidence": "high", "reason": "ifname paired with ifname_size; same confirmed T*,size_t idiom FP as line 885."},
+  {"rule": "MSC13-C", "file": "src/fst/fst_ctrl_iface.c", "line": 935, "verdict": "FP", "confidence": "high", "reason": "g is used as foreach_fst_group(g) loop var; confirmed dl_list/foreach macro-blindness FP class."},
+  {"rule": "MSC37-C", "file": "src/fst/fst_ctrl_iface.c", "line": 937, "verdict": "FP", "confidence": "med", "reason": "Function ends with explicit 'return -EINVAL;' on every path; foreach macro parse confuses CFG/return detection."},
+  {"rule": "EXP33-C", "file": "src/fst/fst_ctrl_iface.c", "line": 937, "verdict": "FP", "confidence": "high", "reason": "g is initialized by the foreach_fst_group/dl_list_for_each macro itself; confirmed macro-blind uninitialized-use FP class."}
+ ],
+ "fns": [
+  {"file": "src/fst/fst_ctrl_iface.c", "line": 475, "rule": "ERR33-C", "desc": "list_session_enum_cb's os_snprintf return value is used unchecked (no os_snprintf_error) to advance c->buf and decrement c->buflen (size_t); a truncation/encoding-error return can underflow buflen to a huge value, letting subsequent snprintf calls in the same enumeration write out of bounds. Sibling loops in this file (iface_peers:546-550, list_ifaces:613-621, list_groups:637-641) all guard with os_snprintf_error() but this callback does not.", "upstream_present": "unknown"}
+ ],
+ "files_clean_for_fn": [],
+ "summary": {"tp": 0, "fp": 9, "fn": 1}
+}

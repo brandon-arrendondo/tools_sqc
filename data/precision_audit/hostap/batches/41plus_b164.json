@@ -1,0 +1,1246 @@
+{
+ "src/utils/os_internal.c": [
+  {
+   "column": 37,
+   "file": "src/utils/os_internal.c",
+   "line": 29,
+   "message": "arithmetic operator '*' applied directly to time_t-typed 'usec' -- the encoding of time_t is unspecified",
+   "rule_id": "MSC05-C",
+   "severity": "Low",
+   "suggestion": "Use difftime() to compute a duration between two time_t values instead of subtracting/adding them directly"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_internal.c",
+   "line": 91,
+   "message": "Storing pointer returned by 'gmtime' is prohibited. The data referenced may be overwritten by subsequent calls. Use strdup(), malloc()/strcpy(), or consume the value immediately.",
+   "rule_id": "ENV34-C",
+   "severity": "Medium",
+   "suggestion": "Instead of 'ptr = gmtime()', use 'ptr = strdup(gmtime())' and remember to free() later, or use 'const char *ptr' for immediate use only"
+  },
+  {
+   "column": 8,
+   "file": "src/utils/os_internal.c",
+   "line": 91,
+   "message": "Call to non-thread-safe function 'gmtime'. Use strftime() with localtime_r()/gmtime_r() (POSIX), or use thread-safe time conversion functions",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strftime() with localtime_r()/gmtime_r() (POSIX), or use thread-safe time conversion functions"
+  },
+  {
+   "column": 8,
+   "file": "src/utils/os_internal.c",
+   "line": 91,
+   "message": "'gmtime()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'gmtime_r' instead for thread safety"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/os_internal.c",
+   "line": 106,
+   "message": "Function 'daemon' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 39,
+   "file": "src/utils/os_internal.c",
+   "line": 107,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 39,
+   "file": "src/utils/os_internal.c",
+   "line": 107,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 8,
+   "file": "src/utils/os_internal.c",
+   "line": 112,
+   "message": "Return value of 'fopen' assigned to 'f' but not checked for errors: 'fopen(pid_file, \"w\")' - Returns NULL if file cannot be opened",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (file == NULL) before using the file pointer"
+  },
+  {
+   "column": 13,
+   "file": "src/utils/os_internal.c",
+   "line": 112,
+   "message": "Return value from fopen() should be checked for errors",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Check if fopen() returned an error value (NULL, -1, etc.)"
+  },
+  {
+   "column": 13,
+   "file": "src/utils/os_internal.c",
+   "line": 112,
+   "message": "fopen() with mode \"w\" does not guarantee exclusive file creation. Use \"wx\" or \"w+x\" mode for exclusive creation.",
+   "rule_id": "FIO03-C",
+   "severity": "Medium",
+   "suggestion": "Use fopen() with \"wx\" or \"w+x\" mode for C11, or use open() with O_CREAT|O_EXCL for POSIX"
+  },
+  {
+   "column": 13,
+   "file": "src/utils/os_internal.c",
+   "line": 112,
+   "message": "fopen() cannot explicitly specify file permissions; use open() for security-sensitive files",
+   "rule_id": "FIO06-C",
+   "severity": "Medium",
+   "suggestion": "Use open(filename, O_CREAT | O_WRONLY, mode) to explicitly specify file permissions"
+  },
+  {
+   "column": 13,
+   "file": "src/utils/os_internal.c",
+   "line": 112,
+   "message": "fopen() called without 'N' flag in mode string \"w\". On Windows, file handles are inheritable by default unless the 'N' flag is specified.",
+   "rule_id": "WIN03-C",
+   "severity": "High",
+   "suggestion": "Add 'N' flag to the mode string (e.g., \"rwN\") to disable handle inheritance on Windows."
+  },
+  {
+   "column": 4,
+   "file": "src/utils/os_internal.c",
+   "line": 115,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 4,
+   "file": "src/utils/os_internal.c",
+   "line": 115,
+   "message": "Return value of 'fclose' ignored: 'fclose(f)' - Returns non-zero on error",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (fclose(file) != 0) for close errors"
+  },
+  {
+   "column": 33,
+   "file": "src/utils/os_internal.c",
+   "line": 130,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/os_internal.c",
+   "line": 135,
+   "message": "fopen() called without 'N' flag in mode string \"rb\". On Windows, file handles are inheritable by default unless the 'N' flag is specified.",
+   "rule_id": "WIN03-C",
+   "severity": "High",
+   "suggestion": "Add 'N' flag to the mode string (e.g., \"rwN\") to disable handle inheritance on Windows."
+  },
+  {
+   "column": 7,
+   "file": "src/utils/os_internal.c",
+   "line": 141,
+   "message": "fread() used without explicitly accounting for null terminator in character buffer",
+   "rule_id": "FIO17-C",
+   "severity": "Medium",
+   "suggestion": "Ensure buffer size accounts for null terminator, or explicitly add null terminator after fread()"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_internal.c",
+   "line": 142,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_internal.c",
+   "line": 150,
+   "message": "Function 'random' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_internal.c",
+   "line": 150,
+   "message": "Pseudorandom number generator 'random()' called without proper seeding - will produce predictable sequences",
+   "rule_id": "MSC32-C",
+   "severity": "Medium",
+   "suggestion": "Call srand() or srandom() with a non-deterministic seed (e.g., from time() or /dev/urandom) before calling random()"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os_internal.c",
+   "line": 156,
+   "message": "Value assigned to 'buf' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_internal.c",
+   "line": 188,
+   "message": "Double-free: 'buf' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_internal.c",
+   "line": 189,
+   "message": "Function returns without releasing all resources. Leaked: buf, ret. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_internal.c",
+   "line": 206,
+   "message": "Function 'setenv' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os_internal.c",
+   "line": 210,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 31,
+   "file": "src/utils/os_internal.c",
+   "line": 221,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/os_internal.c",
+   "line": 226,
+   "message": "File opened for reading using variable filename 'name' without verifying file attributes (fstat + st_uid/st_gid check)",
+   "rule_id": "FIO05-C",
+   "severity": "Medium",
+   "suggestion": "Use fstat() to check file ownership (st_uid, st_gid) before reading untrusted files"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/os_internal.c",
+   "line": 226,
+   "message": "fopen() called without 'N' flag in mode string \"rb\". On Windows, file handles are inheritable by default unless the 'N' flag is specified.",
+   "rule_id": "WIN03-C",
+   "severity": "High",
+   "suggestion": "Add 'N' flag to the mode string (e.g., \"rwN\") to disable handle inheritance on Windows."
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_internal.c",
+   "line": 230,
+   "message": "Return value from fseek() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fseek()"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_internal.c",
+   "line": 230,
+   "message": "Return value of 'fseek' ignored: 'fseek(f, 0, SEEK_END)' - Returns non-zero on failure",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (fseek(file, offset, whence) != 0) for seek errors"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_internal.c",
+   "line": 230,
+   "message": "fseek() with SEEK_END should not be used on binary streams (undefined behavior with null padding)",
+   "rule_id": "FIO14-C",
+   "severity": "Medium",
+   "suggestion": "Use SEEK_SET or SEEK_CUR instead, or ensure stream is in text mode"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_internal.c",
+   "line": 230,
+   "message": "Using fseek()/ftell() to compute file size - use fstat() or platform-specific APIs instead",
+   "rule_id": "FIO19-C",
+   "severity": "Medium",
+   "suggestion": "Use fstat() with fileno() to get file size reliably"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_internal.c",
+   "line": 230,
+   "message": "fseek() operation on device file; this operation is only appropriate for regular files",
+   "rule_id": "FIO32-C",
+   "severity": "Medium",
+   "suggestion": null
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_internal.c",
+   "line": 231,
+   "message": "ftell() operation on device file; this operation is only appropriate for regular files",
+   "rule_id": "FIO32-C",
+   "severity": "Medium",
+   "suggestion": null
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_internal.c",
+   "line": 232,
+   "message": "Return value from fseek() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fseek()"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_internal.c",
+   "line": 232,
+   "message": "Return value of 'fseek' ignored: 'fseek(f, 0, SEEK_SET)' - Returns non-zero on failure",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (fseek(file, offset, whence) != 0) for seek errors"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_internal.c",
+   "line": 232,
+   "message": "fseek() operation on device file; this operation is only appropriate for regular files",
+   "rule_id": "FIO32-C",
+   "severity": "Medium",
+   "suggestion": null
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_internal.c",
+   "line": 236,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_internal.c",
+   "line": 237,
+   "message": "Function returns without releasing all resources. Leaked: buf. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/os_internal.c",
+   "line": 240,
+   "message": "fread() used without explicitly accounting for null terminator in character buffer",
+   "rule_id": "FIO17-C",
+   "severity": "Medium",
+   "suggestion": "Ensure buffer size accounts for null terminator, or explicitly add null terminator after fread()"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_internal.c",
+   "line": 241,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_internal.c",
+   "line": 241,
+   "message": "Return value of 'fclose' ignored: 'fclose(f)' - Returns non-zero on error",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (fclose(file) != 0) for close errors"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_internal.c",
+   "line": 241,
+   "message": "Resource 'f' is closed again after already being closed at line 236. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_internal.c",
+   "line": 243,
+   "message": "Function returns without releasing all resources. Leaked: buf. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_internal.c",
+   "line": 246,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_internal.c",
+   "line": 246,
+   "message": "Resource 'f' is closed again after already being closed at line 236. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_internal.c",
+   "line": 248,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_internal.c",
+   "line": 248,
+   "message": "Function returns without releasing all resources. Leaked: buf. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 23,
+   "file": "src/utils/os_internal.c",
+   "line": 252,
+   "message": "Pointer parameter 'stream' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *stream'"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os_internal.c",
+   "line": 269,
+   "message": "Mixed string management approaches detected. Static char array at line 524 and dynamic allocation at line 269. Consider adopting a consistent approach.",
+   "rule_id": "STR01-C",
+   "severity": "Low",
+   "suggestion": "Adopt either static string arrays OR dynamic allocation consistently throughout the codebase. Document the chosen approach in coding standards."
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_internal.c",
+   "line": 269,
+   "message": "malloc() called with potentially zero size argument: 'size' without prior zero check. Zero-length allocations have implementation-defined behavior.",
+   "rule_id": "MEM04-C",
+   "severity": "Low",
+   "suggestion": "Check that size argument is non-zero before calling malloc()"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_internal.c",
+   "line": 269,
+   "message": "Sensitive data allocated with malloc may be written to disk. Use mlock() (POSIX) or VirtualLock() (Windows) to lock memory pages, or use setrlimit(RLIMIT_CORE, 0) to disable core dumps.",
+   "rule_id": "MEM06-C",
+   "severity": "Medium",
+   "suggestion": "Consider using mlock()/munlock() to prevent memory from being swapped to disk, or use setrlimit() to disable core dumps."
+  },
+  {
+   "column": 24,
+   "file": "src/utils/os_internal.c",
+   "line": 273,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_internal.c",
+   "line": 275,
+   "message": "realloc() called with potentially zero size argument: 'size' without prior check. This is implementation-defined and may cause memory leaks.",
+   "rule_id": "MEM04-C",
+   "severity": "Low",
+   "suggestion": "Check that size argument is non-zero before calling realloc()"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_internal.c",
+   "line": 275,
+   "message": "Sensitive data allocated with realloc may be written to disk. Use mlock() (POSIX) or VirtualLock() (Windows) to lock memory pages, or use setrlimit(RLIMIT_CORE, 0) to disable core dumps.",
+   "rule_id": "MEM06-C",
+   "severity": "Medium",
+   "suggestion": "Consider using mlock()/munlock() to prevent memory from being swapped to disk, or use setrlimit() to disable core dumps."
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os_internal.c",
+   "line": 281,
+   "message": "Value assigned to 'ptr' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os_internal.c",
+   "line": 285,
+   "message": "Function 'os_memcpy' does not validate integer parameter 'n' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'n' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 23,
+   "file": "src/utils/os_internal.c",
+   "line": 285,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 23,
+   "file": "src/utils/os_internal.c",
+   "line": 285,
+   "message": "Pointer parameter 'dest' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *dest'"
+  },
+  {
+   "column": 41,
+   "file": "src/utils/os_internal.c",
+   "line": 285,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_internal.c",
+   "line": 289,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'd' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_internal.c",
+   "line": 290,
+   "message": "Direct assignment of flexible array structure instances. Use memcpy() for dynamic copying.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Use memcpy() to copy the structure and its flexible array member"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_internal.c",
+   "line": 290,
+   "message": "Pointer dereference '*d++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 10,
+   "file": "src/utils/os_internal.c",
+   "line": 290,
+   "message": "Pointer dereference '*s' (char type) assigned to larger type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment: (unsigned char)*ptr"
+  },
+  {
+   "column": 10,
+   "file": "src/utils/os_internal.c",
+   "line": 290,
+   "message": "Pointer dereference '*s++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_internal.c",
+   "line": 291,
+   "message": "Function returns pointer to local variable 'dest' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os_internal.c",
+   "line": 295,
+   "message": "Function 'os_memmove' does not validate integer parameter 'n' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'n' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 24,
+   "file": "src/utils/os_internal.c",
+   "line": 295,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 42,
+   "file": "src/utils/os_internal.c",
+   "line": 295,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/os_internal.c",
+   "line": 297,
+   "message": "Pointer comparison '<' between pointers from different arrays: 'param:dest' and 'param:src'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before comparison"
+  },
+  {
+   "column": 4,
+   "file": "src/utils/os_internal.c",
+   "line": 304,
+   "message": "Direct assignment of flexible array structure instances. Use memcpy() for dynamic copying.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Use memcpy() to copy the structure and its flexible array member"
+  },
+  {
+   "column": 4,
+   "file": "src/utils/os_internal.c",
+   "line": 304,
+   "message": "Pointer dereference '*--d' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 11,
+   "file": "src/utils/os_internal.c",
+   "line": 304,
+   "message": "Pointer dereference '*s' (char type) assigned to larger type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment: (unsigned char)*ptr"
+  },
+  {
+   "column": 11,
+   "file": "src/utils/os_internal.c",
+   "line": 304,
+   "message": "Pointer dereference '*--s' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os_internal.c",
+   "line": 310,
+   "message": "Function 'os_memset' does not validate integer parameter 'n' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'n' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 23,
+   "file": "src/utils/os_internal.c",
+   "line": 310,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 23,
+   "file": "src/utils/os_internal.c",
+   "line": 310,
+   "message": "Pointer parameter 's' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *s'"
+  },
+  {
+   "column": 7,
+   "file": "src/utils/os_internal.c",
+   "line": 312,
+   "message": "Pointer to const assigned to non-const pointer without cast: *p = s: '*p = s'",
+   "rule_id": "EXP40-C",
+   "severity": "Low",
+   "suggestion": "Either remove const qualifier if the object should be modifiable, or use explicit casts to show intentional const removal"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_internal.c",
+   "line": 313,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'p' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_internal.c",
+   "line": 314,
+   "message": "Pointer dereference '*p++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_internal.c",
+   "line": 315,
+   "message": "Function returns pointer to local variable 's' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 26,
+   "file": "src/utils/os_internal.c",
+   "line": 319,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 42,
+   "file": "src/utils/os_internal.c",
+   "line": 319,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_internal.c",
+   "line": 326,
+   "message": "Potential null pointer dereference of variable 'p1'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'p1' is not NULL before dereferencing"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_internal.c",
+   "line": 334,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:s1' and 'param:s2'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_internal.c",
+   "line": 334,
+   "message": "Unsigned subtraction '*p1 - *p2' without guard assumes non-negative result",
+   "rule_id": "INT00-C",
+   "severity": "Medium",
+   "suggestion": "Add a guard: if (a >= b) before unsigned subtraction a - b"
+  },
+  {
+   "column": 5,
+   "file": "src/utils/os_internal.c",
+   "line": 342,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_internal.c",
+   "line": 348,
+   "message": "Function returns pointer to local variable 'res' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os_internal.c",
+   "line": 352,
+   "message": "Function 'os_strlen' does not validate pointer parameter 's' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 's' at the start of the function, e.g., 'if (!s) { return error_code; }'"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_internal.c",
+   "line": 355,
+   "message": "Potential null pointer dereference of variable 'p'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'p' is not NULL before dereferencing"
+  },
+  {
+   "column": 31,
+   "file": "src/utils/os_internal.c",
+   "line": 371,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 47,
+   "file": "src/utils/os_internal.c",
+   "line": 371,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os_internal.c",
+   "line": 381,
+   "message": "Function 'os_strchr' does not validate pointer parameter 's' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 's' at the start of the function, e.g., 'if (!s) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_internal.c",
+   "line": 383,
+   "message": "Unbounded while loop with pointer increment. Loop increments 's' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_internal.c",
+   "line": 383,
+   "message": "Potential null pointer dereference of variable 's'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 's' is not NULL before dereferencing"
+  },
+  {
+   "column": 11,
+   "file": "src/utils/os_internal.c",
+   "line": 385,
+   "message": "Do not cast away const qualification: '(char *) s'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 11,
+   "file": "src/utils/os_internal.c",
+   "line": 400,
+   "message": "Do not cast away const qualification: '(char *) p'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os_internal.c",
+   "line": 407,
+   "message": "Function 'os_strcmp' does not validate pointer parameter 's1' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 's1' at the start of the function, e.g., 'if (!s1) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os_internal.c",
+   "line": 407,
+   "message": "Function 'os_strcmp' does not validate pointer parameter 's2' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 's2' at the start of the function, e.g., 'if (!s2) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_internal.c",
+   "line": 409,
+   "message": "Unbounded while loop with pointer increment. Loop increments 's1' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_internal.c",
+   "line": 409,
+   "message": "Potential null pointer dereference of variable 's1'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 's1' is not NULL before dereferencing"
+  },
+  {
+   "column": 16,
+   "file": "src/utils/os_internal.c",
+   "line": 409,
+   "message": "Potential null pointer dereference of variable 's2'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 's2' is not NULL before dereferencing"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_internal.c",
+   "line": 416,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:s1' and 'param:s2'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os_internal.c",
+   "line": 420,
+   "message": "Function 'os_strncmp' does not validate pointer parameter 's1' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 's1' at the start of the function, e.g., 'if (!s1) { return error_code; }'"
+  },
+  {
+   "column": 27,
+   "file": "src/utils/os_internal.c",
+   "line": 420,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 43,
+   "file": "src/utils/os_internal.c",
+   "line": 420,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_internal.c",
+   "line": 425,
+   "message": "Unbounded while loop with pointer increment. Loop increments 's1' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_internal.c",
+   "line": 425,
+   "message": "Potential null pointer dereference of variable 's1'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 's1' is not NULL before dereferencing"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_internal.c",
+   "line": 435,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:s1' and 'param:s2'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os_internal.c",
+   "line": 439,
+   "message": "Function 'os_strlcpy' does not validate pointer parameter 'src' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'src' at the start of the function, e.g., 'if (!src) { return error_code; }'"
+  },
+  {
+   "column": 24,
+   "file": "src/utils/os_internal.c",
+   "line": 439,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 42,
+   "file": "src/utils/os_internal.c",
+   "line": 439,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_internal.c",
+   "line": 446,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'dest' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_internal.c",
+   "line": 447,
+   "message": "Direct assignment of flexible array structure instances. Use memcpy() for dynamic copying.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Use memcpy() to copy the structure and its flexible array member"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_internal.c",
+   "line": 447,
+   "message": "Pointer dereference '*dest++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 19,
+   "file": "src/utils/os_internal.c",
+   "line": 447,
+   "message": "Pointer dereference '*s' (char type) assigned to larger type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment: (unsigned char)*ptr"
+  },
+  {
+   "column": 19,
+   "file": "src/utils/os_internal.c",
+   "line": 447,
+   "message": "Pointer dereference '*s++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 4,
+   "file": "src/utils/os_internal.c",
+   "line": 455,
+   "message": "Pointer dereference '*dest' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 32,
+   "file": "src/utils/os_internal.c",
+   "line": 464,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 47,
+   "file": "src/utils/os_internal.c",
+   "line": 464,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os_internal.c",
+   "line": 478,
+   "message": "Function 'os_strstr' does not validate pointer parameter 'haystack' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'haystack' at the start of the function, e.g., 'if (!haystack) { return error_code; }'"
+  },
+  {
+   "column": 25,
+   "file": "src/utils/os_internal.c",
+   "line": 480,
+   "message": "'needle' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_internal.c",
+   "line": 481,
+   "message": "Potential null pointer dereference of variable 'haystack'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'haystack' is not NULL before dereferencing"
+  },
+  {
+   "column": 11,
+   "file": "src/utils/os_internal.c",
+   "line": 483,
+   "message": "Do not cast away const qualification: '(char *) haystack'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os_internal.c",
+   "line": 491,
+   "message": "Function 'os_snprintf' does not validate pointer parameter 'str' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'str' at the start of the function, e.g., 'if (!str) { return error_code; }'"
+  },
+  {
+   "column": 22,
+   "file": "src/utils/os_internal.c",
+   "line": 491,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 52,
+   "file": "src/utils/os_internal.c",
+   "line": 491,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_internal.c",
+   "line": 501,
+   "message": "Return value of 'vsnprintf' assigned to 'ret' but not checked for errors: 'vsnprintf(str, size, format, ap)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_internal.c",
+   "line": 504,
+   "message": "Potential null pointer dereference in array access of variable 'str'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'str' is not NULL before array access"
+  },
+  {
+   "column": 37,
+   "file": "src/utils/os_internal.c",
+   "line": 516,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 37,
+   "file": "src/utils/os_internal.c",
+   "line": 516,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_internal.c",
+   "line": 523,
+   "message": "File-scope identifier '_program' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_internal.c",
+   "line": 524,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 5,
+   "file": "src/utils/os_internal.c",
+   "line": 542,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 38,
+   "file": "src/utils/os_internal.c",
+   "line": 547,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 38,
+   "file": "src/utils/os_internal.c",
+   "line": 547,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_internal.c",
+   "line": 550,
+   "message": "Function 'os_exec' calls 'exit', which dictates error handling. Application-independent code should report errors to the caller (via return values, error parameters, or error indicators) rather than terminating the program.",
+   "rule_id": "ERR05-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'exit' with error reporting via return value (e.g., 'return ERROR_CODE;'), error parameter (e.g., '*err = ERROR_CODE;'), or global error indicator"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_internal.c",
+   "line": 551,
+   "message": "Unreachable code after unconditional 'noreturn function call'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  }
+ ]
+}

@@ -1,0 +1,961 @@
+{
+ "src/eap_common/eap_teap_common.c": [
+  {
+   "column": 1,
+   "file": "src/eap_common/eap_teap_common.c",
+   "line": 33,
+   "message": "Function 'eap_teap_put_tlv' does not validate pointer parameter 'data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'data' at the start of the function, e.g., 'if (!data) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_common/eap_teap_common.c",
+   "line": 69,
+   "message": "Function returns pointer to local variable 'e' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 19,
+   "file": "src/eap_common/eap_teap_common.c",
+   "line": 74,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_common/eap_teap_common.c",
+   "line": 121,
+   "message": "Function 'eap_teap_derive_imck' does not validate pointer parameter 'prev_s_imck' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'prev_s_imck' at the start of the function, e.g., 'if (!prev_s_imck) { return error_code; }'"
+  },
+  {
+   "column": 19,
+   "file": "src/eap_common/eap_teap_common.c",
+   "line": 228,
+   "message": "Array declaration 'sha1_cs[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 19,
+   "file": "src/eap_common/eap_teap_common.c",
+   "line": 249,
+   "message": "Array declaration 'sha256_cs[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 19,
+   "file": "src/eap_common/eap_teap_common.c",
+   "line": 274,
+   "message": "Array declaration 'sha384_cs[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_common/eap_teap_common.c",
+   "line": 327,
+   "message": "Function 'eap_teap_compound_mac' does not validate pointer parameter 'cb' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cb' at the start of the function, e.g., 'if (!cb) { return error_code; }'"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_common/eap_teap_common.c",
+   "line": 367,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_common/eap_teap_common.c",
+   "line": 375,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 33,
+   "file": "src/eap_common/eap_teap_common.c",
+   "line": 536,
+   "message": "sizeof applied to pointer/array parameter 'tlv' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*tlv->crypto_binding)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 28,
+   "file": "src/eap_common/eap_teap_common.c",
+   "line": 631,
+   "message": "Dereference of uninitialized pointer 'result'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'result' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_common/eap_teap_common.c",
+   "line": 644,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_common/eap_teap_common.c",
+   "line": 660,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_common/eap_teap_common.c",
+   "line": 676,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  }
+ ],
+ "src/eap_peer/eap_tnc.c": [
+  {
+   "column": 26,
+   "file": "src/eap_peer/eap_tnc.c",
+   "line": 41,
+   "message": "Dereference of uninitialized pointer 'data'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'data' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_tnc.c",
+   "line": 55,
+   "message": "Function returns pointer to local variable 'data' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 42,
+   "file": "src/eap_peer/eap_tnc.c",
+   "line": 59,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_tnc.c",
+   "line": 84,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_tnc.c",
+   "line": 144,
+   "message": "Function returns pointer to local variable 'resp' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/eap_tnc.c",
+   "line": 177,
+   "message": "Potential null pointer dereference in member access of variable 'ret'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'ret' is not NULL before member access"
+  },
+  {
+   "column": 54,
+   "file": "src/eap_peer/eap_tnc.c",
+   "line": 201,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 7,
+   "file": "src/eap_peer/eap_tnc.c",
+   "line": 221,
+   "message": "Passing null pointer 'pos' to 'wpa_printf' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'pos' is not NULL before passing to 'wpa_printf'"
+  },
+  {
+   "column": 9,
+   "file": "src/eap_peer/eap_tnc.c",
+   "line": 314,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/eap_tnc.c",
+   "line": 317,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  },
+  {
+   "column": 10,
+   "file": "src/eap_peer/eap_tnc.c",
+   "line": 354,
+   "message": "Memory allocated with 'eap_msg_alloc' for variable 'resp@354:10' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(resp@354:10)' before the variable goes out of scope"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/eap_tnc.c",
+   "line": 362,
+   "message": "Function returns pointer to local variable 'resp' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_tnc.c",
+   "line": 396,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap_tnc.c",
+   "line": 403,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_peer/eap_tnc.c",
+   "line": 414,
+   "message": "Memory allocated with 'eap_peer_method_alloc' for variable 'eap' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(eap)' before the variable goes out of scope"
+  }
+ ],
+ "src/eap_server/eap_server_wsc.c": [
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_wsc.c",
+   "line": 57,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 26,
+   "file": "src/eap_server/eap_server_wsc.c",
+   "line": 99,
+   "message": "Dereference of uninitialized pointer 'data'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'data' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_wsc.c",
+   "line": 152,
+   "message": "Function returns pointer to local variable 'data' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 58,
+   "file": "src/eap_server/eap_server_wsc.c",
+   "line": 167,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 29,
+   "file": "src/eap_server/eap_server_wsc.c",
+   "line": 168,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_wsc.c",
+   "line": 184,
+   "message": "Function returns pointer to local variable 'req' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_wsc.c",
+   "line": 240,
+   "message": "Function returns pointer to local variable 'req' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 41,
+   "file": "src/eap_server/eap_server_wsc.c",
+   "line": 275,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 51,
+   "file": "src/eap_server/eap_server_wsc.c",
+   "line": 275,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 42,
+   "file": "src/eap_server/eap_server_wsc.c",
+   "line": 467,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 52,
+   "file": "src/eap_server/eap_server_wsc.c",
+   "line": 467,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 45,
+   "file": "src/eap_server/eap_server_wsc.c",
+   "line": 474,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 55,
+   "file": "src/eap_server/eap_server_wsc.c",
+   "line": 474,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 55,
+   "file": "src/eap_server/eap_server_wsc.c",
+   "line": 481,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_server/eap_server_wsc.c",
+   "line": 494,
+   "message": "Memory allocated with 'eap_server_method_alloc' for variable 'eap' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(eap)' before the variable goes out of scope"
+  }
+ ],
+ "src/utils/browser-android.c": [
+  {
+   "column": 34,
+   "file": "src/utils/browser-android.c",
+   "line": 22,
+   "message": "Pointer parameter 'eloop_data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *eloop_data'"
+  },
+  {
+   "column": 52,
+   "file": "src/utils/browser-android.c",
+   "line": 22,
+   "message": "Pointer parameter 'user_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *user_ctx'"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/browser-android.c",
+   "line": 43,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 19,
+   "file": "src/utils/browser-android.c",
+   "line": 44,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 19,
+   "file": "src/utils/browser-android.c",
+   "line": 44,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/browser-android.c",
+   "line": 65,
+   "message": "Function 'hs20_web_browser' does not validate pointer parameter 'url' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'url' at the start of the function, e.g., 'if (!url) { return error_code; }'"
+  },
+  {
+   "column": 37,
+   "file": "src/utils/browser-android.c",
+   "line": 90,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 37,
+   "file": "src/utils/browser-android.c",
+   "line": 90,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 13,
+   "file": "src/utils/browser-android.c",
+   "line": 105,
+   "message": "Do not cast away const qualification: '(void *) url'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 38,
+   "file": "src/utils/browser-android.c",
+   "line": 109,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 38,
+   "file": "src/utils/browser-android.c",
+   "line": 109,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/browser-android.c",
+   "line": 110,
+   "message": "Function 'hs20_web_browser' calls 'exit', which dictates error handling. Application-independent code should report errors to the caller (via return values, error parameters, or error indicators) rather than terminating the program.",
+   "rule_id": "ERR05-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'exit' with error reporting via return value (e.g., 'return ERROR_CODE;'), error parameter (e.g., '*err = ERROR_CODE;'), or global error indicator"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/browser-android.c",
+   "line": 111,
+   "message": "Unreachable code after unconditional 'noreturn function call'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/browser-android.c",
+   "line": 121,
+   "message": "External program invocation 'system(\"/system/bin/input keyevent KEYCODE_HOME\")' without environment sanitization. The environment should be sanitized before invoking external programs to prevent environment variable manipulation attacks.",
+   "rule_id": "ENV03-C",
+   "severity": "High",
+   "suggestion": "Call clearenv() to clear the environment, then use setenv() to set PATH and IFS to known safe values before invoking external programs."
+  },
+  {
+   "column": 6,
+   "file": "src/utils/browser-android.c",
+   "line": 121,
+   "message": "Call to 'system' is prohibited. This function invokes a command processor which can lead to command injection vulnerabilities. The function executes arbitrary shell commands and is inherently dangerous when user input is involved.",
+   "rule_id": "ENV33-C",
+   "severity": "High",
+   "suggestion": "Use the exec() family of functions (execl, execv, etc.) instead, which provide better control and security"
+  }
+ ],
+ "src/utils/ext_password.c": [
+  {
+   "column": 43,
+   "file": "src/utils/ext_password.c",
+   "line": 19,
+   "message": "Array declaration 'backends[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/ext_password.c",
+   "line": 35,
+   "message": "Function 'ext_password_init' does not validate pointer parameter 'params' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'params' at the start of the function, e.g., 'if (!params) { return error_code; }'"
+  },
+  {
+   "column": 26,
+   "file": "src/utils/ext_password.c",
+   "line": 41,
+   "message": "Dereference of uninitialized pointer 'data'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'data' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/ext_password.c",
+   "line": 63,
+   "message": "Function returns pointer to local variable 'data' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 59,
+   "file": "src/utils/ext_password.c",
+   "line": 75,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 5,
+   "file": "src/utils/ext_password.c",
+   "line": 78,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/ext_password.c",
+   "line": 93,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 7,
+   "file": "src/utils/ext_password.c",
+   "line": 95,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/utils/ext_password.c",
+   "line": 95,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/ext_password.c",
+   "line": 99,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 5,
+   "file": "src/utils/ext_password.c",
+   "line": 105,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/ext_password.c",
+   "line": 107,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/ext_password.c",
+   "line": 109,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 7,
+   "file": "src/utils/ext_password.c",
+   "line": 111,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/utils/ext_password.c",
+   "line": 111,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  }
+ ],
+ "src/utils/pcsc_funcs.h": [
+  {
+   "column": 1,
+   "file": "src/utils/pcsc_funcs.h",
+   "line": 17,
+   "message": "Function has pointer parameter without size argument: 'int scard_get_imsi(struct scard_data *scard, char *imsi, size_t *len);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 51,
+   "file": "src/utils/pcsc_funcs.h",
+   "line": 17,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/pcsc_funcs.h",
+   "line": 21,
+   "message": "Function has pointer parameter without size argument: 'int scard_umts_auth(struct scard_data *scard, const unsigned char *_rand,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *res_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 67,
+   "file": "src/utils/pcsc_funcs.h",
+   "line": 21,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 27,
+   "file": "src/utils/pcsc_funcs.h",
+   "line": 22,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 21,
+   "file": "src/utils/pcsc_funcs.h",
+   "line": 23,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 21,
+   "file": "src/utils/pcsc_funcs.h",
+   "line": 24,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 40,
+   "file": "src/utils/pcsc_funcs.h",
+   "line": 24,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 59,
+   "file": "src/utils/pcsc_funcs.h",
+   "line": 24,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/pcsc_funcs.h",
+   "line": 32,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (-1)"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/pcsc_funcs.h",
+   "line": 33,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (-1)"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/pcsc_funcs.h",
+   "line": 34,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (-1)"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/pcsc_funcs.h",
+   "line": 35,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (-1)"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/pcsc_funcs.h",
+   "line": 36,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (-1)"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/pcsc_funcs.h",
+   "line": 37,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (-1)"
+  }
+ ],
+ "wpa_supplicant/wpas_kay.c": [
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpas_kay.c",
+   "line": 15,
+   "message": "Header file 'ieee802_1x_key.h' has the same first 8 characters (case-insensitive) as 'ieee802_1x_kay.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_1x_key.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpas_kay.c",
+   "line": 196,
+   "message": "Function 'ieee802_1x_alloc_kay_sm' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 75,
+   "file": "wpa_supplicant/wpas_kay.c",
+   "line": 196,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpas_kay.c",
+   "line": 199,
+   "message": "Value assigned to 'res' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 29,
+   "file": "wpa_supplicant/wpas_kay.c",
+   "line": 216,
+   "message": "Dereference of uninitialized pointer 'kay_ctx'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'kay_ctx' before dereferencing"
+  },
+  {
+   "column": 58,
+   "file": "wpa_supplicant/wpas_kay.c",
+   "line": 274,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpas_kay.c",
+   "line": 303,
+   "message": "Function 'ieee802_1x_notify_create_actor' does not validate pointer parameter 'peer_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'peer_addr' at the start of the function, e.g., 'if (!peer_addr) { return error_code; }'"
+  },
+  {
+   "column": 25,
+   "file": "wpa_supplicant/wpas_kay.c",
+   "line": 320,
+   "message": "Dereference of uninitialized pointer 'msk'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'msk' before dereferencing"
+  },
+  {
+   "column": 25,
+   "file": "wpa_supplicant/wpas_kay.c",
+   "line": 321,
+   "message": "Dereference of uninitialized pointer 'ckn'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ckn' before dereferencing"
+  },
+  {
+   "column": 25,
+   "file": "wpa_supplicant/wpas_kay.c",
+   "line": 322,
+   "message": "Dereference of uninitialized pointer 'cak'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'cak' before dereferencing"
+  },
+  {
+   "column": 29,
+   "file": "wpa_supplicant/wpas_kay.c",
+   "line": 347,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Derived CAK\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpas_kay.c",
+   "line": 377,
+   "message": "Function 'ieee802_1x_create_preshared_mka' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpas_kay.c",
+   "line": 377,
+   "message": "Function 'ieee802_1x_create_preshared_mka' does not validate pointer parameter 'ssid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ssid' at the start of the function, e.g., 'if (!ssid) { return error_code; }'"
+  },
+  {
+   "column": 25,
+   "file": "wpa_supplicant/wpas_kay.c",
+   "line": 387,
+   "message": "Dereference of uninitialized pointer 'ckn'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ckn' before dereferencing"
+  },
+  {
+   "column": 25,
+   "file": "wpa_supplicant/wpas_kay.c",
+   "line": 391,
+   "message": "Dereference of uninitialized pointer 'cak'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'cak' before dereferencing"
+  }
+ ]
+}

@@ -1,0 +1,1354 @@
+{
+ "src/p2p/p2p.c#part1of3": [
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 14,
+   "message": "Header file 'ieee802_11_defs.h' has the same first 8 characters (case-insensitive) as 'ieee802_11_common.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_defs.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 57,
+   "message": "Function 'p2p_expire_peers' does not validate pointer parameter 'p2p' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'p2p' at the start of the function, e.g., 'if (!p2p) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 145,
+   "message": "Function 'p2p_get_state_txt' does not validate pointer parameter 'p2p' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'p2p' at the start of the function, e.g., 'if (!p2p) { return error_code; }'"
+  },
+  {
+   "column": 48,
+   "file": "src/p2p/p2p.c",
+   "line": 145,
+   "message": "Pointer parameter 'p2p' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *p2p'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 151,
+   "message": "Function 'p2p_get_p2ps_adv_list' does not validate pointer parameter 'p2p' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'p2p' at the start of the function, e.g., 'if (!p2p) { return error_code; }'"
+  },
+  {
+   "column": 67,
+   "file": "src/p2p/p2p.c",
+   "line": 151,
+   "message": "Pointer parameter 'p2p' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *p2p'"
+  },
+  {
+   "column": 44,
+   "file": "src/p2p/p2p.c",
+   "line": 157,
+   "message": "Pointer parameter 'p2p' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *p2p'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 166,
+   "message": "Value assigned to 'dev' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 181,
+   "message": "Value assigned to 'dev' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p.c",
+   "line": 194,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 38,
+   "file": "src/p2p/p2p.c",
+   "line": 252,
+   "message": "sizeof applied to pointer/array parameter 'p2p' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(p2p->dev_sae_password)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 39,
+   "file": "src/p2p/p2p.c",
+   "line": 253,
+   "message": "sizeof applied to pointer/array parameter 'p2p' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(p2p->peer_sae_password)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 7,
+   "file": "src/p2p/p2p.c",
+   "line": 288,
+   "message": "Signed integer multiplication '(r % ((p2p->max_disc_int - p2p->min_disc_int) + 1) +\n\t      p2p->min_disc_int) * 100' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check using complex multiplication overflow detection"
+  },
+  {
+   "column": 8,
+   "file": "src/p2p/p2p.c",
+   "line": 288,
+   "message": "Variable 'r' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'r' before use, e.g., at its declaration"
+  },
+  {
+   "column": 8,
+   "file": "src/p2p/p2p.c",
+   "line": 288,
+   "message": "Division or modulo by '((p2p->max_disc_int - p2p->min_disc_int) + 1)' without checking for zero",
+   "rule_id": "INT33-C",
+   "severity": "High",
+   "suggestion": "Check if '((p2p->max_disc_int - p2p->min_disc_int) + 1)' is not zero before division"
+  },
+  {
+   "column": 10,
+   "file": "src/p2p/p2p.c",
+   "line": 288,
+   "message": "Modulo operator used with potentially signed operands. The result of % with negative operands is implementation-defined and can be negative. Use unsigned types (size_t, unsigned int) or explicitly handle negative remainders.",
+   "rule_id": "INT10-C",
+   "severity": "Medium",
+   "suggestion": "Convert operands to unsigned types (size_t, unsigned int) or add explicit checks for negative values"
+  },
+  {
+   "column": 4,
+   "file": "src/p2p/p2p.c",
+   "line": 396,
+   "message": "Function returns pointer to local variable 'dev' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 408,
+   "message": "Function 'p2p_get_device_interface' does not validate pointer parameter 'p2p' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'p2p' at the start of the function, e.g., 'if (!p2p) { return error_code; }'"
+  },
+  {
+   "column": 4,
+   "file": "src/p2p/p2p.c",
+   "line": 414,
+   "message": "Function returns pointer to local variable 'dev' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 5,
+   "file": "src/p2p/p2p.c",
+   "line": 468,
+   "message": "sizeof applied to pointer/array parameter 'dev' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(dev->info.device_name)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 5,
+   "file": "src/p2p/p2p.c",
+   "line": 490,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p.c",
+   "line": 508,
+   "message": "Loop uses uninitialized variable 'c' as bound for array access. This has indeterminate value and can cause out-of-bounds access.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize 'c' to a valid value before using it in the loop"
+  },
+  {
+   "column": 18,
+   "file": "src/p2p/p2p.c",
+   "line": 508,
+   "message": "Variable 'info' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'info' before use, e.g., at its declaration"
+  },
+  {
+   "column": 5,
+   "file": "src/p2p/p2p.c",
+   "line": 566,
+   "message": "sizeof applied to pointer/array parameter 'dev' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(dev->info.device_name)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 30,
+   "file": "src/p2p/p2p.c",
+   "line": 569,
+   "message": "sizeof applied to pointer/array parameter 'dev' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(dev->info.manufacturer)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 6,
+   "file": "src/p2p/p2p.c",
+   "line": 571,
+   "message": "sizeof applied to pointer/array parameter 'dev' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(dev->info.manufacturer)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 28,
+   "file": "src/p2p/p2p.c",
+   "line": 577,
+   "message": "sizeof applied to pointer/array parameter 'dev' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(dev->info.model_name)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 6,
+   "file": "src/p2p/p2p.c",
+   "line": 579,
+   "message": "sizeof applied to pointer/array parameter 'dev' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(dev->info.model_name)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 30,
+   "file": "src/p2p/p2p.c",
+   "line": 585,
+   "message": "sizeof applied to pointer/array parameter 'dev' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(dev->info.model_number)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 6,
+   "file": "src/p2p/p2p.c",
+   "line": 587,
+   "message": "sizeof applied to pointer/array parameter 'dev' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(dev->info.model_number)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 31,
+   "file": "src/p2p/p2p.c",
+   "line": 593,
+   "message": "sizeof applied to pointer/array parameter 'dev' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(dev->info.serial_number)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 6,
+   "file": "src/p2p/p2p.c",
+   "line": 595,
+   "message": "sizeof applied to pointer/array parameter 'dev' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(dev->info.serial_number)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 6,
+   "file": "src/p2p/p2p.c",
+   "line": 602,
+   "message": "sizeof applied to pointer/array parameter 'dev' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(dev->info.pri_dev_type)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 7,
+   "file": "src/p2p/p2p.c",
+   "line": 603,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 6,
+   "file": "src/p2p/p2p.c",
+   "line": 605,
+   "message": "sizeof applied to pointer/array parameter 'dev' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(dev->info.pri_dev_type)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 26,
+   "file": "src/p2p/p2p.c",
+   "line": 621,
+   "message": "Variable 'msg' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 651,
+   "message": "Function 'p2p_update_peer_6ghz_capab' does not validate pointer parameter 'dev' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dev' at the start of the function, e.g., 'if (!dev) { return error_code; }'"
+  },
+  {
+   "column": 3,
+   "file": "src/p2p/p2p.c",
+   "line": 656,
+   "message": "Potential null pointer dereference in member access of variable 'dev'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'dev' is not NULL before member access"
+  },
+  {
+   "column": 51,
+   "file": "src/p2p/p2p.c",
+   "line": 702,
+   "message": "Pointer parameter 'dev' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *dev'"
+  },
+  {
+   "column": 5,
+   "file": "src/p2p/p2p.c",
+   "line": 781,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 6,
+   "file": "src/p2p/p2p.c",
+   "line": 960,
+   "message": "Potential null pointer dereference in member access of variable 'dev'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'dev' is not NULL before member access"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p.c",
+   "line": 1000,
+   "message": "Loop uses uninitialized variable 'cl' as bound for array access. This has indeterminate value and can cause out-of-bounds access.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize 'cl' to a valid value before using it in the loop"
+  },
+  {
+   "column": 3,
+   "file": "src/p2p/p2p.c",
+   "line": 1004,
+   "message": "Loop uses uninitialized variable 'ch' as bound for array access. This has indeterminate value and can cause out-of-bounds access.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize 'ch' to a valid value before using it in the loop"
+  },
+  {
+   "column": 7,
+   "file": "src/p2p/p2p.c",
+   "line": 1021,
+   "message": "Variable 'ch' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'ch' before use, e.g., at its declaration"
+  },
+  {
+   "column": 13,
+   "file": "src/p2p/p2p.c",
+   "line": 1021,
+   "message": "Variable 'cla' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'cla' before use, e.g., at its declaration"
+  },
+  {
+   "column": 13,
+   "file": "src/p2p/p2p.c",
+   "line": 1021,
+   "message": "Potential null pointer dereference in member access of variable 'cla'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'cla' is not NULL before member access"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 1064,
+   "message": "Value assigned to 'freq' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 52,
+   "file": "src/p2p/p2p.c",
+   "line": 1084,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 1092,
+   "message": "Function 'p2p_notify_scan_trigger_status' does not validate pointer parameter 'p2p' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'p2p' at the start of the function, e.g., 'if (!p2p) { return error_code; }'"
+  },
+  {
+   "column": 52,
+   "file": "src/p2p/p2p.c",
+   "line": 1139,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 42,
+   "file": "src/p2p/p2p.c",
+   "line": 1161,
+   "message": "Pointer parameter 'p2p' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *p2p'"
+  },
+  {
+   "column": 21,
+   "file": "src/p2p/p2p.c",
+   "line": 1176,
+   "message": "Variable 'str_buf' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'str_buf' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 1196,
+   "message": "Function 'p2p_find' does not validate integer parameter 'num_req_dev_types' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'num_req_dev_types' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 3,
+   "file": "src/p2p/p2p.c",
+   "line": 1221,
+   "message": "Use-after-free: passing freed pointer 'p2p' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 13,
+   "file": "src/p2p/p2p.c",
+   "line": 1221,
+   "message": "Use-after-free: accessing member of freed pointer 'p2p'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 22,
+   "file": "src/p2p/p2p.c",
+   "line": 1222,
+   "message": "Use-after-free: accessing member of freed pointer 'p2p'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 9,
+   "file": "src/p2p/p2p.c",
+   "line": 1333,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 1415,
+   "message": "Function 'p2p_stop_find' does not validate pointer parameter 'p2p' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'p2p' at the start of the function, e.g., 'if (!p2p) { return error_code; }'"
+  },
+  {
+   "column": 9,
+   "file": "src/p2p/p2p.c",
+   "line": 1441,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 12,
+   "file": "src/p2p/p2p.c",
+   "line": 1474,
+   "message": "Array declaration 'op_classes_5ghz[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 12,
+   "file": "src/p2p/p2p.c",
+   "line": 1475,
+   "message": "Array declaration 'op_classes_ht40[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 12,
+   "file": "src/p2p/p2p.c",
+   "line": 1476,
+   "message": "Array declaration 'op_classes_vht[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 12,
+   "file": "src/p2p/p2p.c",
+   "line": 1477,
+   "message": "Array declaration 'op_classes_edmg[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 12,
+   "file": "src/p2p/p2p.c",
+   "line": 1478,
+   "message": "Array declaration 'op_classes_6ghz[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 1577,
+   "message": "Function 'p2p_prepare_channel' does not validate pointer parameter 'p2p' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'p2p' at the start of the function, e.g., 'if (!p2p) { return error_code; }'"
+  },
+  {
+   "column": 3,
+   "file": "src/p2p/p2p.c",
+   "line": 1595,
+   "message": "Passing pointer to uninitialized variable 'p2p_chanlist' to 'p2p_dfs_channel_filter' which reads the value",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'p2p_chanlist' before passing its address to 'p2p_dfs_channel_filter'"
+  },
+  {
+   "column": 7,
+   "file": "src/p2p/p2p.c",
+   "line": 1606,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p.c",
+   "line": 1627,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 1644,
+   "message": "Function 'p2p_connect' does not validate pointer parameter 'own_interface_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'own_interface_addr' at the start of the function, e.g., 'if (!own_interface_addr) { return error_code; }'"
+  },
+  {
+   "column": 40,
+   "file": "src/p2p/p2p.c",
+   "line": 1650,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p.c",
+   "line": 1654,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 1751,
+   "message": "Function 'p2p_authorize' does not validate pointer parameter 'own_interface_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'own_interface_addr' at the start of the function, e.g., 'if (!own_interface_addr) { return error_code; }'"
+  },
+  {
+   "column": 16,
+   "file": "src/p2p/p2p.c",
+   "line": 1757,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p.c",
+   "line": 1761,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 1807,
+   "message": "Function 'p2p_add_dev_info' does not validate pointer parameter 'addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'addr' at the start of the function, e.g., 'if (!addr) { return error_code; }'"
+  },
+  {
+   "column": 18,
+   "file": "src/p2p/p2p.c",
+   "line": 1810,
+   "message": "Potential null pointer dereference in member access of variable 'dev'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'dev' is not NULL before member access"
+  },
+  {
+   "column": 37,
+   "file": "src/p2p/p2p.c",
+   "line": 1865,
+   "message": "Pointer parameter 'p2p' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *p2p'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 1875,
+   "message": "Function 'p2p_go_params' does not validate pointer parameter 'p2p' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'p2p' at the start of the function, e.g., 'if (!p2p) { return error_code; }'"
+  },
+  {
+   "column": 7,
+   "file": "src/p2p/p2p.c",
+   "line": 1894,
+   "message": "sizeof applied to pointer/array parameter 'p2p' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(p2p->dev_sae_password)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 7,
+   "file": "src/p2p/p2p.c",
+   "line": 1896,
+   "message": "sizeof applied to pointer/array parameter 'params' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(params->sae_password)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 1903,
+   "message": "Function 'p2p_set_go_role' does not validate pointer parameter 'p2p' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'p2p' at the start of the function, e.g., 'if (!p2p) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p.c",
+   "line": 1948,
+   "message": "Passing pointer to uninitialized variable 'intersection' to 'p2p_channels_intersect' which reads the value",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'intersection' before passing its address to 'p2p_channels_intersect'"
+  },
+  {
+   "column": 10,
+   "file": "src/p2p/p2p.c",
+   "line": 1990,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 6,
+   "file": "src/p2p/p2p.c",
+   "line": 2005,
+   "message": "sizeof applied to pointer/array parameter 'p2p' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(p2p->dev_sae_password)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 6,
+   "file": "src/p2p/p2p.c",
+   "line": 2007,
+   "message": "sizeof applied to pointer/array parameter 'p2p' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(p2p->peer_sae_password)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p.c",
+   "line": 2077,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 2107,
+   "message": "Function 'p2p_rx_action' does not validate pointer parameter 'p2p' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'p2p' at the start of the function, e.g., 'if (!p2p) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 2107,
+   "message": "Function 'p2p_rx_action' does not validate pointer parameter 'sa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sa' at the start of the function, e.g., 'if (!sa) { return error_code; }'"
+  },
+  {
+   "column": 52,
+   "file": "src/p2p/p2p.c",
+   "line": 2154,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 52,
+   "file": "src/p2p/p2p.c",
+   "line": 2175,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 28,
+   "file": "src/p2p/p2p.c",
+   "line": 2260,
+   "message": "Memory allocated with 'wpabuf_dup' for variable 'dev->info.wfd_subelems' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(dev->info.wfd_subelems)' before the variable goes out of scope"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 2273,
+   "message": "Function 'p2p_add_dev_from_go_neg_req' does not validate pointer parameter 'addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'addr' at the start of the function, e.g., 'if (!addr) { return error_code; }'"
+  },
+  {
+   "column": 3,
+   "file": "src/p2p/p2p.c",
+   "line": 2282,
+   "message": "Function returns pointer to local variable 'dev' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p.c",
+   "line": 2291,
+   "message": "Function returns pointer to local variable 'dev' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 2307,
+   "message": "Function 'dev_type_list_match' does not validate pointer parameter 'req_dev_type' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'req_dev_type' at the start of the function, e.g., 'if (!req_dev_type) { return error_code; }'"
+  },
+  {
+   "column": 40,
+   "file": "src/p2p/p2p.c",
+   "line": 2329,
+   "message": "Pointer parameter 'p2p' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *p2p'"
+  },
+  {
+   "column": 6,
+   "file": "src/p2p/p2p.c",
+   "line": 2337,
+   "message": "Variable 'attr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'attr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p.c",
+   "line": 2415,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 9,
+   "file": "src/p2p/p2p.c",
+   "line": 2457,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 29,
+   "file": "src/p2p/p2p.c",
+   "line": 2506,
+   "message": "Do not cast away const qualification: '(u8 *) ie'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 6,
+   "file": "src/p2p/p2p.c",
+   "line": 2513,
+   "message": "Variable 'elems' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'elems' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 2664,
+   "message": "Function 'p2p_probe_req_rx' does not validate pointer parameter 'dst' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dst' at the start of the function, e.g., 'if (!dst) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 2664,
+   "message": "Function 'p2p_probe_req_rx' does not validate pointer parameter 'bssid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'bssid' at the start of the function, e.g., 'if (!bssid) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 2664,
+   "message": "Function 'p2p_probe_req_rx' does not validate pointer parameter 'ie' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ie' at the start of the function, e.g., 'if (!ie) { return error_code; }'"
+  },
+  {
+   "column": 5,
+   "file": "src/p2p/p2p.c",
+   "line": 2727,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 2778,
+   "message": "Function 'p2p_assoc_req_ie' does not validate pointer parameter 'bssid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'bssid' at the start of the function, e.g., 'if (!bssid) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 2841,
+   "message": "Function 'p2p_scan_result_text' does not validate pointer parameter 'ies' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ies' at the start of the function, e.g., 'if (!ies) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 2841,
+   "message": "Function 'p2p_scan_result_text' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 2841,
+   "message": "Function 'p2p_scan_result_text' does not validate pointer parameter 'end' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'end' at the start of the function, e.g., 'if (!end) { return error_code; }'"
+  },
+  {
+   "column": 62,
+   "file": "src/p2p/p2p.c",
+   "line": 2841,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 73,
+   "file": "src/p2p/p2p.c",
+   "line": 2841,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 37,
+   "file": "src/p2p/p2p.c",
+   "line": 2857,
+   "message": "Pointer parameter 'p2p' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *p2p'"
+  },
+  {
+   "column": 4,
+   "file": "src/p2p/p2p.c",
+   "line": 2867,
+   "message": "Function returns pointer to local variable 'adv_data' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 4,
+   "file": "src/p2p/p2p.c",
+   "line": 2961,
+   "message": "Local variable 'adv_data' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 9,
+   "file": "src/p2p/p2p.c",
+   "line": 3020,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 3028,
+   "message": "Function 'p2p_parse_dev_addr' does not validate pointer parameter 'ies' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ies' at the start of the function, e.g., 'if (!ies) { return error_code; }'"
+  },
+  {
+   "column": 3,
+   "file": "src/p2p/p2p.c",
+   "line": 3059,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 43,
+   "file": "src/p2p/p2p.c",
+   "line": 3087,
+   "message": "Pointer parameter 'p2p' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *p2p'"
+  },
+  {
+   "column": 39,
+   "file": "src/p2p/p2p.c",
+   "line": 3095,
+   "message": "Pointer parameter 'p2p' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *p2p'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 3102,
+   "message": "Function 'p2p_update_dfs_ap_info' does not validate pointer parameter 'p2p' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'p2p' at the start of the function, e.g., 'if (!p2p) { return error_code; }'"
+  },
+  {
+   "column": 53,
+   "file": "src/p2p/p2p.c",
+   "line": 3118,
+   "message": "Pointer parameter 'p2p' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *p2p'"
+  },
+  {
+   "column": 25,
+   "file": "src/p2p/p2p.c",
+   "line": 3174,
+   "message": "Dereference of uninitialized pointer 'p2p'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'p2p' before dereferencing"
+  },
+  {
+   "column": 33,
+   "file": "src/p2p/p2p.c",
+   "line": 3174,
+   "message": "sizeof applied to pointer/array parameter 'cfg' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*cfg)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 27,
+   "file": "src/p2p/p2p.c",
+   "line": 3178,
+   "message": "sizeof applied to pointer/array parameter 'cfg' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*cfg)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p.c",
+   "line": 3230,
+   "message": "Function returns pointer to local variable 'p2p' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 3234,
+   "message": "Function 'p2p_deinit' does not validate pointer parameter 'p2p' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'p2p' at the start of the function, e.g., 'if (!p2p) { return error_code; }'"
+  },
+  {
+   "column": 10,
+   "file": "src/p2p/p2p.c",
+   "line": 3256,
+   "message": "Use-after-free: accessing member of freed pointer 'p2p'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 10,
+   "file": "src/p2p/p2p.c",
+   "line": 3257,
+   "message": "Use-after-free: accessing member of freed pointer 'p2p'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 10,
+   "file": "src/p2p/p2p.c",
+   "line": 3258,
+   "message": "Use-after-free: accessing member of freed pointer 'p2p'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 10,
+   "file": "src/p2p/p2p.c",
+   "line": 3259,
+   "message": "Use-after-free: accessing member of freed pointer 'p2p'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 10,
+   "file": "src/p2p/p2p.c",
+   "line": 3260,
+   "message": "Use-after-free: accessing member of freed pointer 'p2p'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 10,
+   "file": "src/p2p/p2p.c",
+   "line": 3261,
+   "message": "Use-after-free: accessing member of freed pointer 'p2p'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p.c",
+   "line": 3263,
+   "message": "Double-free: 'p2p' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p.c",
+   "line": 3265,
+   "message": "Use-after-free: passing freed pointer 'p2p' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 10,
+   "file": "src/p2p/p2p.c",
+   "line": 3266,
+   "message": "Use-after-free: accessing member of freed pointer 'p2p'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p.c",
+   "line": 3267,
+   "message": "Use-after-free: passing freed pointer 'p2p' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p.c",
+   "line": 3268,
+   "message": "Use-after-free: passing freed pointer 'p2p' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p.c",
+   "line": 3270,
+   "message": "Double-free: 'p2p' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p.c",
+   "line": 3270,
+   "message": "Double free detected: 'p2p' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 3274,
+   "message": "Function 'p2p_flush' does not validate pointer parameter 'p2p' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'p2p' at the start of the function, e.g., 'if (!p2p) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p.c",
+   "line": 3287,
+   "message": "Double free detected: 'p2p' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate p2ps_prov_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 3393,
+   "message": "Function 'p2p_set_uuid' does not validate pointer parameter 'uuid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'uuid' at the start of the function, e.g., 'if (!uuid) { return error_code; }'"
+  },
+  {
+   "column": 35,
+   "file": "src/p2p/p2p.c",
+   "line": 3393,
+   "message": "Pointer parameter 'p2p' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *p2p'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 3399,
+   "message": "Function 'p2p_set_pri_dev_type' does not validate pointer parameter 'pri_dev_type' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pri_dev_type' at the start of the function, e.g., 'if (!pri_dev_type) { return error_code; }'"
+  },
+  {
+   "column": 42,
+   "file": "src/p2p/p2p.c",
+   "line": 3399,
+   "message": "Pointer parameter 'p2p' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *p2p'"
+  },
+  {
+   "column": 5,
+   "file": "src/p2p/p2p.c",
+   "line": 3433,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 37,
+   "file": "src/p2p/p2p.c",
+   "line": 3451,
+   "message": "Pointer parameter 'p2p' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *p2p'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 3488,
+   "message": "Function 'p2p_continue_find' does not validate pointer parameter 'p2p' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'p2p' at the start of the function, e.g., 'if (!p2p) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p.c",
+   "line": 3499,
+   "message": "Value assigned to 'found' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 8,
+   "file": "src/p2p/p2p.c",
+   "line": 3643,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  }
+ ]
+}

@@ -1,0 +1,274 @@
+{
+ "src/drivers/driver_ndis.c#part2of2": [
+  {
+   "column": 20,
+   "file": "src/drivers/driver_ndis.c",
+   "line": 2470,
+   "message": "Variable 'devname' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'devname' before use, e.g., at its declaration"
+  },
+  {
+   "column": 20,
+   "file": "src/drivers/driver_ndis.c",
+   "line": 2490,
+   "message": "Variable 'hnd' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'hnd' before use, e.g., at its declaration"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_ndis.c",
+   "line": 2529,
+   "message": "Using LoadLibrary() without specifying search paths enables DLL hijacking attacks. An attacker could place a malicious DLL on the search path.",
+   "rule_id": "WIN00-C",
+   "severity": "High",
+   "suggestion": "Use LoadLibraryEx() with explicit search flags like LOAD_LIBRARY_SEARCH_APPLICATION_DIR or LOAD_LIBRARY_SEARCH_SYSTEM32 to control DLL search paths."
+  },
+  {
+   "column": 64,
+   "file": "src/drivers/driver_ndis.c",
+   "line": 2672,
+   "message": "Pointer parameter 'drv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *drv'"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_ndis.c",
+   "line": 2687,
+   "message": "Shared variable 'driver_ndis_ndisuio_handle' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_ndis.c",
+   "line": 2696,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_ndis.c",
+   "line": 2733,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_ndis.c",
+   "line": 2733,
+   "message": "Off-by-one error: accessing array[i] after loop with condition 'i < n' can access out-of-bounds memory when i == n",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Use 'dest[i-1] = '\\0'' or adjust loop condition to 'i < n-1'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_ndis.c",
+   "line": 2738,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 35,
+   "file": "src/drivers/driver_ndis.c",
+   "line": 2753,
+   "message": "Signed integer subtraction 'i - pos' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b < 0 && a > INT_MAX + b) || (b > 0 && a < INT_MIN + b)) { /* handle error */ }"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_ndis.c",
+   "line": 2754,
+   "message": "Potentially unsafe array access with variable index 'i': Buffer 'ifname' with size 128 (allocated at line 2772)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 71,
+   "file": "src/drivers/driver_ndis.c",
+   "line": 2785,
+   "message": "Pointer parameter 'drv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *drv'"
+  },
+  {
+   "column": 25,
+   "file": "src/drivers/driver_ndis.c",
+   "line": 2817,
+   "message": "Dereference of uninitialized pointer 'drv'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'drv' before dereferencing"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_ndis.c",
+   "line": 2829,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_ndis.c",
+   "line": 2840,
+   "message": "Double free detected: 'drv' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_ndis.c",
+   "line": 2848,
+   "message": "Double free detected: 'drv' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_ndis.c",
+   "line": 2857,
+   "message": "Double free detected: 'drv' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 10,
+   "file": "src/drivers/driver_ndis.c",
+   "line": 2916,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_ndis.c",
+   "line": 2931,
+   "message": "Function returns pointer to local variable 'drv' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_ndis.c",
+   "line": 2969,
+   "message": "Double free detected: 'drv' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 37,
+   "file": "src/drivers/driver_ndis.c",
+   "line": 2974,
+   "message": "Pointer parameter 'global_priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *global_priv'"
+  },
+  {
+   "column": 23,
+   "file": "src/drivers/driver_ndis.c",
+   "line": 2980,
+   "message": "Dereference of uninitialized pointer 'b'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'b' before dereferencing"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_ndis.c",
+   "line": 3011,
+   "message": "Resource 'ndisuio' is closed again after already being closed at line 3004. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_ndis.c",
+   "line": 3035,
+   "message": "Potentially unsafe array access with variable index 'len': Buffer 'name' with size 256 (allocated at line 2983)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 29,
+   "file": "src/drivers/driver_ndis.c",
+   "line": 3047,
+   "message": "Dereference of uninitialized pointer 'niface'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'niface' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_ndis.c",
+   "line": 3065,
+   "message": "Resource 'ndisuio' is closed again after already being closed at line 3004. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_ndis.c",
+   "line": 3067,
+   "message": "File-scope identifier '_names' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_ndis.c",
+   "line": 3111,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_ndis.c",
+   "line": 3114,
+   "message": "Function 'os_memcpy' called with overlapping memory regions. If parameters are restrict-qualified, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure memory regions do not overlap when using restrict pointers"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_ndis.c",
+   "line": 3193,
+   "message": "Double free detected: 'niface' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  }
+ ]
+}

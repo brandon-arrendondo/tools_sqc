@@ -1,0 +1,1007 @@
+{
+ "src/ap/eth_p_oui.c": [
+  {
+   "column": 17,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 22,
+   "message": "Array declaration 'global_oui[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 26,
+   "message": "String buffer placed before pointer in struct 'eth_p_oui_iface': 'char ifname[IFNAMSIZ + 1];' before 'struct l2_packet_data *l2;' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'char ifname' after the pointer field 'struct l2_packet_data *l2;', or use a char* pointer instead of a char array"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 43,
+   "message": "Function 'eth_p_oui_deliver' does not validate pointer parameter 'ctx' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ctx' at the start of the function, e.g., 'if (!ctx) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 43,
+   "message": "Function 'eth_p_oui_deliver' does not validate pointer parameter 'src_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'src_addr' at the start of the function, e.g., 'if (!src_addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 43,
+   "message": "Function 'eth_p_oui_deliver' does not validate pointer parameter 'dst_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dst_addr' at the start of the function, e.g., 'if (!dst_addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 43,
+   "message": "Function 'eth_p_oui_deliver' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  },
+  {
+   "column": 45,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 43,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 27,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 51,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 19,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 57,
+   "message": "Dereference of uninitialized pointer 'ethhdr'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ethhdr' before dereferencing"
+  },
+  {
+   "column": 30,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 57,
+   "message": "sizeof applied to pointer/array parameter 'global_oui' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(global_oui)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 11,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 62,
+   "message": "Do not cast away const qualification: '(struct l2_ethhdr *) buf'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 64,
+   "message": "Scaled integer assignment to pointer: 'buf += sizeof(*ethhdr)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Use unscaled integer increment without sizeof()"
+  },
+  {
+   "column": 33,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 68,
+   "message": "sizeof applied to pointer/array parameter 'global_oui' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(global_oui)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 2,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 70,
+   "message": "Scaled integer assignment to pointer: 'buf += sizeof(global_oui)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Use unscaled integer increment without sizeof()"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 70,
+   "message": "sizeof applied to pointer/array parameter 'global_oui' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(global_oui)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 9,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 71,
+   "message": "sizeof applied to pointer/array parameter 'global_oui' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(global_oui)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 7,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 79,
+   "message": "Pointer arithmetic 'buf + 1' goes 1 elements past the end of array 'buf[0]'. This exceeds array bounds.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Ensure pointer arithmetic stays within array bounds (0 to 0)"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 84,
+   "message": "Function 'eth_p_oui_register' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 84,
+   "message": "Function 'eth_p_oui_register' does not validate pointer parameter 'rx_callback' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'rx_callback' at the start of the function, e.g., 'if (!rx_callback) { return error_code; }'"
+  },
+  {
+   "column": 40,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 85,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 93,
+   "message": "Value assigned to 'found' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 30,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 96,
+   "message": "Dereference of uninitialized pointer 'receiver'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'receiver' before dereferencing"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 110,
+   "message": "Value assigned to 'found' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 134,
+   "message": "Function returns pointer to local variable 'receiver' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 135,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 10,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 136,
+   "message": "Passing null pointer 'receiver' to 'os_free' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'receiver' is not NULL before passing to 'os_free'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 161,
+   "message": "Function 'eth_p_oui_send' does not validate pointer parameter 'ctx' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ctx' at the start of the function, e.g., 'if (!ctx) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 161,
+   "message": "Function 'eth_p_oui_send' does not validate pointer parameter 'src_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'src_addr' at the start of the function, e.g., 'if (!src_addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 161,
+   "message": "Function 'eth_p_oui_send' does not validate pointer parameter 'dst_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dst_addr' at the start of the function, e.g., 'if (!dst_addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 161,
+   "message": "Function 'eth_p_oui_send' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 161,
+   "message": "Function 'eth_p_oui_send' does not validate integer parameter 'len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 41,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 161,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 22,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 170,
+   "message": "Dereference of uninitialized pointer 'ethhdr'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ethhdr' before dereferencing"
+  },
+  {
+   "column": 33,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 170,
+   "message": "sizeof applied to pointer/array parameter 'global_oui' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(global_oui)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 27,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 182,
+   "message": "sizeof applied to pointer/array parameter 'global_oui' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(global_oui)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 4,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 183,
+   "message": "sizeof applied to pointer/array parameter 'global_oui' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(global_oui)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 7,
+   "file": "src/ap/eth_p_oui.c",
+   "line": 184,
+   "message": "sizeof applied to pointer/array parameter 'global_oui' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(global_oui)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  }
+ ],
+ "src/crypto/tls_openssl_ocsp.c": [
+  {
+   "column": 1,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 219,
+   "message": "Function definition is missing an explicit return type",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Add an explicit return type to the function definition"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 241,
+   "message": "Array/pointer 'txt' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'txt' after calling free(). Set pointer to NULL after freeing: free(txt); txt = NULL;"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 242,
+   "message": "Function returns pointer to local variable 'txt' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 9,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 242,
+   "message": "Returning pointer to local array 'txt' which will be destroyed when function returns, creating a dangling pointer.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Consider allocating the array dynamically (malloc/calloc), declaring it as static, or passing a buffer as a parameter."
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 250,
+   "message": "Memory allocated with 'BIO_new' for variable 'out' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(out)' before the variable goes out of scope"
+  },
+  {
+   "column": 43,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 263,
+   "message": "Pointer parameter 'rid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *rid'"
+  },
+  {
+   "column": 9,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 283,
+   "message": "Use-after-free: passing freed pointer 'out' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 291,
+   "message": "Memory allocated with 'BIO_new' for variable 'out' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(out)' before the variable goes out of scope"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 304,
+   "message": "Memory allocated with 'BIO_new' for variable 'out' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(out)' before the variable goes out of scope"
+  },
+  {
+   "column": 36,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 313,
+   "message": "Pointer parameter 'alg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *alg'"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 317,
+   "message": "Memory allocated with 'BIO_new' for variable 'out' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(out)' before the variable goes out of scope"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 333,
+   "message": "Memory allocated with 'BIO_new' for variable 'out' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(out)' before the variable goes out of scope"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 350,
+   "message": "Implicit boolean test on 'ASN1_GENERALIZEDTIME_check(thisupd)'. May be unclear what constitutes success or failure.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Use explicit test: ASN1_GENERALIZEDTIME_check(thisupd) == 0 or ASN1_GENERALIZEDTIME_check(thisupd) != 0 depending on success convention"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 357,
+   "message": "arithmetic operator '+' applied directly to time_t-typed 'now' -- the encoding of time_t is unspecified",
+   "rule_id": "MSC05-C",
+   "severity": "Low",
+   "suggestion": "Use difftime() to compute a duration between two time_t values instead of subtracting/adding them directly"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 366,
+   "message": "Implicit boolean test on 'ASN1_GENERALIZEDTIME_check(nextupd)'. May be unclear what constitutes success or failure.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Use explicit test: ASN1_GENERALIZEDTIME_check(nextupd) == 0 or ASN1_GENERALIZEDTIME_check(nextupd) != 0 depending on success convention"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 372,
+   "message": "arithmetic operator '-' applied directly to time_t-typed 'now' -- the encoding of time_t is unspecified",
+   "rule_id": "MSC05-C",
+   "severity": "Low",
+   "suggestion": "Use difftime() to compute a duration between two time_t values instead of subtracting/adding them directly"
+  },
+  {
+   "column": 58,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 389,
+   "message": "Pointer parameter 'certid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *certid'"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 395,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 441,
+   "message": "Double free detected: 'txt' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 67,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 454,
+   "message": "Pointer parameter 'rid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *rid'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 480,
+   "message": "Function 'check_ocsp_resp' does not validate pointer parameter 'ssl_ctx' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ssl_ctx' at the start of the function, e.g., 'if (!ssl_ctx) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 480,
+   "message": "Function 'check_ocsp_resp' does not validate pointer parameter 'ssl' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ssl' at the start of the function, e.g., 'if (!ssl) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 498,
+   "message": "Declaration is missing an explicit type specifier",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Add an explicit type specifier to the declaration"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 683,
+   "message": "Double free detected: 'txt' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 690,
+   "message": "Double free detected: 'txt' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 4,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 713,
+   "message": "Double free detected: 'txt' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 4,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 720,
+   "message": "Double free detected: 'txt' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 4,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 727,
+   "message": "Double free detected: 'txt' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 4,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 734,
+   "message": "Double free detected: 'txt' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 4,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 752,
+   "message": "Double free detected: 'txt' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 760,
+   "message": "Double free detected: 'txt' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 4,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 768,
+   "message": "Double free detected: 'txt' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 798,
+   "message": "Double free detected: 'txt' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 834,
+   "message": "Double-free: 'X509_free' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 834,
+   "message": "Double free detected: 'certs' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate sk_X509_pop_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 834,
+   "message": "Double free detected: 'X509_free' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate sk_X509_pop_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_openssl_ocsp.c",
+   "line": 837,
+   "message": "Double free detected: 'ctx' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate X509_STORE_CTX_free() call or set the pointer to NULL after first free"
+  }
+ ],
+ "src/utils/base64.c": [
+  {
+   "column": 53,
+   "file": "src/utils/base64.c",
+   "line": 26,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 33,
+   "file": "src/utils/base64.c",
+   "line": 27,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/base64.c",
+   "line": 51,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/base64.c",
+   "line": 52,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/base64.c",
+   "line": 53,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/base64.c",
+   "line": 54,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 4,
+   "file": "src/utils/base64.c",
+   "line": 58,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/base64.c",
+   "line": 64,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 4,
+   "file": "src/utils/base64.c",
+   "line": 66,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 5,
+   "file": "src/utils/base64.c",
+   "line": 68,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 4,
+   "file": "src/utils/base64.c",
+   "line": 70,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 4,
+   "file": "src/utils/base64.c",
+   "line": 72,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 4,
+   "file": "src/utils/base64.c",
+   "line": 75,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/base64.c",
+   "line": 80,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/base64.c",
+   "line": 82,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/base64.c",
+   "line": 85,
+   "message": "Function returns pointer to local variable 'out' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 53,
+   "file": "src/utils/base64.c",
+   "line": 89,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 35,
+   "file": "src/utils/base64.c",
+   "line": 90,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 14,
+   "file": "src/utils/base64.c",
+   "line": 98,
+   "message": "Loop condition uses scaled pointer arithmetic with sizeof(), causing double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Use array element count instead of sizeof() in pointer arithmetic"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/base64.c",
+   "line": 100,
+   "message": "Potentially unsafe array access with variable index ''='': Buffer 'dtable' with size 256 (allocated at line 92)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 2,
+   "file": "src/utils/base64.c",
+   "line": 103,
+   "message": "Loop uses uninitialized variable 'len' as bound for array access. This has indeterminate value and can cause out-of-bounds access.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize 'len' to a valid value before using it in the loop"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/base64.c",
+   "line": 115,
+   "message": "Function returns without releasing all resources. Leaked: pos, out. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 14,
+   "file": "src/utils/base64.c",
+   "line": 135,
+   "message": "Output operation on file stream 'block[1]' follows input without intervening positioning call (fseek, fsetpos, or rewind)",
+   "rule_id": "FIO50-C",
+   "severity": "Low",
+   "suggestion": "Insert a positioning function (fseek, fsetpos, rewind) between input and output operations, unless input encountered EOF"
+  },
+  {
+   "column": 14,
+   "file": "src/utils/base64.c",
+   "line": 135,
+   "message": "Output operation on file stream 'block[1]' follows input without intervening positioning call (fseek, fsetpos, or rewind)",
+   "rule_id": "FIO50-C",
+   "severity": "Low",
+   "suggestion": "Insert a positioning function (fseek, fsetpos, rewind) between input and output operations, unless input encountered EOF"
+  },
+  {
+   "column": 14,
+   "file": "src/utils/base64.c",
+   "line": 136,
+   "message": "Output operation on file stream 'block[2]' follows input without intervening positioning call (fseek, fsetpos, or rewind)",
+   "rule_id": "FIO50-C",
+   "severity": "Low",
+   "suggestion": "Insert a positioning function (fseek, fsetpos, rewind) between input and output operations, unless input encountered EOF"
+  },
+  {
+   "column": 14,
+   "file": "src/utils/base64.c",
+   "line": 136,
+   "message": "Output operation on file stream 'block[2]' follows input without intervening positioning call (fseek, fsetpos, or rewind)",
+   "rule_id": "FIO50-C",
+   "severity": "Low",
+   "suggestion": "Insert a positioning function (fseek, fsetpos, rewind) between input and output operations, unless input encountered EOF"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/base64.c",
+   "line": 146,
+   "message": "Function returns without releasing all resources. Leaked: pos, out. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/base64.c",
+   "line": 154,
+   "message": "Function returns pointer to local variable 'out' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/base64.c",
+   "line": 154,
+   "message": "Function returns without releasing all resources. Leaked: pos, out. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/base64.c",
+   "line": 170,
+   "message": "Function 'base64_encode' does not validate pointer parameter 'out_len' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'out_len' at the start of the function, e.g., 'if (!out_len) { return error_code; }'"
+  },
+  {
+   "column": 33,
+   "file": "src/utils/base64.c",
+   "line": 170,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/base64.c",
+   "line": 177,
+   "message": "Function 'base64_encode_no_lf' does not validate pointer parameter 'out_len' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'out_len' at the start of the function, e.g., 'if (!out_len) { return error_code; }'"
+  },
+  {
+   "column": 39,
+   "file": "src/utils/base64.c",
+   "line": 177,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/base64.c",
+   "line": 183,
+   "message": "Function 'base64_url_encode' does not validate pointer parameter 'out_len' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'out_len' at the start of the function, e.g., 'if (!out_len) { return error_code; }'"
+  },
+  {
+   "column": 37,
+   "file": "src/utils/base64.c",
+   "line": 183,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 42,
+   "file": "src/utils/base64.c",
+   "line": 199,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 46,
+   "file": "src/utils/base64.c",
+   "line": 205,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ]
+}

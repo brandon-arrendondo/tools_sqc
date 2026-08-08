@@ -1,0 +1,643 @@
+{
+ "src/common/wpa_ctrl.c": [
+  {
+   "column": 1,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 94,
+   "message": "Function 'wpa_ctrl_open2' does not validate pointer parameter 'cli_path' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cli_path' at the start of the function, e.g., 'if (!cli_path) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 94,
+   "message": "Function 'wpa_ctrl_open2' performs compound operation on shared static variable 'counter' without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 2,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 98,
+   "message": "Shared variable 'counter' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 5,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 104,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 26,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 107,
+   "message": "Dereference of uninitialized pointer 'ctrl'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ctrl' before dereferencing"
+  },
+  {
+   "column": 6,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 151,
+   "message": "Privileged operation 'bind' without subsequent privilege dropping",
+   "rule_id": "POS02-C",
+   "severity": "Medium",
+   "suggestion": "Call setuid/setgid to drop privileges after setup"
+  },
+  {
+   "column": 3,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 163,
+   "message": "Resource 'ctrl->s' is closed again after already being closed at line 133. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 4,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 178,
+   "message": "Resource 'ctrl->s' is closed again after already being closed at line 133. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 3,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 183,
+   "message": "Function returns pointer to local variable 'ctrl' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 4,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 199,
+   "message": "Resource 'ctrl->s' is closed again after already being closed at line 133. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 3,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 204,
+   "message": "Function returns pointer to local variable 'ctrl' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 4,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 217,
+   "message": "Resource 'ctrl->s' is closed again after already being closed at line 133. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 3,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 224,
+   "message": "Resource 'ctrl->s' is closed again after already being closed at line 133. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 2,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 243,
+   "message": "Function returns pointer to local variable 'ctrl' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 5,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 249,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 272,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 19,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 286,
+   "message": "'readdir()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'readdir_r' instead for thread safety"
+  },
+  {
+   "column": 25,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 287,
+   "message": "Potential null pointer dereference in member access of variable 'result'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'result' is not NULL before member access"
+  },
+  {
+   "column": 26,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 316,
+   "message": "Dereference of uninitialized pointer 'ctrl'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ctrl' before dereferencing"
+  },
+  {
+   "column": 3,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 328,
+   "message": "Function returns without releasing all resources. Leaked: ctrl->s, ctrl->s. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 6,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 347,
+   "message": "Privileged operation 'bind' without subsequent privilege dropping",
+   "rule_id": "POS02-C",
+   "severity": "Medium",
+   "suggestion": "Call setuid/setgid to drop privileges after setup"
+  },
+  {
+   "column": 4,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 375,
+   "message": "Resource 'ctrl->s' is closed again after already being closed at line 349. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 14,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 386,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 14,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 386,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 7,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 399,
+   "message": "'gethostbyname()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'getaddrinfo' instead for thread safety"
+  },
+  {
+   "column": 4,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 405,
+   "message": "Resource 'ctrl->s' is closed again after already being closed at line 349. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 3,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 426,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 7,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 430,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 430,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 3,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 432,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 7,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 433,
+   "message": "'inet_ntoa()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'inet_ntop' instead for thread safety"
+  },
+  {
+   "column": 7,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 435,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 435,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 3,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 437,
+   "message": "Resource 'ctrl->s' is closed again after already being closed at line 349. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 3,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 445,
+   "message": "Potentially unsafe array access with variable index 'len': Buffer 'buf' with size 128 (allocated at line 310)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 3,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 450,
+   "message": "Potentially unsafe array access with variable index 'len': Buffer 'buf' with size 128 (allocated at line 310)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 2,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 454,
+   "message": "Function returns pointer to local variable 'ctrl' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 458,
+   "message": "Function 'wpa_ctrl_get_remote_ifname' does not validate pointer parameter 'ctrl' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ctrl' at the start of the function, e.g., 'if (!ctrl) { return error_code; }'"
+  },
+  {
+   "column": 51,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 458,
+   "message": "Pointer parameter 'ctrl' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctrl'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 461,
+   "message": "Shared variable 'ps' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 9,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 464,
+   "message": "Returning pointer to local array 'ps' which will be destroyed when function returns, creating a dangling pointer.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Consider allocating the array dynamically (malloc/calloc), declaring it as static, or passing a buffer as a parameter."
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 468,
+   "message": "Function 'wpa_ctrl_close' does not validate pointer parameter 'ctrl' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ctrl' at the start of the function, e.g., 'if (!ctrl) { return error_code; }'"
+  },
+  {
+   "column": 8,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 470,
+   "message": "Potential null pointer dereference in member access of variable 'ctrl'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'ctrl' is not NULL before member access"
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 481,
+   "message": "Function 'wpa_ctrl_request' does not validate integer parameter 'cmd_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'cmd_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 38,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 481,
+   "message": "Pointer parameter 'ctrl' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctrl'"
+  },
+  {
+   "column": 56,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 481,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 13,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 482,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 14,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 489,
+   "message": "File-scope identifier '_cmd' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 9,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 491,
+   "message": "File-scope identifier '_cmd_len' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 500,
+   "message": "Value assigned to '_cmd' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 3,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 504,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 609,
+   "message": "Function 'wpa_ctrl_attach' does not validate pointer parameter 'ctrl' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ctrl' at the start of the function, e.g., 'if (!ctrl) { return error_code; }'"
+  },
+  {
+   "column": 35,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 623,
+   "message": "Pointer parameter 'ctrl' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctrl'"
+  },
+  {
+   "column": 47,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 623,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 38,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 635,
+   "message": "Pointer parameter 'ctrl' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctrl'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 648,
+   "message": "Function 'wpa_ctrl_get_fd' does not validate pointer parameter 'ctrl' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ctrl' at the start of the function, e.g., 'if (!ctrl) { return error_code; }'"
+  },
+  {
+   "column": 37,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 648,
+   "message": "Pointer parameter 'ctrl' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctrl'"
+  },
+  {
+   "column": 9,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 650,
+   "message": "Potential null pointer dereference in member access of variable 'ctrl'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'ctrl' is not NULL before member access"
+  },
+  {
+   "column": 26,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 670,
+   "message": "Dereference of uninitialized pointer 'ctrl'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ctrl' before dereferencing"
+  },
+  {
+   "column": 5,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 676,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 682,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 720,
+   "message": "Function returns pointer to local variable 'ctrl' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 724,
+   "message": "Function 'wpa_ctrl_close' does not validate pointer parameter 'ctrl' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ctrl' at the start of the function, e.g., 'if (!ctrl) { return error_code; }'"
+  },
+  {
+   "column": 14,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 726,
+   "message": "Potential null pointer dereference in member access of variable 'ctrl'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'ctrl' is not NULL before member access"
+  },
+  {
+   "column": 38,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 731,
+   "message": "Pointer parameter 'ctrl' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctrl'"
+  },
+  {
+   "column": 56,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 731,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 13,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 732,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 35,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 749,
+   "message": "Pointer parameter 'ctrl' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctrl'"
+  },
+  {
+   "column": 47,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 749,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 38,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 759,
+   "message": "Pointer parameter 'ctrl' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctrl'"
+  },
+  {
+   "column": 37,
+   "file": "src/common/wpa_ctrl.c",
+   "line": 769,
+   "message": "Pointer parameter 'ctrl' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctrl'"
+  }
+ ]
+}

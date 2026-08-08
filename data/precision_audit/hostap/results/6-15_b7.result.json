@@ -1,0 +1,942 @@
+{
+ "labels": [
+  {
+   "rule": "API02-C",
+   "file": "src/common/sae.h",
+   "line": 144,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API02-C misfires: last-pointer-param heuristic; out-param is scalar int*, no array (confirmed API02-C FP class)"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/common/sae.h",
+   "line": 151,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API02-C: allowed_groups int* is scalar out-param, not an array needing size (confirmed API02-C FP class)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/sae.h",
+   "line": 152,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size_t idiom (token+token_len); confirmed categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/sae.h",
+   "line": 153,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size_t idiom (allowed_groups list); confirmed categorical FP"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/common/sae.h",
+   "line": 155,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API02-C: ie_offset is a scalar int* out-param, not an array (confirmed FP class)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/sae.h",
+   "line": 156,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size_t idiom (ie_offset scalar out-param); confirmed FP class"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/common/sae.h",
+   "line": 157,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API02-C: group_allowed's allowed_groups is a zero-terminated int list, not unsized array needing a size param"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/common/sae.h",
+   "line": 161,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API02-C: groups is a zero-terminated int array (sentinel-bounded), no separate size needed"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/sae.h",
+   "line": 161,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size_t idiom (ssid+ssid_len); confirmed FP class"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/common/sae.h",
+   "line": 183,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API02-C: out_len is a scalar size_t* out-param, not an unsized array (confirmed FP class)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/sae.h",
+   "line": 183,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size_t idiom (src+len); confirmed FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/wpa_helpers.h",
+   "line": 14,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size_t idiom, idiomatic C, confirmed categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/wpa_helpers.h",
+   "line": 14,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size_t idiom, idiomatic C, confirmed categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/wpa_helpers.h",
+   "line": 15,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size_t idiom, idiomatic C, confirmed categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/wpa_helpers.h",
+   "line": 16,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size_t idiom, idiomatic C, confirmed categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/wpa_helpers.h",
+   "line": 16,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size_t idiom, idiomatic C, confirmed categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/wpa_helpers.h",
+   "line": 16,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size_t idiom, idiomatic C, confirmed categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/wpa_helpers.h",
+   "line": 22,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size_t idiom, idiomatic C, confirmed categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/wpa_helpers.h",
+   "line": 22,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size_t idiom, idiomatic C, confirmed categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/wpa_helpers.h",
+   "line": 24,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size_t idiom, idiomatic C, confirmed categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/wpa_helpers.h",
+   "line": 24,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size_t idiom, idiomatic C, confirmed categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/wpa_helpers.h",
+   "line": 25,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size_t idiom, idiomatic C, confirmed categorical FP"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/aes-eax.c",
+   "line": 28,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C: hdr is internal-only API, all 3 real callers pass fixed non-NULL sizeof()-bounded args"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/aes-eax.c",
+   "line": 28,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C: data_len always sizeof()-bounded at all 3 call sites, no realistic overflow path"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/crypto/aes-eax.c",
+   "line": 54,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "INT30-C: nonce_len/hdr_len/data_len always small sizeof()-bounded values at every caller, wrap unreachable"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/crypto/aes-eax.c",
+   "line": 59,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "INT30-C: same bounded-value wrap-unreachable reasoning as :54"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/crypto/aes-eax.c",
+   "line": 66,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "INT30-C: same bounded-value wrap-unreachable reasoning as :54"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/aes-eax.c",
+   "line": 92,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C: data_len bounded at all callers, same reasoning as :28"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/crypto/aes-eax.c",
+   "line": 118,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "INT30-C: bounded value, wrap unreachable, decrypt path mirrors encrypt"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/crypto/aes-eax.c",
+   "line": 123,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C UAF: buf freed only on the mutually-exclusive if-branch that returns immediately at :119-121; continuing to :123 means that branch didn't execute (confirmed mutually-exclusive-branch free-tracking FP class)"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/crypto/aes-eax.c",
+   "line": 125,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "INT30-C bounded value, wrap unreachable"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/crypto/aes-eax.c",
+   "line": 130,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C UAF: same mutually-exclusive-branch misattribution as :123, citing the :126 free from a sibling returning branch"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/crypto/aes-eax.c",
+   "line": 132,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "INT30-C bounded value, wrap unreachable"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_server/eap_server_methods.c",
+   "line": 29,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C: static-storage global is zero-initialized by the C standard, not uninitialized"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_server/eap_server_methods.c",
+   "line": 31,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C: m walks a heap-allocated linked list (os_zalloc'd nodes), not automatic storage; confused variable with storage"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_server/eap_server_methods.c",
+   "line": 49,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C: same static-storage zero-init misfire as :29"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_server/eap_server_methods.c",
+   "line": 77,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C sizeof(*eap) idiom on os_zalloc(sizeof(*eap)) is never a dereference, confirmed FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_server/eap_server_methods.c",
+   "line": 84,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C: eap is heap-allocated via os_zalloc, not automatic storage"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/eap_server/eap_server_methods.c",
+   "line": 114,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP34-C: eap_server_method_free(NULL) is a plain os_free(NULL), which is a safe standard no-op; deliberate NULL path"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_server/eap_server_methods.c",
+   "line": 118,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C: same static-storage zero-init misfire"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/eap_server/eap_server_methods.c",
+   "line": 131,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC13-C: eap_methods is a static global read by eap_server_get_eap_method/get_type/get_name later; intra-procedural dead-store check misses cross-function global reads"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_server/eap_server_methods.c",
+   "line": 147,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C: same static-storage zero-init misfire"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/eap_server/eap_server_methods.c",
+   "line": 152,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM30-C: m is reassigned to a fresh eap_methods node at the top of every loop iteration before use; the freed m from the prior iteration is never the one read (loop-carried reassignment, extends mem30-reassign-and-fresh-binding fix class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_server/eap_server_methods.c",
+   "line": 173,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C: same static-storage zero-init misfire"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/config.c",
+   "line": 15,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size_t idiom (buf+buflen); confirmed categorical FP"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/config.c",
+   "line": 17,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR34-C: spurious - line is 'size_t len = os_strlen(buf);', no char-to-int widening conversion of buf present at all"
+  },
+  {
+   "rule": "FIO20-C",
+   "file": "src/utils/config.c",
+   "line": 30,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "FIO20-C: newline_terminated() explicitly detects truncation and skip_line_end() loops via fgets until the real line end is found; truncation IS handled"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/config.c",
+   "line": 38,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C: size is internal-only, all 5 real callers pass sizeof(buf) (fixed positive constant)"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/utils/config.c",
+   "line": 45,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT32-C: size always sizeof(buf)-derived positive constant at every caller, no realistic overflow/underflow path"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/config.c",
+   "line": 84,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR34-C: '*end-- = \\0'; is a plain char assignment of a literal, not a widening conversion (confirmed FP class)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/config.c",
+   "line": 92,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR34-C: same plain char-literal-assignment misfire as :84"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/utils/config.c",
+   "line": 98,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C: pos points into 's', the caller-owned buffer parameter, not this function's automatic storage; writing its address through *_pos is safe"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/config.c",
+   "line": 98,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR34-C: same plain char-literal-assignment misfire"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/utils/config.c",
+   "line": 99,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C: pos aliases the caller-supplied 's' buffer parameter, not local automatic storage"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/config.c",
+   "line": 103,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR34-C: same plain char-literal-assignment misfire"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/ap/vlan_ifconfig.c",
+   "line": 26,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33-C: hostapd/wpa_supplicant are single-threaded eloop programs, no pthread usage; confirmed no-pthread FP class"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/ap/vlan_ifconfig.c",
+   "line": 26,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON34-C: same no-pthread FP class as CON33-C"
+  },
+  {
+   "rule": "DCL39-C",
+   "file": "src/ap/vlan_ifconfig.c",
+   "line": 33,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL39-C: ifr is os_memset to 0 at :30 immediately before this ioctl, no uninitialized padding"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/ap/vlan_ifconfig.c",
+   "line": 36,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33-C: no-pthread FP class"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/ap/vlan_ifconfig.c",
+   "line": 36,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON34-C: no-pthread FP class"
+  },
+  {
+   "rule": "DCL39-C",
+   "file": "src/ap/vlan_ifconfig.c",
+   "line": 46,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL39-C: ifr already zeroed at :30, no leaked padding at this 2nd ioctl either"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/ap/vlan_ifconfig.c",
+   "line": 49,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33-C: no-pthread FP class"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/ap/vlan_ifconfig.c",
+   "line": 49,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON34-C: no-pthread FP class"
+  },
+  {
+   "rule": "FIO24-C",
+   "file": "src/ap/vlan_ifconfig.c",
+   "line": 50,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "FIO24-C: the :37 close is on the SIOCGIFFLAGS-failure branch which returns immediately (:38), mutually exclusive with reaching :50 (confirmed mutually-exclusive-branch FP class)"
+  },
+  {
+   "rule": "FIO24-C",
+   "file": "src/ap/vlan_ifconfig.c",
+   "line": 54,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "FIO24-C: same mutually-exclusive-branch misattribution; :37/:50 closes are on disjoint failure returns, :54 is the success path"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/vlan_ifconfig.c",
+   "line": 66,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C: ifname internal-only API, confirmed FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/ap/vlan_ifconfig.c",
+   "line": 68,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL31-C: if_nametoindex is declared in <net/if.h>, included at :12; 3rd confirmed instance of system-header-declared-function-flagged-as-undeclared class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/wps_hostapd.h",
+   "line": 26,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size_t idiom (buf+buflen); confirmed categorical FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.h",
+   "line": 49,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C: #else stub hostapd_init_wps's hapd param is genuinely 100% unused in the no-op body; confirmed stub-branch TP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.h",
+   "line": 50,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C: same stub, conf param also unused; confirmed stub-branch TP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.h",
+   "line": 55,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C: hostapd_deinit_wps stub, hapd unused; confirmed stub-branch TP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.h",
+   "line": 59,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C: hostapd_init_wps_complete stub, hapd unused; confirmed stub-branch TP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.h",
+   "line": 64,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C: hostapd_update_wps stub, hapd unused; confirmed stub-branch TP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.h",
+   "line": 68,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C: hostapd_wps_eap_completed stub, hapd unused; confirmed stub-branch TP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.h",
+   "line": 72,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C: hostapd_wps_get_mib_sta stub, hapd unused; confirmed stub-branch TP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/wps_hostapd.h",
+   "line": 74,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size_t idiom (buf+buflen) even inside the stub; confirmed FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.h",
+   "line": 74,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C: hostapd_wps_get_mib_sta stub, buf unused (body just returns 0); confirmed stub-branch TP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.h",
+   "line": 79,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C: hostapd_wps_button_pushed stub, hapd unused; confirmed stub-branch TP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.h",
+   "line": 85,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C: hostapd_wps_cancel stub, hapd unused; confirmed stub-branch TP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/x_snoop.c",
+   "line": 68,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C: hapd internal-only API, confirmed FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/x_snoop.c",
+   "line": 68,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C: handler is a fixed callback pointer passed by internal callers, confirmed FP class"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/ap/x_snoop.c",
+   "line": 81,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33-C: no-pthread FP class"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/ap/x_snoop.c",
+   "line": 81,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON34-C: no-pthread FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/x_snoop.c",
+   "line": 93,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C: l2 comes from l2_packet_init(), heap-allocated, not automatic storage"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/x_snoop.c",
+   "line": 97,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C: hapd internal-only API"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/x_snoop.c",
+   "line": 97,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C: sta internal-only API"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/x_snoop.c",
+   "line": 97,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C: buf internal-only API"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/x_snoop.c",
+   "line": 97,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C: hapd is only read (hapd->sock_dhcp), never mutated or forwarded to a non-const call; genuine (low-value) const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/x_snoop.c",
+   "line": 98,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C: sta is only read (sta->addr), never mutated; genuine (low-value) const opportunity"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "src/ap/x_snoop.c",
+   "line": 103,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP40-C: buf parameter is 'u8 *buf' (non-const) at :98, not const at all; the cast-away-const claim is factually wrong"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/x_snoop.c",
+   "line": 108,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C: MAC2STR is a pure array-indexing macro, no side effects to unsequence; confirmed FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/gas.c",
+   "line": 30,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C: buf from wpabuf_alloc(), heap-allocated, not automatic storage"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/gas.c",
+   "line": 65,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C: buf from wpabuf_alloc() via gas_build_resp, heap-allocated"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/gas.c",
+   "line": 112,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C: size is locally-derived from other wpabuf/list lengths at all 3 real callers (hs20_supplicant.c, interworking.c, p2p_sd.c), not raw unbounded attacker length"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/gas.c",
+   "line": 124,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C: buf heap-allocated via gas_build_initial_req"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/gas.c",
+   "line": 128,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C: size locally-derived, not raw unbounded external length, same reasoning as :112"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/gas.c",
+   "line": 142,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C: buf heap-allocated via gas_build_initial_resp"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/gas.c",
+   "line": 164,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C: buf heap-allocated via gas_anqp_build_comeback_resp"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/gas.c",
+   "line": 168,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C: size locally-derived from wpabuf_len(payload), not raw external length"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/gas.c",
+   "line": 183,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C: buf heap-allocated via gas_build_comeback_resp"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/gas.c",
+   "line": 206,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C: buf heap-allocated via gas_anqp_build_comeback_resp"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/gas.c",
+   "line": 255,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C: buf internal-only API, always a valid wpabuf from an internal builder"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/gas.c",
+   "line": 270,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C: len_pos internal-only API, always the return value of gas_anqp_add_element"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/eap_leap.c",
+   "line": 43,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C sizeof(*data) idiom on os_zalloc(sizeof(*data)), never a dereference"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_leap.c",
+   "line": 49,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C: data heap-allocated via os_zalloc, not automatic storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_leap.c",
+   "line": 53,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C: eap_leap_deinit is bound to struct eap_method's deinit vtable field (fixed callback signature), sm unused but signature-pinned; confirmed EAP-method dispatch-contract FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_leap.c",
+   "line": 133,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C: resp heap-allocated via eap_msg_alloc, not automatic storage"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_leap.c",
+   "line": 183,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C: resp heap-allocated via eap_msg_alloc"
+  },
+  {
+   "rule": "MEM03-C",
+   "file": "src/eap_peer/eap_leap.c",
+   "line": 283,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MEM03-C: password is a pointer into the SM config's owned password storage (eap_get_config_password), not a local sensitive copy this function is responsible for scrubbing"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_leap.c",
+   "line": 330,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C: eap_leap_isKeyAvailable bound to struct eap_method's isKeyAvailable vtable field, sm unused but signature-pinned; confirmed dispatch-contract FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_leap.c",
+   "line": 330,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C: same vtable dispatch-contract FP, priv param"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_peer/eap_leap.c",
+   "line": 337,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C: priv is an opaque void* vtable callback param, not an array; misapplied conformant-array-syntax class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_leap.c",
+   "line": 337,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C: eap_leap_getKey bound to struct eap_method's getKey vtable field, priv unused but signature-pinned"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_leap.c",
+   "line": 399,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C: key heap-allocated via os_malloc(LEAP_KEY_LEN), not automatic storage"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/eap_peer/eap_leap.c",
+   "line": 407,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C: eap is passed to eap_peer_method_register() whose doc comment states caller must not free regardless of return value; ownership-transfer FP class"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "src/common/sae.h",
+  "src/common/wpa_helpers.h",
+  "src/crypto/aes-eax.c",
+  "src/eap_server/eap_server_methods.c",
+  "src/utils/config.c",
+  "src/ap/vlan_ifconfig.c",
+  "src/ap/wps_hostapd.h",
+  "src/ap/x_snoop.c",
+  "src/common/gas.c",
+  "src/eap_peer/eap_leap.c"
+ ],
+ "summary": {
+  "tp": 12,
+  "fp": 103,
+  "fn": 0
+ }
+}

@@ -1,0 +1,1291 @@
+{
+ "src/tls/tlsv1_server_write.c": [
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 20,
+   "message": "Header file 'tlsv1_server.h' has the same first 8 characters (case-insensitive) as 'tlsv1_server_i.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'tlsv1_server.h' -> unique name)"
+  },
+  {
+   "column": 65,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 24,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 12,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 35,
+   "message": "Potential null pointer dereference in member access of variable 'cert'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'cert' is not NULL before member access"
+  },
+  {
+   "column": 23,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 43,
+   "message": "Pointer parameter 'end' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *end'"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 53,
+   "message": "Compound assignment 'pos += TLS_RECORD_HEADER_LEN' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 82,
+   "message": "Increment/decrement operation 'pos++' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 85,
+   "message": "Pointer arithmetic moves 3 elements beyond buffer bounds (effective size: 1): Buffer 'pos' with size 1 (allocated at line 802)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 85,
+   "message": "Compound assignment 'pos += 3' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 89,
+   "message": "Pointer arithmetic moves 2 elements beyond buffer bounds (effective size: 1): Buffer 'pos' with size 1 (allocated at line 802)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 89,
+   "message": "Compound assignment 'pos += 2' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 92,
+   "message": "Compound assignment 'pos += TLS_RANDOM_LEN' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 94,
+   "message": "Increment/decrement operation 'pos++' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 96,
+   "message": "Compound assignment 'pos += conn->session_id_len' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 99,
+   "message": "Pointer arithmetic moves 2 elements beyond buffer bounds (effective size: 1): Buffer 'pos' with size 1 (allocated at line 802)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 99,
+   "message": "Compound assignment 'pos += 2' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 101,
+   "message": "Increment/decrement operation 'pos++' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 105,
+   "message": "Pointer arithmetic moves 2 elements beyond buffer bounds (effective size: 1): Buffer 'pos' with size 1 (allocated at line 802)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 105,
+   "message": "Compound assignment 'pos += 2' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 111,
+   "message": "Pointer arithmetic moves 2 elements beyond buffer bounds (effective size: 1): Buffer 'pos' with size 1 (allocated at line 802)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 111,
+   "message": "Compound assignment 'pos += 2' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 114,
+   "message": "Pointer arithmetic moves 2 elements beyond buffer bounds (effective size: 1): Buffer 'pos' with size 1 (allocated at line 802)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 114,
+   "message": "Compound assignment 'pos += 2' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 123,
+   "message": "Pointer arithmetic moves 2 elements beyond buffer bounds (effective size: 1): Buffer 'pos' with size 1 (allocated at line 802)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 123,
+   "message": "Compound assignment 'pos += 2' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 126,
+   "message": "Pointer arithmetic moves 2 elements beyond buffer bounds (effective size: 1): Buffer 'pos' with size 1 (allocated at line 802)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 126,
+   "message": "Compound assignment 'pos += 2' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 13,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 165,
+   "message": "Pointer arithmetic on non-array pointer 'ext_start'. Only perform arithmetic on array pointers",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 166,
+   "message": "Compound assignment 'pos -= 2' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 16,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 174,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:msgpos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 183,
+   "message": "Local variable 'pos' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 22,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 190,
+   "message": "Pointer parameter 'end' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *end'"
+  },
+  {
+   "column": 42,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 205,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:msgpos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 213,
+   "message": "Compound assignment 'pos += TLS_RECORD_HEADER_LEN' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 220,
+   "message": "Increment/decrement operation 'pos++' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 223,
+   "message": "Pointer arithmetic moves 3 elements beyond buffer bounds (effective size: 1): Buffer 'pos' with size 1 (allocated at line 802)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 223,
+   "message": "Compound assignment 'pos += 3' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 227,
+   "message": "Pointer arithmetic moves 3 elements beyond buffer bounds (effective size: 1): Buffer 'pos' with size 1 (allocated at line 802)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 227,
+   "message": "Compound assignment 'pos += 3' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 38,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 230,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:msgpos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 25,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 234,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:msgpos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 240,
+   "message": "Pointer arithmetic moves 3 elements beyond buffer bounds (effective size: 1): Buffer 'pos' with size 1 (allocated at line 802)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 240,
+   "message": "Compound assignment 'pos += 3' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 242,
+   "message": "Compound assignment 'pos += cert->cert_len' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 12,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 247,
+   "message": "Potential null pointer dereference in member access of variable 'cert'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'cert' is not NULL before member access"
+  },
+  {
+   "column": 16,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 264,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:msgpos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 275,
+   "message": "Local variable 'pos' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 29,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 282,
+   "message": "Pointer parameter 'end' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *end'"
+  },
+  {
+   "column": 18,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 284,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 287,
+   "message": "Variable 'pos' should be declared volatile - modified around function calls that may have external side effects",
+   "rule_id": "DCL22-C",
+   "severity": "Low",
+   "suggestion": "Declare as 'volatile' to prevent compiler optimizations that assume variable state is unchanged across function calls"
+  },
+  {
+   "column": 22,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 300,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:msgpos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 308,
+   "message": "Compound assignment 'pos += TLS_RECORD_HEADER_LEN' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 315,
+   "message": "Increment/decrement operation 'pos++' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 318,
+   "message": "Pointer arithmetic moves 3 elements beyond buffer bounds (effective size: 1): Buffer 'pos' with size 1 (allocated at line 802)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 318,
+   "message": "Compound assignment 'pos += 3' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 4,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 339,
+   "message": "Increment/decrement operation 'pos++' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 4,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 341,
+   "message": "Increment/decrement operation 'pos++' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 344,
+   "message": "Pointer arithmetic moves 3 elements beyond buffer bounds (effective size: 1): Buffer 'pos' with size 1 (allocated at line 802)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 344,
+   "message": "Compound assignment 'pos += 3' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 346,
+   "message": "Compound assignment 'pos += ocsp_resp_len' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 16,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 351,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:msgpos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 362,
+   "message": "Local variable 'pos' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 23,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 369,
+   "message": "Pointer parameter 'end' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *end'"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 373,
+   "message": "Variable 'pos' should be declared volatile - modified around function calls that may have external side effects",
+   "rule_id": "DCL22-C",
+   "severity": "Low",
+   "suggestion": "Declare as 'volatile' to prevent compiler optimizations that assume variable state is unchanged across function calls"
+  },
+  {
+   "column": 9,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 430,
+   "message": "Pointer arithmetic on non-array pointer 'pos'. Only perform arithmetic on array pointers",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 19,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 430,
+   "message": "Variable 'conn' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 431,
+   "message": "Increment/decrement operation 'pos++' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 7,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 434,
+   "message": "Unsigned integer subtraction 'conn->dh_secret_len - (pos - conn->dh_secret)' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 435,
+   "message": "Unsigned integer compound subtraction 'conn->dh_secret_len -= pos - conn->dh_secret' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check before compound assignment"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 448,
+   "message": "Function returns without releasing all resources. Leaked: conn->dh_secret, dh_ys. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 456,
+   "message": "Function returns without releasing all resources. Leaked: conn->dh_secret, dh_ys. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 485,
+   "message": "Compound assignment 'pos += TLS_RECORD_HEADER_LEN' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 492,
+   "message": "Increment/decrement operation 'pos++' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 495,
+   "message": "Pointer arithmetic moves 3 elements beyond buffer bounds (effective size: 1): Buffer 'pos' with size 1 (allocated at line 802)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 495,
+   "message": "Compound assignment 'pos += 3' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 31,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 500,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:msgpos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 506,
+   "message": "Function returns without releasing all resources. Leaked: conn->dh_secret, dh_ys. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 509,
+   "message": "Pointer arithmetic moves 2 elements beyond buffer bounds (effective size: 1): Buffer 'pos' with size 1 (allocated at line 802)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 509,
+   "message": "Compound assignment 'pos += 2' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 511,
+   "message": "Compound assignment 'pos += dh_p_len' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 43,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 514,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:msgpos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 520,
+   "message": "Function returns without releasing all resources. Leaked: conn->dh_secret, dh_ys. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 523,
+   "message": "Pointer arithmetic moves 2 elements beyond buffer bounds (effective size: 1): Buffer 'pos' with size 1 (allocated at line 802)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 523,
+   "message": "Compound assignment 'pos += 2' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 525,
+   "message": "Compound assignment 'pos += conn->cred->dh_g_len' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 32,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 528,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:msgpos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 534,
+   "message": "Function returns without releasing all resources. Leaked: conn->dh_secret, dh_ys. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 537,
+   "message": "Pointer arithmetic moves 2 elements beyond buffer bounds (effective size: 1): Buffer 'pos' with size 1 (allocated at line 802)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 537,
+   "message": "Compound assignment 'pos += 2' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 539,
+   "message": "Compound assignment 'pos += dh_ys_len' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 26,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 575,
+   "message": "Variable 'hash' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'hash' before use, e.g., at its declaration"
+  },
+  {
+   "column": 20,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 587,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:msgpos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 5,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 590,
+   "message": "Function returns without releasing all resources. Leaked: conn->dh_secret, dh_ys. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 5,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 592,
+   "message": "Increment/decrement operation 'pos++' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 5,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 593,
+   "message": "Increment/decrement operation 'pos++' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 7,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 611,
+   "message": "string/character literal contains a non-ASCII byte (>= 0x80) -- not portable across locales/national ASCII variants",
+   "rule_id": "MSC09-C",
+   "severity": "Low",
+   "suggestion": "Restrict string and character literals to the portable ASCII subset (letters, digits, space, and basic punctuation)"
+  },
+  {
+   "column": 4,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 617,
+   "message": "Function returns without releasing all resources. Leaked: conn->dh_secret, dh_ys. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 4,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 629,
+   "message": "Function returns without releasing all resources. Leaked: conn->dh_secret, dh_ys. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 654,
+   "message": "Pointer arithmetic moves 2 elements beyond buffer bounds (effective size: 1): Buffer 'pos' with size 1 (allocated at line 802)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 654,
+   "message": "Compound assignment 'pos += 2' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 10,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 655,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:msgpos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 4,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 662,
+   "message": "Function returns without releasing all resources. Leaked: conn->dh_secret, dh_ys. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 4,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 668,
+   "message": "Subscript operation 'pos[clen - 1]' on non-array pointer 'pos'. Subscript notation implies array access",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Only use subscript notation on array pointers, not pointers to single objects"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 672,
+   "message": "Compound assignment 'pos += clen' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 16,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 678,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:msgpos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 683,
+   "message": "Function returns without releasing all resources. Leaked: conn->dh_secret, dh_ys. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 689,
+   "message": "Local variable 'pos' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 691,
+   "message": "Function returns without releasing all resources. Leaked: conn->dh_secret, dh_ys. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 23,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 696,
+   "message": "Pointer parameter 'end' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *end'"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 710,
+   "message": "Compound assignment 'pos += TLS_RECORD_HEADER_LEN' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 717,
+   "message": "Increment/decrement operation 'pos++' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 720,
+   "message": "Pointer arithmetic moves 3 elements beyond buffer bounds (effective size: 1): Buffer 'pos' with size 1 (allocated at line 802)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 720,
+   "message": "Compound assignment 'pos += 3' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 730,
+   "message": "Increment/decrement operation 'pos++' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 731,
+   "message": "Increment/decrement operation 'pos++' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 739,
+   "message": "Pointer arithmetic moves 2 elements beyond buffer bounds (effective size: 1): Buffer 'pos' with size 1 (allocated at line 802)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 739,
+   "message": "Compound assignment 'pos += 2' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 16,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 744,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:msgpos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 755,
+   "message": "Local variable 'pos' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 28,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 762,
+   "message": "Pointer parameter 'end' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *end'"
+  },
+  {
+   "column": 19,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 782,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:msgpos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 49,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 782,
+   "message": "Variable 'payload' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'payload' before use, e.g., at its declaration"
+  },
+  {
+   "column": 29,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 799,
+   "message": "Pointer parameter 'end' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *end'"
+  },
+  {
+   "column": 5,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 802,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 19,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 809,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:msgpos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 836,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 837,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 7,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 890,
+   "message": "Signed integer addition 'verify_data + 1 + 3' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 7,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 890,
+   "message": "Signed integer addition 'verify_data + 1' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 4,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 897,
+   "message": "Signed integer addition 'verify_data + 1 + 3' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 4,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 897,
+   "message": "Signed integer addition 'verify_data + 1' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 911,
+   "message": "Pointer arithmetic moves 3 elements beyond buffer bounds (effective size: 1): Buffer 'pos' with size 1 (allocated at line 802)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 9,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 946,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 11,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 954,
+   "message": "Unsigned integer addition '1000 + tls_server_cert_chain_der_len(conn) + ocsp_resp_len' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }"
+  },
+  {
+   "column": 7,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 976,
+   "message": "Function 'tls_write_server_finished' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 985,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 1005,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 6,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 1024,
+   "message": "Function 'tls_write_server_finished' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 1034,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 1038,
+   "message": "Function 'tlsv1_server_handshake_write' does not validate pointer parameter 'conn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conn' at the start of the function, e.g., 'if (!conn) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 1057,
+   "message": "Function 'tlsv1_server_send_alert' does not validate pointer parameter 'conn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conn' at the start of the function, e.g., 'if (!conn) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 1077,
+   "message": "Pointer arithmetic moves 2 elements beyond buffer bounds (effective size: 1): Buffer 'pos' with size 1 (allocated at line 802)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 1080,
+   "message": "Pointer arithmetic moves 2 elements beyond buffer bounds (effective size: 1): Buffer 'pos' with size 1 (allocated at line 802)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_server_write.c",
+   "line": 1092,
+   "message": "Function returns pointer to local variable 'alert' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  }
+ ]
+}

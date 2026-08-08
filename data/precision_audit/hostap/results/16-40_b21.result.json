@@ -1,0 +1,840 @@
+{
+ "labels": [
+  {
+   "rule": "DCL40-C",
+   "file": "src/ap/wpa_auth.h",
+   "line": 92,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED anon-struct misparse as redeclared object, confirmed pattern"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/ap/wpa_auth.h",
+   "line": 98,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED anon-struct misparse as redeclared object, confirmed pattern"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/wpa_auth.h",
+   "line": 497,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic char*buf+size_t buflen pair, confirmed API05-C FP pattern"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/wpa_auth.h",
+   "line": 498,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic char*buf+size_t buflen pair, confirmed API05-C FP pattern"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/ap/wpa_auth.h",
+   "line": 502,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "int *len is output length param, not array needing a size; confirmed API02-C FP class"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/ap/wpa_auth.h",
+   "line": 515,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "size_t *len is the output length itself, no capacity needed; confirmed API02-C FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/wpa_auth.h",
+   "line": 534,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic char*buf+size_t len pair, confirmed API05-C FP pattern"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/wpa_auth.h",
+   "line": 538,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic char*buf+size_t len pair, confirmed API05-C FP pattern"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/ap/wpa_auth.h",
+   "line": 550,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "size_t *pmk_len already paired with const u8 **pmk; confirmed API02-C FP class"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/ap/wpa_auth.h",
+   "line": 556,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "size_t *pmk_len already paired with u8 *pmk; confirmed API02-C FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/wpa_auth.h",
+   "line": 575,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "const u8*/size_t companion idiom on wpa_ft_process_auth callback params; confirmed API05-C FP class"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/ap/wpa_auth.h",
+   "line": 587,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "int *session_timeout is scalar out-param, not an array; confirmed API02-C FP class"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/ap/wpa_auth.h",
+   "line": 587,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "int *session_timeout is scalar out-param, not an array; confirmed API02-C FP class"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/ap/wpa_auth.h",
+   "line": 587,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "int *session_timeout is scalar out-param, not an array; confirmed API02-C FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/wpa_auth.h",
+   "line": 589,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "u8 *pmk_r1 paired with immediately-following size_t *pmk_r1_len; confirmed API05-C FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/wpa_auth.h",
+   "line": 593,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "int *session_timeout is a scalar out-param, not an array; API05-C category error"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/ap/wpa_auth.h",
+   "line": 635,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "int *seg1_idx is scalar out-param, not an array; confirmed API02-C FP class"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/ap/wpa_auth.h",
+   "line": 641,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "size_t *fils_kek_len already paired with u8 *fils_kek; confirmed API02-C FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/wpa_auth.h",
+   "line": 683,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "const u8 *addr is a fixed ETH_ALEN MAC address, no array-size param needed"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "src/ap/wpa_auth.h",
+   "line": 718,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "for_each_sm_auth's sm arg is always a plain variable at all 7 call sites, no side-effect hazard"
+  },
+  {
+   "rule": "PRE01-C",
+   "file": "src/ap/wpa_auth.h",
+   "line": 718,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "link_id is the for-loop lvalue assignment target; cannot be parenthesized, dl_list-style FP class"
+  },
+  {
+   "rule": "PRE01-C",
+   "file": "src/ap/wpa_auth.h",
+   "line": 718,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "link_id is the for-loop lvalue assignment target; cannot be parenthesized, dl_list-style FP class"
+  },
+  {
+   "rule": "PRE02-C",
+   "file": "src/ap/wpa_auth.h",
+   "line": 718,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macro body is a for-loop+if statement, not an expression; wrapping in parens is invalid C (dl_list-style FP class)"
+  },
+  {
+   "rule": "PRE10-C",
+   "file": "src/ap/wpa_auth.h",
+   "line": 718,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "statement/loop-header macro meant to be followed by a loop body, do-while(0) wrap inapplicable (dl_list-style FP class)"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "src/ap/wpa_auth.h",
+   "line": 718,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sm arg is always a plain variable at call sites, no real multiple-evaluation hazard"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.h",
+   "line": 724,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "conf only read in wpa_auth_pmf_enabled, plain internal helper not bound to callback contract"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/wpa_ctrl.h",
+   "line": 34,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/wpa_ctrl.h",
+   "line": 38,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/wpa_ctrl.h",
+   "line": 109,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/wpa_ctrl.h",
+   "line": 161,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/wpa_ctrl.h",
+   "line": 164,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/wpa_ctrl.h",
+   "line": 199,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/wpa_ctrl.h",
+   "line": 200,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/wpa_ctrl.h",
+   "line": 204,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/wpa_ctrl.h",
+   "line": 212,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/wpa_ctrl.h",
+   "line": 216,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/wpa_ctrl.h",
+   "line": 217,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/wpa_ctrl.h",
+   "line": 218,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/wpa_ctrl.h",
+   "line": 257,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/wpa_ctrl.h",
+   "line": 258,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/wpa_ctrl.h",
+   "line": 283,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/wpa_ctrl.h",
+   "line": 285,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/wpa_ctrl.h",
+   "line": 361,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/wpa_ctrl.h",
+   "line": 366,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/wpa_ctrl.h",
+   "line": 367,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/wpa_ctrl.h",
+   "line": 368,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/wpa_ctrl.h",
+   "line": 473,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macro is a ctrl_iface event-name tag string, not actual secret material; word PASSWORD/KEY/PIN/AUTH is just protocol vocabulary"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/common/wpa_ctrl.h",
+   "line": 601,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reply_len is already the paired size/output-length arg for reply; confirmed API02-C FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/wpa_ctrl.h",
+   "line": 601,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cmd/cmd_len and reply/reply_len are idiomatic ptr+len pairs; confirmed API05-C FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/wpa_ctrl.h",
+   "line": 602,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reply paired with reply_len immediately after; confirmed API05-C FP class"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/common/wpa_ctrl.h",
+   "line": 645,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reply_len already the paired size/output-length arg for reply; confirmed API02-C FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/wpa_ctrl.h",
+   "line": 645,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reply paired with reply_len; confirmed API05-C FP class"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/mbo_ap.c",
+   "line": 12,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "8.3-legacy filename-collision rule inapplicable to modern POSIX build; confirmed PRE08-C FP pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/mbo_ap.c",
+   "line": 19,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta always non-null at all internal call sites; confirmed API00-C internal-only-API FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/mbo_ap.c",
+   "line": 45,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*info) is compile-time only, not a dereference; confirmed EXP33-C sizeof FP pattern"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/ap/mbo_ap.c",
+   "line": 65,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*pos='\\0' is plain char-to-char assignment, no widening conversion; confirmed STR34-C FP pattern"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/ap/mbo_ap.c",
+   "line": 70,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*pos='\\0' is plain char-to-char assignment, no widening conversion; confirmed STR34-C FP pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/mbo_ap.c",
+   "line": 83,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta guaranteed non-null by all callers (ieee802_11.c/drv_callbacks.c); confirmed API00-C internal-only-API FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/mbo_ap.c",
+   "line": 83,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "hapd only read (mbo_enabled check), plain internal helper not bound to callback contract"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/mbo_ap.c",
+   "line": 84,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "elems only read (elems->mbo/mbo_len), plain internal helper not bound to callback contract"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/mbo_ap.c",
+   "line": 109,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mbo_ap_sta_free only frees sta->non_pref_chan sub-list nodes, never sta itself; confirmed MEM30-C sub-field-vs-whole-object conflation pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/mbo_ap.c",
+   "line": 115,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "buflen always positive, no realistic overflow path in this internal API; low-value pedantry"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/mbo_ap.c",
+   "line": 115,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "buflen always positive, no realistic overflow path in this internal API; low-value pedantry"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/mbo_ap.c",
+   "line": 115,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sta only read in mbo_ap_get_info, plain internal helper not bound to callback contract"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/mbo_ap.c",
+   "line": 115,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char *buf paired with size_t buflen; confirmed API05-C FP class"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "src/ap/mbo_ap.c",
+   "line": 117,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf param is plain non-const char*, no const is actually being cast away; rule factually wrong"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/ap/mbo_ap.c",
+   "line": 128,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pos-buf bounded by small ctrl_iface reply buffer size, unrealistic overflow; matches protocol-bound INT32-C FP family"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/ap/mbo_ap.c",
+   "line": 129,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pos+=ret is pointer arithmetic on a char*, not signed-int arithmetic; INT32-C category error"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "src/ap/mbo_ap.c",
+   "line": 132,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos is plain non-const char*, no const is actually being cast away; rule factually wrong"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/ap/mbo_ap.c",
+   "line": 157,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos2==NULL already excluded by preceding 'if (!pos2) break;' in same iteration; guard-blindness FP family, plus end/pos2 both derive from the same buf array"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/ap/mbo_ap.c",
+   "line": 158,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos2==NULL already excluded by preceding 'if (!pos2) break;' in same iteration; guard-blindness FP family, plus end/pos2 both derive from the same buf array"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/ap/mbo_ap.c",
+   "line": 164,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pos-buf bounded by small ctrl_iface reply buffer size, unrealistic overflow; matches protocol-bound INT32-C FP family"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/mbo_ap.c",
+   "line": 182,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char *buf paired with size_t buflen idiom; confirmed API05-C FP class"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/mbo_ap.c",
+   "line": 194,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mbo_ap_sta_free only frees sta->non_pref_chan sub-list nodes, never sta itself; confirmed MEM30-C sub-field-vs-whole-object conflation pattern"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/mbo_ap.c",
+   "line": 197,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mbo_ap_sta_free only frees sta->non_pref_chan sub-list nodes, never sta itself; confirmed MEM30-C sub-field-vs-whole-object conflation pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/mbo_ap.c",
+   "line": 208,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is the WNM Notification element payload, always non-null when this function is invoked; internal-only-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/mbo_ap.c",
+   "line": 208,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is the WNM Notification element payload, always non-null when this function is invoked; internal-only-API FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/gas_server.c",
+   "line": 60,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop timeout callback matching fixed eloop_timeout_handler typedef; confirmed eloop-callback DCL13-C FP pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/gas_server.c",
+   "line": 91,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "gas only read (gas->ctx/gas->tx) in gas_server_send_resp, plain internal helper not a callback itself"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/gas_server.c",
+   "line": 221,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*response) is compile-time only, not a dereference; confirmed EXP33-C sizeof FP pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/gas_server.c",
+   "line": 379,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bssid is always populated by the driver RX path; internal-only-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/gas_server.c",
+   "line": 379,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bssid is always populated by the driver RX path; internal-only-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/gas_server.c",
+   "line": 379,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bssid is always populated by the driver RX path; internal-only-API FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/common/gas_server.c",
+   "line": 401,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR expands to pure byte-index reads with no side effects; confirmed EXP30-C macro-arg FP pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/gas_server.c",
+   "line": 448,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "dst is a MAC address from the TX-status callback, always populated; internal-only-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/gas_server.c",
+   "line": 448,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "dst is a MAC address from the TX-status callback, always populated; internal-only-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/gas_server.c",
+   "line": 483,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "gas always non-null by caller convention; internal-only-API FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/gas_server.c",
+   "line": 483,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "resp_ctx used only for pointer-identity comparison, never dereferenced or modified"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/common/gas_server.c",
+   "line": 491,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "response is read right after the loop in 'if (!response || response->resp)'; dl_list_for_each post-loop-read blind spot"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/gas_server.c",
+   "line": 491,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "response/tmp are both ordinary local variables in the same function, not global/static; DCL30-C claim is factually wrong"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/gas_server.c",
+   "line": 510,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "gas always non-null by caller convention; internal-only-API FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/gas_server.c",
+   "line": 510,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "resp_ctx used only for pointer-identity comparison, never dereferenced or modified"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/common/gas_server.c",
+   "line": 518,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "response is read right after the loop in 'if (!response || response->initial_resp_sent)'; dl_list_for_each post-loop-read blind spot"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/gas_server.c",
+   "line": 518,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "response/tmp are both ordinary local variables in the same function, not global/static; DCL30-C claim is factually wrong"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/gas_server.c",
+   "line": 535,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "gas always non-null by caller convention; internal-only-API FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/gas_server.c",
+   "line": 535,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "resp_ctx used only for pointer-identity comparison, never dereferenced or modified"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/gas_server.c",
+   "line": 550,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "tx is a function pointer supplied once at init by an internal caller; internal-only-API FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/gas_server.c",
+   "line": 558,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*gas) is compile-time only, not a dereference; confirmed EXP33-C sizeof FP pattern"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/gas_server.c",
+   "line": 565,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "gas is a local pointer variable pointing to heap memory from os_zalloc, not automatic storage; confirmed DCL30-C confused-variable-vs-storage pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/gas_server.c",
+   "line": 593,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "status_cb is a function pointer supplied by internal callers; internal-only-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/gas_server.c",
+   "line": 593,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "status_cb is a function pointer supplied by internal callers; internal-only-API FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/gas_server.c",
+   "line": 607,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*handler) is compile-time only, not a dereference; confirmed EXP33-C sizeof FP pattern"
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/common/gas_server.c",
+   "line": 247,
+   "rule": "MEM31-C",
+   "desc": "gas_server_rx_initial_req: if handler->req_cb() sets *comeback_delay<0, function returns 0 without freeing or storing 'resp' -- verified safe only because the single real caller (dpp_supplicant.c) always pairs comeback_delay=-1 with resp==NULL; a future/other req_cb implementation violating that undocumented convention would leak the wpabuf. Not a confirmed live bug today (contract-dependent), flagging as a fragile API contract worth a comment/assert.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [
+  "src/ap/wpa_auth.h",
+  "src/common/wpa_ctrl.h",
+  "src/ap/mbo_ap.c",
+  "src/common/gas_server.c"
+ ],
+ "summary": {
+  "tp": 8,
+  "fp": 94,
+  "fn": 1
+ }
+}

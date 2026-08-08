@@ -1,0 +1,509 @@
+{
+ "labels": [
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 34,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP; called only with caller-validated pointers"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 34,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP; net_access_key always caller-supplied"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 34,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP; id caller-owned struct pointer"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 41,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "MSC13-C genuine: csign=NULL initializer never read before line 61 overwrite/goto fail"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 44,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR31-C misapplied: const u8 *addr[1] is a pointer array, not a char string buffer"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 45,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR31-C misapplied: size_t len[1] not a char array at all"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 130,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C genuine: plain static helper, auth only read, not a dispatch/vtable param"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 182,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C heap-vs-local confusion: msg is dpp_alloc_msg() heap buffer, not automatic storage"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 237,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP; dpp caller-guaranteed valid"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 237,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP; msg_ctx opaque caller context"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 237,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC37-C goto-label blindness: function always reaches out:/return via fail->goto out"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 238,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API05-C ptr+size_t idiom (a_nonce_attr/len, e_id_attr/len)"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 278,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC41-C hexdump/log-label FP: \"E'-id\" is dpp_debug_print_key's log title, not secret data"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 320,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C heap-vs-local confusion: auth is dpp_alloc_auth() heap struct"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 328,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC37-C goto-label blindness: dpp_reconfig_build_resp always returns via out:"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 360,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR39-C misfire: plain integer sum of lengths/constants, no pointer arithmetic present"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 414,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor misfire: wpabuf_head/wpabuf_len have no side effects"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 431,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC07-C goto-label blindness: fail: label reached via goto fail earlier in function"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 437,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP; dpp caller-guaranteed"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 437,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP; msg_ctx opaque context"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 437,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP; own_connector caller-provided string"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 437,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP; csign_key caller-provided buffer"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 437,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC37-C goto-label blindness: dpp_reconfig_auth_req_rx always returns via out:"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 438,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API05-C ptr+size_t idiom on adjacent net_access_key/csign_key + len params"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 439,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API05-C ptr+size_t idiom, same signature"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 466,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP34-C FP: version[0] access guarded by short-circuit !version in same condition"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 560,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP34-C FP: os_free(NULL) is well-defined no-op; own_conn is always NULL here"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 565,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC07-C goto-label blindness: fail: reached via goto fail elsewhere in function"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 572,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC37-C goto-label blindness: dpp_reconfig_build_conf always returns via out:"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 573,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C genuine: plain static helper, auth only read"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 615,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR39-C misfire: plain integer sum '4 + wpabuf_len(clear) + AES_BLOCK_SIZE', no pointer arithmetic"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 644,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor misfire: wpabuf_head/wpabuf_len"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 656,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC07-C goto-label blindness: fail: reached via goto fail earlier"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 663,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP; hdr is caller-parsed frame buffer"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 663,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC37-C goto-label blindness: dpp_reconfig_auth_resp_rx always returns via out:"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 690,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC41-C FP: plain protocol-error description passed to dpp_auth_fail, not secret material"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 700,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC41-C FP: dpp_auth_fail log text, not sensitive data"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 704,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC41-C FP: dpp_auth_fail log text, not sensitive data"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 710,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP34-C FP: version[0] guarded by short-circuit !version"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 712,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC41-C FP: dpp_auth_fail log text"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 722,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC41-C FP: dpp_auth_fail log text"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 731,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC41-C FP: dpp_auth_fail log text"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 741,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC41-C FP: dpp_auth_fail log text"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 787,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR39-C misfire: plain size_t subtraction 'wrapped_data_len - AES_BLOCK_SIZE', no pointer involved"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 794,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC41-C FP: dpp_auth_fail log text"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 809,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC41-C FP: dpp_auth_fail log text"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 817,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC41-C FP: dpp_auth_fail log text"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 841,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM12-C flow-insensitive FP: both signed_connector and unwrapped are freed at out: via goto"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 842,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC07-C goto-label blindness: fail: reached via goto fail earlier"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 849,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP; hdr caller-parsed frame buffer"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 870,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC41-C FP: dpp_auth_fail log text"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 881,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC41-C FP: dpp_auth_fail log text"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 887,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC41-C FP: dpp_auth_fail log text"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 899,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR39-C misfire: plain size_t subtraction, no pointer"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 906,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC41-C FP: dpp_auth_fail log text"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 920,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP34-C FP: trans_id[0] guarded by short-circuit !trans_id in same condition"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 922,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC41-C FP: dpp_auth_fail log text"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 928,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP34-C FP: version[0] guarded by short-circuit !version"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 930,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC41-C FP: dpp_auth_fail log text"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 938,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC41-C FP: dpp_auth_fail log text"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 947,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC41-C FP: dpp_auth_fail log text"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp_reconfig.c",
+   "line": 956,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC41-C FP: dpp_auth_fail log text"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "src/common/dpp_reconfig.c"
+ ],
+ "summary": {
+  "tp": 3,
+  "fp": 59,
+  "fn": 0
+ }
+}

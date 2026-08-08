@@ -1,0 +1,1354 @@
+{
+ "wpa_supplicant/config.c#part1of4": [
+  {
+   "column": 21,
+   "file": "wpa_supplicant/config.c",
+   "line": 65,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 20,
+   "file": "wpa_supplicant/config.c",
+   "line": 112,
+   "message": "Do not cast away const qualification: '(u8 *) ssid'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 25,
+   "file": "wpa_supplicant/config.c",
+   "line": 113,
+   "message": "Do not cast away const qualification: '(u8 *) ssid'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/config.c",
+   "line": 130,
+   "message": "Local variable 'tmp' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/config.c",
+   "line": 130,
+   "message": "Pointer dereference '*dst' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/config.c",
+   "line": 132,
+   "message": "Local variable 'res_len' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/config.c",
+   "line": 141,
+   "message": "Variable 'buf' should be declared volatile - modified around function calls that may have external side effects",
+   "rule_id": "DCL22-C",
+   "severity": "Low",
+   "suggestion": "Declare as 'volatile' to prevent compiler optimizations that assume variable state is unchanged across function calls"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/config.c",
+   "line": 151,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/config.c",
+   "line": 151,
+   "message": "Returning pointer to local array 'buf' which will be destroyed when function returns, creating a dangling pointer.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Consider allocating the array dynamically (malloc/calloc), declaring it as static, or passing a buffer as a parameter."
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/config.c",
+   "line": 164,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/config.c",
+   "line": 170,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 24,
+   "file": "wpa_supplicant/config.c",
+   "line": 181,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 20,
+   "file": "wpa_supplicant/config.c",
+   "line": 186,
+   "message": "Do not cast away const qualification: '(u8 *) ssid'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 24,
+   "file": "wpa_supplicant/config.c",
+   "line": 191,
+   "message": "Do not cast away const qualification: '(u8 *) ssid'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/config.c",
+   "line": 201,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 18,
+   "file": "wpa_supplicant/config.c",
+   "line": 208,
+   "message": "Do not cast away const qualification: '(u8 *) ssid'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/config.c",
+   "line": 209,
+   "message": "Return value of 'strtol' assigned to 'val' but not checked for errors: 'strtol(value, &end, 0)' - Sets errno on overflow/underflow, uses endptr for parsing errors",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check errno and endptr: errno = 0; val = strtol(str, &endptr, base); if (errno != 0 || endptr == str) handle_error();"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/config.c",
+   "line": 209,
+   "message": "Return value from strtol() should be checked for errors",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Check if strtol() returned an error value (NULL, -1, etc.)"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/config.c",
+   "line": 209,
+   "message": "strtol() can set errno but errno is not checked after the call",
+   "rule_id": "ERR01-C",
+   "severity": "Low",
+   "suggestion": "Set errno to 0 before calling strtol() and check errno afterward to detect errors"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/config.c",
+   "line": 209,
+   "message": "In-band function 'strtol' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+   "rule_id": "ERR30-C",
+   "severity": "Medium",
+   "suggestion": "Set errno before call: 'errno = 0; val = strtol(...); if (errno == ERANGE) { ... }'"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/config.c",
+   "line": 210,
+   "message": "Potential null pointer dereference of variable 'end'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'end' is not NULL before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/config.c",
+   "line": 233,
+   "message": "Local variable 'val' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 24,
+   "file": "wpa_supplicant/config.c",
+   "line": 258,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 18,
+   "file": "wpa_supplicant/config.c",
+   "line": 263,
+   "message": "Do not cast away const qualification: '(u8 *) ssid'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/config.c",
+   "line": 273,
+   "message": "Array/pointer 'value' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'value' after calling free(). Set pointer to NULL after freeing: free(value); value = NULL;"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/config.c",
+   "line": 274,
+   "message": "Function returns pointer to local variable 'value' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/config.c",
+   "line": 274,
+   "message": "Returning pointer to local array 'value' which will be destroyed when function returns, creating a dangling pointer.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Consider allocating the array dynamically (malloc/calloc), declaring it as static, or passing a buffer as a parameter."
+  },
+  {
+   "column": 32,
+   "file": "wpa_supplicant/config.c",
+   "line": 280,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 40,
+   "file": "wpa_supplicant/config.c",
+   "line": 281,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/config.c",
+   "line": 285,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/config.c",
+   "line": 292,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'pos' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 320,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/config.c",
+   "line": 330,
+   "message": "Local variable 'buf' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 40,
+   "file": "wpa_supplicant/config.c",
+   "line": 339,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 40,
+   "file": "wpa_supplicant/config.c",
+   "line": 339,
+   "message": "Pointer parameter 'name' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *name'"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 359,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/config.c",
+   "line": 368,
+   "message": "Function returns pointer to local variable 'value' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/config.c",
+   "line": 395,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/config.c",
+   "line": 411,
+   "message": "Array/pointer 'value' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'value' after calling free(). Set pointer to NULL after freeing: free(value); value = NULL;"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/config.c",
+   "line": 412,
+   "message": "Function returns pointer to local variable 'value' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/config.c",
+   "line": 412,
+   "message": "Returning pointer to local array 'value' which will be destroyed when function returns, creating a dangling pointer.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Consider allocating the array dynamically (malloc/calloc), declaring it as static, or passing a buffer as a parameter."
+  },
+  {
+   "column": 24,
+   "file": "wpa_supplicant/config.c",
+   "line": 440,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/config.c",
+   "line": 456,
+   "message": "Function returns pointer to local variable 'value' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/config.c",
+   "line": 487,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 29,
+   "file": "wpa_supplicant/config.c",
+   "line": 497,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/config.c",
+   "line": 533,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 29,
+   "file": "wpa_supplicant/config.c",
+   "line": 543,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 38,
+   "file": "wpa_supplicant/config.c",
+   "line": 593,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_ascii_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"PSK (ASCII passphrase)\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 11,
+   "file": "wpa_supplicant/config.c",
+   "line": 594,
+   "message": "Do not cast away const qualification: '(u8 *) value'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 21,
+   "file": "wpa_supplicant/config.c",
+   "line": 595,
+   "message": "Do not cast away const qualification: '(u8 *) value'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/config.c",
+   "line": 609,
+   "message": "Use-after-free: accessing freed pointer 'ssid->passphrase'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 24,
+   "file": "wpa_supplicant/config.c",
+   "line": 637,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 27,
+   "file": "wpa_supplicant/config.c",
+   "line": 698,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/config.c",
+   "line": 717,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'start' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/config.c",
+   "line": 726,
+   "message": "Pointer dereference '*end' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/config.c",
+   "line": 760,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 774,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 782,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/config.c",
+   "line": 791,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/config.c",
+   "line": 796,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/config.c",
+   "line": 797,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/config.c",
+   "line": 808,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'start' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/config.c",
+   "line": 817,
+   "message": "Pointer dereference '*end' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/config.c",
+   "line": 826,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/config.c",
+   "line": 829,
+   "message": "Value assigned to 'if' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/config.c",
+   "line": 829,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 27,
+   "file": "wpa_supplicant/config.c",
+   "line": 893,
+   "message": "Variable 'key_mgmt' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 32,
+   "file": "wpa_supplicant/config.c",
+   "line": 893,
+   "message": "Modulo operator used with potentially signed operands. The result of % with negative operands is implementation-defined and can be negative. Use unsigned types (size_t, unsigned int) or explicitly handle negative remainders.",
+   "rule_id": "INT10-C",
+   "severity": "Medium",
+   "suggestion": "Convert operands to unsigned types (size_t, unsigned int) or add explicit checks for negative values"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/config.c",
+   "line": 906,
+   "message": "Division or modulo by 'no' without checking for zero",
+   "rule_id": "INT33-C",
+   "severity": "High",
+   "suggestion": "Check if 'no' is not zero before division"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/config.c",
+   "line": 906,
+   "message": "Modulo operator used with potentially signed operands. The result of % with negative operands is implementation-defined and can be negative. Use unsigned types (size_t, unsigned int) or explicitly handle negative remainders.",
+   "rule_id": "INT10-C",
+   "severity": "Medium",
+   "suggestion": "Convert operands to unsigned types (size_t, unsigned int) or add explicit checks for negative values"
+  },
+  {
+   "column": 17,
+   "file": "wpa_supplicant/config.c",
+   "line": 910,
+   "message": "Variable 'ssid' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 38,
+   "file": "wpa_supplicant/config.c",
+   "line": 912,
+   "message": "Division or modulo by 'x' without checking for zero",
+   "rule_id": "INT33-C",
+   "severity": "High",
+   "suggestion": "Check if 'x' is not zero before division"
+  },
+  {
+   "column": 39,
+   "file": "wpa_supplicant/config.c",
+   "line": 912,
+   "message": "Modulo operator used with potentially signed operands. The result of % with negative operands is implementation-defined and can be negative. Use unsigned types (size_t, unsigned int) or explicitly handle negative remainders.",
+   "rule_id": "INT10-C",
+   "severity": "Medium",
+   "suggestion": "Convert operands to unsigned types (size_t, unsigned int) or add explicit checks for negative values"
+  },
+  {
+   "column": 14,
+   "file": "wpa_supplicant/config.c",
+   "line": 925,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/config.c",
+   "line": 927,
+   "message": "Reserved identifier 'NULL' should not be used",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Use a non-reserved identifier"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/config.c",
+   "line": 931,
+   "message": "Use-after-free: pointer arithmetic on freed pointer 'end'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not use freed pointers in arithmetic."
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 935,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 935,
+   "message": "Use-after-free: returning freed pointer 'buf'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not return freed memory from functions."
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/config.c",
+   "line": 937,
+   "message": "Value assigned to 'pos' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 944,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 954,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 964,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 974,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 985,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 995,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 1006,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 1019,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 1030,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 1040,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 1051,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 1063,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 1073,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 1083,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 1093,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 1105,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 1117,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 1129,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 1138,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 1148,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 1157,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 1170,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 1182,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 1194,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/config.c",
+   "line": 1211,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 29,
+   "file": "wpa_supplicant/config.c",
+   "line": 1216,
+   "message": "'value' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/config.c",
+   "line": 1233,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/config.c",
+   "line": 1261,
+   "message": "Bitwise operator '&' used on signed operand 'val' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'val' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 22,
+   "file": "wpa_supplicant/config.c",
+   "line": 1277,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/config.c",
+   "line": 1299,
+   "message": "Bitwise operator '&' used on signed operand 'val' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'val' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/config.c",
+   "line": 1315,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/config.c",
+   "line": 1332,
+   "message": "Bitwise operator '&' used on signed operand 'val' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'val' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 24,
+   "file": "wpa_supplicant/config.c",
+   "line": 1349,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/config.c",
+   "line": 1368,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'start' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/config.c",
+   "line": 1377,
+   "message": "Pointer dereference '*end' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 22,
+   "file": "wpa_supplicant/config.c",
+   "line": 1412,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 1426,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 1427,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 1436,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 1437,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 1446,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 1447,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/config.c",
+   "line": 1457,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/config.c",
+   "line": 1475,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'pos' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/config.c",
+   "line": 1492,
+   "message": "Array/pointer 'freqs' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'freqs' after calling free(). Set pointer to NULL after freeing: free(freqs); freqs = NULL;"
+  },
+  {
+   "column": 17,
+   "file": "wpa_supplicant/config.c",
+   "line": 1492,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 17,
+   "file": "wpa_supplicant/config.c",
+   "line": 1492,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/config.c",
+   "line": 1493,
+   "message": "Array/pointer 'freqs' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'freqs' after calling free(). Set pointer to NULL after freeing: free(freqs); freqs = NULL;"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/config.c",
+   "line": 1499,
+   "message": "Function returns pointer to local variable 'freqs' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/config.c",
+   "line": 1499,
+   "message": "Returning pointer to local array 'freqs' which will be destroyed when function returns, creating a dangling pointer.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Consider allocating the array dynamically (malloc/calloc), declaring it as static, or passing a buffer as a parameter."
+  },
+  {
+   "column": 44,
+   "file": "wpa_supplicant/config.c",
+   "line": 1503,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 69,
+   "file": "wpa_supplicant/config.c",
+   "line": 1503,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 69,
+   "file": "wpa_supplicant/config.c",
+   "line": 1503,
+   "message": "Pointer parameter 'array' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *array'"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/config.c",
+   "line": 1574,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 1590,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/config.c",
+   "line": 1591,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/config.c",
+   "line": 1596,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 23,
+   "file": "wpa_supplicant/config.c",
+   "line": 1601,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 23,
+   "file": "wpa_supplicant/config.c",
+   "line": 1608,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/config.c",
+   "line": 1630,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'start' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/config.c",
+   "line": 1639,
+   "message": "Pointer dereference '*end' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 24,
+   "file": "wpa_supplicant/config.c",
+   "line": 1717,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/config.c",
+   "line": 1745,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/config.c",
+   "line": 1747,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 22,
+   "file": "wpa_supplicant/config.c",
+   "line": 1942,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/config.c",
+   "line": 1950,
+   "message": "Variable 'ssid' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/config.c",
+   "line": 1956,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/config.c",
+   "line": 1972,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 23,
+   "file": "wpa_supplicant/config.c",
+   "line": 1977,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/config.c",
+   "line": 1985,
+   "message": "Variable 'ssid' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/config.c",
+   "line": 1992,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  }
+ ]
+}

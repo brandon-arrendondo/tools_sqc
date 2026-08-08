@@ -1,0 +1,1219 @@
+{
+ "labels": [
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3033,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label's cleanup chain (done:/out:/fail:) frees this pointer; goto-target-frees-it MEM31-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3039,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label's cleanup chain (done:/out:/fail:) frees this pointer; goto-target-frees-it MEM31-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3047,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label's cleanup chain (done:/out:/fail:) frees this pointer; goto-target-frees-it MEM31-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3061,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label's cleanup chain (done:/out:/fail:) frees this pointer; goto-target-frees-it MEM31-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3061,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label's cleanup chain (done:/out:/fail:) frees this pointer; goto-target-frees-it MEM31-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3061,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label's cleanup chain (done:/out:/fail:) frees this pointer; goto-target-frees-it MEM31-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3071,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label's cleanup chain (done:/out:/fail:) frees this pointer; goto-target-frees-it MEM31-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3071,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label's cleanup chain (done:/out:/fail:) frees this pointer; goto-target-frees-it MEM31-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3071,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label's cleanup chain (done:/out:/fail:) frees this pointer; goto-target-frees-it MEM31-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3105,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only crypto backend API (crypto.h contract implemented by multiple backends), never invoked with NULL by any caller; established API00-C internal-only-API FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3105,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "crypto_ecdh_prime_len's signature is the fixed public crypto.h backend-API contract implemented identically by multiple backends (openssl/gnutls/wolfssl/internal); dispatch-contract DCL13-C FP class, same reasoning as the eloop-callback precedent"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3111,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL-version #if/#else (and BoringSSL sub-branch) each end in an explicit return; MSC37-C preprocessor-branch-blindness FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3149,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_ec_key_deinit()/similar wrapper calls EVP_PKEY_free internally; sqc doesn't see through the wrapper (BIO-helper/_cleanup()-wrapper MEM31-C FP class)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3152,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_ec_key_deinit()/similar wrapper calls EVP_PKEY_free internally; sqc doesn't see through the wrapper (BIO-helper/_cleanup()-wrapper MEM31-C FP class)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3155,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer is the function's own return value (ownership transferred to caller); return-value-not-a-leak MEM31-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3158,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_ec_key_deinit()/similar wrapper calls EVP_PKEY_free internally; sqc doesn't see through the wrapper (BIO-helper/_cleanup()-wrapper MEM31-C FP class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3163,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only crypto backend API (crypto.h contract implemented by multiple backends), never invoked with NULL by any caller; established API00-C internal-only-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3163,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C integer-overflow variant on a small enum-like group/len value that never realistically overflows; established API00-C-integer-overflow-variant FP class"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3163,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL-version #if/#else (and BoringSSL sub-branch) each end in an explicit return; MSC37-C preprocessor-branch-blindness FP class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3169,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx's initial NULL IS read (via EVP_PKEY_CTX_free(ctx) at out:) on the priv_bin-alloc-failure goto path, before ctx is ever reassigned; MSC13-C 'never read' claim is false"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3173,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ec_group's initial NULL IS read (via EC_GROUP_free(ec_group) at out:) on the priv_bin-alloc-failure goto path, before ec_group is ever reassigned"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3175,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pub_bin's initial NULL IS read (via os_free(pub_bin) at out:) on the priv_bin-alloc-failure goto path, before pub_bin is ever reassigned"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3176,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "priv_bin's NULL initializer is unconditionally overwritten by os_malloc() on the very next statement with no intervening branch that could read the NULL; genuinely dead init"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3213,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cast-away-const used only to pass into a read-only API call (no write through the cast pointer); established EXP05-C read-only-cast FP class"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3220,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EVP_PKEY_CTX_new_from_name(NULL, \"EC\", NULL): distinct-typed NULL/const-string args misidentified as aliased pointers; established EXP43-C NULL,NULL-test-harness/no-restrict FP class"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3233,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv_bin and pub_bin ARE released via bin_clear_free()/os_free() on the lines immediately above this same return (out: label), contradicting the 'leaked' claim"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3240,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "eckey's NULL initializer is unconditionally overwritten by EC_KEY_new_by_curve_name() right after the only early-return, with no path reading the NULL; genuinely dead init"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3242,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "priv's NULL initializer is unconditionally overwritten by BN_bin2bn() right after, no path reads the NULL; genuinely dead init"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3250,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv_bin/pub_bin don't even exist as variables in this (OpenSSL<3.0) #else branch; cross-branch variable-name conflation with the #if>=3.0 branch's locals"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3254,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'raw_len' is a plain size_t integer parameter, never a pointer and never freed anywhere in this function; category error, not a real use-after-free"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3273,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label's cleanup chain (done:/out:/fail:) frees this pointer; goto-target-frees-it MEM31-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3281,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label's cleanup chain (done:/out:/fail:) frees this pointer; goto-target-frees-it MEM31-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3281,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label's cleanup chain (done:/out:/fail:) frees this pointer; goto-target-frees-it MEM31-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3285,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "variable/free conflated across mutually-exclusive #if/#else preprocessor branches (this file has 2-3 parallel OpenSSL-version implementations); preprocessor-branch variable-conflation FP class"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3287,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv_bin/pub_bin don't exist in this (OpenSSL<3.0) #else branch at all; cross-branch variable conflation with the #if>=3.0 branch"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3287,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer is the function's own return value (ownership transferred to caller); return-value-not-a-leak MEM31-C FP class"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3318,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "the 'code after return' is a fail:/label that IS reached via an earlier goto; not unreachable \u2014 goto/label-blindness MSC07-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3324,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C integer-overflow variant on a small enum-like group/len value that never realistically overflows; established API00-C-integer-overflow-variant FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3324,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C integer-overflow variant on a small enum-like group/len value that never realistically overflows; established API00-C-integer-overflow-variant FP class"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3324,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL-version #if/#else (and BoringSSL sub-branch) each end in an explicit return; MSC37-C preprocessor-branch-blindness FP class"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3346,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cast-away-const used only to pass into a read-only API call (no write through the cast pointer); established EXP05-C read-only-cast FP class"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3351,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EVP_PKEY_CTX_new_from_name(NULL, \"EC\", NULL): distinct-typed NULL/const-string args misidentified as aliased pointers; established EXP43-C NULL,NULL-test-harness/no-restrict FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3403,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label's cleanup chain (done:/out:/fail:) frees this pointer; goto-target-frees-it MEM31-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3409,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label's cleanup chain (done:/out:/fail:) frees this pointer; goto-target-frees-it MEM31-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3419,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label's cleanup chain (done:/out:/fail:) frees this pointer; goto-target-frees-it MEM31-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3419,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label's cleanup chain (done:/out:/fail:) frees this pointer; goto-target-frees-it MEM31-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3426,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label's cleanup chain (done:/out:/fail:) frees this pointer; goto-target-frees-it MEM31-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3426,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label's cleanup chain (done:/out:/fail:) frees this pointer; goto-target-frees-it MEM31-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3426,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label's cleanup chain (done:/out:/fail:) frees this pointer; goto-target-frees-it MEM31-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3435,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pkey is the function's own return value (ownership transferred to caller)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3435,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eckey's ownership was merged into pkey via EVP_PKEY_assign_EC_KEY (freeing pkey frees eckey); not a separate leak"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3446,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL-version #if/#else (and BoringSSL sub-branch) each end in an explicit return; MSC37-C preprocessor-branch-blindness FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3478,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label's cleanup chain (done:/out:/fail:) frees this pointer; goto-target-frees-it MEM31-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3485,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label's cleanup chain (done:/out:/fail:) frees this pointer; goto-target-frees-it MEM31-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3485,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label's cleanup chain (done:/out:/fail:) frees this pointer; goto-target-frees-it MEM31-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3489,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eckey's ownership was merged into pkey via EVP_PKEY_assign_EC_KEY; freeing/returning pkey covers it, not a separate leak"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3489,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer is the function's own return value (ownership transferred to caller); return-value-not-a-leak MEM31-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3500,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C integer-overflow variant on a small enum-like group/len value that never realistically overflows; established API00-C-integer-overflow-variant FP class"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3500,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL-version #if/#else (and BoringSSL sub-branch) each end in an explicit return; MSC37-C preprocessor-branch-blindness FP class"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3513,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cast-away-const used only to pass into a read-only API call (no write through the cast pointer); established EXP05-C read-only-cast FP class"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3516,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EVP_PKEY_CTX_new_from_name(NULL, \"EC\", NULL): distinct-typed NULL/const-string args misidentified as aliased pointers; established EXP43-C NULL,NULL-test-harness/no-restrict FP class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3532,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ec_params's NULL initializer is unconditionally overwritten by EC_KEY_new_by_curve_name() right after the only early-return, no path reads the NULL; genuinely dead init"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3553,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label's cleanup chain (done:/out:/fail:) frees this pointer; goto-target-frees-it MEM31-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3562,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label's cleanup chain (done:/out:/fail:) frees this pointer; goto-target-frees-it MEM31-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3562,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label's cleanup chain (done:/out:/fail:) frees this pointer; goto-target-frees-it MEM31-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3568,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label's cleanup chain (done:/out:/fail:) frees this pointer; goto-target-frees-it MEM31-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3568,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label's cleanup chain (done:/out:/fail:) frees this pointer; goto-target-frees-it MEM31-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3582,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EVP_PKEY_free(NULL) is a documented safe no-op, and crypto_ec_key_deinit is only ever called by the ~dozen internal callers of this crypto backend API; established API00-C internal-only-API FP class"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3605,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'EC_COMP_PUBKEY' is a typedef name introduced by the ASN1_SEQUENCE()/IMPLEMENT_ASN1_FUNCTIONS() macro pair (a type, not a variable); DCL00-C misparses the macro-expanded ASN.1 type definition as a const-qualifiable variable"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3615,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL-version #if/#else (and BoringSSL sub-branch) each end in an explicit return; MSC37-C preprocessor-branch-blindness FP class"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3617,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cast-away-const used only to pass into a read-only API call (no write through the cast pointer); established EXP05-C read-only-cast FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3628,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sqc tracks the EVP_PKEY_dup() result under the reassigned name 'pkey' (pkey = copy;) but the actual free (EVP_PKEY_free(copy)) uses the pre-reassignment name; reassign-then-free aliasing FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3663,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same reassign-then-free aliasing: 'copy' (now aliased as 'pkey') is freed via EVP_PKEY_free(copy) two lines above this return"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3717,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label's cleanup chain (done:/out:/fail:) frees this pointer; goto-target-frees-it MEM31-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3717,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label's cleanup chain (done:/out:/fail:) frees this pointer; goto-target-frees-it MEM31-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3717,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label's cleanup chain (done:/out:/fail:) frees this pointer; goto-target-frees-it MEM31-C FP class"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3720,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "der/pdata is only reached after the i2d_*/OSSL_ENCODER_to_data success/length check; that check already guarantees non-NULL by the OpenSSL alloc-into-double-pointer convention"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3725,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "variable/free conflated across mutually-exclusive #if/#else preprocessor branches (this file has 2-3 parallel OpenSSL-version implementations); preprocessor-branch variable-conflation FP class"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3739,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cast-away-const used only to pass into a read-only API call (no write through the cast pointer); established EXP05-C read-only-cast FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3744,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'key' is a borrowed reference (function parameter), never owned/freed here; no 'pkey' variable exists in this (non-BoringSSL) branch \u2014 cross-branch conflation"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3747,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "der/pdata is only reached after the i2d_*/OSSL_ENCODER_to_data success/length check; that check already guarantees non-NULL by the OpenSSL alloc-into-double-pointer convention"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3748,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "variable/free conflated across mutually-exclusive #if/#else preprocessor branches (this file has 2-3 parallel OpenSSL-version implementations); preprocessor-branch variable-conflation FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3749,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "variable/free conflated across mutually-exclusive #if/#else preprocessor branches (this file has 2-3 parallel OpenSSL-version implementations); preprocessor-branch variable-conflation FP class"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3755,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL-version #if/#else (and BoringSSL sub-branch) each end in an explicit return; MSC37-C preprocessor-branch-blindness FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3775,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reassign-then-free aliasing: 'copy' (EVP_PKEY_dup result, later aliased as 'pkey') is freed via EVP_PKEY_free(copy) before every return in this branch"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3790,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reassign-then-free aliasing: EVP_PKEY_free(copy) is called on the line immediately above this return"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3793,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "der/pdata is only reached after the i2d_*/OSSL_ENCODER_to_data success/length check; that check already guarantees non-NULL by the OpenSSL alloc-into-double-pointer convention"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3796,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reassign-then-free aliasing: EVP_PKEY_free(copy) is called on the line immediately above this return"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3804,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'pkey' here is the borrowed function parameter, never freed in this (OpenSSL<3.0) branch; cross-branch conflation with the >=3.0 branch's unrelated EVP_PKEY_free(copy)"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3821,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "der/pdata is only reached after the i2d_*/OSSL_ENCODER_to_data success/length check; that check already guarantees non-NULL by the OpenSSL alloc-into-double-pointer convention"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3824,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'key'/'pkey' is a borrowed reference in this branch, never freed; cross-branch conflation"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3829,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL-version #if/#else (and BoringSSL sub-branch) each end in an explicit return; MSC37-C preprocessor-branch-blindness FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3839,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "part of the standard 'if (!(x = alloc()) || use(x) || ...)' chain; C's || is a sequence point between operands so buf is assigned then only read, never unsequenced; established EXP30-C assign-then-use-chain FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3839,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "duplicate of the same || short-circuit chain finding; sequence point between operands makes this safe"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3844,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "the assignment is already wrapped in extra parens '!(buf = wpabuf_alloc(pub_len))', which is exactly CERT's own EXP45-C-compliant mitigation; already-parenthesized EXP45-C FP class"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3860,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_memmove is a plain memmove wrapper (no restrict qualifier) used for a legal overlapping shift; established EXP43-C no-restrict FP class"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3903,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_memmove is a plain memmove wrapper (no restrict qualifier) used for a legal overlapping shift; established EXP43-C no-restrict FP class"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3912,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL-version #if/#else (and BoringSSL sub-branch) each end in an explicit return; MSC37-C preprocessor-branch-blindness FP class"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3915,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cast-away-const used only to pass into a read-only API call (no write through the cast pointer); established EXP05-C read-only-cast FP class"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3951,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'(struct crypto_ec_point *) point' is the standard opaque-handle reinterpret cast used only to return the value; no write through the cast pointer"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3971,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL-version #if/#else (and BoringSSL sub-branch) each end in an explicit return; MSC37-C preprocessor-branch-blindness FP class"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3974,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cast-away-const used only to pass into a read-only API call (no write through the cast pointer); established EXP05-C read-only-cast FP class"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3981,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'(struct crypto_bignum *) bn' is the standard opaque-handle reinterpret cast used only to return the value; no write through the cast pointer"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3997,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only crypto backend API (crypto.h contract implemented by multiple backends), never invoked with NULL by any caller; established API00-C internal-only-API FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4021,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "returned local pointer variable refers to heap memory (wpabuf_alloc/EVP_PKEY_new/etc.), not automatic storage; established DCL30-C heap-vs-stack-pointer-variable FP class"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4025,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL-version #if/#else (and BoringSSL sub-branch) each end in an explicit return; MSC37-C preprocessor-branch-blindness FP class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4031,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "'prime's NULL initializer is unconditionally overwritten by BN_new() right after, with no intervening branch reading the NULL; genuinely dead init"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4034,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cast-away-const used only to pass into a read-only API call (no write through the cast pointer); established EXP05-C read-only-cast FP class"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4042,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "OpenSSL's EC_GROUP_get_curve() is documented to return exactly 1 on success (0/negative on error) \u2014 1 is the sole success value, so '== 1' is the correct, non-fragile check, not an EXP20-C violation"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4054,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cast-away-const used only to pass into a read-only API call (no write through the cast pointer); established EXP05-C read-only-cast FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4070,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only crypto backend API (crypto.h contract implemented by multiple backends), never invoked with NULL by any caller; established API00-C internal-only-API FP class"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4070,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "every path (2 early returns plus the out:/fail: goto-chain) does return a value; goto/label-blindness extended to MSC37-C"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4073,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "'sig's NULL initializer is unconditionally overwritten by d2i_ECDSA_SIG() right after 2 unrelated early returns, no path reads the NULL; genuinely dead init"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4108,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "returned local pointer variable refers to heap memory (wpabuf_alloc/EVP_PKEY_new/etc.), not automatic storage; established DCL30-C heap-vs-stack-pointer-variable FP class"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4109,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "the 'code after return' is a fail:/label that IS reached via an earlier goto; not unreachable \u2014 goto/label-blindness MSC07-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4116,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only crypto backend API (crypto.h contract implemented by multiple backends), never invoked with NULL by any caller; established API00-C internal-only-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4138,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only crypto backend API (crypto.h contract implemented by multiple backends), never invoked with NULL by any caller; established API00-C internal-only-API FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4161,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label's cleanup chain (done:/out:/fail:) frees this pointer; goto-target-frees-it MEM31-C FP class"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4164,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "der/pdata is only reached after the i2d_*/OSSL_ENCODER_to_data success/length check; that check already guarantees non-NULL by the OpenSSL alloc-into-double-pointer convention"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4181,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cast-away-const used only to pass into a read-only API call (no write through the cast pointer); established EXP05-C read-only-cast FP class"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4190,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cast-away-const used only to pass into a read-only API call (no write through the cast pointer); established EXP05-C read-only-cast FP class"
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4203,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "case NID_secp521r1 already ends in an unconditional 'return 21;'; the 'fallthrough' is only to a case label hidden behind #ifdef NID_brainpoolP256r1; established MSC17-C #ifdef-intervening-case-label FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4239,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only crypto backend API (crypto.h contract implemented by multiple backends), never invoked with NULL by any caller; established API00-C internal-only-API FP class"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4251,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cast-away-const used only to pass into a read-only API call (no write through the cast pointer); established EXP05-C read-only-cast FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4266,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only crypto backend API (crypto.h contract implemented by multiple backends), never invoked with NULL by any caller; established API00-C internal-only-API FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4285,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() are pure accessor calls with no side effects; established EXP30-C side-effect-free-accessor-args FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4320,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto target label's cleanup chain (done:/out:/fail:) frees this pointer; goto-target-frees-it MEM31-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4362,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only crypto backend API (crypto.h contract implemented by multiple backends), never invoked with NULL by any caller; established API00-C internal-only-API FP class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4365,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "'pkey's NULL initializer is unconditionally overwritten by X509_REQ_get_pubkey() right after declaration, no path reads the NULL; genuinely dead init"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4380,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "the 'code after return' is a fail:/label that IS reached via an earlier goto; not unreachable \u2014 goto/label-blindness MSC07-C FP class"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4433,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cast-away-const used only to pass into a read-only API call (no write through the cast pointer); established EXP05-C read-only-cast FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4470,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'size_t *len' out-param companion to an existing (X509_ATTRIBUTE-based) API; established API05-C ptr+size-idiom FP class"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4536,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "der/pdata is only reached after the i2d_*/OSSL_ENCODER_to_data success/length check; that check already guarantees non-NULL by the OpenSSL alloc-into-double-pointer convention"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4539,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "returned local pointer variable refers to heap memory (wpabuf_alloc/EVP_PKEY_new/etc.), not automatic storage; established DCL30-C heap-vs-stack-pointer-variable FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4552,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is declared in the OpenSSL system header included at the top of the file (openssl/pem.h or openssl/x509.h or openssl/evp.h); sqc doesn't resolve declarations from system/library headers"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4554,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "returned local pointer variable refers to heap memory (wpabuf_alloc/EVP_PKEY_new/etc.), not automatic storage; established DCL30-C heap-vs-stack-pointer-variable FP class"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4556,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "rewind() genuinely has no error return to check; real (if trivial) ERR07-C observation"
+  },
+  {
+   "rule": "MSC24-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4556,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "rewind() is genuinely listed obsolescent by MSC24-C in favor of fseek(); real (if trivial) observation, paired with the ERR07-C finding above"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4557,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is declared in the OpenSSL system header included at the top of the file (openssl/pem.h or openssl/x509.h or openssl/evp.h); sqc doesn't resolve declarations from system/library headers"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4577,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is declared in the OpenSSL system header included at the top of the file (openssl/pem.h or openssl/x509.h or openssl/evp.h); sqc doesn't resolve declarations from system/library headers"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4581,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is declared in the OpenSSL system header included at the top of the file (openssl/pem.h or openssl/x509.h or openssl/evp.h); sqc doesn't resolve declarations from system/library headers"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4587,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "returned local pointer variable refers to heap memory (wpabuf_alloc/EVP_PKEY_new/etc.), not automatic storage; established DCL30-C heap-vs-stack-pointer-variable FP class"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4588,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "the 'code after return' is a fail:/label that IS reached via an earlier goto; not unreachable \u2014 goto/label-blindness MSC07-C FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4589,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is declared in the OpenSSL system header included at the top of the file (openssl/pem.h or openssl/x509.h or openssl/evp.h); sqc doesn't resolve declarations from system/library headers"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4589,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "x509 is only freed once on any real execution path: the 3 goto-fail sites (not_before/not_after/date checks) all occur BEFORE the X509_free(x509) at the pubkey-extraction step, so fail: is the first and only free reached on that path; mutually-exclusive-branch double-free FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4589,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same mutually-exclusive-branch reasoning: the goto-fail sites all precede the one X509_free(x509) call in the success path, so there is no double free on any real path"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4594,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only crypto backend API (crypto.h contract implemented by multiple backends), never invoked with NULL by any caller; established API00-C internal-only-API FP class"
+  },
+  {
+   "rule": "FIO05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4599,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "real (low-priority) defensive-coding gap: the RSA key file path is opened without an fstat ownership check; file is config-supplied (not remotely attacker-controlled) so severity is low"
+  },
+  {
+   "rule": "WIN03-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4599,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "real per rule text (hostap does support Windows wpa_supplicant builds); niche/low-priority since this crypto backend is primarily used on POSIX targets \u2014 WIN* rules still lack a dedicated Windows oracle per prior guidance"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4603,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is declared in the OpenSSL system header included at the top of the file (openssl/pem.h or openssl/x509.h or openssl/evp.h); sqc doesn't resolve declarations from system/library headers"
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4372,
+   "rule": "MEM31-C",
+   "desc": "crypto_csr_verify() calls pkey = X509_REQ_get_pubkey((X509_REQ *)csr); which returns a new EVP_PKEY reference the caller must free, but pkey is never freed on either the success path (return (struct crypto_csr *)csr;) or the fail: path (X509_REQ_free(csr); return NULL;) -- a genuine EVP_PKEY leak on every call where the CSR has a parseable public key. CSR data originates from untrusted/relayed protocol input (e.g. DPP enrollment flows), making this an externally-triggerable leak.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 11,
+  "fp": 139,
+  "fn": 1
+ }
+}

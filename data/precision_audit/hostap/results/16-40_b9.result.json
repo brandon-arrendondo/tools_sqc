@@ -1,0 +1,863 @@
+{
+ "labels": [
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 31,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_drivers[] needs external linkage; it's the production drivers-list symbol referenced by wpa_supplicant.c"
+  },
+  {
+   "rule": "DCL19-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 31,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same file-scope wpa_drivers[] export symbol; external linkage required, not a scope-reduction candidate"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 31,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Confirmed pattern: file-scope wpa_drivers[]-style array whose size legitimately varies; matches categorical_patterns.md drivers.c note"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 52,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Confirmed API05-C ptr+len idiom: const void *data immediately followed by u16 data_len"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 53,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "void **data_pos is a single out-param pointer, not an array; API05 misapplied to non-array pointer"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 57,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*hdr) is an unevaluated operand per C standard; not a real dereference of uninitialized hdr"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 78,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "void *wpa_s is an opaque context handle (wpa_sm_ctx callback), not an array parameter"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 79,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Confirmed API05-C ptr+len idiom: const void *data + u16 data_len"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 80,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "void **data_pos out-param pointer, not an array; same as line53"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 93,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx is wpa_sm_ctx callback field (ctx->get_state); fixed-signature dispatch contract, same shape as eloop/EAP-method FP pattern"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 100,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "void *wpa_s opaque handle param of wpa_sm_ctx ether_send callback, not an array"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 100,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_s forwarded as ctx->ether_send callback; wpa_sm_ctx dispatch-contract FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 120,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_s is ctx->get_beacon_ie callback; wpa_sm_ctx dispatch-contract FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 127,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_s is ctx->get_bssid callback; wpa_sm_ctx dispatch-contract FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 127,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bssid param of ctx->get_bssid callback; fixed signature, same dispatch-contract FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 134,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "void *wpa_s opaque handle param of ctx->set_key callback, not an array"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 134,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_s is ctx->set_key callback; wpa_sm_ctx dispatch-contract FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 145,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_s is ctx->mlme_setprotection callback; wpa_sm_ctx dispatch-contract FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 154,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "void *wpa_s opaque handle param of ctx->add_pmkid callback, not an array"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 154,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_s is ctx->add_pmkid callback; wpa_sm_ctx dispatch-contract FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 154,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "void *network_ctx opaque handle param of ctx->add_pmkid callback, not an array"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 154,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "network_ctx is ctx->add_pmkid callback param; wpa_sm_ctx dispatch-contract FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 166,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_s is ctx->remove_pmkid callback; wpa_sm_ctx dispatch-contract FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 166,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "network_ctx is ctx->remove_pmkid callback param; wpa_sm_ctx dispatch-contract FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 175,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx is ctx->set_config_blob callback; wpa_sm_ctx dispatch-contract FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 184,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx is ctx->get_config_blob callback; wpa_sm_ctx dispatch-contract FP"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 195,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "New pattern: pmksa_candidate_free(wpa_s->wpa) only frees an internal dl_list of pmksa candidates, not the wpa_sm struct itself (verified in src/rsn_supp/preauth.c); wpa_s->wpa is not actually freed before wpa_sm_deinit()"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 203,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "timeout_ctx matches eloop_timeout_handler typedef; confirmed eloop callback dispatch-contract FP"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 235,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ctx) is an unevaluated operand; same FP mechanism as line57, not a real dereference of uninitialized ctx"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 261,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(wpa_s->ifname) sizes a fixed char[100] struct member reached via ->, unrelated to wpa_s's own parameter decay"
+  },
+  {
+   "rule": "ERR05-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 269,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_init_conf genuinely calls exit(-1) directly instead of returning an error code to its caller"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 287,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Initial `ret = 1` is always overwritten by the subsequent if/else before any read; a real (if trivial) dead assignment"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 300,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "New pattern: ordinary multi-line adjacent string-literal concatenation in printf() misidentified as containing preprocessor directives; no #if/#define present"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 300,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same misfire: cited literal is plain multi-line string concatenation, not a preprocessor directive"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 334,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same multi-line string-literal-concatenation misfire as line300"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/preauth_test.c",
+   "line": 334,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same multi-line string-literal-concatenation misfire as line300"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 19,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Confirmed API00-C internal-only pattern: hapd always a valid internal struct pointer at all call sites"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 19,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ssid param likewise only ever passed from internal, already-validated call sites"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 32,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Confirmed pattern: nr is a dl_list_for_each iterator over heap-allocated entries (os_zalloc'd), not a stack/automatic-storage local, despite being a local pointer variable"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 38,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "hapd internal-only API00 pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 38,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "buf is caller-supplied ctrl_iface buffer, always non-NULL at call sites; API00 internal-only pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 38,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "buflen only used to bound os_snprintf via `end-pos`; no arithmetic overflow risk"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 38,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Confirmed API05-C ptr+len idiom: buf followed immediately by its own size buflen"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 38,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "New nuance: buf is an output buffer assigned into local `pos` which is written through via os_snprintf; declaring buf const would break the write path"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 49,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "New pattern: char nrie[2*255+1] is a fixed-size array sized by a compile-time constant expression, not a runtime VLA"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 50,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same constant-expression-sized fixed array misclassified as VLA (char lci[2*255+1])"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 51,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same constant-expression-sized fixed array misclassified as VLA (char civic[2*255+1])"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 52,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "New pattern: ENV01-C fires on an ordinary fixed buffer with no getenv() call anywhere in this function"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 52,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char ssid[SSID_MAX_LEN*2+1] is a constant-expression-sized fixed array, not a VLA"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 60,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() are pure read-only accessors with no side effects; extends confirmed EXP30-C side-effect-free-args FP pattern"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 66,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same pure-accessor EXP30-C misfire as line60"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 72,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same pure-accessor EXP30-C misfire as line60"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 100,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "New pattern: sizeof(nr->bssid) sizes the fixed u8[ETH_ALEN] struct member reached via the nr pointer param, unrelated to nr's own decay"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 101,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(nr->ssid) sizes a fixed-size embedded struct member; same ARR01 misfire as line100"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 102,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(nr->lci_date) sizes a fixed-size embedded struct member; same ARR01 misfire as line100"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 120,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nr = os_zalloc(...); returning heap memory, not automatic storage; same FP class as line32"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 124,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "hapd internal-only API00 pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 124,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "bssid internal-only API00 pattern (always a valid caller-owned MAC buffer)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 144,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "entry->nr is either kept in the persisted nr_db entry (ownership transferred to the DB) or cleaned up via goto fail -> hostapd_neighbor_remove -> hostapd_neighbor_free, which frees it via a re-lookup on the same bssid/ssid"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 149,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Same as line144: entry->lci is freed via hostapd_neighbor_remove on the fail path or retained by the DB on success"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 155,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Same as line144: entry->civic freed via hostapd_neighbor_remove fail path or retained by the DB on success"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 163,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "False leak on the success `return 0`; entry->lci ownership is transferred to the persisted hapd->nr_db entry, freed later via hostapd_neighbor_remove/hostapd_free_neighbor_db"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 165,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`fail:` is a valid goto target reached from earlier `goto fail;` statements; not unreachable dead code"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 167,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "False leak on `return -1`; hostapd_neighbor_remove() on the line above already frees entry (and entry->lci) via a fresh lookup by bssid/ssid"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 179,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "hapd internal-only API00 pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 179,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "bssid internal-only API00 pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 206,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hapd is only read (hapd->iconf) in this NEED_AP_MLME helper with no vtable/callback constraint; genuine (low-value) const opportunity"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 245,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "New pattern: rule misattributes the bitwise op on `hapd->conf->radio_measurements[0] & CAPS` to the base pointer variable 'hapd' itself, which is never used arithmetically or bitwise"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 292,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "if(vht)/else-if(ht) with no final else; center_freq1_idx/2_idx are pre-initialized to 0 as the implicit default, so the missing else is not a real gap"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 344,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same dl_list_for_each iterator pattern as line32/line19; nr points into heap-allocated DB entries, not automatic storage"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/neighbor_db.c",
+   "line": 350,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "hapd internal-only API00 pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/rrm.c",
+   "line": 25,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_ctx matches eloop_timeout_handler typedef; confirmed eloop callback dispatch-contract FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/rrm.c",
+   "line": 49,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_ctx matches eloop_timeout_handler typedef; confirmed eloop callback dispatch-contract FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/rrm.c",
+   "line": 74,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hapd is only read (hapd->msg_ctx) in this plain handler, not a vtable/eloop callback; genuine (low-value) const opportunity"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/ap/rrm.c",
+   "line": 78,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "New pattern: char report[2*255+1] is a fixed-size array sized by a constant expression, not a runtime VLA"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/rrm.c",
+   "line": 106,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "New pattern: get_ie() returns a pointer within the same buf/mgmt buffer it searched; sqc's provenance tracking loses this through the opaque call and via the buf->mgmt reinterpret cast, flagging it as a 'different array'"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/rrm.c",
+   "line": 107,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "New pattern: `while ((ie = get_ie(...)))` already null-guards ie before entering the loop body; ie[1] access inside is unreachable when ie is NULL"
+  },
+  {
+   "rule": "FLP03-C",
+   "file": "src/ap/rrm.c",
+   "line": 177,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "New pattern: diff.sec/diff.usec are os_time_t (integer) fields; `diff.usec / 100000` is integer division, not floating-point"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/rrm.c",
+   "line": 183,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "buf parameter of hostapd_neighbor_report_len is never referenced in the function body at all; trivially const-safe"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/rrm.c",
+   "line": 184,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "nr is only read (wpabuf_len(nr->nr) etc.) in hostapd_neighbor_report_len; genuine const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/rrm.c",
+   "line": 201,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ssid is only read in comparisons inside hostapd_send_nei_report_resp; genuine const opportunity"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/rrm.c",
+   "line": 272,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head(buf)/wpabuf_len(buf) are pure read-only accessors; extends confirmed EXP30-C side-effect-free-args FP pattern"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/rrm.c",
+   "line": 298,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Same get_ie()-returned-pointer-treated-as-different-array FP as line106"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/rrm.c",
+   "line": 310,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same while((ie=get_ie(...))) null-guard-already-established FP as line107"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/ap/rrm.c",
+   "line": 329,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Same get_ie()-returned-pointer aliasing FP: `end` (buf-derived) minus `pos` (ie-derived) are actually within the same underlying buffer"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/rrm.c",
+   "line": 329,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Same get_ie()-returned-pointer aliasing FP as ARR00-C above"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/rrm.c",
+   "line": 338,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_ctx matches eloop_timeout_handler typedef; confirmed eloop callback dispatch-contract FP"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/ap/rrm.c",
+   "line": 355,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char report_msg[2*8+1] is a fixed-size array sized by a constant expression, not a runtime VLA"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/rrm.c",
+   "line": 376,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "mgmt is a reinterpret-cast overlay of buf (same memory, not a different array); mgmt->u.action.u.rrm.variable-derived pos is within buf's own array"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/rrm.c",
+   "line": 384,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "hapd internal-only API00 pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/rrm.c",
+   "line": 384,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "buf is caller-supplied mgmt-frame data, always non-NULL at call sites"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/rrm.c",
+   "line": 417,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "hapd internal-only API00 pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/rrm.c",
+   "line": 417,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "addr internal-only API00 pattern"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/rrm.c",
+   "line": 475,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head(buf)/wpabuf_len(buf) pure accessors; same EXP30-C FP pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/rrm.c",
+   "line": 490,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "hapd internal-only API00 pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/rrm.c",
+   "line": 490,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "addr internal-only API00 pattern"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/rrm.c",
+   "line": 595,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head(buf)/wpabuf_len(buf) pure accessors; same EXP30-C FP pattern"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/rrm.c",
+   "line": 613,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "New pattern: hostapd_free_neighbor_db(hapd) only frees the internal nr_db list entries, not hapd itself (verified in neighbor_db.c); same free-named-helper-frees-internal-field mechanism as preauth_test.c:195"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/rrm.c",
+   "line": 621,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "hapd internal-only API00 pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/rrm.c",
+   "line": 621,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "addr internal-only API00 pattern"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/rrm.c",
+   "line": 707,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head(buf)/wpabuf_len(buf) pure accessors; same EXP30-C FP pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/rrm.c",
+   "line": 717,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "hapd internal-only API00 pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/rrm.c",
+   "line": 717,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "mgmt param always supplied by driver event dispatch, never NULL in practice"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/rrm.c",
+   "line": 717,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hapd is only read (hapd->msg_ctx) in hostapd_rrm_beacon_req_tx_status, called directly by name (not via a function pointer); genuine const opportunity"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/rrm.c",
+   "line": 729,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "addr internal-only API00 pattern"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/rrm.c",
+   "line": 783,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head(buf)/wpabuf_len(buf) pure accessors; same EXP30-C FP pattern"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "src/ap/neighbor_db.c",
+  "src/ap/rrm.c",
+  "wpa_supplicant/preauth_test.c"
+ ],
+ "summary": {
+  "tp": 8,
+  "fp": 98,
+  "fn": 0
+ }
+}

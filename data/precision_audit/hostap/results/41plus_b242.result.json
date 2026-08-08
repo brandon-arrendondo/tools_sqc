@@ -1,0 +1,549 @@
+{
+ "labels": [
+  {
+   "rule": "ARR01-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 41,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*entry) sizes the pointed-to struct correctly; correct-idiom, not decay (categorical: ARR01-C sizeof(*ptr) idiom)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 61,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API; all callers pass fixed non-NULL pmksa (categorical: API00-C internal-only FP)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 89,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_timeout_handler dispatch-contract signature (categorical: DCL13-C eloop FP)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 128,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_timeout_handler dispatch-contract signature (categorical: DCL13-C eloop FP)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 184,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "clamp guard-clause; omitted else is deliberate no-op (categorical: MSC01-C guard-clause FP)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API; all callers pass sm->pmksa, never NULL"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API; callers always pass fixed addr buffers, never NULL"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API; callers always pass sm->own_addr, never NULL"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 234,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed ETH_ALEN/PMKID_LEN-sized ptr, idiomatic C (categorical: API05-C ptr+size FP)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 251,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*entry) is a type-size query, not a dereference; entry assigned same statement"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 298,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain static helper, pmksa only read (pmksa->sm); genuine if low-value (categorical: plain-helper TP)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 299,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain static helper, entry only read; genuine if low-value (categorical: plain-helper TP)"
+  },
+  {
+   "rule": "FLP03-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 317,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "integer division (u32/u8), not floating point (categorical: FLP03-C int-division-misclassified FP)"
+  },
+  {
+   "rule": "INT33-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 317,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "remaining_lifetime guarded >=1 by early return 4 lines above in same function"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 353,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos points into heap-allocated cache list (os_zalloc'd entries), not automatic storage (categorical: DCL30-C local-var-vs-storage FP)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 425,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR is a pure read macro, no real unsequenced side effects (categorical: EXP30-C MAC2STR FP)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 451,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API; all callers pass sm->pmksa, never NULL"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 451,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pmk+pmk_len companion idiom (categorical: API05-C ptr+size FP)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 451,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "network_ctx only compared (==), never modified; plain exported helper (categorical: plain-helper TP)"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 493,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL check stylistic pedantry (categorical: MEM10-C FP)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 517,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "pmksa only read (pmksa->pmksa list walk); plain exported helper (categorical: plain-helper TP)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 531,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "entry/pos point into heap-allocated cache list, not automatic storage"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 568,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "new_entry is the heap pointer returned by pmksa_cache_add(), not automatic storage"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 584,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API; all callers pass sm->pmksa, never NULL"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 584,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API; callers pass fixed addr buffers, never NULL"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 585,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "network_ctx only compared (==), never modified; plain exported helper (categorical: plain-helper TP)"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 591,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL check stylistic pedantry (categorical: MEM10-C FP)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 616,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "entry is either a heap list node or pmksa_cache_clone_entry()'s heap return, not automatic storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 625,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "static helper, pmksa only read (list walk); genuine if low-value"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 635,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "entry points into heap-allocated cache list, not automatic storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 647,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "sm only read (sm->cur_pmksa); plain exported helper (categorical: plain-helper TP)"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 649,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL check stylistic pedantry (categorical: MEM10-C FP)"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 661,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL check stylistic pedantry (categorical: MEM10-C FP)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 682,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "network_ctx used only as opaque comparison key, never dereferenced; internal-only API"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 767,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API; all callers pass sm->pmksa, never NULL"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 767,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len is a caller-owned local buffer size, not attacker-controlled arithmetic input (categorical: API00-C internal-only FP)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 767,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "pmksa only read (list walk); plain exported helper (categorical: plain-helper TP)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 767,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf+len companion idiom (categorical: API05-C ptr+size FP)"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 799,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_snprintf_hex() never returns an error value; nothing to check (categorical: ERR02-C wpa_snprintf_hex FP)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 825,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API; all callers pass sm->pmksa, never NULL"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 825,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "pmksa only read (returns pmksa->pmksa); plain exported helper (categorical: plain-helper TP)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 849,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*pmksa) is a type-size query on the line that allocates pmksa, not a dereference"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 858,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pmksa = os_zalloc(...); heap storage, not automatic (categorical: DCL30-C heap-vs-stack FP)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 882,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx is stored into non-const struct field pmksa->ctx; const-qualifying would discard qualifiers on assignment (categorical: DCL13-C forwarding-to-non-const-consumer FP)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 882,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sm is stored into non-const struct field pmksa->sm; const-qualifying would discard qualifiers on assignment (categorical: DCL13-C forwarding-to-non-const-consumer FP)"
+  },
+  {
+   "rule": "INT36-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 884,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "(void*)-1 non-NULL sentinel idiom, never dereferenced in this stub build (categorical: INT36-C sentinel-idiom TP-low)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 888,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "CONFIG_NO_WPA stub body is empty; pmksa provably 100% unused (categorical: empty-stub DCL13-C TP)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 894,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "stub body returns NULL unconditionally; pmksa provably unused (categorical: empty-stub DCL13-C TP)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 902,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "stub body returns NULL unconditionally; sm provably unused (categorical: empty-stub DCL13-C TP)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 908,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "stub body returns -1 unconditionally; pmksa provably unused (categorical: empty-stub DCL13-C TP)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 908,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf+len companion idiom (categorical: API05-C ptr+size FP)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 908,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "stub body returns -1 unconditionally; buf provably unused (categorical: empty-stub DCL13-C TP)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 915,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "stub body returns NULL unconditionally; pmksa provably unused (categorical: empty-stub DCL13-C TP)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 922,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "stub body returns NULL unconditionally; pmksa provably unused (categorical: empty-stub DCL13-C TP)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 923,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "stub body returns NULL unconditionally; entry provably unused (categorical: empty-stub DCL13-C TP)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 930,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "stub body returns NULL unconditionally; pmksa provably unused (categorical: empty-stub DCL13-C TP)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 932,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed ETH_ALEN/PMKID_LEN-sized ptr idiom (categorical: API05-C ptr+size FP)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 932,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "stub body returns NULL unconditionally; network_ctx provably unused (categorical: empty-stub DCL13-C TP)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 939,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "stub body is empty; sm provably unused (categorical: empty-stub DCL13-C TP)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 944,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "stub body returns -1 unconditionally; sm provably unused (categorical: empty-stub DCL13-C TP)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 945,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "stub body returns -1 unconditionally; network_ctx provably unused (categorical: empty-stub DCL13-C TP)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 952,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "stub body is empty; pmksa provably unused (categorical: empty-stub DCL13-C TP)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 952,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pmk+pmk_len companion idiom (categorical: API05-C ptr+size FP)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 952,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "stub body is empty; network_ctx provably unused (categorical: empty-stub DCL13-C TP)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 958,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "stub body is empty; pmksa provably unused (categorical: empty-stub DCL13-C TP)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 959,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "stub body is empty; entry provably unused (categorical: empty-stub DCL13-C TP)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/pmksa_cache.c",
+   "line": 964,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "stub body is empty; pmksa provably unused (categorical: empty-stub DCL13-C TP)"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "src/rsn_supp/pmksa_cache.c"
+ ],
+ "summary": {
+  "tp": 28,
+  "fp": 39,
+  "fn": 0
+ }
+}

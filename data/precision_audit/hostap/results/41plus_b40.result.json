@@ -1,0 +1,1211 @@
+{
+ "labels": [
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 65,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Config-parser dispatch-table DCL13-C FP: 'ssid' param is either genuinely written via computed pointer offset in parser funcs, or unmodified-but-pinned by the fixed parser/writer function-pointer signature in struct parse_data (ssid_fields[] table) -- extends the eloop/EAP-method dispatch-contract FP class."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 112,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP05-C 'cast away const' on ssid, which is never const-qualified in this function's signature -- no const to cast away."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 113,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP05-C 'cast away const' on ssid, which is never const-qualified in this function's signature -- no const to cast away."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 130,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C misattributes a plain value-copy (pointer/int value) written through an out-param pointer as an address-escape -- established pattern extension (macro-constant precedent)."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 130,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR34-C misidentifies '*dst' (type char*, a pointer) as a char-type assignment needing an unsigned-char cast; no char conversion occurs here at all."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 132,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C misattributes a plain value-copy (pointer/int value) written through an out-param pointer as an address-escape -- established pattern extension (macro-constant precedent)."
+  },
+  {
+   "rule": "DCL22-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 141,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL22-C 'declare as volatile' fires on an ordinary local with no setjmp/longjmp/signal-handler context anywhere in the function -- established pattern."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 151,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C/ARR00-C 'returns pointer to local variable' misapplied to a heap-allocated (os_malloc/os_zalloc/os_strdup) pointer -- confused local variable with local storage, established pattern."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 151,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C/ARR00-C 'returns pointer to local variable' misapplied to a heap-allocated (os_malloc/os_zalloc/os_strdup) pointer -- confused local variable with local storage, established pattern."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 164,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C/ARR00-C 'returns pointer to local variable' misapplied to a heap-allocated (os_malloc/os_zalloc/os_strdup) pointer -- confused local variable with local storage, established pattern."
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 170,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C fires on an ordinary if (ptr == NULL) guard -- established stylistic-pedantry pattern."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 181,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Config-parser dispatch-table DCL13-C FP: 'ssid' param is either genuinely written via computed pointer offset in parser funcs, or unmodified-but-pinned by the fixed parser/writer function-pointer signature in struct parse_data (ssid_fields[] table) -- extends the eloop/EAP-method dispatch-contract FP class."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 186,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP05-C 'cast away const' on ssid, which is never const-qualified in this function's signature -- no const to cast away."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 191,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP05-C 'cast away const' on ssid, which is never const-qualified in this function's signature -- no const to cast away."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 201,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Config-parser dispatch-table DCL13-C FP: 'ssid' param is either genuinely written via computed pointer offset in parser funcs, or unmodified-but-pinned by the fixed parser/writer function-pointer signature in struct parse_data (ssid_fields[] table) -- extends the eloop/EAP-method dispatch-contract FP class."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 208,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP05-C 'cast away const' on ssid, which is never const-qualified in this function's signature -- no const to cast away."
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 209,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "strtol() result is partially validated (*end trailing-garbage check) but errno/ERANGE overflow is never checked -- established weak-validation TP pattern (ctrl_iface.c:8899 precedent)."
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 209,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "strtol() result is partially validated (*end trailing-garbage check) but errno/ERANGE overflow is never checked -- established weak-validation TP pattern (ctrl_iface.c:8899 precedent)."
+  },
+  {
+   "rule": "ERR01-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 209,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "strtol() result is partially validated (*end trailing-garbage check) but errno/ERANGE overflow is never checked -- established weak-validation TP pattern (ctrl_iface.c:8899 precedent)."
+  },
+  {
+   "rule": "ERR30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 209,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "strtol() result is partially validated (*end trailing-garbage check) but errno/ERANGE overflow is never checked -- established weak-validation TP pattern (ctrl_iface.c:8899 precedent)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 210,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP34-C flags strtol's &end output as possibly-NULL; strtol always writes through a non-NULL endptr argument by the C standard, so 'end' is guaranteed non-NULL here."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 233,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C misattributes a plain value-copy (pointer/int value) written through an out-param pointer as an address-escape -- established pattern extension (macro-constant precedent)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 258,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Config-parser dispatch-table DCL13-C FP: 'ssid' param is either genuinely written via computed pointer offset in parser funcs, or unmodified-but-pinned by the fixed parser/writer function-pointer signature in struct parse_data (ssid_fields[] table) -- extends the eloop/EAP-method dispatch-contract FP class."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 263,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP05-C 'cast away const' on ssid, which is never const-qualified in this function's signature -- no const to cast away."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 273,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Free/UAF tracking doesn't separate mutually-exclusive branches: the os_free+return happens on the error branch, the cited access is only reached on the other, not-yet-freed path -- established pattern."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 274,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C/ARR00-C 'returns pointer to local variable' misapplied to a heap-allocated (os_malloc/os_zalloc/os_strdup) pointer -- confused local variable with local storage, established pattern."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 274,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C/ARR00-C 'returns pointer to local variable' misapplied to a heap-allocated (os_malloc/os_zalloc/os_strdup) pointer -- confused local variable with local storage, established pattern."
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 280,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C 'conformant array syntax' fires on the idiomatic C ptr+size (or null-terminated) parameter pair -- established categorical FP."
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 281,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C 'conformant array syntax' fires on the idiomatic C ptr+size (or null-terminated) parameter pair -- established categorical FP."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 285,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM05-C 'VLA' flagged on 'u8 addr[2 * ETH_ALEN]', a fixed compile-time-constant-size array, not a VLA -- established pattern."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 292,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR30-C 'unbounded while loop' flagged on a scan of a proven NUL-terminated os_strdup'd string -- established bounded-scan pattern."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 320,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C 'unsequenced side effects' on wpa_printf(..., MAC2STR(addr), MAC2STR(&addr[ETH_ALEN])) -- MAC2STR is a pure byte-read macro, no side effects to unsequence -- established pattern."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 330,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C misattributes a plain value-copy (pointer/int value) written through an out-param pointer as an address-escape -- established pattern extension (macro-constant precedent)."
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 339,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C 'conformant array syntax' fires on the idiomatic C ptr+size (or null-terminated) parameter pair -- established categorical FP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 339,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_config_write_addr_list's 'name' parameter is never used/modified in the function body and is not itself forwarded into a fixed-signature dispatch-table call -- genuine (if trivial) const opportunity, distinct from the ssid dispatch-table FP class."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 359,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR34-C misfires on a plain char assignment (no widening conversion) -- established 'plain char-to-char assignment' pattern."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 368,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C/ARR00-C 'returns pointer to local variable' misapplied to a heap-allocated (os_malloc/os_zalloc/os_strdup) pointer -- confused local variable with local storage, established pattern."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 395,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Config-parser dispatch-table DCL13-C FP: 'ssid' param is either genuinely written via computed pointer offset in parser funcs, or unmodified-but-pinned by the fixed parser/writer function-pointer signature in struct parse_data (ssid_fields[] table) -- extends the eloop/EAP-method dispatch-contract FP class."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 411,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Free/UAF tracking doesn't separate mutually-exclusive branches: the os_free+return happens on the error branch, the cited access is only reached on the other, not-yet-freed path -- established pattern."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 412,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C/ARR00-C 'returns pointer to local variable' misapplied to a heap-allocated (os_malloc/os_zalloc/os_strdup) pointer -- confused local variable with local storage, established pattern."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 412,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C/ARR00-C 'returns pointer to local variable' misapplied to a heap-allocated (os_malloc/os_zalloc/os_strdup) pointer -- confused local variable with local storage, established pattern."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 440,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Config-parser dispatch-table DCL13-C FP: 'ssid' param is either genuinely written via computed pointer offset in parser funcs, or unmodified-but-pinned by the fixed parser/writer function-pointer signature in struct parse_data (ssid_fields[] table) -- extends the eloop/EAP-method dispatch-contract FP class."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 456,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C/ARR00-C 'returns pointer to local variable' misapplied to a heap-allocated (os_malloc/os_zalloc/os_strdup) pointer -- confused local variable with local storage, established pattern."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 487,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Config-parser dispatch-table DCL13-C FP: 'ssid' param is either genuinely written via computed pointer offset in parser funcs, or unmodified-but-pinned by the fixed parser/writer function-pointer signature in struct parse_data (ssid_fields[] table) -- extends the eloop/EAP-method dispatch-contract FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 497,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Config-parser dispatch-table DCL13-C FP: 'ssid' param is either genuinely written via computed pointer offset in parser funcs, or unmodified-but-pinned by the fixed parser/writer function-pointer signature in struct parse_data (ssid_fields[] table) -- extends the eloop/EAP-method dispatch-contract FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 533,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Config-parser dispatch-table DCL13-C FP: 'ssid' param is either genuinely written via computed pointer offset in parser funcs, or unmodified-but-pinned by the fixed parser/writer function-pointer signature in struct parse_data (ssid_fields[] table) -- extends the eloop/EAP-method dispatch-contract FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 543,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Config-parser dispatch-table DCL13-C FP: 'ssid' param is either genuinely written via computed pointer offset in parser funcs, or unmodified-but-pinned by the fixed parser/writer function-pointer signature in struct parse_data (ssid_fields[] table) -- extends the eloop/EAP-method dispatch-contract FP class."
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 593,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC41-C fires on the debug-log title string literal \"PSK (ASCII passphrase)\" passed to wpa_hexdump_ascii_key, not an embedded secret -- established 'debug-log title, not real secret' pattern."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 594,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP05-C cast-away-const where the cast value is only ever passed to const-taking callees, never written -- established no-write-follows pattern."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 595,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP05-C cast-away-const where the cast value is only ever passed to const-taking callees, never written -- established no-write-follows pattern."
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 609,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid->passphrase is reassigned to dup_binstr()'s new result at line 608, immediately before the line-609 NULL check reads it -- not a use-after-free; free-state should have been cleared by the reassignment (cf. MEM30 reassign-clears-freed-state fix class)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 637,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Config-parser dispatch-table DCL13-C FP: 'ssid' param is either genuinely written via computed pointer offset in parser funcs, or unmodified-but-pinned by the fixed parser/writer function-pointer signature in struct parse_data (ssid_fields[] table) -- extends the eloop/EAP-method dispatch-contract FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 698,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Config-parser dispatch-table DCL13-C FP: 'ssid' param is either genuinely written via computed pointer offset in parser funcs, or unmodified-but-pinned by the fixed parser/writer function-pointer signature in struct parse_data (ssid_fields[] table) -- extends the eloop/EAP-method dispatch-contract FP class."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 717,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR30-C 'unbounded while loop' flagged on a scan of a proven NUL-terminated os_strdup'd string -- established bounded-scan pattern."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 726,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR34-C misfires on a plain char assignment (no widening conversion) -- established 'plain char-to-char assignment' pattern."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 760,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Config-parser dispatch-table DCL13-C FP: 'ssid' param is either genuinely written via computed pointer offset in parser funcs, or unmodified-but-pinned by the fixed parser/writer function-pointer signature in struct parse_data (ssid_fields[] table) -- extends the eloop/EAP-method dispatch-contract FP class."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 774,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C/ARR00-C 'returns pointer to local variable' misapplied to a heap-allocated (os_malloc/os_zalloc/os_strdup) pointer -- confused local variable with local storage, established pattern."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 782,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C/ARR00-C 'returns pointer to local variable' misapplied to a heap-allocated (os_malloc/os_zalloc/os_strdup) pointer -- confused local variable with local storage, established pattern."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 791,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C/ARR00-C 'returns pointer to local variable' misapplied to a heap-allocated (os_malloc/os_zalloc/os_strdup) pointer -- confused local variable with local storage, established pattern."
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 796,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC37-C 'may reach end without returning' is factually wrong: every path in this function (including all #ifdef/#else branches) ends in an explicit return statement."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 797,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Config-parser dispatch-table DCL13-C FP: 'ssid' param is either genuinely written via computed pointer offset in parser funcs, or unmodified-but-pinned by the fixed parser/writer function-pointer signature in struct parse_data (ssid_fields[] table) -- extends the eloop/EAP-method dispatch-contract FP class."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 808,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR30-C 'unbounded while loop' flagged on a scan of a proven NUL-terminated os_strdup'd string -- established bounded-scan pattern."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 817,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR34-C misfires on a plain char assignment (no widening conversion) -- established 'plain char-to-char assignment' pattern."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 826,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C 'no final else' is wrong: the else-if chain does have a terminal 'else { ...; errors++; }' at line 892 -- intervening #ifdef CONFIG_* blocks between here and there hide it from the rule's chain-scan (established preprocessor-branch-blindness family)."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 829,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC13-C flags a dead assignment to a variable literally named 'if' at a plain 'else if (...)' line -- no such variable/assignment exists; tool misattribution/line-drift bug."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 829,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM05-C 'VLA' fires on a line with no array declaration at all (a plain else-if comparison) -- misattribution/line-drift bug, same cluster as the adjacent MSC13-C nonsense finding."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 893,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT10-C/INT33-C misparses a printf format specifier (%s/%x) or a fragment of an adjacent string literal inside a debug wpa_printf() call as a real modulo/division operand -- established string-literal-misparse pattern (config_file.c precedent)."
+  },
+  {
+   "rule": "INT10-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 893,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT10-C/INT33-C misparses a printf format specifier (%s/%x) or a fragment of an adjacent string literal inside a debug wpa_printf() call as a real modulo/division operand -- established string-literal-misparse pattern (config_file.c precedent)."
+  },
+  {
+   "rule": "INT33-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 906,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT10-C/INT33-C misparses a printf format specifier (%s/%x) or a fragment of an adjacent string literal inside a debug wpa_printf() call as a real modulo/division operand -- established string-literal-misparse pattern (config_file.c precedent)."
+  },
+  {
+   "rule": "INT10-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 906,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT10-C/INT33-C misparses a printf format specifier (%s/%x) or a fragment of an adjacent string literal inside a debug wpa_printf() call as a real modulo/division operand -- established string-literal-misparse pattern (config_file.c precedent)."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 910,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT14-C conflates the struct pointer itself with a bitwise use of one of its member fields (ssid->key_mgmt/eap.flags etc.) -- ssid itself is never used with bitwise or arithmetic ops, only member-accessed -- established field-conflation pattern."
+  },
+  {
+   "rule": "INT33-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 912,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT10-C/INT33-C misparses a printf format specifier (%s/%x) or a fragment of an adjacent string literal inside a debug wpa_printf() call as a real modulo/division operand -- established string-literal-misparse pattern (config_file.c precedent)."
+  },
+  {
+   "rule": "INT10-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 912,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT10-C/INT33-C misparses a printf format specifier (%s/%x) or a fragment of an adjacent string literal inside a debug wpa_printf() call as a real modulo/division operand -- established string-literal-misparse pattern (config_file.c precedent)."
+  },
+  {
+   "rule": "STR31-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 925,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR31-C 'character array too small' fires on a line that is a plain pointer-assignment ('pos = buf = os_zalloc(100);'), not a character array declaration at all -- misattribution/line-drift bug."
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 927,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL37-C 'reserved identifier NULL' fires on a correct, standard 'return NULL;' -- NULL is the standard reserved macro used exactly as intended, not a user-defined reserved identifier."
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 931,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM30-C claims a free precedes this line, but no os_free() call occurs anywhere earlier in this function (buf/end are freshly os_zalloc'd) -- likely cross-function name conflation with a sibling writer function's os_free(buf), same root cause as the documented EXP39-C cross-function conflation bug."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 935,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C/ARR00-C 'returns pointer to local variable' misapplied to a heap-allocated (os_malloc/os_zalloc/os_strdup) pointer -- confused local variable with local storage, established pattern."
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 935,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM30-C claims a free precedes this line, but no os_free() call occurs anywhere earlier in this function (buf/end are freshly os_zalloc'd) -- likely cross-function name conflation with a sibling writer function's os_free(buf), same root cause as the documented EXP39-C cross-function conflation bug."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 937,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC13-C 'pos never read' is wrong: 'pos' is read/used in every subsequent os_snprintf(pos, end-pos, ...) call throughout the rest of this long function."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 944,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C 'negative subscript' on ptr[-1] where ptr is an end-of-buffer pointer (end = buf+N), not the array base -- valid in-bounds access, established ptr[-1] pattern."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 954,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C 'negative subscript' on ptr[-1] where ptr is an end-of-buffer pointer (end = buf+N), not the array base -- valid in-bounds access, established ptr[-1] pattern."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 964,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C 'negative subscript' on ptr[-1] where ptr is an end-of-buffer pointer (end = buf+N), not the array base -- valid in-bounds access, established ptr[-1] pattern."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 974,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C 'negative subscript' on ptr[-1] where ptr is an end-of-buffer pointer (end = buf+N), not the array base -- valid in-bounds access, established ptr[-1] pattern."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 985,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C 'negative subscript' on ptr[-1] where ptr is an end-of-buffer pointer (end = buf+N), not the array base -- valid in-bounds access, established ptr[-1] pattern."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 995,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C 'negative subscript' on ptr[-1] where ptr is an end-of-buffer pointer (end = buf+N), not the array base -- valid in-bounds access, established ptr[-1] pattern."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1006,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C 'negative subscript' on ptr[-1] where ptr is an end-of-buffer pointer (end = buf+N), not the array base -- valid in-bounds access, established ptr[-1] pattern."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1019,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C 'negative subscript' on ptr[-1] where ptr is an end-of-buffer pointer (end = buf+N), not the array base -- valid in-bounds access, established ptr[-1] pattern."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1030,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C 'negative subscript' on ptr[-1] where ptr is an end-of-buffer pointer (end = buf+N), not the array base -- valid in-bounds access, established ptr[-1] pattern."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1040,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C 'negative subscript' on ptr[-1] where ptr is an end-of-buffer pointer (end = buf+N), not the array base -- valid in-bounds access, established ptr[-1] pattern."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1051,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C 'negative subscript' on ptr[-1] where ptr is an end-of-buffer pointer (end = buf+N), not the array base -- valid in-bounds access, established ptr[-1] pattern."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1063,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C 'negative subscript' on ptr[-1] where ptr is an end-of-buffer pointer (end = buf+N), not the array base -- valid in-bounds access, established ptr[-1] pattern."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1073,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C 'negative subscript' on ptr[-1] where ptr is an end-of-buffer pointer (end = buf+N), not the array base -- valid in-bounds access, established ptr[-1] pattern."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1083,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C 'negative subscript' on ptr[-1] where ptr is an end-of-buffer pointer (end = buf+N), not the array base -- valid in-bounds access, established ptr[-1] pattern."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1093,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C 'negative subscript' on ptr[-1] where ptr is an end-of-buffer pointer (end = buf+N), not the array base -- valid in-bounds access, established ptr[-1] pattern."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1105,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C 'negative subscript' on ptr[-1] where ptr is an end-of-buffer pointer (end = buf+N), not the array base -- valid in-bounds access, established ptr[-1] pattern."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1117,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C 'negative subscript' on ptr[-1] where ptr is an end-of-buffer pointer (end = buf+N), not the array base -- valid in-bounds access, established ptr[-1] pattern."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1129,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C 'negative subscript' on ptr[-1] where ptr is an end-of-buffer pointer (end = buf+N), not the array base -- valid in-bounds access, established ptr[-1] pattern."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1138,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C 'negative subscript' on ptr[-1] where ptr is an end-of-buffer pointer (end = buf+N), not the array base -- valid in-bounds access, established ptr[-1] pattern."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1148,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C 'negative subscript' on ptr[-1] where ptr is an end-of-buffer pointer (end = buf+N), not the array base -- valid in-bounds access, established ptr[-1] pattern."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1157,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C 'negative subscript' on ptr[-1] where ptr is an end-of-buffer pointer (end = buf+N), not the array base -- valid in-bounds access, established ptr[-1] pattern."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1170,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C 'negative subscript' on ptr[-1] where ptr is an end-of-buffer pointer (end = buf+N), not the array base -- valid in-bounds access, established ptr[-1] pattern."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1182,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C 'negative subscript' on ptr[-1] where ptr is an end-of-buffer pointer (end = buf+N), not the array base -- valid in-bounds access, established ptr[-1] pattern."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1194,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C 'negative subscript' on ptr[-1] where ptr is an end-of-buffer pointer (end = buf+N), not the array base -- valid in-bounds access, established ptr[-1] pattern."
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1211,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC37-C 'may reach end without returning' is factually wrong: every path in this function (including all #ifdef/#else branches) ends in an explicit return statement."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1216,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR34-C claims a char-to-larger-int conversion of 'value', but line 1216 is 'int val = wpa_parse_cipher(value);' -- value is a const char* pointer parameter, no char widening conversion exists at this line -- misattribution bug."
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1233,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC37-C 'may reach end without returning' is factually wrong: every path in this function (including all #ifdef/#else branches) ends in an explicit return statement."
+  },
+  {
+   "rule": "INT13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1261,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "INT13-C 'bitwise op on signed operand' on 'val' -- val is provably non-negative here (wpa_config_parse_cipher's only negative return, -1, is checked and returned early just above) -- rule doesn't see the earlier guard, established 'rule doesn't see cross-call/earlier guard' family."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1277,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Config-parser dispatch-table DCL13-C FP: 'ssid' param is either genuinely written via computed pointer offset in parser funcs, or unmodified-but-pinned by the fixed parser/writer function-pointer signature in struct parse_data (ssid_fields[] table) -- extends the eloop/EAP-method dispatch-contract FP class."
+  },
+  {
+   "rule": "INT13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1299,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "INT13-C 'bitwise op on signed operand' on 'val' -- val is provably non-negative here (wpa_config_parse_cipher's only negative return, -1, is checked and returned early just above) -- rule doesn't see the earlier guard, established 'rule doesn't see cross-call/earlier guard' family."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1315,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Config-parser dispatch-table DCL13-C FP: 'ssid' param is either genuinely written via computed pointer offset in parser funcs, or unmodified-but-pinned by the fixed parser/writer function-pointer signature in struct parse_data (ssid_fields[] table) -- extends the eloop/EAP-method dispatch-contract FP class."
+  },
+  {
+   "rule": "INT13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1332,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "INT13-C 'bitwise op on signed operand' on 'val' -- val is provably non-negative here (wpa_config_parse_cipher's only negative return, -1, is checked and returned early just above) -- rule doesn't see the earlier guard, established 'rule doesn't see cross-call/earlier guard' family."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1349,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Config-parser dispatch-table DCL13-C FP: 'ssid' param is either genuinely written via computed pointer offset in parser funcs, or unmodified-but-pinned by the fixed parser/writer function-pointer signature in struct parse_data (ssid_fields[] table) -- extends the eloop/EAP-method dispatch-contract FP class."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1368,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR30-C 'unbounded while loop' flagged on a scan of a proven NUL-terminated os_strdup'd string -- established bounded-scan pattern."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1377,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR34-C misfires on a plain char assignment (no widening conversion) -- established 'plain char-to-char assignment' pattern."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1412,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Config-parser dispatch-table DCL13-C FP: 'ssid' param is either genuinely written via computed pointer offset in parser funcs, or unmodified-but-pinned by the fixed parser/writer function-pointer signature in struct parse_data (ssid_fields[] table) -- extends the eloop/EAP-method dispatch-contract FP class."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1426,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C 'negative subscript' on ptr[-1] where ptr is an end-of-buffer pointer (end = buf+N), not the array base -- valid in-bounds access, established ptr[-1] pattern."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1427,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C/ARR00-C 'returns pointer to local variable' misapplied to a heap-allocated (os_malloc/os_zalloc/os_strdup) pointer -- confused local variable with local storage, established pattern."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1436,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C 'negative subscript' on ptr[-1] where ptr is an end-of-buffer pointer (end = buf+N), not the array base -- valid in-bounds access, established ptr[-1] pattern."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1437,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C/ARR00-C 'returns pointer to local variable' misapplied to a heap-allocated (os_malloc/os_zalloc/os_strdup) pointer -- confused local variable with local storage, established pattern."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1446,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C 'negative subscript' on ptr[-1] where ptr is an end-of-buffer pointer (end = buf+N), not the array base -- valid in-bounds access, established ptr[-1] pattern."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1447,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C/ARR00-C 'returns pointer to local variable' misapplied to a heap-allocated (os_malloc/os_zalloc/os_strdup) pointer -- confused local variable with local storage, established pattern."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1457,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C/ARR00-C 'returns pointer to local variable' misapplied to a heap-allocated (os_malloc/os_zalloc/os_strdup) pointer -- confused local variable with local storage, established pattern."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1475,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR30-C 'unbounded while loop' flagged on a scan of a proven NUL-terminated os_strdup'd string -- established bounded-scan pattern."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1492,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C claims 'freqs' was freed, but no os_free(freqs) occurs anywhere in wpa_config_parse_int_array itself -- the os_free(freqs) calls are in caller functions (wpa_config_parse_scan_freq/freq_list) with a distinct, same-named local variable -- cross-function name conflation, same root cause as the documented EXP39-C bug."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1492,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "atoi()'s 0-on-error return is used here purely as the list-termination sentinel (0 is never a valid Wi-Fi frequency); parse failure and end-of-list are handled identically and safely -- same shape as the established 'range-checked atoi' FP class."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1492,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "atoi()'s 0-on-error return is used here purely as the list-termination sentinel (0 is never a valid Wi-Fi frequency); parse failure and end-of-list are handled identically and safely -- same shape as the established 'range-checked atoi' FP class."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1493,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C claims 'freqs' was freed, but no os_free(freqs) occurs anywhere in wpa_config_parse_int_array itself -- the os_free(freqs) calls are in caller functions (wpa_config_parse_scan_freq/freq_list) with a distinct, same-named local variable -- cross-function name conflation, same root cause as the documented EXP39-C bug."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1499,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C/ARR00-C 'returns pointer to local variable' misapplied to a heap-allocated (os_malloc/os_zalloc/os_strdup) pointer -- confused local variable with local storage, established pattern."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1499,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C/ARR00-C 'returns pointer to local variable' misapplied to a heap-allocated (os_malloc/os_zalloc/os_strdup) pointer -- confused local variable with local storage, established pattern."
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1503,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C 'conformant array syntax' fires on the idiomatic C ptr+size (or null-terminated) parameter pair -- established categorical FP."
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1503,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C 'conformant array syntax' fires on the idiomatic C ptr+size (or null-terminated) parameter pair -- established categorical FP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1503,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_config_print_int_array's 'array' parameter's pointee is only ever read (*array); the function increments the local pointer copy (array++), which remains legal even if declared const int * -- genuine, if low-value, const opportunity."
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1574,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C fires on an ordinary if (ptr == NULL) guard -- established stylistic-pedantry pattern."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1590,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C 'negative subscript' on ptr[-1] where ptr is an end-of-buffer pointer (end = buf+N), not the array base -- valid in-bounds access, established ptr[-1] pattern."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1591,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C/ARR00-C 'returns pointer to local variable' misapplied to a heap-allocated (os_malloc/os_zalloc/os_strdup) pointer -- confused local variable with local storage, established pattern."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1596,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C/ARR00-C 'returns pointer to local variable' misapplied to a heap-allocated (os_malloc/os_zalloc/os_strdup) pointer -- confused local variable with local storage, established pattern."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1601,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Config-parser dispatch-table DCL13-C FP: 'ssid' param is either genuinely written via computed pointer offset in parser funcs, or unmodified-but-pinned by the fixed parser/writer function-pointer signature in struct parse_data (ssid_fields[] table) -- extends the eloop/EAP-method dispatch-contract FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1608,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Config-parser dispatch-table DCL13-C FP: 'ssid' param is either genuinely written via computed pointer offset in parser funcs, or unmodified-but-pinned by the fixed parser/writer function-pointer signature in struct parse_data (ssid_fields[] table) -- extends the eloop/EAP-method dispatch-contract FP class."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1630,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR30-C 'unbounded while loop' flagged on a scan of a proven NUL-terminated os_strdup'd string -- established bounded-scan pattern."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1639,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR34-C misfires on a plain char assignment (no widening conversion) -- established 'plain char-to-char assignment' pattern."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1717,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Config-parser dispatch-table DCL13-C FP: 'ssid' param is either genuinely written via computed pointer offset in parser funcs, or unmodified-but-pinned by the fixed parser/writer function-pointer signature in struct parse_data (ssid_fields[] table) -- extends the eloop/EAP-method dispatch-contract FP class."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1745,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C 'negative subscript' on ptr[-1] where ptr is an end-of-buffer pointer (end = buf+N), not the array base -- valid in-bounds access, established ptr[-1] pattern."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1747,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C/ARR00-C 'returns pointer to local variable' misapplied to a heap-allocated (os_malloc/os_zalloc/os_strdup) pointer -- confused local variable with local storage, established pattern."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1942,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Config-parser dispatch-table DCL13-C FP: 'ssid' param is either genuinely written via computed pointer offset in parser funcs, or unmodified-but-pinned by the fixed parser/writer function-pointer signature in struct parse_data (ssid_fields[] table) -- extends the eloop/EAP-method dispatch-contract FP class."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1950,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT14-C conflates the struct pointer itself with a bitwise use of one of its member fields (ssid->key_mgmt/eap.flags etc.) -- ssid itself is never used with bitwise or arithmetic ops, only member-accessed -- established field-conflation pattern."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1956,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C/ARR00-C 'returns pointer to local variable' misapplied to a heap-allocated (os_malloc/os_zalloc/os_strdup) pointer -- confused local variable with local storage, established pattern."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1972,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C/ARR00-C 'returns pointer to local variable' misapplied to a heap-allocated (os_malloc/os_zalloc/os_strdup) pointer -- confused local variable with local storage, established pattern."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1977,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Config-parser dispatch-table DCL13-C FP: 'ssid' param is either genuinely written via computed pointer offset in parser funcs, or unmodified-but-pinned by the fixed parser/writer function-pointer signature in struct parse_data (ssid_fields[] table) -- extends the eloop/EAP-method dispatch-contract FP class."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1985,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT14-C conflates the struct pointer itself with a bitwise use of one of its member fields (ssid->key_mgmt/eap.flags etc.) -- ssid itself is never used with bitwise or arithmetic ops, only member-accessed -- established field-conflation pattern."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/config.c",
+   "line": 1992,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C/ARR00-C 'returns pointer to local variable' misapplied to a heap-allocated (os_malloc/os_zalloc/os_strdup) pointer -- confused local variable with local storage, established pattern."
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 6,
+  "fp": 144,
+  "fn": 0
+ }
+}

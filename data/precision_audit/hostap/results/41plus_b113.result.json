@@ -1,0 +1,1211 @@
+{
+ "labels": [
+  {
+   "rule": "PRE08-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 16,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ieee802_11_defs.h/ieee802_11_common.h share 'ieee802_1' prefix; PRE08-C is obsolete for modern toolchains (no 8-char truncation), default FP per categorical_patterns.md"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 63,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_register_timeout fixed callback signature (void *eloop_ctx, void *timeout_ctx); confirmed DCL13-C eloop-callback FP class"
+  },
+  {
+   "rule": "INT36-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 78,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "(void *)1 / (void *)0 used as an opaque sentinel flag for timeout_ctx, never dereferenced -- matches the eap_user_db.c precedent graded TP (low) as the literal violation shape CERT targets, though practically benign"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 158,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "attr.wps_state is only read at line 158-159 on the same path gated by 'wps_parse_msg(...)==0' that populates it -- confirmed WPS attr-parse output-param correlated-conditional EXP33-C FP class"
+  },
+  {
+   "rule": "INT36-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 174,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "(void *)1 / (void *)0 used as an opaque sentinel flag for timeout_ctx, never dereferenced -- matches the eap_user_db.c precedent graded TP (low) as the literal violation shape CERT targets, though practically benign"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 286,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'ssid' is assigned in the first part of the for-loop init comma-expression ('ssid = wpa_s->conf->ssid, next = ssid ? ...') and read in the second part; C sequences comma-expression operands left-to-right so this is well-defined, not uninitialized"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 310,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "deliberate guard-clause if/else-if where the omitted final branch is a legitimate no-op default, not an unhandled case; confirmed MSC01-C guard-clause FP class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 381,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'registrar' is genuinely read at line 528 inside the same #ifdef CONFIG_WPS_REG_DISABLE_OPEN gate; macro-blind CFG doesn't connect the ifdef-scoped read back to this assignment"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 450,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same as line 381: 'registrar = 1' here is read by 'if (registrar)' at line 528 inside the same ifdef gate"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 538,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "flagged line is a 'case' label (or code gated by a sibling #ifdef branch) immediately following an unconditional break of the PREVIOUS case; case labels are always reachable via the switch dispatch -- extension of the confirmed goto-label/preprocessor-branch MSC07-C blindness class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 546,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'add_sae' assigned here is read at line 551 ('if (add_sae && ...)') just a few lines later; not dead"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 566,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'buf' cited here is a different, already out-of-scope local (block-scoped to lines 388-395 and already freed at 394); 'ssid'/'ssid->passphrase' are heap objects owned by the persistent wpa_config network list (via wpa_config_add_network), not memory this function must free -- ownership-transfer/out-of-scope MEM12-C FP class"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 574,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'buf' cited here is a different, already out-of-scope local (block-scoped to lines 388-395 and already freed at 394); 'ssid'/'ssid->passphrase' are heap objects owned by the persistent wpa_config network list (via wpa_config_add_network), not memory this function must free -- ownership-transfer/out-of-scope MEM12-C FP class"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 583,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'buf' cited here is a different, already out-of-scope local (block-scoped to lines 388-395 and already freed at 394); 'ssid'/'ssid->passphrase' are heap objects owned by the persistent wpa_config network list (via wpa_config_add_network), not memory this function must free -- ownership-transfer/out-of-scope MEM12-C FP class"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 596,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'buf' cited here is a different, already out-of-scope local (block-scoped to lines 388-395 and already freed at 394); 'ssid'/'ssid->passphrase' are heap objects owned by the persistent wpa_config network list (via wpa_config_add_network), not memory this function must free -- ownership-transfer/out-of-scope MEM12-C FP class"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 610,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'buf' cited here is a different, already out-of-scope local (block-scoped to lines 388-395 and already freed at 394); 'ssid'/'ssid->passphrase' are heap objects owned by the persistent wpa_config network list (via wpa_config_add_network), not memory this function must free -- ownership-transfer/out-of-scope MEM12-C FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 639,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_register_timeout fixed callback signature (void *eloop_ctx, void *timeout_ctx); confirmed DCL13-C eloop-callback FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 714,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_register_timeout fixed callback signature (void *eloop_ctx, void *timeout_ctx); confirmed DCL13-C eloop-callback FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 722,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wpa_supplicant helper never exposed directly to unchecked external input; confirmed API00-C internal-API-no-NULL-check FP class"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 729,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "static call-graph cycle traced through event-dispatch/deauth chains, but each hop requires a distinct runtime network-state transition (not literal same-stack re-entrancy); analogous to the confirmed guarded-mutual-call MSC04-C FP class, though not independently verified end-to-end here (worth a second opinion)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 751,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain (non-vtable, non-eloop) static/exported helper only reads the pointer param; genuine low-severity DCL13-C per the confirmed 'plain helper, read-only param' TP exception"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 776,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain (non-vtable, non-eloop) static/exported helper only reads the pointer param; genuine low-severity DCL13-C per the confirmed 'plain helper, read-only param' TP exception"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 785,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain (non-vtable, non-eloop) static/exported helper only reads the pointer param; genuine low-severity DCL13-C per the confirmed 'plain helper, read-only param' TP exception"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 811,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain (non-vtable, non-eloop) static/exported helper only reads the pointer param; genuine low-severity DCL13-C per the confirmed 'plain helper, read-only param' TP exception"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 822,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain (non-vtable, non-eloop) static/exported helper only reads the pointer param; genuine low-severity DCL13-C per the confirmed 'plain helper, read-only param' TP exception"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 848,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain (non-vtable, non-eloop) static/exported helper only reads the pointer param; genuine low-severity DCL13-C per the confirmed 'plain helper, read-only param' TP exception"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 853,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "switch is exhaustive over the enum's declared values (wps_er_set_sel_reg_state / wps_event); no default needed for a fully-covered enum switch"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 873,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "static call-graph cycle traced through event-dispatch/deauth chains, but each hop requires a distinct runtime network-state transition (not literal same-stack re-entrancy); analogous to the confirmed guarded-mutual-call MSC04-C FP class, though not independently verified end-to-end here (worth a second opinion)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 877,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "switch is exhaustive over the enum's declared values (wps_er_set_sel_reg_state / wps_event); no default needed for a fully-covered enum switch"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 879,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "data is always a valid stack union address supplied by the internal wps_context event callback contract; never NULL from any call site"
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 889,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'m2d' is only ever passed by address (&data->m2d) in a mutually-exclusive switch/case branch, never actually written by this function; sqc conflates taking the address in a sibling case with a 'write', extending the confirmed mutually-exclusive-branch conflation theme to union member tracking"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 893,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "flagged line is a 'case' label (or code gated by a sibling #ifdef branch) immediately following an unconditional break of the PREVIOUS case; case labels are always reachable via the switch dispatch -- extension of the confirmed goto-label/preprocessor-branch MSC07-C blindness class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 931,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wired as a fixed wps_context/wps_registrar_config callback (rf_band_cb/pin_needed_cb/set_sel_reg_cb/wps_er_deinit cb); const-qualifying would break the shared callback signature"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 953,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "static call-graph cycle traced through event-dispatch/deauth chains, but each hop requires a distinct runtime network-state transition (not literal same-stack re-entrancy); analogous to the confirmed guarded-mutual-call MSC04-C FP class, though not independently verified end-to-end here (worth a second opinion)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 998,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_register_timeout fixed callback signature (void *eloop_ctx, void *timeout_ctx); confirmed DCL13-C eloop-callback FP class"
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1006,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'m2d' is only ever passed by address (&data->m2d) in a mutually-exclusive switch/case branch, never actually written by this function; sqc conflates taking the address in a sibling case with a 'write', extending the confirmed mutually-exclusive-branch conflation theme to union member tracking"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1033,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare both 'var' and 'value' as const char * (config.h:1938,1940); passing a string literal is safe -- confirmed STR30-C const-qualifier rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1033,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare both 'var' and 'value' as const char * (config.h:1938,1940); passing a string literal is safe -- confirmed STR30-C const-qualifier rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1034,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare both 'var' and 'value' as const char * (config.h:1938,1940); passing a string literal is safe -- confirmed STR30-C const-qualifier rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1034,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare both 'var' and 'value' as const char * (config.h:1938,1940); passing a string literal is safe -- confirmed STR30-C const-qualifier rule-logic-bug class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1035,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare both 'var' and 'value' as const char * (config.h:1938,1940); passing a string literal is safe -- confirmed STR30-C const-qualifier rule-logic-bug class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1088,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "returned pointer is heap-allocated (wpa_config_add_network / wps_er_*_config_token / wpabuf) not a local automatic-storage object; confirmed DCL30-C heap-vs-stack FP class"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1092,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "static call-graph cycle traced through event-dispatch/deauth chains, but each hop requires a distinct runtime network-state transition (not literal same-stack re-entrancy); analogous to the confirmed guarded-mutual-call MSC04-C FP class, though not independently verified end-to-end here (worth a second opinion)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1093,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain (non-vtable, non-eloop) static/exported helper only reads the pointer param; genuine low-severity DCL13-C per the confirmed 'plain helper, read-only param' TP exception"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1128,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "static call-graph cycle traced through event-dispatch/deauth chains, but each hop requires a distinct runtime network-state transition (not literal same-stack re-entrancy); analogous to the confirmed guarded-mutual-call MSC04-C FP class, though not independently verified end-to-end here (worth a second opinion)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1142,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "deliberate guard-clause if/else-if where the omitted final branch is a legitimate no-op default, not an unhandled case; confirmed MSC01-C guard-clause FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1164,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wpa_supplicant helper never exposed directly to unchecked external input; confirmed API00-C internal-API-no-NULL-check FP class"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1164,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "static call-graph cycle traced through event-dispatch/deauth chains, but each hop requires a distinct runtime network-state transition (not literal same-stack re-entrancy); analogous to the confirmed guarded-mutual-call MSC04-C FP class, though not independently verified end-to-end here (worth a second opinion)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1216,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare both 'var' and 'value' as const char * (config.h:1938,1940); passing a string literal is safe -- confirmed STR30-C const-qualifier rule-logic-bug class"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1234,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "static call-graph cycle traced through event-dispatch/deauth chains, but each hop requires a distinct runtime network-state transition (not literal same-stack re-entrancy); analogous to the confirmed guarded-mutual-call MSC04-C FP class, though not independently verified end-to-end here (worth a second opinion)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1236,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bare null-terminated 'const char *' string param or a begin/end pointer-pair idiom (buf/end); no array+separate-size parameter shape exists to convert -- confirmed API05-C bare-pointer/pointer-pair FP class"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1241,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "array bound is a compile-time macro constant expression (WPS_OOB_PUBKEY_HASH_LEN arithmetic), not a runtime-sized VLA; confirmed MEM05-C fixed-size-array misfire class"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1243,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "array bound is a compile-time macro constant expression (WPS_OOB_PUBKEY_HASH_LEN arithmetic), not a runtime-sized VLA; confirmed MEM05-C fixed-size-array misfire class"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1255,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "callee wpas_wps_add_network explicitly guards with 'if (bssid)' (line 1048) before dereferencing; factually checked"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1320,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare both 'var' and 'value' as const char * (config.h:1938,1940); passing a string literal is safe -- confirmed STR30-C const-qualifier rule-logic-bug class"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1333,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "callee wpas_wps_reassoc explicitly guards with 'else if (bssid)' (line 1142) before dereferencing; factually checked"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1338,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wpa_supplicant helper never exposed directly to unchecked external input; confirmed API00-C internal-API-no-NULL-check FP class"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1338,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "static call-graph cycle traced through event-dispatch/deauth chains, but each hop requires a distinct runtime network-state transition (not literal same-stack re-entrancy); analogous to the confirmed guarded-mutual-call MSC04-C FP class, though not independently verified end-to-end here (worth a second opinion)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1347,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wpa_supplicant helper never exposed directly to unchecked external input; confirmed API00-C internal-API-no-NULL-check FP class"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1364,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "static call-graph cycle traced through event-dispatch/deauth chains, but each hop requires a distinct runtime network-state transition (not literal same-stack re-entrancy); analogous to the confirmed guarded-mutual-call MSC04-C FP class, though not independently verified end-to-end here (worth a second opinion)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1403,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain (non-vtable, non-eloop) static/exported helper only reads the pointer param; genuine low-severity DCL13-C per the confirmed 'plain helper, read-only param' TP exception"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1442,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set/wpa_config_set_quoted declare both 'var' and 'value' as const char * (config.h:1938,1940); passing a string literal is safe -- confirmed STR30-C const-qualifier rule-logic-bug class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1453,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bare null-terminated 'const char *' string param or a begin/end pointer-pair idiom (buf/end); no array+separate-size parameter shape exists to convert -- confirmed API05-C bare-pointer/pointer-pair FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1453,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wired as a fixed wps_context/wps_registrar_config callback (rf_band_cb/pin_needed_cb/set_sel_reg_cb/wps_er_deinit cb); const-qualifying would break the shared callback signature"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1462,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR(x) expands to 6 comma-separated pure byte reads with no side effects; confirmed EXP30-C side-effect-free macro-logging-arg FP class"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1467,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "\"Per-device PSK\" is only the descriptive title argument to wpa_hexdump_key; the actual secret is the separate psk/psk_len runtime buffer -- confirmed MSC41-C label-string misfire class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1475,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wired as a fixed wps_context/wps_registrar_config callback (rf_band_cb/pin_needed_cb/set_sel_reg_cb/wps_er_deinit cb); const-qualifying would break the shared callback signature"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1484,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "only one argument (wps_dev_type_bin2str writing devtype) has a side effect; no other argument in the call reads/writes that same object, so there is no actual unsequenced-modification hazard"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1496,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wired as a fixed wps_context/wps_registrar_config callback (rf_band_cb/pin_needed_cb/set_sel_reg_cb/wps_er_deinit cb); const-qualifying would break the shared callback signature"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1535,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain (non-vtable, non-eloop) static/exported helper only reads the pointer param; genuine low-severity DCL13-C per the confirmed 'plain helper, read-only param' TP exception"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1568,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain (non-vtable, non-eloop) static/exported helper only reads the pointer param; genuine low-severity DCL13-C per the confirmed 'plain helper, read-only param' TP exception"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1585,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wpa_supplicant helper never exposed directly to unchecked external input; confirmed API00-C internal-API-no-NULL-check FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1592,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*wps) is a compile-time, non-evaluated-context type query; 'wps' is never actually dereferenced at runtime before its os_zalloc assignment -- confirmed sizeof(*ptr) EXP33-C FP class"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1608,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ordinary bitmask-flags variable read with both '&'/'|' and simple assignment; confirmed INT14-C stylistic-pedantry mismatch class (not the arithmetic-vs-bitwise conflict the rule targets)"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1629,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'m' is explicitly initialized by the for-loop's own init clause ('for (m = 0; m < wpa_s->hw.num_modes; m++)') immediately before use; not uninitialized"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1635,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "deliberate guard-clause if/else-if where the omitted final branch is a legitimate no-op default, not an unhandled case; confirmed MSC01-C guard-clause FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1722,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wpa_supplicant helper never exposed directly to unchecked external input; confirmed API00-C internal-API-no-NULL-check FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1722,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wpa_supplicant helper never exposed directly to unchecked external input; confirmed API00-C internal-API-no-NULL-check FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1796,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wpa_supplicant helper never exposed directly to unchecked external input; confirmed API00-C internal-API-no-NULL-check FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1796,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wpa_supplicant helper never exposed directly to unchecked external input; confirmed API00-C internal-API-no-NULL-check FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1796,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wpa_supplicant helper never exposed directly to unchecked external input; confirmed API00-C internal-API-no-NULL-check FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1796,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain (non-vtable, non-eloop) static/exported helper only reads the pointer param; genuine low-severity DCL13-C per the confirmed 'plain helper, read-only param' TP exception"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1809,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "deliberate guard-clause if/else-if where the omitted final branch is a legitimate no-op default, not an unhandled case; confirmed MSC01-C guard-clause FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1853,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain (non-vtable, non-eloop) static/exported helper only reads the pointer param; genuine low-severity DCL13-C per the confirmed 'plain helper, read-only param' TP exception"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1854,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain (non-vtable, non-eloop) static/exported helper only reads the pointer param; genuine low-severity DCL13-C per the confirmed 'plain helper, read-only param' TP exception"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1855,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain (non-vtable, non-eloop) static/exported helper only reads the pointer param; genuine low-severity DCL13-C per the confirmed 'plain helper, read-only param' TP exception"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1859,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "selected/ssid are internal params already dereferenced unconditionally by the only caller (wpas_wps_scan_pbc_overlap) before this helper is reached; never actually NULL"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1862,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same internal-invariant reasoning as line 1859: ssid is already dereferenced by the caller before this call"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1883,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wpa_supplicant helper never exposed directly to unchecked external input; confirmed API00-C internal-API-no-NULL-check FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1883,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wpa_supplicant helper never exposed directly to unchecked external input; confirmed API00-C internal-API-no-NULL-check FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1883,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain (non-vtable, non-eloop) static/exported helper only reads the pointer param; genuine low-severity DCL13-C per the confirmed 'plain helper, read-only param' TP exception"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1922,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR(x) expands to 6 comma-separated pure byte reads with no side effects; confirmed EXP30-C side-effect-free macro-logging-arg FP class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1969,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "deliberate guard-clause if/else-if where the omitted final branch is a legitimate no-op default, not an unhandled case; confirmed MSC01-C guard-clause FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1974,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wpa_supplicant helper never exposed directly to unchecked external input; confirmed API00-C internal-API-no-NULL-check FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1974,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain (non-vtable, non-eloop) static/exported helper only reads the pointer param; genuine low-severity DCL13-C per the confirmed 'plain helper, read-only param' TP exception"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1987,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wpa_supplicant helper never exposed directly to unchecked external input; confirmed API00-C internal-API-no-NULL-check FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1987,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wpa_supplicant helper never exposed directly to unchecked external input; confirmed API00-C internal-API-no-NULL-check FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1987,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wpa_supplicant helper never exposed directly to unchecked external input; confirmed API00-C internal-API-no-NULL-check FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1987,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bare null-terminated 'const char *' string param or a begin/end pointer-pair idiom (buf/end); no array+separate-size parameter shape exists to convert -- confirmed API05-C bare-pointer/pointer-pair FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 1988,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bare null-terminated 'const char *' string param or a begin/end pointer-pair idiom (buf/end); no array+separate-size parameter shape exists to convert -- confirmed API05-C bare-pointer/pointer-pair FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2003,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wpa_supplicant helper never exposed directly to unchecked external input; confirmed API00-C internal-API-no-NULL-check FP class"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2003,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "every branch of wpas_wps_er_start (including the #else CONFIG_WPS_ER arm) explicitly returns a value; confirmed MSC37-C preprocessor-branch-blind reach-end FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2020,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wpa_supplicant helper never exposed directly to unchecked external input; confirmed API00-C internal-API-no-NULL-check FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2030,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wpa_supplicant helper never exposed directly to unchecked external input; confirmed API00-C internal-API-no-NULL-check FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2030,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wpa_supplicant helper never exposed directly to unchecked external input; confirmed API00-C internal-API-no-NULL-check FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2030,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain (non-vtable, non-eloop) static/exported helper only reads the pointer param; genuine low-severity DCL13-C per the confirmed 'plain helper, read-only param' TP exception"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2052,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wpa_supplicant helper never exposed directly to unchecked external input; confirmed API00-C internal-API-no-NULL-check FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2052,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain (non-vtable, non-eloop) static/exported helper only reads the pointer param; genuine low-severity DCL13-C per the confirmed 'plain helper, read-only param' TP exception"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2067,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wpa_supplicant helper never exposed directly to unchecked external input; confirmed API00-C internal-API-no-NULL-check FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2067,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain (non-vtable, non-eloop) static/exported helper only reads the pointer param; genuine low-severity DCL13-C per the confirmed 'plain helper, read-only param' TP exception"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2088,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'cred' is a plain struct pointer parameter (not an array parameter that decayed); sizeof(*cred) correctly computes the pointee struct size -- the exact correct idiom for os_memset(cred, 0, sizeof(*cred))"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2119,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wpa_supplicant helper never exposed directly to unchecked external input; confirmed API00-C internal-API-no-NULL-check FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2119,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wpa_supplicant helper never exposed directly to unchecked external input; confirmed API00-C internal-API-no-NULL-check FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2119,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain (non-vtable, non-eloop) static/exported helper only reads the pointer param; genuine low-severity DCL13-C per the confirmed 'plain helper, read-only param' TP exception"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2146,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wpa_supplicant helper never exposed directly to unchecked external input; confirmed API00-C internal-API-no-NULL-check FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2146,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain (non-vtable, non-eloop) static/exported helper only reads the pointer param; genuine low-severity DCL13-C per the confirmed 'plain helper, read-only param' TP exception"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2147,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain (non-vtable, non-eloop) static/exported helper only reads the pointer param; genuine low-severity DCL13-C per the confirmed 'plain helper, read-only param' TP exception"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2166,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ordinary bitmask-flags variable read with both '&'/'|' and simple assignment; confirmed INT14-C stylistic-pedantry mismatch class (not the arithmetic-vs-bitwise conflict the rule targets)"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2189,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "flagged lines are plain enum-constant assignments (cred.encr_type = WPS_ENCR_WEP/TKIP/AES) inside an if/else-if chain with an embedded #ifdef CONFIG_TESTING_OPTIONS branch -- no function pointer exists anywhere nearby; parser confusion near the #ifdef (see paired bogus MSC13-C 'if'/'return' findings), not a real WIN04-C violation"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2192,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "flagged lines are plain enum-constant assignments (cred.encr_type = WPS_ENCR_WEP/TKIP/AES) inside an if/else-if chain with an embedded #ifdef CONFIG_TESTING_OPTIONS branch -- no function pointer exists anywhere nearby; parser confusion near the #ifdef (see paired bogus MSC13-C 'if'/'return' findings), not a real WIN04-C violation"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2194,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'if' is the C keyword, not a variable; sqc misparses a token near the #ifdef/#else inside this if/else-if chain (see WIN04-C finding at same lines) -- bogus finding"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2194,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "flagged lines are plain enum-constant assignments (cred.encr_type = WPS_ENCR_WEP/TKIP/AES) inside an if/else-if chain with an embedded #ifdef CONFIG_TESTING_OPTIONS branch -- no function pointer exists anywhere nearby; parser confusion near the #ifdef (see paired bogus MSC13-C 'if'/'return' findings), not a real WIN04-C violation"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2197,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'return' is the C keyword, not a variable; same parser-confusion bug as the 'if' finding at line 2194"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2205,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain (non-vtable, non-eloop) static/exported helper only reads the pointer param; genuine low-severity DCL13-C per the confirmed 'plain helper, read-only param' TP exception"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2232,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "returned pointer is heap-allocated (wpa_config_add_network / wps_er_*_config_token / wpabuf) not a local automatic-storage object; confirmed DCL30-C heap-vs-stack FP class"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2237,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_supplicant core is single-threaded/eloop-driven with zero pthread_create/pthread_mutex usage anywhere; confirmed no-pthread CON03-C FP class"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2239,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "callbacks_pending is only ever touched from eloop callback context in this single-threaded/eloop-driven process; confirmed no-pthread CON07-C FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2239,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wired as a fixed wps_context/wps_registrar_config callback (rf_band_cb/pin_needed_cb/set_sel_reg_cb/wps_er_deinit cb); const-qualifying would break the shared callback signature"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2248,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "callbacks_pending is only ever touched from eloop callback context in this single-threaded/eloop-driven process; confirmed no-pthread CON07-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2262,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wpa_supplicant helper never exposed directly to unchecked external input; confirmed API00-C internal-API-no-NULL-check FP class"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2272,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ordinary bitmask-flags variable read with both '&'/'|' and simple assignment; confirmed INT14-C stylistic-pedantry mismatch class (not the arithmetic-vs-bitwise conflict the rule targets)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2315,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wpa_supplicant helper never exposed directly to unchecked external input; confirmed API00-C internal-API-no-NULL-check FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2315,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain (non-vtable, non-eloop) static/exported helper only reads the pointer param; genuine low-severity DCL13-C per the confirmed 'plain helper, read-only param' TP exception"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2329,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain (non-vtable, non-eloop) static/exported helper only reads the pointer param; genuine low-severity DCL13-C per the confirmed 'plain helper, read-only param' TP exception"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2349,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "returned pointer is heap-allocated (wpa_config_add_network / wps_er_*_config_token / wpabuf) not a local automatic-storage object; confirmed DCL30-C heap-vs-stack FP class"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2363,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "strtol(id_str,&end,10) is followed by an endptr check (catches partial/garbage parses) but errno is never reset to 0 beforehand nor checked for ERANGE afterward, so integer overflow on an oversized id_str is undetected -- genuinely missing per CERT ERR34-C guidance, though id_str is a local ctrl_iface-supplied network id, not remote/wire data, so real-world severity is low"
+  },
+  {
+   "rule": "ERR01-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2363,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "strtol(id_str,&end,10) is followed by an endptr check (catches partial/garbage parses) but errno is never reset to 0 beforehand nor checked for ERANGE afterward, so integer overflow on an oversized id_str is undetected -- genuinely missing per CERT ERR34-C guidance, though id_str is a local ctrl_iface-supplied network id, not remote/wire data, so real-world severity is low"
+  },
+  {
+   "rule": "ERR30-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2363,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "strtol(id_str,&end,10) is followed by an endptr check (catches partial/garbage parses) but errno is never reset to 0 beforehand nor checked for ERANGE afterward, so integer overflow on an oversized id_str is undetected -- genuinely missing per CERT ERR34-C guidance, though id_str is a local ctrl_iface-supplied network id, not remote/wire data, so real-world severity is low"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2397,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wpa_supplicant helper never exposed directly to unchecked external input; confirmed API00-C internal-API-no-NULL-check FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2397,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wpa_supplicant helper never exposed directly to unchecked external input; confirmed API00-C internal-API-no-NULL-check FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2397,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wpa_supplicant helper never exposed directly to unchecked external input; confirmed API00-C internal-API-no-NULL-check FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2397,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wpa_supplicant helper never exposed directly to unchecked external input; confirmed API00-C internal-API-no-NULL-check FP class"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2397,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "static call-graph cycle traced through event-dispatch/deauth chains, but each hop requires a distinct runtime network-state transition (not literal same-stack re-entrancy); analogous to the confirmed guarded-mutual-call MSC04-C FP class, though not independently verified end-to-end here (worth a second opinion)"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2404,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "array bound is a compile-time macro constant expression (WPS_OOB_PUBKEY_HASH_LEN arithmetic), not a runtime-sized VLA; confirmed MEM05-C fixed-size-array misfire class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2427,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps->dh_privkey/dh_pubkey are freed on the failure branch (lines 2431/2433) or persist as legitimate long-lived struct-field state for later use/next-call free at line 2424-2426 -- not leaked; extends the confirmed struct-field MEM30/MEM31 reassignment-blindness class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2428,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps->dh_privkey/dh_pubkey are freed on the failure branch (lines 2431/2433) or persist as legitimate long-lived struct-field state for later use/next-call free at line 2424-2426 -- not leaked; extends the confirmed struct-field MEM30/MEM31 reassignment-blindness class"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2429,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps->dh_privkey/dh_pubkey were freshly reassigned via wpabuf_dup() at lines 2427-2428 immediately before this NULL check; sqc's free-state tracking doesn't clear on struct-field reassignment -- confirmed 'MEM30-C doesn't see reassignment' theme extended to struct fields (documented for eap_server_tls_common.c's data->tls_out)"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2429,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps->dh_privkey/dh_pubkey were freshly reassigned via wpabuf_dup() at lines 2427-2428 immediately before this NULL check; sqc's free-state tracking doesn't clear on struct-field reassignment -- confirmed 'MEM30-C doesn't see reassignment' theme extended to struct fields (documented for eap_server_tls_common.c's data->tls_out)"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2431,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "this free targets the NEW wpabuf_dup() allocation assigned at line 2428/2427, not the old value already freed at line 2425/2426 -- same struct-field reassignment-blindness root cause as the paired MEM30-C UAF findings at line 2429"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/wps_supplicant.c",
+   "line": 2433,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "this free targets the NEW wpabuf_dup() allocation assigned at line 2428/2427, not the old value already freed at line 2425/2426 -- same struct-field reassignment-blindness root cause as the paired MEM30-C UAF findings at line 2429"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 30,
+  "fp": 120,
+  "fn": 0
+ }
+}

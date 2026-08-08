@@ -1,0 +1,1354 @@
+{
+ "wpa_supplicant/wpa_cli.c#part1of4": [
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 42,
+   "message": "Shared variable 'wpa_cli_quit' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 43,
+   "message": "Shared variable 'wpa_cli_attached' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 44,
+   "message": "Shared variable 'wpa_cli_connected' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 45,
+   "message": "Shared variable 'wpa_cli_last_id' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 51,
+   "message": "Shared variable 'ctrl_ifname' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 55,
+   "message": "Shared variable 'reconnect' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 56,
+   "message": "Shared variable 'ping_interval' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 57,
+   "message": "Shared variable 'interactive' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 57,
+   "message": "Global flag variable 'interactive' appears to be used for synchronization without proper primitives. Use mutexes, condition variables, or atomic operations instead.",
+   "rule_id": "CON02-C",
+   "severity": "High",
+   "suggestion": "Replace with proper synchronization primitives like mtx_t (C11 threads), pthread_mutex_t (POSIX), or atomic types (_Atomic)"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 58,
+   "message": "Shared variable 'ifname_prefix' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 84,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 84,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"wpa_cli [-p<path to ctrl sockets>] [-i<ifname>] [-hvBr] \"\n\t       \"[-a<action file>] \\\\\\n\"\n\t       \"        [-P<pid file>] [-g<global ctrl>] [-G<ping interval>] \"\n\t       \"\\\\\\n\"\n\t       \"        [-s<wpa_client_socket_file_path>] \"\n\t       \"[command..]\\n\"\n\t       \"  -h = help (show this usage text)\\n\"\n\t       \"  -v = shown version information\\n\"\n\t       \"  -a = run in daemon mode executing the action file based on \"\n\t       \"events from\\n\"\n\t       \"       wpa_supplicant\\n\"\n\t       \"  -r = try to reconnect when client socket is disconnected.\\n\"\n\t       \"       This is useful only when used with -a.\\n\"\n\t       \"  -B = run a daemon in the background\\n\"\n\t       \"  default path: \" CONFIG_CTRL_IFACE_DIR \"\\n\"\n\t       \"  default interface: first interface found in socket path\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 140,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 141,
+   "message": "Function returns without releasing all resources. Leaked: ctrl_conn, mon_conn. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 147,
+   "message": "Function returns without releasing all resources. Leaked: ctrl_conn, mon_conn. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 155,
+   "message": "Function returns without releasing all resources. Leaked: ctrl_conn, mon_conn. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 162,
+   "message": "Function returns without releasing all resources. Leaked: ctrl_conn, mon_conn, cfile. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 167,
+   "message": "Function returns without releasing all resources. Leaked: ctrl_conn, mon_conn, cfile. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 36,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 171,
+   "message": "Passing null pointer 'client_socket_dir' to 'wpa_ctrl_open2' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'client_socket_dir' is not NULL before passing to 'wpa_ctrl_open2'"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 174,
+   "message": "Function returns without releasing all resources. Leaked: ctrl_conn, mon_conn, cfile. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 36,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 178,
+   "message": "Passing null pointer 'client_socket_dir' to 'wpa_ctrl_open2' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'client_socket_dir' is not NULL before passing to 'wpa_ctrl_open2'"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 192,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 11,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 192,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Warning: Failed to attach to \"\n\t\t\t       \"wpa_supplicant.\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 195,
+   "message": "Function returns without releasing all resources. Leaked: ctrl_conn, mon_conn, cfile. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 199,
+   "message": "Function returns without releasing all resources. Leaked: ctrl_conn, mon_conn, cfile. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 205,
+   "message": "Static variable 'ctrl_conn' used without explicit initialization",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'ctrl_conn' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 210,
+   "message": "Value assigned to 'wpa_cli_attached' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 213,
+   "message": "Value assigned to 'ctrl_conn' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 214,
+   "message": "Static variable 'mon_conn' used without explicit initialization",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'mon_conn' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 217,
+   "message": "Value assigned to 'mon_conn' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 33,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 222,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 33,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 222,
+   "message": "Pointer parameter 'msg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *msg'"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 234,
+   "message": "Static variable 'ctrl_conn' used without explicit initialization",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'ctrl_conn' before use, e.g., at its declaration"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 242,
+   "message": "Local variable 'buf' assigned to global/static variable 'cmd' - creates dangling pointer",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage for local variable or copy data instead of assigning pointer"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 248,
+   "message": "Type mismatch in printf(): format specifier '%s' expects Pointer but argument 1 ('cmd') is Integer",
+   "rule_id": "FIO47-C",
+   "severity": "High",
+   "suggestion": "Ensure format specifiers match argument types"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 250,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 251,
+   "message": "Type mismatch in printf(): format specifier '%s' expects Pointer but argument 1 ('cmd') is Integer",
+   "rule_id": "FIO47-C",
+   "severity": "High",
+   "suggestion": "Ensure format specifiers match argument types"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 255,
+   "message": "Potentially unsafe array access with variable index 'len': Buffer 'buf' with size 4096 (allocated at line 230)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 16,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 256,
+   "message": "Variable 'buf' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'buf' before use, e.g., at its declaration"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 275,
+   "message": "Type mismatch in printf(): format specifier '%s' expects Pointer but argument 1 ('cmd') is Integer",
+   "rule_id": "FIO47-C",
+   "severity": "High",
+   "suggestion": "Ensure format specifiers match argument types"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 275,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 275,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid %s command - at least %d argument%s \"\n\t\t       \"required.\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 69,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 286,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 69,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 292,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 67,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 308,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 68,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 314,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 66,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 326,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 68,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 332,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 339,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 45,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 378,
+   "message": "Pointer parameter 'ctrl' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctrl'"
+  },
+  {
+   "column": 67,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 378,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 28,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 387,
+   "message": "'str' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 392,
+   "message": "Static variable 'wpa_list_cmd_list' used without explicit initialization",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'wpa_list_cmd_list' before use, e.g., at its declaration"
+  },
+  {
+   "column": 48,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 400,
+   "message": "Pointer parameter 'ctrl' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctrl'"
+  },
+  {
+   "column": 70,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 400,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 45,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 407,
+   "message": "Pointer parameter 'ctrl' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctrl'"
+  },
+  {
+   "column": 67,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 407,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 73,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 416,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 78,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 422,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 28,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 455,
+   "message": "'str' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 14,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 456,
+   "message": "Array declaration 'fields[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 33,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 529,
+   "message": "'fields' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 67,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 549,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 14,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 556,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 15,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 563,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 28,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 577,
+   "message": "'str' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 14,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 578,
+   "message": "Array declaration 'fields[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 33,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 631,
+   "message": "'fields' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 69,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 649,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 68,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 655,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 662,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 71,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 668,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 72,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 708,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 740,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 740,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid WPS_PIN command: need one or two arguments:\\n\"\n\t\t       \"- BSSID: use 'any' to select any\\n\"\n\t\t       \"- PIN: optional, used only with devices that have no \"\n\t\t       \"display\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 759,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 11,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 788,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 795,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 795,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid 'wps_nfc_tag_read' command - one argument \"\n\t\t       \"is required.\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 70,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 836,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 845,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 845,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 846,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 871,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 871,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid WPS_REG command: need two arguments:\\n\"\n\t\t       \"- BSSID of the target AP\\n\"\n\t\t       \"- AP PIN\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 874,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 874,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Alternatively, six arguments can be used to \"\n\t\t       \"reconfigure the AP:\\n\"\n\t\t       \"- BSSID of the target AP\\n\"\n\t\t       \"- AP PIN\\n\"\n\t\t       \"- new SSID\\n\"\n\t\t       \"- new auth (OPEN, WPAPSK, WPA2PSK)\\n\"\n\t\t       \"- new encr (NONE, WEP, TKIP, CCMP)\\n\"\n\t\t       \"- new key\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 908,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 919,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 919,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid WPS_ER_PIN command: need at least two \"\n\t\t       \"arguments:\\n\"\n\t\t       \"- UUID: use 'any' to select any\\n\"\n\t\t       \"- PIN: Enrollee PIN\\n\"\n\t\t       \"optional: - Enrollee MAC address\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 942,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 942,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid WPS_ER_LEARN command: need two arguments:\\n\"\n\t\t       \"- UUID: specify which AP to use\\n\"\n\t\t       \"- PIN: AP PIN\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 956,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 956,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid WPS_ER_SET_CONFIG command: need two \"\n\t\t       \"arguments:\\n\"\n\t\t       \"- UUID: specify which AP to use\\n\"\n\t\t       \"- Network configuration id\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 15,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 968,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 974,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 974,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 975,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1000,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1000,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid WPS_ER_CONFIG command: need six arguments:\\n\"\n\t\t       \"- AP UUID\\n\"\n\t\t       \"- AP PIN\\n\"\n\t\t       \"- new SSID\\n\"\n\t\t       \"- new auth (OPEN, WPAPSK, WPA2PSK)\\n\"\n\t\t       \"- new encr (NONE, WEP, TKIP, CCMP)\\n\"\n\t\t       \"- new key\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1023,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1023,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid WPS_ER_NFC_CONFIG_TOKEN command: need two \"\n\t\t       \"arguments:\\n\"\n\t\t       \"- WPS/NDEF: token format\\n\"\n\t\t       \"- UUID: specify which AP to use\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 71,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1047,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1053,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1053,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid IDENTITY command: needs two arguments \"\n\t\t       \"(network id and identity)\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1058,
+   "message": "Variable 'cmd' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'cmd' before use, e.g., at its declaration"
+  },
+  {
+   "column": 71,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1080,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1086,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1086,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid PASSWORD command: needs two arguments \"\n\t\t       \"(network id and password)\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1091,
+   "message": "Variable 'cmd' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'cmd' before use, e.g., at its declaration"
+  },
+  {
+   "column": 14,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1114,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1120,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1120,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid NEW_PASSWORD command: needs two arguments \"\n\t\t       \"(network id and password)\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1125,
+   "message": "Variable 'cmd' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'cmd' before use, e.g., at its declaration"
+  },
+  {
+   "column": 66,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1147,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1153,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1153,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid PIN command: needs two arguments \"\n\t\t       \"(network id and pin)\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1158,
+   "message": "Variable 'cmd' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'cmd' before use, e.g., at its declaration"
+  },
+  {
+   "column": 66,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1179,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1185,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1185,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid OTP command: needs two arguments (network \"\n\t\t       \"id and password)\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1190,
+   "message": "Variable 'cmd' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'cmd' before use, e.g., at its declaration"
+  },
+  {
+   "column": 66,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1212,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1218,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1218,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid SIM command: needs two arguments \"\n\t\t       \"(network id and SIM operation response)\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1223,
+   "message": "Variable 'cmd' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'cmd' before use, e.g., at its declaration"
+  },
+  {
+   "column": 16,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1245,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1255,
+   "message": "Variable 'cmd' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'cmd' before use, e.g., at its declaration"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1278,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1284,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1284,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid PASSPHRASE command: needs two arguments \"\n\t\t       \"(network id and passphrase)\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1289,
+   "message": "Variable 'cmd' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'cmd' before use, e.g., at its declaration"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1314,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1314,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid BSSID command: needs two arguments (network \"\n\t\t       \"id and BSSID)\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1365,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 57,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1377,
+   "message": "'argv' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1386,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1386,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"set_network variables:\\n\"\n\t       \"  ssid (network name, SSID)\\n\"\n\t       \"  psk (WPA passphrase or pre-shared key)\\n\"\n\t       \"  key_mgmt (key management protocol)\\n\"\n\t       \"  identity (EAP identity)\\n\"\n\t       \"  password (EAP password)\\n\"\n\t       \"  ...\\n\"\n\t       \"\\n\"\n\t       \"Note: Values are entered in the same format as the \"\n\t       \"configuration file is using,\\n\"\n\t       \"i.e., strings values need to be inside double quotation \"\n\t       \"marks.\\n\"\n\t       \"For example: set_network 1 ssid \\\"network name\\\"\\n\"\n\t       \"\\n\"\n\t       \"Please see wpa_supplicant.conf documentation for full list \"\n\t       \"of\\navailable variables.\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1414,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1414,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid SET_NETWORK command: needs three arguments\\n\"\n\t\t       \"(network id, variable name, and value)\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1432,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1432,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid GET_NETWORK command: needs two arguments\\n\"\n\t\t       \"(network id and variable name)\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 20,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1441,
+   "message": "Array declaration 'network_fields[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 28,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1519,
+   "message": "'str' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 28,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1543,
+   "message": "'str' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1559,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1559,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid DUP_NETWORK command: needs three arguments\\n\"\n\t\t       \"(src netid, dest netid, and variable name)\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 28,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1570,
+   "message": "'str' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1594,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 71,
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1600,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  }
+ ]
+}

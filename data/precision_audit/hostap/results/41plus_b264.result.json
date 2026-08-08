@@ -1,0 +1,910 @@
+{
+ "labels": [
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 13,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "8.3-legacy FP: eapol_auth_sm.h/eapol_auth_sm_i.h share prefix, irrelevant on modern FS"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 48,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*entry) sizes pointed-to struct for bin_clear_free, not a decayed-array sizeof"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 52,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; pmksa always the caller's live cache struct"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 102,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; pmksa always valid cache struct"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 112,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_timeout_handler dispatch contract (void*,void*) is fixed-signature; can't add const"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 149,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL check pedantry; if(eapol==NULL) return; is fine idiomatic C"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 174,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "deref is inside if(entry->vlan_desc) guard immediately above; already checked"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 174,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "struct vlan_description has no flexible array member (fixed int tagged[32]); whole-struct assign is safe"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 183,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; hapd only forwarded to ap_sta_set_vlan, always valid caller struct"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 281,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eapol passed to pmksa_cache_from_eapol_data which itself NULL-checks before deref"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 281,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eapol passed to pmksa_cache_from_eapol_data which itself NULL-checks before deref"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 281,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eapol passed to pmksa_cache_from_eapol_data which itself NULL-checks before deref"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 297,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "entry returned is heap (os_zalloc) from pmksa_cache_auth_create_entry, not automatic storage"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 317,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; spa used only in fixed-size memcpy from internal callers"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 332,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*entry) does not evaluate operand; not a dereference of uninitialized entry"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 359,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "entry is heap-allocated via os_zalloc, not automatic storage"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 372,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; pmksa always valid cache struct from init"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 377,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL check pedantry on entry==NULL"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 400,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; pmkid is fixed PMKID_LEN array from internal caller"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 400,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; pmkid is fixed PMKID_LEN array from internal caller"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 400,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; pmkid is fixed PMKID_LEN array from internal caller"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 407,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*entry) not a dereference; entry assigned by os_zalloc on same line"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 434,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "deref guarded by if(entry->vlan_desc) directly above"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 434,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "struct vlan_description has no flexible array member; plain struct assignment is safe"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 442,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "entry is heap (os_zalloc), not automatic storage"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 455,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL check pedantry on pmksa==NULL"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 478,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; cache always valid, direct field store"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 491,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; pmksa always valid struct"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 492,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "pmksa is genuinely read-only in this accessor; low-value const opportunity"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 503,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "entry returned is a heap-persisted cache-list node, not automatic storage"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 509,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "entry returned is a heap-persisted cache-list node, not automatic storage"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 527,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; pmksa always valid struct"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 528,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "pmksa only read (list traversal) in pmksa_cache_get_okc; genuine low-value const opportunity"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 540,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "entry returned is a heap-persisted cache-list node, not automatic storage"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 555,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "entry returned is a heap-persisted cache-list node, not automatic storage"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 573,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*pmksa) not a dereference; pmksa assigned via os_zalloc on same line"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 579,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pmksa is heap-allocated via os_zalloc, not automatic storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 583,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "entry only read in das_attr_match; genuine low-value const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 584,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "attr only read in das_attr_match; genuine low-value const opportunity"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 628,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; pmksa always the module's own cache struct, not attacker-controlled"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 664,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "len only used in pointer-difference bound checks (buf+len-pos), no overflow-prone arithmetic"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 664,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "len only used in pointer-difference bound checks (buf+len-pos), no overflow-prone arithmetic"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 664,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "len only used in pointer-difference bound checks (buf+len-pos), no overflow-prone arithmetic"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 664,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "len only used in pointer-difference bound checks (buf+len-pos), no overflow-prone arithmetic"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 664,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "pmksa only read (list traversal) in pmksa_cache_auth_list; genuine low-value const opportunity"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 664,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic char *buf, size_t len companion pair, not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 665,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "int *index is a scalar out-param with no array/bound semantics at all"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 680,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "call is wpa_snprintf_hex(), which never returns a negative/error value; not sprintf"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 710,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "len only used in pointer-difference bound checks, no overflow-prone arithmetic"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 710,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "len only used in pointer-difference bound checks, no overflow-prone arithmetic"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 710,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "len only used in pointer-difference bound checks, no overflow-prone arithmetic"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 710,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "pmksa only read (for-loop traversal) in pmksa_cache_auth_list_mesh; low-value const opportunity"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 711,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic char *buf, size_t len companion pair"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 711,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf's underlying memory is written throughout via aliased pos=buf; const would break compile"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 737,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "call is wpa_snprintf_hex(), never returns a negative/error value"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/ap/pmksa_cache_auth.c",
+   "line": 745,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "call is wpa_snprintf_hex(), never returns a negative/error value"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 39,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "i used as shift count (tmp>>i) and loop counter (i++); routine parity-bit idiom, not a real readability hazard"
+  },
+  {
+   "rule": "FIO50-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 40,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "duplicate of the same misfire; 'tmp' is not a file stream"
+  },
+  {
+   "rule": "FIO50-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 40,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "duplicate of the same misfire; 'tmp' is not a file stream"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 44,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nettle_des_set_key declared in <nettle/des.h>, a system header sqc doesn't parse"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 45,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nettle_des_encrypt declared in <nettle/des.h>, unresolved system header"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 84,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wrapper API; mac always the caller's fixed digest buffer"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 84,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wrapper API; mac always the caller's fixed digest buffer"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 84,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only wrapper API; mac always the caller's fixed digest buffer"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 251,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ctx) not a dereference; ctx assigned via os_malloc on same line"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 255,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nettle_aes_set_encrypt_key declared in <nettle/aes.h>, unresolved system header"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 257,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx returned is heap (os_malloc), not automatic storage"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 264,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nettle_aes_encrypt declared in <nettle/aes.h>, unresolved system header"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 282,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ctx) not a dereference; ctx assigned via os_malloc on same line"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 286,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nettle_aes_set_decrypt_key declared in <nettle/aes.h>, unresolved system header"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 288,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx returned is heap (os_malloc), not automatic storage"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 295,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nettle_aes_decrypt declared in <nettle/aes.h>, unresolved system header"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 307,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; prime_len only used in subtraction guarded by pubkey_len<prime_len, no overflow path"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 333,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; privkey always caller's fixed-size key buffer"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 347,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mpz_init declared via <gmp.h>, transitively included by <nettle/bignum.h>, unresolved system header"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 347,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "mpz_init(pub) is the GMP initialization call for 'pub' itself; flagged as use-before-init at its own init site"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 348,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mpz_import declared via <gmp.h>, unresolved system header"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 349,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mpz_cmp_d declared via <gmp.h>, unresolved system header"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 357,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mpz_inits declared via <gmp.h>, unresolved system header"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 357,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "mpz_inits(p,q,tmp,NULL) is the GMP initialization call for p; flagged at its own init site"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 357,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "mpz_inits(p,q,tmp,NULL) is the GMP initialization call for q; flagged at its own init site"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 357,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "mpz_inits(p,q,tmp,NULL) is the GMP initialization call for tmp; flagged at its own init site"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 358,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mpz_import declared via <gmp.h>, unresolved system header"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 359,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mpz_import declared via <gmp.h>, unresolved system header"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 360,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mpz_powm declared via <gmp.h>, unresolved system header"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 361,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mpz_cmp_d declared via <gmp.h>, unresolved system header"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 362,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mpz_clears declared via <gmp.h>, unresolved system header"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 370,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mpz_clear declared via <gmp.h>, unresolved system header"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 375,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; modulus always caller's fixed prime buffer"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 375,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; modulus always caller's fixed prime buffer"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 384,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mpz_inits declared via <gmp.h>, unresolved system header"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 384,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "mpz_inits(...) is the GMP initialization call for bn_base; flagged at its own init site"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 384,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "mpz_inits(...) is the GMP initialization call for bn_exp; flagged at its own init site"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 384,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "mpz_inits(...) is the GMP initialization call for bn_modulus; flagged at its own init site"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 384,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "mpz_inits(...) is the GMP initialization call for bn_result; flagged at its own init site"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 385,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mpz_import declared via <gmp.h>, unresolved system header"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 386,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mpz_import declared via <gmp.h>, unresolved system header"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 387,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mpz_import declared via <gmp.h>, unresolved system header"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 389,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mpz_powm declared via <gmp.h>, unresolved system header"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 390,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mpz_sizeinbase declared via <gmp.h>, unresolved system header"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 394,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mpz_export declared via <gmp.h>, unresolved system header"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 398,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mpz_clears declared via <gmp.h>, unresolved system header"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 417,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ctx) not a dereference; ctx assigned via os_zalloc on same line"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 425,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nettle_arcfour_set_key declared in <nettle/arcfour.h>, unresolved system header"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 432,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx returned is heap (os_zalloc), not automatic storage"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 432,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conflates two distinct switch arms: only the unrelated default: branch frees ctx (and returns NULL there); this success-path return ctx never touches freed memory"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 436,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; crypt always caller's fixed ciphertext buffer"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 436,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; crypt always caller's fixed ciphertext buffer"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 441,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nettle_arcfour_crypt declared in <nettle/arcfour.h>, unresolved system header"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 451,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; crypt always caller's fixed buffer"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 456,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nettle_arcfour_crypt declared in <nettle/arcfour.h>, unresolved system header"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/crypto/crypto_nettle.c",
+   "line": 468,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ctx) sizes the pointed-to struct for bin_clear_free, not a decayed-array sizeof"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "src/ap/pmksa_cache_auth.c",
+  "src/crypto/crypto_nettle.c"
+ ],
+ "summary": {
+  "tp": 6,
+  "fp": 106,
+  "fn": 0
+ }
+}

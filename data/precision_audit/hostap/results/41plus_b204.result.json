@@ -1,0 +1,733 @@
+{
+ "labels": [
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/browser.c",
+   "line": 31,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/GObject signal-callback dispatch contract, param not caller-controllable (destroy signal)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/browser.c",
+   "line": 31,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/GObject signal-callback dispatch contract, param not caller-controllable (destroy signal)"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/browser.c",
+   "line": 35,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/WebKit system header unresolved (sqc doesn't parse it), matches DCL31-C system-header FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/browser.c",
+   "line": 39,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal helper, ctx never mutated, real (low-value) const opportunity"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/browser.c",
+   "line": 44,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/WebKit system header unresolved (sqc doesn't parse it), matches DCL31-C system-header FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/browser.c",
+   "line": 49,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/WebKit system header unresolved (sqc doesn't parse it), matches DCL31-C system-header FP class"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/utils/browser.c",
+   "line": 55,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ctx->title is unbounded webpage title text, snprintf return genuinely never checked"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/utils/browser.c",
+   "line": 55,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf and ctx->title/literal are distinct pointers, no aliasing exists on this line"
+  },
+  {
+   "rule": "STR03-C",
+   "file": "src/utils/browser.c",
+   "line": 55,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ctx->title unbounded, truncation of buf[100] is real (low severity: cosmetic window title)"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/browser.c",
+   "line": 57,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/WebKit system header unresolved (sqc doesn't parse it), matches DCL31-C system-header FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/browser.c",
+   "line": 66,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/WebKit system header unresolved (sqc doesn't parse it), matches DCL31-C system-header FP class"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/utils/browser.c",
+   "line": 67,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi(uri+6) on OSU trigger URL, no range/format validation, low real-world severity"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/utils/browser.c",
+   "line": 67,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "same atoi() call, no error detection per rule text"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/utils/browser.c",
+   "line": 69,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "quit initialized 0 before chain; no-final-else leaves the deliberate default"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/browser.c",
+   "line": 69,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/WebKit system header unresolved (sqc doesn't parse it), matches DCL31-C system-header FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/browser.c",
+   "line": 80,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/WebKit system header unresolved (sqc doesn't parse it), matches DCL31-C system-header FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/browser.c",
+   "line": 92,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/GObject signal-callback dispatch contract, param not caller-controllable (notify::estimated-load-progress)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/browser.c",
+   "line": 102,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/GObject signal-callback dispatch contract, param not caller-controllable (resource-load-started)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/browser.c",
+   "line": 103,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/GObject signal-callback dispatch contract, param not caller-controllable (resource-load-started)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/browser.c",
+   "line": 114,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/GObject signal-callback dispatch contract, param not caller-controllable (decide-policy)"
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "src/utils/browser.c",
+   "line": 121,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "break; exists at :132 inside the case's own {} block before next case label"
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "src/utils/browser.c",
+   "line": 134,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "break; exists at :147 inside the case's own {} block before next case label"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/browser.c",
+   "line": 157,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/GObject signal-callback dispatch contract, param not caller-controllable (mouse-target-changed)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/utils/browser.c",
+   "line": 169,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "uri initialized NULL before chain; deliberate default, matches MSC01-C guard-clause FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/browser.c",
+   "line": 183,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/GObject signal-callback dispatch contract, param not caller-controllable (notify::title)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/browser.c",
+   "line": 183,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/GObject signal-callback dispatch contract, param not caller-controllable (notify::title)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/browser.c",
+   "line": 197,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/GObject signal-callback dispatch contract, param not caller-controllable (notify::progress)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/browser.c",
+   "line": 207,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/GObject signal-callback dispatch contract, param not caller-controllable (notify::load-status)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/browser.c",
+   "line": 220,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/GObject signal-callback dispatch contract, param not caller-controllable (resource-request-starting)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/browser.c",
+   "line": 221,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/GObject signal-callback dispatch contract, param not caller-controllable (resource-request-starting)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/browser.c",
+   "line": 222,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/GObject signal-callback dispatch contract, param not caller-controllable (resource-request-starting)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/browser.c",
+   "line": 224,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/GObject signal-callback dispatch contract, param not caller-controllable (resource-request-starting)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "src/utils/browser.c",
+   "line": 231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GLib/GTK setter unresolved header; real API param is const char*, sqc guesses wrong (webkit_network_request_set_uri's uri param)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/browser.c",
+   "line": 238,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/GObject signal-callback dispatch contract, param not caller-controllable (mime-type-policy-decision-requested)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/browser.c",
+   "line": 238,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/GObject signal-callback dispatch contract, param not caller-controllable (mime-type-policy-decision-requested)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/browser.c",
+   "line": 240,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/GObject signal-callback dispatch contract, param not caller-controllable (mime-type-policy-decision-requested)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/browser.c",
+   "line": 253,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/GObject signal-callback dispatch contract, param not caller-controllable (download-requested)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/browser.c",
+   "line": 255,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/GObject signal-callback dispatch contract, param not caller-controllable (download-requested)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/browser.c",
+   "line": 264,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/GObject signal-callback dispatch contract, param not caller-controllable (hovering-over-link)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/browser.c",
+   "line": 279,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/GObject signal-callback dispatch contract, param not caller-controllable (title-changed)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/browser.c",
+   "line": 279,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/GObject signal-callback dispatch contract, param not caller-controllable (title-changed)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/browser.c",
+   "line": 292,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API: sole caller (osu_client.c:1607) always passes a validated argv element"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/utils/browser.c",
+   "line": 305,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "explicit ! test on gboolean TRUE/FALSE return; unambiguous 0/1 boolean contract"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/browser.c",
+   "line": 305,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/WebKit system header unresolved (sqc doesn't parse it), matches DCL31-C system-header FP class"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/utils/browser.c",
+   "line": 305,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NULL,NULL literal args misread as aliased pointers, no real aliasing"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "src/utils/browser.c",
+   "line": 310,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GLib/GTK setter unresolved header; real API param is const char*, sqc guesses wrong (g_object_set property name)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "src/utils/browser.c",
+   "line": 310,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GLib/GTK setter unresolved header; real API param is const char*, sqc guesses wrong (g_object_set ssl-ca-file value)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "src/utils/browser.c",
+   "line": 313,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GLib/GTK setter unresolved header; real API param is const char*, sqc guesses wrong (g_object_set ssl-strict property name)"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/browser.c",
+   "line": 316,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/WebKit system header unresolved (sqc doesn't parse it), matches DCL31-C system-header FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/utils/browser.c",
+   "line": 316,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK widget, ref-counted GObject destroyed via gtk_widget_destroy, not malloc/free (ctx.win, destroyed at :395)"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/browser.c",
+   "line": 317,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/WebKit system header unresolved (sqc doesn't parse it), matches DCL31-C system-header FP class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "src/utils/browser.c",
+   "line": 317,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GLib/GTK setter unresolved header; real API param is const char*, sqc guesses wrong (gtk_window_set_role role param)"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/browser.c",
+   "line": 318,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/WebKit system header unresolved (sqc doesn't parse it), matches DCL31-C system-header FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/browser.c",
+   "line": 320,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/WebKit system header unresolved (sqc doesn't parse it), matches DCL31-C system-header FP class"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/utils/browser.c",
+   "line": 320,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NULL,NULL literal args misread as aliased pointers, no real aliasing"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/utils/browser.c",
+   "line": 320,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK widget, ref-counted GObject destroyed via gtk_widget_destroy, not malloc/free (scroll, destroyed as child of ctx.win via container hierarchy)"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/browser.c",
+   "line": 321,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/WebKit system header unresolved (sqc doesn't parse it), matches DCL31-C system-header FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/browser.c",
+   "line": 324,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/WebKit system header unresolved (sqc doesn't parse it), matches DCL31-C system-header FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/utils/browser.c",
+   "line": 324,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "G_OBJECT/G_CALLBACK/GTK_CONTAINER/GTK_WIDGET are pure cast macros, no side effects"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/browser.c",
+   "line": 327,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/WebKit system header unresolved (sqc doesn't parse it), matches DCL31-C system-header FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/utils/browser.c",
+   "line": 330,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "G_OBJECT/G_CALLBACK/GTK_CONTAINER/GTK_WIDGET are pure cast macros, no side effects"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/utils/browser.c",
+   "line": 333,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "G_OBJECT/G_CALLBACK/GTK_CONTAINER/GTK_WIDGET are pure cast macros, no side effects"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/utils/browser.c",
+   "line": 335,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "G_OBJECT/G_CALLBACK/GTK_CONTAINER/GTK_WIDGET are pure cast macros, no side effects"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/utils/browser.c",
+   "line": 337,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "G_OBJECT/G_CALLBACK/GTK_CONTAINER/GTK_WIDGET are pure cast macros, no side effects"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/utils/browser.c",
+   "line": 339,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "G_OBJECT/G_CALLBACK/GTK_CONTAINER/GTK_WIDGET are pure cast macros, no side effects"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/utils/browser.c",
+   "line": 342,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "G_OBJECT/G_CALLBACK/GTK_CONTAINER/GTK_WIDGET are pure cast macros, no side effects"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/utils/browser.c",
+   "line": 344,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "G_OBJECT/G_CALLBACK/GTK_CONTAINER/GTK_WIDGET are pure cast macros, no side effects"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/utils/browser.c",
+   "line": 346,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "G_OBJECT/G_CALLBACK/GTK_CONTAINER/GTK_WIDGET are pure cast macros, no side effects"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/utils/browser.c",
+   "line": 348,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "G_OBJECT/G_CALLBACK/GTK_CONTAINER/GTK_WIDGET are pure cast macros, no side effects"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/utils/browser.c",
+   "line": 350,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "G_OBJECT/G_CALLBACK/GTK_CONTAINER/GTK_WIDGET are pure cast macros, no side effects"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/utils/browser.c",
+   "line": 352,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "G_OBJECT/G_CALLBACK/GTK_CONTAINER/GTK_WIDGET are pure cast macros, no side effects"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/utils/browser.c",
+   "line": 354,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "G_OBJECT/G_CALLBACK/GTK_CONTAINER/GTK_WIDGET are pure cast macros, no side effects"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/browser.c",
+   "line": 358,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/WebKit system header unresolved (sqc doesn't parse it), matches DCL31-C system-header FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/utils/browser.c",
+   "line": 358,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "G_OBJECT/G_CALLBACK/GTK_CONTAINER/GTK_WIDGET are pure cast macros, no side effects"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/browser.c",
+   "line": 359,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/WebKit system header unresolved (sqc doesn't parse it), matches DCL31-C system-header FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/utils/browser.c",
+   "line": 359,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "G_OBJECT/G_CALLBACK/GTK_CONTAINER/GTK_WIDGET are pure cast macros, no side effects"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/browser.c",
+   "line": 361,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/WebKit system header unresolved (sqc doesn't parse it), matches DCL31-C system-header FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/browser.c",
+   "line": 362,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/WebKit system header unresolved (sqc doesn't parse it), matches DCL31-C system-header FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/browser.c",
+   "line": 364,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/WebKit system header unresolved (sqc doesn't parse it), matches DCL31-C system-header FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/browser.c",
+   "line": 365,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/WebKit system header unresolved (sqc doesn't parse it), matches DCL31-C system-header FP class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "src/utils/browser.c",
+   "line": 365,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GLib/GTK setter unresolved header; real API param is const char*, sqc guesses wrong (g_object_set user-agent value)"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/browser.c",
+   "line": 369,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/WebKit system header unresolved (sqc doesn't parse it), matches DCL31-C system-header FP class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "src/utils/browser.c",
+   "line": 369,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GLib/GTK setter unresolved header; real API param is const char*, sqc guesses wrong (g_object_set auto-load-images property name)"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/browser.c",
+   "line": 391,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/WebKit system header unresolved (sqc doesn't parse it), matches DCL31-C system-header FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/browser.c",
+   "line": 394,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/WebKit system header unresolved (sqc doesn't parse it), matches DCL31-C system-header FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/browser.c",
+   "line": 395,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/WebKit system header unresolved (sqc doesn't parse it), matches DCL31-C system-header FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/browser.c",
+   "line": 396,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/WebKit system header unresolved (sqc doesn't parse it), matches DCL31-C system-header FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/browser.c",
+   "line": 397,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK/WebKit system header unresolved (sqc doesn't parse it), matches DCL31-C system-header FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/utils/browser.c",
+   "line": 401,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK widget, ref-counted GObject destroyed via gtk_widget_destroy, not malloc/free (scroll destroyed via gtk_widget_destroy(ctx.win) at :395)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/utils/browser.c",
+   "line": 401,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GTK widget, ref-counted GObject destroyed via gtk_widget_destroy, not malloc/free (ctx.win destroyed at :395 before return at :401)"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "src/utils/browser.c"
+ ],
+ "summary": {
+  "tp": 5,
+  "fp": 85,
+  "fn": 0
+ }
+}

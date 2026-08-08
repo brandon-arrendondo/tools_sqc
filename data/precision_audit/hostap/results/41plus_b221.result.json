@@ -1,0 +1,667 @@
+{
+  "labels": [
+    {
+      "rule": "PRE08-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 15,
+      "verdict": "TP",
+      "confidence": "high",
+      "reason": "Header 8-char collision is literally true per rule text; dbus_new* family low-value-TP convention (41plus_b27)."
+    },
+    {
+      "rule": "PRE08-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 17,
+      "verdict": "TP",
+      "confidence": "high",
+      "reason": "Header 8-char collision is literally true per rule text; dbus_new* family low-value-TP convention (41plus_b27)."
+    },
+    {
+      "rule": "PRE08-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 17,
+      "verdict": "TP",
+      "confidence": "high",
+      "reason": "Header 8-char collision is literally true per rule text; dbus_new* family low-value-TP convention (41plus_b27)."
+    },
+    {
+      "rule": "PRE08-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 18,
+      "verdict": "TP",
+      "confidence": "high",
+      "reason": "Header 8-char collision is literally true per rule text; dbus_new* family low-value-TP convention (41plus_b27)."
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 58,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "libdbus function declared in <dbus/dbus.h>, transitively included via dbus_new_helpers.h:13; unresolved system header FP class."
+    },
+    {
+      "rule": "MSC07-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 64,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "goto-label-blindness: label reached via earlier goto, sqc CFG misses the jump target."
+    },
+    {
+      "rule": "STR30-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 65,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "dbus_set_error_const message param is const char* in dbus-errors.h; cannot be modified, rule-logic bug."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 83,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "Plain internal helper/exported API, param only read, not bound to any callback typedef/vtable; real if low-severity."
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 89,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "libdbus function declared in <dbus/dbus.h>, transitively included via dbus_new_helpers.h:13; unresolved system header FP class."
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 108,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Local var points to heap allocation (dbus_message_new_method_return refcounted obj / os_strdup), not automatic storage."
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 116,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Local var points to heap allocation (dbus_message_new_method_return refcounted obj / os_strdup), not automatic storage."
+    },
+    {
+      "rule": "ENV01-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 125,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "No getenv() call anywhere in this function; wholesale zero-getenv misfire."
+    },
+    {
+      "rule": "STR34-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 131,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Plain char-literal/pointer assignment (*pos='\\0', *item=NULL) or char* pointer arithmetic mistaken for signed-char widening; no actual conversion occurs."
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 135,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "registered_sig used only in pointer arithmetic (address computation), not a read of its uninitialized contents."
+    },
+    {
+      "rule": "STR34-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 135,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Plain char-literal/pointer assignment (*pos='\\0', *item=NULL) or char* pointer arithmetic mistaken for signed-char widening; no actual conversion occurs."
+    },
+    {
+      "rule": "EXP20-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 144,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "!os_strncmp(...) is the standard, unambiguous 0-means-match idiom used throughout hostap; not unclear."
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 177,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "libdbus function declared in <dbus/dbus.h>, transitively included via dbus_new_helpers.h:13; unresolved system header FP class."
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 189,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Local var points to heap allocation (dbus_message_new_method_return refcounted obj / os_strdup), not automatic storage."
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 211,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "libdbus function declared in <dbus/dbus.h>, transitively included via dbus_new_helpers.h:13; unresolved system header FP class."
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 213,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "libdbus function declared in <dbus/dbus.h>, transitively included via dbus_new_helpers.h:13; unresolved system header FP class."
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 214,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "libdbus function declared in <dbus/dbus.h>, transitively included via dbus_new_helpers.h:13; unresolved system header FP class."
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 220,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "libdbus function declared in <dbus/dbus.h>, transitively included via dbus_new_helpers.h:13; unresolved system header FP class."
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 228,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Local var points to heap allocation (dbus_message_new_method_return refcounted obj / os_strdup), not automatic storage."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 235,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "Plain internal helper/exported API, param only read, not bound to any callback typedef/vtable; real if low-severity."
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 245,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "libdbus function declared in <dbus/dbus.h>, transitively included via dbus_new_helpers.h:13; unresolved system header FP class."
+    },
+    {
+      "rule": "EXP20-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 255,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "!os_strncmp(...) is the standard, unambiguous 0-means-match idiom used throughout hostap; not unclear."
+    },
+    {
+      "rule": "EXP20-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 257,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "!os_strncmp(...) is the standard, unambiguous 0-means-match idiom used throughout hostap; not unclear."
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 291,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "libdbus function declared in <dbus/dbus.h>, transitively included via dbus_new_helpers.h:13; unresolved system header FP class."
+    },
+    {
+      "rule": "EXP20-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 293,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "!os_strncmp(...) is the standard, unambiguous 0-means-match idiom used throughout hostap; not unclear."
+    },
+    {
+      "rule": "EXP20-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 295,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "!os_strncmp(...) is the standard, unambiguous 0-means-match idiom used throughout hostap; not unclear."
+    },
+    {
+      "rule": "EXP20-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 297,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "!os_strncmp(...) is the standard, unambiguous 0-means-match idiom used throughout hostap; not unclear."
+    },
+    {
+      "rule": "EXP20-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 308,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "!os_strncmp(...) is the standard, unambiguous 0-means-match idiom used throughout hostap; not unclear."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 323,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "Plain internal helper/exported API, param only read, not bound to any callback typedef/vtable; real if low-severity."
+    },
+    {
+      "rule": "EXP20-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 335,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "!os_strncmp(...) is the standard, unambiguous 0-means-match idiom used throughout hostap; not unclear."
+    },
+    {
+      "rule": "EXP20-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 337,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "!os_strncmp(...) is the standard, unambiguous 0-means-match idiom used throughout hostap; not unclear."
+    },
+    {
+      "rule": "EXP20-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 396,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "!os_strncmp(...) is the standard, unambiguous 0-means-match idiom used throughout hostap; not unclear."
+    },
+    {
+      "rule": "EXP20-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 398,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "!os_strncmp(...) is the standard, unambiguous 0-means-match idiom used throughout hostap; not unclear."
+    },
+    {
+      "rule": "EXP20-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 407,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "!os_strncmp(...) is the standard, unambiguous 0-means-match idiom used throughout hostap; not unclear."
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 417,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "libdbus function declared in <dbus/dbus.h>, transitively included via dbus_new_helpers.h:13; unresolved system header FP class."
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 419,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "libdbus function declared in <dbus/dbus.h>, transitively included via dbus_new_helpers.h:13; unresolved system header FP class."
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 420,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "libdbus function declared in <dbus/dbus.h>, transitively included via dbus_new_helpers.h:13; unresolved system header FP class."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 453,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "free_dbus_object_desc_cb connection param pinned by DBusObjectPathVTable unregister-fn typedef; dispatch-contract FP."
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 471,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Internal-only API; sole/known call site(s) always pass a live, non-NULL value (verified by reading callers)."
+    },
+    {
+      "rule": "CON43-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 494,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "switch operand is an int return value (dbus_bus_request_name), not a pointer dereference; also single-threaded eloop model, no double-fetch possible."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 531,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "Plain internal helper/exported API, param only read, not bound to any callback typedef/vtable; real if low-severity."
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 543,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "Stylistic ad-hoc NULL-check pedantry on a standard guard clause; not a real defect."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 582,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "Plain internal helper/exported API, param only read, not bound to any callback typedef/vtable; real if low-severity."
+    },
+    {
+      "rule": "ARR00-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 613,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "dsc is initialized in the for-loop's own init clause (dsc = obj_dsc->properties); not actually uninitialized."
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 648,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "libdbus function declared in <dbus/dbus.h>, transitively included via dbus_new_helpers.h:13; unresolved system header FP class."
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 677,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "libdbus function declared in <dbus/dbus.h>, transitively included via dbus_new_helpers.h:13; unresolved system header FP class."
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 680,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "libdbus function declared in <dbus/dbus.h>, transitively included via dbus_new_helpers.h:13; unresolved system header FP class."
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 684,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "libdbus function declared in <dbus/dbus.h>, transitively included via dbus_new_helpers.h:13; unresolved system header FP class."
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 687,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "libdbus function declared in <dbus/dbus.h>, transitively included via dbus_new_helpers.h:13; unresolved system header FP class."
+    },
+    {
+      "rule": "MSC07-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 692,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "goto-label-blindness: label reached via earlier goto, sqc CFG misses the jump target."
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 715,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "libdbus function declared in <dbus/dbus.h>, transitively included via dbus_new_helpers.h:13; unresolved system header FP class."
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 718,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "libdbus function declared in <dbus/dbus.h>, transitively included via dbus_new_helpers.h:13; unresolved system header FP class."
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 721,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "libdbus function declared in <dbus/dbus.h>, transitively included via dbus_new_helpers.h:13; unresolved system header FP class."
+    },
+    {
+      "rule": "MSC07-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 726,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "goto-label-blindness: label reached via earlier goto, sqc CFG misses the jump target."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 755,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "flush_object_timeout_handler is an eloop_register_timeout callback; timeout_ctx pinned by eloop_timeout_handler typedef, dispatch-contract FP."
+    },
+    {
+      "rule": "MEM05-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 767,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "recursive_flush_changed_properties recurses over the locally self-registered D-Bus object path tree; depth bounded by app-defined hierarchy, not excessive/attacker-controlled."
+    },
+    {
+      "rule": "MSC04-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 767,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "Same bounded self-registered object-tree recursion as the MEM05-C finding on this line; not unbounded."
+    },
+    {
+      "rule": "ENV01-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 771,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "No getenv() call anywhere in this function; wholesale zero-getenv misfire."
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 779,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "objects guarded by the immediately preceding `if (!dbus_connection_list_registered(...)) goto out;` check; libdbus guarantees non-NULL array on success."
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 786,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "libdbus function declared in <dbus/dbus.h>, transitively included via dbus_new_helpers.h:13; unresolved system header FP class."
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 797,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Internal-only API; sole/known call site(s) always pass a live, non-NULL value (verified by reading callers)."
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 820,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Internal-only API; sole/known call site(s) always pass a live, non-NULL value (verified by reading callers)."
+    },
+    {
+      "rule": "ARR00-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 832,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "dsc is initialized in the for-loop's own init clause (dsc = obj_dsc->properties); not actually uninitialized."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 859,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "Plain internal helper/exported API, param only read, not bound to any callback typedef/vtable; real if low-severity."
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 867,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "Stylistic ad-hoc NULL-check pedantry on a standard guard clause; not a real defect."
+    },
+    {
+      "rule": "ARR00-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 879,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "dsc is initialized in the for-loop's own init clause (dsc = obj_dsc->properties); not actually uninitialized."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 915,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "Plain internal helper/exported API, param only read, not bound to any callback typedef/vtable; real if low-severity."
+    },
+    {
+      "rule": "STR34-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 981,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Plain char-literal/pointer assignment (*pos='\\0', *item=NULL) or char* pointer arithmetic mistaken for signed-char widening; no actual conversion occurs."
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 999,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Local var points to heap allocation (dbus_message_new_method_return refcounted obj / os_strdup), not automatic storage."
+    },
+    {
+      "rule": "STR34-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 1002,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Plain char-literal/pointer assignment (*pos='\\0', *item=NULL) or char* pointer arithmetic mistaken for signed-char widening; no actual conversion occurs."
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 1006,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Local var points to heap allocation (dbus_message_new_method_return refcounted obj / os_strdup), not automatic storage."
+    },
+    {
+      "rule": "STR34-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 1009,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Plain char-literal/pointer assignment (*pos='\\0', *item=NULL) or char* pointer arithmetic mistaken for signed-char widening; no actual conversion occurs."
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 1010,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Local var points to heap allocation (dbus_message_new_method_return refcounted obj / os_strdup), not automatic storage."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 1027,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "Plain internal helper/exported API, param only read, not bound to any callback typedef/vtable; real if low-severity."
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 1072,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "Plain internal helper/exported API, param only read, not bound to any callback typedef/vtable; real if low-severity."
+    },
+    {
+      "rule": "FLP03-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 1082,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "current_tx_rate is `unsigned long` (driver.h:2631); `/ 1000` is integer division, not floating point at all."
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 1198,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "libdbus function declared in <dbus/dbus.h>, transitively included via dbus_new_helpers.h:13; unresolved system header FP class."
+    }
+  ],
+  "fns": [
+    {
+      "file": "wpa_supplicant/dbus/dbus_new_helpers.c",
+      "line": 177,
+      "rule": "EXP34-C",
+      "desc": "properties_get(): reply = dbus_message_new_method_return(message) is never NULL-checked before dbus_message_iter_init_append(reply, &iter) dereferences it on the next line (and again via dbus_message_unref(reply) if the getter fails) -- an OOM/allocation-failure NULL deref. Sibling get_all_properties() (line 89-91) correctly checks and returns wpas_dbus_error_no_memory(message) instead; properties_get lacks the equivalent guard.",
+      "upstream_present": "unknown"
+    }
+  ],
+  "files_clean_for_fn": [],
+  "summary": {
+    "tp": 13,
+    "fp": 68,
+    "fn": 1
+  }
+}

@@ -1,0 +1,883 @@
+{
+ "labels": [
+  {
+   "rule": "PRE08-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 24,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE08-C wps_upnp.h/wps_upnp_i.h 8-char legacy-fs FP, established categorical pattern"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 42,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "end1=0 init never read before line51 unconditional overwrite; genuine dead store, low severity"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 43,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "end2=0 init never read before line51 unconditional overwrite; genuine dead store, low severity"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 45,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "*s1 char deref assigned to int c1 w/o cast; feeds isalpha/isupper, real sign-extension risk"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 45,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Same c1=*s1++ char->int widening w/o cast; feeds ctype calls, low severity"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 46,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "*s2 char deref assigned to int c2 w/o cast; feeds isalpha/isupper"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 46,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Same c2=*s2++ char->int widening w/o cast; feeds ctype calls"
+  },
+  {
+   "rule": "STR37-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 47,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "isalpha(c1) missing unsigned char cast; established ctype-cast-missing genuine low-sev TP"
+  },
+  {
+   "rule": "STR37-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 47,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "isupper(c1) missing unsigned char cast, same ctype disposition"
+  },
+  {
+   "rule": "STR37-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 48,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "tolower(c1) missing unsigned char cast, same ctype disposition"
+  },
+  {
+   "rule": "STR37-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 49,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "isalpha(c2) missing unsigned char cast"
+  },
+  {
+   "rule": "STR37-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 49,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "isupper(c2) missing unsigned char cast"
+  },
+  {
+   "rule": "STR37-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 50,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "tolower(c2) missing unsigned char cast"
+  },
+  {
+   "rule": "STR37-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 51,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "isalnum(c1) missing unsigned char cast"
+  },
+  {
+   "rule": "STR37-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 52,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "isalnum(c2) missing unsigned char cast"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 65,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "token_length's 'c' never modified after init in loop body; genuine low-value DCL00-C TP"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 65,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "*s char deref converted to int c w/o cast; c feeds isalnum() at line66"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 65,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "*s char deref assigned to int c w/o cast, same construct"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 65,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Flags 's' itself as 'signed/plain char' but s is a const char* pointer, not a char; category error (established wrong-type-claim pattern)"
+  },
+  {
+   "rule": "STR37-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 66,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "isalnum(c) missing unsigned char cast"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 82,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "word_separation_length's 'c' never modified after init; genuine low-value DCL00-C TP"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 82,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "*s char deref converted to int c w/o cast"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 82,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "*s char deref assigned to int c w/o cast"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 82,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Flags pointer 's' as signed/plain char; same category error as line65"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 121,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "next_advertisement's 'a' only ever read (a->type/a->state), never written; genuine low-value DCL13-C TP, not a callback/vtable signature"
+  },
+  {
+   "rule": "STR05-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 124,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "char *NTString = \"\" (and later \"NT\"/\"ST\") assigns string literals without const; genuine STR05-C"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 209,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg is a local pointer VARIABLE holding wpabuf_alloc() heap memory, not automatic-storage object; established DCL30-C local-var-vs-storage FP"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 246,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head(msg)/wpabuf_len(msg) sibling args are pure accessors, no real unsequenced side effects; established EXP30-C FP"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 249,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() non-thread-safe misfire; file has zero pthread usage"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 249,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() shared-static-storage misfire; no pthread anywhere in file"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 257,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_data param of advertisement_state_machine_handler matches fixed eloop_timeout_handler dispatch contract"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 291,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head(msg)/wpabuf_len(msg) pure-accessor sibling args, no real unsequenced side effects"
+  },
+  {
+   "rule": "INT18-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 291,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sendto() returns signed ssize_t; comparing == -1 is a completely ordinary signed comparison, not unsigned-vs-negative-literal; category error"
+  },
+  {
+   "rule": "ERR32-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 294,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "advertisement_state_machine_handler is an eloop timeout callback, not a signal()/sigaction() handler; established ERR32-C wholesale misfire"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 294,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread misfire"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 294,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread misfire"
+  },
+  {
+   "rule": "ERR32-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 294,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Not a signal handler; established ERR32-C misfire"
+  },
+  {
+   "rule": "ERR32-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 294,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Not a signal handler; established ERR32-C misfire"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 312,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "UPNP_CACHE_SEC macro used only with '/' (arithmetic); the >>16 shifts a derived product expression, not UPNP_CACHE_SEC itself; scope/attribution error"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 312,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'r' multiplied then part of a >>16 applied to the product, not r alone; idiomatic fixed-point randomization scaling, not a real bitwise/arithmetic mix hazard"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 313,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "r initialized via os_get_random(&r,...) or the else-branch r=32768 on both paths before use; tool blind to by-reference init"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 351,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_random is a function call, not a variable; category error misattributing bitwise+arithmetic mixing to the function name"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 370,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msearchreply_state_machine_stop only called internally with always-valid non-NULL 'a'; established API00-C internal-only-API FP"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 397,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "inet_ntoa(a->client.sin_addr)/ntohs(...) sibling log args, pure accessors, no real side effects"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 398,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "inet_ntoa() no-pthread misfire; file has zero pthread usage"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 408,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head(msg)/wpabuf_len(msg) sibling accessor args"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 410,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "errno/strerror(errno)/inet_ntoa/ntohs are log args with no overlapping-object writes; no real unsequenced side effect"
+  },
+  {
+   "rule": "ERR32-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 412,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Not a signal()/sigaction() handler; established ERR32-C misfire"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 412,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread misfire"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 412,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread misfire"
+  },
+  {
+   "rule": "ERR32-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 412,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Not a signal handler; established ERR32-C misfire"
+  },
+  {
+   "rule": "ERR32-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 412,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Not a signal handler; established ERR32-C misfire"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 413,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "inet_ntoa() no-pthread misfire"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 465,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*a) in os_zalloc(sizeof(*a)) is a non-evaluated sizeof context, not a real dereference; established EXP33-C FP"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 470,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*client) is the correct idiom for copying a fixed-size struct via a pointer param; established ARR01-C FP"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 472,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "mx is genuinely a plain signed int shifted via >>8 inside a product; literal rule match per established 'genuinely signed operand' INT13-C TP class, low severity"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 472,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_random is a function call, not a variable; category error"
+  },
+  {
+   "rule": "INT10-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 474,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "next_timeout_msec's value is always non-negative by construction (mx caller-validated >=0/<=120, os_random()&0xFF in [0,255]); cross-function proven-nonneg, established INT10-C FP class"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 485,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label reached via goto fail at line479; established MSC07-C goto-target-label-after-return blindness"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 529,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data is const char*, not an integer; INT32-C category error misclassifying pointer arithmetic as signed-int overflow"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 532,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data is the function's own non-NULL parameter, only ever advanced by bounded offsets into the same NUL-terminated buffer; can never become NULL"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 532,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer arithmetic on const char* misclassified as signed-int overflow (loop increment clause)"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 533,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "\"host\" is the SSDP HOST: header keyword being matched, not a secret/credential; MSC41-C misfire"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 562,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer arithmetic misclassified as signed-int overflow"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 563,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer arithmetic misclassified as signed-int overflow"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 566,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data++ on a const char* misclassified as signed-int increment overflow"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 567,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer arithmetic misclassified as signed-int overflow"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 577,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "uuid_string is filled by uuid_bin2str() before the str_starts() read on the only reachable path; tool blind to the write-through-pointer init"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 585,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer arithmetic misclassified as signed-int overflow"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 611,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "\"man\" is the SSDP MAN: header keyword being matched, not a secret; MSC41-C misfire"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 612,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer arithmetic misclassified as signed-int overflow"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 613,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer arithmetic misclassified as signed-int overflow"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 616,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data++ misclassified as signed-int increment overflow"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 617,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer arithmetic misclassified as signed-int overflow"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 625,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Trailing 'ignore anything else' comment documents the deliberate no-final-else default; established MSC01-C pedantry FP"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 626,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer arithmetic misclassified as signed-int overflow"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 627,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer arithmetic misclassified as signed-int overflow"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 630,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data++ misclassified as signed-int increment overflow"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 631,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer arithmetic misclassified as signed-int overflow"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 632,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atol(data) on attacker-controlled MX field has no error detection; downstream mx<0/mx>120 checks don't reject non-numeric input parsed as 0"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 632,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Same atol() gap; malformed MX value silently becomes mx=0 (a valid value), unlike the established post-atoi sentinel-reject FP precedent"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 653,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bad: label reached via multiple goto bad; statements earlier in the function; established MSC07-C blindness"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 685,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_ctx param of ssdp_listener_handler matches fixed eloop_sock_handler dispatch contract"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 691,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "File has zero getenv() calls anywhere; established ENV01-C wholesale misfire"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 710,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*pos = '\\0' is plain char-to-char assignment, no widening; established STR34-C FP"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 711,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "inet_ntoa(addr.sin_addr)/ntohs(addr.sin_port) sibling log args, pure accessors"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 712,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "inet_ntoa() no-pthread misfire"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 712,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "addr is filled by recvfrom(...,&addr,&addr_len) before this use on the only reachable path (nread<=0 returns first)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 714,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*pos = '\\n' plain char-to-char restore, no widening"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 718,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "buf[strlen(\"M-SEARCH\")] plain char passed to isgraph() without cast; established ctype-cast-missing genuine low-sev TP"
+  },
+  {
+   "rule": "STR37-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 718,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Same isgraph() missing unsigned char cast"
+  },
+  {
+   "rule": "POS02-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 745,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bind() without privilege-drop; established POS02-C codebase-wide FP (no setuid/setgid pattern used anywhere in this codebase)"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 758,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label reached via goto fail; established MSC07-C blindness"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 782,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label reached via goto fail; established MSC07-C blindness"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 801,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "add_ssdp_network's #ifdef __linux__ / #else both branches return; established MSC37-C preprocessor-branch-blind FP"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 817,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "net_if is genuinely const char*; rt.rt_dev is non-const char*; real cast-away-const, established genuine-TP disposition for this shape"
+  },
+  {
+   "rule": "DCL39-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 827,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "rt is os_memset-zeroed at line812 before any field write; no padding bytes leak; established DCL39-C FP"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 832,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "errno==EEXIST is the intentional silently-ignored default (route already exists); established MSC01-C pedantry FP"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 834,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread misfire"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 834,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread misfire"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 872,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread misfire"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 872,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread misfire"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 889,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread misfire"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 889,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread misfire"
+  },
+  {
+   "rule": "FIO24-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 890,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "close(sd) at 873/890/897 are 3 mutually exclusive setsockopt-failure branches, each returns -1 immediately after its own close; no runtime double-close; established FIO24-C FP"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 896,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread misfire"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 896,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread misfire"
+  },
+  {
+   "rule": "FIO24-C",
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 897,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same mutually-exclusive-branch reasoning as line890; no runtime double-close"
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/wps/wps_upnp_ssdp.c",
+   "line": 774,
+   "rule": "ERR33-C",
+   "desc": "ssdp_listener_start() assigns sm->ssdp_sd = ssdp_listener_open() and never checks for -1 before calling eloop_register_sock(sm->ssdp_sd, ...); eloop_register_sock() does assert(sock >= 0), so a socket()/bind()/setsockopt() failure inside ssdp_listener_open() (e.g. fd exhaustion, port in use, permission denied) reaches a reachable assertion failure (abort/DoS) instead of the intended goto-fail cleanup path.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 29,
+  "fp": 79,
+  "fn": 1
+ }
+}

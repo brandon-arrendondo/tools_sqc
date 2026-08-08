@@ -1,0 +1,1213 @@
+{
+ "labels": [
+  {
+   "rule": "MEM31-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "vendor_ext freed by matching loop in hostapd_free_wps + rollback loop in hostapd_wps_set_vendor_ext; not actually leaked"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 15,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "PRE08-C header-family low-value convention (ieee802_11_defs.h/common.h), technically true but low real risk"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 17,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "PRE08-C header-family (eapol_auth_sm.h/_i.h), same convention"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 39,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ie/ie_len paired idiom - established API05-C categorical FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 54,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps_for_each matches hostapd.h for_each_interface callback typedef int(*cb)(struct hostapd_iface*,void*); dispatch contract"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 54,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same dispatch contract as iface param"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 59,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic misfire on plain NULL check - established FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 96,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "psk/psk_len paired idiom - API05-C categorical FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 96,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd_wps_new_psk_cb matches wps.h new_psk_cb callback typedef; dispatch contract"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 109,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR is a pure read macro; only one real call present, not multiple side-effecting calls"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 114,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'Per-device PSK' is a hexdump label string, not embedded secret data - MSC41-C hexdump-title FP"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 123,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*p) never evaluates its operand - not a dereference, established FP idiom"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 141,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hex[PMK_LEN*2+1] is compile-time-constant sized (PMK_LEN=32), not a VLA"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 144,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fopen() return IS checked at the very next line (if (!f))"
+  },
+  {
+   "rule": "WIN03-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 144,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "WIN03-C literal fopen-N-flag gap; Windows-specific, unconfirmed real risk (primarily POSIX daemon)"
+  },
+  {
+   "rule": "DCL11-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 152,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MACSTR/MAC2STR macro expansion not counted by rule; actual specifiers==args (7==7) once expanded"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 152,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same macro-blindness root cause as DCL11-C at same line"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 153,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "fclose(f) return genuinely ignored"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 153,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "fclose(f) return genuinely ignored (duplicate rule of same gap)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 174,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd_wps_pin_needed_cb matches wps.h pin_needed_cb callback typedef; dispatch contract"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 184,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR pure macro + one real call (wps_dev_type_bin2str); not multiple side-effecting calls"
+  },
+  {
+   "rule": "WIN03-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 197,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "WIN03-C literal fopen-N-flag gap"
+  },
+  {
+   "rule": "DCL11-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 201,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macro-blindness: MACSTR(6)+MAC2STR(6) expansion makes specifiers==args (14==14)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 201,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR pure macro + one real call; same EXP30 reasoning as #20"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 201,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same macro-blindness as DCL11-C at same line"
+  },
+  {
+   "rule": "INT00-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 201,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_time_t is typedef'd to 'long' (utils/os.h:12); %ld is exactly correct, no assumption violated"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 201,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no #ifdef/#endif token anywhere in this fprintf call; misfire mistaking macro invocation for a directive"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 201,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same misfire as above - no actual preprocessor directive present"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 208,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "fclose(f) return genuinely ignored"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 208,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "fclose(f) return genuinely ignored (duplicate rule)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 220,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps_stop_registrar matches hostapd_wps_for_each callback typedef int(*func)(struct hostapd_data*,void*)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 220,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same dispatch contract as hapd param"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 230,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dev_pw/dev_pw_len paired idiom - API05-C categorical FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 252,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd_wps_reg_success_cb matches wps.h reg_success_cb callback typedef"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 264,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic misfire - established FP"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 266,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR pure macro, single real call (wpa_msg); not unsequenced side effects"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 275,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd_wps_enrollee_seen_cb matches wps.h enrollee_seen_cb callback typedef"
+  },
+  {
+   "rule": "FLP30-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 283,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'wpa_psk' is `const struct hostapd_wpa_psk *`, a pointer - not floating point at all; clear misfire"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 299,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dev_psk points into hapd->conf->ssid.wpa_psk list (heap/config-owned), not local automatic storage - DCL30 local-var-vs-storage confusion"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 301,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "any_psk same reasoning - points into heap-owned wpa_psk list"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 313,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps_reload_config matches eloop_timeout_handler typedef void(*)(void*,void*); dispatch contract"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 326,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; hapd always valid from eapol state-machine callers"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 326,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hapd only read (hapd->iface); genuine low-value DCL13 on plain exported helper, not a dispatch callback"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 334,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_deplete_timeout is documented to return exactly 1/0/-1 (eloop.h:232); ==1 is the correct check per its own contract"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 340,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hapd_new_ap_event reads hapd->msg_ctx only; plain static helper, not a dispatch callback"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 354,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "hapd only used to derive bss=hapd->conf; hapd itself never reassigned/written, genuinely could be const"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 369,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "different struct fields of cred (auth_type via &, key_len via arithmetic) conflated as one 'variable cred' with mixed bitwise+arithmetic use"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 425,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "guard-clause pedantry: real if/else-if w/o final else, deliberate (unmatched key length silently skipped)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 492,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head_u8(attr)/wpabuf_len(attr) pure-accessor pair passed as args - established EXP30-C misfire pattern"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 537,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM12-C flow-insensitive leak list; wps->network_key is a persistent struct field freed later via hostapd_free_wps, not leaked here"
+  },
+  {
+   "rule": "FIO05-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 540,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "config_fname is the AP's own admin-configured local path, not attacker-controlled input"
+  },
+  {
+   "rule": "WIN03-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 540,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "WIN03-C literal fopen-N-flag gap"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 545,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "oconf is NULL here (fopen failed) and tmp_fname was just freed on the prior line; flow-insensitive leak list is bogus"
+  },
+  {
+   "rule": "FIO03-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 548,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "literal FIO03-C gap on a fixed sibling temp filename; low realistic risk (root-owned config dir)"
+  },
+  {
+   "rule": "FIO06-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 548,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "literal FIO06-C gap - fopen cannot set explicit perms"
+  },
+  {
+   "rule": "WIN03-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 548,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "WIN03-C literal fopen-N-flag gap"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 553,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "fclose(oconf) return genuinely ignored on an error-path read-only stream"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 554,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nconf is NULL here (fopen failed) and tmp_fname was just freed on the prior line; flow-insensitive leak list is bogus"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 616,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MGMT_FRAME_PROTECTION_OPTIONAL is a plain macro constant; no #ifdef/#endif token present in this call at all"
+  },
+  {
+   "rule": "FIO20-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 668,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "fgets() truncation genuinely unchecked, literal violation; low real impact since only the buffer's start is used for prefix matching"
+  },
+  {
+   "rule": "FIO39-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 668,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fgets reads from oconf, fprintf writes to nconf - two independent FILE* streams, FIO39-C's same-stream requirement doesn't apply"
+  },
+  {
+   "rule": "FIO39-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 687,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same reasoning: fprintf(nconf,...) and fgets(oconf,...) are different streams"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 687,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is `char buf[1024]`; array-to-pointer decay for %s misclassified by sqc as an Integer type"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 689,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same array-decay-misclassified-as-Integer misfire as #62, same buf variable"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 692,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "fclose(nconf) unchecked after extensive writes; a flush failure here would go undetected before rename() clobbers the original config"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 692,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same real gap as #64 (duplicate rule)"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 693,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "fclose(oconf) unchecked, read-only stream, low value"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 693,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "same as #66 (duplicate rule)"
+  },
+  {
+   "rule": "FIO24-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 693,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "oconf's close at line 553 only happens on the early-return (nconf==NULL) branch; line 693's close is on the mutually-exclusive success-continuation branch - never both execute"
+  },
+  {
+   "rule": "FIO10-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 695,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "rename() used deliberately for atomic POSIX config replacement; Windows implementation-defined behavior isn't relevant to this daemon's primary target"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 697,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd/wpa_supplicant core is single-threaded (eloop-based); no pthread usage found in the codebase"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 697,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same - no threading in this codebase"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 699,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tmp_fname freed at the line immediately before this return; flow-insensitive leak list bogus"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 712,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tmp_fname already freed earlier in the function before this final return; flow-insensitive leak list bogus"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 719,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cred cast to void* only to satisfy the generic ctx parameter, then immediately re-declared const on the callee side; never written through - EXP05-C cast-away-const-read-only-overlay"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 723,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd_wps_reenable_ap_pin matches eloop_timeout_handler typedef; dispatch contract"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 739,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps_pwd_auth_fail matches hostapd_wps_for_each callback typedef"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 772,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "guard-clause pedantry: deliberate no-op path (skip lockout scheduling entirely once setup is permanently locked)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 775,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "guard-clause pedantry: nested lockout-time chain, no final else, deliberate"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 804,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps_ap_pin_success matches hostapd_wps_for_each callback typedef"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 856,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hostapd_wps_event_success called directly from a switch dispatch, not via a function-pointer table; plain read/write-only helper on hapd->wps_stats"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 944,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd_wps_rf_band_cb matches wps.h rf_band_cb typedef int(*)(void*); dispatch contract"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 957,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hapd is an internal invariant never-null param across all call sites of hostapd_wps_clear_ies"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 973,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "get_uuid_cb matches for_each_interface callback typedef"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 978,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic misfire"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 993,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "get_own_uuid called directly (not via a table); plain read-only helper"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1002,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "uuid local pointer variable is set to point at hapd->wps->uuid (heap-owned struct field, via get_uuid_cb's *uuid = ...); not local automatic storage - DCL30 local-var-vs-storage confusion"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1006,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "count_interface_cb matches for_each_interface callback typedef"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1014,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "interface_count called directly; plain read-only helper"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1026,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hostapd_wps_set_vendor_ext called directly; hapd only read"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1035,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal invariant never-null hapd"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1051,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hostapd_wps_set_application_ext called directly; hapd only read"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1056,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal invariant never-null hapd"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1062,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps->dev.application_ext is reassigned via wpabuf_dup() on the line immediately before this read; sqc's free-tracking misses the reassignment and treats the fresh value as the earlier-freed one"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1078,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(wps->psk) sizes the fixed-size struct member array, not the pointer wps itself - correct idiom"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1083,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API convention; hapd always valid at hostapd_init_wps's call sites"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1095,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*wps) idiom - not a dereference"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1240,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "guard-clause pedantry: deliberate no-op for an unmatched WEP branch"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1284,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "guard-clause pedantry: multi_ap backhaul key-selection chain"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1334,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd_register_probereq_cb's cb/ctx params carry no restrict qualifier at all (hostapd.h:812-817); passing hapd twice (struct + opaque ctx) is the intended, safe pattern - EXP43-C restrict-free misfire"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1344,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps is successfully assigned to hapd->wps on this success path (ownership transfer); multi_ap_netw_key freed on the line just prior; nothing leaked"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1346,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label is reached via multiple `goto fail;` statements earlier in the function; not unreachable - MSC07-C goto-label-blindness"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1347,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "line 1342's free and line 1347's free sit on mutually-exclusive paths (success-return vs goto-fail); never both execute in one run"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1349,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd_free_wps() (called just before this return) internally frees wps->network_key via bin_clear_free; nothing left to leak"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1389,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hostapd_wps_update_multi_ap called directly; hapd only used once to read hapd->conf"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1392,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal invariant never-null hapd"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1397,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conf = hapd->conf is always valid for a valid hapd - internal invariant"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1409,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "guard-clause pedantry"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1451,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API convention"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1490,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "guard-clause pedantry"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1493,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps->network_key is NULL at this return (os_malloc just failed, checked on the prior line); nothing to leak - flow-insensitive misfire"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1527,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps_add_pin matches hostapd_wps_for_each callback typedef"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1543,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "addr appears to be a valid nullable 'match any address' input in this API family, not an unchecked crash risk; internal-only API convention"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1574,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hostapd_wps_button_pushed exported, directly-called API; hapd only passed through, never modified"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1588,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API convention"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1588,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "p2p_dev_addr NULL is a valid 'no P2P device' sentinel in this API family per surrounding code"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1622,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API convention"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1635,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ie/ie_len paired idiom"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1635,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd_wps_probe_req_rx matches hostapd.h probereq_cb callback typedef (hostapd.h:812-817)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1653,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "elems is an out-param populated by ieee802_11_parse_elems() at the immediately preceding line, guarded by a ParseFailed check before use"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1706,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head(msg)/wpabuf_len(msg) pure-accessor pair - established EXP30-C misfire pattern"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1751,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*p) idiom"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1755,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p (and p->msg) is stored into hapd->wps->upnp_msgs list; ownership transferred, freed later via wps_free_pending_msgs() at wps deinit"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1760,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same ownership-transfer reasoning as #122"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1771,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ctx) idiom"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1791,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal invariant never-null hapd (hostapd_wps_upnp_deinit always called with valid hapd)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1797,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only ctrl_iface API convention"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1797,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same for buf param - internal-only API convention"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1797,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hostapd_wps_get_mib_sta called directly; hapd only read (hapd->wps)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1798,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf/buflen paired idiom"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1806,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd_wps_ap_pin_timeout matches eloop_timeout_handler typedef"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1833,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps_ap_pin_disable matches hostapd_wps_for_each callback typedef"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1845,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API convention"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1858,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps_ap_pin_set matches hostapd_wps_for_each callback typedef"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1875,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API convention"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1882,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_snprintf() WRITES into data.pin_txt at this line; destination of a write, not a read of uninitialized data"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1889,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API convention"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1889,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hostapd_wps_ap_pin_get reads hapd->conf->ap_pin only; called directly"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1895,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API convention"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1901,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_snprintf() writes into data.pin_txt; destination write, not a read of uninitialized data"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1909,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps_update_ie matches hostapd_wps_for_each callback typedef"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1909,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same dispatch contract as ctx param"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1917,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API convention"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1923,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hostapd_wps_update_ie only passes hapd through to hostapd_wps_for_each; plain helper"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1932,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len&1 parity check plus len/2 and len>2*sizeof(...) arithmetic on the SAME length variable is a standard idiomatic hex-string-length check, not a confusing flag/counter reuse"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1940,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'if' is a C keyword, not a variable; parser misfire mis-tokenizing tokens around a #ifndef/#endif-interleaved if/else-if chain as declared variables"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1943,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same parser misfire as #145"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1946,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'return' is a C keyword, not a variable; same parser misfire"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1952,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same parser misfire as #145"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1955,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same parser misfire as #145"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "src/ap/wps_hostapd.c"
+ ],
+ "summary": {
+  "tp": 38,
+  "fp": 112,
+  "fn": 0
+ }
+}

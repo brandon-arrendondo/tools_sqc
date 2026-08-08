@@ -1,0 +1,1354 @@
+{
+ "hostapd/hostapd_cli.c#part1of2": [
+  {
+   "column": 1,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 27,
+   "message": "Shared variable 'hostapd_cli_quit' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 28,
+   "message": "Shared variable 'hostapd_cli_attached' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 36,
+   "message": "Shared variable 'ctrl_ifname' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 39,
+   "message": "Shared variable 'ping_interval' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 40,
+   "message": "Shared variable 'interactive' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 12,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 40,
+   "message": "Global flag variable 'interactive' appears to be used for synchronization without proper primitives. Use mutexes, condition variables, or atomic operations instead.",
+   "rule_id": "CON02-C",
+   "severity": "High",
+   "suggestion": "Replace with proper synchronization primitives like mtx_t (C11 threads), pthread_mutex_t (POSIX), or atomic types (_Atomic)"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 41,
+   "message": "Shared variable 'event_handler_registered' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 45,
+   "message": "Function has pointer parameter without size argument: 'static void print_help(FILE *stream, const char *cmd);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'FILE *stream' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 55,
+   "message": "Function 'fprintf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 56,
+   "message": "User input used as format string in 'fprintf()' call: \"\\n\"\n\t\t\"usage: hostapd_cli [-p<path>] [-i<ifname>] \"\n#ifdef CONFIG_IEEE80211BE\n\t\t\"[-l<link_id>] \"\n#endif",
+   "rule_id": "FIO30-C",
+   "severity": "Medium",
+   "suggestion": "Use a literal format string: fprintf(\"%s\", user_input) instead of fprintf(user_input)"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 56,
+   "message": "Argument to 'fprintf' contains preprocessor directive: '\"\\n\"\n\t\t\"usage: hostapd_cli [-p<path>] [-i<ifname>] \"\n#ifdef CONFIG_IEEE80211BE\n\t\t\"[-l<link_id>] \"\n#endif'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 61,
+   "message": "Argument to 'fprintf' contains preprocessor directive: '\"[-hvBr] \"\n\t\t\"[-a<path>] \\\\\\n\"\n\t\t\"                   [-P<pid file>] [-G<ping interval>] [command..]\\n\"\n\t\t\"\\n\"\n\t\t\"Options:\\n\"\n\t\t\"   -h           help (show this usage text)\\n\"\n\t\t\"   -v           shown version information\\n\"\n\t\t\"   -p<path>     path to find control sockets (default: \"\n\t\t\"/var/run/hostapd)\\n\"\n\t\t\"   -s<dir_path> dir path to open client sockets (default: \"\n\t\tCONFIG_CTRL_IFACE_DIR \")\\n\"\n\t\t\"   -a<file>     run in daemon mode executing the action file \"\n\t\t\"based on events\\n\"\n\t\t\"                from hostapd\\n\"\n\t\t\"   -r           try to reconnect when client socket is \"\n\t\t\"disconnected.\\n\"\n\t\t\"                This is useful only when used with -a.\\n\"\n\t\t\"   -B           run a daemon in the background\\n\"\n\t\t\"   -i<ifname>   Interface to listen on (default: first \"\n\t\t\"interface found in the\\n\"\n\t\t\"                socket path)\\n\"\n#ifdef CONFIG_IEEE80211BE\n\t\t\"   -l<link_id>  Link ID of the interface in case of Multi-Link Operation\\n\"\n#endif'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 7,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 92,
+   "message": "Static variable 'ctrl_conn' used without explicit initialization",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'ctrl_conn' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 103,
+   "message": "Function 'unregister_event_handler' performs compound operation on shared static variables (event_handler_registered, interactive) without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 7,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 105,
+   "message": "Static variable 'ctrl_conn' used without explicit initialization",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'ctrl_conn' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 109,
+   "message": "Value assigned to 'event_handler_registered' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 114,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 5,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 121,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 129,
+   "message": "Mixed string management approaches detected. Static char array at line 203 and dynamic allocation at line 129. Consider adopting a consistent approach.",
+   "rule_id": "STR01-C",
+   "severity": "Low",
+   "suggestion": "Adopt either static string arrays OR dynamic allocation consistently throughout the codebase. Document the chosen approach in coding standards."
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 129,
+   "message": "Return value of 'malloc' assigned to 'cfile' but not checked for errors: 'malloc(flen)' - Returns NULL on allocation failure",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (ptr == NULL) before using the allocated memory"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 129,
+   "message": "Memory allocation result not cast; assign to 'cfile' without explicit cast",
+   "rule_id": "MEM02-C",
+   "severity": "Low",
+   "suggestion": "Cast the result: (char *)malloc(...)"
+  },
+  {
+   "column": 10,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 129,
+   "message": "Return value from malloc() should be checked for errors",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Check if malloc() returned an error value (NULL, -1, etc.)"
+  },
+  {
+   "column": 10,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 129,
+   "message": "malloc() called with potentially zero size argument: 'flen' without prior zero check. Zero-length allocations have implementation-defined behavior.",
+   "rule_id": "MEM04-C",
+   "severity": "Low",
+   "suggestion": "Check that size argument is non-zero before calling malloc()"
+  },
+  {
+   "column": 10,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 129,
+   "message": "Sensitive data allocated with malloc may be written to disk. Use mlock() (POSIX) or VirtualLock() (Windows) to lock memory pages, or use setrlimit(RLIMIT_CORE, 0) to disable core dumps.",
+   "rule_id": "MEM06-C",
+   "severity": "Medium",
+   "suggestion": "Consider using mlock()/munlock() to prevent memory from being swapped to disk, or use setrlimit() to disable core dumps."
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 131,
+   "message": "Function returns without releasing all resources. Leaked: ctrl_conn, cfile. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 132,
+   "message": "Return value of 'snprintf' ignored: 'snprintf(cfile, flen, \"%s/%s\", ctrl_iface_dir, ifname)' - Returns negative on error, or >= buffer size on truncation",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check result: int ret = snprintf(buf, size, fmt, ...); if (ret < 0 || ret >= size) handle_error();"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 132,
+   "message": "Call to snprintf may inadvertently truncate string without proper length validation",
+   "rule_id": "STR03-C",
+   "severity": "Medium",
+   "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+  },
+  {
+   "column": 33,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 132,
+   "message": "Do not cast away const qualification: 'ctrl_iface_dir'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 137,
+   "message": "Value assigned to 'cfile' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 138,
+   "message": "Function returns without releasing all resources. Leaked: ctrl_conn. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 36,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 141,
+   "message": "Passing null pointer 'client_socket_dir' to 'wpa_ctrl_open2' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'client_socket_dir' is not NULL before passing to 'wpa_ctrl_open2'"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 142,
+   "message": "Value assigned to 'cfile' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 143,
+   "message": "Function returns without releasing all resources. Leaked: ctrl_conn. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 6,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 150,
+   "message": "Static variable 'ctrl_conn' used without explicit initialization",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'ctrl_conn' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 156,
+   "message": "Value assigned to 'hostapd_cli_attached' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 159,
+   "message": "Value assigned to 'ctrl_conn' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 163,
+   "message": "Function 'hostapd_cli_reconnect' performs compound operation on shared static variables (action_file, ctrl_ifname, hostapd_cli_attached, interactive) without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 174,
+   "message": "Local variable 'next_ctrl_ifname' assigned to global/static variable 'ctrl_ifname' - creates dangling pointer",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage for local variable or copy data instead of assigning pointer"
+  },
+  {
+   "column": 37,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 194,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 6,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 207,
+   "message": "Static variable 'ctrl_conn' used without explicit initialization",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'ctrl_conn' before use, e.g., at its declaration"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 217,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 222,
+   "message": "Potentially unsafe array access with variable index 'len': Buffer 'buf' with size 4096 (allocated at line 203)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 223,
+   "message": "Type mismatch in printf(): format specifier '%s' expects Pointer but argument 1 ('buf') is Integer",
+   "rule_id": "FIO47-C",
+   "severity": "High",
+   "suggestion": "Ensure format specifiers match argument types"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 241,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 71,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 251,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 72,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 257,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 15,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 264,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 73,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 270,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 70,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 278,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 45,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 308,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 45,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 308,
+   "message": "Pointer parameter 'msg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *msg'"
+  },
+  {
+   "column": 40,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 325,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 70,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 331,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 335,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 335,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid 'sta' command - at least one argument, STA \"\n\t\t       \"address, is required.\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 340,
+   "message": "Return value of 'snprintf' ignored: 'snprintf(buf, sizeof(buf), \"STA %s %s\", argv[0], argv[1])' - Returns negative on error, or >= buffer size on truncation",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check result: int ret = snprintf(buf, size, fmt, ...); if (ret < 0 || ret >= size) handle_error();"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 340,
+   "message": "Call to snprintf may inadvertently truncate string without proper length validation",
+   "rule_id": "STR03-C",
+   "severity": "Medium",
+   "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 342,
+   "message": "Return value of 'snprintf' ignored: 'snprintf(buf, sizeof(buf), \"STA %s\", argv[0])' - Returns negative on error, or >= buffer size on truncation",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check result: int ret = snprintf(buf, size, fmt, ...); if (ret < 0 || ret >= size) handle_error();"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 342,
+   "message": "Call to snprintf may inadvertently truncate string without proper length validation",
+   "rule_id": "STR03-C",
+   "severity": "Medium",
+   "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+  },
+  {
+   "column": 28,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 349,
+   "message": "'str' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 13,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 363,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 367,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 367,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid 'new_sta' command - exactly one argument, STA \"\n\t\t       \"address, is required.\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 371,
+   "message": "Return value of 'snprintf' ignored: 'snprintf(buf, sizeof(buf), \"NEW_STA %s\", argv[0])' - Returns negative on error, or >= buffer size on truncation",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check result: int ret = snprintf(buf, size, fmt, ...); if (ret < 0 || ret >= size) handle_error();"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 371,
+   "message": "Call to snprintf may inadvertently truncate string without proper length validation",
+   "rule_id": "STR03-C",
+   "severity": "Medium",
+   "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+  },
+  {
+   "column": 13,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 377,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 381,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 381,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid 'deauthenticate' command - exactly one \"\n\t\t       \"argument, STA address, is required.\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 11,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 395,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 399,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 399,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid 'disassociate' command - exactly one \"\n\t\t       \"argument, STA address, is required.\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 15,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 414,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 14,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 429,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 433,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 433,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid 'sa_query' command - exactly one argument, \"\n\t\t       \"STA address, is required.\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 437,
+   "message": "Return value of 'snprintf' ignored: 'snprintf(buf, sizeof(buf), \"SA_QUERY %s\", argv[0])' - Returns negative on error, or >= buffer size on truncation",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check result: int ret = snprintf(buf, size, fmt, ...); if (ret < 0 || ret >= size) handle_error();"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 437,
+   "message": "Call to snprintf may inadvertently truncate string without proper length validation",
+   "rule_id": "STR03-C",
+   "severity": "Medium",
+   "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+  },
+  {
+   "column": 13,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 444,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 448,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 448,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid 'wps_pin' command - at least two arguments, \"\n\t\t       \"UUID and PIN, are required.\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 453,
+   "message": "Return value of 'snprintf' ignored: 'snprintf(buf, sizeof(buf), \"WPS_PIN %s %s %s %s\",\n\t\t\t argv[0], argv[1], argv[2], argv[3])' - Returns negative on error, or >= buffer size on truncation",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check result: int ret = snprintf(buf, size, fmt, ...); if (ret < 0 || ret >= size) handle_error();"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 453,
+   "message": "Call to snprintf may inadvertently truncate string without proper length validation",
+   "rule_id": "STR03-C",
+   "severity": "Medium",
+   "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 456,
+   "message": "Return value of 'snprintf' ignored: 'snprintf(buf, sizeof(buf), \"WPS_PIN %s %s %s\",\n\t\t\t argv[0], argv[1], argv[2])' - Returns negative on error, or >= buffer size on truncation",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check result: int ret = snprintf(buf, size, fmt, ...); if (ret < 0 || ret >= size) handle_error();"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 456,
+   "message": "Call to snprintf may inadvertently truncate string without proper length validation",
+   "rule_id": "STR03-C",
+   "severity": "Medium",
+   "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 459,
+   "message": "Return value of 'snprintf' ignored: 'snprintf(buf, sizeof(buf), \"WPS_PIN %s %s\", argv[0], argv[1])' - Returns negative on error, or >= buffer size on truncation",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check result: int ret = snprintf(buf, size, fmt, ...); if (ret < 0 || ret >= size) handle_error();"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 459,
+   "message": "Call to snprintf may inadvertently truncate string without proper length validation",
+   "rule_id": "STR03-C",
+   "severity": "Medium",
+   "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+  },
+  {
+   "column": 12,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 465,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 471,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 471,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid WPS_CHECK_PIN command: needs one argument:\\n\"\n\t\t       \"- PIN to be verified\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 13,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 491,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 16,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 498,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 15,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 506,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 513,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 513,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid 'wps_nfc_tag_read' command - one argument \"\n\t\t       \"is required.\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 22,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 532,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 538,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 538,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid 'wps_nfc_config_token' command - one argument \"\n\t\t       \"is required.\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 22,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 554,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 560,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 560,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid 'wps_nfc_token' command - one argument is \"\n\t\t       \"required.\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 22,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 575,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 581,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 581,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid 'nfc_get_handover_sel' command - two arguments \"\n\t\t       \"are required.\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 16,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 599,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 603,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 603,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid 'wps_ap_pin' command - at least one argument \"\n\t\t       \"is required.\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 608,
+   "message": "Return value of 'snprintf' ignored: 'snprintf(buf, sizeof(buf), \"WPS_AP_PIN %s %s %s\",\n\t\t\t argv[0], argv[1], argv[2])' - Returns negative on error, or >= buffer size on truncation",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check result: int ret = snprintf(buf, size, fmt, ...); if (ret < 0 || ret >= size) handle_error();"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 608,
+   "message": "Call to snprintf may inadvertently truncate string without proper length validation",
+   "rule_id": "STR03-C",
+   "severity": "Medium",
+   "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 611,
+   "message": "Return value of 'snprintf' ignored: 'snprintf(buf, sizeof(buf), \"WPS_AP_PIN %s %s\",\n\t\t\t argv[0], argv[1])' - Returns negative on error, or >= buffer size on truncation",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check result: int ret = snprintf(buf, size, fmt, ...); if (ret < 0 || ret >= size) handle_error();"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 611,
+   "message": "Call to snprintf may inadvertently truncate string without proper length validation",
+   "rule_id": "STR03-C",
+   "severity": "Medium",
+   "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 614,
+   "message": "Return value of 'snprintf' ignored: 'snprintf(buf, sizeof(buf), \"WPS_AP_PIN %s\", argv[0])' - Returns negative on error, or >= buffer size on truncation",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check result: int ret = snprintf(buf, size, fmt, ...); if (ret < 0 || ret >= size) handle_error();"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 614,
+   "message": "Call to snprintf may inadvertently truncate string without proper length validation",
+   "rule_id": "STR03-C",
+   "severity": "Medium",
+   "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+  },
+  {
+   "column": 13,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 620,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 16,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 627,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 630,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 630,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 631,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 635,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 635,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid 'wps_config' command - at least two arguments \"\n\t\t       \"are required.\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 658,
+   "message": "Return value of 'snprintf' ignored: 'snprintf(buf, sizeof(buf), \"WPS_CONFIG %s %s %s %s\",\n\t\t\t ssid_hex, argv[1], argv[2], key_hex)' - Returns negative on error, or >= buffer size on truncation",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check result: int ret = snprintf(buf, size, fmt, ...); if (ret < 0 || ret >= size) handle_error();"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 658,
+   "message": "Call to snprintf may inadvertently truncate string without proper length validation",
+   "rule_id": "STR03-C",
+   "severity": "Medium",
+   "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 661,
+   "message": "Return value of 'snprintf' ignored: 'snprintf(buf, sizeof(buf), \"WPS_CONFIG %s %s %s\",\n\t\t\t ssid_hex, argv[1], argv[2])' - Returns negative on error, or >= buffer size on truncation",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check result: int ret = snprintf(buf, size, fmt, ...); if (ret < 0 || ret >= size) handle_error();"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 661,
+   "message": "Call to snprintf may inadvertently truncate string without proper length validation",
+   "rule_id": "STR03-C",
+   "severity": "Medium",
+   "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 664,
+   "message": "Return value of 'snprintf' ignored: 'snprintf(buf, sizeof(buf), \"WPS_CONFIG %s %s\",\n\t\t\t ssid_hex, argv[1])' - Returns negative on error, or >= buffer size on truncation",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check result: int ret = snprintf(buf, size, fmt, ...); if (ret < 0 || ret >= size) handle_error();"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 664,
+   "message": "Call to snprintf may inadvertently truncate string without proper length validation",
+   "rule_id": "STR03-C",
+   "severity": "Medium",
+   "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+  },
+  {
+   "column": 16,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 672,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 678,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 678,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid 'disassoc_imminent' command - two arguments \"\n\t\t       \"(STA addr and Disassociation Timer) are needed\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 11,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 692,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 698,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 698,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Invalid 'ess_disassoc' command - three arguments (STA \"\n\t\t       \"addr, disassoc timer, and URL) are needed\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 16,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 712,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 16,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 739,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 67,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 745,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 10,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 746,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 6,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 752,
+   "message": "Static variable 'ctrl_conn' used without explicit initialization",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'ctrl_conn' before use, e.g., at its declaration"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 762,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 767,
+   "message": "Potentially unsafe array access with variable index 'len': Buffer 'buf' with size 4096 (allocated at line 748)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 771,
+   "message": "Type mismatch in printf(): format specifier '%s' expects Pointer but argument 1 ('buf') is Integer",
+   "rule_id": "FIO47-C",
+   "severity": "High",
+   "suggestion": "Ensure format specifiers match argument types"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 776,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 13,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 783,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 790,
+   "message": "Return value of 'snprintf' ignored: 'snprintf(cmd, sizeof(cmd), \"STA-NEXT %s\", addr)' - Returns negative on error, or >= buffer size on truncation",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check result: int ret = snprintf(buf, size, fmt, ...); if (ret < 0 || ret >= size) handle_error();"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 790,
+   "message": "Call to snprintf may inadvertently truncate string without proper length validation",
+   "rule_id": "STR03-C",
+   "severity": "Medium",
+   "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+  },
+  {
+   "column": 14,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 798,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 4,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 806,
+   "message": "Type mismatch in printf(): format specifier '%s' expects Pointer but argument 1 ('addr') is Integer",
+   "rule_id": "FIO47-C",
+   "severity": "High",
+   "suggestion": "Ensure format specifiers match argument types"
+  },
+  {
+   "column": 49,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 814,
+   "message": "Pointer parameter 'ctrl' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctrl'"
+  },
+  {
+   "column": 71,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 814,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 28,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 823,
+   "message": "'str' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 828,
+   "message": "Static variable 'list_cmd_list' used without explicit initialization",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'list_cmd_list' before use, e.g., at its declaration"
+  },
+  {
+   "column": 52,
+   "file": "hostapd/hostapd_cli.c",
+   "line": 836,
+   "message": "Pointer parameter 'ctrl' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctrl'"
+  }
+ ]
+}

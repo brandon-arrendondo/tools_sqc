@@ -1,0 +1,1131 @@
+{
+ "labels": [
+  {
+   "rule": "ENV01-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 49,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ENV01-C wholesale misfire: plain fixed-size local array, function never calls getenv()"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 101,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ENV01-C wholesale misfire: plain fixed-size local array, function never calls getenv()"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 174,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ssid_len is an output param set by get_go_info() only when it returns success; use is gated by that same check"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 185,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "dev is only read in this static helper, never modified; not a callback/vtable signature"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 238,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is heap-allocated via wpabuf_alloc(), not automatic storage; classic DCL30-C heap-vs-stack confusion"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 263,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "extra += ... is plain size_t integer arithmetic, not pointer arithmetic; no double scaling occurs"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 263,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "INT14-C stylistic-pedantry mismatch: struct pointer's -> access conflated with bitwise ops on its scalar fields"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 289,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC01-C no-final-else/no-default guard-clause pedantry; missing branch is a deliberate no-op, not a real gap"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 306,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is heap-allocated via wpabuf_alloc(), not automatic storage; classic DCL30-C heap-vs-stack confusion"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 311,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "dev is only read (dialog_token, bootstrap_params); genuine if low-value DCL13-C"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 342,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is heap-allocated via wpabuf_alloc(), not automatic storage; classic DCL30-C heap-vs-stack confusion"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 368,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "g is assigned once per loop iteration and never reassigned in the loop body; could be const-qualified"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 369,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ie is unconditionally assigned via p2p_group_get_wfd_ie() immediately before its only read; no use-before-def"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 422,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ENV01-C wholesale misfire: plain fixed-size local array, function never calls getenv()"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 484,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC01-C no-final-else/no-default guard-clause pedantry; missing branch is a deliberate no-op, not a real gap"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 507,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is heap-allocated via wpabuf_alloc(), not automatic storage; classic DCL30-C heap-vs-stack confusion"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 550,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "msg is only read via msg->_attr checks in this static helper; genuine if low-value"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 560,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "_attr is evaluated once (msg->_attr); #_attr is compile-time stringizing, not a 2nd runtime evaluation"
+  },
+  {
+   "rule": "PRE05-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 560,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "call sites always pass bare attribute-name tokens, never macros needing pre-expansion before stringizing"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 560,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "_attr is evaluated once (msg->_attr); #_attr is compile-time stringizing, not a 2nd runtime evaluation"
+  },
+  {
+   "rule": "CON43-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 601,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "msg->conn_cap points into a locally-owned, single-threaded parsed frame buffer; no concurrent mutator exists for a double-fetch"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 647,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "P2PS_PD_REQ_CHECK is a boolean-check macro, not a function; sqc misparses macro args as aliased output/input pointers"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 648,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "P2PS_PD_REQ_CHECK is a boolean-check macro, not a function; sqc misparses macro args as aliased output/input pointers"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 649,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "P2PS_PD_REQ_CHECK is a boolean-check macro, not a function; sqc misparses macro args as aliased output/input pointers"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 650,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "P2PS_PD_REQ_CHECK is a boolean-check macro, not a function; sqc misparses macro args as aliased output/input pointers"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 651,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "P2PS_PD_REQ_CHECK is a boolean-check macro, not a function; sqc misparses macro args as aliased output/input pointers"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 652,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "P2PS_PD_REQ_CHECK is a boolean-check macro, not a function; sqc misparses macro args as aliased output/input pointers"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 660,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "msg is only read (pcea_info fields); not part of any dispatch table, genuine if low-value"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 719,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "cookie_len's initial =0 is never read; only read after being reassigned inside the PBMA-comeback branch"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 721,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "status's initial value is unconditionally overwritten by every reachable path before the callback read at out:"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 873,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() are side-effect-free accessors; standard EXP30-C false-positive class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 893,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "p2ps_adv's initial NULL is never read; all reads occur after reassignment inside the !msg->status block"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 931,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC01-C no-final-else/no-default guard-clause pedantry; missing branch is a deliberate no-op, not a real gap"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 933,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dev->info.wfd_subelems is a persistent device-struct field freed on next reassignment (wpabuf_free+wpabuf_dup idiom) or at device teardown, not a local leak"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 940,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "INT14-C stylistic-pedantry mismatch: struct pointer's -> access conflated with bitwise ops on its scalar fields"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 943,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dev->info.wfd_subelems is a persistent device-struct field freed on next reassignment (wpabuf_free+wpabuf_dup idiom) or at device teardown, not a local leak"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 959,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dev->info.wfd_subelems is a persistent device-struct field freed on next reassignment (wpabuf_free+wpabuf_dup idiom) or at device teardown, not a local leak"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 972,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dev->info.wfd_subelems is a persistent device-struct field freed on next reassignment (wpabuf_free+wpabuf_dup idiom) or at device teardown, not a local leak"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 994,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dev->info.wfd_subelems is a persistent device-struct field freed on next reassignment (wpabuf_free+wpabuf_dup idiom) or at device teardown, not a local leak"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1018,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC01-C no-final-else/no-default guard-clause pedantry; missing branch is a deliberate no-op, not a real gap"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1051,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dev->info.wfd_subelems is a persistent device-struct field freed on next reassignment (wpabuf_free+wpabuf_dup idiom) or at device teardown, not a local leak"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1058,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dev->info.wfd_subelems is a persistent device-struct field freed on next reassignment (wpabuf_free+wpabuf_dup idiom) or at device teardown, not a local leak"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1074,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "req_fcap derives from msg->feature_cap, whose non-NULL is enforced by p2ps_validate_pd_req()'s P2PS_PD_REQ_CHECK(1, feature_cap) earlier in the call chain"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1094,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC01-C no-final-else/no-default guard-clause pedantry; missing branch is a deliberate no-op, not a real gap"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1143,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "intersect is populated by p2p_channels_intersect() as an output pointer parameter before being read"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1157,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dev->info.wfd_subelems is a persistent device-struct field freed on next reassignment (wpabuf_free+wpabuf_dup idiom) or at device teardown, not a local leak"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1182,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dev->info.wfd_subelems is a persistent device-struct field freed on next reassignment (wpabuf_free+wpabuf_dup idiom) or at device teardown, not a local leak"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1189,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dev->info.wfd_subelems is a persistent device-struct field freed on next reassignment (wpabuf_free+wpabuf_dup idiom) or at device teardown, not a local leak"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1202,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dev->info.wfd_subelems is a persistent device-struct field freed on next reassignment (wpabuf_free+wpabuf_dup idiom) or at device teardown, not a local leak"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1212,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dev->info.wfd_subelems is a persistent device-struct field freed on next reassignment (wpabuf_free+wpabuf_dup idiom) or at device teardown, not a local leak"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1218,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dev->info.wfd_subelems is a persistent device-struct field freed on next reassignment (wpabuf_free+wpabuf_dup idiom) or at device teardown, not a local leak"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1244,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC01-C no-final-else/no-default guard-clause pedantry; missing branch is a deliberate no-op, not a real gap"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1319,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dev->info.wfd_subelems is a persistent device-struct field freed on next reassignment (wpabuf_free+wpabuf_dup idiom) or at device teardown, not a local leak"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1322,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() are side-effect-free accessors; standard EXP30-C false-positive class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1422,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC01-C no-final-else/no-default guard-clause pedantry; missing branch is a deliberate no-op, not a real gap"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1519,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len is bounds-checked by p2p_parse()'s own len<1 guard and the len<1 check in the p2p.c dispatcher before this point"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1539,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "msg only read in this static helper; genuine if low-value DCL13-C"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1546,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "_attr is evaluated once (msg->_attr); #_attr is compile-time stringizing, not a 2nd runtime evaluation"
+  },
+  {
+   "rule": "PRE05-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1546,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "call sites always pass bare attribute-name tokens, never macros needing pre-expansion before stringizing"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1546,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "_attr is evaluated once (msg->_attr); #_attr is compile-time stringizing, not a 2nd runtime evaluation"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1555,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "P2PS_PD_RESP_CHECK(1, adv_id) macro references msg->adv_id, not the unrelated local u32 adv_id; name-collision misattribution"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1559,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "P2PS_PD_RESP_CHECK(1, session_id) macro references msg->session_id, not the unrelated local u32 session_id; name-collision misattribution"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1643,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "cookie_len's initial =0 is never read outside the P2P_SC_COMEBACK branch that reassigns it first"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1798,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "switch intentionally has no default: unmatched conncap values are meant to pass through unchanged (identity mapping)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1817,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC01-C no-final-else/no-default guard-clause pedantry; missing branch is a deliberate no-op, not a real gap"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1819,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dev->info.wfd_subelems is a persistent device-struct field freed on next reassignment (wpabuf_free+wpabuf_dup idiom) or at device teardown, not a local leak"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1827,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dev->info.wfd_subelems is a persistent device-struct field freed on next reassignment (wpabuf_free+wpabuf_dup idiom) or at device teardown, not a local leak"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1859,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dev->info.wfd_subelems is a persistent device-struct field freed on next reassignment (wpabuf_free+wpabuf_dup idiom) or at device teardown, not a local leak"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1871,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "INT14-C stylistic-pedantry mismatch: struct pointer's -> access conflated with bitwise ops on its scalar fields"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1877,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC01-C no-final-else/no-default guard-clause pedantry; missing branch is a deliberate no-op, not a real gap"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1951,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1952,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC01-C no-final-else/no-default guard-clause pedantry; missing branch is a deliberate no-op, not a real gap"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1961,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1965,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1965,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1966,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1966,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1966,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1966,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1966,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1976,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1976,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1977,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dev->info.wfd_subelems is a persistent device-struct field freed on next reassignment (wpabuf_free+wpabuf_dup idiom) or at device teardown, not a local leak"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1982,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1982,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1983,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1983,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1983,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1984,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1984,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1990,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC01-C no-final-else/no-default guard-clause pedantry; missing branch is a deliberate no-op, not a real gap"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1990,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1990,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1991,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1991,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1991,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1992,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1992,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1995,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC01-C no-final-else/no-default guard-clause pedantry; missing branch is a deliberate no-op, not a real gap"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1996,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1997,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1997,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1998,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1998,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1998,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1998,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1998,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 2001,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 2001,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 2002,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dev->info.wfd_subelems is a persistent device-struct field freed on next reassignment (wpabuf_free+wpabuf_dup idiom) or at device teardown, not a local leak"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 2012,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 2012,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 2012,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 2012,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 2012,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 2014,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 2017,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 2018,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dev->info.wfd_subelems is a persistent device-struct field freed on next reassignment (wpabuf_free+wpabuf_dup idiom) or at device teardown, not a local leak"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 2035,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 2035,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 2042,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 2042,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 2042,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 2042,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 2042,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 2045,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 2046,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 2047,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 2052,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len is bounds-checked the same way via p2p_parse() and the caller dispatcher's len<1 guard"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 2140,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() are side-effect-free accessors; standard EXP30-C false-positive class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 2155,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2p is an internal, always-valid module context pointer passed by the control-interface caller; never NULL in practice"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 2202,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "the enclosing if condition (!p2ps_prov) guarantees p2ps_prov is NULL here; os_free(NULL)/free(NULL) is a well-defined no-op"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 2224,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 2224,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 2225,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 2226,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 2234,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 2245,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2ps_prov_free(p2p) only frees p2p->p2ps_prov and NULLs it (see p2p_pd.c:2272-2276); p2p itself is never freed here"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_pd.c",
+   "line": 2249,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2p_reset_pending_pd is only called internally with the module's live p2p_data context; internal-only-API FP class"
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/p2p/p2p_pd.c",
+   "line": 1973,
+   "rule": "INT30-C",
+   "desc": "os_malloc(2 * info_len + 1) where info_len = msg->session_info_len is attacker-controlled (parsed from an 802.11 P2P PD Response wire frame); no explicit upper-bound check before the doubling multiply, relying only on the frame's own size limits. Low practical risk (frame size caps info_len well below overflow range) but no defensive bound is asserted.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 10,
+  "fp": 129,
+  "fn": 1
+ }
+}

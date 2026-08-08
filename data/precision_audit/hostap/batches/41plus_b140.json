@@ -1,0 +1,139 @@
+{
+ "src/ap/dpp_hostapd.c#part2of2": [
+  {
+   "column": 14,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3806,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3864,
+   "message": "Function 'hostapd_dpp_chirp' does not validate pointer parameter 'cmd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cmd' at the start of the function, e.g., 'if (!cmd) { return error_code; }'"
+  },
+  {
+   "column": 58,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3874,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 58,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3874,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 10,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3883,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 10,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3883,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 17,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3890,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 17,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3890,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 54,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3935,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 67,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3935,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3951,
+   "message": "Function 'hostapd_dpp_remove_bi' does not validate pointer parameter 'bi' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'bi' at the start of the function, e.g., 'if (!bi) { return error_code; }'"
+  },
+  {
+   "column": 66,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3963,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3972,
+   "message": "Function 'hostapd_dpp_push_button' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 4050,
+   "message": "Function 'hostapd_dpp_configurator_connectivity' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 64,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 4050,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  }
+ ]
+}

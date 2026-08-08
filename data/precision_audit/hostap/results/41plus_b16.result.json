@@ -1,0 +1,1211 @@
+{
+ "labels": [
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 9662,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33/34-C strerror() FP: driver_nl80211.c is eloop-driven, no pthread (categorical pattern)"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 9662,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Negating errno-range return from send_and_recv_cmd/resp (always small, never INT_MIN); extends 'rule ignores realistic bounds' family to errno negation"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 9720,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR(dst/src/bssid) macro args are pure reads, no side effects (categorical EXP30-C pure-accessor/macro-arg FP)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 9790,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 9790,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Assignment already wrapped in its own parens inside the ||/&& chain (CERT's own recommended mitigation for signaling deliberate assignment); categorical EXP45-C FP"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 9799,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33/34-C strerror() FP: driver_nl80211.c is eloop-driven, no pthread (categorical pattern)"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 9799,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33/34-C strerror() FP: driver_nl80211.c is eloop-driven, no pthread (categorical pattern)"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 9799,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Negating errno-range return from send_and_recv_cmd/resp (always small, never INT_MIN); extends 'rule ignores realistic bounds' family to errno negation"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 9829,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "nl80211_put_any_link_id is a plain internal helper (not a vtable/eloop/EAP-method callback); 'mlo' is only read, never forwarded to a mutating call - genuine low-severity const opportunity"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 9842,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'i' is for_each_link()'s own loop variable, initialized in the macro's for(...) init clause (extends ARR00-C/dl_list_for_each loop-macro-init FP family to EXP33-C)"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 9845,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'link_id = i;' IS read after the for_each_link loop (via 'if (link_id==-1) ...' and the final nla_put_u8 call); rule misses the post-loop/post-break read (extends confirmed MSC13-C post-loop-read-miss family)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 9874,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 9874,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 9874,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 9874,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Assignment already wrapped in its own parens inside the ||/&& chain (CERT's own recommended mitigation for signaling deliberate assignment); categorical EXP45-C FP"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 9894,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33/34-C strerror() FP: driver_nl80211.c is eloop-driven, no pthread (categorical pattern)"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 9894,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33/34-C strerror() FP: driver_nl80211.c is eloop-driven, no pthread (categorical pattern)"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 9894,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Negating errno-range return from send_and_recv_cmd/resp (always small, never INT_MIN); extends 'rule ignores realistic bounds' family to errno negation"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 9927,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33/34-C strerror() FP: driver_nl80211.c is eloop-driven, no pthread (categorical pattern)"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 9927,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33/34-C strerror() FP: driver_nl80211.c is eloop-driven, no pthread (categorical pattern)"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 9927,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Negating errno-range return from send_and_recv_cmd/resp (always small, never INT_MIN); extends 'rule ignores realistic bounds' family to errno negation"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 9947,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause: neither branch matching means Probe Request reporting is already in the desired state, no action needed (categorical MSC01-C no-final-else FP)"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 9979,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'out_err:' is a goto target reached from an earlier failure branch ('goto out_err;'), not unreachable (categorical MSC07-C goto-target-label FP)"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10023,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33/34-C strerror() FP: driver_nl80211.c is eloop-driven, no pthread (categorical pattern)"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10023,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33/34-C strerror() FP: driver_nl80211.c is eloop-driven, no pthread (categorical pattern)"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10023,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Negating errno-range return from send_and_recv_cmd/resp (always small, never INT_MIN); extends 'rule ignores realistic bounds' family to errno negation"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10029,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'fail:' is a goto target reached from earlier failure branches, not unreachable (categorical MSC07-C goto-target-label FP)"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10070,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'bss->valid_links & BIT(link_id)' check two lines above returns -1 unless link_id names a currently-valid link (rule doesn't see the earlier same-function guard; extends INT33/INT30/ARR30 'earlier guard' family)"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10116,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33/34-C strerror() FP: driver_nl80211.c is eloop-driven, no pthread (categorical pattern)"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10116,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33/34-C strerror() FP: driver_nl80211.c is eloop-driven, no pthread (categorical pattern)"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10116,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Negating errno-range return from send_and_recv_cmd/resp (always small, never INT_MIN); extends 'rule ignores realistic bounds' family to errno negation"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10131,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'link_id' is for_each_link()'s own loop variable, initialized in the macro's for(...) init clause"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10228,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10228,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10228,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10228,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Assignment already wrapped in its own parens inside the ||/&& chain (CERT's own recommended mitigation for signaling deliberate assignment); categorical EXP45-C FP"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10229,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Assignment already wrapped in its own parens inside the ||/&& chain (CERT's own recommended mitigation for signaling deliberate assignment); categorical EXP45-C FP"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10243,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Array is sized by NL80211_ATTR_MAX/NL80211_SURVEY_INFO_MAX (compile-time enum constants), not a runtime-sized VLA (categorical MEM05-C compile-time-constant-size FP)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10247,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "genlmsg_attrdata(gnlh,0)/genlmsg_attrlen(gnlh,0) are pure accessor reads, no side effects to unsequence (categorical EXP30-C pure-accessor FP)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10247,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Array passed directly to nla_parse()/nla_parse_nested(), which fills it before any read (write-only output-param idiom, extends wps_parse_msg/p2p_channels_union EXP33-C FP class)"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10285,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*si) sizes the pointed-to struct type at compile time; 'si' is a parameter but sizeof is applied to the dereferenced object, not the decayed pointer itself (categorical ARR01-C sizeof(*ptr) misclassification)"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10304,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Array is sized by NL80211_ATTR_MAX/NL80211_SURVEY_INFO_MAX (compile-time enum constants), not a runtime-sized VLA (categorical MEM05-C compile-time-constant-size FP)"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10306,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Array is sized by NL80211_ATTR_MAX/NL80211_SURVEY_INFO_MAX (compile-time enum constants), not a runtime-sized VLA (categorical MEM05-C compile-time-constant-size FP)"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10307,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Array is sized by NL80211_ATTR_MAX/NL80211_SURVEY_INFO_MAX (compile-time enum constants), not a runtime-sized VLA (categorical MEM05-C compile-time-constant-size FP)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10314,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "genlmsg_attrdata(gnlh,0)/genlmsg_attrlen(gnlh,0) are pure accessor reads, no side effects to unsequence (categorical EXP30-C pure-accessor FP)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10314,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Array passed directly to nla_parse()/nla_parse_nested(), which fills it before any read (write-only output-param idiom, extends wps_parse_msg/p2p_channels_union EXP33-C FP class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10322,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Array passed directly to nla_parse()/nla_parse_nested(), which fills it before any read (write-only output-param idiom, extends wps_parse_msg/p2p_channels_union EXP33-C FP class)"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10362,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Array is sized by NL80211_ATTR_MAX/NL80211_SURVEY_INFO_MAX (compile-time enum constants), not a runtime-sized VLA (categorical MEM05-C compile-time-constant-size FP)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10368,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "genlmsg_attrdata(gnlh,0)/genlmsg_attrlen(gnlh,0) are pure accessor reads, no side effects to unsequence (categorical EXP30-C pure-accessor FP)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10368,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Array passed directly to nla_parse()/nla_parse_nested(), which fills it before any read (write-only output-param idiom, extends wps_parse_msg/p2p_channels_union EXP33-C FP class)"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10375,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Array is sized by NL80211_ATTR_MAX/NL80211_SURVEY_INFO_MAX (compile-time enum constants), not a runtime-sized VLA (categorical MEM05-C compile-time-constant-size FP)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10378,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "genlmsg_attrdata(gnlh,0)/genlmsg_attrlen(gnlh,0) are pure accessor reads, no side effects to unsequence (categorical EXP30-C pure-accessor FP)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10378,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Array passed directly to nla_parse()/nla_parse_nested(), which fills it before any read (write-only output-param idiom, extends wps_parse_msg/p2p_channels_union EXP33-C FP class)"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10427,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*mlo_si) sizes the pointed-to struct type at compile time, not a decayed-pointer sizeof (categorical ARR01-C sizeof(*ptr) misclassification)"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10458,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain 'if (param == NULL) return 0;' guard - stylistic pedantry, the check is already present (categorical MEM10-C FP)"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10533,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'pos' walks a NUL-terminated C string ('param'); loop terminates at '*pos==0', each iteration advances via strtol's endptr - standard bounded string scan, not unbounded (extends confirmed NUL-terminated-scan ARR30-C FP family)"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10537,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "strtol()'s result is range-checked ('sel > 127 || sel < 0') immediately after; any ERANGE overflow returns LONG_MAX/LONG_MIN, which always fails this check, so overflow is functionally caught without an explicit errno test (distinguishes from the ctrl_iface.c strtoul TP precedent, which had no value-range check at all)"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10537,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "strtol()'s result is range-checked ('sel > 127 || sel < 0') immediately after; any ERANGE overflow returns LONG_MAX/LONG_MIN, which always fails this check, so overflow is functionally caught without an explicit errno test (distinguishes from the ctrl_iface.c strtoul TP precedent, which had no value-range check at all)"
+  },
+  {
+   "rule": "ERR01-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10537,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "strtol()'s result is range-checked ('sel > 127 || sel < 0') immediately after; any ERANGE overflow returns LONG_MAX/LONG_MIN, which always fails this check, so overflow is functionally caught without an explicit errno test (distinguishes from the ctrl_iface.c strtoul TP precedent, which had no value-range check at all)"
+  },
+  {
+   "rule": "ERR30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10537,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "strtol()'s result is range-checked ('sel > 127 || sel < 0') immediately after; any ERANGE overflow returns LONG_MAX/LONG_MIN, which always fails this check, so overflow is functionally caught without an explicit errno test (distinguishes from the ctrl_iface.c strtoul TP precedent, which had no value-range check at all)"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10564,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "<sys/utsname.h> is included (line 15) and declares uname(); extends the confirmed DCL31-C external-header-not-resolved FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10570,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*global) is a compile-time type-size computation, not a dereference (categorical sizeof(*ptr) EXP33-C FP)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10579,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*cfg) is a compile-time type-size computation, not a dereference (categorical sizeof(*ptr) EXP33-C FP)"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10598,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33/34-C strerror() FP: driver_nl80211.c is eloop-driven, no pthread (categorical pattern)"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10598,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33/34-C strerror() FP: driver_nl80211.c is eloop-driven, no pthread (categorical pattern)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10602,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'global' is a local pointer *variable* whose value is os_zalloc()'d heap memory, not automatic-storage data (categorical DCL30-C FP)"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10604,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'err:' is a goto target reached from earlier failure branches ('goto err;'), not unreachable (categorical MSC07-C goto-target-label FP)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10648,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nl80211_get_radio_name is wired into wpa_driver_ops.get_radio_name; 'priv' signature is pinned by the driver-ops dispatch contract (categorical DCL13-C vtable-dispatch FP)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10657,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "nl80211_pmkid is a plain internal static helper, not a callback; 'params' is only read (never modified, never forwarded to a mutating call) - genuine low-severity const opportunity"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10666,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10666,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10666,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10666,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10666,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10666,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10666,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10666,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Assignment already wrapped in its own parens inside the ||/&& chain (CERT's own recommended mitigation for signaling deliberate assignment); categorical EXP45-C FP"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10705,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause: unmatched case just skips the debug log, no missing behavior (categorical MSC01-C no-final-else FP)"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10724,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33/34-C strerror() FP: driver_nl80211.c is eloop-driven, no pthread (categorical pattern)"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10724,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33/34-C strerror() FP: driver_nl80211.c is eloop-driven, no pthread (categorical pattern)"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10724,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Negating errno-range return from send_and_recv_cmd/resp (always small, never INT_MIN); extends 'rule ignores realistic bounds' family to errno negation"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10739,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause: unmatched case just skips the debug log, no missing behavior (categorical MSC01-C no-final-else FP)"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10750,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33/34-C strerror() FP: driver_nl80211.c is eloop-driven, no pthread (categorical pattern)"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10750,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33/34-C strerror() FP: driver_nl80211.c is eloop-driven, no pthread (categorical pattern)"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10750,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Negating errno-range return from send_and_recv_cmd/resp (always small, never INT_MIN); extends 'rule ignores realistic bounds' family to errno negation"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10785,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "add_survey is a plain internal static helper, not a callback; 'sinfo' is only read - genuine low-severity const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10841,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "check_survey_ok is a plain internal static helper, not a callback; 'sinfo' is only read - genuine low-severity const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10851,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "survey_handler is registered as a netlink message-handler callback via send_and_recv_resp(...,survey_handler,...), matching the fixed int(*)(struct nl_msg*,void*) dispatch contract shared with get_channel_width/get_links_noise/cookie_handler - new sub-family of the confirmed dispatch-bound-callback DCL13-C FP class"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10853,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Array is sized by NL80211_ATTR_MAX/NL80211_SURVEY_INFO_MAX (compile-time enum constants), not a runtime-sized VLA (categorical MEM05-C compile-time-constant-size FP)"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10855,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Array is sized by NL80211_ATTR_MAX/NL80211_SURVEY_INFO_MAX (compile-time enum constants), not a runtime-sized VLA (categorical MEM05-C compile-time-constant-size FP)"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10857,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "Verified: 'surveyed_freq = 0' initializer is never read on any path before being overwritten by nla_get_u32(); matches the confirmed 'MSC13-C correctly caught genuine dead-default-init' pattern"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10860,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "survey_policy is a function-local static, write-once at declaration and read-only thereafter; driver_nl80211.c has no pthread usage (extends confirmed CON32-C/POS49-C single-threaded FP family to CON03-C)"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10860,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Array is sized by NL80211_ATTR_MAX/NL80211_SURVEY_INFO_MAX (compile-time enum constants), not a runtime-sized VLA (categorical MEM05-C compile-time-constant-size FP)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10867,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "genlmsg_attrdata(gnlh,0)/genlmsg_attrlen(gnlh,0) are pure accessor reads, no side effects to unsequence (categorical EXP30-C pure-accessor FP)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10867,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Array passed directly to nla_parse()/nla_parse_nested(), which fills it before any read (write-only output-param idiom, extends wps_parse_msg/p2p_channels_union EXP33-C FP class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10878,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Array passed directly to nla_parse()/nla_parse_nested(), which fills it before any read (write-only output-param idiom, extends wps_parse_msg/p2p_channels_union EXP33-C FP class)"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10890,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "check_survey_ok() is a locally-defined helper whose own body unambiguously returns a boolean 0/1 ('return freq_filter == surveyed_freq;'/'return 1;'); using '!' on it is idiomatic, not ambiguous"
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10928,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'wiphy_idx' is not a member of union wpa_event_data or any type touched in this function at all (grep shows it's an unrelated struct wiphy_idx_data field elsewhere in the file) - a bogus/misattributed citation, same root class as the confirmed cross-function union-conflation EXP39-C bug"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10946,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'const u8 *kek, size_t kek_len' (and kck/kck_len) is the idiomatic ptr-immediately-followed-by-its-own-size pairing (categorical API05-C ptr+len-pair FP)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10960,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10960,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10960,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10960,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10960,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Assignment already wrapped in its own parens inside the ||/&& chain (CERT's own recommended mitigation for signaling deliberate assignment); categorical EXP45-C FP"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10961,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Assignment already wrapped in its own parens inside the ||/&& chain (CERT's own recommended mitigation for signaling deliberate assignment); categorical EXP45-C FP"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 10990,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED is a packing macro (like __attribute__((packed))), not a variable - sqc misparsed the macro-suffixed anonymous struct declaration (extends confirmed STRUCT_PACKED-misparse family, here hitting MSC13-C)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11034,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11034,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Assignment already wrapped in its own parens inside the ||/&& chain (CERT's own recommended mitigation for signaling deliberate assignment); categorical EXP45-C FP"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11042,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR(addr) macro arg is a pure read, no side effects (categorical EXP30-C pure-accessor/macro-arg FP)"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11044,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33/34-C strerror() FP: driver_nl80211.c is eloop-driven, no pthread (categorical pattern)"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11044,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33/34-C strerror() FP: driver_nl80211.c is eloop-driven, no pthread (categorical pattern)"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11044,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Negating errno-range return from send_and_recv_cmd/resp (always small, never INT_MIN); extends 'rule ignores realistic bounds' family to errno negation"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11059,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11059,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Assignment already wrapped in its own parens inside the ||/&& chain (CERT's own recommended mitigation for signaling deliberate assignment); categorical EXP45-C FP"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11071,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33/34-C strerror() FP: driver_nl80211.c is eloop-driven, no pthread (categorical pattern)"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11071,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33/34-C strerror() FP: driver_nl80211.c is eloop-driven, no pthread (categorical pattern)"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11071,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Negating errno-range return from send_and_recv_cmd/resp (always small, never INT_MIN); extends 'rule ignores realistic bounds' family to errno negation"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11120,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11120,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Assignment already wrapped in its own parens inside the ||/&& chain (CERT's own recommended mitigation for signaling deliberate assignment); categorical EXP45-C FP"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11144,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33/34-C strerror() FP: driver_nl80211.c is eloop-driven, no pthread (categorical pattern)"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11144,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33/34-C strerror() FP: driver_nl80211.c is eloop-driven, no pthread (categorical pattern)"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11144,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Negating errno-range return from send_and_recv_cmd/resp (always small, never INT_MIN); extends 'rule ignores realistic bounds' family to errno negation"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11172,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Both the #ifdef CONFIG_DRIVER_NL80211_QCA and #else branches end in a return statement; function always returns (categorical MSC37-C preprocessor-branch-blind FP)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11182,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11182,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11182,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11182,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11182,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Assignment already wrapped in its own parens inside the ||/&& chain (CERT's own recommended mitigation for signaling deliberate assignment); categorical EXP45-C FP"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11186,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Assignment already wrapped in its own parens inside the ||/&& chain (CERT's own recommended mitigation for signaling deliberate assignment); categorical EXP45-C FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11206,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'const u8 *dst' is a fixed ETH_ALEN(6)-byte MAC address by hostap-wide convention, a well-known-length buffer, not a missing-size gap (categorical API05-C fixed-size-buffer FP)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11228,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11228,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11228,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11228,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11228,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11228,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11228,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11228,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11228,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Assignment already wrapped in its own parens inside the ||/&& chain (CERT's own recommended mitigation for signaling deliberate assignment); categorical EXP45-C FP"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11242,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'fail:' is a goto target reached from 'goto fail;' above, not unreachable (categorical MSC07-C goto-target-label FP)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11283,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11283,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg = f() || nla_put(msg,...)' idiom: || guarantees a sequence point after the left operand, so msg is fully assigned before being read - no unsequenced access (new pattern: rule ignores &&/|| sequence points)"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11283,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Assignment already wrapped in its own parens inside the ||/&& chain (CERT's own recommended mitigation for signaling deliberate assignment); categorical EXP45-C FP"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11291,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR(peer) macro arg is a pure read, no side effects (categorical EXP30-C pure-accessor/macro-arg FP)"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11293,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33/34-C strerror() FP: driver_nl80211.c is eloop-driven, no pthread (categorical pattern)"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11293,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33/34-C strerror() FP: driver_nl80211.c is eloop-driven, no pthread (categorical pattern)"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11293,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Negating errno-range return from send_and_recv_cmd/resp (always small, never INT_MIN); extends 'rule ignores realistic bounds' family to errno negation"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11305,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'ret = -ENOBUFS' IS read: if any earlier || operand (!msg, nla_put, nla_put_u8) short-circuits before reaching '(ret = nl80211_put_freq_params(...))', the if-body's 'return ret;' returns the original -ENOBUFS value"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11318,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Assignment already wrapped in its own parens inside the ||/&& chain (CERT's own recommended mitigation for signaling deliberate assignment); categorical EXP45-C FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11464,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nl80211_is_drv_shared is wired into wpa_driver_ops.is_drv_shared; 'priv' signature is pinned by the driver-ops dispatch contract (categorical DCL13-C vtable-dispatch FP)"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 5,
+  "fp": 145,
+  "fn": 0
+ }
+}

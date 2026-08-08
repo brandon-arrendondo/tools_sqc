@@ -1,0 +1,1211 @@
+{
+ "labels": [
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4438,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if/else-if guard-clause pedantry, no final else needed (confirmed pattern)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4449,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_s param genuinely unused in this helper; real (trivial) const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4450,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "mode only read (mode->mode), never written; real (trivial) const opportunity"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4456,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mode already validated non-NULL by caller (get_mode() NULL-checked before wpas_p2p_verify_channel forwards it)"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4472,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "const array with full brace-initializer sized via ARRAY_SIZE; explicit bound adds nothing (extends param-array ARR02-C FP pattern)"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4473,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "const array with full brace-initializer sized via ARRAY_SIZE; explicit bound adds nothing (extends param-array ARR02-C FP pattern)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4518,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if/else-if guard-clause pedantry, no final else needed (confirmed pattern)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4529,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_s param unused in wpas_p2p_verify_edmg; real (trivial) const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4530,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "mode only read (mode->edmg), never written; real (trivial) const opportunity"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4536,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mode already validated non-NULL by caller before reaching this helper (internal-invariant pattern)"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4556,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'flag' is genuinely declared `int`; bitwise & on a signed int is a real (low-severity) CERT INT13-C hit"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4561,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'flag' is genuinely declared `int`; bitwise & on a signed int is a real (low-severity) CERT INT13-C hit"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4566,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mode already validated non-NULL by caller before reaching this helper (internal-invariant pattern)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4580,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if/else-if guard-clause pedantry, no final else needed (confirmed pattern)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4594,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_s only read, never written, in is_dfs_chan_supported; real (trivial) const opportunity"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4645,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'ch' is initialized in the very same for-loop's init clause (`for (ch = o->min_chan; ...)`); not actually uninitialized"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4673,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if/else-if guard-clause pedantry, no final else needed (confirmed pattern)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4708,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal helper; wpa_s/mode already validated by all internal callers"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4708,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal helper; wpa_s/mode already validated by all internal callers"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4766,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal helper; mode already validated by all internal callers"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4792,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal helper; wpa_s/mode already validated by all internal callers"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4792,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal helper; wpa_s/mode already validated by all internal callers"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4817,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if/else-if guard-clause pedantry, no final else needed (confirmed pattern)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4833,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "T*ptr,size_t len idiom misfired as non-conformant array syntax (confirmed pattern)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4849,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal helper; wpa_s always a valid interface pointer from internal callers"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4849,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_s pointee never written (only reassigned as loop iterator); real (trivial) const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4871,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_s pointee never written (only reassigned as loop iterator); real (trivial) const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4894,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "void*ctx cast to wpa_s inside p2p_config callback (eloop/dispatch-contract FP pattern)"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4916,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "structural call-graph cycle through wpa_supplicant_event dispatch, gated by interface-status conditions; not unbounded runtime recursion"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4948,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(wpa_s->pending_interface_name), a genuine struct-member array; member arrays don't decay (confirmed pattern)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4980,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "T*ptr,size_t len idiom misfired as non-conformant array syntax (confirmed pattern)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4980,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "void*ctx p2p_config callback param (dispatch-contract FP pattern)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5002,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "T*ptr,size_t len idiom misfired as non-conformant array syntax (confirmed pattern)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5035,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "T*ptr,size_t len idiom misfired as non-conformant array syntax (confirmed pattern)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5036,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "T*ptr,size_t len idiom misfired as non-conformant array syntax (confirmed pattern)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5037,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "T*ptr,size_t len idiom misfired as non-conformant array syntax (confirmed pattern)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5077,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "T*ptr,size_t len idiom misfired as non-conformant array syntax (confirmed pattern)"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5088,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'s' just assigned by the enclosing while((s=...)) condition, which already excludes NULL"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5126,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "T*ptr,size_t len idiom misfired as non-conformant array syntax (confirmed pattern)"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5146,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf_len and sizeof(pref) are plain size_t integers (length arithmetic for wpa_snprintf_hex), not pointer arithmetic at all -- no scaling involved"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5154,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "recursive call is depth-bounded (recurses once with a failure status that short-circuits before any further recursive call), not unbounded stack growth"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5154,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "T*ptr,size_t len idiom misfired as non-conformant array syntax (confirmed pattern)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5161,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "T*ptr,size_t len idiom misfired as non-conformant array syntax (confirmed pattern)"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5188,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain 'if (ptr == NULL)' ad-hoc check flagged as stylistic gap (confirmed pattern)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5189,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_msg_global/wpa_printf args use pure MAC2STR/accessor macros, no side effects (confirmed pattern)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5200,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_msg_global/wpa_printf args use pure MAC2STR/accessor macros, no side effects (confirmed pattern)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5232,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_msg_global/wpa_printf args use pure MAC2STR/accessor macros, no side effects (confirmed pattern)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5313,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_msg_global/wpa_printf args use pure MAC2STR/accessor macros, no side effects (confirmed pattern)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5346,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if/else-if guard-clause pedantry, no final else needed (confirmed pattern)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5371,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if/else-if guard-clause pedantry, no final else needed (confirmed pattern)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5383,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if/else-if guard-clause pedantry, no final else needed (confirmed pattern)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5406,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_msg_global/wpa_printf args use pure MAC2STR/accessor macros, no side effects (confirmed pattern)"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5432,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`char ssid_hex[32*2+1]` is a fixed compile-time-constant-size array, not a VLA (confirmed wholesale MEM05-C misfire pattern)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5439,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_msg_global/wpa_printf args use pure MAC2STR/accessor macros, no side effects (confirmed pattern)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5451,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_msg_global/wpa_printf args use pure MAC2STR/accessor macros, no side effects (confirmed pattern)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5518,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_timeout_handler fixed-signature timeout_ctx (confirmed eloop dispatch FP pattern)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5600,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "void*ctx p2p_config callback (dispatch-contract FP pattern)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5612,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_msg_global/wpa_printf args use pure MAC2STR/accessor macros, no side effects (confirmed pattern)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5621,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "void*ctx p2p_config callback (dispatch-contract FP pattern)"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5626,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed local buffer with no getenv()/environment-variable code anywhere in function (confirmed wholesale-misfire pattern)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5687,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`awork = os_zalloc(sizeof(*awork))` -- sizeof(*ptr) is not evaluated, not a dereference (confirmed idiom)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5722,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "T*ptr,size_t len idiom misfired as non-conformant array syntax (confirmed pattern)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5732,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "void*ctx PASN callback (dispatch-contract FP pattern)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5741,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "T*ptr,size_t len idiom misfired as non-conformant array syntax (confirmed pattern)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5741,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "void*ctx PASN callback (dispatch-contract FP pattern)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5750,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "void*ctx PASN callback (dispatch-contract FP pattern)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 5820,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "void*ctx p2p_config is_p2p_dfs_chan callback (dispatch-contract FP pattern)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 6097,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal deinit path; wpa_s always valid at call sites"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 6147,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "structural cycle through group teardown dispatch; gated, not unbounded runtime recursion"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 6186,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_s only read in wpas_p2p_create_iface; real (trivial) const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 6206,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_s only read in wpas_p2p_config_sae_password; real (trivial) const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 6207,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ssid only read (ssid->sae_password); real (trivial) const opportunity"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 6211,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid assigned from ifs->current_ssid which was NULL-checked (`!ifs->current_ssid` continue) just above"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 6219,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_s only read in wpas_p2p_start_go_neg; real (trivial) const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 6224,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ssid only read, forwarded as-is; real (trivial) const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 6252,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ssid only read in wpas_p2p_auth_go_neg; real (trivial) const opportunity"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 6276,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "gated by wpa_s->p2p_join_scan_count > P2P_MAX_JOIN_SCAN_ATTEMPTS before falling back (guarded-cycle FP pattern)"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 6373,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "part of the same join-scan cycle gated by p2p_join_scan_count/p2p_fallback_to_go_neg"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 6489,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_msg_global/wpa_printf args use pure MAC2STR/accessor macros, no side effects (confirmed pattern)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 6505,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_msg_global/wpa_printf args use pure MAC2STR/accessor macros, no side effects (confirmed pattern)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 6513,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if/else-if guard-clause pedantry, no final else needed (confirmed pattern)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 6531,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_msg_global/wpa_printf args use pure MAC2STR/accessor macros, no side effects (confirmed pattern)"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 6609,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'start:' is a goto target reached from two earlier `goto start;` sites, not fallthrough after the preceding return (confirmed goto-label FP pattern)"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 6616,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "part of the same join-scan cycle gated by p2p_join_scan_count/p2p_fallback_to_go_neg"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 6727,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_timeout_handler fixed-signature timeout_ctx (confirmed eloop dispatch FP pattern)"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 6734,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "part of the same join-scan cycle gated by p2p_join_scan_count/p2p_fallback_to_go_neg"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 6739,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_msg_global/wpa_printf args use pure MAC2STR/accessor macros, no side effects (confirmed pattern)"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 6763,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "part of the same join-scan cycle gated by p2p_join_scan_count/p2p_fallback_to_go_neg"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 6771,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`wpas_p2p_get_group_iface` is a function call, not a static variable; tool misattributes the callee name as an uninitialized static"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 6808,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(wpa_s->pending_join_password), a genuine struct-member array; member arrays don't decay (confirmed pattern)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 6834,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if/else-if guard-clause pedantry, no final else needed (confirmed pattern)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 6987,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_s only read in is_p2p_6ghz_supported; real (trivial) const opportunity"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 7058,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "part of the same join-scan cycle gated by p2p_join_scan_count/p2p_fallback_to_go_neg"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 7059,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "T*ptr,size_t len idiom misfired as non-conformant array syntax (confirmed pattern)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 7066,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "T*ptr,size_t len idiom misfired as non-conformant array syntax (confirmed pattern)"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 7073,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed local buffer with no getenv()/environment-variable code anywhere in function (confirmed wholesale-misfire pattern)"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 7082,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "short-circuit-safe `ssid == NULL || ssid->...` idiom; ssid checked before the member access"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 7123,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(wpa_s->p2p_pin), a genuine struct-member array; member arrays don't decay (confirmed pattern)"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 7127,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(wpa_s->p2p_pin), a genuine struct-member array; member arrays don't decay (confirmed pattern)"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 7129,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(wpa_s->p2p_pin), a genuine struct-member array; member arrays don't decay (confirmed pattern)"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 7130,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(wpa_s->p2p_pin), a genuine struct-member array; member arrays don't decay (confirmed pattern)"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 7135,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(wpa_s->p2p_pin), a genuine struct-member array; member arrays don't decay (confirmed pattern)"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 7141,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(wpa_s->pending_join_password), a genuine struct-member array; member arrays don't decay (confirmed pattern)"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 7185,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid=NULL is read by the very next loop iteration's overwrite or by `if (ssid)` after the loop; not dead (loop-scope MSC13-C misfire)"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 7189,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "force_freq is read a few lines later as an argument to wpas_p2p_auth_go_neg(); not dead"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 7232,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(wpa_s->pending_join_password), a genuine struct-member array; member arrays don't decay (confirmed pattern)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 7344,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_s only read in wpas_p2p_listen_start; real (trivial) const opportunity"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 7405,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal helper; wpa_s always valid at call sites"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 7405,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "structural cycle through group teardown dispatch; gated, not unbounded runtime recursion"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 7434,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "wpa_s/calling_wpa_s are not restrict-qualified, and the callee explicitly handles wpa_s==calling_wpa_s as an intentional case (`if (calling_wpa_s == wpa_s && ...)`)"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 7453,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed local buffer with no getenv()/environment-variable code anywhere in function (confirmed wholesale-misfire pattern)"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 7533,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "2412+(r%3)*25 is bounded to [2412,2462] since r%3 in [0,2]; nowhere near INT_MAX (rule doesn't see the modulo-bounded range)"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 7533,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "2412+(r%3)*25 is bounded to [2412,2462] since r%3 in [0,2]; nowhere near INT_MAX (rule doesn't see the modulo-bounded range)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 7533,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'r' is set via os_get_random(&r,sizeof(r)) two lines earlier; tool doesn't track pointer-output initialization"
+  },
+  {
+   "rule": "INT10-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 7533,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'r' is declared `unsigned int`; % on an unsigned operand can never produce an implementation-defined negative result (rule's signedness detection is wrong)"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 7570,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "const array with full brace-initializer sized via ARRAY_SIZE; explicit bound adds nothing (extends param-array ARR02-C FP pattern)"
+  },
+  {
+   "rule": "INT33-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 7589,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "num_freqs = ARRAY_SIZE(freqs) on a fixed 8-element array; compile-time-constant, provably non-zero"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 7711,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "2412+((r+i)%3)*25 is bounded to [2412,2462] since the %3 term in [0,2]; nowhere near INT_MAX (rule doesn't see the modulo-bounded range)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 7711,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'r' is set via os_get_random(&r,sizeof(r)) a few lines earlier; tool doesn't track pointer-output initialization"
+  },
+  {
+   "rule": "INT10-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 7711,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'r' is declared `unsigned int`; % on an unsigned operand can never produce an implementation-defined negative result (rule's signedness detection is wrong)"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 7733,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'out:' is a goto target reached from multiple earlier `goto out;` sites, not fallthrough after the preceding return (confirmed goto-label FP pattern)"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 7765,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`sizeof(*params)` sizes the pointee struct via explicit dereference -- not a decayed array/pointer param at all, different mistake than the member-array shape"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 7822,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "rule matches the base identifier 'wpa_s'; the bitwise and arithmetic operations are on different unrelated struct member fields, not the same value (confirmed pattern)"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8089,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'fail:' is a goto target reached via `goto fail;`, not fallthrough after the preceding return (confirmed goto-label FP pattern)"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8090,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'success:' and 'fail:' are mutually-exclusive branches (one goto's past the other's free+return); freqs is freed exactly once on any given path (confirmed mutually-exclusive-branch FP pattern)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8090,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same mutually-exclusive success:/fail: branches as the MEM30-C finding at this line"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8095,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "part of the same join-scan cycle gated by p2p_join_scan_count/p2p_fallback_to_go_neg"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8147,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "group_wpa_s points to a heap-allocated interface from wpas_p2p_init_group_interface, not to automatic/stack storage (confirmed DCL30-C local-variable-vs-local-storage FP pattern)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8205,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`wpas_p2p_get_group_iface` is a function call, not a static variable; same tool misattribution as :6771"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8206,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain 'if (ptr == NULL)' ad-hoc check flagged as stylistic gap (confirmed pattern)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8229,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`wpas_p2p_get_group_iface` is a function call, not a static variable; same tool misattribution as :6771"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8230,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain 'if (ptr == NULL)' ad-hoc check flagged as stylistic gap (confirmed pattern)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8289,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`entry = os_zalloc(sizeof(*entry))` -- sizeof(*ptr) is not evaluated, not a dereference (confirmed idiom)"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8335,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "other_iface_found is read on the next loop iteration's condition (`!other_iface_found || ...`); not dead (loop-scope MSC13-C misfire)"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8422,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(wpa_s->pending_join_password), a genuine struct-member array; member arrays don't decay (confirmed pattern)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8479,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`wpas_p2p_get_group_iface` is a function call, not a static variable; same tool misattribution as :6771"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8480,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain 'if (ptr == NULL)' ad-hoc check flagged as stylistic gap (confirmed pattern)"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8549,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ssid has a single internal call site (ap.c) that always supplies the active config's ssid; internal-invariant FP pattern"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8552,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`cfg = os_zalloc(sizeof(*cfg))` -- sizeof(*ptr) is not evaluated, not a dereference (confirmed idiom)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8558,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if/else-if guard-clause pedantry, no final else needed (confirmed pattern)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8582,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "group points to the heap object returned by p2p_group_init, not automatic/stack storage (confirmed DCL30-C local-variable-vs-local-storage FP pattern)"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8586,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "structural cycle through WPS success dispatch; gated by provisioning-state flags, not unbounded runtime recursion"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8624,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if/else-if guard-clause pedantry, no final else needed (confirmed pattern)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8647,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal event callback; fail always populated by the WPS event layer"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8729,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free() explicitly NULL-checks internally (src/utils/os_unix.c:770); confirmed os_free(NULL)-is-safe FP class"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8751,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "this free is in a separate, mutually-exclusive early-return branch from the :8729 free; each returns immediately (confirmed mutually-exclusive-branch FP pattern)"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8755,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reached only when neither earlier os_free(p2ps_prov)+return branch executed; p2ps_prov is not freed on this path (confirmed mutually-exclusive-branch FP pattern)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8761,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "thin forwarding wrapper to p2p_scan_result_text; no direct dereference here, internal-only API"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8761,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "thin forwarding wrapper to p2p_scan_result_text; no direct dereference here, internal-only API"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 8761,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "thin forwarding wrapper to p2p_scan_result_text; no direct dereference here, internal-only API"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 17,
+  "fp": 133,
+  "fn": 0
+ }
+}

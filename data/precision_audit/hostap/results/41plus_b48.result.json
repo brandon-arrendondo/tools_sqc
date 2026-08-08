@@ -1,0 +1,1211 @@
+{
+ "labels": [
+  {
+   "rule": "CON03-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 42,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread CON03-C class: wpa_cli.c is single-threaded/eloop-driven, no pthread anywhere in file"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 43,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread CON03-C class: wpa_cli.c is single-threaded/eloop-driven, no pthread anywhere in file"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 44,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread CON03-C class: wpa_cli.c is single-threaded/eloop-driven, no pthread anywhere in file"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 45,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread CON03-C class: wpa_cli.c is single-threaded/eloop-driven, no pthread anywhere in file"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 51,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread CON03-C class: wpa_cli.c is single-threaded/eloop-driven, no pthread anywhere in file"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 55,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread CON03-C class: wpa_cli.c is single-threaded/eloop-driven, no pthread anywhere in file"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 56,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread CON03-C class: wpa_cli.c is single-threaded/eloop-driven, no pthread anywhere in file"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 57,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread CON03-C class: wpa_cli.c is single-threaded/eloop-driven, no pthread anywhere in file"
+  },
+  {
+   "rule": "CON02-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 57,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "extends no-pthread CON03-C class to CON02-C; 'interactive' is a plain mode flag, no thread sync involved"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 58,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no-pthread CON03-C class: wpa_cli.c is single-threaded/eloop-driven, no pthread anywhere in file"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 84,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 84,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 140,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C fires on any plain if(ptr==NULL) guard (confirmed stylistic-pedantry class)"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 141,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctrl_conn/mon_conn are module-static globals owned across calls, freed later by wpa_cli_close_connection(); not per-call local resources - new variant of the MEM12-C ownership-transfer FP class"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 147,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctrl_conn/mon_conn are module-static globals owned across calls, freed later by wpa_cli_close_connection(); not per-call local resources - new variant of the MEM12-C ownership-transfer FP class"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 155,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctrl_conn/mon_conn are module-static globals owned across calls, freed later by wpa_cli_close_connection(); not per-call local resources - new variant of the MEM12-C ownership-transfer FP class"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 162,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctrl_conn/mon_conn are module-static globals owned across calls, freed later by wpa_cli_close_connection(); not per-call local resources - new variant of the MEM12-C ownership-transfer FP class"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 167,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctrl_conn/mon_conn are module-static globals owned across calls, freed later by wpa_cli_close_connection(); not per-call local resources - new variant of the MEM12-C ownership-transfer FP class"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 171,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "callee wpa_ctrl_open2() NULL-checks cli_path internally (`if (cli_path && cli_path[0]=='/')`) before any deref - extends confirmed 'callee guarantees non-null/checks internally' EXP34-C FP class"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 174,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctrl_conn/mon_conn are module-static globals owned across calls, freed later by wpa_cli_close_connection(); not per-call local resources - new variant of the MEM12-C ownership-transfer FP class"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 178,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "callee wpa_ctrl_open2() NULL-checks cli_path internally (`if (cli_path && cli_path[0]=='/')`) before any deref - extends confirmed 'callee guarantees non-null/checks internally' EXP34-C FP class"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 192,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 192,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 195,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctrl_conn/mon_conn are module-static globals owned across calls, freed later by wpa_cli_close_connection(); not per-call local resources - new variant of the MEM12-C ownership-transfer FP class"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 199,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctrl_conn/mon_conn are module-static globals owned across calls, freed later by wpa_cli_close_connection(); not per-call local resources - new variant of the MEM12-C ownership-transfer FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 205,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "static-duration pointer is implicitly zero-initialized per C 6.7.9p10; checking `== NULL` on it is safe by the language guarantee, not an uninitialized-use"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 210,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "static/global cross-call-significance MSC13-C FP class: wpa_cli_attached/ctrl_conn/mon_conn are module statics read by later calls to other functions, not dead within this function"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 213,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "static/global cross-call-significance MSC13-C FP class: wpa_cli_attached/ctrl_conn/mon_conn are module statics read by later calls to other functions, not dead within this function"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 214,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "static-duration pointer is implicitly zero-initialized per C 6.7.9p10; checking `== NULL` on it is safe by the language guarantee, not an uninitialized-use"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 217,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "static/global cross-call-significance MSC13-C FP class: wpa_cli_attached/ctrl_conn/mon_conn are module statics read by later calls to other functions, not dead within this function"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 222,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg_cb callback param pair (char *msg, size_t len) is the idiomatic pointer+length convention, not a real conformant-array-syntax gap (confirmed API05-C class)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 222,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_cli_msg_cb is registered as wpa_ctrl_request's fixed-signature msg_cb callback (void(*)(char*,size_t)) - dispatch-contract FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 234,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "static-duration pointer is implicitly zero-initialized per C 6.7.9p10; checking `== NULL` on it is safe by the language guarantee, not an uninitialized-use"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 242,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misidentifies local parameter 'cmd' as a global/static; cmd is a plain function parameter reassigned to point at local buf and used only within the same call before return - no dangling pointer, no global/static involved"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 248,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "argument-type misidentification engine bug: 'cmd' is declared const char* (a real pointer) for the %s specifier; extends the confirmed FIO47-C argument-binding/type-misparse family beyond sscanf to printf"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 250,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "guard-clause if/else-if with no final else: fallthrough to the print logic is the intended default when ret>=0, not a missing case (confirmed MSC01-C stylistic-pedantry class)"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 251,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "argument-type misidentification engine bug: 'cmd' is declared const char* (a real pointer) for the %s specifier; extends the confirmed FIO47-C argument-binding/type-misparse family beyond sscanf to printf"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 255,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len is written back by wpa_ctrl_request() bounded by the *reply_len passed in (sizeof(buf)-1); standard bounded recv-style contract, rule doesn't see the callee's size-in/size-out guarantee"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 256,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is written by wpa_ctrl_request(ctrl,cmd,...,buf,&len,...) through the output pointer parameter before this read - callee-side write-through-pointer blindness, same shape as the confirmed wps_parse_msg/nla_parse EXP33-C FP class"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 275,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "argument-type misidentification engine bug: 'cmd' is declared const char* (a real pointer) for the %s specifier; extends the confirmed FIO47-C argument-binding/type-misparse family beyond sscanf to printf"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 275,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 275,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 286,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 292,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 308,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 314,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 326,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 332,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 339,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 378,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 378,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 387,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misattribution: cited identifier (str/fields/argv) is a pointer/array passed as a plain function argument at this line, not a scalar char undergoing widening conversion"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 392,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misattribution: line calls the forward-declared static function wpa_list_cmd_list(), not a static variable read"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 400,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 400,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 407,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 407,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 416,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 422,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 455,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misattribution: cited identifier (str/fields/argv) is a pointer/array passed as a plain function argument at this line, not a scalar char undergoing widening conversion"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 456,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "locally-declared array sized by its own brace initializer (accessed only via ARRAY_SIZE()); no real implicit-bounds gap, extends the confirmed ARR02-C initializer-sized-array FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 529,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misattribution: cited identifier (str/fields/argv) is a pointer/array passed as a plain function argument at this line, not a scalar char undergoing widening conversion"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 549,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 556,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 563,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 577,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misattribution: cited identifier (str/fields/argv) is a pointer/array passed as a plain function argument at this line, not a scalar char undergoing widening conversion"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 578,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "locally-declared array sized by its own brace initializer (accessed only via ARRAY_SIZE()); no real implicit-bounds gap, extends the confirmed ARR02-C initializer-sized-array FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 631,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misattribution: cited identifier (str/fields/argv) is a pointer/array passed as a plain function argument at this line, not a scalar char undergoing widening conversion"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 649,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 655,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 662,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 668,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 708,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 740,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 740,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 759,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 788,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 795,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 795,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 836,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 845,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed-size local buffer sized by compile-time macro constants (SSID_MAX_LEN); no getenv/putenv anywhere in this function - confirmed ENV01-C fixed-macro-array misfire class"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 845,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed-size array sized by compile-time macro/literal arithmetic (2*SSID_MAX_LEN+1, 2*64+1), not a VLA - confirmed MEM05-C fixed-macro-array misfire class"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 846,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed-size array sized by compile-time macro/literal arithmetic (2*SSID_MAX_LEN+1, 2*64+1), not a VLA - confirmed MEM05-C fixed-macro-array misfire class"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 871,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 871,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 874,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 874,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 908,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 919,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 919,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 942,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 942,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 956,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 956,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 968,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 974,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed-size local buffer sized by compile-time macro constants (SSID_MAX_LEN); no getenv/putenv anywhere in this function - confirmed ENV01-C fixed-macro-array misfire class"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 974,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed-size array sized by compile-time macro/literal arithmetic (2*SSID_MAX_LEN+1, 2*64+1), not a VLA - confirmed MEM05-C fixed-macro-array misfire class"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 975,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed-size array sized by compile-time macro/literal arithmetic (2*SSID_MAX_LEN+1, 2*64+1), not a VLA - confirmed MEM05-C fixed-macro-array misfire class"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1000,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1000,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1023,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1023,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1047,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1053,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1053,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1058,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`end = cmd + sizeof(cmd)` is array-to-pointer decay for address/boundary computation, not a read of cmd's uninitialized contents; cmd is subsequently written via os_snprintf(pos,...) before any real use"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1080,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1086,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1086,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1091,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`end = cmd + sizeof(cmd)` is array-to-pointer decay for address/boundary computation, not a read of cmd's uninitialized contents; cmd is subsequently written via os_snprintf(pos,...) before any real use"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1114,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1120,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1120,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1125,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`end = cmd + sizeof(cmd)` is array-to-pointer decay for address/boundary computation, not a read of cmd's uninitialized contents; cmd is subsequently written via os_snprintf(pos,...) before any real use"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1147,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1153,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1153,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1158,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`end = cmd + sizeof(cmd)` is array-to-pointer decay for address/boundary computation, not a read of cmd's uninitialized contents; cmd is subsequently written via os_snprintf(pos,...) before any real use"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1179,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1185,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1185,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1190,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`end = cmd + sizeof(cmd)` is array-to-pointer decay for address/boundary computation, not a read of cmd's uninitialized contents; cmd is subsequently written via os_snprintf(pos,...) before any real use"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1212,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1218,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1218,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1223,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`end = cmd + sizeof(cmd)` is array-to-pointer decay for address/boundary computation, not a read of cmd's uninitialized contents; cmd is subsequently written via os_snprintf(pos,...) before any real use"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1245,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1255,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`end = cmd + sizeof(cmd)` is array-to-pointer decay for address/boundary computation, not a read of cmd's uninitialized contents; cmd is subsequently written via os_snprintf(pos,...) before any real use"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1278,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1284,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1284,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1289,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`end = cmd + sizeof(cmd)` is array-to-pointer decay for address/boundary computation, not a read of cmd's uninitialized contents; cmd is subsequently written via os_snprintf(pos,...) before any real use"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1314,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1314,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1365,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1377,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misattribution: cited identifier (str/fields/argv) is a pointer/array passed as a plain function argument at this line, not a scalar char undergoing widening conversion"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1386,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1386,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1414,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1414,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1432,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1432,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1441,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "locally-declared array sized by its own brace initializer (accessed only via ARRAY_SIZE()); no real implicit-bounds gap, extends the confirmed ARR02-C initializer-sized-array FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1519,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misattribution: cited identifier (str/fields/argv) is a pointer/array passed as a plain function argument at this line, not a scalar char undergoing widening conversion"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1543,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misattribution: cited identifier (str/fields/argv) is a pointer/array passed as a plain function argument at this line, not a scalar char undergoing widening conversion"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1559,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1559,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary printf/usage() string-literal concatenation with #ifdef fragments; preprocessor resolves before the call, no macro-arg hazard (confirmed PRE32-C/FIO30-C class)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1570,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misattribution: cited identifier (str/fields/argv) is a pointer/array passed as a plain function argument at this line, not a scalar char undergoing widening conversion"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1594,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wpa_cli.c",
+   "line": 1600,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handler is registered in wpa_cli_commands[] against the fixed struct wpa_cli_cmd.handler signature (int(*)(struct wpa_ctrl*,int,char*[])) - dispatch-contract FP class, same root cause as eloop/EAP-method tables"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 0,
+  "fp": 150,
+  "fn": 0
+ }
+}

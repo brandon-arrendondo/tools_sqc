@@ -1,0 +1,1211 @@
+{
+ "labels": [
+  {
+   "rule": "INT14-C",
+   "file": "hostapd/config_file.c",
+   "line": 1469,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT14-C stylistic-pedantry mismatch (BCD packing shift/or on char array elements), confirmed categorical FP"
+  },
+  {
+   "rule": "EXP00-C",
+   "file": "hostapd/config_file.c",
+   "line": 1471,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Suggested parenthesization already present verbatim in source; moot/non-actionable finding"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "hostapd/config_file.c",
+   "line": 1471,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT14-C stylistic-pedantry mismatch, same BCD-packing idiom as :1469"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "hostapd/config_file.c",
+   "line": 1485,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label reached via earlier goto fail, not fallthrough after return; confirmed MSC07-C pattern"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "hostapd/config_file.c",
+   "line": 1514,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_realloc_array params are not restrict-qualified; confirmed EXP43-C non-restrict FP class"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "hostapd/config_file.c",
+   "line": 1526,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "offsets freed only at line 1533, after this read at 1526; access precedes free, order-tracking bug"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 1539,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "encoding = atoi(pos) with no downstream range/validity check"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 1539,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: no error detection on atoi result"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 1548,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*end = '\\0' literal char assignment, not a widening conversion; confirmed massive STR34-C FP class"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 1580,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "eap_method = atoi(pos), never validated afterward"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 1580,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: unchecked atoi"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 1590,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "auth_id[...] = atoi(pos), never validated afterward"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 1590,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: unchecked atoi"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 1595,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "auth_val[...] = atoi(pos), never validated afterward"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 1595,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: unchecked atoi"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "hostapd/config_file.c",
+   "line": 1612,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "while(*rpos) bounded by realm_buf NUL-termination + explicit break on strchr NULL; confirmed bounded-scan FP class"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "hostapd/config_file.c",
+   "line": 1612,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "loop splits/NUL-terminates realm_buf in place; no copying occurs at all, mischaracterized as a copy loop"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 1621,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*rpos++ = '\\0' literal char assignment; confirmed massive STR34-C FP class"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "hostapd/config_file.c",
+   "line": 1628,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label reached via earlier goto fail; confirmed MSC07-C pattern"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 1646,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "infoid = atoi(buf) with no downstream range/validity check"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 1646,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: unchecked atoi"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "hostapd/config_file.c",
+   "line": 1648,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len used with &1 parity check then /=2 arithmetic; confirmed INT14-C parity-then-arithmetic FP class"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "hostapd/config_file.c",
+   "line": 1687,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "qos_map_set[16+2*21] is a fixed compile-time-constant size, not a VLA; confirmed MEM05-C constant-sum FP class"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "hostapd/config_file.c",
+   "line": 1688,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf parameter is plain char*, not const-qualified anywhere; EXP40-C's const premise is factually wrong"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 1698,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "val range-checked (>255||<0) immediately after atoi; confirmed range-checked-atoi FP class"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 1698,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same as ERR07-C: immediately range-validated"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "hostapd/config_file.c",
+   "line": 1718,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "qos_map_set filled to exactly `count` entries before memcpy of `count` bytes; not actually uninitialized"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/config_file.c",
+   "line": 1726,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "buf param never modified in function body and not forwarded to any vtable/callback; genuine low-severity const opportunity"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "hostapd/config_file.c",
+   "line": 1735,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_realloc is not restrict-qualified; confirmed EXP43-C non-restrict FP class"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 1743,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "conn_cap[0] = atoi(pos), truncated into u8 with no validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 1743,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: unchecked atoi"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 1748,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "WPA_PUT_LE16 arg from atoi(pos), no validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 1748,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: unchecked atoi"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 1753,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "conn_cap[3] = atoi(pos), no validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 1753,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: unchecked atoi"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 1782,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "WAN Info downlink speed from atoi(pos), no validation anywhere in function"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 1782,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: unchecked atoi"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 1789,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "uplink speed from atoi(pos), no validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 1789,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: unchecked atoi"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 1796,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "downlink load from atoi(pos), no validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 1796,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: unchecked atoi"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 1803,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "uplink load from atoi(pos), no validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 1803,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: unchecked atoi"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 1810,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "LMD field from atoi(pos), no validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 1810,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: unchecked atoi"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "hostapd/config_file.c",
+   "line": 1817,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label reached via earlier goto fail; confirmed MSC07-C pattern"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "hostapd/config_file.c",
+   "line": 1848,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "while(*pos) bounded: each iteration requires a valid ':' or fails/breaks; NUL-terminated bounded scan"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "hostapd/config_file.c",
+   "line": 1848,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pos is never actually NULL on any path reaching this line (validated by prior strchr/strtod checks)"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "hostapd/config_file.c",
+   "line": 1849,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*bias) in os_realloc_array call misread as a freed-pointer dereference; matches confirmed b20 realloc-own-pointer MEM30-C bug"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 1854,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bias[num].channel range-checked (<=0 rejected) immediately after atoi; confirmed range-checked-atoi FP class"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 1854,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same as ERR07-C: immediately range-validated"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "hostapd/config_file.c",
+   "line": 1861,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "strtod validated via endptr (end==pos) plus range check; CERT permits endptr as an errno alternative"
+  },
+  {
+   "rule": "ERR01-C",
+   "file": "hostapd/config_file.c",
+   "line": 1861,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same reasoning: endptr-based validation is present, errno check not required by CERT's own alternative"
+  },
+  {
+   "rule": "ERR30-C",
+   "file": "hostapd/config_file.c",
+   "line": 1861,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same reasoning: endptr-based validation already performed"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "hostapd/config_file.c",
+   "line": 1875,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label reached via earlier goto fail; confirmed MSC07-C pattern"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "hostapd/config_file.c",
+   "line": 1901,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "elems is a heap pointer from wpabuf_parse_bin, not local automatic storage; confirmed DCL30-C variable-vs-storage FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "hostapd/config_file.c",
+   "line": 1914,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*realm) idiom, sizeof never evaluates its operand; confirmed EXP33-C FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/config_file.c",
+   "line": 1971,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "value's pointee is mutated via aliased pos/next pointers (*next++='\\0'); confirmed DCL13-C aliased-mutation FP sub-class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "hostapd/config_file.c",
+   "line": 1976,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*wt) idiom; confirmed EXP33-C FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 1984,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*next++ = '\\0' literal char assignment; confirmed massive STR34-C FP class"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 1992,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wt->weight rejected via `if (!wt->weight)` immediately after atoi; confirmed range-checked-atoi FP class"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 1992,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same as ERR07-C: immediately range-validated"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 2032,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "vlan_id = atoi(pos2), no downstream validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2032,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: unchecked atoi"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/config_file.c",
+   "line": 2088,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "misattributed: no WPA_PUT_LE16 call near this #ifdef, which sits inside a multi-line if-condition; matches confirmed PRE32-C misattribution pattern"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "hostapd/config_file.c",
+   "line": 2120,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fopen return IS checked two lines later (if (!f) {...return -1;}); finding is simply wrong"
+  },
+  {
+   "rule": "FIO05-C",
+   "file": "hostapd/config_file.c",
+   "line": 2120,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sae_password_file is an admin-supplied local config path, not adversarial network input; confirmed FIO05-C hostapd-config FP class"
+  },
+  {
+   "rule": "WIN03-C",
+   "file": "hostapd/config_file.c",
+   "line": 2120,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "hostapd targets Linux/POSIX; Windows handle-inheritance concern not realistic for this file"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "hostapd/config_file.c",
+   "line": 2127,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misattributed cast-away-const on 'f' (plain non-const FILE*); matches confirmed b20 fgets-while EXP05-C misattribution pattern"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2130,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*pos = '\\0' literal char assignment; confirmed massive STR34-C FP class"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "hostapd/config_file.c",
+   "line": 2136,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fclose() on a read-only stream; not actionable, confirmed b20 read-only-fclose FP class"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "hostapd/config_file.c",
+   "line": 2141,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same read-only fclose reasoning as :2136"
+  },
+  {
+   "rule": "FIO24-C",
+   "file": "hostapd/config_file.c",
+   "line": 2141,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "the two closes are on mutually exclusive branches (error return vs success path); confirmed mutually-exclusive-branch FIO24-C FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "hostapd/config_file.c",
+   "line": 2155,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*conf) idiom; confirmed EXP33-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "hostapd/config_file.c",
+   "line": 2166,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "val freed then reassigned to a fresh pkhash allocation before this free; targets a different allocation, not a double free"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "hostapd/config_file.c",
+   "line": 2170,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label reached via earlier goto fail; confirmed MSC07-C pattern"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "hostapd/config_file.c",
+   "line": 2171,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: cleanup frees whichever single still-live allocation reached it via goto; same free-reassign reasoning as :2166, not a double free"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "hostapd/config_file.c",
+   "line": 2171,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same reasoning as MEM30-C at this line"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2171,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free NULL-checks internally; confirmed os_free(NULL)-is-safe EXP34-C FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/config_file.c",
+   "line": 2179,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf+max_len is the idiomatic pointer+size companion pair; confirmed API05-C FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/config_file.c",
+   "line": 2179,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same idiomatic pointer/size pair misfire as the other API05-C on this line"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2181,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "val is a plain function parameter passed to os_strlen; no char-widening conversion occurs, cross-function conflation"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "hostapd/config_file.c",
+   "line": 2181,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hlen used with hlen&1 parity check then len=hlen/2 arithmetic; confirmed INT14-C parity-then-arithmetic FP class"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "hostapd/config_file.c",
+   "line": 2182,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no getenv/environment-variable code anywhere in the function; confirmed ENV01-C wholesale-misfire FP class"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "hostapd/config_file.c",
+   "line": 2198,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "val validated via *end and range 0-0xffff; endptr-based check is a CERT-recognized alternative to errno"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "hostapd/config_file.c",
+   "line": 2198,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same reasoning: return value effectively checked via endptr+range"
+  },
+  {
+   "rule": "ERR01-C",
+   "file": "hostapd/config_file.c",
+   "line": 2198,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same reasoning: endptr-based validation present"
+  },
+  {
+   "rule": "ERR30-C",
+   "file": "hostapd/config_file.c",
+   "line": 2198,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same reasoning: endptr-based validation present"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2198,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos is a pointer argument to strtol, not a char being widened; cross-function type conflation bug"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2198,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*end is not dereferenced on this line at all (dereference happens at :2200); misattributed"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2198,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "end is a pointer variable argument, not a char undergoing conversion; cross-function conflation"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "hostapd/config_file.c",
+   "line": 2200,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strtol always writes a valid pointer into *endptr before returning; end is never actually uninitialized here"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2200,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "endptr is guaranteed non-NULL by strtol's contract; confirmed endptr-non-null EXP34-C FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2217,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "val is a plain function parameter passed to os_strlen; no char-widening conversion, cross-function conflation"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "hostapd/config_file.c",
+   "line": 2219,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tmp is freed on the error path and its ownership is transferred to *var on success; not leaked"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "hostapd/config_file.c",
+   "line": 2231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tmp is a wpabuf_alloc heap pointer, not local automatic storage; confirmed DCL30-C variable-vs-storage FP class"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 2247,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "bridge_hairpin = atoi(pos), no downstream validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2247,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: unchecked atoi"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 2276,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "logger_syslog_level = atoi(pos), no downstream validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2276,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: unchecked atoi"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 2278,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "logger_stdout_level = atoi(pos), no downstream validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2278,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: unchecked atoi"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 2280,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "logger_syslog = atoi(pos), no downstream validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2280,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: unchecked atoi"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 2282,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "logger_stdout = atoi(pos), no downstream validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2282,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: unchecked atoi"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 2314,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "result immediately boolean-coerced via `> 0`; confirmed atoi-boolean-coerced FP sub-class"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2314,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same as ERR07-C: boolean-coerced result"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 2316,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "acl range-validated against 3 valid enum values immediately after; confirmed range-checked-atoi FP class"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2316,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same as ERR07-C: immediately range-validated"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 2341,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wds_sta = atoi(pos), no downstream validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2341,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: unchecked atoi"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 2343,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "start_disabled = atoi(pos), no downstream validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2343,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: unchecked atoi"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 2345,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "isolate = atoi(pos), no downstream validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2345,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: unchecked atoi"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 2347,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ap_max_inactivity = atoi(pos), no downstream validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2347,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: unchecked atoi"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 2349,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "skip_inactivity_poll = atoi(pos), no downstream validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2349,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: unchecked atoi"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 2351,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "val range-checked (0-2) immediately after atoi; confirmed range-checked-atoi FP class"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2351,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same as ERR07-C: immediately range-validated"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 2360,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "max_acceptable_idle_period = atoi(pos), no downstream validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2360,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: unchecked atoi"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 2362,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "val range-checked (0-1) immediately after atoi; confirmed range-checked-atoi FP class"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2362,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same as ERR07-C: immediately range-validated"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "hostapd/config_file.c",
+   "line": 2384,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "strtol(pos, NULL, 16) discards endptr entirely and result is never range/errno-checked"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "hostapd/config_file.c",
+   "line": 2384,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same: return value genuinely unchecked, no endptr captured"
+  },
+  {
+   "rule": "ERR30-C",
+   "file": "hostapd/config_file.c",
+   "line": 2384,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same: no errno reset/check and no endptr-based alternative used"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 2386,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ieee80211d = atoi(pos), no downstream validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2386,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: unchecked atoi"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 2388,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ieee80211h = atoi(pos), no downstream validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2388,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: unchecked atoi"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 2390,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ieee802_1x = atoi(pos), no downstream validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2390,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: unchecked atoi"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 2392,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eapol_version range-checked (1..max_ver) immediately after atoi; confirmed range-checked-atoi FP class"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2392,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same as ERR07-C: immediately range-validated"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 2409,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "obsolete eap_authenticator alias = atoi(pos), no downstream validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2409,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: unchecked atoi"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 2412,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "eap_server = atoi(pos), no downstream validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2412,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: unchecked atoi"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 2448,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "check_crl = atoi(pos), no downstream validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2448,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: unchecked atoi"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 2450,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "check_crl_strict = atoi(pos), no downstream validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2450,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: unchecked atoi"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 2452,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "crl_reload_interval = atoi(pos), no downstream validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2452,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: unchecked atoi"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 2454,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "tls_session_lifetime = atoi(pos), no downstream validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/config_file.c",
+   "line": 2454,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same as ERR07-C: unchecked atoi"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/config_file.c",
+   "line": 2458,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "max_auth_rounds = atoi(pos), no downstream validation"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 73,
+  "fp": 77,
+  "fn": 0
+ }
+}

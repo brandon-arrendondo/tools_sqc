@@ -1,0 +1,1354 @@
+{
+ "src/crypto/tls_wolfssl.c#part1of2": [
+  {
+   "column": 1,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 43,
+   "message": "Shared variable 'tls_ref_count' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 72,
+   "message": "Shared variable 'tls_global' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 91,
+   "message": "String buffer placed before pointer in struct 'tls_connection': 'unsigned char client_random[RAN_LEN];' before 'WOLFSSL_X509 *peer_cert;' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'unsigned char client_random' after the pointer field 'WOLFSSL_X509 *peer_cert;', or use a char* pointer instead of a char array"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 92,
+   "message": "String buffer placed before pointer in struct 'tls_connection': 'unsigned char server_random[RAN_LEN];' before 'WOLFSSL_X509 *peer_cert;' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'unsigned char server_random' after the pointer field 'WOLFSSL_X509 *peer_cert;', or use a char* pointer instead of a char array"
+  },
+  {
+   "column": 39,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 161,
+   "message": "Pointer parameter 'ssl' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssl'"
+  },
+  {
+   "column": 36,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 186,
+   "message": "Pointer parameter 'ssl' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssl'"
+  },
+  {
+   "column": 43,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 207,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 9,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 312,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 376,
+   "message": "Arithmetic expression involving 'ecc_key_sz' (narrow type 'short') without proper overflow protection",
+   "rule_id": "INT08-C",
+   "severity": "Medium",
+   "suggestion": "Use a wider type (e.g., 'long' instead of 'short') or add overflow checks before the operation"
+  },
+  {
+   "column": 37,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 378,
+   "message": "Arithmetic expression involving 'ecc_key_sz' (narrow type 'short') without proper overflow protection",
+   "rule_id": "INT08-C",
+   "severity": "Medium",
+   "suggestion": "Use a wider type (e.g., 'long' instead of 'short') or add overflow checks before the operation"
+  },
+  {
+   "column": 12,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 408,
+   "message": "Memory allocated with 'tls_context_new' for variable 'tls_global' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(tls_global)' before the variable goes out of scope"
+  },
+  {
+   "column": 12,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 408,
+   "message": "Memory allocated with 'tls_context_new' for variable 'context' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(context)' before the variable goes out of scope"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 413,
+   "message": "Local variable 'context' assigned to global/static variable 'tls_global' - creates dangling pointer",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage for local variable or copy data instead of assigning pointer"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 413,
+   "message": "Stack pointer escape: local array/VLA assigned to global 'tls_global'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not save pointers to stack-allocated memory in global variables."
+  },
+  {
+   "column": 28,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 425,
+   "message": "Function 'wolfSSLv23_client_method' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 432,
+   "message": "Value assigned to 'tls_global' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 436,
+   "message": "Function 'wolfSSL_SetIORecv' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 437,
+   "message": "Function 'wolfSSL_SetIOSend' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 459,
+   "message": "Memory leak: 'ssl_ctx' allocated with 'wolfSSL_CTX_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'ssl_ctx' before this return statement"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 459,
+   "message": "Memory leak: 'tls_global' allocated with 'tls_context_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'tls_global' before this return statement"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 463,
+   "message": "Function returns pointer to local variable 'ssl_ctx' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 463,
+   "message": "Memory leak: 'tls_global' allocated with 'tls_context_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'tls_global' before this return statement"
+  },
+  {
+   "column": 20,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 481,
+   "message": "Passing null pointer 'tls_global' to 'tls_context_free' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'tls_global' is not NULL before passing to 'tls_context_free'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 482,
+   "message": "Value assigned to 'tls_global' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 25,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 487,
+   "message": "Pointer parameter 'tls_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tls_ctx'"
+  },
+  {
+   "column": 26,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 512,
+   "message": "Dereference of uninitialized pointer 'conn'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'conn' before dereferencing"
+  },
+  {
+   "column": 14,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 515,
+   "message": "Memory allocated with 'wolfSSL_new' for variable 'conn->ssl' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(conn->ssl)' before the variable goes out of scope"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 532,
+   "message": "Function returns pointer to local variable 'conn' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 532,
+   "message": "Memory leak: 'conn->ssl' allocated with 'wolfSSL_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'conn->ssl' before this return statement"
+  },
+  {
+   "column": 33,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 536,
+   "message": "Pointer parameter 'tls_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tls_ctx'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 557,
+   "message": "Function 'tls_connection_established' does not validate pointer parameter 'conn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conn' at the start of the function, e.g., 'if (!conn) { return error_code; }'"
+  },
+  {
+   "column": 37,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 557,
+   "message": "Pointer parameter 'tls_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tls_ctx'"
+  },
+  {
+   "column": 69,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 557,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 44,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 563,
+   "message": "Pointer parameter 'tls_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tls_ctx'"
+  },
+  {
+   "column": 33,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 564,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 34,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 571,
+   "message": "Pointer parameter 'tls_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tls_ctx'"
+  },
+  {
+   "column": 66,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 571,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 61,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 647,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 22,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 648,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 44,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 703,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 33,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 704,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 22,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 705,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 22,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 706,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 711,
+   "message": "Sensitive buffer 'passwd' not cleared before function exit",
+   "rule_id": "MEM03-C",
+   "severity": "Medium",
+   "suggestion": "Call SecureZeroMemory(passwd, size) or memset(passwd, 0, size) before the buffer goes out of scope"
+  },
+  {
+   "column": 20,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 782,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 43,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 851,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 72,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 851,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 10,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 874,
+   "message": "Unsigned subtraction 'len - match_len' without guard assumes non-negative result",
+   "rule_id": "INT00-C",
+   "severity": "Medium",
+   "suggestion": "Add a guard: if (a >= b) before unsigned subtraction a - b"
+  },
+  {
+   "column": 67,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 882,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 902,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 905,
+   "message": "Testing 'domain_suffix_match(\n\t\t\t    (const char *) wolfSSL_ASN1_STRING_data(gen->d.ia5),\n\t\t\t    wolfSSL_ASN1_STRING_length(gen->d.ia5), match,\n\t\t\t    match_len, full)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: domain_suffix_match(\n\t\t\t    (const char *) wolfSSL_ASN1_STRING_data(gen->d.ia5),\n\t\t\t    wolfSSL_ASN1_STRING_length(gen->d.ia5), match,\n\t\t\t    match_len, full) != 0"
+  },
+  {
+   "column": 24,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 926,
+   "message": "Variable 'cn' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'cn' before use, e.g., at its declaration"
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 939,
+   "message": "Testing 'domain_suffix_match(cn->data, cn->length,\n\t\t\t\t\tmatch, match_len, full)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: domain_suffix_match(cn->data, cn->length,\n\t\t\t\t\tmatch, match_len, full) != 0"
+  },
+  {
+   "column": 22,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1035,
+   "message": "'value' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 58,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1178,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1184,
+   "message": "Value assigned to 'cert' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1225,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 58,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1234,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1257,
+   "message": "Accessing union 'ev' member 'peer_cert' after writing to 'cert_fail' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 13,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1262,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 10,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1263,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 9,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1279,
+   "message": "Variable 'pos' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'pos' before use, e.g., at its declaration"
+  },
+  {
+   "column": 26,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1283,
+   "message": "Do not cast away const qualification: '(void *) ext'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1311,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1314,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1365,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 14,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1404,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 11,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1405,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 11,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1414,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 9,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1481,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 40,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1513,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 18,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1514,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 18,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1516,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 0,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1521,
+   "message": "Function 'tls_connection_ca_cert' accesses bit-field 'tls_connection.ca_cert_verify' without mutex protection in a multi-threaded context",
+   "rule_id": "CON32-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field accesses with mutex locks or use separate byte-sized members instead of bit-fields"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1521,
+   "message": "Bit-field 'ca_cert_verify' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 0,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1526,
+   "message": "Function 'tls_connection_ca_cert' accesses bit-field 'tls_connection.cert_probe' without mutex protection in a multi-threaded context",
+   "rule_id": "CON32-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field accesses with mutex locks or use separate byte-sized members instead of bit-fields"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1526,
+   "message": "Bit-field 'cert_probe' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 0,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1527,
+   "message": "Function 'tls_connection_ca_cert' accesses bit-field 'tls_connection.ca_cert_verify' without mutex protection in a multi-threaded context",
+   "rule_id": "CON32-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field accesses with mutex locks or use separate byte-sized members instead of bit-fields"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1527,
+   "message": "Bit-field 'ca_cert_verify' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 28,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1531,
+   "message": "Passing null pointer 'ca_cert' to 'os_strncmp' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'ca_cert' is not NULL before passing to 'os_strncmp'"
+  },
+  {
+   "column": 0,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1554,
+   "message": "Function 'tls_connection_ca_cert' accesses bit-field 'tls_connection.server_cert_only' without mutex protection in a multi-threaded context",
+   "rule_id": "CON32-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field accesses with mutex locks or use separate byte-sized members instead of bit-fields"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1554,
+   "message": "Bit-field 'server_cert_only' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 0,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1606,
+   "message": "Function 'tls_connection_ca_cert' accesses bit-field 'tls_connection.ca_cert_verify' without mutex protection in a multi-threaded context",
+   "rule_id": "CON32-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field accesses with mutex locks or use separate byte-sized members instead of bit-fields"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1606,
+   "message": "Bit-field 'ca_cert_verify' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1779,
+   "message": "Sensitive buffer 'passwd' not cleared before function exit",
+   "rule_id": "MEM03-C",
+   "severity": "Medium",
+   "suggestion": "Call SecureZeroMemory(passwd, size) or memset(passwd, 0, size) before the buffer goes out of scope"
+  },
+  {
+   "column": 25,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1837,
+   "message": "Pointer parameter 'unused' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *unused'"
+  },
+  {
+   "column": 20,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1838,
+   "message": "Pointer parameter 'request' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *request'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1864,
+   "message": "Function 'ocsp_resp_free_cb' does not validate pointer parameter 'response' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'response' at the start of the function, e.g., 'if (!response) { return error_code; }'"
+  },
+  {
+   "column": 29,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1864,
+   "message": "Pointer parameter 'ocsp_stapling_response' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ocsp_stapling_response'"
+  },
+  {
+   "column": 10,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1882,
+   "message": "Potential null pointer dereference in member access of variable 'context'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'context' is not NULL before member access"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2010,
+   "message": "Function 'tls_connection_set_verify' does not validate pointer parameter 'ssl_ctx' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ssl_ctx' at the start of the function, e.g., 'if (!ssl_ctx) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2010,
+   "message": "Function 'tls_connection_set_verify' performs compound operation on shared static variable 'counter' without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 36,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2010,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2014,
+   "message": "Shared variable 'counter' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 0,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2024,
+   "message": "Function 'tls_connection_set_verify' accesses bit-field 'tls_connection.ca_cert_verify' without mutex protection in a multi-threaded context",
+   "rule_id": "CON32-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field accesses with mutex locks or use separate byte-sized members instead of bit-fields"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2024,
+   "message": "Bit-field 'ca_cert_verify' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 0,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2029,
+   "message": "Function 'tls_connection_set_verify' accesses bit-field 'tls_connection.ca_cert_verify' without mutex protection in a multi-threaded context",
+   "rule_id": "CON32-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field accesses with mutex locks or use separate byte-sized members instead of bit-fields"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2029,
+   "message": "Bit-field 'ca_cert_verify' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 68,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2126,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2135,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2188,
+   "message": "Function returns pointer to local variable 'out_data' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2192,
+   "message": "Function 'tls_connection_handshake' does not validate pointer parameter 'in_data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'in_data' at the start of the function, e.g., 'if (!in_data) { return error_code; }'"
+  },
+  {
+   "column": 47,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2192,
+   "message": "Pointer parameter 'tls_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tls_ctx'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2201,
+   "message": "Function 'tls_connection_server_handshake' does not validate pointer parameter 'conn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conn' at the start of the function, e.g., 'if (!conn) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2201,
+   "message": "Function 'tls_connection_server_handshake' does not validate pointer parameter 'in_data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'in_data' at the start of the function, e.g., 'if (!in_data) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2201,
+   "message": "Function 'tls_connection_server_handshake' does not validate pointer parameter 'appl_data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'appl_data' at the start of the function, e.g., 'if (!appl_data) { return error_code; }'"
+  },
+  {
+   "column": 54,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2201,
+   "message": "Pointer parameter 'tls_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tls_ctx'"
+  },
+  {
+   "column": 45,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2210,
+   "message": "Pointer parameter 'tls_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tls_ctx'"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2223,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 45,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2238,
+   "message": "Pointer parameter 'tls_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tls_ctx'"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2262,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2272,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 33,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2276,
+   "message": "Pointer parameter 'tls_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tls_ctx'"
+  },
+  {
+   "column": 65,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2276,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 41,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2282,
+   "message": "Pointer parameter 'tls_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tls_ctx'"
+  },
+  {
+   "column": 73,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2282,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 11,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2283,
+   "message": "Pointer parameter 'ciphers' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ciphers'"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2298,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'c' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2301,
+   "message": "Dereferencing pointer in switch statement may create double-fetch vulnerability",
+   "rule_id": "CON43-C",
+   "severity": "High",
+   "suggestion": "Store dereferenced value in a local variable or use atomic operations"
+  },
+  {
+   "column": 25,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2351,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 25,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2351,
+   "message": "Pointer parameter 'tls_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tls_ctx'"
+  },
+  {
+   "column": 57,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2351,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 11,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2352,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 43,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2372,
+   "message": "Pointer parameter 'tls_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tls_ctx'"
+  },
+  {
+   "column": 32,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2373,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 36,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2380,
+   "message": "Pointer parameter 'tls_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tls_ctx'"
+  },
+  {
+   "column": 68,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2380,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 41,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2389,
+   "message": "Pointer parameter 'tls_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tls_ctx'"
+  },
+  {
+   "column": 73,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2389,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 42,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2399,
+   "message": "Pointer parameter 'tls_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tls_ctx'"
+  },
+  {
+   "column": 31,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2400,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2411,
+   "message": "Function 'tls_get_library_version' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  },
+  {
+   "column": 34,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2411,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 26,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2417,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 26,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2417,
+   "message": "Pointer parameter 'ssl_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssl_ctx'"
+  },
+  {
+   "column": 58,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2417,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 12,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2418,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 36,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2434,
+   "message": "Pointer parameter 'ssl_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssl_ctx'"
+  },
+  {
+   "column": 21,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2445,
+   "message": "sizeof applied to pointer/array parameter 'keys' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*keys)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 29,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2448,
+   "message": "sizeof applied to pointer/array parameter 'conn' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(conn->client_random)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 29,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2451,
+   "message": "sizeof applied to pointer/array parameter 'conn' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(conn->server_random)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 36,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2457,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 36,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2457,
+   "message": "Pointer parameter 'tls_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tls_ctx'"
+  },
+  {
+   "column": 68,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2457,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 21,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2458,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2481,
+   "message": "Function 'tls_connection_get_eap_fast_key' does not validate integer parameter 'out_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'out_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 42,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2481,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 42,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2481,
+   "message": "Pointer parameter 'tls_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tls_ctx'"
+  },
+  {
+   "column": 74,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2481,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2485,
+   "message": "Value assigned to 'ret' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  }
+ ]
+}

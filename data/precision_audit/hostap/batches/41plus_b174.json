@@ -1,0 +1,1057 @@
+{
+ "wpa_supplicant/wpa_priv.c": [
+  {
+   "column": 5,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 89,
+   "message": "main() returns without calling fclose(stdout) - data may be unflushed",
+   "rule_id": "FIO23-C",
+   "severity": "Medium",
+   "suggestion": "Call fclose(stdout) before return to ensure data is flushed"
+  },
+  {
+   "column": 28,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 121,
+   "message": "Pointer parameter 'from' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *from'"
+  },
+  {
+   "column": 57,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 136,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 57,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 136,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 15,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 137,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 15,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 137,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 142,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 142,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 147,
+   "message": "Dereference of uninitialized pointer 'scan'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'scan' before dereferencing"
+  },
+  {
+   "column": 66,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 181,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 207,
+   "message": "Variable 'r' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const r = ..."
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 223,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 224,
+   "message": "Double-free: 'buf' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 224,
+   "message": "Double free detected: 'buf' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 224,
+   "message": "Passing null pointer 'buf' to 'os_free' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'buf' is not NULL before passing to 'os_free'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 225,
+   "message": "Double-free: 'res' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 225,
+   "message": "Double free detected: 'res' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpa_scan_results_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 65,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 244,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 65,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 244,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 16,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 245,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 16,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 245,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 254,
+   "message": "Dereference of uninitialized pointer 'auth'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'auth' before dereferencing"
+  },
+  {
+   "column": 62,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 296,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 62,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 296,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 297,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 297,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 307,
+   "message": "Dereference of uninitialized pointer 'assoc'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'assoc' before dereferencing"
+  },
+  {
+   "column": 62,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 344,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 360,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 61,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 365,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 368,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 368,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 387,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 60,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 392,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 11,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 393,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 11,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 393,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 20,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 402,
+   "message": "Dereference of uninitialized pointer 'params'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'params' before dereferencing"
+  },
+  {
+   "column": 61,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 427,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 443,
+   "message": "Structure 'capa' passed to trust boundary function 'sendto' may leak padding bytes. Use packed attributes, explicit padding fields, or serialize fields individually.",
+   "rule_id": "DCL39-C",
+   "severity": "Medium",
+   "suggestion": "Use __attribute__((__packed__)) or serialize fields: copy_to_user(buf, &capa.a, sizeof(capa.a)); ..."
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 447,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 33,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 452,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 33,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 452,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 460,
+   "message": "Do not cast away const qualification: '(u8 *) src_addr'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 462,
+   "message": "Do not cast away const qualification: '(u8 *) buf'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 471,
+   "message": "Structure 'msg' passed to trust boundary function 'sendmsg' may leak padding bytes. Use packed attributes, explicit padding fields, or serialize fields individually.",
+   "rule_id": "DCL39-C",
+   "severity": "Medium",
+   "suggestion": "Use __attribute__((__packed__)) or serialize fields: copy_to_user(buf, &msg.a, sizeof(msg.a)); ..."
+  },
+  {
+   "column": 47,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 472,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 47,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 472,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 64,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 484,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 15,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 487,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 15,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 487,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 489,
+   "message": "Pointer to const assigned to non-const pointer without cast: *reg_cmd = buf: '*reg_cmd = buf'",
+   "rule_id": "EXP40-C",
+   "severity": "Low",
+   "suggestion": "Either remove const qualifier if the object should be modifiable, or use explicit casts to show intentional const removal"
+  },
+  {
+   "column": 73,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 569,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 31,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 570,
+   "message": "Pointer parameter 'from' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *from'"
+  },
+  {
+   "column": 60,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 581,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 11,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 583,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 11,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 583,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 64,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 626,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 62,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 637,
+   "message": "Pointer parameter 'sock_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sock_ctx'"
+  },
+  {
+   "column": 41,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 650,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 41,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 650,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 662,
+   "message": "Potentially unsafe array access with variable index 'sizeof(int)': Buffer 'buf' with size 2000 (allocated at line 640)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 665,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 708,
+   "message": "Pointer comparison uses sizeof(array) instead of array element count. Use the number of elements, not sizeof.",
+   "rule_id": "EXP08-C",
+   "severity": "Medium",
+   "suggestion": null
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 710,
+   "message": "Potentially unsafe array access with variable index 'cmd_len': Buffer 'pos' with size 2000 (allocated at line 640)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 710,
+   "message": "Subscript operation 'pos[cmd_len]' on non-array pointer 'pos'. Subscript notation implies array access",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Only use subscript notation on array pointers, not pointers to single objects"
+  },
+  {
+   "column": 27,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 762,
+   "message": "Dereference of uninitialized pointer 'iface'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'iface' before dereferencing"
+  },
+  {
+   "column": 44,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 804,
+   "message": "Variable 'addr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'addr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 48,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 811,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 48,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 811,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 813,
+   "message": "Function returns without releasing all resources. Leaked: iface->sock_name, iface->fd. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 820,
+   "message": "Privileged operation 'bind' without subsequent privilege dropping",
+   "rule_id": "POS02-C",
+   "severity": "Medium",
+   "suggestion": "Call setuid/setgid to drop privileges after setup"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 822,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 822,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 27,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 831,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 27,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 831,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 834,
+   "message": "Privileged operation 'bind' without subsequent privilege dropping",
+   "rule_id": "POS02-C",
+   "severity": "Medium",
+   "suggestion": "Call setuid/setgid to drop privileges after setup"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 838,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 838,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 852,
+   "message": "Privileged operation 'chmod' without subsequent privilege dropping",
+   "rule_id": "POS02-C",
+   "severity": "Medium",
+   "suggestion": "Call setuid/setgid to drop privileges after setup"
+  },
+  {
+   "column": 38,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 853,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 38,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 853,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 859,
+   "message": "Function returns pointer to local variable 'iface' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 859,
+   "message": "Function returns without releasing all resources. Leaked: iface->sock_name, iface->fd. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 861,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 863,
+   "message": "Function returns without releasing all resources. Leaked: iface->sock_name, iface->fd. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 58,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 867,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 22,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 868,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 875,
+   "message": "Do not cast away const qualification: '(u8 *) data'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 875,
+   "message": "Casting from char * (alignment 1) to u8 * (alignment 4) may cause alignment issues",
+   "rule_id": "EXP36-C",
+   "severity": "Low",
+   "suggestion": "Use memcpy or ensure proper alignment before casting"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 884,
+   "message": "Structure 'msg' passed to trust boundary function 'sendmsg' may leak padding bytes. Use packed attributes, explicit padding fields, or serialize fields individually.",
+   "rule_id": "DCL39-C",
+   "severity": "Medium",
+   "suggestion": "Use __attribute__((__packed__)) or serialize fields: copy_to_user(buf, &msg.a, sizeof(msg.a)); ..."
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 886,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 886,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 54,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 897,
+   "message": "Potential null pointer dereference in member access of variable 'data'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'data' is not NULL before member access"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 925,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 972,
+   "message": "Value assigned to 'pos' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 976,
+   "message": "Value assigned to 'pos' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 30,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 986,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 993,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 11,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 997,
+   "message": "sizeof applied to pointer/array parameter 'data' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(data->interface_status.ifname)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1045,
+   "message": "Function 'wpa_supplicant_event' does not validate pointer parameter 'data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'data' at the start of the function, e.g., 'if (!data) { return error_code; }'"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1066,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1071,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1089,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 39,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1109,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 35,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1140,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1152,
+   "message": "Do not cast away const qualification: '(u8 *) src_addr'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1154,
+   "message": "Do not cast away const qualification: '(u8 *) buf'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1163,
+   "message": "Structure 'msg' passed to trust boundary function 'sendmsg' may leak padding bytes. Use packed attributes, explicit padding fields, or serialize fields individually.",
+   "rule_id": "DCL39-C",
+   "severity": "Medium",
+   "suggestion": "Use __attribute__((__packed__)) or serialize fields: copy_to_user(buf, &msg.a, sizeof(msg.a)); ..."
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1165,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1165,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 46,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1169,
+   "message": "Pointer parameter 'signal_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *signal_ctx'"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1186,
+   "message": "open() called without O_NOFOLLOW flag and without lstat() validation. This may be vulnerable to symlink attacks.",
+   "rule_id": "POS01-C",
+   "severity": "High",
+   "suggestion": "Use O_NOFOLLOW flag in open() call, or validate with lstat() before opening"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1198,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1198,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"wpa_priv v%s\\n\"\n\t       \"Copyright (c) 2007-2017, Jouni Malinen <j@w1.fi> and \"\n\t       \"contributors\\n\"\n\t       \"\\n\"\n\t       \"usage:\\n\"\n\t       \"  wpa_priv [-Bdd] [-c<ctrl dir>] [-P<pid file>] \"\n\t       \"<driver:ifname> \\\\\\n\"\n\t       \"           [driver:ifname ...]\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1210,
+   "message": "Function 'main' does not validate pointer parameter 'argv' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'argv' at the start of the function, e.g., 'if (!argv) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1210,
+   "message": "Program arguments (argv) used without validating argc or checking for null pointers",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Validate argc and argv[0] before use: const char *prog = (argc && argv[0]) ? argv[0] : \"\""
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/wpa_priv.c",
+   "line": 1216,
+   "message": "Pointer variable '(unknown)' is assigned a string literal without const qualification. String literals are immutable and should be declared as 'const char *' or 'const wchar_t *'.",
+   "rule_id": "STR05-C",
+   "severity": "Low",
+   "suggestion": "Add 'const' qualifier to the pointee type (e.g., change 'char *' to 'const char *')."
+  }
+ ]
+}

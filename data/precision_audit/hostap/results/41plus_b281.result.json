@@ -1,0 +1,718 @@
+{
+ "labels": [
+  {
+   "rule": "EXP30-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 59,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_eke_state_txt() twice, pure switch/return, no side effects to unsequence."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 81,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*data) is compile-time type size, not a runtime deref of uninitialized data."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 102,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi(pos+8) on phase1 config string, no error detection; established atoi default."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 102,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Same atoi() call, no errno/range check."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 109,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi(pos+5) on phase1 config string, no error detection."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 109,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Same atoi() call, no errno/range check."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 116,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi(pos+4) on phase1 config string, no error detection."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 116,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Same atoi() call, no errno/range check."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 123,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi(pos+4) on phase1 config string, no error detection."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 123,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Same atoi() call, no errno/range check."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 129,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_eke_init returns 'data' from os_zalloc, heap not automatic storage."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 133,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_eke_deinit assigned to eap->deinit; fixed EAP-method vtable signature."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 144,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "eap_eke_build_msg's 'data' param is entirely unused in the body; internal helper, not vtable-bound."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 161,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg' from eap_msg_alloc() is heap memory, not automatic storage."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 208,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(data->dh_priv) is sizeof a fixed struct-member array, correct idiom, not a decayed param."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 216,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'resp' from eap_eke_build_msg() is heap memory."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 348,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'resp' from eap_eke_build_msg() is heap memory."
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 363,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "u8 key[] local buffer declaration; no getenv() call anywhere in this file."
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 364,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "u8 pub[] local buffer declaration; no getenv() call anywhere in this file."
+  },
+  {
+   "rule": "MEM03-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 365,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'password' is a const u8* borrowed from sm's config store, not a local buffer this function owns/should clear."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 495,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'resp' from eap_eke_build_msg() is heap memory."
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 508,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "u8 nonces[] local buffer declaration; no getenv() call in this file."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 508,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "2*EAP_EKE_MAX_NONCE_LEN is a compile-time constant (macro =16), not a runtime-sized VLA."
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 509,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "u8 auth_s[] local buffer declaration; no getenv() call in this file."
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 564,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "\"EAP-EKE server\" is the RFC6124-defined Auth_S domain-separation label string, not a credential/secret."
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 597,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "\"EAP-EKE peer\" is the RFC6124-defined Auth_P domain-separation label string, not a credential/secret."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 614,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(data->dh_priv) fixed struct-member array idiom, same as line 208."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 622,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'resp' from eap_eke_build_msg() is heap memory."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 699,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'resp' assigned from process_id/commit/confirm/failure calls, all heap-or-NULL, never a local automatic-storage object."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 703,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_eke_isKeyAvailable assigned to eap->isKeyAvailable; fixed vtable signature ('sm')."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 703,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_eke_isKeyAvailable assigned to eap->isKeyAvailable; fixed vtable signature ('priv')."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 710,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_eke_getKey assigned to eap->getKey; fixed vtable signature ('sm')."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 710,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "void*/size_t* out-param idiom on a fixed callback signature, established API05-C ptr+size companion FP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 710,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_eke_getKey assigned to eap->getKey; fixed vtable signature ('priv')."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 723,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'key' from os_memdup() is heap memory."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 727,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_eke_get_emsk assigned to eap->get_emsk; fixed vtable signature ('sm')."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 727,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same ptr+size companion idiom FP as line 710."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 727,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_eke_get_emsk assigned to eap->get_emsk; fixed vtable signature ('priv')."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 740,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'key' from os_memdup() is heap memory."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 744,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_eke_get_session_id assigned to eap->getSessionId; fixed vtable signature ('sm')."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 744,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same ptr+size companion idiom FP as line 710."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 744,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_eke_get_session_id assigned to eap->getSessionId; fixed vtable signature ('priv')."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 763,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'sid' from os_malloc() is heap memory."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/eap_peer/eap_eke.c",
+   "line": 771,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'eap' handed to eap_peer_method_register(), which takes ownership (frees on failure / holds in registry) \u2014 established registration-API ownership-transfer FP."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 54,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_sake_state_txt() twice, pure switch/return, no side effects."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 61,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_sake_init assigned to eap->init; fixed vtable signature."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 65,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*data) is a compile-time size computation, not a deref."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 78,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'data' from os_zalloc() is heap memory."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 82,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_sake_reset assigned to eap->reset; fixed vtable signature."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 107,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*sake) is a type-size computation before the pointer is assigned, not a deref."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 112,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg' from eap_msg_alloc() (via eap_sake_build_msg) is heap memory."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 116,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "eap_sake_build_identity's 'sm' is only ever read (sm->cfg->server_id*); internal helper, not itself vtable-bound."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 140,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg' heap memory via eap_sake_build_msg/eap_msg_alloc."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 144,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "eap_sake_build_challenge's 'sm' only read; internal helper, same class as line 116."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 176,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg' heap memory via eap_sake_build_msg/eap_msg_alloc."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 180,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "eap_sake_build_confirm's 'sm' only read; internal helper, same class as line 116."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 200,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head(msg)/wpabuf_len(msg) are pure accessors passed as sibling args, no side effects to unsequence."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 211,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg' heap memory via eap_sake_build_msg/eap_msg_alloc."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 235,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_sake_buildReq assigned to eap->buildReq; fixed vtable signature ('sm')."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 235,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_sake_buildReq assigned to eap->buildReq; fixed vtable signature ('priv')."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 250,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "'(struct eap_sake_hdr *) pos' casts away const from a const u8* to a mutable struct pointer; real EXP05-C violation per rule text even though only read afterward."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 287,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "eap_sake_process_identity's 'sm' param is entirely unused in the body; internal dispatch helper, not itself vtable-bound."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 301,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "eap_sake_process_challenge's 'sm' only read (sm->user->password); internal dispatch helper, genuine const opportunity."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 317,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_sake_parse_attributes() unconditionally os_memset(attr,0,sizeof(*attr)) as its first statement (even on failure return); attr is never used uninitialized. Established WPS/eap_sim_db-style out-param-zeroed-in-callee FP."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 353,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head(respData)/wpabuf_len(respData) pure accessors, no side effects."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 372,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "eap_sake_process_confirm's 'sm' only read (sm->cfg->server_id*); internal dispatch helper, genuine const opportunity."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 388,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same eap_sake_parse_attributes() unconditional memset-first pattern as line 317."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 394,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head(respData)/wpabuf_len(respData) pure accessors, same as line 353."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 410,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "eap_sake_process_auth_reject's 'sm' param is entirely unused in the body; internal dispatch helper."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 433,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Same const-cast-away pattern as line 250, in eap_sake_process."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 441,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "switch(subtype) on attacker-controlled EAP response subtype has no default; unlike sibling switches in this codebase (eap_sake_buildReq, eap_eke_process) which log unknown values, unrecognized subtypes here are silently dropped with no diagnostic."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 459,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_sake_isDone assigned to eap->isDone; fixed vtable signature ('sm')."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 459,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_sake_isDone assigned to eap->isDone; fixed vtable signature ('priv')."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 466,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_sake_getKey assigned to eap->getKey; fixed vtable signature ('sm')."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 466,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "void*/size_t* out-param idiom on fixed vtable callback signature, established API05-C FP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 466,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_sake_getKey assigned to eap->getKey; fixed vtable signature ('priv')."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 479,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'key' from os_memdup() is heap memory."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 483,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_sake_get_emsk assigned to eap->get_emsk; fixed vtable signature ('sm')."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 483,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same ptr+size companion idiom FP as line 466."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 483,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_sake_get_emsk assigned to eap->get_emsk; fixed vtable signature ('priv')."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 496,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'key' from os_memdup() is heap memory."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 500,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_sake_isSuccess assigned to eap->isSuccess; fixed vtable signature ('sm')."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 500,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_sake_isSuccess assigned to eap->isSuccess; fixed vtable signature ('priv')."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 507,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_sake_get_session_id assigned to eap->getSessionId; fixed vtable signature ('sm')."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 507,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same ptr+size companion idiom FP as line 466."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 507,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_sake_get_session_id assigned to eap->getSessionId; fixed vtable signature ('priv')."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 525,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'id' from os_malloc() is heap memory."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/eap_server/eap_server_sake.c",
+   "line": 533,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'eap' handed to eap_server_method_register(), established registration-API ownership-transfer FP."
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "src/eap_peer/eap_eke.c",
+  "src/eap_server/eap_server_sake.c"
+ ],
+ "summary": {
+  "tp": 19,
+  "fp": 69,
+  "fn": 0
+ }
+}

@@ -1,0 +1,1033 @@
+{
+ "labels": [
+  {
+   "rule": "DCL37-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 9,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "_WIN32_WINNT is a reserved identifier per C std; literal violation though idiomatic Windows-SDK pattern"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 21,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "file uses COINIT_MULTITHREADED; wmi_refcnt touched from init/destructor, genuine cross-thread risk unlike core eloop code"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 22,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "same COM-MTA context as wmi_refcnt; guarded once-only check but still unsynchronized"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 38,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "BstrAlloc(x) expands x twice (ternary cond + call arg); real multi-eval macro defect"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 38,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "same BstrAlloc multi-eval issue as PRE00-C"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 39,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "BstrFree(x) expands x twice (if-cond + call arg); real multi-eval macro defect"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 39,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "same BstrFree multi-eval issue as PRE00-C"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 43,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pSvc/pCtx only forwarded to the wrapped COM call, never deref'd by this wrapper; internal-only-API FP class, pCtx legitimately NULL at some call sites"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 43,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pSvc/pCtx only forwarded to the wrapped COM call, never deref'd by this wrapper; internal-only-API FP class, pCtx legitimately NULL at some call sites"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 43,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "call_IWbemServices_ExecQuery used only within ndis_events.c (verified via grep); not the sibling-TU exception seen in driver_ndis.c"
+  },
+  {
+   "rule": "DCL19-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 43,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "same file-internal-only usage as DCL15-C"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 53,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "IWbemServices_ExecQuery is a COM macro from Windows SDK wbemidl.h, unresolvable header class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 63,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pSvc/pCtx forwarded not deref'd; internal-only-API FP, twin of :43"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 63,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pSvc/pCtx forwarded not deref'd; internal-only-API FP, twin of :43"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 63,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "call_IWbemServices_ExecNotificationQueryAsync used only within this file"
+  },
+  {
+   "rule": "DCL19-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 63,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "same file-internal-only usage"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 73,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "IWbemServices_ExecNotificationQueryAsync COM macro, Windows SDK header class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 84,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pLoc/pCtx forwarded not deref'd; internal-only-API FP, twin of :43/:63"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 84,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pLoc/pCtx forwarded not deref'd; internal-only-API FP, twin of :43/:63"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 84,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "call_IWbemLocator_ConnectServer used only within this file"
+  },
+  {
+   "rule": "DCL19-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 84,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "same file-internal-only usage"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 98,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "IWbemLocator_ConnectServer COM macro, Windows SDK header class"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 128,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CreateEvent(NULL,TRUE,FALSE,NULL): two literal NULL args misread as aliased restrict params, established NULL,NULL misfire class"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 141,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "--wmi_refcnt compound op unsynchronized in genuine COM-MTA multithreaded context"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 141,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "events param only read in this plain internal static helper (not a vtable callback); genuine-if-low-value TP"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 146,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "IWbemServices_Release COM macro, Windows SDK header class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 147,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "IWbemLocator_Release COM macro, Windows SDK header class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 149,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CoUninitialize COM API, Windows SDK header class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 158,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "IsEqualIID COM macro, Windows SDK header class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 159,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "IsEqualIID COM macro, Windows SDK header class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 161,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "IWbemObjectSink_AddRef COM macro, Windows SDK header class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 192,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "events param only read in this plain internal static helper; genuine-if-low-value TP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 194,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char *data, size_t data_len is the idiomatic ptr+len pair, established API05-C FP class"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 197,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "_type is a block-scope local inside ndis_events_send_event, misclassified as file-scope"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 200,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf + sizeof(buf) only takes buf's address for pointer arithmetic, never reads its contents; not a real use-before-init"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 206,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "data_len >> 8 / & 0xff is the idiomatic 2-byte length-prefix split, not an actionable readability issue"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 211,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*pos++ = (int expr) is a narrowing WRITE into a char, not a signed-char READ being widened; wrong direction for this rule"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 212,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same narrowing-write-not-widening-read misfire as :211"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 217,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos and buf both derive from the same 512-byte stack array within one function; subtraction is provably bounded, cannot overflow"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 253,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "IWbemClassObject_Get COM macro, Windows SDK header class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 262,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "SafeArrayGetLBound COM API, Windows SDK header class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 263,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "SafeArrayGetUBound COM API, Windows SDK header class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 269,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "VariantClear COM API, Windows SDK header class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 275,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "SafeArrayGetElement COM API, Windows SDK header class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 276,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*pos++ = ch assigns a UCHAR byte into a char, single-byte write, no sign-extension widening involved"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 278,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cast target is (u8 *) i.e. unsigned char, genuinely 1-byte aligned; tool's 'alignment 4' claim for u8* is factually wrong"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 280,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "VariantClear COM API, Windows SDK header class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 304,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ppObjArray is IWbemObjectSink::Indicate's fixed COM vtable parameter, dispatch-contract FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 322,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "IWbemClassObject_Get COM macro, Windows SDK header class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 331,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "IWbemClassObject_Get COM macro, Windows SDK header class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 336,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "VariantClear COM API, Windows SDK header class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 353,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "VariantClear COM API, Windows SDK header class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 354,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "VariantClear COM API, Windows SDK header class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 357,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "VariantClear COM API, Windows SDK header class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 380,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "VariantClear COM API, Windows SDK header class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 388,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "this is IWbemObjectSink::SetStatus's fixed COM vtable parameter, dispatch-contract FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 389,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pObjParam is IWbemObjectSink::SetStatus's fixed COM vtable parameter, same dispatch-contract FP class"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 421,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "class_list[] is a fully-enumerated NULL-terminated initializer list; established initializer-sized-array FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 439,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "only external call site (driver_ndis.c:2943) is guarded by if (drv->events); internal-only-API FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 442,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "IWbemServices_CancelAsyncCall COM macro, Windows SDK header class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 443,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "IWbemObjectSink_Release COM macro, Windows SDK header class"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 457,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL-check stylistic pedantry, established MEM10-C FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 470,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char literal NUL write, no widening involved"
+  },
+  {
+   "rule": "ARR38-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 478,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "events->adapter_desc allocated exactly (len+1)*sizeof(WCHAR); size arg matches the buffer's WCHAR capacity exactly"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 490,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "file contains zero getenv()/putenv() calls anywhere; wholesale ENV01-C misfire class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 528,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 533,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 539,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 540,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 543,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 545,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 546,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 551,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 560,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 561,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 570,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 575,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 580,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 580,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pEnumerator/pObj released once per WMI query round on mutually-exclusive fail-vs-continue branches, then reassigned via a fresh Next()/ExecQuery() output param before the next round's release; established mutually-exclusive-branch double-free/release CFG-blindness class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 581,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 584,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 584,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pEnumerator/pObj released once per WMI query round on mutually-exclusive fail-vs-continue branches, then reassigned via a fresh Next()/ExecQuery() output param before the next round's release; established mutually-exclusive-branch double-free/release CFG-blindness class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 586,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 590,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 590,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pEnumerator/pObj released once per WMI query round on mutually-exclusive fail-vs-continue branches, then reassigned via a fresh Next()/ExecQuery() output param before the next round's release; established mutually-exclusive-branch double-free/release CFG-blindness class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 591,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 598,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 607,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 611,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 611,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pEnumerator/pObj released once per WMI query round on mutually-exclusive fail-vs-continue branches, then reassigned via a fresh Next()/ExecQuery() output param before the next round's release; established mutually-exclusive-branch double-free/release CFG-blindness class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 612,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 624,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 625,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 625,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pEnumerator/pObj released once per WMI query round on mutually-exclusive fail-vs-continue branches, then reassigned via a fresh Next()/ExecQuery() output param before the next round's release; established mutually-exclusive-branch double-free/release CFG-blindness class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 626,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 643,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 644,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 644,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pEnumerator/pObj released once per WMI query round on mutually-exclusive fail-vs-continue branches, then reassigned via a fresh Next()/ExecQuery() output param before the next round's release; established mutually-exclusive-branch double-free/release CFG-blindness class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 654,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 661,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 666,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 666,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pEnumerator/pObj released once per WMI query round on mutually-exclusive fail-vs-continue branches, then reassigned via a fresh Next()/ExecQuery() output param before the next round's release; established mutually-exclusive-branch double-free/release CFG-blindness class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 667,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 672,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 672,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pEnumerator/pObj released once per WMI query round on mutually-exclusive fail-vs-continue branches, then reassigned via a fresh Next()/ExecQuery() output param before the next round's release; established mutually-exclusive-branch double-free/release CFG-blindness class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 674,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 678,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 678,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pEnumerator/pObj released once per WMI query round on mutually-exclusive fail-vs-continue branches, then reassigned via a fresh Next()/ExecQuery() output param before the next round's release; established mutually-exclusive-branch double-free/release CFG-blindness class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 679,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 689,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 691,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 691,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pEnumerator/pObj released once per WMI query round on mutually-exclusive fail-vs-continue branches, then reassigned via a fresh Next()/ExecQuery() output param before the next round's release; established mutually-exclusive-branch double-free/release CFG-blindness class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 693,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 702,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "only external call site (driver_ndis.c:2880) always passes &drv->events_pipe/&drv->event_avail, never NULL; internal-only-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 702,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "only external call site (driver_ndis.c:2880) always passes &drv->events_pipe/&drv->event_avail, never NULL; internal-only-API FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 710,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "flags sizeof(*events) inside os_zalloc(sizeof(*events)); sizeof(*ptr) is a compile-time construct, not a runtime dereference"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 722,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 735,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "wmi_first=0 is read on the NEXT invocation of ndis_events_init via the guard 'if (wmi_first)' at :731 (static storage duration); cross-invocation read the per-call dead-assignment check doesn't see"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 737,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 737,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CoInitializeSecurity(NULL,-1,NULL,NULL,...,NULL,...,NULL): 4 literal NULL optional args misread as aliased restrict params, extends the NULL,NULL misfire class to production (non-test) Windows API calls"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 749,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 755,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 761,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 774,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "COM macro/API call (IWbemServices_/IEnumWbemClassObject_/IWbemClassObject_/Co*), Windows SDK header unresolvable-declaration class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/drivers/ndis_events.c",
+   "line": 802,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "events is heap memory from os_zalloc(sizeof(*events)), not automatic/stack storage; established heap-vs-stack-confusion DCL30-C FP class"
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/drivers/ndis_events.c",
+   "line": 546,
+   "rule": "MEM31-C",
+   "desc": "ndis_events_get_adapter: if IWbemClassObject_Get(pObj,\"Index\",...) fails (:546-552), function releases pSvc and returns but never calls IWbemClassObject_Release(pObj) -- COM object refcount leak on this error path (contrast with the analogous round2/round3 failure paths at :590,611,625,644,666,672,678,691 which all correctly release pObj/pEnumerator).",
+   "upstream_present": "unknown"
+  },
+  {
+   "file": "src/drivers/ndis_events.c",
+   "line": 345,
+   "rule": "EXP34-C",
+   "desc": "ndis_events_indicate: on MSNdis_NotifyAdapterArrival, calls ndis_events_get_adapter(events, events->ifname, NULL) without checking its return value (:345). ndis_events_get_adapter unconditionally frees events->adapter_desc and sets it NULL at entry (:503-504); if the WMI re-query and the desc==NULL fallback in ndis_events_use_desc both fail, events->adapter_desc remains NULL, and the very next statement, wcscmp(events->adapter_desc, vt.bstrVal) (:348), dereferences it -- NULL pointer dereference on the WMI notification path when an adapter re-query fails after an arrival event.",
+   "upstream_present": "unknown"
+  },
+  {
+   "file": "src/drivers/ndis_events.c",
+   "line": 262,
+   "rule": "ERR33-C",
+   "desc": "ndis_events_media_specific: SafeArrayGetLBound(:262)/SafeArrayGetUBound(:263) return values are discarded; lower/upper are plain LONG locals with no initializer. If either call fails, lower/upper are used uninitialized to compute data_len = upper-lower+1 (:264) and to bound the k=lower..upper copy loop (:274-277), which can yield a huge/garbage data_len feeding os_malloc() and an out-of-bounds SafeArrayGetElement/*pos++ write loop -- unchecked-return-value leading to a potential heap buffer overflow driven by untrusted NDIS status-indication data.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 16,
+  "fp": 109,
+  "fn": 3
+ }
+}

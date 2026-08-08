@@ -1,0 +1,859 @@
+{
+ "src/radius/radius_client.c": [
+  {
+   "column": 18,
+   "file": "src/radius/radius_client.c",
+   "line": 269,
+   "message": "Potential null pointer dereference in member access of variable 'req'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'req' is not NULL before member access"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius_client.c",
+   "line": 290,
+   "message": "Function 'radius_client_register' does not validate pointer parameter 'radius' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'radius' at the start of the function, e.g., 'if (!radius) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius_client.c",
+   "line": 290,
+   "message": "Function 'radius_client_register' does not validate pointer parameter 'handler' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'handler' at the start of the function, e.g., 'if (!handler) { return error_code; }'"
+  },
+  {
+   "column": 54,
+   "file": "src/radius/radius_client.c",
+   "line": 290,
+   "message": "Pointer parameter 'radius' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *radius'"
+  },
+  {
+   "column": 26,
+   "file": "src/radius/radius_client.c",
+   "line": 310,
+   "message": "Use-after-free: dereferencing freed pointer 'handlers'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access memory after freeing it."
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius_client.c",
+   "line": 318,
+   "message": "Local variable 'newh' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius_client.c",
+   "line": 318,
+   "message": "Use-after-free: writing to freed memory via 'handlers'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access memory after freeing it."
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius_client.c",
+   "line": 334,
+   "message": "Function 'radius_client_set_interim_error_cb' does not validate pointer parameter 'radius' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'radius' at the start of the function, e.g., 'if (!radius) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius_client.c",
+   "line": 334,
+   "message": "Function 'radius_client_set_interim_error_cb' does not validate pointer parameter 'cb' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cb' at the start of the function, e.g., 'if (!cb) { return error_code; }'"
+  },
+  {
+   "column": 6,
+   "file": "src/radius/radius_client.c",
+   "line": 351,
+   "message": "File-scope identifier '_errno' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 51,
+   "file": "src/radius/radius_client.c",
+   "line": 352,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 51,
+   "file": "src/radius/radius_client.c",
+   "line": 352,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 3,
+   "file": "src/radius/radius_client.c",
+   "line": 476,
+   "message": "Potential null pointer dereference in member access of variable 'hdr'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'hdr' is not NULL before member access"
+  },
+  {
+   "column": 16,
+   "file": "src/radius/radius_client.c",
+   "line": 479,
+   "message": "arithmetic operator '-' applied directly to time_t-typed 'now' -- the encoding of time_t is unspecified",
+   "rule_id": "MSC05-C",
+   "severity": "Low",
+   "suggestion": "Use difftime() to compute a duration between two time_t values instead of subtracting/adding them directly"
+  },
+  {
+   "column": 3,
+   "file": "src/radius/radius_client.c",
+   "line": 518,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 6,
+   "file": "src/radius/radius_client.c",
+   "line": 527,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 20,
+   "file": "src/radius/radius_client.c",
+   "line": 542,
+   "message": "arithmetic operator '+' applied directly to time_t-typed 'now' -- the encoding of time_t is unspecified",
+   "rule_id": "MSC05-C",
+   "severity": "Low",
+   "suggestion": "Use difftime() to compute a duration between two time_t values instead of subtracting/adding them directly"
+  },
+  {
+   "column": 55,
+   "file": "src/radius/radius_client.c",
+   "line": 551,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 26,
+   "file": "src/radius/radius_client.c",
+   "line": 628,
+   "message": "arithmetic operator '-' applied directly to time_t-typed 'first' -- the encoding of time_t is unspecified",
+   "rule_id": "MSC05-C",
+   "severity": "Low",
+   "suggestion": "Use difftime() to compute a duration between two time_t values instead of subtracting/adding them directly"
+  },
+  {
+   "column": 23,
+   "file": "src/radius/radius_client.c",
+   "line": 633,
+   "message": "arithmetic operator '-' applied directly to time_t-typed 'first' -- the encoding of time_t is unspecified",
+   "rule_id": "MSC05-C",
+   "severity": "Low",
+   "suggestion": "Use difftime() to compute a duration between two time_t values instead of subtracting/adding them directly"
+  },
+  {
+   "column": 25,
+   "file": "src/radius/radius_client.c",
+   "line": 714,
+   "message": "arithmetic operator '-' applied directly to time_t-typed 'first' -- the encoding of time_t is unspecified",
+   "rule_id": "MSC05-C",
+   "severity": "Low",
+   "suggestion": "Use difftime() to compute a duration between two time_t values instead of subtracting/adding them directly"
+  },
+  {
+   "column": 38,
+   "file": "src/radius/radius_client.c",
+   "line": 718,
+   "message": "arithmetic operator '-' applied directly to time_t-typed 'first' -- the encoding of time_t is unspecified",
+   "rule_id": "MSC05-C",
+   "severity": "Low",
+   "suggestion": "Use difftime() to compute a duration between two time_t values instead of subtracting/adding them directly"
+  },
+  {
+   "column": 27,
+   "file": "src/radius/radius_client.c",
+   "line": 737,
+   "message": "Dereference of uninitialized pointer 'entry'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'entry' before dereferencing"
+  },
+  {
+   "column": 7,
+   "file": "src/radius/radius_client.c",
+   "line": 788,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/radius/radius_client.c",
+   "line": 788,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius_client.c",
+   "line": 849,
+   "message": "Function 'radius_client_send' does not validate pointer parameter 'radius' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'radius' at the start of the function, e.g., 'if (!radius) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius_client.c",
+   "line": 849,
+   "message": "Function 'radius_client_send' does not validate pointer parameter 'addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'addr' at the start of the function, e.g., 'if (!addr) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius_client.c",
+   "line": 854,
+   "message": "Sensitive buffer 'shared_secret' not cleared before function exit",
+   "rule_id": "MEM03-C",
+   "severity": "Medium",
+   "suggestion": "Call SecureZeroMemory(shared_secret, size) or memset(shared_secret, 0, size) before the buffer goes out of scope"
+  },
+  {
+   "column": 3,
+   "file": "src/radius/radius_client.c",
+   "line": 950,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 8,
+   "file": "src/radius/radius_client.c",
+   "line": 958,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius_client.c",
+   "line": 997,
+   "message": "Value assigned to 'out' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 8,
+   "file": "src/radius/radius_client.c",
+   "line": 1042,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 44,
+   "file": "src/radius/radius_client.c",
+   "line": 1044,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 44,
+   "file": "src/radius/radius_client.c",
+   "line": 1044,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius_client.c",
+   "line": 1093,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius_client.c",
+   "line": 1094,
+   "message": "Double-free: 'out' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius_client.c",
+   "line": 1094,
+   "message": "Double free detected: 'out' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius_client.c",
+   "line": 1112,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 47,
+   "file": "src/radius/radius_client.c",
+   "line": 1157,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 47,
+   "file": "src/radius/radius_client.c",
+   "line": 1157,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 6,
+   "file": "src/radius/radius_client.c",
+   "line": 1161,
+   "message": "Variable 'tls' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tls' before use, e.g., at its declaration"
+  },
+  {
+   "column": 14,
+   "file": "src/radius/radius_client.c",
+   "line": 1166,
+   "message": "Variable 'tls_ready' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tls_ready' before use, e.g., at its declaration"
+  },
+  {
+   "column": 3,
+   "file": "src/radius/radius_client.c",
+   "line": 1201,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 3,
+   "file": "src/radius/radius_client.c",
+   "line": 1203,
+   "message": "Double free detected: 'out' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 10,
+   "file": "src/radius/radius_client.c",
+   "line": 1229,
+   "message": "Potential null pointer dereference in member access of variable 'hdr'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'hdr' is not NULL before member access"
+  },
+  {
+   "column": 3,
+   "file": "src/radius/radius_client.c",
+   "line": 1269,
+   "message": "Floating-point division without error checking (consider using feclearexcept/fetestexcept)",
+   "rule_id": "FLP03-C",
+   "severity": "Low",
+   "suggestion": "Use feclearexcept(FE_ALL_EXCEPT) before and fetestexcept(FE_ALL_EXCEPT) after floating-point operations"
+  },
+  {
+   "column": 37,
+   "file": "src/radius/radius_client.c",
+   "line": 1274,
+   "message": "Modulo operator used with potentially signed operands. The result of % with negative operands is implementation-defined and can be negative. Use unsigned types (size_t, unsigned int) or explicitly handle negative remainders.",
+   "rule_id": "INT10-C",
+   "severity": "Medium",
+   "suggestion": "Convert operands to unsigned types (size_t, unsigned int) or add explicit checks for negative values"
+  },
+  {
+   "column": 3,
+   "file": "src/radius/radius_client.c",
+   "line": 1282,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius_client.c",
+   "line": 1315,
+   "message": "Use-after-free: passing freed pointer 'req' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 30,
+   "file": "src/radius/radius_client.c",
+   "line": 1315,
+   "message": "Use-after-free: accessing member of freed pointer 'req'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius_client.c",
+   "line": 1323,
+   "message": "Double-free: 'msg' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius_client.c",
+   "line": 1340,
+   "message": "Value assigned to 'res' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 56,
+   "file": "src/radius/radius_client.c",
+   "line": 1397,
+   "message": "Passing null pointer 'in' to 'tls_connection_handshake' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'in' is not NULL before passing to 'tls_connection_handshake'"
+  },
+  {
+   "column": 8,
+   "file": "src/radius/radius_client.c",
+   "line": 1411,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 44,
+   "file": "src/radius/radius_client.c",
+   "line": 1413,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 44,
+   "file": "src/radius/radius_client.c",
+   "line": 1413,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius_client.c",
+   "line": 1430,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius_client.c",
+   "line": 1433,
+   "message": "Double-free: 'out' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius_client.c",
+   "line": 1433,
+   "message": "Double free detected: 'out' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius_client.c",
+   "line": 1447,
+   "message": "Function 'radius_client_get_id' does not validate pointer parameter 'radius' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'radius' at the start of the function, e.g., 'if (!radius) { return error_code; }'"
+  },
+  {
+   "column": 70,
+   "file": "src/radius/radius_client.c",
+   "line": 1519,
+   "message": "Pointer parameter 'radius' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *radius'"
+  },
+  {
+   "column": 37,
+   "file": "src/radius/radius_client.c",
+   "line": 1544,
+   "message": "Pointer parameter 'oserv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *oserv'"
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius_client.c",
+   "line": 1619,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 3,
+   "file": "src/radius/radius_client.c",
+   "line": 1643,
+   "message": "Function returns without releasing all resources. Leaked: sel_sock, sel_sock. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 3,
+   "file": "src/radius/radius_client.c",
+   "line": 1650,
+   "message": "Function returns without releasing all resources. Leaked: sel_sock, sel_sock. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 7,
+   "file": "src/radius/radius_client.c",
+   "line": 1656,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/radius/radius_client.c",
+   "line": 1656,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 8,
+   "file": "src/radius/radius_client.c",
+   "line": 1669,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 8,
+   "file": "src/radius/radius_client.c",
+   "line": 1669,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 3,
+   "file": "src/radius/radius_client.c",
+   "line": 1682,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 4,
+   "file": "src/radius/radius_client.c",
+   "line": 1702,
+   "message": "Resource 'sel_sock' is closed again after already being closed at line 1657. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 7,
+   "file": "src/radius/radius_client.c",
+   "line": 1706,
+   "message": "Privileged operation 'bind' without subsequent privilege dropping",
+   "rule_id": "POS02-C",
+   "severity": "Medium",
+   "suggestion": "Call setuid/setgid to drop privileges after setup"
+  },
+  {
+   "column": 8,
+   "file": "src/radius/radius_client.c",
+   "line": 1708,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 8,
+   "file": "src/radius/radius_client.c",
+   "line": 1708,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 4,
+   "file": "src/radius/radius_client.c",
+   "line": 1709,
+   "message": "Resource 'sel_sock' is closed again after already being closed at line 1657. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 8,
+   "file": "src/radius/radius_client.c",
+   "line": 1721,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 8,
+   "file": "src/radius/radius_client.c",
+   "line": 1721,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 4,
+   "file": "src/radius/radius_client.c",
+   "line": 1722,
+   "message": "Resource 'sel_sock' is closed again after already being closed at line 1657. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 4,
+   "file": "src/radius/radius_client.c",
+   "line": 1733,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 8,
+   "file": "src/radius/radius_client.c",
+   "line": 1734,
+   "message": "'inet_ntoa()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'inet_ntop' instead for thread safety"
+  },
+  {
+   "column": 18,
+   "file": "src/radius/radius_client.c",
+   "line": 1734,
+   "message": "Variable 'claddr' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'claddr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 4,
+   "file": "src/radius/radius_client.c",
+   "line": 1743,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 62,
+   "file": "src/radius/radius_client.c",
+   "line": 1787,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 38,
+   "file": "src/radius/radius_client.c",
+   "line": 1839,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 26,
+   "file": "src/radius/radius_client.c",
+   "line": 1840,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 2,
+   "file": "src/radius/radius_client.c",
+   "line": 1901,
+   "message": "Function returns pointer to local variable 'radius' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius_client.c",
+   "line": 1943,
+   "message": "Function 'radius_client_flush_auth' does not validate pointer parameter 'radius' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'radius' at the start of the function, e.g., 'if (!radius) { return error_code; }'"
+  },
+  {
+   "column": 48,
+   "file": "src/radius/radius_client.c",
+   "line": 1977,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 34,
+   "file": "src/radius/radius_client.c",
+   "line": 1979,
+   "message": "Pointer parameter 'cli' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *cli'"
+  },
+  {
+   "column": 48,
+   "file": "src/radius/radius_client.c",
+   "line": 2026,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 34,
+   "file": "src/radius/radius_client.c",
+   "line": 2028,
+   "message": "Pointer parameter 'cli' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *cli'"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius_client.c",
+   "line": 2079,
+   "message": "Function 'radius_client_get_mib' does not validate integer parameter 'buflen' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'buflen' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 53,
+   "file": "src/radius/radius_client.c",
+   "line": 2079,
+   "message": "Pointer parameter 'radius' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *radius'"
+  },
+  {
+   "column": 67,
+   "file": "src/radius/radius_client.c",
+   "line": 2079,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 67,
+   "file": "src/radius/radius_client.c",
+   "line": 2079,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  }
+ ]
+}

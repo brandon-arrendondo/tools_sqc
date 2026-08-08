@@ -1,0 +1,553 @@
+{
+ "src/tls/tlsv1_client_write.c": [
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 20,
+   "message": "Header file 'tlsv1_client.h' has the same first 8 characters (case-insensitive) as 'tlsv1_client_i.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'tlsv1_client.h' -> unique name)"
+  },
+  {
+   "column": 65,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 24,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 12,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 38,
+   "message": "Potential null pointer dereference in member access of variable 'cert'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'cert' is not NULL before member access"
+  },
+  {
+   "column": 23,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 67,
+   "message": "Variable 'conn' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 248,
+   "message": "Function returns pointer to local variable 'hello' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 22,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 253,
+   "message": "Pointer parameter 'end' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *end'"
+  },
+  {
+   "column": 42,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 260,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:msgpos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 268,
+   "message": "Compound assignment 'pos += TLS_RECORD_HEADER_LEN' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 275,
+   "message": "Increment/decrement operation 'pos++' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 278,
+   "message": "Compound assignment 'pos += 3' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 282,
+   "message": "Compound assignment 'pos += 3' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 38,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 285,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:msgpos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 25,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 289,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:msgpos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 295,
+   "message": "Compound assignment 'pos += 3' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 297,
+   "message": "Compound assignment 'pos += cert->cert_len' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 12,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 302,
+   "message": "Potential null pointer dereference in member access of variable 'cert'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'cert' is not NULL before member access"
+  },
+  {
+   "column": 16,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 319,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:msgpos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 330,
+   "message": "Local variable 'pos' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 67,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 336,
+   "message": "Pointer parameter 'end' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *end'"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 339,
+   "message": "Sensitive buffer 'csecret' not cleared before function exit",
+   "rule_id": "MEM03-C",
+   "severity": "Medium",
+   "suggestion": "Call SecureZeroMemory(csecret, size) or memset(csecret, 0, size) before the buffer goes out of scope"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 361,
+   "message": "Array/pointer 'csecret' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'csecret' after calling free(). Set pointer to NULL after freeing: free(csecret); csecret = NULL;"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 380,
+   "message": "Function returns without releasing all resources. Leaked: csecret, dh_yc. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 390,
+   "message": "Function returns without releasing all resources. Leaked: csecret, dh_yc. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 6,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 396,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 401,
+   "message": "Function returns without releasing all resources. Leaked: csecret, dh_yc. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 28,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 405,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 412,
+   "message": "Function returns without releasing all resources. Leaked: csecret, dh_yc. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 426,
+   "message": "Function returns without releasing all resources. Leaked: csecret, dh_yc, shared. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 438,
+   "message": "Function returns without releasing all resources. Leaked: csecret, dh_yc, shared. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 450,
+   "message": "Function returns without releasing all resources. Leaked: csecret, dh_yc, shared. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 455,
+   "message": "Function returns without releasing all resources. Leaked: csecret, dh_yc, shared. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 68,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 459,
+   "message": "Pointer parameter 'end' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *end'"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 461,
+   "message": "Sensitive buffer 'pre_master_secret' not cleared before function exit",
+   "rule_id": "MEM03-C",
+   "severity": "Medium",
+   "suggestion": "Call SecureZeroMemory(pre_master_secret, size) or memset(pre_master_secret, 0, size) before the buffer goes out of scope"
+  },
+  {
+   "column": 9,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 485,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 525,
+   "message": "Compound assignment 'pos += TLS_RECORD_HEADER_LEN' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 532,
+   "message": "Increment/decrement operation 'pos++' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 535,
+   "message": "Compound assignment 'pos += 3' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 16,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 548,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:msgpos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 558,
+   "message": "Local variable 'pos' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 635,
+   "message": "Function 'os_memmove' called with overlapping memory regions. If parameters are restrict-qualified, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure memory regions do not overlap when using restrict pointers"
+  },
+  {
+   "column": 14,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 635,
+   "message": "Signed integer addition 'hash + 19' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 19,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 637,
+   "message": "string/character literal contains a non-ASCII byte (>= 0x80) -- not portable across locales/national ASCII variants",
+   "rule_id": "MSC09-C",
+   "severity": "Low",
+   "suggestion": "Restrict string and character literals to the portable ASCII subset (letters, digits, space, and basic punctuation)"
+  },
+  {
+   "column": 8,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 726,
+   "message": "Unsigned integer addition 'rhdr + rlen' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }"
+  },
+  {
+   "column": 29,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 737,
+   "message": "Pointer parameter 'end' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *end'"
+  },
+  {
+   "column": 5,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 740,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 19,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 747,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:msgpos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 774,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 775,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 7,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 826,
+   "message": "Signed integer addition 'verify_data + 1 + 3' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 7,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 826,
+   "message": "Signed integer addition 'verify_data + 1' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 4,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 833,
+   "message": "Signed integer addition 'verify_data + 1 + 3' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 4,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 833,
+   "message": "Signed integer addition 'verify_data + 1' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 7,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 888,
+   "message": "Function 'tls_write_client_certificate_verify' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 6,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 890,
+   "message": "Function 'tls_write_client_finished' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 899,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 6,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 918,
+   "message": "Function 'tls_write_client_finished' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 931,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 935,
+   "message": "Function 'tlsv1_client_handshake_write' does not validate pointer parameter 'conn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conn' at the start of the function, e.g., 'if (!conn) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 961,
+   "message": "Function 'tlsv1_client_send_alert' does not validate pointer parameter 'conn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conn' at the start of the function, e.g., 'if (!conn) { return error_code; }'"
+  },
+  {
+   "column": 50,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 961,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_client_write.c",
+   "line": 996,
+   "message": "Function returns pointer to local variable 'alert' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  }
+ ]
+}

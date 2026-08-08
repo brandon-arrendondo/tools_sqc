@@ -1,0 +1,503 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+DCL30-C,hostap,wpa_supplicant/config.c,2009,FP,"heap-not-stack DCL30-C/ARR00-C confusion: value/buf is os_malloc/zalloc'd heap memory, not automatic storage",41plus_b41,high
+API05-C,hostap,wpa_supplicant/config.c,2019,FP,API05-C ptr+len-pair idiom FP class: 'key' immediately followed by its own size_t *len companion param,41plus_b41,high
+DCL13-C,hostap,wpa_supplicant/config.c,2091,FP,config-parser dispatch-table DCL13-C FP class (41plus_b40): ssid_fields[] .parser/.writer callback signature pins this param,41plus_b41,high
+DCL13-C,hostap,wpa_supplicant/config.c,2157,FP,config-parser dispatch-table DCL13-C FP class (41plus_b40): ssid_fields[] .parser/.writer callback signature pins this param,41plus_b41,high
+ARR00-C,hostap,wpa_supplicant/config.c,2173,FP,conditional-branch-blind false UAF: the free() is inside an error branch that returns immediately; normal path never frees before this use,41plus_b41,high
+DCL30-C,hostap,wpa_supplicant/config.c,2174,FP,"heap-not-stack DCL30-C/ARR00-C confusion: value/buf is os_malloc/zalloc'd heap memory, not automatic storage",41plus_b41,high
+ARR00-C,hostap,wpa_supplicant/config.c,2174,FP,"heap-not-stack DCL30-C/ARR00-C confusion: value/buf is os_malloc/zalloc'd heap memory, not automatic storage",41plus_b41,high
+STR34-C,hostap,wpa_supplicant/config.c,2194,FP,STR34-C misattribution/line-drift: line is 'int *ids = wpa_config_parse_int_array(value);' - no char conversion at all,41plus_b41,high
+DCL13-C,hostap,wpa_supplicant/config.c,2212,FP,config-parser dispatch-table DCL13-C FP class (41plus_b40): ssid_fields[] .parser/.writer callback signature pins this param,41plus_b41,high
+DCL13-C,hostap,wpa_supplicant/config.c,2221,FP,config-parser dispatch-table DCL13-C FP class (41plus_b40): ssid_fields[] .parser/.writer callback signature pins this param,41plus_b41,high
+EXP33-C,hostap,wpa_supplicant/config.c,2236,FP,"'p' is os_zalloc'd and NULL-checked immediately above; not uninitialized, pointer-init blindness",41plus_b41,med
+DCL13-C,hostap,wpa_supplicant/config.c,2276,FP,config-parser dispatch-table DCL13-C FP class (41plus_b40): ssid_fields[] .parser/.writer callback signature pins this param,41plus_b41,high
+STR34-C,hostap,wpa_supplicant/config.c,2291,FP,"STR34-C misattribution: 'value' here is line inside psk_list parse, not a char widening conversion site",41plus_b41,high
+DCL13-C,hostap,wpa_supplicant/config.c,2313,FP,config-parser dispatch-table DCL13-C FP class (41plus_b40): ssid_fields[] .parser/.writer callback signature pins this param,41plus_b41,high
+INT10-C,hostap,wpa_supplicant/config.c,2357,FP,"INT10-C misattribution: 'len' is size_t (unsigned), modulo-signedness concern does not apply",41plus_b41,high
+DCL13-C,hostap,wpa_supplicant/config.c,2380,FP,config-parser dispatch-table DCL13-C FP class (41plus_b40): ssid_fields[] .parser/.writer callback signature pins this param,41plus_b41,high
+DCL13-C,hostap,wpa_supplicant/config.c,2390,FP,config-parser dispatch-table DCL13-C FP class (41plus_b40): ssid_fields[] .parser/.writer callback signature pins this param,41plus_b41,high
+ERR33-C,hostap,wpa_supplicant/config.c,2410,TP,ERR33-C strtol() *end-checked but errno/ERANGE not verified - established low-severity TP shape for this file (41plus_b40 config.c:209 precedent),41plus_b41,low
+ERR00-C,hostap,wpa_supplicant/config.c,2410,TP,ERR00-C strtol() return not checked for errors beyond *end test - same reconfirmed shape,41plus_b41,low
+ERR01-C,hostap,wpa_supplicant/config.c,2410,TP,ERR01-C errno not checked after strtol() - same reconfirmed shape,41plus_b41,low
+ERR30-C,hostap,wpa_supplicant/config.c,2410,TP,ERR30-C errno not reset before strtol() call - same reconfirmed shape,41plus_b41,low
+EXP34-C,hostap,wpa_supplicant/config.c,2411,FP,"EXP34-C strtol() endptr-never-NULL FP class: 'end' is always written by strtol(), cannot be NULL after the call",41plus_b41,high
+DCL13-C,hostap,wpa_supplicant/config.c,2424,FP,config-parser dispatch-table DCL13-C FP class (41plus_b40): ssid_fields[] .parser/.writer callback signature pins this param,41plus_b41,high
+ARR00-C,hostap,wpa_supplicant/config.c,2432,FP,"heap-not-stack DCL30-C/ARR00-C confusion: value/buf is os_malloc/zalloc'd heap memory, not automatic storage",41plus_b41,high
+DCL13-C,hostap,wpa_supplicant/config.c,2440,FP,config-parser dispatch-table DCL13-C FP class (41plus_b40): ssid_fields[] .parser/.writer callback signature pins this param,41plus_b41,high
+DCL13-C,hostap,wpa_supplicant/config.c,2450,FP,config-parser dispatch-table DCL13-C FP class (41plus_b40): ssid_fields[] .parser/.writer callback signature pins this param,41plus_b41,high
+DCL13-C,hostap,wpa_supplicant/config.c,2458,FP,config-parser dispatch-table DCL13-C FP class (41plus_b40): ssid_fields[] .parser/.writer callback signature pins this param,41plus_b41,high
+DCL13-C,hostap,wpa_supplicant/config.c,2478,FP,config-parser dispatch-table DCL13-C FP class (41plus_b40): ssid_fields[] .parser/.writer callback signature pins this param,41plus_b41,high
+ARR00-C,hostap,wpa_supplicant/config.c,2495,FP,conditional-branch-blind false UAF: the free() is inside an error branch that returns immediately; normal path never frees before this use,41plus_b41,high
+DCL30-C,hostap,wpa_supplicant/config.c,2496,FP,"heap-not-stack DCL30-C/ARR00-C confusion: value/buf is os_malloc/zalloc'd heap memory, not automatic storage",41plus_b41,high
+ARR00-C,hostap,wpa_supplicant/config.c,2496,FP,"heap-not-stack DCL30-C/ARR00-C confusion: value/buf is os_malloc/zalloc'd heap memory, not automatic storage",41plus_b41,high
+PRE00-C,hostap,wpa_supplicant/config.c,2511,FP,"PRE00-C category error: _STR macro args are only stringified (#f)/token-pasted, never runtime-evaluated",41plus_b41,high
+PRE12-C,hostap,wpa_supplicant/config.c,2511,FP,"PRE12-C category error: same as PRE00-C, stringification isn't evaluation",41plus_b41,high
+DCL37-C,hostap,wpa_supplicant/config.c,2511,FP,"DCL37-C reserved-identifier: _STR is file-scope reserved per C 7.1.3 - judged consistent with prior __must_check-style TP calls, but this is a private macro #undef'd at file end with no external-header shadowing justification",41plus_b41,med
+DCL37-C,hostap,wpa_supplicant/config.c,2512,FP,DCL37-C same reasoning as _STR,41plus_b41,med
+PRE00-C,hostap,wpa_supplicant/config.c,2514,FP,"PRE00-C category error, same as _STR entry",41plus_b41,high
+PRE12-C,hostap,wpa_supplicant/config.c,2514,FP,"PRE12-C category error, same as _STR entry",41plus_b41,high
+DCL37-C,hostap,wpa_supplicant/config.c,2514,FP,DCL37-C same reasoning,41plus_b41,med
+DCL37-C,hostap,wpa_supplicant/config.c,2515,FP,DCL37-C same reasoning,41plus_b41,med
+PRE00-C,hostap,wpa_supplicant/config.c,2526,FP,PRE00-C category error: _STR_LEN macro args token-pasted/stringified only,41plus_b41,high
+PRE12-C,hostap,wpa_supplicant/config.c,2526,FP,"PRE12-C category error, same shape",41plus_b41,high
+DCL37-C,hostap,wpa_supplicant/config.c,2526,FP,DCL37-C same reasoning,41plus_b41,med
+PRE00-C,hostap,wpa_supplicant/config.c,2527,FP,PRE00-C category error: _STR_LENe,41plus_b41,high
+PRE12-C,hostap,wpa_supplicant/config.c,2527,FP,"PRE12-C category error, same shape",41plus_b41,high
+DCL37-C,hostap,wpa_supplicant/config.c,2527,FP,DCL37-C same reasoning,41plus_b41,med
+DCL37-C,hostap,wpa_supplicant/config.c,2534,FP,"DCL37-C same reasoning, _STR_RANGE",41plus_b41,med
+PRE00-C,hostap,wpa_supplicant/config.c,2539,FP,PRE00-C category error: _INT macro,41plus_b41,high
+PRE12-C,hostap,wpa_supplicant/config.c,2539,FP,"PRE12-C category error, same shape",41plus_b41,high
+DCL37-C,hostap,wpa_supplicant/config.c,2539,FP,DCL37-C same reasoning,41plus_b41,med
+DCL37-C,hostap,wpa_supplicant/config.c,2540,FP,DCL37-C same reasoning,41plus_b41,med
+PRE00-C,hostap,wpa_supplicant/config.c,2542,FP,PRE00-C category error: _INT macro (2nd definition),41plus_b41,high
+PRE12-C,hostap,wpa_supplicant/config.c,2542,FP,"PRE12-C category error, same shape",41plus_b41,high
+DCL37-C,hostap,wpa_supplicant/config.c,2542,FP,DCL37-C same reasoning,41plus_b41,med
+DCL37-C,hostap,wpa_supplicant/config.c,2544,FP,DCL37-C same reasoning,41plus_b41,med
+PRE00-C,hostap,wpa_supplicant/config.c,2554,FP,"PRE00-C category error: INT_RANGE macro, f is only stringified/pasted",41plus_b41,high
+PRE05-C,hostap,wpa_supplicant/config.c,2554,FP,"PRE05-C misfire: matches confirmed PRE00/01/02/05/12-C bundle misfire family - # here stringifies a plain identifier, no pre-expansion concern",41plus_b41,high
+PRE12-C,hostap,wpa_supplicant/config.c,2554,FP,"PRE12-C category error, same shape",41plus_b41,high
+PRE00-C,hostap,wpa_supplicant/config.c,2557,FP,PRE00-C category error: INT_RANGE (2nd definition),41plus_b41,high
+PRE05-C,hostap,wpa_supplicant/config.c,2557,FP,"PRE05-C misfire, same reasoning",41plus_b41,high
+PRE12-C,hostap,wpa_supplicant/config.c,2557,FP,"PRE12-C category error, same shape",41plus_b41,high
+PRE00-C,hostap,wpa_supplicant/config.c,2565,FP,"PRE00-C category error: _FUNC macro, f only used via ## token-paste and #f stringify",41plus_b41,high
+PRE12-C,hostap,wpa_supplicant/config.c,2565,FP,"PRE12-C category error, same shape",41plus_b41,high
+DCL37-C,hostap,wpa_supplicant/config.c,2565,FP,DCL37-C same reasoning,41plus_b41,med
+PRE00-C,hostap,wpa_supplicant/config.c,2567,FP,PRE00-C category error: _FUNC (2nd definition),41plus_b41,high
+PRE12-C,hostap,wpa_supplicant/config.c,2567,FP,"PRE12-C category error, same shape",41plus_b41,high
+DCL37-C,hostap,wpa_supplicant/config.c,2567,FP,DCL37-C same reasoning,41plus_b41,med
+ARR02-C,hostap,wpa_supplicant/config.c,2596,FP,"ARR02-C implicit-bounds FP class: ssid_fields[] is ARRAY_SIZE()-consumed (NUM_SSID_FIELDS), size-mismatch risk never materializes",41plus_b41,high
+EXP43-C,hostap,wpa_supplicant/config.c,2630,FP,"EXP43-C macro category-error (cf. __AKM X-macro entry): STR_LENe/STRe/INTe are macros building a static initializer, args are bare field-name identifiers not pointers, no function call exists",41plus_b41,high
+EXP43-C,hostap,wpa_supplicant/config.c,2631,FP,"EXP43-C macro category-error (cf. __AKM X-macro entry): STR_LENe/STRe/INTe are macros building a static initializer, args are bare field-name identifiers not pointers, no function call exists",41plus_b41,high
+EXP43-C,hostap,wpa_supplicant/config.c,2632,FP,"EXP43-C macro category-error (cf. __AKM X-macro entry): STR_LENe/STRe/INTe are macros building a static initializer, args are bare field-name identifiers not pointers, no function call exists",41plus_b41,high
+EXP43-C,hostap,wpa_supplicant/config.c,2633,FP,"EXP43-C macro category-error (cf. __AKM X-macro entry): STR_LENe/STRe/INTe are macros building a static initializer, args are bare field-name identifiers not pointers, no function call exists",41plus_b41,high
+EXP43-C,hostap,wpa_supplicant/config.c,2656,FP,"EXP43-C macro category-error (cf. __AKM X-macro entry): STR_LENe/STRe/INTe are macros building a static initializer, args are bare field-name identifiers not pointers, no function call exists",41plus_b41,high
+EXP43-C,hostap,wpa_supplicant/config.c,2657,FP,"EXP43-C macro category-error (cf. __AKM X-macro entry): STR_LENe/STRe/INTe are macros building a static initializer, args are bare field-name identifiers not pointers, no function call exists",41plus_b41,high
+EXP43-C,hostap,wpa_supplicant/config.c,2658,FP,"EXP43-C macro category-error (cf. __AKM X-macro entry): STR_LENe/STRe/INTe are macros building a static initializer, args are bare field-name identifiers not pointers, no function call exists",41plus_b41,high
+EXP43-C,hostap,wpa_supplicant/config.c,2659,FP,"EXP43-C macro category-error (cf. __AKM X-macro entry): STR_LENe/STRe/INTe are macros building a static initializer, args are bare field-name identifiers not pointers, no function call exists",41plus_b41,high
+EXP43-C,hostap,wpa_supplicant/config.c,2692,FP,"EXP43-C macro category-error (cf. __AKM X-macro entry): STR_LENe/STRe/INTe are macros building a static initializer, args are bare field-name identifiers not pointers, no function call exists",41plus_b41,high
+EXP43-C,hostap,wpa_supplicant/config.c,2693,FP,"EXP43-C macro category-error (cf. __AKM X-macro entry): STR_LENe/STRe/INTe are macros building a static initializer, args are bare field-name identifiers not pointers, no function call exists",41plus_b41,high
+EXP43-C,hostap,wpa_supplicant/config.c,2694,FP,"EXP43-C macro category-error (cf. __AKM X-macro entry): STR_LENe/STRe/INTe are macros building a static initializer, args are bare field-name identifiers not pointers, no function call exists",41plus_b41,high
+EXP43-C,hostap,wpa_supplicant/config.c,2695,FP,"EXP43-C macro category-error (cf. __AKM X-macro entry): STR_LENe/STRe/INTe are macros building a static initializer, args are bare field-name identifiers not pointers, no function call exists",41plus_b41,high
+EXP43-C,hostap,wpa_supplicant/config.c,2696,FP,"EXP43-C macro category-error (cf. __AKM X-macro entry): STR_LENe/STRe/INTe are macros building a static initializer, args are bare field-name identifiers not pointers, no function call exists",41plus_b41,high
+EXP43-C,hostap,wpa_supplicant/config.c,2708,FP,"EXP43-C macro category-error (cf. __AKM X-macro entry): STR_LENe/STRe/INTe are macros building a static initializer, args are bare field-name identifiers not pointers, no function call exists",41plus_b41,high
+EXP43-C,hostap,wpa_supplicant/config.c,2709,FP,"EXP43-C macro category-error (cf. __AKM X-macro entry): STR_LENe/STRe/INTe are macros building a static initializer, args are bare field-name identifiers not pointers, no function call exists",41plus_b41,high
+API00-C,hostap,wpa_supplicant/config.c,2875,FP,"API00-C internal-only-API FP class: param supplied exclusively by internal callers, never externally nullable",41plus_b41,high
+ARR00-C,hostap,wpa_supplicant/config.c,2885,FP,"ARR00-C misfire: 'prio' is initialized in the very for-loop's own init clause (for (prio = 0; ...)), not uninitialized",41plus_b41,high
+EXP43-C,hostap,wpa_supplicant/config.c,2896,FP,"EXP43-C no-restrict-qualifier FP class: os_realloc_array has no restrict params, single-pointer realloc, no aliasing",41plus_b41,high
+API00-C,hostap,wpa_supplicant/config.c,2927,FP,"API00-C internal-only-API FP class: param supplied exclusively by internal callers, never externally nullable",41plus_b41,high
+STR00-C,hostap,wpa_supplicant/config.c,2940,FP,"STR00-C type misattribution: 'ret' is declared 'int ret = 0;', not a plain char variable",41plus_b41,high
+DCL13-C,hostap,wpa_supplicant/config.c,2950,TP,"DCL13-C real opportunity: eap_peer_config_free_cert is a private static helper never registered in ssid_fields[] (disambiguation test from 41plus_b40), cert genuinely never modified",41plus_b41,low
+API00-C,hostap,wpa_supplicant/config.c,3006,FP,"API00-C internal-only-API FP class: param supplied exclusively by internal callers, never externally nullable",41plus_b41,high
+EXP34-C,hostap,wpa_supplicant/config.c,3010,FP,"EXP34-C internal-only-API FP class extended (41plus_b?): wpa_config_free_ssid's ssid is only ever called on live list entries from wpa_config_free's non-null walk, never externally nullable",41plus_b41,high
+EXP34-C,hostap,wpa_supplicant/config.c,3042,FP,"EXP34-C misfire inside while ((psk = dl_list_first(...))) - the while condition itself is the null-guard for psk, established FP class",41plus_b41,high
+ARR01-C,hostap,wpa_supplicant/config.c,3048,FP,"ARR01-C pointee-sizing-correct-idiom FP class: sizeof(*ssid) dereferences first to get the pointee type, not a decayed-array sizeof",41plus_b41,high
+MSC13-C,hostap,wpa_supplicant/config.c,3114,TP,MSC13-C genuine dead-NULL-init: 'prev' is set NULL then unconditionally overwritten inside the loop on every iteration and never read after the loop,41plus_b41,low
+API00-C,hostap,wpa_supplicant/config.c,3208,FP,API00-C internal-only-API FP class: config only ever supplied by internal callers,41plus_b41,high
+API00-C,hostap,wpa_supplicant/config.c,3208,FP,"API00-C misfire: 'func' is a fixed-signature callback param, always supplied by call sites, and dereferencing it (calling it) is the function's entire purpose",41plus_b41,high
+API00-C,hostap,wpa_supplicant/config.c,3208,FP,"API00-C misfire: 'arg' is an opaque context pointer only ever passed through to func(), never dereferenced in this function - opaque-handle API00 FP class",41plus_b41,med
+DCL13-C,hostap,wpa_supplicant/config.c,3208,TP,"DCL13-C real opportunity: wpa_config_foreach_network is a plain public utility, not a dispatch-table entry, and never modifies config",41plus_b41,low
+DCL31-C,hostap,wpa_supplicant/config.c,3217,FP,"DCL31-C category error: 'func' is a function-pointer PARAMETER (typed in the signature), not an undeclared external function requiring a prior prototype",41plus_b41,high
+DCL30-C,hostap,wpa_supplicant/config.c,3218,FP,"DCL30-C false claim: 'ssid' here is a LOCAL variable declared in this function ('struct wpa_ssid *ssid, *next;'), not a global/static - no such assignment-to-global exists",41plus_b41,high
+API00-C,hostap,wpa_supplicant/config.c,3229,FP,"API00-C internal-only-API FP class: param supplied exclusively by internal callers, never externally nullable",41plus_b41,high
+API00-C,hostap,wpa_supplicant/config.c,3229,FP,"API00-C category error: 'id' is only ever compared with ==, no arithmetic operation exists to overflow",41plus_b41,high
+DCL13-C,hostap,wpa_supplicant/config.c,3229,TP,"DCL13-C real opportunity: config only read (config->ssid), not a dispatch-table entry",41plus_b41,low
+DCL30-C,hostap,wpa_supplicant/config.c,3240,FP,"DCL30-C heap-vs-stack-pointer-variable confusion: 'ssid' local var holds a pointer into the persistent config->ssid heap-allocated list, not automatic storage",41plus_b41,high
+API00-C,hostap,wpa_supplicant/config.c,3252,FP,"API00-C internal-only-API FP class: param supplied exclusively by internal callers, never externally nullable",41plus_b41,high
+DCL13-C,hostap,wpa_supplicant/config.c,3252,TP,"DCL13-C real opportunity: config only read via config->ssid walk, not a dispatch-table entry",41plus_b41,low
+DCL30-C,hostap,wpa_supplicant/config.c,3262,FP,"DCL30-C heap-vs-stack-pointer-variable confusion, same as wpa_config_get_network",41plus_b41,high
+DCL30-C,hostap,wpa_supplicant/config.c,3265,FP,"DCL30-C heap-vs-stack-pointer-variable confusion, same as wpa_config_get_network",41plus_b41,high
+API00-C,hostap,wpa_supplicant/config.c,3278,FP,"API00-C internal-only-API FP class: param supplied exclusively by internal callers, never externally nullable",41plus_b41,high
+API00-C,hostap,wpa_supplicant/config.c,3315,FP,"API00-C internal-only-API FP class: param supplied exclusively by internal callers, never externally nullable",41plus_b41,high
+API00-C,hostap,wpa_supplicant/config.c,3315,FP,"API00-C category error: 'id' only compared with ==, no arithmetic",41plus_b41,high
+ARR02-C,hostap,wpa_supplicant/config.c,3411,FP,"ARR02-C implicit-bounds FP class: removed_fields[] is a NULL-terminated sentinel array, consumed via 'for (i=0; removed_fields[i]; i++)', never ARRAY_SIZE'd",41plus_b41,high
+STR00-C,hostap,wpa_supplicant/config.c,3465,FP,"STR00-C type misattribution: 'ret' is declared 'int ret = 0;' in wpa_config_set, not a char",41plus_b41,high
+STR00-C,hostap,wpa_supplicant/config.c,3489,FP,"STR00-C type misattribution, same function/variable",41plus_b41,high
+DCL22-C,hostap,wpa_supplicant/config.c,3501,FP,"DCL22-C misfire on an ordinary local pointer FP class: 'buf' is a plain heap pointer used only within this one function, no signal-handler/setjmp interaction",41plus_b41,high
+API00-C,hostap,wpa_supplicant/config.c,3530,FP,"API00-C internal-only-API FP class: param supplied exclusively by internal callers, never externally nullable",41plus_b41,high
+MSC37-C,hostap,wpa_supplicant/config.c,3530,FP,MSC37-C preprocessor-branch-blind FP class: #ifdef NO_CONFIG_WRITE return NULL; #else ... #endif - both branches return,41plus_b41,high
+MEM31-C,hostap,wpa_supplicant/config.c,3562,FP,"MEM31-C cross-iteration name conflation: the only os_free(value) on this path is inside 'if (key==NULL)' (value not yet stored to props), sqc conflates it with a later loop iteration's distinct field->writer() allocation reusing the same local name",41plus_b41,high
+EXP34-C,hostap,wpa_supplicant/config.c,3660,FP,"EXP34-C os_free(NULL)-is-safe FP class: os_free is a NULL-safe wrapper, passing a possibly-NULL 'res' is not a bug",41plus_b41,high
+ARR00-C,hostap,wpa_supplicant/config.c,3663,FP,"heap-not-stack DCL30-C/ARR00-C confusion: value/buf is os_malloc/zalloc'd heap memory, not automatic storage",41plus_b41,high
+MSC41-C,hostap,wpa_supplicant/config.c,3687,FP,"MSC41-C misfire on a wpa_hexdump_key() debug-log label string ('PSK (from passphrase)' describes what's dumped, not the actual sensitive data) - established FP class",41plus_b41,high
+EXP43-C,hostap,wpa_supplicant/config.c,3703,FP,"EXP43-C no-restrict-qualifier FP class: os_realloc_array has no restrict params, single-pointer realloc, no aliasing",41plus_b41,high
+EXP43-C,hostap,wpa_supplicant/config.c,3709,FP,"EXP43-C no-restrict-qualifier FP class: os_realloc_array has no restrict params, single-pointer realloc, no aliasing",41plus_b41,high
+ERR07-C,hostap,wpa_supplicant/config.c,3715,TP,unchecked atoi() assigned straight to struct field with zero downstream validation - established ERR07/ERR34 disposition,41plus_b41,med
+ERR34-C,hostap,wpa_supplicant/config.c,3715,TP,unchecked atoi() assigned straight to struct field with zero downstream validation - established ERR07/ERR34 disposition,41plus_b41,med
+ARR00-C,hostap,wpa_supplicant/config.c,3735,FP,conditional-branch-blind false UAF: the free() is inside an error branch that returns immediately; normal path never frees before this use,41plus_b41,high
+ERR07-C,hostap,wpa_supplicant/config.c,3735,TP,unchecked atoi() assigned straight to struct field with zero downstream validation - established ERR07/ERR34 disposition,41plus_b41,med
+ERR34-C,hostap,wpa_supplicant/config.c,3735,TP,unchecked atoi() assigned straight to struct field with zero downstream validation - established ERR07/ERR34 disposition,41plus_b41,med
+ARR00-C,hostap,wpa_supplicant/config.c,3749,FP,conditional-branch-blind false UAF: the free() is inside an error branch that returns immediately; normal path never frees before this use,41plus_b41,high
+API05-C,hostap,wpa_supplicant/config.c,3758,FP,"API05-C misfire on a #define'd compile-time constant used as array-size annotation (MAX_ROAMING_CONS_OI_LEN) - established FP class (driver_roboswitch.c precedent), not an undeclared/later-declared runtime variable",41plus_b41,high
+API05-C,hostap,wpa_supplicant/config.c,3759,FP,"API05-C misfire, same #define-constant-as-array-bound FP class (MAX_ROAMING_CONS)",41plus_b41,high
+API05-C,hostap,wpa_supplicant/config.c,3760,FP,"API05-C misfire: cred_ois_len[MAX_ROAMING_CONS] is a fixed-size array param with a macro-constant bound, not a conformant-array-syntax gap",41plus_b41,med
+API05-C,hostap,wpa_supplicant/config.c,3761,FP,"API05-C misfire: cred_num_ois is a plain scalar unsigned int* out-param, not an array - extends the scalar-out-param API05 FP class",41plus_b41,med
+ENV01-C,hostap,wpa_supplicant/config.c,3763,FP,"ENV01-C wholesale misfire FP class: no getenv() call anywhere in this function, 'ois' is fixed-size WLAN roaming-consortium data",41plus_b41,high
+ARR00-C,hostap,wpa_supplicant/config.c,3763,FP,"ARR00-C VLA misfire FP class: MAX_ROAMING_CONS_OI_LEN is a compile-time #define constant, not a runtime parameter - ois[][] is not a VLA",41plus_b41,high
+ENV01-C,hostap,wpa_supplicant/config.c,3764,FP,"ENV01-C wholesale misfire, same reasoning as :3763",41plus_b41,high
+ARR00-C,hostap,wpa_supplicant/config.c,3764,FP,"ARR00-C VLA misfire, same reasoning as :3763 (MAX_ROAMING_CONS)",41plus_b41,high
+INT14-C,hostap,wpa_supplicant/config.c,3770,FP,INT14-C pedantry: 'len & 1' is a standard odd/even parity idiom and 'len/2' a standard byte-count conversion - mixing them on one variable is not a real readability/correctness issue,41plus_b41,med
+EXP33-C,hostap,wpa_supplicant/config.c,3786,FP,"EXP33-C category error: MAX_ROAMING_CONS_OI_LEN is a #define macro constant, not a variable requiring initialization",41plus_b41,high
+ERR07-C,hostap,wpa_supplicant/config.c,3826,TP,unchecked atoi() assigned straight to struct field with zero downstream validation - established ERR07/ERR34 disposition,41plus_b41,med
+ERR34-C,hostap,wpa_supplicant/config.c,3826,TP,unchecked atoi() assigned straight to struct field with zero downstream validation - established ERR07/ERR34 disposition,41plus_b41,med
+ERR07-C,hostap,wpa_supplicant/config.c,3831,TP,unchecked atoi() assigned straight to struct field with zero downstream validation - established ERR07/ERR34 disposition,41plus_b41,med
+ERR34-C,hostap,wpa_supplicant/config.c,3831,TP,unchecked atoi() assigned straight to struct field with zero downstream validation - established ERR07/ERR34 disposition,41plus_b41,med
+ERR07-C,hostap,wpa_supplicant/config.c,3836,TP,unchecked atoi() assigned straight to struct field with zero downstream validation - established ERR07/ERR34 disposition,41plus_b41,med
+ERR34-C,hostap,wpa_supplicant/config.c,3836,TP,unchecked atoi() assigned straight to struct field with zero downstream validation - established ERR07/ERR34 disposition,41plus_b41,med
+STR34-C,hostap,wpa_supplicant/config.c,3836,FP,"STR34-C misattribution: 'value' at this line is a const char* argument to atoi(), not a char undergoing widening conversion",41plus_b41,high
+ERR07-C,hostap,wpa_supplicant/config.c,3844,TP,unchecked atoi() assigned straight to struct field with zero downstream validation - established ERR07/ERR34 disposition,41plus_b41,med
+ERR34-C,hostap,wpa_supplicant/config.c,3844,TP,unchecked atoi() assigned straight to struct field with zero downstream validation - established ERR07/ERR34 disposition,41plus_b41,med
+EXP33-C,hostap,wpa_supplicant/config.c,3850,FP,EXP33-C misfire: '&method.vendor' is passed as an OUT-param address to be filled by eap_peer_get_type() before method.method is read - address-of an as-yet-unwritten field for output is not a 'use' of uninitialized memory,41plus_b41,med
+ARR01-C,hostap,wpa_supplicant/config.c,3858,FP,"ARR01-C pointee-sizing-correct-idiom FP class: sizeof(*cred->eap_method) dereferences first, correct malloc-sizing idiom",41plus_b41,high
+ERR07-C,hostap,wpa_supplicant/config.c,3876,TP,unchecked atoi() assigned straight to struct field with zero downstream validation - established ERR07/ERR34 disposition,41plus_b41,med
+ERR34-C,hostap,wpa_supplicant/config.c,3876,TP,atoi() result stored/used with no downstream range check (categorical: mostly-TP atoi default),41plus_b42,med
+ERR07-C,hostap,wpa_supplicant/config.c,3881,TP,atoi() result stored/used with no downstream range check (categorical: mostly-TP atoi default),41plus_b42,med
+ERR34-C,hostap,wpa_supplicant/config.c,3881,TP,atoi() result stored/used with no downstream range check (categorical: mostly-TP atoi default),41plus_b42,med
+ERR07-C,hostap,wpa_supplicant/config.c,3886,TP,atoi() result stored/used with no downstream range check (categorical: mostly-TP atoi default),41plus_b42,med
+ERR34-C,hostap,wpa_supplicant/config.c,3886,TP,atoi() result stored/used with no downstream range check (categorical: mostly-TP atoi default),41plus_b42,med
+ERR07-C,hostap,wpa_supplicant/config.c,3891,TP,atoi() result stored/used with no downstream range check (categorical: mostly-TP atoi default),41plus_b42,med
+ERR34-C,hostap,wpa_supplicant/config.c,3891,TP,atoi() result stored/used with no downstream range check (categorical: mostly-TP atoi default),41plus_b42,med
+ERR07-C,hostap,wpa_supplicant/config.c,3896,TP,atoi() result stored/used with no downstream range check (categorical: mostly-TP atoi default),41plus_b42,med
+ERR34-C,hostap,wpa_supplicant/config.c,3896,TP,atoi() result stored/used with no downstream range check (categorical: mostly-TP atoi default),41plus_b42,med
+ERR07-C,hostap,wpa_supplicant/config.c,3901,TP,atoi() result stored/used with no downstream range check (categorical: mostly-TP atoi default),41plus_b42,med
+ERR34-C,hostap,wpa_supplicant/config.c,3901,TP,atoi() result stored/used with no downstream range check (categorical: mostly-TP atoi default),41plus_b42,med
+ERR07-C,hostap,wpa_supplicant/config.c,3909,TP,atoi() result stored/used with no downstream range check (categorical: mostly-TP atoi default),41plus_b42,med
+ERR34-C,hostap,wpa_supplicant/config.c,3909,TP,atoi() result stored/used with no downstream range check (categorical: mostly-TP atoi default),41plus_b42,med
+ERR07-C,hostap,wpa_supplicant/config.c,3914,TP,atoi() result stored/used with no downstream range check (categorical: mostly-TP atoi default),41plus_b42,med
+ERR34-C,hostap,wpa_supplicant/config.c,3914,TP,atoi() result stored/used with no downstream range check (categorical: mostly-TP atoi default),41plus_b42,med
+ERR07-C,hostap,wpa_supplicant/config.c,3919,TP,atoi() result stored/used with no downstream range check (categorical: mostly-TP atoi default),41plus_b42,med
+ERR34-C,hostap,wpa_supplicant/config.c,3919,TP,atoi() result stored/used with no downstream range check (categorical: mostly-TP atoi default),41plus_b42,med
+EXP34-C,hostap,wpa_supplicant/config.c,3931,FP,os_free(NULL) is standard-guaranteed safe; categorical EXP34-C os_free(NULL) FP pattern,41plus_b42,high
+EXP43-C,hostap,wpa_supplicant/config.c,4022,FP,"os_realloc_array(void*,size_t,size_t) has one pointer param, no restrict aliasing possible; extends EXP43-C non-restrict-param FP class",41plus_b42,high
+ARR01-C,hostap,wpa_supplicant/config.c,4047,FP,"sizeof applied to cred->home_ois[0], a fixed-size struct member array, not the decayed cred pointer itself; categorical ARR01-C sizeof(*param->field) FP",41plus_b42,high
+ARR01-C,hostap,wpa_supplicant/config.c,4065,FP,"sizeof applied to cred->home_ois[0], a fixed-size struct member array, not the decayed cred pointer itself; categorical ARR01-C sizeof(*param->field) FP",41plus_b42,high
+EXP43-C,hostap,wpa_supplicant/config.c,4129,FP,"os_realloc_array(void*,size_t,size_t) has one pointer param, no restrict aliasing possible; extends EXP43-C non-restrict-param FP class",41plus_b42,high
+EXP43-C,hostap,wpa_supplicant/config.c,4151,FP,"os_realloc_array(void*,size_t,size_t) has one pointer param, no restrict aliasing possible; extends EXP43-C non-restrict-param FP class",41plus_b42,high
+STR34-C,hostap,wpa_supplicant/config.c,4167,FP,plain char-to-char '*pos++ = c' tokenizing idiom; categorical STR34-C char-to-char FP (massively confirmed),41plus_b42,high
+ERR07-C,hostap,wpa_supplicant/config.c,4174,TP,atoi() result stored/used with no downstream range check (categorical: mostly-TP atoi default),41plus_b42,med
+ERR34-C,hostap,wpa_supplicant/config.c,4174,TP,atoi() result stored/used with no downstream range check (categorical: mostly-TP atoi default),41plus_b42,med
+STR34-C,hostap,wpa_supplicant/config.c,4181,FP,plain char-to-char '*pos++ = c' tokenizing idiom; categorical STR34-C char-to-char FP (massively confirmed),41plus_b42,high
+ERR07-C,hostap,wpa_supplicant/config.c,4183,TP,atoi() result stored/used with no downstream range check (categorical: mostly-TP atoi default),41plus_b42,med
+ERR34-C,hostap,wpa_supplicant/config.c,4183,TP,atoi() result stored/used with no downstream range check (categorical: mostly-TP atoi default),41plus_b42,med
+STR34-C,hostap,wpa_supplicant/config.c,4190,FP,plain char-to-char '*pos++ = c' tokenizing idiom; categorical STR34-C char-to-char FP (massively confirmed),41plus_b42,high
+DCL30-C,hostap,wpa_supplicant/config.c,4247,FP,"buf is os_malloc'd heap memory, not automatic storage; categorical DCL30-C heap-vs-stack-pointer-variable FP",41plus_b42,high
+MEM10-C,hostap,wpa_supplicant/config.c,4253,FP,plain 'if (ptr == NULL)' guard is present and sufficient; categorical MEM10-C ad-hoc-NULL-check-is-fine FP,41plus_b42,high
+DCL13-C,hostap,wpa_supplicant/config.c,4259,TP,function genuinely never writes through this parameter; real (low-severity) const-correctness opportunity,41plus_b42,low
+INT32-C,hostap,wpa_supplicant/config.c,4310,FP,'pos'/'end' are char* pointers into an os_malloc(4000) buffer; pointer arithmetic misclassified as signed-int addition; categorical INT32-C buf+N FP,41plus_b42,high
+MEM12-C,hostap,wpa_supplicant/config.c,4397,FP,"buf is the function's malloc'd return value handed to the caller, not leaked; categorical MEM12-C ownership-transfer-on-return FP",41plus_b42,high
+INT32-C,hostap,wpa_supplicant/config.c,4399,FP,'pos'/'end' are char* pointers into an os_malloc(4000) buffer; pointer arithmetic misclassified as signed-int addition; categorical INT32-C buf+N FP,41plus_b42,high
+MEM12-C,hostap,wpa_supplicant/config.c,4405,FP,"buf is the function's malloc'd return value handed to the caller, not leaked; categorical MEM12-C ownership-transfer-on-return FP",41plus_b42,high
+MEM12-C,hostap,wpa_supplicant/config.c,4409,FP,"buf is the function's malloc'd return value handed to the caller, not leaked; categorical MEM12-C ownership-transfer-on-return FP",41plus_b42,high
+MEM12-C,hostap,wpa_supplicant/config.c,4413,FP,"buf is the function's malloc'd return value handed to the caller, not leaked; categorical MEM12-C ownership-transfer-on-return FP",41plus_b42,high
+MEM12-C,hostap,wpa_supplicant/config.c,4416,FP,"buf is the function's malloc'd return value handed to the caller, not leaked; categorical MEM12-C ownership-transfer-on-return FP",41plus_b42,high
+MEM12-C,hostap,wpa_supplicant/config.c,4423,FP,"buf is the function's malloc'd return value handed to the caller, not leaked; categorical MEM12-C ownership-transfer-on-return FP",41plus_b42,high
+MEM12-C,hostap,wpa_supplicant/config.c,4427,FP,"buf is the function's malloc'd return value handed to the caller, not leaked; categorical MEM12-C ownership-transfer-on-return FP",41plus_b42,high
+MEM12-C,hostap,wpa_supplicant/config.c,4430,FP,"buf is the function's malloc'd return value handed to the caller, not leaked; categorical MEM12-C ownership-transfer-on-return FP",41plus_b42,high
+MEM12-C,hostap,wpa_supplicant/config.c,4439,FP,"buf is the function's malloc'd return value handed to the caller, not leaked; categorical MEM12-C ownership-transfer-on-return FP",41plus_b42,high
+MEM12-C,hostap,wpa_supplicant/config.c,4443,FP,"buf is the function's malloc'd return value handed to the caller, not leaked; categorical MEM12-C ownership-transfer-on-return FP",41plus_b42,high
+MEM12-C,hostap,wpa_supplicant/config.c,4446,FP,"buf is the function's malloc'd return value handed to the caller, not leaked; categorical MEM12-C ownership-transfer-on-return FP",41plus_b42,high
+MEM12-C,hostap,wpa_supplicant/config.c,4455,FP,"buf is the function's malloc'd return value handed to the caller, not leaked; categorical MEM12-C ownership-transfer-on-return FP",41plus_b42,high
+MEM12-C,hostap,wpa_supplicant/config.c,4459,FP,"buf is the function's malloc'd return value handed to the caller, not leaked; categorical MEM12-C ownership-transfer-on-return FP",41plus_b42,high
+STR34-C,hostap,wpa_supplicant/config.c,4463,FP,plain char-to-char '*pos++ = c' tokenizing idiom; categorical STR34-C char-to-char FP (massively confirmed),41plus_b42,high
+ERR02-C,hostap,wpa_supplicant/config.c,4464,FP,"flags wpa_snprintf_hex(), a custom bounded helper (not libc sprintf) whose return value is consumed via pos+=; categorical ERR02-C name-substring-misfire FP",41plus_b42,high
+EXP34-C,hostap,wpa_supplicant/config.c,4469,FP,pos derives from buf (checked non-null after os_malloc) and only advances via pos+=...; never NULL; categorical EXP34-C FP,41plus_b42,high
+STR34-C,hostap,wpa_supplicant/config.c,4469,FP,plain char-to-char '*pos++ = c' tokenizing idiom; categorical STR34-C char-to-char FP (massively confirmed),41plus_b42,high
+MEM12-C,hostap,wpa_supplicant/config.c,4470,FP,"buf is the function's malloc'd return value handed to the caller, not leaked; categorical MEM12-C ownership-transfer-on-return FP",41plus_b42,high
+MEM12-C,hostap,wpa_supplicant/config.c,4479,FP,"buf is the function's malloc'd return value handed to the caller, not leaked; categorical MEM12-C ownership-transfer-on-return FP",41plus_b42,high
+MEM12-C,hostap,wpa_supplicant/config.c,4484,FP,"buf is the function's malloc'd return value handed to the caller, not leaked; categorical MEM12-C ownership-transfer-on-return FP",41plus_b42,high
+STR34-C,hostap,wpa_supplicant/config.c,4488,FP,plain char-to-char '*pos++ = c' tokenizing idiom; categorical STR34-C char-to-char FP (massively confirmed),41plus_b42,high
+ERR02-C,hostap,wpa_supplicant/config.c,4489,FP,"flags wpa_snprintf_hex(), a custom bounded helper (not libc sprintf) whose return value is consumed via pos+=; categorical ERR02-C name-substring-misfire FP",41plus_b42,high
+STR34-C,hostap,wpa_supplicant/config.c,4494,FP,plain char-to-char '*pos++ = c' tokenizing idiom; categorical STR34-C char-to-char FP (massively confirmed),41plus_b42,high
+MEM12-C,hostap,wpa_supplicant/config.c,4495,FP,"buf is the function's malloc'd return value handed to the caller, not leaked; categorical MEM12-C ownership-transfer-on-return FP",41plus_b42,high
+MEM12-C,hostap,wpa_supplicant/config.c,4504,FP,"buf is the function's malloc'd return value handed to the caller, not leaked; categorical MEM12-C ownership-transfer-on-return FP",41plus_b42,high
+MEM12-C,hostap,wpa_supplicant/config.c,4509,FP,"buf is the function's malloc'd return value handed to the caller, not leaked; categorical MEM12-C ownership-transfer-on-return FP",41plus_b42,high
+STR34-C,hostap,wpa_supplicant/config.c,4513,FP,plain char-to-char '*pos++ = c' tokenizing idiom; categorical STR34-C char-to-char FP (massively confirmed),41plus_b42,high
+ERR02-C,hostap,wpa_supplicant/config.c,4514,FP,"flags wpa_snprintf_hex(), a custom bounded helper (not libc sprintf) whose return value is consumed via pos+=; categorical ERR02-C name-substring-misfire FP",41plus_b42,high
+STR34-C,hostap,wpa_supplicant/config.c,4519,FP,plain char-to-char '*pos++ = c' tokenizing idiom; categorical STR34-C char-to-char FP (massively confirmed),41plus_b42,high
+MEM12-C,hostap,wpa_supplicant/config.c,4520,FP,"buf is the function's malloc'd return value handed to the caller, not leaked; categorical MEM12-C ownership-transfer-on-return FP",41plus_b42,high
+MEM12-C,hostap,wpa_supplicant/config.c,4528,FP,"buf is the function's malloc'd return value handed to the caller, not leaked; categorical MEM12-C ownership-transfer-on-return FP",41plus_b42,high
+MEM12-C,hostap,wpa_supplicant/config.c,4532,FP,"buf is the function's malloc'd return value handed to the caller, not leaked; categorical MEM12-C ownership-transfer-on-return FP",41plus_b42,high
+INT32-C,hostap,wpa_supplicant/config.c,4534,FP,'pos'/'end' are char* pointers into an os_malloc(4000) buffer; pointer arithmetic misclassified as signed-int addition; categorical INT32-C buf+N FP,41plus_b42,high
+MEM12-C,hostap,wpa_supplicant/config.c,4545,FP,"buf is the function's malloc'd return value handed to the caller, not leaked; categorical MEM12-C ownership-transfer-on-return FP",41plus_b42,high
+MEM12-C,hostap,wpa_supplicant/config.c,4549,FP,"buf is the function's malloc'd return value handed to the caller, not leaked; categorical MEM12-C ownership-transfer-on-return FP",41plus_b42,high
+MEM12-C,hostap,wpa_supplicant/config.c,4557,FP,"buf is the function's malloc'd return value handed to the caller, not leaked; categorical MEM12-C ownership-transfer-on-return FP",41plus_b42,high
+MEM12-C,hostap,wpa_supplicant/config.c,4561,FP,"buf is the function's malloc'd return value handed to the caller, not leaked; categorical MEM12-C ownership-transfer-on-return FP",41plus_b42,high
+INT32-C,hostap,wpa_supplicant/config.c,4563,FP,'pos'/'end' are char* pointers into an os_malloc(4000) buffer; pointer arithmetic misclassified as signed-int addition; categorical INT32-C buf+N FP,41plus_b42,high
+MEM12-C,hostap,wpa_supplicant/config.c,4575,FP,"buf is the function's malloc'd return value handed to the caller, not leaked; categorical MEM12-C ownership-transfer-on-return FP",41plus_b42,high
+MEM12-C,hostap,wpa_supplicant/config.c,4579,FP,"buf is the function's malloc'd return value handed to the caller, not leaked; categorical MEM12-C ownership-transfer-on-return FP",41plus_b42,high
+MEM12-C,hostap,wpa_supplicant/config.c,4583,FP,"buf is the function's malloc'd return value handed to the caller, not leaked; categorical MEM12-C ownership-transfer-on-return FP",41plus_b42,high
+MEM12-C,hostap,wpa_supplicant/config.c,4585,FP,"buf is the function's malloc'd return value handed to the caller, not leaked; categorical MEM12-C ownership-transfer-on-return FP",41plus_b42,high
+API00-C,hostap,wpa_supplicant/config.c,4589,FP,"config is the process-wide config object, never NULL at these internal call sites; categorical API00-C internal-API FP",41plus_b42,med
+DCL13-C,hostap,wpa_supplicant/config.c,4589,TP,function genuinely never writes through this parameter; real (low-severity) const-correctness opportunity,41plus_b42,low
+DCL30-C,hostap,wpa_supplicant/config.c,4600,FP,"cred points into config->cred persistent list, not local automatic storage; extends DCL30-C heap/list-vs-stack FP class",41plus_b42,high
+API00-C,hostap,wpa_supplicant/config.c,4604,FP,"config is the process-wide config object, never NULL at these internal call sites; categorical API00-C internal-API FP",41plus_b42,med
+API00-C,hostap,wpa_supplicant/config.c,4633,FP,"config is the process-wide config object, never NULL at these internal call sites; categorical API00-C internal-API FP",41plus_b42,med
+API00-C,hostap,wpa_supplicant/config.c,4665,FP,"config is the process-wide config object, never NULL at these internal call sites; categorical API00-C internal-API FP",41plus_b42,med
+DCL13-C,hostap,wpa_supplicant/config.c,4665,TP,function genuinely never writes through this parameter; real (low-severity) const-correctness opportunity,41plus_b42,low
+DCL30-C,hostap,wpa_supplicant/config.c,4672,FP,"blob points into config->blobs persistent list, not local automatic storage; extends DCL30-C heap/list-vs-stack FP class",41plus_b42,high
+EXP33-C,hostap,wpa_supplicant/config.c,4772,FP,"sizeof(*config) is a compile-time operand, not a runtime dereference of the not-yet-assigned pointer; categorical EXP33-C sizeof(*ptr) FP",41plus_b42,high
+DCL30-C,hostap,wpa_supplicant/config.c,4830,FP,"config is os_zalloc'd heap memory, not automatic storage; categorical DCL30-C heap-vs-stack FP",41plus_b42,high
+DCL13-C,hostap,wpa_supplicant/config.c,4839,TP,function genuinely never writes through this parameter; real (low-severity) const-correctness opportunity,41plus_b42,low
+ARR00-C,hostap,wpa_supplicant/config.c,4844,FP,'prio' is initialized in the very same for-loop init clause (for (prio = 0; ...)); categorical ARR00-C initialized-in-for-init FP,41plus_b42,high
+DCL13-C,hostap,wpa_supplicant/config.c,4890,FP,config IS mutated via an offset-computed aliased pointer or output-buffer field write; categorical DCL13-C misses-aliased/direct-struct-field-write FP,41plus_b42,high
+ERR33-C,hostap,wpa_supplicant/config.c,4898,TP,"strtol() via wpa_global_config_parse_int (check_range=false path) has only an endptr/trailing-char check, no magnitude bound and no errno/ERANGE guard; categorical strtol-partial-validation TP",41plus_b42,low
+ERR00-C,hostap,wpa_supplicant/config.c,4898,TP,"strtol() via wpa_global_config_parse_int (check_range=false path) has only an endptr/trailing-char check, no magnitude bound and no errno/ERANGE guard; categorical strtol-partial-validation TP",41plus_b42,low
+ERR01-C,hostap,wpa_supplicant/config.c,4898,TP,"strtol() via wpa_global_config_parse_int (check_range=false path) has only an endptr/trailing-char check, no magnitude bound and no errno/ERANGE guard; categorical strtol-partial-validation TP",41plus_b42,low
+ERR30-C,hostap,wpa_supplicant/config.c,4898,TP,"strtol() via wpa_global_config_parse_int (check_range=false path) has only an endptr/trailing-char check, no magnitude bound and no errno/ERANGE guard; categorical strtol-partial-validation TP",41plus_b42,low
+EXP34-C,hostap,wpa_supplicant/config.c,4899,FP,"strtol()'s endptr output always writes a valid pointer, never NULL; categorical EXP34-C endptr-never-null FP",41plus_b42,high
+DCL30-C,hostap,wpa_supplicant/config.c,4920,FP,"'*dst = val' copies an int by value through a pointer; val's address is never stored anywhere, category error",41plus_b42,high
+DCL13-C,hostap,wpa_supplicant/config.c,4946,FP,config IS mutated via an offset-computed aliased pointer or output-buffer field write; categorical DCL13-C misses-aliased/direct-struct-field-write FP,41plus_b42,high
+ERR33-C,hostap,wpa_supplicant/config.c,4955,FP,wpa_global_config_parse_bool has a tight downstream magnitude check (val<0||val>1) that catches any strtol overflow; categorical TIGHT-range-check strtol FP,41plus_b42,med
+ERR00-C,hostap,wpa_supplicant/config.c,4955,FP,wpa_global_config_parse_bool has a tight downstream magnitude check (val<0||val>1) that catches any strtol overflow; categorical TIGHT-range-check strtol FP,41plus_b42,med
+ERR01-C,hostap,wpa_supplicant/config.c,4955,FP,wpa_global_config_parse_bool has a tight downstream magnitude check (val<0||val>1) that catches any strtol overflow; categorical TIGHT-range-check strtol FP,41plus_b42,med
+ERR30-C,hostap,wpa_supplicant/config.c,4955,TP,errno is never reset before strtol() despite the downstream range check; categorical ERR30-C-still-TP-under-tight-bound,41plus_b42,low
+EXP34-C,hostap,wpa_supplicant/config.c,4956,FP,"strtol()'s endptr output always writes a valid pointer, never NULL; categorical EXP34-C endptr-never-null FP",41plus_b42,high
+DCL13-C,hostap,wpa_supplicant/config.c,4986,FP,config IS mutated via an offset-computed aliased pointer or output-buffer field write; categorical DCL13-C misses-aliased/direct-struct-field-write FP,41plus_b42,high
+DCL30-C,hostap,wpa_supplicant/config.c,5028,FP,"tmp is os_strdup'd heap memory assigned via '*dst = tmp', not a stack address escaping; DCL30-C heap-vs-stack FP",41plus_b42,high
+STR34-C,hostap,wpa_supplicant/config.c,5028,FP,"'*dst = tmp' is a char** pointer assignment, not a char byte write; categorical STR34-C misapplied-to-pointer-variable FP",41plus_b42,high
+DCL13-C,hostap,wpa_supplicant/config.c,5057,FP,config IS mutated via an offset-computed aliased pointer or output-buffer field write; categorical DCL13-C misses-aliased/direct-struct-field-write FP,41plus_b42,high
+DCL30-C,hostap,wpa_supplicant/config.c,5072,FP,"tmp is wpabuf_parse_bin'd heap memory assigned via '*dst = tmp', not a stack address escaping; DCL30-C heap-vs-stack FP",41plus_b42,high
+DCL13-C,hostap,wpa_supplicant/config.c,5120,FP,config IS mutated via an offset-computed aliased pointer or output-buffer field write; categorical DCL13-C misses-aliased/direct-struct-field-write FP,41plus_b42,high
+DCL13-C,hostap,wpa_supplicant/config.c,5163,TP,function genuinely never writes through this parameter; real (low-severity) const-correctness opportunity,41plus_b42,low
+MSC01-C,hostap,wpa_supplicant/config.c,5172,FP,if(ret==-2){...} else if(ret){...} — implicit success (ret==0) fallthrough is the correct behavior; categorical MSC01-C deliberate-guard-clause FP,41plus_b42,med
+DCL13-C,hostap,wpa_supplicant/config.c,5186,FP,config IS mutated via an offset-computed aliased pointer or output-buffer field write; categorical DCL13-C misses-aliased/direct-struct-field-write FP,41plus_b42,high
+DCL13-C,hostap,wpa_supplicant/config.c,5202,FP,config IS mutated via an offset-computed aliased pointer or output-buffer field write; categorical DCL13-C misses-aliased/direct-struct-field-write FP,41plus_b42,high
+DCL13-C,hostap,wpa_supplicant/config.c,5209,FP,config IS mutated via an offset-computed aliased pointer or output-buffer field write; categorical DCL13-C misses-aliased/direct-struct-field-write FP,41plus_b42,high
+STR34-C,hostap,wpa_supplicant/config.c,5227,FP,"'pos' is a pointer parameter passed to os_strlen()/parse_int_array(), no char-to-int conversion occurs; categorical STR34-C bare-pointer-parameter FP",41plus_b42,high
+ERR07-C,hostap,wpa_supplicant/config.c,5295,TP,atoi() result stored/used with no downstream range check (categorical: mostly-TP atoi default),41plus_b42,med
+ERR34-C,hostap,wpa_supplicant/config.c,5295,TP,atoi() result stored/used with no downstream range check (categorical: mostly-TP atoi default),41plus_b42,med
+ERR07-C,hostap,wpa_supplicant/config.c,5300,TP,atoi() result stored/used with no downstream range check (categorical: mostly-TP atoi default),41plus_b42,med
+ERR34-C,hostap,wpa_supplicant/config.c,5300,TP,atoi() result stored/used with no downstream range check (categorical: mostly-TP atoi default),41plus_b42,med
+MEM10-C,hostap,wpa_supplicant/config.c,5312,FP,plain 'if (ptr == NULL)' guard is present and sufficient; categorical MEM10-C ad-hoc-NULL-check-is-fine FP,41plus_b42,high
+MSC07-C,hostap,wpa_supplicant/config.c,5326,FP,fail: label after return is reached via earlier 'goto fail;' statements; categorical MSC07-C goto-target-label FP,41plus_b42,high
+DCL13-C,hostap,wpa_supplicant/config.c,5354,FP,config IS mutated via an offset-computed aliased pointer or output-buffer field write; categorical DCL13-C misses-aliased/direct-struct-field-write FP,41plus_b42,high
+DCL13-C,hostap,wpa_supplicant/config.c,5371,FP,config IS mutated via an offset-computed aliased pointer or output-buffer field write; categorical DCL13-C misses-aliased/direct-struct-field-write FP,41plus_b42,high
+STR34-C,hostap,wpa_supplicant/config.c,5387,FP,"'pos' is a pointer parameter passed to os_strlen()/parse_int_array(), no char-to-int conversion occurs; categorical STR34-C bare-pointer-parameter FP",41plus_b42,high
+API05-C,hostap,wpa_supplicant/config.c,5464,FP,"idiomatic 'char *buf, size_t buflen' pointer+size-param pair; categorical API05-C conformant-array-syntax FP",41plus_b42,high
+DCL13-C,hostap,wpa_supplicant/config.c,5464,TP,function genuinely never writes through this parameter; real (low-severity) const-correctness opportunity,41plus_b42,low
+API05-C,hostap,wpa_supplicant/config.c,5465,FP,"idiomatic 'char *buf, size_t buflen' pointer+size-param pair; categorical API05-C conformant-array-syntax FP",41plus_b42,high
+API05-C,hostap,wpa_supplicant/config.c,5476,FP,"idiomatic 'char *buf, size_t buflen' pointer+size-param pair; categorical API05-C conformant-array-syntax FP",41plus_b42,high
+DCL13-C,hostap,wpa_supplicant/config.c,5476,TP,function genuinely never writes through this parameter; real (low-severity) const-correctness opportunity,41plus_b42,low
+API05-C,hostap,wpa_supplicant/config.c,5477,FP,"idiomatic 'char *buf, size_t buflen' pointer+size-param pair; categorical API05-C conformant-array-syntax FP",41plus_b42,high
+API05-C,hostap,wpa_supplicant/config.c,5488,FP,"idiomatic 'char *buf, size_t buflen' pointer+size-param pair; categorical API05-C conformant-array-syntax FP",41plus_b42,high
+DCL13-C,hostap,wpa_supplicant/config.c,5488,TP,function genuinely never writes through this parameter; real (low-severity) const-correctness opportunity,41plus_b42,low
+API05-C,hostap,wpa_supplicant/config.c,5489,FP,"idiomatic 'char *buf, size_t buflen' pointer+size-param pair; categorical API05-C conformant-array-syntax FP",41plus_b42,high
+STR00-C,hostap,wpa_supplicant/config.c,5503,FP,"'res' is declared 'int res;' in this function, not char; STR00-C misidentifies the variable's type",41plus_b42,high
+API05-C,hostap,wpa_supplicant/config.c,5509,FP,"idiomatic 'char *buf, size_t buflen' pointer+size-param pair; categorical API05-C conformant-array-syntax FP",41plus_b42,high
+DCL13-C,hostap,wpa_supplicant/config.c,5509,TP,function genuinely never writes through this parameter; real (low-severity) const-correctness opportunity,41plus_b42,low
+API05-C,hostap,wpa_supplicant/config.c,5510,FP,"idiomatic 'char *buf, size_t buflen' pointer+size-param pair; categorical API05-C conformant-array-syntax FP",41plus_b42,high
+STR00-C,hostap,wpa_supplicant/config.c,5528,FP,"'res' is declared 'int res;' in this function, not char; STR00-C misidentifies the variable's type",41plus_b42,high
+API05-C,hostap,wpa_supplicant/config.c,5534,FP,"idiomatic 'char *buf, size_t buflen' pointer+size-param pair; categorical API05-C conformant-array-syntax FP",41plus_b42,high
+DCL13-C,hostap,wpa_supplicant/config.c,5534,TP,function genuinely never writes through this parameter; real (low-severity) const-correctness opportunity,41plus_b42,low
+API05-C,hostap,wpa_supplicant/config.c,5535,FP,"idiomatic 'char *buf, size_t buflen' pointer+size-param pair; categorical API05-C conformant-array-syntax FP",41plus_b42,high
+STR00-C,hostap,wpa_supplicant/config.c,5567,FP,"'res' is declared 'int res;' in this function, not char; STR00-C misidentifies the variable's type",41plus_b42,high
+API05-C,hostap,wpa_supplicant/config.c,5574,FP,"idiomatic 'char *buf, size_t buflen' pointer+size-param pair; categorical API05-C conformant-array-syntax FP",41plus_b42,high
+DCL13-C,hostap,wpa_supplicant/config.c,5574,TP,function genuinely never writes through this parameter; real (low-severity) const-correctness opportunity,41plus_b42,low
+API05-C,hostap,wpa_supplicant/config.c,5575,FP,"idiomatic 'char *buf, size_t buflen' pointer+size-param pair; categorical API05-C conformant-array-syntax FP",41plus_b42,high
+STR00-C,hostap,wpa_supplicant/config.c,5591,FP,"'res' is declared 'int res;' in this function, not char; STR00-C misidentifies the variable's type",41plus_b42,high
+DCL13-C,hostap,wpa_supplicant/config.c,5601,FP,config IS mutated via an offset-computed aliased pointer or output-buffer field write; categorical DCL13-C misses-aliased/direct-struct-field-write FP,41plus_b42,high
+PRE00-C,hostap,wpa_supplicant/config.c,5621,FP,"'f' is only used via '##'-pasting/'#'-stringizing (OFFSET(f), wpa_config_process_##f), never evaluated at runtime; categorical PRE00/05/12-C token-paste-not-evaluation FP",41plus_b42,high
+PRE05-C,hostap,wpa_supplicant/config.c,5621,FP,"call sites always pass bare identifiers, never macros needing pre-expansion before ##; categorical PRE05-C FP",41plus_b42,high
+PRE12-C,hostap,wpa_supplicant/config.c,5621,FP,"'f' is token-pasted/stringized, never evaluated as a runtime expression; categorical PRE00/05/12-C FP",41plus_b42,high
+PRE00-C,hostap,wpa_supplicant/config.c,5622,FP,"'f' is only used via '##'-pasting/'#'-stringizing (OFFSET(f), wpa_config_process_##f), never evaluated at runtime; categorical PRE00/05/12-C token-paste-not-evaluation FP",41plus_b42,high
+PRE05-C,hostap,wpa_supplicant/config.c,5622,FP,"f used only via ##/stringize for token-composition, never runtime evaluated; token-paste-only macro-param FP class.",41plus_b43,high
+PRE12-C,hostap,wpa_supplicant/config.c,5622,FP,"f only paste/stringized once per use, never runtime-evaluated; token-paste-only macro-param FP class.",41plus_b43,high
+PRE00-C,hostap,wpa_supplicant/config.c,5624,FP,"f used only via ##/OFFSET for identifier composition, never runtime evaluated; token-paste-only FP class.",41plus_b43,high
+PRE05-C,hostap,wpa_supplicant/config.c,5624,FP,"f always passed as a bare field-name token at every call site, never a macro needing pre-expansion.",41plus_b43,high
+PRE12-C,hostap,wpa_supplicant/config.c,5624,FP,token-paste-only macro-param FP class; f never runtime-evaluated.,41plus_b43,high
+PRE00-C,hostap,wpa_supplicant/config.c,5625,FP,"f used only via #f stringize/OFFSET(f) composition, never runtime evaluated.",41plus_b43,high
+PRE12-C,hostap,wpa_supplicant/config.c,5625,FP,token-paste-only macro-param FP class.,41plus_b43,high
+DCL37-C,hostap,wpa_supplicant/config.c,5625,TP,"_INT is a genuine file-scope macro name beginning with underscore+uppercase, always reserved per C 7.1.3 (unlike the block-scope-local FP class).",41plus_b43,high
+PRE00-C,hostap,wpa_supplicant/config.c,5627,FP,"f used only via #f/OFFSET(f) composition, never runtime evaluated; token-paste-only FP class.",41plus_b43,high
+PRE01-C,hostap,wpa_supplicant/config.c,5627,TP,"min used bare as rvalue operand in '(void *) min' cast; real (if low-severity) precedence hazard, graded on the macro definition independent of today's literal-only call sites.",41plus_b43,med
+PRE01-C,hostap,wpa_supplicant/config.c,5627,TP,max used bare as rvalue operand in '(void *) max' cast; same precedence-hazard reasoning as min.,41plus_b43,med
+PRE05-C,hostap,wpa_supplicant/config.c,5627,FP,"f always passed as a bare field-name identifier at every call site, never a macro needing pre-expansion.",41plus_b43,high
+PRE12-C,hostap,wpa_supplicant/config.c,5627,FP,token-paste-only macro-param FP class; f never runtime-evaluated.,41plus_b43,high
+PRE00-C,hostap,wpa_supplicant/config.c,5629,FP,token-paste-only macro-param FP class; f never runtime-evaluated.,41plus_b43,high
+PRE05-C,hostap,wpa_supplicant/config.c,5629,FP,"f always passed as a bare field-name identifier, never a macro needing pre-expansion.",41plus_b43,high
+PRE12-C,hostap,wpa_supplicant/config.c,5629,FP,token-paste-only macro-param FP class.,41plus_b43,high
+PRE00-C,hostap,wpa_supplicant/config.c,5631,FP,token-paste-only macro-param FP class; f never runtime-evaluated.,41plus_b43,high
+PRE12-C,hostap,wpa_supplicant/config.c,5631,FP,token-paste-only macro-param FP class.,41plus_b43,high
+DCL37-C,hostap,wpa_supplicant/config.c,5631,TP,"_STR is a genuine file-scope macro name beginning with underscore+uppercase, always reserved per C 7.1.3.",41plus_b43,high
+PRE01-C,hostap,wpa_supplicant/config.c,5633,TP,min used bare as rvalue operand in STR_RANGE's '(void *) min' (via _STR/STR chain to INT_RANGE-style cast); real precedence hazard on the macro definition.,41plus_b43,med
+PRE01-C,hostap,wpa_supplicant/config.c,5633,TP,max used bare as rvalue operand; same precedence-hazard reasoning as min.,41plus_b43,med
+PRE00-C,hostap,wpa_supplicant/config.c,5634,FP,token-paste-only macro-param FP class; f never runtime-evaluated.,41plus_b43,high
+PRE05-C,hostap,wpa_supplicant/config.c,5634,FP,"f always passed as a bare field-name identifier, never a macro needing pre-expansion.",41plus_b43,high
+PRE12-C,hostap,wpa_supplicant/config.c,5634,FP,token-paste-only macro-param FP class.,41plus_b43,high
+PRE00-C,hostap,wpa_supplicant/config.c,5635,FP,token-paste-only macro-param FP class; f never runtime-evaluated.,41plus_b43,high
+PRE05-C,hostap,wpa_supplicant/config.c,5635,FP,"f always passed as a bare field-name identifier, never a macro needing pre-expansion.",41plus_b43,high
+PRE12-C,hostap,wpa_supplicant/config.c,5635,FP,token-paste-only macro-param FP class.,41plus_b43,high
+ARR02-C,hostap,wpa_supplicant/config.c,5638,FP,"global_fields[] size always retrieved via ARRAY_SIZE(global_fields) (NUM_GLOBAL_FIELDS macro, line 5870); confirmed ARR02-C-on-ARRAY_SIZE-consumed-array FP class.",41plus_b43,high
+API00-C,hostap,wpa_supplicant/config.c,5873,FP,"wpa_config_dump_values always called with wpa_s->conf (ctrl_iface.c:13347), internal-only-API FP class.",41plus_b43,high
+API00-C,hostap,wpa_supplicant/config.c,5873,FP,buf param supplied only from internal fixed ctrl_iface buffers; internal-only-API FP class.,41plus_b43,high
+API00-C,hostap,wpa_supplicant/config.c,5873,FP,"buflen is only decremented (buflen -= tmp), no overflow-prone arithmetic; API00-C non-arithmetic-int-param FP class.",41plus_b43,med
+API05-C,hostap,wpa_supplicant/config.c,5873,FP,buf/buflen ptr+len idiom; confirmed API05-C FP class.,41plus_b43,high
+API00-C,hostap,wpa_supplicant/config.c,5897,FP,"name comes from a fixed internal ctrl_iface command buffer, never externally-nullable; internal-only-API FP class.",41plus_b43,high
+API00-C,hostap,wpa_supplicant/config.c,5897,FP,wpa_config_get_value always called with wpa_s->conf (ctrl_iface.c:1055); internal-only-API FP class.,41plus_b43,high
+API05-C,hostap,wpa_supplicant/config.c,5897,FP,name is a NUL-terminated C string with no length param needed; ptr+len idiom variant FP class.,41plus_b43,high
+API05-C,hostap,wpa_supplicant/config.c,5898,FP,buf/buflen ptr+len idiom; confirmed API05-C FP class.,41plus_b43,high
+STR00-C,hostap,wpa_supplicant/config.c,5967,FP,"ret is declared 'int ret = 0;' (line 5952) in wpa_config_process_global, not char; rule's own type claim is factually wrong (confirmed STR00-C wrong-type-claim FP class).",41plus_b43,high
+STR34-C,hostap,wpa_supplicant/config.c,5988,FP,"plain char-to-char '*tmp++ = \0;' assignment, not a widening conversion; confirmed STR34-C char-to-char FP class.",41plus_b43,high
+STR34-C,hostap,wpa_supplicant/config.c,6011,FP,plain char-to-char '*tmp++ = \0;' assignment; confirmed STR34-C char-to-char FP class.,41plus_b43,high
+STR00-C,hostap,wpa_supplicant/config.c,6029,FP,"ret is declared 'int ret = 0;' (line 5952), not char; STR00-C wrong-type-claim FP class.",41plus_b43,high
+API00-C,hostap,wpa_supplicant/config.c,6036,FP,"value comes only from config_file.c's internal line-parsing (pos2), never an externally-nullable pointer; internal-only-API FP class.",41plus_b43,high
+ERR07-C,hostap,wpa_supplicant/config.c,6044,TP,atoi(value) assigned straight into identity->dik_cipher with zero downstream validation; genuine unchecked-atoi() TP per established atoi() disposition.,41plus_b43,high
+ERR34-C,hostap,wpa_supplicant/config.c,6044,TP,"same unchecked atoi() call, no range/error check anywhere on identity->dik_cipher afterward.",41plus_b43,high
+STR00-C,hostap,wpa_supplicant/config.c,6060,FP,"ret is declared 'int ret = 0;' (line 6041) in wpa_config_set_identity, not char; STR00-C wrong-type-claim FP class.",41plus_b43,high
+STR00-C,hostap,wpa_supplicant/config.c,6065,FP,"ret is int, not char; STR00-C wrong-type-claim FP class.",41plus_b43,high
+STR00-C,hostap,wpa_supplicant/config.c,6071,FP,"ret is int, not char; STR00-C wrong-type-claim FP class.",41plus_b43,high
+STR00-C,hostap,wpa_supplicant/config.c,6076,FP,"ret is int, not char; STR00-C wrong-type-claim FP class.",41plus_b43,high
+MSC01-C,hostap,wpa_supplicant/config.c,6078,FP,"deliberate guard-clause shape: 'else if (line)' intentionally only logs/errors when line is truthy (config-file context); silent no-op otherwise is by design, matching the established MSC01-C guard-clause FP default.",41plus_b43,med
+STR00-C,hostap,wpa_supplicant/config.c,6081,FP,"ret is int, not char; STR00-C wrong-type-claim FP class.",41plus_b43,high
+API00-C,hostap,wpa_supplicant/config.c,6103,FP,wpa_config_add_identity always called with wpa_s->conf (p2p_supplicant.c:1486); internal-only-API FP class.,41plus_b43,high
+API00-C,hostap,wpa_supplicant/config.c,6137,FP,"wpa_config_remove_identity always called with wpa_s->conf (p2p_supplicant.c:1457,1480,1510); internal-only-API FP class.",41plus_b43,high
+API00-C,hostap,wpa_supplicant/config.c,6137,FP,"id is only ever compared with '==', never used in arithmetic; matches confirmed API00-C non-arithmetic-int-param overflow-flag FP class (eap_sake_common.c:335 precedent).",41plus_b43,high
+API05-C,hostap,src/crypto/tls_openssl.c,90,FP,"pointer+size idiom (out,outlen) on compat wrapper SSL_get_client_random -- confirmed API05-C FP class",41plus_b44,high
+API05-C,hostap,src/crypto/tls_openssl.c,100,FP,pointer+size idiom on SSL_get_server_random compat wrapper -- confirmed API05-C FP class,41plus_b44,high
+API05-C,hostap,src/crypto/tls_openssl.c,112,FP,pointer+size idiom on SSL_SESSION_get_master_key compat wrapper -- confirmed API05-C FP class,41plus_b44,high
+EXP05-C,hostap,src/crypto/tls_openssl.c,129,TP,real cast-away-const to call legacy non-const ASN1_STRING_data getter; matches b32's 'compat shim casts const away for pure getter' judged-TP class,41plus_b44,low
+MSC13-C,hostap,src/crypto/tls_openssl.c,139,FP,bio's NULL init IS read at 'return bio' on the path where BIO_new fails; not dead,41plus_b44,high
+STR34-C,hostap,src/crypto/tls_openssl.c,141,FP,"misattribution: flags pointer param 'key' as a char widening conversion; line is keystore_get(key,strlen(key),&value), no char conversion exists",41plus_b44,high
+STR34-C,hostap,src/crypto/tls_openssl.c,141,FP,"misattribution: flags pointer param 'key' as a char widening conversion; line is keystore_get(key,strlen(key),&value), no char conversion exists",41plus_b44,high
+MSC13-C,hostap,src/crypto/tls_openssl.c,144,FP,"misattribution: line is free(value); value is read via keystore_get/BIO_write before this, not dead",41plus_b44,high
+DCL30-C,hostap,src/crypto/tls_openssl.c,145,FP,"heap-not-stack: bio is a local pointer *variable* to BIO_new() heap object, not automatic storage",41plus_b44,high
+STR34-C,hostap,src/crypto/tls_openssl.c,185,FP,"misattribution: flags pointer param 'encoded_key_alias' as char-widening; line is os_strlen(encoded_key_alias), no char conversion",41plus_b44,high
+INT14-C,hostap,src/crypto/tls_openssl.c,188,FP,"stylistic: len (from os_strlen, always non-negative) tested via 'len & 1' parity check and used arithmetically elsewhere; no real hazard",41plus_b44,med
+CON03-C,hostap,src/crypto/tls_openssl.c,209,FP,"no-pthread class: wpa_supplicant/hostapd core is single-threaded (eloop), no pthread_create/mutex anywhere touching tls_openssl_ref_count",41plus_b44,high
+CON03-C,hostap,src/crypto/tls_openssl.c,210,FP,"no-pthread class, tls_ex_idx_session",41plus_b44,high
+CON03-C,hostap,src/crypto/tls_openssl.c,226,FP,"no-pthread class, tls_global",41plus_b44,high
+MSC13-C,hostap,src/crypto/tls_openssl.c,306,FP,'err' is used: assigned+tested in while((err=ERR_get_error())) drain loop; rule's 'never used' claim is false,41plus_b44,high
+DCL30-C,hostap,src/crypto/tls_openssl.c,358,FP,heap-not-stack: store is local pointer variable to X509_STORE_new() heap object,41plus_b44,high
+CON03-C,hostap,src/crypto/tls_openssl.c,366,FP,"no-pthread class, openssl_pkcs11_provider",41plus_b44,high
+MSC13-C,hostap,src/crypto/tls_openssl.c,387,FP,static var read by openssl_load_pkcs11_provider's guard on a later call -- matches confirmed static-var-cross-invocation-read class,41plus_b44,high
+EXP20-C,hostap,src/crypto/tls_openssl.c,396,TP,"!os_strcmp(...) implicit-boolean idiom -- genuinely relies on implicit test rather than == 0, matches rule text",41plus_b44,low
+MSC37-C,hostap,src/crypto/tls_openssl.c,407,FP,"full #if/#else return coverage (>=3.0 branch returns key, else branch returns NULL) -- confirmed preprocessor-blind MSC37-C class",41plus_b44,high
+MSC37-C,hostap,src/crypto/tls_openssl.c,464,FP,"same full #if/#else return coverage, provider_load_cert",41plus_b44,high
+DCL13-C,hostap,src/crypto/tls_openssl.c,540,FP,RSA_METHOD vtable dispatch signature (cryptoapi_rsa_pub_enc wired via rsa_meth->rsa_pub_enc) -- extends confirmed eloop/EAP callback-contract DCL13-C FP class,41plus_b44,high
+DCL13-C,hostap,src/crypto/tls_openssl.c,540,FP,RSA_METHOD vtable dispatch signature (cryptoapi_rsa_pub_enc wired via rsa_meth->rsa_pub_enc) -- extends confirmed eloop/EAP callback-contract DCL13-C FP class,41plus_b44,high
+DCL13-C,hostap,src/crypto/tls_openssl.c,548,FP,"same RSA_METHOD vtable dispatch signature, cryptoapi_rsa_pub_dec",41plus_b44,high
+DCL13-C,hostap,src/crypto/tls_openssl.c,548,FP,"same RSA_METHOD vtable dispatch signature, cryptoapi_rsa_pub_dec",41plus_b44,high
+EXP33-C,hostap,src/crypto/tls_openssl.c,598,FP,"output-param-write blindness: hash_size is written via CryptGetHashParam(...,&hash_size,...) just above",41plus_b44,high
+EXP05-C,hostap,src/crypto/tls_openssl.c,605,TP,real const-cast of 'from' to (BYTE*) to satisfy legacy CryptSetHashParam's non-const signature; harmless (read-only use) but a literal cast-away-const,41plus_b44,low
+DCL13-C,hostap,src/crypto/tls_openssl.c,635,FP,"RSA_METHOD vtable dispatch signature, cryptoapi_rsa_priv_dec stub",41plus_b44,high
+DCL13-C,hostap,src/crypto/tls_openssl.c,635,FP,"RSA_METHOD vtable dispatch signature, cryptoapi_rsa_priv_dec stub",41plus_b44,high
+MEM10-C,hostap,src/crypto/tls_openssl.c,644,FP,confirmed MEM10-C FP class: fires on any plain if(ptr==NULL) guard,41plus_b44,high
+MEM30-C,hostap,src/crypto/tls_openssl.c,656,FP,ordering confusion: rsa->meth is not freed until the NEXT line (657); this access precedes any free,41plus_b44,high
+MEM30-C,hostap,src/crypto/tls_openssl.c,657,FP,this line IS the free statement itself (os_free((void*)rsa->meth)); flagged as 'accessing freed pointer' before the free completes,41plus_b44,high
+MSC01-C,hostap,src/crypto/tls_openssl.c,683,FP,"guard-clause default (ret pre-set to NULL, if/else-if just narrows) -- confirmed no-final-else pedantry class",41plus_b44,high
+EXP33-C,hostap,src/crypto/tls_openssl.c,721,FP,"sizeof(*priv) misfire: sizeof is compile-time type-only, no runtime dereference of the not-yet-assigned pointer",41plus_b44,high
+EXP33-C,hostap,src/crypto/tls_openssl.c,722,FP,"sizeof(*rsa_meth) misfire, same class",41plus_b44,high
+EXP34-C,hostap,src/crypto/tls_openssl.c,726,FP,os_free(NULL) is safe by convention throughout hostap -- confirmed EXP34-C FP class,41plus_b44,high
+EXP34-C,hostap,src/crypto/tls_openssl.c,727,FP,"os_free(NULL) safe, same class",41plus_b44,high
+MEM31-C,hostap,src/crypto/tls_openssl.c,786,FP,RSA_free(rsa) (line 793) transitively frees rsa->n/rsa->e; sqc doesn't know library free()s free embedded fields,41plus_b44,high
+MEM31-C,hostap,src/crypto/tls_openssl.c,787,FP,"same, rsa->e transitively freed by RSA_free(rsa)",41plus_b44,high
+MEM31-C,hostap,src/crypto/tls_openssl.c,793,FP,"double-free flagged across mutually-exclusive branches: this is the ONLY free of rsa on the success path, the err: path free (line 801) never co-executes",41plus_b44,high
+MEM31-C,hostap,src/crypto/tls_openssl.c,795,FP,RSA_free(rsa) on the immediately preceding line transitively frees rsa->n/rsa->e; not a leak,41plus_b44,high
+MEM31-C,hostap,src/crypto/tls_openssl.c,795,FP,RSA_free(rsa) on the immediately preceding line transitively frees rsa->n/rsa->e; not a leak,41plus_b44,high
+MSC07-C,hostap,src/crypto/tls_openssl.c,797,FP,err: is a live goto target from earlier 'goto err;' statements -- confirmed goto-label-blindness class,41plus_b44,high
+MEM30-C,hostap,src/crypto/tls_openssl.c,801,FP,double-free flagged across mutually-exclusive branches: this err-path free never co-executes with the success-path free at line 793,41plus_b44,high
+MEM31-C,hostap,src/crypto/tls_openssl.c,806,FP,"RSA_free(rsa) at line 801 (this branch, rsa non-NULL) transitively frees rsa->n/rsa->e",41plus_b44,high
+MEM31-C,hostap,src/crypto/tls_openssl.c,806,FP,"RSA_free(rsa) at line 801 (this branch, rsa non-NULL) transitively frees rsa->n/rsa->e",41plus_b44,high
+DCL13-C,hostap,src/crypto/tls_openssl.c,810,TP,static internal function; 'ssl' param genuinely never referenced in body (only ssl_ctx is used),41plus_b44,low
+ARR38-C,hostap,src/crypto/tls_openssl.c,821,FP,"strncmp(name,""cert_store://"",13): 13 exactly equals strlen of the literal -- safe prefix-compare idiom, not a hazard",41plus_b44,high
+DCL13-C,hostap,src/crypto/tls_openssl.c,879,TP,"#ifdef FEATURE...#else no-op stub (tls_cryptoapi_cert returning -1) -- matches confirmed 'stub branch param 100% unused, const IS a real harmless opportunity' TP class",41plus_b44,low
+INT13-C,hostap,src/crypto/tls_openssl.c,894,TP,"real bitwise & on locally-declared signed int 'w' (not signature-pinned); technically matches rule text, low severity",41plus_b44,low
+INT13-C,hostap,src/crypto/tls_openssl.c,896,TP,"same, second use of 'w'",41plus_b44,low
+EXP05-C,hostap,src/crypto/tls_openssl.c,905,TP,cast-away-const on 'ssl' to call legacy non-const SSL_get_app_data -- same compat-shim pattern as line 129/605,41plus_b44,low
+EXP30-C,hostap,src/crypto/tls_openssl.c,906,FP,"pure accessor args (SSL_alert_type_string_long/SSL_alert_desc_string_long, static string-table lookups, no side effects) -- confirmed side-effect-free-accessor EXP30-C FP class",41plus_b44,high
+INT13-C,hostap,src/crypto/tls_openssl.c,912,FP,"'ret' is the info-callback's SSL_CTX_set_info_callback-pinned int parameter -- changing its type would break the fixed external callback signature, extends the DCL13-C signature-pinned-type reasoning to INT13-C",41plus_b44,high
+INT14-C,hostap,src/crypto/tls_openssl.c,912,FP,same signature-pinned-type reasoning extended to INT14-C's suggested type change on 'ret',41plus_b44,high
+MSC01-C,hostap,src/crypto/tls_openssl.c,927,FP,guard-clause default (unhandled SSL_CB_* states silently ignored is intentional) -- confirmed no-final-else class,41plus_b44,high
+MEM31-C,hostap,src/crypto/tls_openssl.c,1010,FP,"double-free flagged across mutually exclusive branches: this failure-path free (post_cmd loop) returns immediately, never co-executes with line 1015's success-path free",41plus_b44,high
+MEM31-C,hostap,src/crypto/tls_openssl.c,1015,FP,"same, success-path free never co-executes with line 1010's failure-path free",41plus_b44,high
+DCL00-C,hostap,src/crypto/tls_openssl.c,1029,TP,engine_id genuinely never modified after init -- real (low-value) const-qualify opportunity,41plus_b44,low
+STR05-C,hostap,src/crypto/tls_openssl.c,1029,TP,"char *engine_id = ""pkcs11"" genuinely missing const qualifier",41plus_b44,low
+ARR02-C,hostap,src/crypto/tls_openssl.c,1030,TP,"local pre_cmd[] array (not a function parameter) relies on initializer for its bound -- real, low-severity CERT ARR02-C opportunity",41plus_b44,low
+ARR02-C,hostap,src/crypto/tls_openssl.c,1038,TP,"same, post_cmd[]",41plus_b44,low
+STR30-C,hostap,src/crypto/tls_openssl.c,1046,FP,"misfire: pre_cmd[1]=pkcs11_so_path reassigns an array-of-pointers element to a different string, it does not write through/modify a string literal's characters",41plus_b44,high
+STR30-C,hostap,src/crypto/tls_openssl.c,1046,FP,"misfire: pre_cmd[1]=pkcs11_so_path reassigns an array-of-pointers element to a different string, it does not write through/modify a string literal's characters",41plus_b44,high
+STR30-C,hostap,src/crypto/tls_openssl.c,1047,FP,same array-of-pointers-element-reassignment misfire,41plus_b44,high
+STR30-C,hostap,src/crypto/tls_openssl.c,1047,FP,same array-of-pointers-element-reassignment misfire,41plus_b44,high
+STR30-C,hostap,src/crypto/tls_openssl.c,1049,FP,"same misfire, post_cmd[]",41plus_b44,high
+STR30-C,hostap,src/crypto/tls_openssl.c,1049,FP,"same misfire, post_cmd[]",41plus_b44,high
+STR30-C,hostap,src/crypto/tls_openssl.c,1051,FP,"same misfire, post_cmd[]",41plus_b44,high
+STR30-C,hostap,src/crypto/tls_openssl.c,1051,FP,"same misfire, post_cmd[]",41plus_b44,high
+DCL00-C,hostap,src/crypto/tls_openssl.c,1066,TP,engine_id (opensc variant) genuinely never modified -- same real opportunity as line 1029,41plus_b44,low
+STR05-C,hostap,src/crypto/tls_openssl.c,1066,TP,same missing-const-on-literal-assignment as line 1029,41plus_b44,low
+ARR02-C,hostap,src/crypto/tls_openssl.c,1067,TP,same local-array-implicit-bounds opportunity as line 1030,41plus_b44,low
+STR30-C,hostap,src/crypto/tls_openssl.c,1078,FP,"same array-of-pointers-element-reassignment misfire, opensc pre_cmd[]",41plus_b44,high
+STR30-C,hostap,src/crypto/tls_openssl.c,1078,FP,"same array-of-pointers-element-reassignment misfire, opensc pre_cmd[]",41plus_b44,high
+STR30-C,hostap,src/crypto/tls_openssl.c,1079,FP,same misfire,41plus_b44,high
+STR30-C,hostap,src/crypto/tls_openssl.c,1079,FP,same misfire,41plus_b44,high
+DCL30-C,hostap,src/crypto/tls_openssl.c,1097,FP,"dl_list_for_each loop pointer into heap-allocated tls_session_data nodes, not automatic storage -- matches documented dl_list_for_each DCL30-C FP sub-class",41plus_b44,high
+DCL31-C,hostap,src/crypto/tls_openssl.c,1121,FP,SSL_SESSION_set_ex_data is a genuine OpenSSL library function declared via <openssl/ssl.h> (included at top of file) -- confirmed DCL31-C system-header FP class,41plus_b44,high
+CON03-C,hostap,src/crypto/tls_openssl.c,1180,FP,"no-pthread class extended to a static local (fips_enabled), single-threaded core",41plus_b44,high
+MSC13-C,hostap,src/crypto/tls_openssl.c,1188,FP,static global tls_global read by later invocations of tls_init/tls_deinit -- confirmed static-var-cross-invocation-read class,41plus_b44,high
+MSC13-C,hostap,src/crypto/tls_openssl.c,1192,FP,static local fips_enabled read via the '!fips_enabled' guard on a later call -- same class,41plus_b44,high
+MSC13-C,hostap,src/crypto/tls_openssl.c,1200,FP,"same tls_global cross-invocation-read class, #else FIPS branch",41plus_b44,high
+MEM31-C,hostap,src/crypto/tls_openssl.c,1229,FP,"context is stored via SSL_CTX_set_app_data(ssl,context) and retrieved+freed later in tls_deinit -- opaque-storage blindness, not a leak",41plus_b44,high
+EXP33-C,hostap,src/crypto/tls_openssl.c,1235,FP,"sizeof(*data) misfire, compile-time type-only, no runtime dereference",41plus_b44,high
+DCL31-C,hostap,src/crypto/tls_openssl.c,1237,FP,SSLv23_method is a genuine OpenSSL library function from <openssl/ssl.h> -- confirmed system-header DCL31-C FP class,41plus_b44,high
+MSC13-C,hostap,src/crypto/tls_openssl.c,1247,FP,tls_global=NULL persists for read by later invocations -- confirmed static-var cross-invocation-read class,41plus_b44,high
+MEM31-C,hostap,src/crypto/tls_openssl.c,1250,FP,"context IS freed here, just under the alias name tls_global (os_free(tls_global) two lines above) -- cross-variable-alias free blindness",41plus_b44,high
+EXP34-C,hostap,src/crypto/tls_openssl.c,1252,FP,data is implicitly guaranteed non-NULL here: the preceding 'if (ssl==NULL) return NULL;' already returned unless data was non-NULL (ssl is only set from a non-NULL data) -- cross-variable guard blindness,41plus_b44,high
+EXP43-C,hostap,src/crypto/tls_openssl.c,1299,FP,"SSL_SESSION_get_ex_new_index(0,NULL,NULL,NULL,NULL) -- all-NULL-literal args, no aliasing of any kind -- confirmed EXP43-C NULL-literal misfire class",41plus_b44,high
+MEM31-C,hostap,src/crypto/tls_openssl.c,1303,FP,"tls_deinit(data) is called, which internally frees context via SSL_CTX_get_app_data retrieval -- wrapper-not-seen-through MEM31-C FP class",41plus_b44,high
+MEM31-C,hostap,src/crypto/tls_openssl.c,1316,FP,same tls_deinit(data) wrapper-frees-it class,41plus_b44,high
+MEM31-C,hostap,src/crypto/tls_openssl.c,1330,FP,same tls_deinit(data) wrapper-frees-it class,41plus_b44,high
+DCL30-C,hostap,src/crypto/tls_openssl.c,1333,FP,"heap-not-stack: data is os_zalloc()'d heap memory, not automatic storage",41plus_b44,high
+MEM31-C,hostap,src/crypto/tls_openssl.c,1333,FP,context is stored in ssl's app-data and freed later via tls_deinit; not leaked on this return,41plus_b44,high
+EXP34-C,hostap,src/crypto/tls_openssl.c,1359,FP,while((sess_data=dl_list_first(...))) condition assignment guarantees sess_data non-NULL inside the loop body,41plus_b44,high
+EXP34-C,hostap,src/crypto/tls_openssl.c,1383,FP,"tls_global is guaranteed valid whenever tls_deinit is legitimately reached (internal init/ref-count invariant), not realistically NULL here",41plus_b44,med
+MSC13-C,hostap,src/crypto/tls_openssl.c,1386,FP,"same static-var cross-invocation-read reasoning as lines 1188/1192/1200/1247, this is the final defensive null-out",41plus_b44,med
+MSC37-C,hostap,src/crypto/tls_openssl.c,1421,FP,full preprocessor-branch return coverage across all ANDROID/BORINGSSL/OPENSSL_NO_ENGINE combinations -- confirmed class,41plus_b44,high
+MEM10-C,hostap,src/crypto/tls_openssl.c,1444,FP,confirmed MEM10-C direct-NULL-check FP class,41plus_b44,high
+EXP05-C,hostap,src/crypto/tls_openssl.c,1509,TP,cast-away-const '(void*)cmd_name' to satisfy legacy ENGINE_ctrl's non-const void* param -- same compat-shim pattern as lines 129/605/905,41plus_b44,low
+DCL13-C,hostap,src/crypto/tls_openssl.c,1561,FP,"tls_get_errors(void *tls_ctx) -- ssl_ctx is part of the public multi-backend tls.h interface signature (int tls_get_errors(void *tls_ctx);), pinned across all TLS backend implementations",41plus_b44,high
+DCL13-C,hostap,src/crypto/tls_openssl.c,1696,TP,static internal function (not part of tls.h public interface); 'ssl' param genuinely unused in check_server_key_exchange's body,41plus_b44,low
+API05-C,hostap,src/crypto/tls_openssl.c,1743,FP,tls_msg_cb is the fixed SSL_set_msg_callback signature (buf+len pointer+size idiom too) -- doubly-pinned FP,41plus_b44,high
+API05-C,hostap,src/crypto/tls_openssl.c,1743,FP,tls_msg_cb is the fixed SSL_set_msg_callback signature (buf+len pointer+size idiom too) -- doubly-pinned FP,41plus_b44,high
+EXP30-C,hostap,src/crypto/tls_openssl.c,1765,FP,pure accessor args (openssl_content_type/openssl_handshake_type) as sibling wpa_printf arguments -- confirmed pure-accessor EXP30-C class,41plus_b44,high
+CON32-C,hostap,src/crypto/tls_openssl.c,1774,FP,"no-pthread class: invalid_hb_used bitfield, single-threaded core",41plus_b44,high
+POS49-C,hostap,src/crypto/tls_openssl.c,1774,FP,same no-pthread class,41plus_b44,high
+EXP43-C,hostap,src/crypto/tls_openssl.c,1785,FP,pos+1/pos+len are a begin/end pointer pair into the same buffer passed as separate non-restrict params -- confirmed EXP43-C no-restrict FP class,41plus_b44,high
+EXP43-C,hostap,src/crypto/tls_openssl.c,1787,FP,"same begin/end pointer-pair pattern, check_server_key_exchange",41plus_b44,high
+CON34-C,hostap,src/crypto/tls_openssl.c,1818,FP,"no-pthread class extended to getenv(), single-threaded core",41plus_b44,high
+FIO02-C,hostap,src/crypto/tls_openssl.c,1822,TP,"filename from getenv(SSLKEYLOGFILE) opened without canonicalization -- real per rule text, though gated behind CONFIG_TESTING_OPTIONS debug-only feature",41plus_b44,low
+POS01-C,hostap,src/crypto/tls_openssl.c,1822,TP,"open() without O_NOFOLLOW/lstat validation on the same env-derived path -- real symlink-attack gap, same debug-only caveat",41plus_b44,low
+CON33-C,hostap,src/crypto/tls_openssl.c,1826,FP,confirmed CON33-C/CON34-C strerror() no-pthread FP class,41plus_b44,high
+CON34-C,hostap,src/crypto/tls_openssl.c,1826,FP,same class,41plus_b44,high
+EXP05-C,hostap,src/crypto/tls_openssl.c,1832,TP,cast-away-const '(void*)line' to populate iovec's non-const iov_base field -- same compat-shim/legacy-struct-API pattern,41plus_b44,low
+DCL18-C,hostap,src/crypto/tls_openssl.c,1837,TP,"'01' is genuinely octal notation for what reads as intended decimal 1 (numerically identical here, so harmless, but literally the confusing notation the rule targets)",41plus_b44,low
+CON33-C,hostap,src/crypto/tls_openssl.c,1840,FP,confirmed strerror() no-pthread FP class,41plus_b44,high
+CON34-C,hostap,src/crypto/tls_openssl.c,1840,FP,same class,41plus_b44,high
+EXP33-C,hostap,src/crypto/tls_openssl.c,1877,FP,"sizeof(*conn) misfire, compile-time type-only",41plus_b44,high
+MEM31-C,hostap,src/crypto/tls_openssl.c,1882,FP,conn->ssl is either transferred to the caller via 'return conn' (freed later by tls_connection_deinit) or explicitly SSL_free'd on the error paths below -- not leaked,41plus_b44,high
+CON34-C,hostap,src/crypto/tls_openssl.c,1909,FP,no-pthread class extended to getenv(),41plus_b44,high
+MEM31-C,hostap,src/crypto/tls_openssl.c,1914,FP,conn->ssl_in is either attached via SSL_set_bio (transitively freed by SSL_free(conn->ssl) later) or explicitly BIO_free'd on the immediate failure branch,41plus_b44,high
+MEM31-C,hostap,src/crypto/tls_openssl.c,1920,FP,conn->ssl is explicitly SSL_free'd on the line just above this return -- not leaked,41plus_b44,high
+MEM31-C,hostap,src/crypto/tls_openssl.c,1923,FP,"conn->ssl_out same as ssl_in: transitively freed via SSL_set_bio+SSL_free, or explicitly freed on failure",41plus_b44,high
+MEM31-C,hostap,src/crypto/tls_openssl.c,1930,FP,conn->ssl_in and conn->ssl are both explicitly freed on the lines immediately above this return -- not leaked,41plus_b44,high
+MEM31-C,hostap,src/crypto/tls_openssl.c,1930,FP,conn->ssl_in and conn->ssl are both explicitly freed on the lines immediately above this return -- not leaked,41plus_b44,high
+DCL30-C,hostap,src/crypto/tls_openssl.c,1935,FP,heap-not-stack: conn is os_zalloc()'d heap memory,41plus_b44,high
+MEM31-C,hostap,src/crypto/tls_openssl.c,1935,FP,"conn->ssl/ssl_in/ssl_out ownership is transferred to the caller via 'return conn' (freed later by tls_connection_deinit -> SSL_free, which transitively frees the attached BIOs) -- not a leak",41plus_b44,high
+MEM31-C,hostap,src/crypto/tls_openssl.c,1935,FP,"conn->ssl/ssl_in/ssl_out ownership is transferred to the caller via 'return conn' (freed later by tls_connection_deinit -> SSL_free, which transitively frees the attached BIOs) -- not a leak",41plus_b44,high
+MEM31-C,hostap,src/crypto/tls_openssl.c,1935,FP,"conn->ssl/ssl_in/ssl_out ownership is transferred to the caller via 'return conn' (freed later by tls_connection_deinit -> SSL_free, which transitively frees the attached BIOs) -- not a leak",41plus_b44,high
+DCL13-C,hostap,src/crypto/tls_openssl.c,1939,FP,"ssl_ctx is part of the public multi-backend tls.h interface signature (void tls_connection_deinit(void *tls_ctx, ...)), pinned across all TLS backends",41plus_b44,high
+MEM10-C,hostap,src/crypto/tls_openssl.c,1941,FP,confirmed MEM10-C direct-NULL-check class,41plus_b44,high
+CON32-C,hostap,src/crypto/tls_openssl.c,1943,FP,"no-pthread class, success_data bitfield",41plus_b44,high
+API00-C,hostap,src/crypto/tls_openssl.c,1964,FP,factually wrong: the function body IS 'return conn ? SSL_is_init_finished(conn->ssl) : 0;' -- conn is validated inline,41plus_b44,high
+DCL13-C,hostap,src/crypto/tls_openssl.c,1964,FP,"ssl_ctx/conn are part of the public tls.h interface signature (int tls_connection_established(void *tls_ctx, struct tls_connection *conn);), pinned across all TLS backends",41plus_b44,high
+DCL13-C,hostap,src/crypto/tls_openssl.c,1964,FP,"ssl_ctx/conn are part of the public tls.h interface signature (int tls_connection_established(void *tls_ctx, struct tls_connection *conn);), pinned across all TLS backends",41plus_b44,high
+DCL13-C,hostap,src/crypto/tls_openssl.c,1970,FP,"tls_ctx is part of the public tls.h interface signature, pinned across all TLS backends",41plus_b44,high
+DCL13-C,hostap,src/crypto/tls_openssl.c,1971,FP,conn is part of the same pinned public tls.h interface signature,41plus_b44,high
+EXP30-C,hostap,src/crypto/tls_openssl.c,1988,FP,pure accessor args (ASN1_STRING_get0_data/ASN1_STRING_length on the same immutable ASN1_STRING) -- confirmed pure-accessor EXP30-C class,41plus_b44,high
+DCL30-C,hostap,src/crypto/tls_openssl.c,1991,FP,heap-not-stack: serial_num is os_malloc()'d heap memory,41plus_b44,high
+DCL13-C,hostap,src/crypto/tls_openssl.c,1995,FP,"ssl_ctx/conn are part of the public tls.h interface signature (int tls_connection_shutdown(void *tls_ctx, struct tls_connection *conn);), pinned across all TLS backends",41plus_b44,high
+DCL13-C,hostap,src/crypto/tls_openssl.c,1995,FP,"ssl_ctx/conn are part of the public tls.h interface signature (int tls_connection_shutdown(void *tls_ctx, struct tls_connection *conn);), pinned across all TLS backends",41plus_b44,high
+MEM10-C,hostap,src/crypto/tls_openssl.c,1997,FP,confirmed MEM10-C direct-NULL-check class,41plus_b44,high
+EXP20-C,hostap,src/crypto/tls_openssl.c,2005,FP,SSL_clear() is documented by OpenSSL to return exactly 1 (success) or 0 (failure) -- confirmed OpenSSL exact-1/0-contract EXP20-C FP class,41plus_b44,high
+API05-C,hostap,src/crypto/tls_openssl.c,2010,FP,"pointer+size idiom (value,len) -- confirmed API05-C FP class",41plus_b44,high
+API05-C,hostap,src/crypto/tls_openssl.c,2080,FP,"pointer+size idiom (val/len, match/match_len) -- confirmed API05-C FP class",41plus_b44,high
+INT00-C,hostap,src/crypto/tls_openssl.c,2103,FP,"guarded by the earlier 'if (match_len > len || ...) return 0;' and match_len==len early-return -- rule doesn't see the earlier guard, matches documented family",41plus_b44,high
+EXP05-C,hostap,src/crypto/tls_openssl.c,2168,TP,cast-away-const '(X509*)cert' to call legacy non-const X509_get_subject_name getter -- same compat-shim pattern,41plus_b44,low
+EXP30-C,hostap,src/crypto/tls_openssl.c,2177,FP,"for(i=-1;(i=X509_NAME_get_index_by_NID(name,nid,i))>-1;) self-referential reassignment: the read of i (as arg) is sequenced-before the write (assignment of the call's result) -- safe idiomatic loop, not unsequenced",41plus_b44,high

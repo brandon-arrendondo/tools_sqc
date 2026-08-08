@@ -1,0 +1,1354 @@
+{
+ "src/wps/wps_registrar.c#part1of2": [
+  {
+   "column": 1,
+   "file": "src/wps/wps_registrar.c",
+   "line": 23,
+   "message": "Header file 'wps_upnp.h' has the same first 8 characters (case-insensitive) as 'wps_upnp_i.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'wps_upnp.h' -> unique name)"
+  },
+  {
+   "column": 24,
+   "file": "src/wps/wps_registrar.c",
+   "line": 46,
+   "message": "sizeof applied to pointer/array parameter 'token' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*token)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 4,
+   "file": "src/wps/wps_registrar.c",
+   "line": 67,
+   "message": "Function returns pointer to local variable 'token' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 58,
+   "file": "src/wps/wps_registrar.c",
+   "line": 123,
+   "message": "Pointer parameter 'pbc' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pbc'"
+  },
+  {
+   "column": 67,
+   "file": "src/wps/wps_registrar.c",
+   "line": 234,
+   "message": "Pointer parameter 'reg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *reg'"
+  },
+  {
+   "column": 36,
+   "file": "src/wps/wps_registrar.c",
+   "line": 251,
+   "message": "sizeof applied to pointer/array parameter 'reg' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(reg->authorized_macs)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 70,
+   "file": "src/wps/wps_registrar.c",
+   "line": 255,
+   "message": "Pointer parameter 'reg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *reg'"
+  },
+  {
+   "column": 36,
+   "file": "src/wps/wps_registrar.c",
+   "line": 276,
+   "message": "sizeof applied to pointer/array parameter 'reg' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(reg->authorized_macs)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 58,
+   "file": "src/wps/wps_registrar.c",
+   "line": 280,
+   "message": "Pointer parameter 'dev' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *dev'"
+  },
+  {
+   "column": 74,
+   "file": "src/wps/wps_registrar.c",
+   "line": 293,
+   "message": "Pointer parameter 'reg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *reg'"
+  },
+  {
+   "column": 4,
+   "file": "src/wps/wps_registrar.c",
+   "line": 300,
+   "message": "Function returns pointer to local variable 'dev' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 58,
+   "file": "src/wps/wps_registrar.c",
+   "line": 306,
+   "message": "Pointer parameter 'dst' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *dst'"
+  },
+  {
+   "column": 30,
+   "file": "src/wps/wps_registrar.c",
+   "line": 307,
+   "message": "Pointer parameter 'src' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *src'"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_registrar.c",
+   "line": 312,
+   "message": "Function-like macro 'WPS_STRDUP' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_registrar.c",
+   "line": 312,
+   "message": "Macro parameter 'n' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'n' in parentheses: (n) instead of n"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_registrar.c",
+   "line": 312,
+   "message": "Macro evaluates parameter 'n' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_registrar.c",
+   "line": 325,
+   "message": "Function 'wps_device_store' does not validate pointer parameter 'reg' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'reg' at the start of the function, e.g., 'if (!reg) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_registrar.c",
+   "line": 325,
+   "message": "Function 'wps_device_store' does not validate pointer parameter 'uuid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'uuid' at the start of the function, e.g., 'if (!uuid) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_registrar.c",
+   "line": 428,
+   "message": "Function 'wps_registrar_pbc_overlap' does not validate pointer parameter 'reg' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'reg' at the start of the function, e.g., 'if (!reg) { return error_code; }'"
+  },
+  {
+   "column": 52,
+   "file": "src/wps/wps_registrar.c",
+   "line": 428,
+   "message": "Pointer parameter 'reg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *reg'"
+  },
+  {
+   "column": 51,
+   "file": "src/wps/wps_registrar.c",
+   "line": 477,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 57,
+   "file": "src/wps/wps_registrar.c",
+   "line": 513,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 62,
+   "file": "src/wps/wps_registrar.c",
+   "line": 526,
+   "message": "Pointer parameter 'reg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *reg'"
+  },
+  {
+   "column": 67,
+   "file": "src/wps/wps_registrar.c",
+   "line": 539,
+   "message": "Pointer parameter 'reg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *reg'"
+  },
+  {
+   "column": 62,
+   "file": "src/wps/wps_registrar.c",
+   "line": 555,
+   "message": "Pointer parameter 'reg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *reg'"
+  },
+  {
+   "column": 66,
+   "file": "src/wps/wps_registrar.c",
+   "line": 592,
+   "message": "Pointer parameter 'reg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *reg'"
+  },
+  {
+   "column": 64,
+   "file": "src/wps/wps_registrar.c",
+   "line": 615,
+   "message": "Pointer parameter 'reg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *reg'"
+  },
+  {
+   "column": 60,
+   "file": "src/wps/wps_registrar.c",
+   "line": 634,
+   "message": "Pointer parameter 'reg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *reg'"
+  },
+  {
+   "column": 53,
+   "file": "src/wps/wps_registrar.c",
+   "line": 641,
+   "message": "Pointer parameter 'reg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *reg'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_registrar.c",
+   "line": 728,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_registrar.c",
+   "line": 748,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_registrar.c",
+   "line": 785,
+   "message": "Function 'wps_registrar_add_pin' does not validate pointer parameter 'reg' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'reg' at the start of the function, e.g., 'if (!reg) { return error_code; }'"
+  },
+  {
+   "column": 23,
+   "file": "src/wps/wps_registrar.c",
+   "line": 791,
+   "message": "Dereference of uninitialized pointer 'p'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'p' before dereferencing"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_registrar.c",
+   "line": 796,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 16,
+   "file": "src/wps/wps_registrar.c",
+   "line": 828,
+   "message": "string/character literal contains a non-ASCII byte (>= 0x80) -- not portable across locales/national ASCII variants",
+   "rule_id": "MSC09-C",
+   "severity": "Low",
+   "suggestion": "Restrict string and character literals to the portable ASCII subset (letters, digits, space, and basic punctuation)"
+  },
+  {
+   "column": 16,
+   "file": "src/wps/wps_registrar.c",
+   "line": 828,
+   "message": "Hard-coded sensitive information detected passed to `wps_registrar_add_authorized_mac`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"\\xff\\xff\\xff\\xff\\xff\\xff\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_registrar.c",
+   "line": 910,
+   "message": "Function 'wps_registrar_invalidate_pin' does not validate pointer parameter 'reg' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'reg' at the start of the function, e.g., 'if (!reg) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_registrar.c",
+   "line": 939,
+   "message": "Value assigned to 'found' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_registrar.c",
+   "line": 952,
+   "message": "Value assigned to 'wildcard' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_registrar.c",
+   "line": 954,
+   "message": "Value assigned to 'found' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_registrar.c",
+   "line": 990,
+   "message": "Function 'wps_registrar_unlock_pin' does not validate pointer parameter 'reg' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'reg' at the start of the function, e.g., 'if (!reg) { return error_code; }'"
+  },
+  {
+   "column": 17,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1016,
+   "message": "string/character literal contains a non-ASCII byte (>= 0x80) -- not portable across locales/national ASCII variants",
+   "rule_id": "MSC09-C",
+   "severity": "Low",
+   "suggestion": "Restrict string and character literals to the portable ASCII subset (letters, digits, space, and basic punctuation)"
+  },
+  {
+   "column": 17,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1016,
+   "message": "Hard-coded sensitive information detected passed to `wps_registrar_remove_authorized_mac`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"\\xff\\xff\\xff\\xff\\xff\\xff\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 61,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1021,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 14,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1064,
+   "message": "string/character literal contains a non-ASCII byte (>= 0x80) -- not portable across locales/national ASCII variants",
+   "rule_id": "MSC09-C",
+   "severity": "Low",
+   "suggestion": "Restrict string and character literals to the portable ASCII subset (letters, digits, space, and basic punctuation)"
+  },
+  {
+   "column": 14,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1064,
+   "message": "Hard-coded sensitive information detected passed to `wps_registrar_add_authorized_mac`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"\\xff\\xff\\xff\\xff\\xff\\xff\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1094,
+   "message": "Function 'wps_registrar_complete' does not validate pointer parameter 'registrar' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'registrar' at the start of the function, e.g., 'if (!registrar) { return error_code; }'"
+  },
+  {
+   "column": 9,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1125,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1146,
+   "message": "Function 'wps_registrar_probe_req_rx' does not validate pointer parameter 'reg' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'reg' at the start of the function, e.g., 'if (!reg) { return error_code; }'"
+  },
+  {
+   "column": 6,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1160,
+   "message": "Variable 'attr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'attr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 3,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1182,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1229,
+   "message": "Function 'wps_cb_new_psk' does not validate pointer parameter 'mac_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'mac_addr' at the start of the function, e.g., 'if (!mac_addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1229,
+   "message": "Function 'wps_cb_new_psk' does not validate pointer parameter 'p2p_dev_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'p2p_dev_addr' at the start of the function, e.g., 'if (!p2p_dev_addr) { return error_code; }'"
+  },
+  {
+   "column": 41,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1229,
+   "message": "Pointer parameter 'reg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *reg'"
+  },
+  {
+   "column": 52,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1240,
+   "message": "Pointer parameter 'reg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *reg'"
+  },
+  {
+   "column": 53,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1250,
+   "message": "Pointer parameter 'reg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *reg'"
+  },
+  {
+   "column": 47,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1261,
+   "message": "Pointer parameter 'reg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *reg'"
+  },
+  {
+   "column": 53,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1268,
+   "message": "Pointer parameter 'reg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *reg'"
+  },
+  {
+   "column": 55,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1293,
+   "message": "Pointer parameter 'reg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *reg'"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1374,
+   "message": "Memory leak: 'beacon' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'beacon' before this return statement"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1374,
+   "message": "Memory leak: 'probe' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'probe' before this return statement"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1375,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 45,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1444,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 45,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1454,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 48,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1502,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 48,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1512,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1599,
+   "message": "Function 'wps_build_credential_wrap' does not validate pointer parameter 'msg' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'msg' at the start of the function, e.g., 'if (!msg) { return error_code; }'"
+  },
+  {
+   "column": 40,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1630,
+   "message": "sizeof applied to pointer/array parameter 'wps' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(wps->cred)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 27,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1633,
+   "message": "sizeof applied to pointer/array parameter 'wps' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(wps->cred)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 6,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1665,
+   "message": "Variable 'wps' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 7,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1668,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1671,
+   "message": "Value assigned to 'if' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 7,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1671,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 7,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1686,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1693,
+   "message": "Value assigned to 'if' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 8,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1693,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1705,
+   "message": "Value assigned to 'if' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 8,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1705,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 7,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1733,
+   "message": "Use-after-free: accessing freed pointer 'wps->new_psk'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 10,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1737,
+   "message": "Use-after-free: accessing freed array 'wps->new_psk'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access memory after freeing it."
+  },
+  {
+   "column": 11,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1740,
+   "message": "Use-after-free: accessing freed pointer 'wps->new_psk'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 28,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1741,
+   "message": "Use-after-free: accessing freed pointer 'wps->new_psk'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 9,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1762,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1787,
+   "message": "Value assigned to 'if' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1787,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 3,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1788,
+   "message": "Variable 'cred' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'cred' before use, e.g., at its declaration"
+  },
+  {
+   "column": 10,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1788,
+   "message": "Memory allocated with 'wpabuf_alloc' for variable 'unknown' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(unknown)' before the variable goes out of scope"
+  },
+  {
+   "column": 3,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1819,
+   "message": "Memory leak: 'unknown' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'unknown' before this return statement"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1833,
+   "message": "Memory leak: 'unknown' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'unknown' before this return statement"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1873,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 26,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1925,
+   "message": "Memory allocated with 'wpabuf_alloc' for variable 'plain' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(plain)' before the variable goes out of scope"
+  },
+  {
+   "column": 22,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1931,
+   "message": "Passing null pointer 'plain' to 'wpabuf_clear_free' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'plain' is not NULL before passing to 'wpabuf_clear_free'"
+  },
+  {
+   "column": 3,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1941,
+   "message": "Memory leak: 'plain' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'plain' before this return statement"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1946,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1946,
+   "message": "Memory leak: 'plain' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'plain' before this return statement"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_registrar.c",
+   "line": 1985,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2024,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2060,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2096,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 7,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2110,
+   "message": "Use-after-free: accessing freed pointer 'wps->wps'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2122,
+   "message": "Use-after-free: accessing freed pointer 'wps->wps'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 4,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2138,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2194,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 55,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2198,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2200,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 56,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2213,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2215,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 47,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2229,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2231,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2245,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 48,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2257,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2259,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 48,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2271,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2273,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2291,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2331,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 49,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2375,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2377,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2412,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2469,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 56,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2505,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2507,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2524,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 50,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2558,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2560,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 52,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2573,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2577,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 53,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2589,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2593,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 61,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2605,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 3,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2614,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 55,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2626,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 13,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2693,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 10,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2725,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 31,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2780,
+   "message": "Pointer parameter 'attr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *attr'"
+  },
+  {
+   "column": 31,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2815,
+   "message": "Pointer parameter 'attr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *attr'"
+  },
+  {
+   "column": 48,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2862,
+   "message": "Variable 'eattr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'eattr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 7,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2884,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 7,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2888,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 34,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2900,
+   "message": "sizeof applied to pointer/array parameter 'dst' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(dst->ssid)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 32,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2905,
+   "message": "sizeof applied to pointer/array parameter 'dst' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(dst->key)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 31,
+   "file": "src/wps/wps_registrar.c",
+   "line": 2966,
+   "message": "Pointer parameter 'attr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *attr'"
+  },
+  {
+   "column": 48,
+   "file": "src/wps/wps_registrar.c",
+   "line": 3014,
+   "message": "Variable 'eattr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'eattr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_registrar.c",
+   "line": 3033,
+   "message": "Value assigned to 'ret' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 6,
+   "file": "src/wps/wps_registrar.c",
+   "line": 3040,
+   "message": "Variable 'attr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'attr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_registrar.c",
+   "line": 3054,
+   "message": "Dereferencing pointer in switch statement may create double-fetch vulnerability",
+   "rule_id": "CON43-C",
+   "severity": "High",
+   "suggestion": "Store dereferenced value in a local variable or use atomic operations"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_registrar.c",
+   "line": 3071,
+   "message": "Unreachable code after unconditional 'break'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 6,
+   "file": "src/wps/wps_registrar.c",
+   "line": 3122,
+   "message": "Variable 'attr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'attr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 6,
+   "file": "src/wps/wps_registrar.c",
+   "line": 3194,
+   "message": "Variable 'attr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'attr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 6,
+   "file": "src/wps/wps_registrar.c",
+   "line": 3278,
+   "message": "Variable 'attr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'attr' before use, e.g., at its declaration"
+  }
+ ]
+}

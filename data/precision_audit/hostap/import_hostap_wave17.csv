@@ -1,0 +1,890 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+MEM31-C,hostap,src/ap/wps_hostapd.c,1,FP,vendor_ext freed by matching loop in hostapd_free_wps + rollback loop in hostapd_wps_set_vendor_ext; not actually leaked,hostap_full_audit_0.4.169,high
+PRE08-C,hostap,src/ap/wps_hostapd.c,15,TP,"PRE08-C header-family low-value convention (ieee802_11_defs.h/common.h), technically true but low real risk",hostap_full_audit_0.4.169,low
+PRE08-C,hostap,src/ap/wps_hostapd.c,17,TP,"PRE08-C header-family (eapol_auth_sm.h/_i.h), same convention",hostap_full_audit_0.4.169,low
+API05-C,hostap,src/ap/wps_hostapd.c,39,FP,ie/ie_len paired idiom - established API05-C categorical FP,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/ap/wps_hostapd.c,54,FP,"wps_for_each matches hostapd.h for_each_interface callback typedef int(*cb)(struct hostapd_iface*,void*); dispatch contract",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/ap/wps_hostapd.c,54,FP,same dispatch contract as iface param,hostap_full_audit_0.4.169,high
+MEM10-C,hostap,src/ap/wps_hostapd.c,59,FP,MEM10-C stylistic misfire on plain NULL check - established FP,hostap_full_audit_0.4.169,high
+API05-C,hostap,src/ap/wps_hostapd.c,96,FP,psk/psk_len paired idiom - API05-C categorical FP,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/ap/wps_hostapd.c,96,FP,hostapd_wps_new_psk_cb matches wps.h new_psk_cb callback typedef; dispatch contract,hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/ap/wps_hostapd.c,109,FP,"MAC2STR is a pure read macro; only one real call present, not multiple side-effecting calls",hostap_full_audit_0.4.169,high
+MSC41-C,hostap,src/ap/wps_hostapd.c,114,FP,"'Per-device PSK' is a hexdump label string, not embedded secret data - MSC41-C hexdump-title FP",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/ap/wps_hostapd.c,123,FP,"sizeof(*p) never evaluates its operand - not a dereference, established FP idiom",hostap_full_audit_0.4.169,high
+MEM05-C,hostap,src/ap/wps_hostapd.c,141,FP,"hex[PMK_LEN*2+1] is compile-time-constant sized (PMK_LEN=32), not a VLA",hostap_full_audit_0.4.169,high
+ERR00-C,hostap,src/ap/wps_hostapd.c,144,FP,fopen() return IS checked at the very next line (if (!f)),hostap_full_audit_0.4.169,high
+WIN03-C,hostap,src/ap/wps_hostapd.c,144,TP,"WIN03-C literal fopen-N-flag gap; Windows-specific, unconfirmed real risk (primarily POSIX daemon)",hostap_full_audit_0.4.169,low
+DCL11-C,hostap,src/ap/wps_hostapd.c,152,FP,MACSTR/MAC2STR macro expansion not counted by rule; actual specifiers==args (7==7) once expanded,hostap_full_audit_0.4.169,high
+FIO47-C,hostap,src/ap/wps_hostapd.c,152,FP,same macro-blindness root cause as DCL11-C at same line,hostap_full_audit_0.4.169,high
+ERR00-C,hostap,src/ap/wps_hostapd.c,153,TP,fclose(f) return genuinely ignored,hostap_full_audit_0.4.169,low
+ERR33-C,hostap,src/ap/wps_hostapd.c,153,TP,fclose(f) return genuinely ignored (duplicate rule of same gap),hostap_full_audit_0.4.169,low
+DCL13-C,hostap,src/ap/wps_hostapd.c,174,FP,hostapd_wps_pin_needed_cb matches wps.h pin_needed_cb callback typedef; dispatch contract,hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/ap/wps_hostapd.c,184,FP,MAC2STR pure macro + one real call (wps_dev_type_bin2str); not multiple side-effecting calls,hostap_full_audit_0.4.169,high
+WIN03-C,hostap,src/ap/wps_hostapd.c,197,TP,WIN03-C literal fopen-N-flag gap,hostap_full_audit_0.4.169,low
+DCL11-C,hostap,src/ap/wps_hostapd.c,201,FP,macro-blindness: MACSTR(6)+MAC2STR(6) expansion makes specifiers==args (14==14),hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/ap/wps_hostapd.c,201,FP,MAC2STR pure macro + one real call; same EXP30 reasoning as #20,hostap_full_audit_0.4.169,high
+FIO47-C,hostap,src/ap/wps_hostapd.c,201,FP,same macro-blindness as DCL11-C at same line,hostap_full_audit_0.4.169,high
+INT00-C,hostap,src/ap/wps_hostapd.c,201,FP,"os_time_t is typedef'd to 'long' (utils/os.h:12); %ld is exactly correct, no assumption violated",hostap_full_audit_0.4.169,high
+PRE32-C,hostap,src/ap/wps_hostapd.c,201,FP,no #ifdef/#endif token anywhere in this fprintf call; misfire mistaking macro invocation for a directive,hostap_full_audit_0.4.169,high
+PRE32-C,hostap,src/ap/wps_hostapd.c,201,FP,same misfire as above - no actual preprocessor directive present,hostap_full_audit_0.4.169,high
+ERR00-C,hostap,src/ap/wps_hostapd.c,208,TP,fclose(f) return genuinely ignored,hostap_full_audit_0.4.169,low
+ERR33-C,hostap,src/ap/wps_hostapd.c,208,TP,fclose(f) return genuinely ignored (duplicate rule),hostap_full_audit_0.4.169,low
+DCL13-C,hostap,src/ap/wps_hostapd.c,220,FP,"wps_stop_registrar matches hostapd_wps_for_each callback typedef int(*func)(struct hostapd_data*,void*)",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/ap/wps_hostapd.c,220,FP,same dispatch contract as hapd param,hostap_full_audit_0.4.169,high
+API05-C,hostap,src/ap/wps_hostapd.c,230,FP,dev_pw/dev_pw_len paired idiom - API05-C categorical FP,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/ap/wps_hostapd.c,252,FP,hostapd_wps_reg_success_cb matches wps.h reg_success_cb callback typedef,hostap_full_audit_0.4.169,high
+MEM10-C,hostap,src/ap/wps_hostapd.c,264,FP,MEM10-C stylistic misfire - established FP,hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/ap/wps_hostapd.c,266,FP,"MAC2STR pure macro, single real call (wpa_msg); not unsequenced side effects",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/ap/wps_hostapd.c,275,FP,hostapd_wps_enrollee_seen_cb matches wps.h enrollee_seen_cb callback typedef,hostap_full_audit_0.4.169,high
+FLP30-C,hostap,src/ap/wps_hostapd.c,283,FP,"'wpa_psk' is `const struct hostapd_wpa_psk *`, a pointer - not floating point at all; clear misfire",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/ap/wps_hostapd.c,299,FP,"dev_psk points into hapd->conf->ssid.wpa_psk list (heap/config-owned), not local automatic storage - DCL30 local-var-vs-storage confusion",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/ap/wps_hostapd.c,301,FP,any_psk same reasoning - points into heap-owned wpa_psk list,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/ap/wps_hostapd.c,313,FP,"wps_reload_config matches eloop_timeout_handler typedef void(*)(void*,void*); dispatch contract",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/ap/wps_hostapd.c,326,FP,internal-only API; hapd always valid from eapol state-machine callers,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/ap/wps_hostapd.c,326,TP,"hapd only read (hapd->iface); genuine low-value DCL13 on plain exported helper, not a dispatch callback",hostap_full_audit_0.4.169,low
+EXP20-C,hostap,src/ap/wps_hostapd.c,334,FP,eloop_deplete_timeout is documented to return exactly 1/0/-1 (eloop.h:232); ==1 is the correct check per its own contract,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/ap/wps_hostapd.c,340,TP,"hapd_new_ap_event reads hapd->msg_ctx only; plain static helper, not a dispatch callback",hostap_full_audit_0.4.169,low
+DCL13-C,hostap,src/ap/wps_hostapd.c,354,TP,"hapd only used to derive bss=hapd->conf; hapd itself never reassigned/written, genuinely could be const",hostap_full_audit_0.4.169,med
+INT14-C,hostap,src/ap/wps_hostapd.c,369,FP,"different struct fields of cred (auth_type via &, key_len via arithmetic) conflated as one 'variable cred' with mixed bitwise+arithmetic use",hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/ap/wps_hostapd.c,425,TP,"guard-clause pedantry: real if/else-if w/o final else, deliberate (unmatched key length silently skipped)",hostap_full_audit_0.4.169,low
+EXP30-C,hostap,src/ap/wps_hostapd.c,492,FP,wpabuf_head_u8(attr)/wpabuf_len(attr) pure-accessor pair passed as args - established EXP30-C misfire pattern,hostap_full_audit_0.4.169,high
+MEM12-C,hostap,src/ap/wps_hostapd.c,537,FP,"MEM12-C flow-insensitive leak list; wps->network_key is a persistent struct field freed later via hostapd_free_wps, not leaked here",hostap_full_audit_0.4.169,high
+FIO05-C,hostap,src/ap/wps_hostapd.c,540,FP,"config_fname is the AP's own admin-configured local path, not attacker-controlled input",hostap_full_audit_0.4.169,med
+WIN03-C,hostap,src/ap/wps_hostapd.c,540,TP,WIN03-C literal fopen-N-flag gap,hostap_full_audit_0.4.169,low
+MEM12-C,hostap,src/ap/wps_hostapd.c,545,FP,oconf is NULL here (fopen failed) and tmp_fname was just freed on the prior line; flow-insensitive leak list is bogus,hostap_full_audit_0.4.169,high
+FIO03-C,hostap,src/ap/wps_hostapd.c,548,TP,literal FIO03-C gap on a fixed sibling temp filename; low realistic risk (root-owned config dir),hostap_full_audit_0.4.169,low
+FIO06-C,hostap,src/ap/wps_hostapd.c,548,TP,literal FIO06-C gap - fopen cannot set explicit perms,hostap_full_audit_0.4.169,low
+WIN03-C,hostap,src/ap/wps_hostapd.c,548,TP,WIN03-C literal fopen-N-flag gap,hostap_full_audit_0.4.169,low
+ERR00-C,hostap,src/ap/wps_hostapd.c,553,TP,fclose(oconf) return genuinely ignored on an error-path read-only stream,hostap_full_audit_0.4.169,low
+MEM12-C,hostap,src/ap/wps_hostapd.c,554,FP,nconf is NULL here (fopen failed) and tmp_fname was just freed on the prior line; flow-insensitive leak list is bogus,hostap_full_audit_0.4.169,high
+PRE32-C,hostap,src/ap/wps_hostapd.c,616,FP,MGMT_FRAME_PROTECTION_OPTIONAL is a plain macro constant; no #ifdef/#endif token present in this call at all,hostap_full_audit_0.4.169,high
+FIO20-C,hostap,src/ap/wps_hostapd.c,668,TP,"fgets() truncation genuinely unchecked, literal violation; low real impact since only the buffer's start is used for prefix matching",hostap_full_audit_0.4.169,low
+FIO39-C,hostap,src/ap/wps_hostapd.c,668,FP,"fgets reads from oconf, fprintf writes to nconf - two independent FILE* streams, FIO39-C's same-stream requirement doesn't apply",hostap_full_audit_0.4.169,high
+FIO39-C,hostap,src/ap/wps_hostapd.c,687,FP,"same reasoning: fprintf(nconf,...) and fgets(oconf,...) are different streams",hostap_full_audit_0.4.169,high
+FIO47-C,hostap,src/ap/wps_hostapd.c,687,FP,buf is `char buf[1024]`; array-to-pointer decay for %s misclassified by sqc as an Integer type,hostap_full_audit_0.4.169,high
+FIO47-C,hostap,src/ap/wps_hostapd.c,689,FP,"same array-decay-misclassified-as-Integer misfire as #62, same buf variable",hostap_full_audit_0.4.169,high
+ERR00-C,hostap,src/ap/wps_hostapd.c,692,TP,fclose(nconf) unchecked after extensive writes; a flush failure here would go undetected before rename() clobbers the original config,hostap_full_audit_0.4.169,med
+ERR33-C,hostap,src/ap/wps_hostapd.c,692,TP,same real gap as #64 (duplicate rule),hostap_full_audit_0.4.169,med
+ERR00-C,hostap,src/ap/wps_hostapd.c,693,TP,"fclose(oconf) unchecked, read-only stream, low value",hostap_full_audit_0.4.169,low
+ERR33-C,hostap,src/ap/wps_hostapd.c,693,TP,same as #66 (duplicate rule),hostap_full_audit_0.4.169,low
+FIO24-C,hostap,src/ap/wps_hostapd.c,693,FP,oconf's close at line 553 only happens on the early-return (nconf==NULL) branch; line 693's close is on the mutually-exclusive success-continuation branch - never both execute,hostap_full_audit_0.4.169,high
+FIO10-C,hostap,src/ap/wps_hostapd.c,695,FP,rename() used deliberately for atomic POSIX config replacement; Windows implementation-defined behavior isn't relevant to this daemon's primary target,hostap_full_audit_0.4.169,med
+CON33-C,hostap,src/ap/wps_hostapd.c,697,FP,hostapd/wpa_supplicant core is single-threaded (eloop-based); no pthread usage found in the codebase,hostap_full_audit_0.4.169,high
+CON34-C,hostap,src/ap/wps_hostapd.c,697,FP,same - no threading in this codebase,hostap_full_audit_0.4.169,high
+MEM12-C,hostap,src/ap/wps_hostapd.c,699,FP,tmp_fname freed at the line immediately before this return; flow-insensitive leak list bogus,hostap_full_audit_0.4.169,high
+MEM12-C,hostap,src/ap/wps_hostapd.c,712,FP,tmp_fname already freed earlier in the function before this final return; flow-insensitive leak list bogus,hostap_full_audit_0.4.169,high
+EXP05-C,hostap,src/ap/wps_hostapd.c,719,FP,"cred cast to void* only to satisfy the generic ctx parameter, then immediately re-declared const on the callee side; never written through - EXP05-C cast-away-const-read-only-overlay",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/ap/wps_hostapd.c,723,FP,hostapd_wps_reenable_ap_pin matches eloop_timeout_handler typedef; dispatch contract,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/ap/wps_hostapd.c,739,FP,wps_pwd_auth_fail matches hostapd_wps_for_each callback typedef,hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/ap/wps_hostapd.c,772,TP,guard-clause pedantry: deliberate no-op path (skip lockout scheduling entirely once setup is permanently locked),hostap_full_audit_0.4.169,low
+MSC01-C,hostap,src/ap/wps_hostapd.c,775,TP,"guard-clause pedantry: nested lockout-time chain, no final else, deliberate",hostap_full_audit_0.4.169,low
+DCL13-C,hostap,src/ap/wps_hostapd.c,804,FP,wps_ap_pin_success matches hostapd_wps_for_each callback typedef,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/ap/wps_hostapd.c,856,TP,"hostapd_wps_event_success called directly from a switch dispatch, not via a function-pointer table; plain read/write-only helper on hapd->wps_stats",hostap_full_audit_0.4.169,low
+DCL13-C,hostap,src/ap/wps_hostapd.c,944,FP,hostapd_wps_rf_band_cb matches wps.h rf_band_cb typedef int(*)(void*); dispatch contract,hostap_full_audit_0.4.169,high
+EXP34-C,hostap,src/ap/wps_hostapd.c,957,FP,hapd is an internal invariant never-null param across all call sites of hostapd_wps_clear_ies,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/ap/wps_hostapd.c,973,FP,get_uuid_cb matches for_each_interface callback typedef,hostap_full_audit_0.4.169,high
+MEM10-C,hostap,src/ap/wps_hostapd.c,978,FP,MEM10-C stylistic misfire,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/ap/wps_hostapd.c,993,TP,get_own_uuid called directly (not via a table); plain read-only helper,hostap_full_audit_0.4.169,low
+DCL30-C,hostap,src/ap/wps_hostapd.c,1002,FP,"uuid local pointer variable is set to point at hapd->wps->uuid (heap-owned struct field, via get_uuid_cb's *uuid = ...); not local automatic storage - DCL30 local-var-vs-storage confusion",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/ap/wps_hostapd.c,1006,FP,count_interface_cb matches for_each_interface callback typedef,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/ap/wps_hostapd.c,1014,TP,interface_count called directly; plain read-only helper,hostap_full_audit_0.4.169,low
+DCL13-C,hostap,src/ap/wps_hostapd.c,1026,TP,hostapd_wps_set_vendor_ext called directly; hapd only read,hostap_full_audit_0.4.169,low
+EXP34-C,hostap,src/ap/wps_hostapd.c,1035,FP,internal invariant never-null hapd,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/ap/wps_hostapd.c,1051,TP,hostapd_wps_set_application_ext called directly; hapd only read,hostap_full_audit_0.4.169,low
+EXP34-C,hostap,src/ap/wps_hostapd.c,1056,FP,internal invariant never-null hapd,hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/ap/wps_hostapd.c,1062,FP,wps->dev.application_ext is reassigned via wpabuf_dup() on the line immediately before this read; sqc's free-tracking misses the reassignment and treats the fresh value as the earlier-freed one,hostap_full_audit_0.4.169,high
+ARR01-C,hostap,src/ap/wps_hostapd.c,1078,FP,"sizeof(wps->psk) sizes the fixed-size struct member array, not the pointer wps itself - correct idiom",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/ap/wps_hostapd.c,1083,FP,internal-only API convention; hapd always valid at hostapd_init_wps's call sites,hostap_full_audit_0.4.169,med
+EXP33-C,hostap,src/ap/wps_hostapd.c,1095,FP,sizeof(*wps) idiom - not a dereference,hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/ap/wps_hostapd.c,1240,TP,guard-clause pedantry: deliberate no-op for an unmatched WEP branch,hostap_full_audit_0.4.169,low
+MSC01-C,hostap,src/ap/wps_hostapd.c,1284,TP,guard-clause pedantry: multi_ap backhaul key-selection chain,hostap_full_audit_0.4.169,low
+EXP43-C,hostap,src/ap/wps_hostapd.c,1334,FP,"hostapd_register_probereq_cb's cb/ctx params carry no restrict qualifier at all (hostapd.h:812-817); passing hapd twice (struct + opaque ctx) is the intended, safe pattern - EXP43-C restrict-free misfire",hostap_full_audit_0.4.169,high
+MEM12-C,hostap,src/ap/wps_hostapd.c,1344,FP,wps is successfully assigned to hapd->wps on this success path (ownership transfer); multi_ap_netw_key freed on the line just prior; nothing leaked,hostap_full_audit_0.4.169,high
+MSC07-C,hostap,src/ap/wps_hostapd.c,1346,FP,fail: label is reached via multiple `goto fail;` statements earlier in the function; not unreachable - MSC07-C goto-label-blindness,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/ap/wps_hostapd.c,1347,FP,line 1342's free and line 1347's free sit on mutually-exclusive paths (success-return vs goto-fail); never both execute in one run,hostap_full_audit_0.4.169,high
+MEM12-C,hostap,src/ap/wps_hostapd.c,1349,FP,hostapd_free_wps() (called just before this return) internally frees wps->network_key via bin_clear_free; nothing left to leak,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/ap/wps_hostapd.c,1389,TP,hostapd_wps_update_multi_ap called directly; hapd only used once to read hapd->conf,hostap_full_audit_0.4.169,low
+EXP34-C,hostap,src/ap/wps_hostapd.c,1392,FP,internal invariant never-null hapd,hostap_full_audit_0.4.169,high
+EXP34-C,hostap,src/ap/wps_hostapd.c,1397,FP,conf = hapd->conf is always valid for a valid hapd - internal invariant,hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/ap/wps_hostapd.c,1409,TP,guard-clause pedantry,hostap_full_audit_0.4.169,low
+API00-C,hostap,src/ap/wps_hostapd.c,1451,FP,internal-only API convention,hostap_full_audit_0.4.169,med
+MSC01-C,hostap,src/ap/wps_hostapd.c,1490,TP,guard-clause pedantry,hostap_full_audit_0.4.169,low
+MEM12-C,hostap,src/ap/wps_hostapd.c,1493,FP,"wps->network_key is NULL at this return (os_malloc just failed, checked on the prior line); nothing to leak - flow-insensitive misfire",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/ap/wps_hostapd.c,1527,FP,wps_add_pin matches hostapd_wps_for_each callback typedef,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/ap/wps_hostapd.c,1543,FP,"addr appears to be a valid nullable 'match any address' input in this API family, not an unchecked crash risk; internal-only API convention",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/ap/wps_hostapd.c,1574,TP,"hostapd_wps_button_pushed exported, directly-called API; hapd only passed through, never modified",hostap_full_audit_0.4.169,low
+API00-C,hostap,src/ap/wps_hostapd.c,1588,FP,internal-only API convention,hostap_full_audit_0.4.169,med
+API00-C,hostap,src/ap/wps_hostapd.c,1588,FP,p2p_dev_addr NULL is a valid 'no P2P device' sentinel in this API family per surrounding code,hostap_full_audit_0.4.169,med
+API00-C,hostap,src/ap/wps_hostapd.c,1622,FP,internal-only API convention,hostap_full_audit_0.4.169,med
+API05-C,hostap,src/ap/wps_hostapd.c,1635,FP,ie/ie_len paired idiom,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/ap/wps_hostapd.c,1635,FP,hostapd_wps_probe_req_rx matches hostapd.h probereq_cb callback typedef (hostapd.h:812-817),hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/ap/wps_hostapd.c,1653,FP,"elems is an out-param populated by ieee802_11_parse_elems() at the immediately preceding line, guarded by a ParseFailed check before use",hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/ap/wps_hostapd.c,1706,FP,wpabuf_head(msg)/wpabuf_len(msg) pure-accessor pair - established EXP30-C misfire pattern,hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/ap/wps_hostapd.c,1751,FP,sizeof(*p) idiom,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/ap/wps_hostapd.c,1755,FP,"p (and p->msg) is stored into hapd->wps->upnp_msgs list; ownership transferred, freed later via wps_free_pending_msgs() at wps deinit",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/ap/wps_hostapd.c,1760,FP,same ownership-transfer reasoning as #122,hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/ap/wps_hostapd.c,1771,FP,sizeof(*ctx) idiom,hostap_full_audit_0.4.169,high
+EXP34-C,hostap,src/ap/wps_hostapd.c,1791,FP,internal invariant never-null hapd (hostapd_wps_upnp_deinit always called with valid hapd),hostap_full_audit_0.4.169,high
+API00-C,hostap,src/ap/wps_hostapd.c,1797,FP,internal-only ctrl_iface API convention,hostap_full_audit_0.4.169,med
+API00-C,hostap,src/ap/wps_hostapd.c,1797,FP,same for buf param - internal-only API convention,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/ap/wps_hostapd.c,1797,TP,hostapd_wps_get_mib_sta called directly; hapd only read (hapd->wps),hostap_full_audit_0.4.169,low
+API05-C,hostap,src/ap/wps_hostapd.c,1798,FP,buf/buflen paired idiom,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/ap/wps_hostapd.c,1806,FP,hostapd_wps_ap_pin_timeout matches eloop_timeout_handler typedef,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/ap/wps_hostapd.c,1833,FP,wps_ap_pin_disable matches hostapd_wps_for_each callback typedef,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/ap/wps_hostapd.c,1845,FP,internal-only API convention,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/ap/wps_hostapd.c,1858,FP,wps_ap_pin_set matches hostapd_wps_for_each callback typedef,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/ap/wps_hostapd.c,1875,FP,internal-only API convention,hostap_full_audit_0.4.169,med
+EXP33-C,hostap,src/ap/wps_hostapd.c,1882,FP,"os_snprintf() WRITES into data.pin_txt at this line; destination of a write, not a read of uninitialized data",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/ap/wps_hostapd.c,1889,FP,internal-only API convention,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/ap/wps_hostapd.c,1889,TP,hostapd_wps_ap_pin_get reads hapd->conf->ap_pin only; called directly,hostap_full_audit_0.4.169,low
+API00-C,hostap,src/ap/wps_hostapd.c,1895,FP,internal-only API convention,hostap_full_audit_0.4.169,med
+EXP33-C,hostap,src/ap/wps_hostapd.c,1901,FP,"os_snprintf() writes into data.pin_txt; destination write, not a read of uninitialized data",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/ap/wps_hostapd.c,1909,FP,wps_update_ie matches hostapd_wps_for_each callback typedef,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/ap/wps_hostapd.c,1909,FP,same dispatch contract as ctx param,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/ap/wps_hostapd.c,1917,FP,internal-only API convention,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/ap/wps_hostapd.c,1923,TP,hostapd_wps_update_ie only passes hapd through to hostapd_wps_for_each; plain helper,hostap_full_audit_0.4.169,low
+INT14-C,hostap,src/ap/wps_hostapd.c,1932,FP,"len&1 parity check plus len/2 and len>2*sizeof(...) arithmetic on the SAME length variable is a standard idiomatic hex-string-length check, not a confusing flag/counter reuse",hostap_full_audit_0.4.169,high
+MSC13-C,hostap,src/ap/wps_hostapd.c,1940,FP,"'if' is a C keyword, not a variable; parser misfire mis-tokenizing tokens around a #ifndef/#endif-interleaved if/else-if chain as declared variables",hostap_full_audit_0.4.169,high
+MSC13-C,hostap,src/ap/wps_hostapd.c,1943,FP,same parser misfire as #145,hostap_full_audit_0.4.169,high
+MSC13-C,hostap,src/ap/wps_hostapd.c,1946,FP,"'return' is a C keyword, not a variable; same parser misfire",hostap_full_audit_0.4.169,high
+MSC13-C,hostap,src/ap/wps_hostapd.c,1952,FP,same parser misfire as #145,hostap_full_audit_0.4.169,high
+MSC13-C,hostap,src/ap/wps_hostapd.c,1955,FP,same parser misfire as #145,hostap_full_audit_0.4.169,high
+DCL01-C,hostap,src/ap/wps_hostapd.c,1955,FP,sqc misparses 'else if' keyword as a variable named 'if'; no such variable exists,hostap_full_audit_0.4.169,high
+MSC13-C,hostap,src/ap/wps_hostapd.c,1958,FP,sqc misparses 'return -1;' keyword as an unused variable named 'return',hostap_full_audit_0.4.169,high
+DCL01-C,hostap,src/ap/wps_hostapd.c,1958,FP,same keyword-as-identifier misparse as line 1955; 'return' is not a variable,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/ap/wps_hostapd.c,1988,FP,"hapd signature pinned by wps_for_each_data.func callback contract, matches eloop-callback dispatch FP pattern",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/ap/wps_hostapd.c,2030,FP,"attr is filled by wps_parse_msg(wps,&attr) output-param at line 2025 before this read; not uninitialized",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/ap/wps_hostapd.c,2038,FP,hapd always non-NULL from internal ctrl_iface lookup call site; matches API00-C internal-API pedantry pattern,hostap_full_audit_0.4.169,med
+DCL30-C,hostap,src/ap/wps_hostapd.c,2055,FP,"wps is a local const struct wpabuf* at line 2041, not the global/context wps; scope-blind name collision",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/ap/wps_hostapd.c,2083,FP,"ret is a local pointer variable holding heap memory from wps_get_oob_cred/ndef_build_wifi, not automatic-storage object",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/ap/wps_hostapd.c,2102,FP,"wps->ap_nfc_dh_pubkey is a persistent context field freed later via hostapd_wps_nfc_clear(), not a local leak",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/ap/wps_hostapd.c,2104,FP,same struct-field-persistence pattern as line 2102 for ap_nfc_dh_privkey,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/ap/wps_hostapd.c,2107,FP,hostapd_wps_nfc_clear(wps) at line 2106 frees ap_nfc_dh_pubkey before this return; interprocedural free not seen,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/ap/wps_hostapd.c,2107,FP,hostapd_wps_nfc_clear(wps) at line 2106 frees ap_nfc_dh_privkey before this return; interprocedural free not seen,hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/ap/wps_hostapd.c,2124,FP,"ret again holds heap memory (wps_build_nfc_handover_sel/ndef_build_wifi), same misidentification as line 2083",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/ap/wps_hostapd.c,2124,FP,"ap_nfc_dh_pubkey remains live via wps->ap_nfc_dh_pubkey struct field after return; not lost, freed later by hostapd_wps_nfc_clear",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/ap/wps_hostapd.c,2124,FP,"same as prior entry for ap_nfc_dh_privkey; struct-field persistence, no leak",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/ap/wps_hostapd.c,2128,FP,hapd always non-NULL from internal ctrl_iface.c call site; internal-API pedantry pattern,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/ap/wps_hostapd.c,2128,TP,"hapd only read (hapd->wps->registrar), no callback/vtable contract constrains signature; real const opportunity",hostap_full_audit_0.4.169,med
+EXP33-C,hostap,src/ap/wps_hostapd.c,2181,FP,"attr filled by wps_parse_msg(&msg,&attr) output-param at line 2174, checked ret<0 before this read; not uninitialized",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/ap/wps_hostapd.c,2257,FP,"wps->ap_nfc_dh_pubkey persistent context field, freed later via hostapd_wps_nfc_clear(); same pattern as line 2102",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/ap/wps_hostapd.c,2258,FP,"wps->ap_nfc_dh_privkey persistent context field, same struct-field-persistence pattern",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/ap/wps_hostapd.c,2260,FP,"wps->ap_nfc_dev_pw persistent context field, same struct-field-persistence pattern",hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/ap/wps_hostapd.c,2263,FP,"only wpabuf_put has a side effect; wpabuf_len/wpabuf_head calls on distinct object pw are pure reads, no real unsequenced hazard",hostap_full_audit_0.4.169,med
+MEM31-C,hostap,src/ap/wps_hostapd.c,2273,FP,hostapd_wps_nfc_clear(wps) at line 2272 frees ap_nfc_dh_privkey immediately before this return -1,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/ap/wps_hostapd.c,2273,FP,hostapd_wps_nfc_clear(wps) at line 2272 frees ap_nfc_dh_pubkey immediately before this return -1,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/ap/wps_hostapd.c,2273,FP,hostapd_wps_nfc_clear(wps) at line 2272 frees ap_nfc_dev_pw immediately before this return -1,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/ap/wps_hostapd.c,2276,FP,"success path; ap_nfc_dh_privkey remains live via wps struct field, freed later by hostapd_wps_nfc_clear, not leaked",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/ap/wps_hostapd.c,2276,FP,"success path; ap_nfc_dh_pubkey remains live via wps struct field, same struct-field-persistence pattern",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/ap/wps_hostapd.c,2276,FP,"success path; ap_nfc_dev_pw remains live via wps struct field, same struct-field-persistence pattern",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/ap/wps_hostapd.c,2280,FP,hapd always non-NULL from internal ctrl_iface.c call site; internal-API pedantry pattern,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/ap/wps_hostapd.c,2280,TP,"hapd only read (hapd->conf->iface, hapd->wps), no callback/vtable contract; real but trivial const opportunity",hostap_full_audit_0.4.169,low
+PRE08-C,hostap,src/drivers/driver_ndis.c,37,FP,PRE08-C 8.3-filename convention not applicable to POSIX toolchain; established FP-by-default disposition,hostap_full_audit_0.4.169,high
+DCL38-C,hostap,src/drivers/driver_ndis.c,170,FP,"Windows NDIS ABI-mirror struct fallback typedef; [1] intentionally matches real OS header, not a C99 gap",hostap_full_audit_0.4.169,high
+STR31-C,hostap,src/drivers/driver_ndis.c,170,FP,"Flexible array member holds raw IE/key bytes, not string data; STR31-C misapplied",hostap_full_audit_0.4.169,high
+DCL38-C,hostap,src/drivers/driver_ndis.c,175,FP,"Windows NDIS ABI-mirror struct fallback typedef; [1] intentionally matches real OS header, not a C99 gap",hostap_full_audit_0.4.169,high
+STR31-C,hostap,src/drivers/driver_ndis.c,175,FP,"Flexible array member holds raw IE/key bytes, not string data; STR31-C misapplied",hostap_full_audit_0.4.169,high
+DCL38-C,hostap,src/drivers/driver_ndis.c,188,FP,"Windows NDIS ABI-mirror struct fallback typedef; [1] intentionally matches real OS header, not a C99 gap",hostap_full_audit_0.4.169,high
+STR31-C,hostap,src/drivers/driver_ndis.c,188,FP,"Flexible array member holds raw IE/key bytes, not string data; STR31-C misapplied",hostap_full_audit_0.4.169,high
+DCL38-C,hostap,src/drivers/driver_ndis.c,200,FP,"Windows NDIS ABI-mirror struct fallback typedef; [1] intentionally matches real OS header, not a C99 gap",hostap_full_audit_0.4.169,high
+STR31-C,hostap,src/drivers/driver_ndis.c,200,FP,"Flexible array member holds raw IE/key bytes, not string data; STR31-C misapplied",hostap_full_audit_0.4.169,high
+DCL38-C,hostap,src/drivers/driver_ndis.c,243,FP,"Windows NDIS ABI-mirror struct fallback typedef; [1] intentionally matches real OS header, not a C99 gap",hostap_full_audit_0.4.169,high
+STR31-C,hostap,src/drivers/driver_ndis.c,244,FP,"Flexible array member holds raw IE/key bytes, not string data; STR31-C misapplied",hostap_full_audit_0.4.169,high
+DCL38-C,hostap,src/drivers/driver_ndis.c,257,FP,"Windows NDIS ABI-mirror struct fallback typedef; [1] intentionally matches real OS header, not a C99 gap",hostap_full_audit_0.4.169,high
+STR31-C,hostap,src/drivers/driver_ndis.c,257,FP,"Flexible array member holds raw IE/key bytes, not string data; STR31-C misapplied",hostap_full_audit_0.4.169,high
+DCL38-C,hostap,src/drivers/driver_ndis.c,280,FP,"Windows NDIS ABI-mirror struct fallback typedef; [1] intentionally matches real OS header, not a C99 gap",hostap_full_audit_0.4.169,high
+STR31-C,hostap,src/drivers/driver_ndis.c,280,FP,"Flexible array member holds raw IE/key bytes, not string data; STR31-C misapplied",hostap_full_audit_0.4.169,high
+DCL38-C,hostap,src/drivers/driver_ndis.c,318,FP,"Windows NDIS ABI-mirror struct fallback typedef; [1] intentionally matches real OS header, not a C99 gap",hostap_full_audit_0.4.169,high
+STR31-C,hostap,src/drivers/driver_ndis.c,319,FP,"Flexible array member holds raw IE/key bytes, not string data; STR31-C misapplied",hostap_full_audit_0.4.169,high
+DCL38-C,hostap,src/drivers/driver_ndis.c,332,FP,"Windows NDIS ABI-mirror struct fallback typedef; [1] intentionally matches real OS header, not a C99 gap",hostap_full_audit_0.4.169,high
+STR31-C,hostap,src/drivers/driver_ndis.c,332,FP,"Flexible array member holds raw IE/key bytes, not string data; STR31-C misapplied",hostap_full_audit_0.4.169,high
+DCL38-C,hostap,src/drivers/driver_ndis.c,345,FP,"Windows NDIS ABI-mirror struct fallback typedef; [1] intentionally matches real OS header, not a C99 gap",hostap_full_audit_0.4.169,high
+STR31-C,hostap,src/drivers/driver_ndis.c,345,FP,"Flexible array member holds raw IE/key bytes, not string data; STR31-C misapplied",hostap_full_audit_0.4.169,high
+DCL38-C,hostap,src/drivers/driver_ndis.c,387,FP,"Windows NDIS ABI-mirror struct fallback typedef; [1] intentionally matches real OS header, not a C99 gap",hostap_full_audit_0.4.169,high
+STR31-C,hostap,src/drivers/driver_ndis.c,387,FP,"Flexible array member holds raw IE/key bytes, not string data; STR31-C misapplied",hostap_full_audit_0.4.169,high
+DCL37-C,hostap,src/drivers/driver_ndis.c,400,TP,"Genuine leading-underscore reserved-identifier macro name, low value/severity",hostap_full_audit_0.4.169,low
+PRE02-C,hostap,src/drivers/driver_ndis.c,403,FP,"Macro body is a single function-call-shaped invocation; no precedence hazard, matches established PRE02-C call-shaped FP class",hostap_full_audit_0.4.169,high
+PRE02-C,hostap,src/drivers/driver_ndis.c,407,FP,"Macro body is a single function-call-shaped invocation; no precedence hazard, matches established PRE02-C call-shaped FP class",hostap_full_audit_0.4.169,high
+PRE02-C,hostap,src/drivers/driver_ndis.c,411,FP,"Macro body is a single function-call-shaped invocation; no precedence hazard, matches established PRE02-C call-shaped FP class",hostap_full_audit_0.4.169,high
+PRE02-C,hostap,src/drivers/driver_ndis.c,415,FP,"Macro body is a single function-call-shaped invocation; no precedence hazard, matches established PRE02-C call-shaped FP class",hostap_full_audit_0.4.169,high
+PRE02-C,hostap,src/drivers/driver_ndis.c,419,FP,"Macro body is a single function-call-shaped invocation; no precedence hazard, matches established PRE02-C call-shaped FP class",hostap_full_audit_0.4.169,high
+PRE02-C,hostap,src/drivers/driver_ndis.c,423,FP,"Macro body is a single function-call-shaped invocation; no precedence hazard, matches established PRE02-C call-shaped FP class",hostap_full_audit_0.4.169,high
+MSC37-C,hostap,src/drivers/driver_ndis.c,451,FP,Both #ifdef/#else arms of ndis_get_oid return on every path; preprocessor-branch-blind CFG miss,hostap_full_audit_0.4.169,high
+API05-C,hostap,src/drivers/driver_ndis.c,452,FP,"Idiomatic ptr+len parameter pair (data,len); established API05-C FP",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/drivers/driver_ndis.c,456,FP,sizeof(*o) never evaluates operand; not a dereference,hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/drivers/driver_ndis.c,499,FP,sizeof(*o) in mutually-exclusive #else arm's own fresh 'o'; cross-#ifdef-branch free-state conflation with unrelated branch's freed 'o',hostap_full_audit_0.4.169,high
+MSC37-C,hostap,src/drivers/driver_ndis.c,526,FP,Both #ifdef/#else arms of ndis_set_oid return on every path; preprocessor-branch-blind,hostap_full_audit_0.4.169,high
+API05-C,hostap,src/drivers/driver_ndis.c,527,FP,"Idiomatic ptr+len parameter pair (data,len)",hostap_full_audit_0.4.169,high
+EXP36-C,hostap,src/drivers/driver_ndis.c,536,FP,"Cast target is const u8* (1-byte alignment); tool's claimed alignment-4 for u8 is factually wrong, no real hazard",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/drivers/driver_ndis.c,538,FP,sizeof(*o) never evaluates operand; not a dereference,hostap_full_audit_0.4.169,high
+ARR39-C,hostap,src/drivers/driver_ndis.c,539,FP,"buflen-sizeof(o->Data) is plain size_t byte-count arithmetic, not pointer scaling; established plain-integer-subtraction FP",hostap_full_audit_0.4.169,high
+EXP36-C,hostap,src/drivers/driver_ndis.c,564,FP,Cast target is const u8* (1-byte alignment); alignment-4 claim factually wrong,hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/drivers/driver_ndis.c,566,FP,"sizeof(*o) in this #else arm's own fresh 'o', never freed here; cross-#ifdef-branch conflation",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/drivers/driver_ndis.c,612,FP,"auth_mode is populated via &auth_mode passed as output buffer to ndis_get_oid, then read only after success check; write-through-pointer not tracked",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/drivers/driver_ndis.c,640,FP,Same output-param write-through-pointer pattern as auth_mode,hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/drivers/driver_ndis.c,678,FP,"buf populated via &buf output param to ndis_get_oid, read only after res>=4 success check",hostap_full_audit_0.4.169,high
+STR30-C,hostap,src/drivers/driver_ndis.c,706,FP,"ndis_set_oid's 3rd param is declared 'const char *data'; cannot modify the literal, claim factually wrong",hostap_full_audit_0.4.169,high
+ENV01-C,hostap,src/drivers/driver_ndis.c,713,FP,No getenv() call anywhere in this function; established wholesale zero-getenv misfire class,hostap_full_audit_0.4.169,high
+CON34-C,hostap,src/drivers/driver_ndis.c,716,FP,hostap/wpa_supplicant has no pthread usage; established no-pthread CON34-C FP class,hostap_full_audit_0.4.169,high
+MSC30-C,hostap,src/drivers/driver_ndis.c,716,FP,"rand() picks junk SSID bytes purely to force driver disconnect, non-cryptographic/non-adversarial use; established batch-local FP (driver_wext.c twin)",hostap_full_audit_0.4.169,med
+MSC32-C,hostap,src/drivers/driver_ndis.c,716,FP,Same non-security-relevant randomness use as MSC30-C; no adversarial consequence from lack of seeding,hostap_full_audit_0.4.169,med
+EXP33-C,hostap,src/drivers/driver_ndis.c,717,FP,for loop deterministically assigns every byte of ssid[SSID_MAX_LEN] before use; CFG misses full-array-covering loop as init,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/drivers/driver_ndis.c,729,FP,Matches eloop_timeout_handler dispatch-contract typedef; established eloop_ctx/timeout_ctx FP,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/drivers/driver_ndis.c,738,TP,"Plain internal static helper, params param structurally unused in body, not bound to any vtable/callback typedef",hostap_full_audit_0.4.169,low
+STR30-C,hostap,src/drivers/driver_ndis.c,774,FP,Same const-qualified ndis_set_oid data param; cannot modify literal,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/drivers/driver_ndis.c,789,TP,"Plain internal static helper, ssid param only ever read, not a vtable/callback contract",hostap_full_audit_0.4.169,low
+ARR01-C,hostap,src/drivers/driver_ndis.c,800,FP,"sizeof(*r) is the correct idiom to size a realloc, not a pointer-decay bug",hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/drivers/driver_ndis.c,800,FP,"r->ie_len is evaluated as an argument to os_realloc(r,...) before the call executes, not after; not a UAF",hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/drivers/driver_ndis.c,800,FP,Same self-referential-argument-evaluated-before-call confusion as the sibling finding on this line,hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/drivers/driver_ndis.c,810,FP,"nr comes from os_realloc(), heap memory, not automatic-storage local; established heap-vs-stack confusion class",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/drivers/driver_ndis.c,836,FP,sizeof(*results) never evaluates operand; not a dereference,hostap_full_audit_0.4.169,high
+ARR39-C,hostap,src/drivers/driver_ndis.c,872,FP,"sizeof(*r)+bss->IELength-sizeof(...) is plain integer byte-count arithmetic, not pointer scaling",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/drivers/driver_ndis.c,872,FP,sizeof(*r) never evaluates operand; not a dereference,hostap_full_audit_0.4.169,high
+FLP03-C,hostap,src/drivers/driver_ndis.c,879,FP,"bss->Configuration.DSConfig/1000 is integer division (ULONG/int); no floating point involved, established misclassification class",hostap_full_audit_0.4.169,high
+ARR37-C,hostap,src/drivers/driver_ndis.c,891,FP,"pos walks the heap-allocated, explicitly bounds-checked b->Bssid[] flexible-array buffer; established pos-into-real-array FP class",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/drivers/driver_ndis.c,898,FP,"results comes from os_zalloc(), heap memory, not automatic-storage local",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/driver_ndis.c,915,FP,"1<<30 is deliberate NDIS KeyIndex bit-flag protocol packing, not a representation assumption; established EXP07-C bit-packing FP class",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/driver_ndis.c,948,FP,1<<31 is deliberate KeyIndex bit-flag protocol packing,hostap_full_audit_0.4.169,high
+INT32-C,hostap,src/drivers/driver_ndis.c,948,TP,1 (int literal) << 31 sets the sign bit of a 32-bit signed int; genuine UB per C standard though harmless on real 2's-complement compilers,hostap_full_audit_0.4.169,med
+API05-C,hostap,src/drivers/driver_ndis.c,966,FP,"Idiomatic ptr+len parameter pair (seq,seq_len); established API05-C FP",hostap_full_audit_0.4.169,high
+API05-C,hostap,src/drivers/driver_ndis.c,966,FP,"Idiomatic ptr+len parameter pair (key,key_len)",hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/driver_ndis.c,1008,FP,1<<31 deliberate KeyIndex bit-flag packing,hostap_full_audit_0.4.169,high
+INT32-C,hostap,src/drivers/driver_ndis.c,1008,TP,"1<<31 on signed int literal is genuine UB per C standard, same shape as line 948",hostap_full_audit_0.4.169,med
+EXP07-C,hostap,src/drivers/driver_ndis.c,1010,FP,1<<30 deliberate KeyIndex bit-flag packing,hostap_full_audit_0.4.169,high
+EXP07-C,hostap,src/drivers/driver_ndis.c,1012,FP,1<<29 deliberate KeyIndex bit-flag packing,hostap_full_audit_0.4.169,high
+INT14-C,hostap,src/drivers/driver_ndis.c,1017,FP,Bitwise op (<<) operates on (ULONGLONG)seq[i]; 'i' only appears in i*8 (arithmetic) and seq[i] (index); misattribution,hostap_full_audit_0.4.169,high
+INT13-C,hostap,src/drivers/driver_ndis.c,1017,FP,"Left operand of << is (ULONGLONG)seq[i] (already unsigned via cast), not 'i'; 'i' is only the shift count",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/drivers/driver_ndis.c,1038,FP,Matches struct wpa_driver_ops.set_key vtable field signature exactly (non-const); dispatch-contract FP,hostap_full_audit_0.4.169,high
+MSC07-C,hostap,src/drivers/driver_ndis.c,1168,FP,"'default:' is a switch-case label, always reachable via dispatch regardless of preceding break; established case/default-label-blindness class",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/drivers/driver_ndis.c,1188,FP,Preceding switch is exhaustive (default-terminated) and sets encr on every case before any break; provably always initialized,hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/drivers/driver_ndis.c,1194,FP,Missing else is an intentional no-op (neither bssid set nor previously set -> nothing to do); established dispatch-no-op MSC01-C FP class,hostap_full_audit_0.4.169,med
+STR30-C,hostap,src/drivers/driver_ndis.c,1195,FP,Same const-qualified ndis_set_oid data param; cannot modify literal,hostap_full_audit_0.4.169,high
+MSC09-C,hostap,src/drivers/driver_ndis.c,1195,FP,"\xff broadcast-address byte literal is raw binary protocol data, not human-readable text; MSC09-C's locale-portability concern is inapplicable",hostap_full_audit_0.4.169,med
+EXP05-C,hostap,src/drivers/driver_ndis.c,1231,FP,"p is declared non-const NDIS_802_11_PMKID*; cast to (u8*)p removes no const, phantom cast-away-const",hostap_full_audit_0.4.169,high
+EXP05-C,hostap,src/drivers/driver_ndis.c,1232,FP,Same phantom cast-away-const; p was never const-qualified,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/drivers/driver_ndis.c,1239,FP,Matches struct wpa_driver_ops.add_pmkid vtable field signature; dispatch-contract FP,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/drivers/driver_ndis.c,1284,FP,Matches struct wpa_driver_ops.remove_pmkid vtable field signature; dispatch-contract FP,hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/drivers/driver_ndis.c,1393,FP,sizeof(*ai) never evaluates operand; not a dereference,hostap_full_audit_0.4.169,high
+ARR37-C,hostap,src/drivers/driver_ndis.c,1452,FP,"pos walks the heap-allocated, bounds-checked b->Bssid[] buffer; established pos-into-real-array FP class",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/drivers/driver_ndis.c,1460,FP,"b is set to NULL immediately after its earlier free; the later os_free(b) at skip_scan_results is a safe no-op on NULL, not a double free",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/drivers/driver_ndis.c,1466,FP,Matches eloop_timeout_handler dispatch-contract typedef,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/drivers/driver_ndis.c,1520,FP,"drv is only ever passed from wpa_driver_ndis_event_process (driver_ndis_.c), internal call chain, never externally nullable",hostap_full_audit_0.4.169,high
+DCL15-C,hostap,src/drivers/driver_ndis.c,1520,FP,"Function is called from src/drivers/driver_ndis_.c, a sibling translation unit sqc's cross-file scan missed; cannot be static",hostap_full_audit_0.4.169,high
+DCL19-C,hostap,src/drivers/driver_ndis.c,1520,FP,Same cross-TU usage in driver_ndis_.c disproves 'only used within this file',hostap_full_audit_0.4.169,high
+API00-C,hostap,src/drivers/driver_ndis.c,1532,FP,"drv internal-only call chain from driver_ndis_.c, never externally nullable",hostap_full_audit_0.4.169,high
+DCL15-C,hostap,src/drivers/driver_ndis.c,1532,FP,"Called from driver_ndis_.c, a sibling TU sqc missed; cannot be static",hostap_full_audit_0.4.169,high
+DCL19-C,hostap,src/drivers/driver_ndis.c,1532,FP,Confirmed cross-file usage in driver_ndis_.c,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/drivers/driver_ndis.c,1532,FP,"Function writes through drv via os_memset(drv->bssid,...); drv genuinely cannot be const, DCL13-C's premise is factually wrong",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/drivers/driver_ndis.c,1540,TP,"Plain internal helper, drv only read (drv->ctx), not bound to any vtable/eloop typedef",hostap_full_audit_0.4.169,low
+EXP33-C,hostap,src/drivers/driver_ndis.c,1547,FP,sizeof(*req) never evaluates operand; not a dereference,hostap_full_audit_0.4.169,high
+EXP05-C,hostap,src/drivers/driver_ndis.c,1552,FP,"data is const u8*; resulting req pointer is only ever read (Bssid, Flags), never written; established cast-away-const read-only-overlay FP class",hostap_full_audit_0.4.169,high
+EXP36-C,hostap,src/drivers/driver_ndis.c,1552,TP,"NDIS_802_11_AUTHENTICATION_REQUEST contains ULONG fields (genuinely 4-byte-aligned); source buffer alignment unproven in-function, established disposition",hostap_full_audit_0.4.169,med
+MSC01-C,hostap,src/drivers/driver_ndis.c,1561,FP,Missing else is intentional no-op (neither pairwise nor group error -> no MIC failure event); established dispatch-no-op class,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/drivers/driver_ndis.c,1574,TP,"Plain internal helper, drv only read (drv->ctx), not bound to a vtable/eloop typedef",hostap_full_audit_0.4.169,low
+EXP05-C,hostap,src/drivers/driver_ndis.c,1586,FP,"data is const u8*; pmkid pointer only ever read (Version, NumCandidates, CandidateList); read-only-overlay FP",hostap_full_audit_0.4.169,high
+EXP36-C,hostap,src/drivers/driver_ndis.c,1586,TP,NDIS_802_11_PMKID_CANDIDATE_LIST contains ULONG fields; source buffer alignment unproven in-function,hostap_full_audit_0.4.169,med
+EXP39-C,hostap,src/drivers/driver_ndis.c,1607,FP,"event is wpa_driver_ndis_event_pmkid's own local union, never writes michael_mic_failure in this function; the cited earlier write belongs to a different function's distinct local of the same type/name",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/drivers/driver_ndis.c,1619,FP,"drv internal-only call chain (driver_ndis_.c and ndisuio_notification_receive), never externally nullable",hostap_full_audit_0.4.169,high
+DCL15-C,hostap,src/drivers/driver_ndis.c,1619,FP,"Called from driver_ndis_.c, sibling TU sqc missed; cannot be static",hostap_full_audit_0.4.169,high
+DCL19-C,hostap,src/drivers/driver_ndis.c,1619,FP,Confirmed cross-file usage in driver_ndis_.c,hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/drivers/driver_ndis.c,1624,FP,sizeof(*status) never evaluates operand; not a dereference,hostap_full_audit_0.4.169,high
+EXP05-C,hostap,src/drivers/driver_ndis.c,1630,FP,data is const u8*; status pointer only ever read (StatusType); read-only-overlay FP,hostap_full_audit_0.4.169,high
+EXP36-C,hostap,src/drivers/driver_ndis.c,1630,TP,NDIS_802_11_STATUS_INDICATION contains an enum field (genuinely 4-byte-aligned); source alignment unproven in-function,hostap_full_audit_0.4.169,med
+ARR39-C,hostap,src/drivers/driver_ndis.c,1631,TP,"'sizeof(status)' takes the size of the pointer variable, not sizeof(*status) (the struct); genuine sizeof-pointer-vs-sizeof-struct bug, latent on 64-bit builds",hostap_full_audit_0.4.169,med
+ARR39-C,hostap,src/drivers/driver_ndis.c,1632,TP,Same sizeof(status)-vs-sizeof(*status) pointer/struct-size confusion feeding data_len; can underflow data_len on 64-bit,hostap_full_audit_0.4.169,med
+API00-C,hostap,src/drivers/driver_ndis.c,1650,FP,drv internal-only call chain from driver_ndis_.c and ndisuio_notification_receive,hostap_full_audit_0.4.169,high
+DCL15-C,hostap,src/drivers/driver_ndis.c,1650,FP,"Called from driver_ndis_.c, sibling TU sqc missed; cannot be static",hostap_full_audit_0.4.169,high
+DCL19-C,hostap,src/drivers/driver_ndis.c,1650,FP,Confirmed cross-file usage in driver_ndis_.c,hostap_full_audit_0.4.169,high
+EXP39-C,hostap,src/drivers/driver_ndis.c,1672,FP,"event is wpa_driver_ndis_event_adapter_arrival's own local union, never touches michael_mic_failure; cross-function union-name conflation",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/drivers/driver_ndis.c,1680,FP,drv internal-only call chain from driver_ndis_.c,hostap_full_audit_0.4.169,high
+DCL15-C,hostap,src/drivers/driver_ndis.c,1680,FP,"Called from driver_ndis_.c, sibling TU sqc missed; cannot be static",hostap_full_audit_0.4.169,high
+DCL19-C,hostap,src/drivers/driver_ndis.c,1680,FP,Confirmed cross-file usage in driver_ndis_.c,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/drivers/driver_ndis.c,1680,TP,"Plain internal helper, drv only read (ifname, ctx), never modified",hostap_full_audit_0.4.169,low
+ARR37-C,hostap,src/drivers/driver_ndis.c,1791,FP,ae = &c->AuthenticationEncryptionSupported[i] points into that flexible-array member; ae+1 is legitimate array-pointer bounds-check arithmetic,hostap_full_audit_0.4.169,high
+ARR01-C,hostap,src/drivers/driver_ndis.c,1853,FP,"sizeof(*capa) is the correct idiom for a struct pointer parameter, not a decay bug",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/drivers/driver_ndis.c,1858,FP,wpa_driver_ndis_get_ifname is wpa_driver_ndis_ops.get_ifname; generic void*priv dispatch-contract param,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/drivers/driver_ndis.c,1865,FP,wpa_driver_ndis_get_mac_addr is wpa_driver_ndis_ops.get_mac_addr; dispatch-contract param,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/drivers/driver_ndis.c,1876,FP,ndisuio_notification_receive is an eloop_register_event callback; fixed-signature dispatch contract,hostap_full_audit_0.4.169,high
+DCL31-C,hostap,src/drivers/driver_ndis.c,1883,FP,ReadMsgQueue is a genuine WinCE API declared in Windows SDK headers sqc's parser can't resolve on this platform; established Win32-API-header-not-parsed FP class,hostap_full_audit_0.4.169,high
+MSC07-C,hostap,src/drivers/driver_ndis.c,1934,FP,"'default:' switch-case label, always reachable via dispatch; case/default-label-blindness",hostap_full_audit_0.4.169,high
+DCL31-C,hostap,src/drivers/driver_ndis.c,1950,FP,DeviceIoControl is a genuine WinAPI function declared in unresolvable Windows SDK headers; established class,hostap_full_audit_0.4.169,high
+DCL31-C,hostap,src/drivers/driver_ndis.c,1957,FP,Same unresolvable Windows SDK header class,hostap_full_audit_0.4.169,high
+ARR01-C,hostap,src/drivers/driver_ndis.c,1966,FP,"sizeof(drv->event_queue) is the correct idiom for a struct field, not a decay bug",hostap_full_audit_0.4.169,high
+DCL31-C,hostap,src/drivers/driver_ndis.c,1998,FP,CreateMsgQueue is a genuine WinCE API in unresolvable Windows SDK headers,hostap_full_audit_0.4.169,high
+MSC37-C,hostap,src/drivers/driver_ndis.c,2037,FP,Both #ifdef/#else arms of wpa_driver_ndis_get_names return on every path; preprocessor-branch-blind,hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/drivers/driver_ndis.c,2041,FP,sizeof(*b) never evaluates operand; not a dereference,hostap_full_audit_0.4.169,high
+ARR30-C,hostap,src/drivers/driver_ndis.c,2072,FP,"len is clamped to sizeof(name)-1 two lines earlier (if len>=sizeof(name) len=sizeof(name)-1); provably in-bounds, established earlier-guard-blindness class",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/drivers/driver_ndis.c,2107,FP,name is unconditionally populated within the same loop iteration that sets found=1 before the break; CFG doesn't connect the correlated assignment,hostap_full_audit_0.4.169,high
+ARR01-C,hostap,src/drivers/driver_ndis.c,2108,FP,"sizeof(drv->ifname) is the correct idiom for a struct field, not a decay bug",hostap_full_audit_0.4.169,high
+DCL37-C,hostap,src/drivers/driver_ndis.c,2134,FP,"_names is a block-scope local variable inside wpa_driver_ndis_get_names, not file-scope; underscore+lowercase names are only reserved at file scope. Twin bug already documented for the sibling get_interfaces function",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/drivers/driver_ndis.c,2180,FP,"'*pos++ = pos2[0]' is a plain char-to-char assignment (both char*), no widening/sign-extension involved",hostap_full_audit_0.4.169,high
+EXP43-C,hostap,src/drivers/driver_ndis.c,2183,FP,"dest range [pos+2, pos+2+(pos-names)) starts strictly after src range [names,pos) ends; provably disjoint, not overlapping. Same conclusion already reached for twin code in get_interfaces (b128)",hostap_full_audit_0.4.169,high
+ARR36-C,hostap,src/drivers/driver_ndis.c,2183,FP,"Message cites 'desc[i]' and '_names' subtraction, but this line (os_memcpy(pos+2,names,pos-names)) contains neither; misattributed to an unrelated line/variables",hostap_full_audit_0.4.169,med
+ARR01-C,hostap,src/drivers/driver_ndis.c,2272,FP,sizeof(drv->ifname) is the correct idiom for a struct field,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/drivers/driver_ndis.c,2364,TP,"Plain internal static helper, drv only read (adapter_name), never modified, not a vtable/eloop contract",hostap_full_audit_0.4.169,low
+ARR38-C,hostap,src/drivers/driver_ndis.c,2383,FP,len is bounded <=81 by an earlier 'if (len>80) return -1' guard; memcpy size is provably small and safe,hostap_full_audit_0.4.169,high
+INT32-C,hostap,src/drivers/driver_ndis.c,2383,FP,len*sizeof(TCHAR) with len<=81 (guarded earlier) cannot realistically overflow; established already-validated-upstream FP class,hostap_full_audit_0.4.169,high
+ARR38-C,hostap,src/drivers/driver_ndis.c,2384,FP,9*sizeof(TCHAR) is a compile-time constant (18); the &multi[len] destination is bounded since len<=81+9<=100 (array size 100),hostap_full_audit_0.4.169,high
+INT32-C,hostap,src/drivers/driver_ndis.c,2384,FP,'9*sizeof(TCHAR)' is a fixed compile-time constant expression; cannot overflow,hostap_full_audit_0.4.169,high
+ARR30-C,hostap,src/drivers/driver_ndis.c,2384,FP,"len<=81 after the earlier 'if(len>80) return -1' guard, so &multi[len] with a further +9 stays within the 100-element array",hostap_full_audit_0.4.169,high
+FIO24-C,hostap,src/drivers/driver_ndis.c,2398,FP,"The two CloseHandle(ndis) calls sit in mutually-exclusive branches (one inside an early-return failure path, the other only reached on success); never both execute",hostap_full_audit_0.4.169,high
+MSC37-C,hostap,src/drivers/driver_ndis.c,2408,FP,Both #ifdef _WIN32_WCE / #else arms of wpa_driver_ndis_set_wzc return on every path; preprocessor-branch-blind,hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/drivers/driver_ndis.c,2470,FP,"devname is the RegQueryValueEx output buffer (write target), not read uninitialized",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/drivers/driver_ndis.c,2490,FP,"hnd's address passed as RegQueryValueEx output param; sizeof(hnd) is compile-time, no read of hnd",hostap_full_audit_0.4.169,high
+WIN00-C,hostap,src/drivers/driver_ndis.c,2529,TP,"LoadLibrary(TEXT(""wzcsapi.dll"")) with no search-path restriction, genuine DLL-hijack pattern",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/drivers/driver_ndis.c,2672,TP,"non-Windows #else stub of wpa_driver_ndis_set_wzc; drv genuinely unused in this compiled arm, matches header-stub TP class extended to a .c-file mutually-exclusive #ifdef stub",hostap_full_audit_0.4.169,low
+CON03-C,hostap,src/drivers/driver_ndis.c,2687,FP,"no pthread usage in file; wpa_supplicant/driver layer is single-threaded eloop, established CON03-C no-thread FP class",hostap_full_audit_0.4.169,high
+MSC37-C,hostap,src/drivers/driver_ndis.c,2696,FP,"wpa_driver_ndis_adapter_init returns on every path in both compiled #ifdef arms, preprocessor-branch-blind misfire",hostap_full_audit_0.4.169,high
+MSC37-C,hostap,src/drivers/driver_ndis.c,2733,FP,wpa_driver_ndis_adapter_open returns on every path in both compiled #ifdef arms,hostap_full_audit_0.4.169,high
+STR31-C,hostap,src/drivers/driver_ndis.c,2733,FP,ifname[i]='\0' after loop is a bounds-checked null-terminate idiom; len already clamped < MAX_NDIS_DEVICE_NAME_LEN by earlier guard,hostap_full_audit_0.4.169,high
+ENV01-C,hostap,src/drivers/driver_ndis.c,2738,FP,no getenv() call anywhere in this file; wholesale ENV01-C misfire,hostap_full_audit_0.4.169,high
+INT32-C,hostap,src/drivers/driver_ndis.c,2753,FP,"i and pos are both size_t, not signed int; loop invariant i>=pos, no overflow/underflow possible",hostap_full_audit_0.4.169,high
+ARR30-C,hostap,src/drivers/driver_ndis.c,2754,FP,cross-#ifdef-branch name conflation: real buffer is WCHAR ifname[256] bounded by len<256; cited size-128 buffer is an unrelated local in the mutually exclusive #else arm,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/drivers/driver_ndis.c,2785,TP,"plain internal helper only reads drv->ndisuio/drv->adapter, never forwards drv to a non-const consumer",hostap_full_audit_0.4.169,low
+EXP33-C,hostap,src/drivers/driver_ndis.c,2817,FP,"sizeof(*drv) is a non-evaluating context, not a dereference; established sizeof(*ptr)-not-a-deref FP class",hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/drivers/driver_ndis.c,2829,FP,no-final-else guard-clause pedantry; leaving ifname unmodified when neither known prefix matches is the intended behavior,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/drivers/driver_ndis.c,2840,FP,"mutually exclusive early-return branches in wpa_driver_ndis_init, not a real double free",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/drivers/driver_ndis.c,2848,FP,"mutually exclusive early-return branches in wpa_driver_ndis_init, not a real double free",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/drivers/driver_ndis.c,2857,FP,"mutually exclusive early-return branches in wpa_driver_ndis_init, not a real double free",hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/drivers/driver_ndis.c,2916,FP,no-final-else guard-clause pedantry; the unhandled case correctly requires no action,hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/drivers/driver_ndis.c,2931,FP,"drv is heap-allocated via os_zalloc, not automatic storage; heap-vs-stack confusion",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/drivers/driver_ndis.c,2969,FP,no earlier os_free(drv) exists in wpa_driver_ndis_deinit; likely cross-function name/type conflation with the unrelated drv freed in wpa_driver_ndis_init,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/drivers/driver_ndis.c,2974,TP,"global_priv param is entirely unused in wpa_driver_ndis_get_interfaces' body, trivially const-able",hostap_full_audit_0.4.169,low
+EXP33-C,hostap,src/drivers/driver_ndis.c,2980,FP,"sizeof(*b) is non-evaluating, not a dereference of uninitialized b",hostap_full_audit_0.4.169,high
+FIO24-C,hostap,src/drivers/driver_ndis.c,3011,FP,"mutually exclusive early-return branches, each with its own CloseHandle, not a real double close",hostap_full_audit_0.4.169,high
+ARR30-C,hostap,src/drivers/driver_ndis.c,3035,FP,len already clamped to sizeof(name)-1 immediately before the write; bounded-clamp-guarantees-safety idiom,hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/drivers/driver_ndis.c,3047,FP,"sizeof(*niface) is non-evaluating, not a dereference",hostap_full_audit_0.4.169,high
+FIO24-C,hostap,src/drivers/driver_ndis.c,3065,FP,"final success-path close, only reached when the two earlier error-path closes (mutually exclusive) never executed",hostap_full_audit_0.4.169,high
+DCL37-C,hostap,src/drivers/driver_ndis.c,3067,FP,"_names is a block-scope local inside wpa_driver_ndis_get_interfaces, not a file-scope identifier",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/drivers/driver_ndis.c,3111,FP,"both pos and pos2 are char*, plain char-to-char assignment, no widening/sign-extension involved",hostap_full_audit_0.4.169,high
+EXP43-C,hostap,src/drivers/driver_ndis.c,3114,FP,"dest range [pos+2, ...) starts strictly after src range [names, pos) ends; provably disjoint, no overlap",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/drivers/driver_ndis.c,3193,FP,conflated with the unrelated os_free(niface) in the mutually exclusive NDISUIO #ifdef branch of the same function,hostap_full_audit_0.4.169,high
+MEM10-C,hostap,src/drivers/driver_common.c,17,FP,Ad-hoc NULL check pedantry; matches confirmed MEM10-C dedicated-validation-function FP class.,hostap_full_audit_0.4.169,high
+PRE00-C,hostap,src/drivers/driver_common.c,29,FP,"E2S/CHECK_TRIGGER/DF2S macro param is only token-pasted/stringized/field-name-substituted, never runtime-evaluated; PRE00/PRE05/PRE12 X-macro category-error FP class.",hostap_full_audit_0.4.169,high
+PRE05-C,hostap,src/drivers/driver_common.c,29,FP,"E2S/CHECK_TRIGGER/DF2S macro param is only token-pasted/stringized/field-name-substituted, never runtime-evaluated; PRE00/PRE05/PRE12 X-macro category-error FP class.",hostap_full_audit_0.4.169,high
+PRE12-C,hostap,src/drivers/driver_common.c,29,FP,"E2S/CHECK_TRIGGER/DF2S macro param is only token-pasted/stringized/field-name-substituted, never runtime-evaluated; PRE00/PRE05/PRE12 X-macro category-error FP class.",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,31,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,32,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,33,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,34,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,35,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,36,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,37,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,38,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,39,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,40,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,41,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,42,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,43,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,44,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,45,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,46,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,47,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,48,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,49,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,50,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,51,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,52,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,53,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,54,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,55,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,56,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,57,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,58,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,59,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,60,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,61,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,62,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,63,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,64,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,65,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,66,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,67,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,68,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,69,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,70,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,71,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,72,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,73,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,74,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,75,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,76,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,77,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,78,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,79,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,80,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,81,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,82,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,83,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,84,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,85,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,86,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,87,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,88,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,89,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,90,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,91,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,92,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,93,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,94,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,95,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,96,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,97,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,98,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,99,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,100,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,101,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,102,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,103,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,104,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,105,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,106,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+ARR00-C,hostap,src/drivers/driver_common.c,205,FP,"he_capab[op_mode] has single call site (events.c:1036) passing compile-time-constant IEEE80211_MODE_INFRA; internal-only-API, no unvalidated external index reaches this.",hostap_full_audit_0.4.169,med
+ARR30-C,hostap,src/drivers/driver_common.c,205,FP,"he_capab[op_mode] has single call site (events.c:1036) passing compile-time-constant IEEE80211_MODE_INFRA; internal-only-API, no unvalidated external index reaches this.",hostap_full_audit_0.4.169,med
+EXP33-C,hostap,src/drivers/driver_common.c,237,FP,"triggers = os_zalloc(sizeof(*triggers)) is the sizeof(*ptr) idiom, never a real dereference; confirmed EXP33-C FP class.",hostap_full_audit_0.4.169,high
+PRE00-C,hostap,src/drivers/driver_common.c,241,FP,"E2S/CHECK_TRIGGER/DF2S macro param is only token-pasted/stringized/field-name-substituted, never runtime-evaluated; PRE00/PRE05/PRE12 X-macro category-error FP class.",hostap_full_audit_0.4.169,high
+PRE05-C,hostap,src/drivers/driver_common.c,241,FP,"E2S/CHECK_TRIGGER/DF2S macro param is only token-pasted/stringized/field-name-substituted, never runtime-evaluated; PRE00/PRE05/PRE12 X-macro category-error FP class.",hostap_full_audit_0.4.169,high
+PRE12-C,hostap,src/drivers/driver_common.c,241,FP,"E2S/CHECK_TRIGGER/DF2S macro param is only token-pasted/stringized/field-name-substituted, never runtime-evaluated; PRE00/PRE05/PRE12 X-macro category-error FP class.",hostap_full_audit_0.4.169,high
+ARR30-C,hostap,src/drivers/driver_common.c,247,FP,"while (*start != '\0') scans a NUL-terminated os_strdup'd string with explicit '\0' checks; provably-bounded scan, same class as nt_password_hash.c:30.",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/drivers/driver_common.c,256,FP,"*end = '\0' is a plain char assignment, not a widening char-to-int conversion; same class as nt_password_hash.c:32.",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/drivers/driver_common.c,281,FP,"triggers points to os_zalloc'd heap memory, not automatic/local storage; DCL30-C heap-vs-stack confusion FP class (comeback_token.c precedent).",hostap_full_audit_0.4.169,high
+PRE00-C,hostap,src/drivers/driver_common.c,287,FP,"E2S/CHECK_TRIGGER/DF2S macro param is only token-pasted/stringized/field-name-substituted, never runtime-evaluated; PRE00/PRE05/PRE12 X-macro category-error FP class.",hostap_full_audit_0.4.169,high
+PRE05-C,hostap,src/drivers/driver_common.c,287,FP,"E2S/CHECK_TRIGGER/DF2S macro param is only token-pasted/stringized/field-name-substituted, never runtime-evaluated; PRE00/PRE05/PRE12 X-macro category-error FP class.",hostap_full_audit_0.4.169,high
+PRE12-C,hostap,src/drivers/driver_common.c,287,FP,"E2S/CHECK_TRIGGER/DF2S macro param is only token-pasted/stringized/field-name-substituted, never runtime-evaluated; PRE00/PRE05/PRE12 X-macro category-error FP class.",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,289,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,290,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,291,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,292,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,293,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,294,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,295,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,296,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,297,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,298,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,299,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,300,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,301,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,302,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,303,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,304,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,305,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,306,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,307,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,308,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,309,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,310,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,311,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,312,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,313,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,314,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,315,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,316,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,317,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,318,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,319,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,320,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,321,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,322,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,323,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,324,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,325,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,326,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,327,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,328,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,329,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,330,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,331,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,332,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,333,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,334,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,335,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,336,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,337,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,338,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,339,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,340,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,341,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,342,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,343,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,344,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,345,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,346,FP,"X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,347,FP,DF2S(x) macro expands to a case-label; tree-sitter sees an opaque call before any real case label it can parse (X-macro pattern).,hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,348,FP,Same X-macro case-label generator FP as line 347 (DF2S).,hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,349,FP,Same X-macro case-label generator FP as line 347 (DF2S).,hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,350,FP,Same X-macro case-label generator FP as line 347 (DF2S).,hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,351,FP,Same X-macro case-label generator FP as line 347 (DF2S).,hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,352,FP,Same X-macro case-label generator FP as line 347 (DF2S).,hostap_full_audit_0.4.169,high
+PRE00-C,hostap,src/drivers/driver_common.c,361,FP,"DF2S(x) param only token-pasted (##) and stringized (#x), never runtime-evaluated; matches documented X-macro case-generator FP bundle.",hostap_full_audit_0.4.169,high
+PRE05-C,hostap,src/drivers/driver_common.c,361,FP,"## is the intentional mechanism to build WPA_DRIVER_FLAGS2_x identifiers, not a parameter-expansion hazard; documented X-macro pattern.",hostap_full_audit_0.4.169,high
+PRE12-C,hostap,src/drivers/driver_common.c,361,FP,"x is only pasted/stringized at compile time, never evaluated multiple times as a runtime expression; documented X-macro pattern.",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,363,FP,"Same X-macro case-label generator FP as line 347 (DF2S, 2nd switch).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,364,FP,"Same X-macro case-label generator FP as line 347 (DF2S, 2nd switch).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,365,FP,"Same X-macro case-label generator FP as line 347 (DF2S, 2nd switch).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,366,FP,"Same X-macro case-label generator FP as line 347 (DF2S, 2nd switch).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,367,FP,"Same X-macro case-label generator FP as line 347 (DF2S, 2nd switch).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,368,FP,"Same X-macro case-label generator FP as line 347 (DF2S, 2nd switch).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,369,FP,"Same X-macro case-label generator FP as line 347 (DF2S, 2nd switch).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,370,FP,"Same X-macro case-label generator FP as line 347 (DF2S, 2nd switch).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,371,FP,"Same X-macro case-label generator FP as line 347 (DF2S, 2nd switch).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,372,FP,"Same X-macro case-label generator FP as line 347 (DF2S, 2nd switch).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,373,FP,"Same X-macro case-label generator FP as line 347 (DF2S, 2nd switch).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,374,FP,"Same X-macro case-label generator FP as line 347 (DF2S, 2nd switch).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,375,FP,"Same X-macro case-label generator FP as line 347 (DF2S, 2nd switch).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,376,FP,"Same X-macro case-label generator FP as line 347 (DF2S, 2nd switch).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,377,FP,"Same X-macro case-label generator FP as line 347 (DF2S, 2nd switch).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,378,FP,"Same X-macro case-label generator FP as line 347 (DF2S, 2nd switch).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,379,FP,"Same X-macro case-label generator FP as line 347 (DF2S, 2nd switch).",hostap_full_audit_0.4.169,high
+DCL41-C,hostap,src/drivers/driver_common.c,380,FP,"Same X-macro case-label generator FP as line 347 (DF2S, 2nd switch).",hostap_full_audit_0.4.169,high
+DCL15-C,hostap,wpa_supplicant/eapol_test.c,36,FP,wpa_drivers has extern decl in driver.h; needs external linkage,hostap_full_audit_0.4.169,high
+DCL19-C,hostap,wpa_supplicant/eapol_test.c,36,FP,same: extern-linked array can't be scope-reduced,hostap_full_audit_0.4.169,high
+ARR02-C,hostap,wpa_supplicant/eapol_test.c,36,FP,confirmed pattern: driver array size varies per CONFIG_DRIVER_*,hostap_full_audit_0.4.169,high
+API05-C,hostap,wpa_supplicant/eapol_test.c,93,FP,hostapd_logger_cb ctx: fixed hostapd_logger_cb_func typedef contract,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/eapol_test.c,93,FP,"same dispatch-contract callback, ctx pinned by typedef",hostap_full_audit_0.4.169,high
+API05-C,hostap,wpa_supplicant/eapol_test.c,94,FP,"addr param, same fixed callback typedef, API05 misapplied",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/eapol_test.c,105,TP,attr never modified in add_extra_attr; real const opportunity,hostap_full_audit_0.4.169,med
+ENV01-C,hostap,wpa_supplicant/eapol_test.c,110,FP,no getenv() anywhere in add_extra_attr; confirmed ENV01 misfire,hostap_full_audit_0.4.169,high
+MEM05-C,hostap,wpa_supplicant/eapol_test.c,110,FP,"buf is fixed macro-sized array, not a VLA",hostap_full_audit_0.4.169,high
+INT14-C,hostap,wpa_supplicant/eapol_test.c,126,FP,"len&1/len/2 is idiomatic hex-decode parity/halving, not confusing",hostap_full_audit_0.4.169,med
+EXP33-C,hostap,wpa_supplicant/eapol_test.c,131,FP,"buf is hexstr2bin's output arg (write target), not read",hostap_full_audit_0.4.169,high
+ERR07-C,hostap,wpa_supplicant/eapol_test.c,137,TP,"unchecked atoi() on -N attribute value, no validation at all",hostap_full_audit_0.4.169,med
+ERR34-C,hostap,wpa_supplicant/eapol_test.c,137,TP,"unchecked atoi() on -N attribute value, no validation at all",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,wpa_supplicant/eapol_test.c,156,TP,"attrs never modified; plain internal helper, real opportunity",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,wpa_supplicant/eapol_test.c,168,TP,"attrs never modified; plain internal helper, real opportunity",hostap_full_audit_0.4.169,med
+DCL30-C,hostap,wpa_supplicant/eapol_test.c,173,FP,"p points into heap-allocated list nodes, not local automatic storage",hostap_full_audit_0.4.169,high
+ENV01-C,hostap,wpa_supplicant/eapol_test.c,183,FP,no getenv() in ieee802_1x_encapsulate_radius,hostap_full_audit_0.4.169,high
+MEM05-C,hostap,wpa_supplicant/eapol_test.c,183,FP,"fixed macro-sized buffer, not a VLA",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,wpa_supplicant/eapol_test.c,223,FP,fail: label frees msg; goto does not leak (confirmed pattern),hostap_full_audit_0.4.169,high
+MEM31-C,hostap,wpa_supplicant/eapol_test.c,230,FP,fail: label frees msg; goto does not leak (confirmed pattern),hostap_full_audit_0.4.169,high
+MEM31-C,hostap,wpa_supplicant/eapol_test.c,237,FP,fail: label frees msg; goto does not leak (confirmed pattern),hostap_full_audit_0.4.169,high
+MEM31-C,hostap,wpa_supplicant/eapol_test.c,247,FP,fail: label frees msg; goto does not leak (confirmed pattern),hostap_full_audit_0.4.169,high
+MEM31-C,hostap,wpa_supplicant/eapol_test.c,256,FP,fail: label frees msg; goto does not leak (confirmed pattern),hostap_full_audit_0.4.169,high
+MEM31-C,hostap,wpa_supplicant/eapol_test.c,263,FP,fail: label frees msg; goto does not leak (confirmed pattern),hostap_full_audit_0.4.169,high
+MEM31-C,hostap,wpa_supplicant/eapol_test.c,270,FP,fail: label frees msg; goto does not leak (confirmed pattern),hostap_full_audit_0.4.169,high
+MEM31-C,hostap,wpa_supplicant/eapol_test.c,278,FP,fail: label frees msg; goto does not leak (confirmed pattern),hostap_full_audit_0.4.169,high
+MEM31-C,hostap,wpa_supplicant/eapol_test.c,286,FP,fail: label frees msg; goto does not leak (confirmed pattern),hostap_full_audit_0.4.169,high
+PRE32-C,hostap,wpa_supplicant/eapol_test.c,297,FP,no #ifdef anywhere in this printf's arguments,hostap_full_audit_0.4.169,high
+PRE32-C,hostap,wpa_supplicant/eapol_test.c,297,FP,no #ifdef anywhere in this printf's arguments,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,wpa_supplicant/eapol_test.c,299,FP,goto fail frees msg at the target label,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,wpa_supplicant/eapol_test.c,310,FP,radius_client_send() transfers msg ownership via radius_client_list_add on success,hostap_full_audit_0.4.169,high
+MSC07-C,hostap,wpa_supplicant/eapol_test.c,312,FP,"fail: label is reached via goto, not actually unreachable",hostap_full_audit_0.4.169,high
+API05-C,hostap,wpa_supplicant/eapol_test.c,317,FP,API05 misapplied to void* ctx callback param,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/eapol_test.c,317,FP,ctx is eapol_ctx.eapol_send fixed callback field,hostap_full_audit_0.4.169,high
+INT00-C,hostap,wpa_supplicant/eapol_test.c,320,FP,"explicit (unsigned long) cast to match %lu is the correct fix, not a violation",hostap_full_audit_0.4.169,med
+PRE32-C,hostap,wpa_supplicant/eapol_test.c,320,FP,no #ifdef in this printf's arguments,hostap_full_audit_0.4.169,high
+EXP33-C,hostap,wpa_supplicant/eapol_test.c,324,FP,eapol_test is a static global fully init'd by main() before this runtime callback fires,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,wpa_supplicant/eapol_test.c,330,FP,ctx is eapol_ctx.set_config_blob fixed callback field,hostap_full_audit_0.4.169,high
+DCL00-C,hostap,wpa_supplicant/eapol_test.c,333,TP,e never reassigned; real low-value const opportunity,hostap_full_audit_0.4.169,low
+DCL13-C,hostap,wpa_supplicant/eapol_test.c,339,FP,ctx is eapol_ctx.get_config_blob fixed callback field,hostap_full_audit_0.4.169,high
+DCL00-C,hostap,wpa_supplicant/eapol_test.c,341,TP,e never reassigned; real low-value const opportunity,hostap_full_audit_0.4.169,low
+DCL13-C,hostap,wpa_supplicant/eapol_test.c,346,FP,ctx is eapol_ctx.eapol_done_cb fixed callback field,hostap_full_audit_0.4.169,high
+DCL00-C,hostap,wpa_supplicant/eapol_test.c,348,TP,e never reassigned; real low-value const opportunity,hostap_full_audit_0.4.169,low
+DCL13-C,hostap,wpa_supplicant/eapol_test.c,356,FP,eloop_timeout_handler fixed typedef dispatch contract,hostap_full_audit_0.4.169,high
+MSC01-C,hostap,wpa_supplicant/eapol_test.c,378,FP,guard-clause if/else-if chain; default ret=1 already correct behavior,hostap_full_audit_0.4.169,high
+MSC01-C,hostap,wpa_supplicant/eapol_test.c,387,FP,guard-clause if/else-if chain; default ret=1 already correct behavior,hostap_full_audit_0.4.169,high
+MSC01-C,hostap,wpa_supplicant/eapol_test.c,389,FP,guard-clause if/else-if chain; default ret=1 already correct behavior,hostap_full_audit_0.4.169,high
+MSC01-C,hostap,wpa_supplicant/eapol_test.c,396,FP,mismatch/ok counters: no action needed when no_mppe_keys is set,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/eapol_test.c,425,FP,eapol param pinned by struct eapol_ctx.cb fixed callback typedef; also unused,hostap_full_audit_0.4.169,high
+CON32-C,hostap,wpa_supplicant/eapol_test.c,430,FP,eapol_test is single-threaded; no pthreads anywhere in this tool,hostap_full_audit_0.4.169,high
+POS49-C,hostap,wpa_supplicant/eapol_test.c,430,FP,eapol_test is single-threaded; no pthreads anywhere in this tool,hostap_full_audit_0.4.169,high
+CON32-C,hostap,wpa_supplicant/eapol_test.c,431,FP,eapol_test is single-threaded; no pthreads anywhere in this tool,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/eapol_test.c,443,FP,"FILE* f later passed to fprintf(), which requires non-const FILE*; won't compile const",hostap_full_audit_0.4.169,high
+EXP30-C,hostap,wpa_supplicant/eapol_test.c,448,FP,"wpabuf_head/wpabuf_len are pure read-only accessors, no side effects",hostap_full_audit_0.4.169,high
+PRE32-C,hostap,wpa_supplicant/eapol_test.c,451,FP,no #ifdef anywhere in this fprintf's arguments,hostap_full_audit_0.4.169,high
+PRE32-C,hostap,wpa_supplicant/eapol_test.c,451,FP,no #ifdef anywhere in this fprintf's arguments,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/eapol_test.c,458,FP,ctx is eapol_ctx.cert_cb fixed callback field,hostap_full_audit_0.4.169,high
+DCL00-C,hostap,wpa_supplicant/eapol_test.c,461,TP,e never reassigned; real low-value const opportunity,hostap_full_audit_0.4.169,low
+ARR00-C,hostap,wpa_supplicant/eapol_test.c,494,FP,"buf here is eap_param_needed's own heap alloc (line 481), freed only at line 498; sqc cites unrelated buf from a different function (line 774) as the alloc site",hostap_full_audit_0.4.169,high
+ARR30-C,hostap,wpa_supplicant/eapol_test.c,494,FP,same cross-function buf conflation; wrong allocation site/size attributed,hostap_full_audit_0.4.169,high
+ARR00-C,hostap,wpa_supplicant/eapol_test.c,496,FP,"buf here is eap_param_needed's own heap alloc (line 481), freed only at line 498; sqc cites unrelated buf from a different function (line 774) as the alloc site",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/eapol_test.c,505,FP,ctx/cert types pinned by struct eapol_ctx.cert_cb fixed callback field type,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/eapol_test.c,505,FP,ctx/cert types pinned by struct eapol_ctx.cert_cb fixed callback field type,hostap_full_audit_0.4.169,high
+DCL00-C,hostap,wpa_supplicant/eapol_test.c,508,TP,e never reassigned; real low-value const opportunity,hostap_full_audit_0.4.169,low
+EXP30-C,hostap,wpa_supplicant/eapol_test.c,522,FP,"wpabuf_head/wpabuf_len are pure read-only accessors, no side effects",hostap_full_audit_0.4.169,high
+API05-C,hostap,wpa_supplicant/eapol_test.c,542,FP,API05 misapplied to void* ctx + fixed callback contract,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/eapol_test.c,542,FP,ctx is eapol_ctx.set_anon_id fixed callback field,hostap_full_audit_0.4.169,high
+DCL00-C,hostap,wpa_supplicant/eapol_test.c,544,TP,e never reassigned; real low-value const opportunity,hostap_full_audit_0.4.169,low
+MEM10-C,hostap,wpa_supplicant/eapol_test.c,555,FP,MEM10-C fires on any plain NULL check; confirmed FP class,hostap_full_audit_0.4.169,high
+STR30-C,hostap,wpa_supplicant/eapol_test.c,556,FP,wpa_config_set's value param is already const char *; literal is safe,hostap_full_audit_0.4.169,high
+STR30-C,hostap,wpa_supplicant/eapol_test.c,556,FP,wpa_config_set's value param is already const char *; literal is safe,hostap_full_audit_0.4.169,high
+STR30-C,hostap,wpa_supplicant/eapol_test.c,564,FP,wpa_config_set's value param is already const char *; literal is safe,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/eapol_test.c,573,FP,ctx is wpa_sm_ctx.get_state fixed callback field,hostap_full_audit_0.4.169,high
+DCL00-C,hostap,wpa_supplicant/eapol_test.c,575,TP,e never reassigned; real low-value const opportunity,hostap_full_audit_0.4.169,low
+EXP33-C,hostap,wpa_supplicant/eapol_test.c,589,FP,"sizeof(*ptr) is a non-evaluated context, not a dereference",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,wpa_supplicant/eapol_test.c,622,FP,"sizeof(*ptr) is a non-evaluated context, not a dereference",hostap_full_audit_0.4.169,high
+POS49-C,hostap,wpa_supplicant/eapol_test.c,686,FP,"wpa_s->ctrl_iface is struct ctrl_iface_priv*, not eapol_test_data's bitfield; name conflation across distinct structs",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/eapol_test.c,702,FP,eloop_ctx/timeout_ctx pinned by eloop_timeout_handler fixed typedef,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/eapol_test.c,702,FP,eloop_ctx/timeout_ctx pinned by eloop_timeout_handler fixed typedef,hostap_full_audit_0.4.169,high
+EXP33-C,hostap,wpa_supplicant/eapol_test.c,709,FP,"hdr=(cast)buf is a cast/address-of, not a read of buf's contents",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/eapol_test.c,728,FP,timeout_ctx pinned by eloop_timeout_handler fixed typedef,hostap_full_audit_0.4.169,high
+EXP33-C,hostap,wpa_supplicant/eapol_test.c,794,FP,"sizeof(*hdr)/sizeof(*dot1x) non-evaluated context, not a dereference",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,wpa_supplicant/eapol_test.c,843,FP,"sizeof(*hdr)/sizeof(*dot1x) non-evaluated context, not a dereference",hostap_full_audit_0.4.169,high
+EXP30-C,hostap,wpa_supplicant/eapol_test.c,848,FP,"wpabuf_head/wpabuf_len are pure read-only accessors, no side effects",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,wpa_supplicant/eapol_test.c,903,FP,"keys reassigned at line 872 immediately after first free; later free targets the new value, not a double free",hostap_full_audit_0.4.169,high
+API05-C,hostap,wpa_supplicant/eapol_test.c,920,FP,data pinned by RadiusRxResult handler fixed typedef; API05 misapplied to void*,hostap_full_audit_0.4.169,high
+EXP34-C,hostap,wpa_supplicant/eapol_test.c,927,FP,radius_msg_get_hdr() always returns a valid pointer for a successfully-parsed msg,hostap_full_audit_0.4.169,med
+MSC01-C,hostap,wpa_supplicant/eapol_test.c,933,FP,guard-clause if/else-if; falling through after either branch is intentional,hostap_full_audit_0.4.169,high
+CON32-C,hostap,wpa_supplicant/eapol_test.c,969,FP,single-threaded test tool,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/eapol_test.c,977,FP,priv pinned by wpa_driver_ops.get_ssid fixed vtable field type,hostap_full_audit_0.4.169,high
+CON32-C,hostap,wpa_supplicant/eapol_test.c,988,FP,single-threaded test tool,hostap_full_audit_0.4.169,high
+CON32-C,hostap,wpa_supplicant/eapol_test.c,988,FP,single-threaded test tool,hostap_full_audit_0.4.169,high
+CON32-C,hostap,wpa_supplicant/eapol_test.c,991,FP,single-threaded test tool,hostap_full_audit_0.4.169,high
+POS49-C,hostap,wpa_supplicant/eapol_test.c,991,FP,single-threaded test tool,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/eapol_test.c,1000,FP,priv pinned by wpa_driver_ops.get_capa fixed vtable field type,hostap_full_audit_0.4.169,high
+ARR01-C,hostap,wpa_supplicant/eapol_test.c,1002,FP,sizeof(*capa) is the correct idiom for a struct pointer param,hostap_full_audit_0.4.169,high
+CON03-C,hostap,wpa_supplicant/eapol_test.c,1008,FP,single-threaded test tool,hostap_full_audit_0.4.169,high
+DCL15-C,hostap,wpa_supplicant/eapol_test.c,1008,TP,"eapol_test_drv_ops only referenced within this file, no extern elsewhere",hostap_full_audit_0.4.169,med
+DCL19-C,hostap,wpa_supplicant/eapol_test.c,1008,FP,"used across two functions; can't be function-scoped, DCL15 static already the fix",hostap_full_audit_0.4.169,high
+ARR01-C,hostap,wpa_supplicant/eapol_test.c,1031,FP,"sizeof(wpa_s->ifname) sizes the array member itself, correct idiom",hostap_full_audit_0.4.169,high
+ERR00-C,hostap,wpa_supplicant/eapol_test.c,1042,TP,sscanf() return value genuinely never checked,hostap_full_audit_0.4.169,med
+ERR33-C,hostap,wpa_supplicant/eapol_test.c,1042,TP,sscanf() return value genuinely never checked,hostap_full_audit_0.4.169,med
+ERR34-C,hostap,wpa_supplicant/eapol_test.c,1042,TP,sscanf() return value genuinely never checked,hostap_full_audit_0.4.169,med
+FIO47-C,hostap,wpa_supplicant/eapol_test.c,1042,FP,confirmed rule bug: FIO47 misidentifies scanf-family pointer args as type mismatch,hostap_full_audit_0.4.169,high
+INT05-C,hostap,wpa_supplicant/eapol_test.c,1042,TP,"per confirmed precedent: real if low-severity, sscanf errno/ERANGE not reliably signaled",hostap_full_audit_0.4.169,low
+MSC24-C,hostap,wpa_supplicant/eapol_test.c,1042,FP,"sscanf_s is C11 Annex K, unavailable on glibc/Linux; not a real substitute",hostap_full_audit_0.4.169,high
+EXP05-C,hostap,wpa_supplicant/eapol_test.c,1042,FP,"no cast present at all in sscanf(authsrv, ...) call",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,wpa_supplicant/eapol_test.c,1042,TP,a[] may be partially uninitialized since sscanf's return is never checked,hostap_full_audit_0.4.169,med
+ARR37-C,hostap,wpa_supplicant/eapol_test.c,1044,FP,"pos stays within the bounds of the single addr.u.v4 member, doesn't cross sibling struct members",hostap_full_audit_0.4.169,med
+ARR37-C,hostap,wpa_supplicant/eapol_test.c,1045,FP,"pos stays within the bounds of the single addr.u.v4 member, doesn't cross sibling struct members",hostap_full_audit_0.4.169,med
+ARR37-C,hostap,wpa_supplicant/eapol_test.c,1046,FP,"pos stays within the bounds of the single addr.u.v4 member, doesn't cross sibling struct members",hostap_full_audit_0.4.169,med
+ARR37-C,hostap,wpa_supplicant/eapol_test.c,1047,FP,"pos stays within the bounds of the single addr.u.v4 member, doesn't cross sibling struct members",hostap_full_audit_0.4.169,med
+DCL03-C,hostap,wpa_supplicant/eapol_test.c,1054,FP,assert(0) is inside a runtime-conditional error branch; static_assert(0) would always fail to compile,hostap_full_audit_0.4.169,high
+DCL03-C,hostap,wpa_supplicant/eapol_test.c,1079,FP,assert(0) is inside a runtime-conditional error branch; static_assert(0) would always fail to compile,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/eapol_test.c,1092,TP,e never reassigned in scard_test; real low-value const opportunity,hostap_full_audit_0.4.169,low
+DCL37-C,hostap,wpa_supplicant/eapol_test.c,1097,FP,"_rand is a block-scope local, not file-scope",hostap_full_audit_0.4.169,high
+ARR32-C,hostap,wpa_supplicant/eapol_test.c,1103,FP,"num_triplets is a #define macro (5), not a variable; not a VLA",hostap_full_audit_0.4.169,high
+ARR32-C,hostap,wpa_supplicant/eapol_test.c,1104,FP,"num_triplets is a #define macro (5), not a variable; not a VLA",hostap_full_audit_0.4.169,high
+ARR32-C,hostap,wpa_supplicant/eapol_test.c,1105,FP,"num_triplets is a #define macro (5), not a variable; not a VLA",hostap_full_audit_0.4.169,high
+ENV01-C,hostap,wpa_supplicant/eapol_test.c,1118,FP,no getenv() in scard_test,hostap_full_audit_0.4.169,high
+ARR00-C,hostap,wpa_supplicant/eapol_test.c,1149,FP,"num_triplets is a macro constant, not an uninitialized variable",hostap_full_audit_0.4.169,high
+ARR00-C,hostap,wpa_supplicant/eapol_test.c,1150,FP,rand_ populated via scard_gsm_auth() output params in the preceding loop,hostap_full_audit_0.4.169,high
+ARR00-C,hostap,wpa_supplicant/eapol_test.c,1150,FP,rand_ populated via scard_gsm_auth() output params in the preceding loop,hostap_full_audit_0.4.169,high
+ARR00-C,hostap,wpa_supplicant/eapol_test.c,1151,FP,rand_ populated via scard_gsm_auth() output params in the preceding loop,hostap_full_audit_0.4.169,high
+ARR00-C,hostap,wpa_supplicant/eapol_test.c,1151,FP,sres_ populated via scard_gsm_auth() output param in preceding loop,hostap_full_audit_0.4.169,high
+ARR00-C,hostap,wpa_supplicant/eapol_test.c,1151,FP,kc_ populated via scard_gsm_auth() output param in preceding loop,hostap_full_audit_0.4.169,high
+ARR00-C,hostap,wpa_supplicant/eapol_test.c,1155,FP,"num_triplets is a macro constant, not an uninitialized variable",hostap_full_audit_0.4.169,high
+ARR00-C,hostap,wpa_supplicant/eapol_test.c,1161,FP,rand_ populated via scard_gsm_auth() output params in the preceding loop,hostap_full_audit_0.4.169,high
+ARR00-C,hostap,wpa_supplicant/eapol_test.c,1164,FP,sres_ populated via scard_gsm_auth() output param in preceding loop,hostap_full_audit_0.4.169,high
+ARR00-C,hostap,wpa_supplicant/eapol_test.c,1167,FP,kc_ populated via scard_gsm_auth() output param in preceding loop,hostap_full_audit_0.4.169,high
+MSC09-C,hostap,wpa_supplicant/eapol_test.c,1175,FP,"raw hex-escaped byte-pattern AKA test vector, not human-readable text",hostap_full_audit_0.4.169,high
+MSC09-C,hostap,wpa_supplicant/eapol_test.c,1176,FP,"raw hex-escaped byte-pattern AKA test vector, not human-readable text",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/eapol_test.c,1201,TP,e never reassigned in scard_get_triplets,hostap_full_audit_0.4.169,low
+DCL13-C,hostap,wpa_supplicant/eapol_test.c,1201,TP,argv only read (os_strcmp/atoi/const-char* param); could be const-qualified,hostap_full_audit_0.4.169,low
+DCL37-C,hostap,wpa_supplicant/eapol_test.c,1206,FP,"_rand is a block-scope local, not file-scope",hostap_full_audit_0.4.169,high
+ERR07-C,hostap,wpa_supplicant/eapol_test.c,1213,FP,atoi() result checked <=0 (rejects 0); range-checked-atoi confirmed FP class,hostap_full_audit_0.4.169,high
+ERR34-C,hostap,wpa_supplicant/eapol_test.c,1213,FP,atoi() result checked <=0 (rejects 0); range-checked-atoi confirmed FP class,hostap_full_audit_0.4.169,high
+PRE32-C,hostap,wpa_supplicant/eapol_test.c,1276,TP,first usage() printf genuinely has #ifdef CONFIG_RADIUS_TLS/#endif spanning its args,hostap_full_audit_0.4.169,med
+FIO30-C,hostap,wpa_supplicant/eapol_test.c,1276,FP,"format string is a hardcoded literal concatenation, not user input",hostap_full_audit_0.4.169,high
+PRE32-C,hostap,wpa_supplicant/eapol_test.c,1276,TP,"same call, genuinely embedded preprocessor directive in the argument list",hostap_full_audit_0.4.169,med
+PRE32-C,hostap,wpa_supplicant/eapol_test.c,1288,TP,"same call, genuinely embedded preprocessor directive in the argument list",hostap_full_audit_0.4.169,med
+PRE32-C,hostap,wpa_supplicant/eapol_test.c,1292,FP,second (options:) printf has no #ifdef anywhere in its arguments,hostap_full_audit_0.4.169,high
+PRE32-C,hostap,wpa_supplicant/eapol_test.c,1292,FP,second (options:) printf has no #ifdef anywhere in its arguments,hostap_full_audit_0.4.169,high
+STR05-C,hostap,wpa_supplicant/eapol_test.c,1337,TP,"as_addr holds a string literal in non-const char*; real, if pedantic",hostap_full_audit_0.4.169,low
+MEM03-C,hostap,wpa_supplicant/eapol_test.c,1339,FP,"as_secret aliases a literal or argv-owned memory, not an owned buffer safe to zero",hostap_full_audit_0.4.169,high
+MSC17-C,hostap,wpa_supplicant/eapol_test.c,1385,FP,"case 'i' has an explicit break; next label sits behind #ifdef, confirmed MSC17 ifdef-blind misfire",hostap_full_audit_0.4.169,high
+ERR00-C,hostap,wpa_supplicant/eapol_test.c,1413,TP,fclose() return value genuinely never checked,hostap_full_audit_0.4.169,med
+ERR33-C,hostap,wpa_supplicant/eapol_test.c,1413,TP,fclose() return value genuinely never checked,hostap_full_audit_0.4.169,med
+ERR33-C,hostap,wpa_supplicant/eapol_test.c,1414,FP,fopen() result IS checked on the very next line (1415),hostap_full_audit_0.4.169,high
+ERR00-C,hostap,wpa_supplicant/eapol_test.c,1414,FP,fopen() result IS checked on the very next line (1415),hostap_full_audit_0.4.169,high
+FIO03-C,hostap,wpa_supplicant/eapol_test.c,1414,TP,"fopen(optarg,""w"") no O_EXCL-equivalent; matches confirmed data-file-rewrite genuine-low-sev TP class",hostap_full_audit_0.4.169,low
+FIO06-C,hostap,wpa_supplicant/eapol_test.c,1414,TP,"fopen ""w"" doesn't set explicit perms; same precedent class as FIO03-C sibling",hostap_full_audit_0.4.169,low
+WIN03-C,hostap,wpa_supplicant/eapol_test.c,1414,TP,"file has active CONFIG_NATIVE_WINDOWS branch (:1037), unlike never-built-for-Windows FP precedent; literal violation",hostap_full_audit_0.4.169,low
+PRE32-C,hostap,wpa_supplicant/eapol_test.c,1416,FP,"plain multi-line printf string literal, zero preprocessor tokens; confirmed phantom-directive FP class",hostap_full_audit_0.4.169,high
+ERR07-C,hostap,wpa_supplicant/eapol_test.c,1422,TP,"as_port=atoi(optarg) only clamps negative-to-default, no real range/format validation; matches ctrl_iface atoi TP precedent",hostap_full_audit_0.4.169,med
+ERR34-C,hostap,wpa_supplicant/eapol_test.c,1422,TP,"same as ERR07-C sibling, unchecked malformed input",hostap_full_audit_0.4.169,med
+ERR07-C,hostap,wpa_supplicant/eapol_test.c,1428,TP,eapol_test_num_reauths=atoi(optarg) never validated; CLI-arg atoi TP precedent,hostap_full_audit_0.4.169,med
+ERR34-C,hostap,wpa_supplicant/eapol_test.c,1428,TP,same as ERR07-C sibling,hostap_full_audit_0.4.169,med
+ERR07-C,hostap,wpa_supplicant/eapol_test.c,1440,TP,timeout=atoi(optarg) never validated; CLI-arg atoi TP precedent,hostap_full_audit_0.4.169,med
+ERR34-C,hostap,wpa_supplicant/eapol_test.c,1440,TP,same as ERR07-C sibling,hostap_full_audit_0.4.169,med
+POS49-C,hostap,wpa_supplicant/eapol_test.c,1444,FP,zero pthread usage in file/wpa_supplicant core; confirmed CON32-C/POS49-C single-threaded FP class,hostap_full_audit_0.4.169,high
+EXP33-C,hostap,wpa_supplicant/eapol_test.c,1463,FP,p1=os_zalloc(sizeof(*p1)) - sizeof(*ptr) is not a dereference; confirmed EXP33-C misfire class,hostap_full_audit_0.4.169,high
+ERR07-C,hostap,wpa_supplicant/eapol_test.c,1472,TP,p->type=atoi(optarg) never validated; CLI-arg atoi TP precedent,hostap_full_audit_0.4.169,med
+ERR34-C,hostap,wpa_supplicant/eapol_test.c,1472,TP,same as ERR07-C sibling,hostap_full_audit_0.4.169,med
+PRE32-C,hostap,wpa_supplicant/eapol_test.c,1482,FP,"concatenated 2-line printf string literal, zero preprocessor tokens; phantom-directive FP class",hostap_full_audit_0.4.169,high
+PRE32-C,hostap,wpa_supplicant/eapol_test.c,1482,FP,"duplicate finding same line/message, same phantom-directive FP class",hostap_full_audit_0.4.169,high
+DCL11-C,hostap,wpa_supplicant/eapol_test.c,1540,TP,"conf defaults NULL (:1344), only set via -c; if ctrl_iface set and -c omitted + config alloc fails, printf(""%s"",conf) passes NULL - genuine edge-case UB",hostap_full_audit_0.4.169,low
+EXP34-C,hostap,wpa_supplicant/eapol_test.c,1554,FP,wpa_init_conf explicitly checks 'if (ca_cert)' before deref (:1061) - message's 'does not check for NULL' claim is factually false,hostap_full_audit_0.4.169,high
+EXP34-C,hostap,wpa_supplicant/eapol_test.c,1554,FP,wpa_init_conf checks 'if (client_cert)' before deref (:1063); message factually false,hostap_full_audit_0.4.169,high
+EXP34-C,hostap,wpa_supplicant/eapol_test.c,1554,FP,wpa_init_conf checks 'if (private_key)' before deref (:1065); message factually false,hostap_full_audit_0.4.169,high
+EXP34-C,hostap,wpa_supplicant/eapol_test.c,1554,FP,wpa_init_conf checks 'if (private_key_passwd)' before deref (:1067); message factually false,hostap_full_audit_0.4.169,high
+POS49-C,hostap,wpa_supplicant/eapol_test.c,1556,FP,same no-pthread single-threaded FP class as :1444,hostap_full_audit_0.4.169,high
+PRE32-C,hostap,wpa_supplicant/eapol_test.c,1558,FP,"multi-line concatenated printf string literal, zero preprocessor tokens; phantom-directive FP class",hostap_full_audit_0.4.169,high
+PRE32-C,hostap,wpa_supplicant/eapol_test.c,1558,FP,"duplicate finding same site, same phantom-directive FP class",hostap_full_audit_0.4.169,high
+ERR00-C,hostap,wpa_supplicant/eapol_test.c,1615,TP,"fclose on write-stream (opened ""w"" via -o) ignored; write-stream-fclose-ignored genuine-TP precedent (vs read-stream FP)",hostap_full_audit_0.4.169,low
+ERR33-C,hostap,wpa_supplicant/eapol_test.c,1615,TP,same write-stream fclose-ignored TP as ERR00-C sibling,hostap_full_audit_0.4.169,low
+PRE32-C,hostap,wpa_supplicant/eapol_test.c,1617,FP,"plain multi-line printf string literal, zero preprocessor tokens; phantom-directive FP class",hostap_full_audit_0.4.169,high
+CON03-C,hostap,src/crypto/tls_wolfssl.c,43,FP,No-pthread eloop-only codebase; static tls_ref_count/tls_global/counter class (categorical_patterns.md),hostap_full_audit_0.4.169,high
+CON03-C,hostap,src/crypto/tls_wolfssl.c,72,FP,No-pthread eloop-only codebase; static tls_ref_count/tls_global/counter class (categorical_patterns.md),hostap_full_audit_0.4.169,high
+API01-C,hostap,src/crypto/tls_wolfssl.c,91,FP,Struct-layout API01-C categorical FP; client/server_random written bounded via sizeof(field),hostap_full_audit_0.4.169,high
+API01-C,hostap,src/crypto/tls_wolfssl.c,92,FP,Struct-layout API01-C categorical FP; client/server_random written bounded via sizeof(field),hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,161,FP,Fixed wolfSSL I/O/session/OCSP callback prototype; const-qualifying breaks registration,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,186,FP,Fixed wolfSSL I/O/session/OCSP callback prototype; const-qualifying breaks registration,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,207,FP,Fixed wolfSSL I/O/session/OCSP callback prototype; const-qualifying breaks registration,hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/crypto/tls_wolfssl.c,312,FP,Guard-clause/default-no-op shape; missing branch intentionally means no state change,hostap_full_audit_0.4.169,med
+INT08-C,hostap,src/crypto/tls_wolfssl.c,376,FP,ecc_key_sz only ever assigned small compile-time literals (128/256/384); /8 cannot overflow short,hostap_full_audit_0.4.169,high
+INT08-C,hostap,src/crypto/tls_wolfssl.c,378,FP,ecc_key_sz only ever assigned small compile-time literals (128/256/384); /8 cannot overflow short,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/crypto/tls_wolfssl.c,408,FP,Ownership persists at module scope (tls_global) or is freed via tls_deinit/tls_connection_deinit later,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/crypto/tls_wolfssl.c,408,FP,Ownership persists at module scope (tls_global) or is freed via tls_deinit/tls_connection_deinit later,hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/crypto/tls_wolfssl.c,413,FP,"Local pointer variable references heap storage (os_zalloc/wolfSSL_CTX_new/wpabuf_alloc), not automatic storage",hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/crypto/tls_wolfssl.c,413,FP,"context is heap-allocated (tls_context_new/os_zalloc), not a stack pointer escape",hostap_full_audit_0.4.169,high
+DCL31-C,hostap,src/crypto/tls_wolfssl.c,425,FP,wolfSSL library function declared in wolfssl/ssl.h; DCL31-C system-header class,hostap_full_audit_0.4.169,high
+MSC13-C,hostap,src/crypto/tls_wolfssl.c,432,FP,"tls_global is a module static consumed by later tls_init/tls_deinit calls, not dead",hostap_full_audit_0.4.169,high
+DCL31-C,hostap,src/crypto/tls_wolfssl.c,436,FP,wolfSSL library function declared in wolfssl/ssl.h; DCL31-C system-header class,hostap_full_audit_0.4.169,high
+DCL31-C,hostap,src/crypto/tls_wolfssl.c,437,FP,wolfSSL library function declared in wolfssl/ssl.h; DCL31-C system-header class,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/crypto/tls_wolfssl.c,459,FP,Ownership persists at module scope (tls_global) or is freed via tls_deinit/tls_connection_deinit later,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/crypto/tls_wolfssl.c,459,FP,Ownership persists at module scope (tls_global) or is freed via tls_deinit/tls_connection_deinit later,hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/crypto/tls_wolfssl.c,463,FP,"Local pointer variable references heap storage (os_zalloc/wolfSSL_CTX_new/wpabuf_alloc), not automatic storage",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/crypto/tls_wolfssl.c,463,FP,Ownership persists at module scope (tls_global) or is freed via tls_deinit/tls_connection_deinit later,hostap_full_audit_0.4.169,high
+EXP34-C,hostap,src/crypto/tls_wolfssl.c,481,FP,tls_context_free has its own internal `if (context)` NULL guard,hostap_full_audit_0.4.169,high
+MSC13-C,hostap,src/crypto/tls_wolfssl.c,482,FP,"tls_global is a module static consumed by later tls_init/tls_deinit calls, not dead",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,487,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/crypto/tls_wolfssl.c,512,FP,"conn is being assigned via os_zalloc on this line, not dereferenced; NULL-checked before first deref",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/crypto/tls_wolfssl.c,515,FP,Ownership persists at module scope (tls_global) or is freed via tls_deinit/tls_connection_deinit later,hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/crypto/tls_wolfssl.c,532,FP,"Local pointer variable references heap storage (os_zalloc/wolfSSL_CTX_new/wpabuf_alloc), not automatic storage",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/crypto/tls_wolfssl.c,532,FP,Ownership persists at module scope (tls_global) or is freed via tls_deinit/tls_connection_deinit later,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,536,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/crypto/tls_wolfssl.c,557,FP,Body is `return conn ? ... : 0;` -- ternary NULL guard literally present; factually wrong finding,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,557,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,557,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,563,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,564,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,571,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,571,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,647,TP,"Static internal helper, param genuinely unmodified; not a pinned vtable/tls.h contract",hostap_full_audit_0.4.169,low
+API05-C,hostap,src/crypto/tls_wolfssl.c,648,FP,"Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP",hostap_full_audit_0.4.169,high
+API05-C,hostap,src/crypto/tls_wolfssl.c,703,FP,"Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,704,TP,"Static internal helper, param genuinely unmodified; not a pinned vtable/tls.h contract",hostap_full_audit_0.4.169,low
+API05-C,hostap,src/crypto/tls_wolfssl.c,705,FP,"Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP",hostap_full_audit_0.4.169,high
+API05-C,hostap,src/crypto/tls_wolfssl.c,706,FP,"Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP",hostap_full_audit_0.4.169,high
+MEM03-C,hostap,src/crypto/tls_wolfssl.c,711,TP,"passwd is an os_strdup'd private-key passphrase, os_free'd without zeroing; genuine (low-severity) sensitive-data-not-cleared gap",hostap_full_audit_0.4.169,low
+API05-C,hostap,src/crypto/tls_wolfssl.c,782,FP,"Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP",hostap_full_audit_0.4.169,high
+API05-C,hostap,src/crypto/tls_wolfssl.c,851,FP,"Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP",hostap_full_audit_0.4.169,high
+API05-C,hostap,src/crypto/tls_wolfssl.c,851,FP,"Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP",hostap_full_audit_0.4.169,high
+INT00-C,hostap,src/crypto/tls_wolfssl.c,874,FP,Guarded earlier in the same function: `if (match_len > len ...) return 0;` precedes the subtraction,hostap_full_audit_0.4.169,high
+API05-C,hostap,src/crypto/tls_wolfssl.c,882,FP,"Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP",hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/crypto/tls_wolfssl.c,902,FP,"Args are pure accessor calls (ASN1_STRING_data/length, wpabuf_head/len/mhead/size); no real side effects to unsequence",hostap_full_audit_0.4.169,high
+EXP20-C,hostap,src/crypto/tls_wolfssl.c,905,FP,domain_suffix_match is a local static function whose body provably returns only 0 or 1,hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/crypto/tls_wolfssl.c,926,FP,cn assigned then NULL-checked (`if (!cn) continue;`) immediately before any use,hostap_full_audit_0.4.169,high
+EXP20-C,hostap,src/crypto/tls_wolfssl.c,939,FP,domain_suffix_match is a local static function whose body provably returns only 0 or 1,hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/crypto/tls_wolfssl.c,1035,FP,Misattributes a pointer parameter/`\0` literal assignment as a scalar char-widening conversion; no such conversion exists at this line,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,1178,TP,"Static internal helper, param genuinely unmodified; not a pinned vtable/tls.h contract",hostap_full_audit_0.4.169,low
+MSC13-C,hostap,src/crypto/tls_wolfssl.c,1184,TP,cert=NULL immediately overwritten before any read; genuine harmless dead init,hostap_full_audit_0.4.169,low
+MSC01-C,hostap,src/crypto/tls_wolfssl.c,1225,FP,Guard-clause/default-no-op shape; missing branch intentionally means no state change,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,1234,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+EXP39-C,hostap,src/crypto/tls_wolfssl.c,1257,FP,Unclassified rule; defaulting per batch review,hostap_full_audit_0.4.169,low
+STR31-C,hostap,src/crypto/tls_wolfssl.c,1262,FP,"Misapplied to a 1-element pointer/size array (`const u8 *addr[1]`/`size_t len[1]`), not a char array",hostap_full_audit_0.4.169,high
+STR31-C,hostap,src/crypto/tls_wolfssl.c,1263,FP,"Misapplied to a 1-element pointer/size array (`const u8 *addr[1]`/`size_t len[1]`), not a char array",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/crypto/tls_wolfssl.c,1279,FP,pos assigned via os_malloc immediately after declaration; no use precedes the assignment,hostap_full_audit_0.4.169,high
+EXP05-C,hostap,src/crypto/tls_wolfssl.c,1283,FP,`ext` is declared plain `void *ext;` (not const-qualified); nothing is actually cast away,hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/crypto/tls_wolfssl.c,1311,FP,"Args are pure accessor calls (ASN1_STRING_data/length, wpabuf_head/len/mhead/size); no real side effects to unsequence",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/crypto/tls_wolfssl.c,1314,FP,Misattributes a pointer parameter/`\0` literal assignment as a scalar char-widening conversion; no such conversion exists at this line,hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/crypto/tls_wolfssl.c,1365,FP,Guard-clause/default-no-op shape; missing branch intentionally means no state change,hostap_full_audit_0.4.169,med
+STR31-C,hostap,src/crypto/tls_wolfssl.c,1404,FP,"Misapplied to a 1-element pointer/size array (`const u8 *addr[1]`/`size_t len[1]`), not a char array",hostap_full_audit_0.4.169,high
+STR31-C,hostap,src/crypto/tls_wolfssl.c,1405,FP,"Misapplied to a 1-element pointer/size array (`const u8 *addr[1]`/`size_t len[1]`), not a char array",hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/crypto/tls_wolfssl.c,1414,FP,Guard-clause/default-no-op shape; missing branch intentionally means no state change,hostap_full_audit_0.4.169,med
+MSC01-C,hostap,src/crypto/tls_wolfssl.c,1481,FP,Guard-clause/default-no-op shape; missing branch intentionally means no state change,hostap_full_audit_0.4.169,med
+API05-C,hostap,src/crypto/tls_wolfssl.c,1513,FP,"Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP",hostap_full_audit_0.4.169,high
+API05-C,hostap,src/crypto/tls_wolfssl.c,1514,FP,"Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP",hostap_full_audit_0.4.169,high
+API05-C,hostap,src/crypto/tls_wolfssl.c,1516,FP,"Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP",hostap_full_audit_0.4.169,high
+CON32-C,hostap,src/crypto/tls_wolfssl.c,1521,FP,"No pthread usage anywhere in file; single-threaded eloop model, bit-field access class",hostap_full_audit_0.4.169,high
+POS49-C,hostap,src/crypto/tls_wolfssl.c,1521,FP,"No pthread usage anywhere in file; single-threaded eloop model, bit-field access class",hostap_full_audit_0.4.169,high
+CON32-C,hostap,src/crypto/tls_wolfssl.c,1526,FP,"No pthread usage anywhere in file; single-threaded eloop model, bit-field access class",hostap_full_audit_0.4.169,high
+POS49-C,hostap,src/crypto/tls_wolfssl.c,1526,FP,"No pthread usage anywhere in file; single-threaded eloop model, bit-field access class",hostap_full_audit_0.4.169,high
+CON32-C,hostap,src/crypto/tls_wolfssl.c,1527,FP,"No pthread usage anywhere in file; single-threaded eloop model, bit-field access class",hostap_full_audit_0.4.169,high
+POS49-C,hostap,src/crypto/tls_wolfssl.c,1527,FP,"No pthread usage anywhere in file; single-threaded eloop model, bit-field access class",hostap_full_audit_0.4.169,high
+EXP34-C,hostap,src/crypto/tls_wolfssl.c,1531,FP,ca_cert guarded non-NULL by the same `ca_cert &&` short-circuit in the flagged expression,hostap_full_audit_0.4.169,high
+CON32-C,hostap,src/crypto/tls_wolfssl.c,1554,FP,"No pthread usage anywhere in file; single-threaded eloop model, bit-field access class",hostap_full_audit_0.4.169,high
+POS49-C,hostap,src/crypto/tls_wolfssl.c,1554,FP,"No pthread usage anywhere in file; single-threaded eloop model, bit-field access class",hostap_full_audit_0.4.169,high
+CON32-C,hostap,src/crypto/tls_wolfssl.c,1606,FP,"No pthread usage anywhere in file; single-threaded eloop model, bit-field access class",hostap_full_audit_0.4.169,high
+POS49-C,hostap,src/crypto/tls_wolfssl.c,1606,FP,"No pthread usage anywhere in file; single-threaded eloop model, bit-field access class",hostap_full_audit_0.4.169,high
+MEM03-C,hostap,src/crypto/tls_wolfssl.c,1779,TP,"passwd is an os_strdup'd private-key passphrase, os_free'd without zeroing; genuine (low-severity) sensitive-data-not-cleared gap",hostap_full_audit_0.4.169,low
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,1837,FP,Fixed wolfSSL I/O/session/OCSP callback prototype; const-qualifying breaks registration,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,1838,FP,Fixed wolfSSL I/O/session/OCSP callback prototype; const-qualifying breaks registration,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/crypto/tls_wolfssl.c,1864,FP,"Body is `os_free(response);`; os_free(NULL) is safe, no check needed",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,1864,FP,Fixed wolfSSL I/O/session/OCSP callback prototype; const-qualifying breaks registration,hostap_full_audit_0.4.169,high
+EXP34-C,hostap,src/crypto/tls_wolfssl.c,1882,FP,context is set by tls_init's ex_data contract for any valid tls_ctx reaching this internal API,hostap_full_audit_0.4.169,med
+API00-C,hostap,src/crypto/tls_wolfssl.c,2010,FP,Internal tls.h-contract API; NULL forwarded safely to callee or guaranteed valid by tls_init lifecycle,hostap_full_audit_0.4.169,med
+CON07-C,hostap,src/crypto/tls_wolfssl.c,2010,FP,"No pthread usage in file; single-threaded eloop model, static counter class",hostap_full_audit_0.4.169,high
+API05-C,hostap,src/crypto/tls_wolfssl.c,2010,FP,"Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP",hostap_full_audit_0.4.169,high
+CON03-C,hostap,src/crypto/tls_wolfssl.c,2014,FP,No-pthread eloop-only codebase; static tls_ref_count/tls_global/counter class (categorical_patterns.md),hostap_full_audit_0.4.169,high
+CON32-C,hostap,src/crypto/tls_wolfssl.c,2024,FP,"No pthread usage anywhere in file; single-threaded eloop model, bit-field access class",hostap_full_audit_0.4.169,high
+POS49-C,hostap,src/crypto/tls_wolfssl.c,2024,FP,"No pthread usage anywhere in file; single-threaded eloop model, bit-field access class",hostap_full_audit_0.4.169,high
+CON32-C,hostap,src/crypto/tls_wolfssl.c,2029,FP,"No pthread usage anywhere in file; single-threaded eloop model, bit-field access class",hostap_full_audit_0.4.169,high
+POS49-C,hostap,src/crypto/tls_wolfssl.c,2029,FP,"No pthread usage anywhere in file; single-threaded eloop model, bit-field access class",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2126,TP,"Static internal helper, param genuinely unmodified; not a pinned vtable/tls.h contract",hostap_full_audit_0.4.169,low
+EXP30-C,hostap,src/crypto/tls_wolfssl.c,2135,FP,"Args are pure accessor calls (ASN1_STRING_data/length, wpabuf_head/len/mhead/size); no real side effects to unsequence",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/crypto/tls_wolfssl.c,2188,FP,"Local pointer variable references heap storage (os_zalloc/wolfSSL_CTX_new/wpabuf_alloc), not automatic storage",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/crypto/tls_wolfssl.c,2192,FP,Internal tls.h-contract API; NULL forwarded safely to callee or guaranteed valid by tls_init lifecycle,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2192,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/crypto/tls_wolfssl.c,2201,FP,Internal tls.h-contract API; NULL forwarded safely to callee or guaranteed valid by tls_init lifecycle,hostap_full_audit_0.4.169,med
+API00-C,hostap,src/crypto/tls_wolfssl.c,2201,FP,Internal tls.h-contract API; NULL forwarded safely to callee or guaranteed valid by tls_init lifecycle,hostap_full_audit_0.4.169,med
+API00-C,hostap,src/crypto/tls_wolfssl.c,2201,FP,Internal tls.h-contract API; NULL forwarded safely to callee or guaranteed valid by tls_init lifecycle,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2201,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2210,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/crypto/tls_wolfssl.c,2223,FP,"Args are pure accessor calls (ASN1_STRING_data/length, wpabuf_head/len/mhead/size); no real side effects to unsequence",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2238,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/crypto/tls_wolfssl.c,2262,FP,"Args are pure accessor calls (ASN1_STRING_data/length, wpabuf_head/len/mhead/size); no real side effects to unsequence",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/crypto/tls_wolfssl.c,2272,FP,"Local pointer variable references heap storage (os_zalloc/wolfSSL_CTX_new/wpabuf_alloc), not automatic storage",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2276,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2276,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2282,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2282,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2283,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+ARR30-C,hostap,src/crypto/tls_wolfssl.c,2298,FP,Sentinel-terminated scan: tls.h documents cipher array as TLS_CIPHER_NONE-terminated,hostap_full_audit_0.4.169,high
+CON43-C,hostap,src/crypto/tls_wolfssl.c,2301,FP,"switch on a dereferenced local scan pointer in a single-threaded, no-pthread codebase",hostap_full_audit_0.4.169,high
+API05-C,hostap,src/crypto/tls_wolfssl.c,2351,FP,"Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2351,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2351,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+API05-C,hostap,src/crypto/tls_wolfssl.c,2352,FP,"Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2372,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2373,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2380,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2380,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2389,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2389,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2399,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2400,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/crypto/tls_wolfssl.c,2411,FP,Internal tls.h-contract API; NULL forwarded safely to callee or guaranteed valid by tls_init lifecycle,hostap_full_audit_0.4.169,med
+API05-C,hostap,src/crypto/tls_wolfssl.c,2411,FP,"Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP",hostap_full_audit_0.4.169,high
+API05-C,hostap,src/crypto/tls_wolfssl.c,2417,FP,"Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2417,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2417,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+API05-C,hostap,src/crypto/tls_wolfssl.c,2418,FP,"Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2434,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+ARR01-C,hostap,src/crypto/tls_wolfssl.c,2445,FP,sizeof(*keys) pointee-dereference idiom / sizeof on real fixed-size struct-member arrays (client_random/server_random),hostap_full_audit_0.4.169,high
+ARR01-C,hostap,src/crypto/tls_wolfssl.c,2448,FP,sizeof(*keys) pointee-dereference idiom / sizeof on real fixed-size struct-member arrays (client_random/server_random),hostap_full_audit_0.4.169,high
+ARR01-C,hostap,src/crypto/tls_wolfssl.c,2451,FP,sizeof(*keys) pointee-dereference idiom / sizeof on real fixed-size struct-member arrays (client_random/server_random),hostap_full_audit_0.4.169,high
+API05-C,hostap,src/crypto/tls_wolfssl.c,2457,FP,"Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2457,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2457,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+API05-C,hostap,src/crypto/tls_wolfssl.c,2458,FP,"Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/crypto/tls_wolfssl.c,2481,FP,Internal tls.h-contract API; NULL forwarded safely to callee or guaranteed valid by tls_init lifecycle,hostap_full_audit_0.4.169,med
+API05-C,hostap,src/crypto/tls_wolfssl.c,2481,FP,"Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2481,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2481,FP,tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class,hostap_full_audit_0.4.169,high
+MSC13-C,hostap,src/crypto/tls_wolfssl.c,2485,TP,ret=-1 init always overwritten before its one read; matches established dead-init TP class,hostap_full_audit_0.4.169,low
+DCL37-C,hostap,src/crypto/tls_wolfssl.c,2488,FP,block-scope local '_out' misclassified as file-scope; established DCL37-C block-scope misclassification FP class,hostap_full_audit_0.4.169,high
+MSC13-C,hostap,src/crypto/tls_wolfssl.c,2489,TP,"skip=0 unconditionally overwritten at line 2501 before any read; genuine dead-init class (harmless, low severity)",hostap_full_audit_0.4.169,low
+API05-C,hostap,src/crypto/tls_wolfssl.c,2542,FP,"void *ssl_ctx is an opaque unused context handle, not an array buffer; matches opaque-handle API05-C FP class",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2542,FP,"ssl_ctx/conn params of tls_connection_client_hello_ext, declared verbatim in tls.h (line 591) shared across all TLS backends; tls.h cross-backend contract FP class",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2542,FP,"same tls.h contract FP class as ssl_ctx above, applied to conn param",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2559,FP,tls_sess_sec_cb's 'arg' is pinned by wolfSSL_set_session_secret_cb's external callback signature; DCL13-C fixed-callback-contract FP class,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/crypto/tls_wolfssl.c,2594,FP,tls_connection_set_session_ticket_cb's conn is always a valid connection from internal call sites; API00-C internal-only-API FP default,hostap_full_audit_0.4.169,med
+MSC37-C,hostap,src/crypto/tls_wolfssl.c,2594,FP,every #if/#else branch returns (0/-1); MSC37-C preprocessor-branch-blind reach-end FP class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2594,FP,tls_ctx param of tls.h-declared tls_connection_set_session_ticket_cb (line 628); tls.h contract FP class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2619,FP,conn param of tls.h-declared tls_connection_set_success_data_resumed (line 652); tls.h contract FP class,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/crypto/tls_wolfssl.c,2626,FP,tls_connection_remove_session's conn always valid from internal call sites; API00-C internal-only-API FP default,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2626,FP,conn param of tls.h-declared tls_connection_remove_session; tls.h contract FP class,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/crypto/tls_wolfssl.c,2640,FP,tls_get_tls_unique's conn always valid from internal call sites; API00-C internal-only-API FP default,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2640,FP,conn param of tls.h-declared tls_get_tls_unique (line 670); tls.h contract FP class,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/crypto/tls_wolfssl.c,2659,FP,tls_connection_get_cipher_suite's conn always valid from internal call sites; API00-C internal-only-API FP default,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2659,FP,conn param of tls.h-declared tls_connection_get_cipher_suite (line 677); tls.h contract FP class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2665,FP,"conn param of tls.h-declared tls_connection_get_peer_subject; function even inline-guards conn, reinforcing FP",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/crypto/tls_wolfssl.c,2673,FP,tls_connection_set_success_data's conn always valid from internal call sites; API00-C internal-only-API FP default,hostap_full_audit_0.4.169,med
+DCL40-C,hostap,src/crypto/tls_wolfssl.c,2673,FP,tls_connection_set_success_data vs _resumed share exactly the first 31 significant chars; established DCL40-C 31-char not-practically-actionable convention,hostap_full_audit_0.4.169,high
+POS49-C,hostap,src/crypto/tls_wolfssl.c,2698,FP,"success_data bit-field access in single-threaded wpa_supplicant/hostapd eloop core, no pthread; established no-pthread CON32-C/POS49-C FP class",hostap_full_audit_0.4.169,high
+MSC07-C,hostap,src/crypto/tls_wolfssl.c,2701,FP,'fail:' goto-target label reached via goto before the preceding unconditional return; established MSC07-C goto-label-blindness FP class,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/crypto/tls_wolfssl.c,2707,FP,tls_connection_get_success_data's conn always valid from internal call sites; API00-C internal-only-API FP default,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2708,FP,conn param of tls.h-declared tls_connection_get_success_data (line 655); tls.h contract FP class,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/crypto/tls_wolfssl.c,2721,FP,conn param of tls.h-declared tls_connection_get_own_cert_used (line 691); tls.h contract FP class,hostap_full_audit_0.4.169,high
+DCL31-C,hostap,src/crypto/tls_wolfssl.c,2724,FP,"wolfSSL_get_certificate is declared in system header /usr/include/wolfssl/ssl.h, included at line 19; established DCL31-C external-library-header FP class",hostap_full_audit_0.4.169,high

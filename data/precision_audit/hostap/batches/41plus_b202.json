@@ -1,0 +1,832 @@
+{
+ "src/rsn_supp/tdls.c": [
+  {
+   "column": 1,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 14,
+   "message": "Header file 'ieee802_11_defs.h' has the same first 8 characters (case-insensitive) as 'ieee802_11_common.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_defs.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 62,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct wpa_tdls_ftie {\n\tu8 ie_type; /* FTIE */\n\tu8 ie_len;\n\tu8 mic_ctrl[2];\n\tu8 mic[TDLS_MIC_LEN];\n\tu8 Anonce[WPA_NONCE_LEN]; /* Responder Nonce in TDLS */\n\tu8 Snonce[WPA_NONCE_LEN]; /* Initiator Nonce in TDLS */\n\t/* followed by optional elements */\n}' and 'struct wpa_tdls_timeoutie {\n\tu8 ie_type; /* Timeout IE */\n\tu8 ie_len;\n\tu8 interval_type;\n\tu8 value[TDLS_TIMEOUT_LEN];\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 69,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct wpa_tdls_ftie {\n\tu8 ie_type; /* FTIE */\n\tu8 ie_len;\n\tu8 mic_ctrl[2];\n\tu8 mic[TDLS_MIC_LEN];\n\tu8 Anonce[WPA_NONCE_LEN]; /* Responder Nonce in TDLS */\n\tu8 Snonce[WPA_NONCE_LEN]; /* Initiator Nonce in TDLS */\n\t/* followed by optional elements */\n}' and 'struct wpa_tdls_lnkid {\n\tu8 ie_type; /* Link Identifier IE */\n\tu8 ie_len;\n\tu8 bssid[ETH_ALEN];\n\tu8 init_sta[ETH_ALEN];\n\tu8 resp_sta[ETH_ALEN];\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 78,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct wpa_tdls_ftie {\n\tu8 ie_type; /* FTIE */\n\tu8 ie_len;\n\tu8 mic_ctrl[2];\n\tu8 mic[TDLS_MIC_LEN];\n\tu8 Anonce[WPA_NONCE_LEN]; /* Responder Nonce in TDLS */\n\tu8 Snonce[WPA_NONCE_LEN]; /* Initiator Nonce in TDLS */\n\t/* followed by optional elements */\n}' and 'struct wpa_tdls_frame {\n\tu8 payloadtype; /* IEEE80211_TDLS_RFTYPE */\n\tu8 category; /* Category */\n\tu8 action; /* Action (enum tdls_frame_type) */\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 57,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 169,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 47,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 177,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 69,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 195,
+   "message": "Pointer parameter 'peer' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *peer'"
+  },
+  {
+   "column": 25,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 333,
+   "message": "Floating-point division without error checking (consider using feclearexcept/fetestexcept)",
+   "rule_id": "FLP03-C",
+   "severity": "Low",
+   "suggestion": "Use feclearexcept(FE_ALL_EXCEPT) before and fetestexcept(FE_ALL_EXCEPT) after floating-point operations"
+  },
+  {
+   "column": 26,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 389,
+   "message": "Floating-point division without error checking (consider using feclearexcept/fetestexcept)",
+   "rule_id": "FLP03-C",
+   "severity": "Low",
+   "suggestion": "Use feclearexcept(FE_ALL_EXCEPT) before and fetestexcept(FE_ALL_EXCEPT) after floating-point operations"
+  },
+  {
+   "column": 2,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 434,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 25,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 471,
+   "message": "sizeof applied to pointer/array parameter 'peer' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(peer->tpk)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 19,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 473,
+   "message": "sizeof applied to pointer/array parameter 'peer' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(peer->tpk.kck)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 18,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 475,
+   "message": "sizeof applied to pointer/array parameter 'peer' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(peer->tpk.tk)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 24,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 499,
+   "message": "File-scope identifier '_ftie' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 31,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 500,
+   "message": "File-scope identifier '_lnkid' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 24,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 562,
+   "message": "File-scope identifier '_ftie' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 5,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 566,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 8,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 569,
+   "message": "Scaled integer arithmetic with pointer: '2 + lnkid[1] + sizeof(rcode) + sizeof(dtoken) +\n\t\tsizeof(trans_seq)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 8,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 569,
+   "message": "Scaled integer arithmetic with pointer: '2 + lnkid[1] + sizeof(rcode) + sizeof(dtoken)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 8,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 569,
+   "message": "Scaled integer arithmetic with pointer: '2 + lnkid[1] + sizeof(rcode)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 29,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 605,
+   "message": "Pointer parameter 'peer' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *peer'"
+  },
+  {
+   "column": 59,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 635,
+   "message": "Pointer parameter 'peer' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *peer'"
+  },
+  {
+   "column": 2,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 722,
+   "message": "Bit-field 'reconfig_key' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 27,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 749,
+   "message": "sizeof applied to pointer/array parameter 'peer' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(peer->tpk)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 69,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 764,
+   "message": "Pointer parameter 'peer' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *peer'"
+  },
+  {
+   "column": 19,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 821,
+   "message": "Dereference of uninitialized pointer 'ftie'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ftie' before dereferencing"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 913,
+   "message": "Function 'wpa_tdls_disable_unreachable_link' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 53,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 946,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 971,
+   "message": "Value assigned to 'peer' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 10,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 1000,
+   "message": "Unsigned integer subtraction 'len - (pos - buf)' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 48,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 1021,
+   "message": "Dereference of uninitialized pointer 'ftie'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ftie' before dereferencing"
+  },
+  {
+   "column": 4,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 1080,
+   "message": "Function returns pointer to local variable 'peer' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 1096,
+   "message": "Function returns pointer to local variable 'peer' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 13,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 1175,
+   "message": "Signed integer subtraction '(pos - peer->rsnie_i) - 2' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b < 0 && a > INT_MAX + b) || (b > 0 && a < INT_MIN + b)) { /* handle error */ }"
+  },
+  {
+   "column": 3,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 1183,
+   "message": "Scaled integer assignment to pointer: 'buf_len += peer->rsnie_i_len + sizeof(struct wpa_tdls_ftie) +\n\t\t\tsizeof(struct wpa_tdls_timeoutie)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Use unscaled integer increment without sizeof()"
+  },
+  {
+   "column": 14,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 1183,
+   "message": "Scaled integer arithmetic with pointer: 'peer->rsnie_i_len + sizeof(struct wpa_tdls_ftie) +\n\t\t\tsizeof(struct wpa_tdls_timeoutie)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 3,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 1190,
+   "message": "Scaled integer assignment to pointer: 'buf_len += sizeof(struct wpa_tdls_lnkid)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Use unscaled integer increment without sizeof()"
+  },
+  {
+   "column": 8,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 1251,
+   "message": "Static variable 'wpa_add_tdls_timeoutie' used without explicit initialization",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'wpa_add_tdls_timeoutie' before use, e.g., at its declaration"
+  },
+  {
+   "column": 3,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 1298,
+   "message": "Scaled integer assignment to pointer: 'buf_len += peer->rsnie_i_len + sizeof(struct wpa_tdls_ftie) +\n\t\t\tsizeof(struct wpa_tdls_timeoutie)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Use unscaled integer increment without sizeof()"
+  },
+  {
+   "column": 14,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 1298,
+   "message": "Scaled integer arithmetic with pointer: 'peer->rsnie_i_len + sizeof(struct wpa_tdls_ftie) +\n\t\t\tsizeof(struct wpa_tdls_timeoutie)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 8,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 1348,
+   "message": "Static variable 'wpa_add_tdls_timeoutie' used without explicit initialization",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'wpa_add_tdls_timeoutie' before use, e.g., at its declaration"
+  },
+  {
+   "column": 3,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 1391,
+   "message": "Scaled integer assignment to pointer: 'buf_len += peer->rsnie_i_len + sizeof(struct wpa_tdls_ftie) +\n\t\t\tsizeof(struct wpa_tdls_timeoutie)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Use unscaled integer increment without sizeof()"
+  },
+  {
+   "column": 14,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 1391,
+   "message": "Scaled integer arithmetic with pointer: 'peer->rsnie_i_len + sizeof(struct wpa_tdls_ftie) +\n\t\t\tsizeof(struct wpa_tdls_timeoutie)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 8,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 1439,
+   "message": "Static variable 'wpa_add_tdls_timeoutie' used without explicit initialization",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'wpa_add_tdls_timeoutie' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 1479,
+   "message": "Value assigned to 'buf_len' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 13,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 1524,
+   "message": "Signed integer subtraction '(pos - (u8 *) hdr) - 2' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b < 0 && a > INT_MAX + b) || (b > 0 && a < INT_MIN + b)) { /* handle error */ }"
+  },
+  {
+   "column": 14,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 1524,
+   "message": "Pointer subtraction between pointers from different arrays: 'rbuf' and 'peer->rsnie_i'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 3,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 1533,
+   "message": "Scaled integer assignment to pointer: 'buf_len += peer->rsnie_i_len +\n\t\t\tsizeof(struct wpa_tdls_timeoutie)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Use unscaled integer increment without sizeof()"
+  },
+  {
+   "column": 8,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 1549,
+   "message": "Static variable 'wpa_add_tdls_timeoutie' used without explicit initialization",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'wpa_add_tdls_timeoutie' before use, e.g., at its declaration"
+  },
+  {
+   "column": 55,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 1562,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 16,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 1577,
+   "message": "Variable 'i' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'i' before use, e.g., at its declaration"
+  },
+  {
+   "column": 23,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 1600,
+   "message": "Scaled integer arithmetic with pointer: 'sizeof(struct wpa_tdls_frame) +\n\t\t1 /* dialog token */ + sizeof(struct wpa_tdls_lnkid)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 17,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 1614,
+   "message": "Array subscript with scaled integer: 'buf[sizeof(struct wpa_tdls_frame)]'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Use unscaled index or element count instead of sizeof()"
+  },
+  {
+   "column": 31,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 1621,
+   "message": "Scaled integer arithmetic with pointer: 'buf + sizeof(struct wpa_tdls_frame)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 25,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 1671,
+   "message": "Function 'merge_byte_arrays' called with overlapping memory regions. If parameters are restrict-qualified, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure memory regions do not overlap when using restrict pointers"
+  },
+  {
+   "column": 21,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 1672,
+   "message": "sizeof applied to pointer/array parameter 'peer' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(peer->supp_rates)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 73,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 1906,
+   "message": "Pointer parameter 'peer' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *peer'"
+  },
+  {
+   "column": 7,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 1934,
+   "message": "Potentially unsafe array access with variable index 'i': Buffer 'nonce' with size 2 (allocated at line 432)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 10,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 1992,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 6,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 2146,
+   "message": "Bitwise operator '&' used on signed operand 'cipher' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'cipher' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 17,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 2206,
+   "message": "Variable 'cipher' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'cipher' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 2311,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 2349,
+   "message": "Bit-field 'reconfig_key' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 10,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 2436,
+   "message": "Unsigned integer subtraction 'len - (pos - buf)' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 48,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 2508,
+   "message": "Dereference of uninitialized pointer 'ftie'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ftie' before dereferencing"
+  },
+  {
+   "column": 3,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 2615,
+   "message": "Bit-field 'reconfig_key' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 2646,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 10,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 2696,
+   "message": "Unsigned integer subtraction 'len - (pos - buf)' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 48,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 2726,
+   "message": "Dereference of uninitialized pointer 'ftie'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ftie' before dereferencing"
+  },
+  {
+   "column": 3,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 2789,
+   "message": "Bit-field 'reconfig_key' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 2810,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 41,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 2932,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 19,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 2952,
+   "message": "Dereference of uninitialized pointer 'tf'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'tf' before dereferencing"
+  },
+  {
+   "column": 7,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 2958,
+   "message": "Do not cast away const qualification: '(struct wpa_tdls_frame *) buf'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 5,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 3003,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 3,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 3064,
+   "message": "Local variable 'tmp' assigned to global/static variable 'peer' - creates dangling pointer",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage for local variable or copy data instead of assigning pointer"
+  },
+  {
+   "column": 3,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 3082,
+   "message": "Local variable 'tmp' assigned to global/static variable 'peer' - creates dangling pointer",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage for local variable or copy data instead of assigning pointer"
+  },
+  {
+   "column": 5,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 3095,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 3106,
+   "message": "Function 'wpa_tdls_assoc' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 3113,
+   "message": "Function 'wpa_tdls_disassoc' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 56,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 3120,
+   "message": "Pointer parameter 'elems' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *elems'"
+  },
+  {
+   "column": 68,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 3127,
+   "message": "Pointer parameter 'elems' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *elems'"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 3134,
+   "message": "Function 'wpa_tdls_ap_ies' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 6,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 3143,
+   "message": "Variable 'elems' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'elems' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 3156,
+   "message": "Function 'wpa_tdls_assoc_resp_ies' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 6,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 3162,
+   "message": "Variable 'elems' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'elems' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 3180,
+   "message": "Function 'wpa_tdls_enable' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 3187,
+   "message": "Function 'wpa_tdls_is_external_setup' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 46,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 3187,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 3193,
+   "message": "Function 'wpa_tdls_process_discovery_response' does not validate pointer parameter 'addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'addr' at the start of the function, e.g., 'if (!addr) { return error_code; }'"
+  },
+  {
+   "column": 23,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 3199,
+   "message": "Scaled integer arithmetic with pointer: '1 /* Dialog Token */ + 2 /* Capability */ +\n\t\tsizeof(struct wpa_tdls_lnkid)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 7,
+   "file": "src/rsn_supp/tdls.c",
+   "line": 3221,
+   "message": "Variable 'elems' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'elems' before use, e.g., at its declaration"
+  }
+ ]
+}

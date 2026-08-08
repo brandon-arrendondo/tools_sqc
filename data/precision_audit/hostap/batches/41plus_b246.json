@@ -1,0 +1,580 @@
+{
+ "src/ap/hw_features.c": [
+  {
+   "column": 1,
+   "file": "src/ap/hw_features.c",
+   "line": 15,
+   "message": "Header file 'ieee802_11_defs.h' has the same first 8 characters (case-insensitive) as 'ieee802_11_common.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_defs.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hw_features.c",
+   "line": 15,
+   "message": "Header file 'ieee802_11_defs.h' has the same first 8 characters (case-insensitive) as 'ieee802_11.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_defs.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hw_features.c",
+   "line": 16,
+   "message": "Header file 'ieee802_11_common.h' has the same first 8 characters (case-insensitive) as 'ieee802_11.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_common.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hw_features.c",
+   "line": 18,
+   "message": "Header file 'hw_features_common.h' has the same first 8 characters (case-insensitive) as 'hw_features.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'hw_features_common.h' -> unique name)"
+  },
+  {
+   "column": 5,
+   "file": "src/ap/hw_features.c",
+   "line": 33,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 52,
+   "file": "src/ap/hw_features.c",
+   "line": 46,
+   "message": "Pointer parameter 'chan' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *chan'"
+  },
+  {
+   "column": 10,
+   "file": "src/ap/hw_features.c",
+   "line": 51,
+   "message": "Bitwise operator '&' used on signed operand 'chan' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'chan' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/hw_features.c",
+   "line": 70,
+   "message": "Returning pointer to local array 'info' which will be destroyed when function returns, creating a dangling pointer.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Consider allocating the array dynamically (malloc/calloc), declaring it as static, or passing a buffer as a parameter."
+  },
+  {
+   "column": 55,
+   "file": "src/ap/hw_features.c",
+   "line": 94,
+   "message": "Pointer parameter 'new_feature' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *new_feature'"
+  },
+  {
+   "column": 34,
+   "file": "src/ap/hw_features.c",
+   "line": 95,
+   "message": "Pointer parameter 'old_feature' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *old_feature'"
+  },
+  {
+   "column": 32,
+   "file": "src/ap/hw_features.c",
+   "line": 101,
+   "message": "Variable 'old_chan' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'old_chan' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hw_features.c",
+   "line": 118,
+   "message": "Function 'hostapd_get_hw_features' does not validate pointer parameter 'iface' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'iface' at the start of the function, e.g., 'if (!iface) { return error_code; }'"
+  },
+  {
+   "column": 11,
+   "file": "src/ap/hw_features.c",
+   "line": 185,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hw_features.c",
+   "line": 253,
+   "message": "Function 'hostapd_prepare_rates' does not validate pointer parameter 'mode' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'mode' at the start of the function, e.g., 'if (!mode) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/hw_features.c",
+   "line": 258,
+   "message": "Variable 'basic_rates_a' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const basic_rates_a = ..."
+  },
+  {
+   "column": 6,
+   "file": "src/ap/hw_features.c",
+   "line": 258,
+   "message": "Array declaration 'basic_rates_a[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/hw_features.c",
+   "line": 259,
+   "message": "Variable 'basic_rates_b' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const basic_rates_b = ..."
+  },
+  {
+   "column": 6,
+   "file": "src/ap/hw_features.c",
+   "line": 259,
+   "message": "Array declaration 'basic_rates_b[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/hw_features.c",
+   "line": 260,
+   "message": "Variable 'basic_rates_g' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const basic_rates_g = ..."
+  },
+  {
+   "column": 6,
+   "file": "src/ap/hw_features.c",
+   "line": 260,
+   "message": "Array declaration 'basic_rates_g[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 29,
+   "file": "src/ap/hw_features.c",
+   "line": 296,
+   "message": "Variable 'rate' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'rate' before use, e.g., at its declaration"
+  },
+  {
+   "column": 70,
+   "file": "src/ap/hw_features.c",
+   "line": 325,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 60,
+   "file": "src/ap/hw_features.c",
+   "line": 397,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/hw_features.c",
+   "line": 438,
+   "message": "Variable 'iface' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 63,
+   "file": "src/ap/hw_features.c",
+   "line": 481,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/hw_features.c",
+   "line": 516,
+   "message": "Bitwise operator '&' used on signed operand 'chan' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'chan' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 62,
+   "file": "src/ap/hw_features.c",
+   "line": 526,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/hw_features.c",
+   "line": 557,
+   "message": "Bitwise operator '&' used on signed operand 'chan' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'chan' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 55,
+   "file": "src/ap/hw_features.c",
+   "line": 567,
+   "message": "Pointer parameter 'user_data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *user_data'"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/hw_features.c",
+   "line": 588,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/hw_features.c",
+   "line": 588,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hw_features.c",
+   "line": 610,
+   "message": "Function 'hostapd_stop_setup_timers' does not validate pointer parameter 'iface' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'iface' at the start of the function, e.g., 'if (!iface) { return error_code; }'"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/hw_features.c",
+   "line": 640,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/hw_features.c",
+   "line": 640,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/hw_features.c",
+   "line": 650,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/hw_features.c",
+   "line": 650,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 63,
+   "file": "src/ap/hw_features.c",
+   "line": 660,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 65,
+   "file": "src/ap/hw_features.c",
+   "line": 750,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 65,
+   "file": "src/ap/hw_features.c",
+   "line": 783,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 64,
+   "file": "src/ap/hw_features.c",
+   "line": 791,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 51,
+   "file": "src/ap/hw_features.c",
+   "line": 846,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 54,
+   "file": "src/ap/hw_features.c",
+   "line": 872,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 56,
+   "file": "src/ap/hw_features.c",
+   "line": 922,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 21,
+   "file": "src/ap/hw_features.c",
+   "line": 936,
+   "message": "Bitwise operator '&' used on signed operand 'chan' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'chan' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/hw_features.c",
+   "line": 943,
+   "message": "Bitwise operator '&' used on signed operand 'chan' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'chan' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/hw_features.c",
+   "line": 944,
+   "message": "Bitwise operator '&' used on signed operand 'chan' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'chan' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 35,
+   "file": "src/ap/hw_features.c",
+   "line": 946,
+   "message": "Bitwise operator '&' used on signed operand 'chan' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'chan' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/hw_features.c",
+   "line": 977,
+   "message": "Variable 'pri_chan' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 14,
+   "file": "src/ap/hw_features.c",
+   "line": 982,
+   "message": "Variable 'i' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 65,
+   "file": "src/ap/hw_features.c",
+   "line": 1027,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/hw_features.c",
+   "line": 1127,
+   "message": "Bitwise operator '&' used on signed operand 'pri_chan' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'pri_chan' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/hw_features.c",
+   "line": 1130,
+   "message": "Bitwise operator '&' used on signed operand 'pri_chan' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'pri_chan' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 19,
+   "file": "src/ap/hw_features.c",
+   "line": 1139,
+   "message": "Bitwise operator '&' used on signed operand 'pri_chan' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'pri_chan' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 19,
+   "file": "src/ap/hw_features.c",
+   "line": 1146,
+   "message": "Bitwise operator '&' used on signed operand 'pri_chan' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'pri_chan' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 44,
+   "file": "src/ap/hw_features.c",
+   "line": 1155,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 59,
+   "file": "src/ap/hw_features.c",
+   "line": 1244,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hw_features.c",
+   "line": 1266,
+   "message": "Function 'hostapd_acs_completed' does not validate pointer parameter 'iface' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'iface' at the start of the function, e.g., 'if (!iface) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hw_features.c",
+   "line": 1266,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hw_features.c",
+   "line": 1424,
+   "message": "Function 'hostapd_hw_get_freq' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 45,
+   "file": "src/ap/hw_features.c",
+   "line": 1424,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 48,
+   "file": "src/ap/hw_features.c",
+   "line": 1430,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 47,
+   "file": "src/ap/hw_features.c",
+   "line": 1459,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 29,
+   "file": "src/ap/hw_features.c",
+   "line": 1460,
+   "message": "Pointer parameter 'mode' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *mode'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hw_features.c",
+   "line": 1476,
+   "message": "Function 'hostapd_free_multi_hw_info' does not validate pointer parameter 'multi_hw_info' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'multi_hw_info' at the start of the function, e.g., 'if (!multi_hw_info) { return error_code; }'"
+  }
+ ]
+}

@@ -1,0 +1,1211 @@
+{
+ "labels": [
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp.c",
+   "line": 42,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "dpp_auth_fail's auth only read (msg_ctx field); plain internal helper, real if low-severity"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp.c",
+   "line": 48,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; all call sites pass small computed lengths, not raw attacker length"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp.c",
+   "line": 62,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg is wpabuf_alloc'd heap object, not automatic-storage local; confuses variable with storage"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp.c",
+   "line": 80,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos points into caller's buf parameter, not local automatic storage"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/common/dpp.c",
+   "line": 99,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "end derives from buf, pos from prev; same buf/end bounds-pair idiom extended to prev, established FP class"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/dpp.c",
+   "line": 99,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same buf/end/prev bounds-pair idiom as ARR00-C above"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/common/dpp.c",
+   "line": 104,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same buf/end/prev bounds-pair idiom"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/dpp.c",
+   "line": 104,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same buf/end/prev bounds-pair idiom"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp.c",
+   "line": 108,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos points into caller's buf parameter, not local automatic storage"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/common/dpp.c",
+   "line": 190,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "while(*info) is a bounded NUL-terminated string scan, established FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/common/dpp.c",
+   "line": 191,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "val is declared unsigned char itself; no widening/sign-extension occurs"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp.c",
+   "line": 208,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; chan_list is defensively checked via pos&&*pos before deref"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/common/dpp.c",
+   "line": 214,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "while(pos && *pos && *pos!=';') is a bounded NUL-terminated scan"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/common/dpp.c",
+   "line": 219,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi(pos) only lower-bound checked (>0), no upper bound, not narrow-range-validated"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/common/dpp.c",
+   "line": 219,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same weak validation as ERR07-C above"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/common/dpp.c",
+   "line": 224,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi(pos) only lower-bound checked (>0), no upper bound"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/common/dpp.c",
+   "line": 224,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same weak validation as ERR07-C above"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp.c",
+   "line": 255,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto-label-blindness: fail: is a jump target from earlier goto fail statements, not dead code"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp.c",
+   "line": 261,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bi forwarded to hwaddr_aton2 which writes bi->mac_addr; non-const-callee forwarding FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/common/dpp.c",
+   "line": 401,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*port++ = '\\0' is a literal-constant assignment, no widening"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/common/dpp.c",
+   "line": 403,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi(port+1) result used with zero downstream validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/common/dpp.c",
+   "line": 403,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi(port+1) result used with zero downstream validation"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/common/dpp.c",
+   "line": 410,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*port++ = '\\0' is a literal-constant assignment, no widening"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/common/dpp.c",
+   "line": 411,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi(port) result used with zero downstream validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/common/dpp.c",
+   "line": 411,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi(port) result used with zero downstream validation"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp.c",
+   "line": 487,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*bi) is a compile-time, non-evaluated expression, not a real dereference"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp.c",
+   "line": 503,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bi is os_zalloc'd heap memory, not automatic storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp.c",
+   "line": 527,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "own_modes only read (channels/flag fields); plain internal helper, real if low-severity"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/common/dpp.c",
+   "line": 537,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "c is initialized in the for-loop's own init clause (c=0), not uninitialized"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/common/dpp.c",
+   "line": 576,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(freqs[0]) is the correct per-element-size idiom, unrelated to decay"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp.c",
+   "line": 606,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "own_modes only read; plain internal helper, real if low-severity"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/common/dpp.c",
+   "line": 624,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "c is initialized in the for-loop's own init clause (c=0)"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/dpp.c",
+   "line": 650,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no getenv()/environment code anywhere in function; fixed array sized by macro"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/common/dpp.c",
+   "line": 650,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "freqs is a fixed-size array (DPP_BOOTSTRAP_MAX_FREQ*6+10 is a compile-time constant), not a VLA"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/common/dpp.c",
+   "line": 686,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*pos = '\\0' is a literal-constant assignment, no widening"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/common/dpp.c",
+   "line": 696,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macstr sized by ETH_ALEN macro constant, fixed size, not a VLA"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/common/dpp.c",
+   "line": 713,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'len' is a scalar size_t counter, not a buffer; cited alloc line 3989 is an unrelated cross-file identifier conflation"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/common/dpp.c",
+   "line": 722,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "call is os_snprintf(), hostap's own wrapper, not libc sprintf(); return value is consumed via len+="
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/common/dpp.c",
+   "line": 725,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_snprintf() misidentified as sprintf(), established FP class"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/common/dpp.c",
+   "line": 741,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_snprintf() misidentified as sprintf()"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/common/dpp.c",
+   "line": 743,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_snprintf() misidentified as sprintf()"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/common/dpp.c",
+   "line": 746,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_snprintf() misidentified as sprintf()"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp.c",
+   "line": 769,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API (dpp_global*/msg_ctx always caller-supplied internally)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp.c",
+   "line": 774,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "auth=os_zalloc(sizeof(*auth)); sizeof(*ptr) is not a real dereference"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp.c",
+   "line": 780,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "auth is os_zalloc'd heap memory, not automatic storage"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/dpp.c",
+   "line": 793,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "auth_i is a fixed-size array (DPP_MAX_HASH_LEN macro), no getenv anywhere"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/common/dpp.c",
+   "line": 808,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "nonce_len is bounded by curve->nonce_len from a small static curve table, no realistic wrap"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/common/dpp.c",
+   "line": 818,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "hash_len bounded by static curve table (max ~64), no realistic wrap"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/common/dpp.c",
+   "line": 822,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pure size_t/int additive arithmetic (attr_len), no pointer operand at all"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/common/dpp.c",
+   "line": 825,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "testing-only += 5 on an already-small attr_len; no realistic wrap"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/common/dpp.c",
+   "line": 839,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "nonce_len sourced from curve params, always >=16, cannot underflow at -1"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/common/dpp.c",
+   "line": 840,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same nonce_len bound as above"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/common/dpp.c",
+   "line": 892,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/wpabuf_len are pure read-only accessors, no side effects to unsequence"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp.c",
+   "line": 943,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API, auth always non-null from caller chain"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp.c",
+   "line": 943,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API, json always non-null from caller chain"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/common/dpp.c",
+   "line": 948,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_build_conf_req_attr is defined earlier at line 784, same-file-distance blind spot"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp.c",
+   "line": 966,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is heap memory from gas_build_initial_req(), not automatic storage"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp.c",
+   "line": 970,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp.c",
+   "line": 970,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp.c",
+   "line": 970,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/common/dpp.c",
+   "line": 1004,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/wpabuf_len are pure read-only accessors"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp.c",
+   "line": 1058,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "val,len is the idiomatic pointer+size-pair; cmp is a plain NUL-terminated C string"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp.c",
+   "line": 1058,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same idiomatic ptr+len / NUL-terminated-string pair"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp.c",
+   "line": 1064,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; all call sites pass non-null type strings"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp.c",
+   "line": 1070,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conf=os_zalloc(sizeof(*conf)); sizeof(*ptr) not a real dereference"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp.c",
+   "line": 1100,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conf is os_zalloc'd heap memory, not automatic storage"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp.c",
+   "line": 1101,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto-label-blindness: fail: is reached by earlier goto fail statements"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/common/dpp.c",
+   "line": 1175,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*conf) correctly sizes the pointee struct; not decayed-array misuse"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp.c",
+   "line": 1198,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "conf is an alias for conf_ap; both conf_sta/conf_ap freed on fail: or ownership-transferred to auth on success"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/common/dpp.c",
+   "line": 1238,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi(pos+14) result used with zero downstream validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/common/dpp.c",
+   "line": 1238,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi(pos+14) result used with zero downstream validation"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/common/dpp.c",
+   "line": 1298,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "val checked only via <=0 (no endptr/no ERANGE guard); weak-validation strtol shape, established TP-low pattern"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/common/dpp.c",
+   "line": 1298,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same weak-validation strtol shape"
+  },
+  {
+   "rule": "ERR01-C",
+   "file": "src/common/dpp.c",
+   "line": 1298,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "errno genuinely never checked, only val<=0"
+  },
+  {
+   "rule": "ERR30-C",
+   "file": "src/common/dpp.c",
+   "line": 1298,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "errno not reset before call and no ERANGE guard exists"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp.c",
+   "line": 1358,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto-label-blindness: fail: reached via earlier goto fail statements"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp.c",
+   "line": 1391,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto-label-blindness: fail: reached via earlier goto fail statements"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp.c",
+   "line": 1411,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conf points into the persistent dpp->configurator list, not automatic storage"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/common/dpp.c",
+   "line": 1451,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "atoi(pos) feeds dpp_configurator_get_id which safely fails/NULLs on any invalid id, checked next line"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/common/dpp.c",
+   "line": 1451,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same downstream-failure-handled shape as ERR07-C"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/common/dpp.c",
+   "line": 1462,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "result only ever consumed as a boolean flag (auth->send_conn_status &&...)"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/common/dpp.c",
+   "line": 1462,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "boolean-use atoi() shape"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/common/dpp.c",
+   "line": 1468,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "result only ever consumed as a boolean flag (akm_use_selector &&...)"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/common/dpp.c",
+   "line": 1468,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "boolean-use atoi() shape"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/common/dpp.c",
+   "line": 1536,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*auth) correctly sizes the pointee struct for bin_clear_free; not decay"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp.c",
+   "line": 1541,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "auth only read (discovery_override); plain internal helper"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp.c",
+   "line": 1542,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "conf only read (ssid/ssid_len/ssid_charset); plain internal helper"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp.c",
+   "line": 1564,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is wpabuf_alloc'd heap memory, not automatic storage"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp.c",
+   "line": 1584,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is wpabuf_alloc'd heap memory, not automatic storage"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp.c",
+   "line": 1588,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; key always non-null from callers"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp.c",
+   "line": 1625,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "conf only read (passphrase/psk/idpass); plain internal helper"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/common/dpp.c",
+   "line": 1637,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "deliberate guard clause; invariant that one of passphrase/psk_set holds is validated earlier by dpp_configuration_valid"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/common/dpp.c",
+   "line": 1638,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "psk[2*sizeof(conf->psk)+1] sized from a fixed struct-array field, not a VLA"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/common/dpp.c",
+   "line": 1638,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conf->psk is a genuine fixed-size array field (u8 psk[32]), not decayed"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/common/dpp.c",
+   "line": 1641,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conf->psk fixed-size array field, not decayed"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp.c",
+   "line": 1663,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "bi only read (supported_curves); plain internal helper"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/common/dpp.c",
+   "line": 1839,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "tailroom is a sizing estimate bounded by curve params/config strings; no realistic wrap"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/common/dpp.c",
+   "line": 1839,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "curve->prime_len bounded by static curve table (max 66)"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/common/dpp.c",
+   "line": 1840,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "signed_conn length bounded by locally-generated connector data"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/common/dpp.c",
+   "line": 1842,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "literal += 1000 on a small counter, no realistic wrap"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/common/dpp.c",
+   "line": 1845,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "certbag length is locally-managed cert/config data, not raw attacker length"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/common/dpp.c",
+   "line": 1847,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "cacert length is locally-managed cert/config data"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/common/dpp.c",
+   "line": 1849,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "trusted_eap_server_name is a bounded config string"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/common/dpp.c",
+   "line": 1850,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "literal += 1000, no realistic wrap"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/common/dpp.c",
+   "line": 1853,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "extra_name/extra_value are bounded local config strings"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/common/dpp.c",
+   "line": 1874,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/wpabuf_len are pure read-only accessors"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/common/dpp.c",
+   "line": 1878,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/wpabuf_len are pure read-only accessors"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/common/dpp.c",
+   "line": 1922,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/wpabuf_len are pure read-only accessors"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/common/dpp.c",
+   "line": 1992,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/wpabuf_len are pure read-only accessors"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp.c",
+   "line": 1995,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is heap memory from dpp_build_conf_start (wpabuf_alloc), not automatic storage"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp.c",
+   "line": 2008,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bi=os_zalloc(sizeof(*bi)); sizeof(*ptr) not a real dereference"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/common/dpp.c",
+   "line": 2037,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "missing-else handled by downstream if(!conf) check"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/common/dpp.c",
+   "line": 2039,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "missing-else handled by downstream if(!conf) check"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/common/dpp.c",
+   "line": 2042,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "missing-else handled by downstream if(!conf) check"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/common/dpp.c",
+   "line": 2073,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_build_conf_obj_dpp defined earlier at line 1690, same-file-distance blind spot"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/common/dpp.c",
+   "line": 2076,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_build_conf_obj_dpp defined earlier at line 1690"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/common/dpp.c",
+   "line": 2089,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "addr is const u8*[1] (pointer array), not a character array; misapplied to non-char array"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/common/dpp.c",
+   "line": 2090,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len is size_t[1], not a character array; misapplied to non-char array"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/common/dpp.c",
+   "line": 2105,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/wpabuf_len are pure read-only accessors"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/common/dpp.c",
+   "line": 2116,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "final else clause exists at line 2123-2124, just after an intervening #ifdef/#endif block"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/common/dpp.c",
+   "line": 2120,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "line is 'else if (auth->waiting_new_key)'; no function pointer construct present at all"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/common/dpp.c",
+   "line": 2168,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pure size_t/int additive arithmetic (attr_len), no pointer operand"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/common/dpp.c",
+   "line": 2171,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "testing-only += 5 on an already-computed attr_len"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/common/dpp.c",
+   "line": 2218,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "missing else is an intentional no-op (nothing to do when conf2 unsupported by peer)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/common/dpp.c",
+   "line": 2293,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/wpabuf_len are pure read-only accessors"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 2359,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain descriptive error-log string passed to dpp_auth_fail, not real secret data"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/common/dpp.c",
+   "line": 2365,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pure u16/size_t subtraction, no pointer operand; wrapped_data_len>=AES_BLOCK_SIZE already guarded above"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 2372,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "descriptive error-log string, not real secret data"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 2388,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "descriptive error-log string"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 2399,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "descriptive error-log string"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/dpp.c",
+   "line": 2404,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "auth_i is a fixed-size array (DPP_MAX_HASH_LEN macro), no getenv anywhere"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 2418,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'New Peer Protocol Key (Pe)' is a debug label, not actual key material"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 2431,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "descriptive error-log string"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 2437,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "descriptive error-log string"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 2452,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "descriptive error-log string"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 2482,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "descriptive error-log string"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 2501,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "descriptive error-log string"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/common/dpp.c",
+   "line": 2543,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*pos = '\\0' literal-constant assignment, no widening"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/common/dpp.c",
+   "line": 2572,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/wpabuf_len are pure read-only accessors"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/common/dpp.c",
+   "line": 2635,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conf is struct dpp_config_obj*; passphrase is char passphrase[64], a genuine fixed array, not decayed"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/common/dpp.c",
+   "line": 2639,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "password_id is char password_id[64], a genuine fixed array, not decayed"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/common/dpp.c",
+   "line": 2728,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head(x)/wpabuf_head(y)/wpabuf_len(x) are pure read-only accessors"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp.c",
+   "line": 2733,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curve points into the static const dpp_curves[] table, not automatic storage"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/common/dpp.c",
+   "line": 2760,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf's return value IS checked (!= 6 test), correct idiomatic validation"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "src/common/dpp.c",
+   "line": 2760,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misattributes the format-string literal itself as 'argument 1'; established rule-engine bug"
+  },
+  {
+   "rule": "INT05-C",
+   "file": "src/common/dpp.c",
+   "line": 2760,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sscanf's %u conversions don't reliably signal ERANGE via errno; low-severity but real"
+  },
+  {
+   "rule": "MSC24-C",
+   "file": "src/common/dpp.c",
+   "line": 2760,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf is not an actually-obsolescent C function; sscanf_s is an unavailable optional Annex K function"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/common/dpp.c",
+   "line": 2760,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "no cast-away-const of any kind present in this sscanf call; likely mislabeled same call as the FIO47-C bug"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp.c",
+   "line": 2767,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "year is read only after sscanf(...)!=6 guard confirms all 6 items were assigned"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp.c",
+   "line": 2767,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "month is read only after sscanf(...)!=6 guard confirms all 6 items were assigned"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 22,
+  "fp": 128,
+  "fn": 0
+ }
+}

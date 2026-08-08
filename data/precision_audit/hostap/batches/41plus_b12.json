@@ -1,0 +1,1354 @@
+{
+ "src/drivers/driver_nl80211.c#part1of8": [
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 27,
+   "message": "Header file 'qca-vendor.h' has the same first 8 characters (case-insensitive) as 'qca-vendor-attr.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'qca-vendor.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 30,
+   "message": "Header file 'ieee802_11_defs.h' has the same first 8 characters (case-insensitive) as 'ieee802_11_common.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_defs.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 40,
+   "message": "Header file 'radiotap.h' has the same first 8 characters (case-insensitive) as 'radiotap_iter.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'radiotap.h' -> unique name)"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 53,
+   "message": "Enumeration constant 'NLMSGERR_ATTR_UNUSED' has duplicate value 0 (implicitly). Mixing explicit and implicit enum value assignments can cause unintentional duplicates.",
+   "rule_id": "INT09-C",
+   "severity": "Medium",
+   "suggestion": "Either use all implicit values, or make all assignments explicit"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 59,
+   "message": "Enumeration constant 'NLMSGERR_ATTR_MAX' has duplicate value 0 (explicitly). Mixing explicit and implicit enum value assignments can cause unintentional duplicates.",
+   "rule_id": "INT09-C",
+   "severity": "Medium",
+   "suggestion": "Either use all implicit values, or make all assignments explicit"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 99,
+   "message": "Function returns pointer to local variable 'handle' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 179,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (-1)"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 255,
+   "message": "Function 'get_bss_ifindex' does not validate pointer parameter 'drv' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'drv' at the start of the function, e.g., 'if (!drv) { return error_code; }'"
+  },
+  {
+   "column": 66,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 255,
+   "message": "Pointer parameter 'drv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *drv'"
+  },
+  {
+   "column": 13,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 260,
+   "message": "Potential null pointer dereference in member access of variable 'drv'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'drv' is not NULL before member access"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 262,
+   "message": "Function returns pointer to local variable 'bss' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 275,
+   "message": "Function 'nl80211_mark_disconnected' does not validate pointer parameter 'drv' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'drv' at the start of the function, e.g., 'if (!drv) { return error_code; }'"
+  },
+  {
+   "column": 35,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 280,
+   "message": "sizeof applied to pointer/array parameter 'drv' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(drv->sta_mlo_info)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 38,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 299,
+   "message": "Pointer parameter 'msg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *msg'"
+  },
+  {
+   "column": 56,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 313,
+   "message": "Pointer parameter 'arg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *arg'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 316,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 322,
+   "message": "Scaled integer arithmetic with pointer: 'sizeof(struct nlmsghdr) + sizeof(int) +\n\t\tsizeof(struct nlmsghdr)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 325,
+   "message": "Scaled integer arithmetic with pointer: '(u8 *) nlmsg_data(nlmsg_hdr(msg)) + sizeof(struct nlmsghdr) +\n\t\t sizeof(int)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 325,
+   "message": "Scaled integer arithmetic with pointer: '(u8 *) nlmsg_data(nlmsg_hdr(msg)) + sizeof(struct nlmsghdr)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 325,
+   "message": "Variable 'msg' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 325,
+   "message": "Variable 'nlmsg_hdr' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 335,
+   "message": "Variable 'tb' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb' before use, e.g., at its declaration"
+  },
+  {
+   "column": 41,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 343,
+   "message": "Pointer parameter 'msg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *msg'"
+  },
+  {
+   "column": 45,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 357,
+   "message": "Pointer parameter 'nla' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *nla'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 365,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 16,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 366,
+   "message": "Scaled integer arithmetic with pointer: 'sizeof(*nlh) + sizeof(int) + sizeof(*nlh)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 16,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 366,
+   "message": "Variable 'nlh' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 387,
+   "message": "Variable 'tb' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb' before use, e.g., at its declaration"
+  },
+  {
+   "column": 9,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 389,
+   "message": "Function 'strnlen' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 37,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 401,
+   "message": "sizeof applied to pointer/array parameter 'err' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(err->msg)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 14,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 408,
+   "message": "Scaled integer arithmetic with pointer: '(unsigned char *) orig_nlh + offset'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 13,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 432,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 39,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 447,
+   "message": "Pointer parameter 'msg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *msg'"
+  },
+  {
+   "column": 50,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 447,
+   "message": "Pointer parameter 'arg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *arg'"
+  },
+  {
+   "column": 66,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 527,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 561,
+   "message": "Function 'nl80211_reply_hook' does not validate pointer parameter 'delayed_handler' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'delayed_handler' at the start of the function, e.g., 'if (!delayed_handler) { return error_code; }'"
+  },
+  {
+   "column": 27,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 603,
+   "message": "Dereference of uninitialized pointer 'event'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'event' before dereferencing"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 620,
+   "message": "Function 'send_and_recv_glb' does not validate pointer parameter 'drv' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'drv' at the start of the function, e.g., 'if (!drv) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 620,
+   "message": "Function 'send_and_recv_glb' does not validate pointer parameter 'nl_handle' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'nl_handle' at the start of the function, e.g., 'if (!nl_handle) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 620,
+   "message": "Function 'send_and_recv_glb' does not validate pointer parameter 'valid_handler' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'valid_handler' at the start of the function, e.g., 'if (!valid_handler) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 620,
+   "message": "Function 'send_and_recv_glb' does not validate pointer parameter 'err_info' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'err_info' at the start of the function, e.g., 'if (!err_info) { return error_code; }'"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 650,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 650,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 658,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 658,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 685,
+   "message": "Potential null pointer dereference in member access of variable 'ext_arg'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'ext_arg' is not NULL before member access"
+  },
+  {
+   "column": 10,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 713,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 68,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 734,
+   "message": "Pointer parameter 'drv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *drv'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 756,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 761,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 761,
+   "message": "Variable 'tb' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb' before use, e.g., at its declaration"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 767,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 768,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 13,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 768,
+   "message": "Variable 'tb2' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb2' before use, e.g., at its declaration"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 772,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 791,
+   "message": "Memory allocated with 'nlmsg_alloc' for variable 'msg' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(msg)' before the variable goes out of scope"
+  },
+  {
+   "column": 51,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 809,
+   "message": "Pointer parameter 'drv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *drv'"
+  },
+  {
+   "column": 69,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 819,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 841,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 872,
+   "message": "Function 'nl80211_drv_msg' does not validate pointer parameter 'drv' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'drv' at the start of the function, e.g., 'if (!drv) { return error_code; }'"
+  },
+  {
+   "column": 49,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 879,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 895,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 899,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 899,
+   "message": "Variable 'tb' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb' before use, e.g., at its declaration"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 927,
+   "message": "Assignment in if statement condition: 'msg = nl80211_cmd_msg(bss, 0, NL80211_CMD_GET_INTERFACE)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 944,
+   "message": "Assignment in if statement condition: 'msg = nl80211_cmd_msg(bss, 0, NL80211_CMD_GET_INTERFACE)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 960,
+   "message": "Assignment in if statement condition: 'msg = nl80211_cmd_msg(bss, 0, NL80211_CMD_GET_INTERFACE)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 974,
+   "message": "Value assigned to 'msg' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 974,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 974,
+   "message": "Assignment in if statement condition: 'msg = nl80211_cmd_msg(bss, 0, NL80211_CMD_GET_INTERFACE)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 35,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 982,
+   "message": "Pointer parameter 'w' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *w'"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 987,
+   "message": "Memory allocated with 'nlmsg_alloc' for variable 'msg' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(msg)' before the variable goes out of scope"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1002,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1002,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 49,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1008,
+   "message": "Pointer parameter 'eloop_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *eloop_ctx'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1028,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1031,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1031,
+   "message": "Variable 'tb' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb' before use, e.g., at its declaration"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1046,
+   "message": "Accessing union 'event' member 'rx_mgmt' after writing to 'list' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 14,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1085,
+   "message": "Memory allocated with 'nl_cb_alloc' for variable 'w->nl_cb' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(w->nl_cb)' before the variable goes out of scope"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1100,
+   "message": "Memory leak: 'w->nl_cb' allocated with 'nl_cb_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'w->nl_cb' before this return statement"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1107,
+   "message": "Memory leak: 'w->nl_cb' allocated with 'nl_cb_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'w->nl_cb' before this return statement"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1120,
+   "message": "Value assigned to 'found' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1130,
+   "message": "Function returns pointer to local variable 'w' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1130,
+   "message": "Memory leak: 'w->nl_cb' allocated with 'nl_cb_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'w->nl_cb' before this return statement"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1148,
+   "message": "Value assigned to 'found' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 46,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1168,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 46,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1177,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 45,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1188,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1201,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1203,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1204,
+   "message": "Shared variable 'link_policy' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1204,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1211,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1211,
+   "message": "Variable 'tb' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb' before use, e.g., at its declaration"
+  },
+  {
+   "column": 24,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1221,
+   "message": "Variable 'link_data' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'link_data' before use, e.g., at its declaration"
+  },
+  {
+   "column": 42,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1262,
+   "message": "sizeof applied to pointer/array parameter 'mlo_info' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*mlo_info)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1267,
+   "message": "Function 'get_sta_mlo_interface_info' does not validate pointer parameter 'bss' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'bss' at the start of the function, e.g., 'if (!bss) { return error_code; }'"
+  },
+  {
+   "column": 24,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1282,
+   "message": "Pointer parameter 'global' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *global'"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1288,
+   "message": "Function 'if_nametoindex' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1301,
+   "message": "Accessing union 'event' member 'interface_status' after writing to 'list' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 24,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1314,
+   "message": "Pointer parameter 'global' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *global'"
+  },
+  {
+   "column": 53,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1346,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 10,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1347,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1398,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 5,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1417,
+   "message": "Function returns pointer to local variable 'bss' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 5,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1420,
+   "message": "Function returns pointer to local variable 'bss' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 9,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1440,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1441,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 55,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1455,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 25,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1456,
+   "message": "Pointer parameter 'ifi' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ifi'"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1461,
+   "message": "Value assigned to 'bss' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1466,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1482,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1487,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1490,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1493,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1497,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1548,
+   "message": "Value assigned to 'drv' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1569,
+   "message": "Function 'if_nametoindex' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 55,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1624,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 25,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1625,
+   "message": "Pointer parameter 'ifi' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ifi'"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1630,
+   "message": "Value assigned to 'bss' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1634,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1649,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1654,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1657,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1661,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1716,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1718,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1719,
+   "message": "Shared variable 'bss_policy' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1719,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1730,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1730,
+   "message": "Variable 'tb' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb' before use, e.g., at its declaration"
+  },
+  {
+   "column": 23,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1733,
+   "message": "Variable 'bss' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'bss' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1809,
+   "message": "Function 'nl80211_get_assoc_ssid' does not validate pointer parameter 'drv' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'drv' at the start of the function, e.g., 'if (!drv) { return error_code; }'"
+  },
+  {
+   "column": 11,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1838,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 11,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1838,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 20,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1838,
+   "message": "Signed integer negation '-ret' may overflow (-INT_MIN)",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add check: if (value == INT_MIN) { /* handle error */ }"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1843,
+   "message": "Function 'nl80211_get_assoc_freq' does not validate pointer parameter 'drv' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'drv' at the start of the function, e.g., 'if (!drv) { return error_code; }'"
+  },
+  {
+   "column": 19,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1885,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 19,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1885,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 28,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1885,
+   "message": "Signed integer negation '-ret' may overflow (-INT_MIN)",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add check: if (value == INT_MIN) { /* handle error */ }"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1890,
+   "message": "Function 'nl80211_get_assoc_bssid' does not validate pointer parameter 'bss' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'bss' at the start of the function, e.g., 'if (!bss) { return error_code; }'"
+  },
+  {
+   "column": 11,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1932,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 11,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1932,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 20,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1932,
+   "message": "Signed integer negation '-ret' may overflow (-INT_MIN)",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add check: if (value == INT_MIN) { /* handle error */ }"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1940,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1942,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1943,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  }
+ ]
+}

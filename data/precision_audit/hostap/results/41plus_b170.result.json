@@ -1,0 +1,1019 @@
+{
+  "labels": [
+    {
+      "rule": "PRE08-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 14,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "PRE08-C header 8-char convention TP-by-convention per precedent"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 61,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "local array w/ explicit 4-elem initializer, knowable bound; low-value TP"
+    },
+    {
+      "rule": "MEM03-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 100,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "password cleared via str_clear_free() on both return and fail: paths"
+    },
+    {
+      "rule": "MEM03-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 109,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "password_id is a borrowed pointer into ssid->sae_password_id, not owned/allocated here"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 121,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf is returned to caller (ownership transfer via #ifdef TESTING_OPTIONS early return), not leaked"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 129,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf is a heap pointer from wpabuf_alloc aliased through a local var, not automatic storage"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 165,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpabuf_head/len are pure accessors; no real side effects to unsequence (EXP30-C precedent)"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 201,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "rsnxe_capa pre-initialized to 0; no-match case intentionally keeps default (MSC01-C convention)"
+    },
+    {
+      "rule": "EXP05-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 258,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "password is plain char*, not const-qualified; cast is a type-pun, not const removal"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 307,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf is heap pointer via wpabuf_alloc, not automatic storage (DCL30-C precedent)"
+    },
+    {
+      "rule": "MSC07-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 309,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "fail: is a goto target reached from earlier error paths, not dead code after return"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 310,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "free at 306 (return path) and 310 (fail: path) are mutually exclusive control flow, not a double free"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 310,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "free at 306 (return path) and 310 (fail: path) are mutually exclusive control flow, not a double free"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 330,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf is heap pointer via wpabuf_alloc, not automatic storage (DCL30-C precedent)"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 360,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "bitwise op is on wpa_s->drv_rrm_flags member, not variable wpa_s itself (INT14-C mis-detection precedent)"
+    },
+    {
+      "rule": "ARR01-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 369,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof binds to array member wpa_s->sme.assoc_req_ie, not the wpa_s pointer (ARR01-C misparse)"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 409,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "plain static helper wpas_ml_connect_pref; bss only read, not dispatch/callback contract"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 410,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "plain static helper wpas_ml_connect_pref; ssid only read, not dispatch/callback contract"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 421,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "bitwise op is on member field, not variable wpa_s itself (INT14-C mis-detection precedent)"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 426,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "for_each_link() macro initializes i=0 in its for-loop; not actually uninitialized"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 470,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "MAC2STR pure accessor pairs passed to wpa_printf; no side effects to unsequence"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 488,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "plain static helper wpas_sme_ml_auth; wpa_s only read, not a dispatch/callback contract"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 489,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "plain static helper wpas_sme_ml_auth; data only read, not a dispatch/callback contract"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 506,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "elems is populated by ieee802_11_parse_elems() output-param call checked for ParseFailed before use"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 556,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "for_each_link() macro initializes i=0 in its for-loop; not actually uninitialized"
+    },
+    {
+      "rule": "ARR01-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 589,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof binds to array member wpa_s->sme.assoc_req_ie, not the wpa_s pointer (ARR01-C misparse)"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 833,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ie[1] is u8 (max 255) + constant 2; cannot overflow signed int (INT32-C precedent)"
+    },
+    {
+      "rule": "EXP05-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 853,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "pos is plain u8*, not const-qualified; cast is a type-pun, not const removal"
+    },
+    {
+      "rule": "DCL37-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 877,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "_ie is a block-scope local inside sme_send_authentication, not file-scope"
+    },
+    {
+      "rule": "INT30-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 895,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "assoc_req_ie_len is kept <= sizeof(assoc_req_ie) by construction via checked increments throughout file"
+    },
+    {
+      "rule": "INT30-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 914,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "assoc_req_ie_len is kept <= sizeof(assoc_req_ie) by construction via checked increments throughout file"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 927,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "pos[1] is u8 (max 255) + constant 2; cannot overflow signed int (INT32-C precedent)"
+    },
+    {
+      "rule": "INT30-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 955,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "assoc_req_ie_len is kept <= sizeof(assoc_req_ie) by construction via checked increments throughout file"
+    },
+    {
+      "rule": "INT30-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 1000,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "assoc_req_ie_len is kept <= sizeof(assoc_req_ie) by construction via checked increments throughout file"
+    },
+    {
+      "rule": "INT30-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 1024,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "assoc_req_ie_len is kept <= sizeof(assoc_req_ie) by construction via checked increments throughout file"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 1109,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "indic is a pointer (const u8*); '+2' is pointer arithmetic, not signed integer addition"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 1169,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "le_to_host16 calls are pure byte-swap reads; no side effects to unsequence"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 1276,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sme_send_authentication is fully defined at line 601, well before use at 1276"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 1318,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*cwork) in os_zalloc is not a dereference; cwork assigned by this same statement"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 1428,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "plain reads/ternaries as args to sme_external_auth_build_buf; no side effects to unsequence"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 1454,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "plain static helper sme_handle_external_auth_start; data only read, not a dispatch/callback contract"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 1509,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpabuf_head/len pure accessors passed to wpa_drv_send_mlme; no side effects to unsequence"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 1579,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "use_pt/use_pk pre-initialized defaults; no-match case intentionally keeps default (MSC01-C convention)"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 1587,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "plain static helper sme_sae_is_group_enabled; wpa_s only read, not a dispatch/callback contract"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 1590,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "local array w/ explicit 4-elem initializer, knowable bound; low-value TP"
+    },
+    {
+      "rule": "INT13-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 1616,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "len is size_t (unsigned), not int; INT13-C wrong-type claim"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 1616,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "len is size_t (unsigned); single bitwise use plus later arithmetic is normal, not mixed-misuse"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 1640,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "plain static helper sme_external_ml_auth; wpa_s only read, not a dispatch/callback contract"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 1653,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "elems is populated by ieee802_11_parse_elems() output-param call checked for ParseFailed before use"
+    },
+    {
+      "rule": "API05-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 1686,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "const u8 *data, size_t len idiom (API05-C precedent)"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 1698,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "local array w/ explicit 4-elem initializer, knowable bound; low-value TP"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 1702,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "h2e=0 initializer is dead-overwritten by h2e=wpa_s->sme.sae.h2e before any read (MSC13-C literal true)"
+    },
+    {
+      "rule": "ARR39-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 1727,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "data + sizeof(le16) is a plain byte-offset pointer add, not double scaling (ARR39-C precedent)"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 1750,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "use_pt default preserved when neither branch matches (MSC01-C convention)"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 1905,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "groups=NULL is a deliberate sentinel (groups[0]<=0 case); sae_parse_commit is expected to handle absent group list"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 1943,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "status_code default preserved by prior checks; MSC01-C convention"
+    },
+    {
+      "rule": "ARR01-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 1996,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof binds to array member wpa_s->sme.assoc_req_ie, not the wpa_s pointer (ARR01-C misparse)"
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 2015,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "internal-only API; wpa_s guaranteed non-NULL by caller (API00-C internal-API pedantry precedent)"
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 2015,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "internal-only API; auth_frame length-checked before deref at line 2024 (API00-C pedantry precedent)"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 2035,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "le_to_host16 calls are pure byte-swap reads; no side effects to unsequence"
+    },
+    {
+      "rule": "MSC04-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 2063,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "chain routes through wpa_supplicant_event dispatch + state guards; not genuine same-stack synchronous recursion"
+    },
+    {
+      "rule": "ARR00-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 2296,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "end/next both derive arithmetically from the same underlying buf array (ARR00-C precedent)"
+    },
+    {
+      "rule": "ARR36-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 2296,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "end/next both derive arithmetically from the same underlying buf array (ARR36-C precedent)"
+    },
+    {
+      "rule": "MEM05-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 2309,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "nonces[2*NONCE_LEN]: NONCE_LEN is a #define constant, so size is a compile-time constant, not a VLA"
+    },
+    {
+      "rule": "MEM05-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 2331,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "hlp[max_hlp] size derives from a non-const-expression local var; genuine VLA syntax even though value is fixed literal 20"
+    },
+    {
+      "rule": "ARR32-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 2331,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "max_hlp is a fixed literal (20), already trivially validated positive/bounded"
+    },
+    {
+      "rule": "MSC09-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 2345,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "binary SNAP-header byte string literal contains bytes >=0x80; technically true but by design"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 2393,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpabuf_head/len pure accessors in os_memcpy args; no side effects to unsequence"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 2449,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpabuf_head/len pure accessors in os_memcpy args; no side effects to unsequence"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 2483,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpabuf_head/len pure accessors in os_memcpy args; no side effects to unsequence"
+    },
+    {
+      "rule": "INT30-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 2542,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "assoc_req_ie_len is kept <= sizeof(assoc_req_ie) by construction via checked increments throughout file"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 2578,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "status_code/PMF checks precede; no-match branch intentionally keeps default (MSC01-C convention)"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 2642,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "no-match branch intentionally keeps default value (MSC01-C convention)"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 2672,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "rm_en[1] is u8 (max 255) + constant 2; cannot overflow signed int (INT32-C precedent)"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 2698,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "pos[1] is u8 (max 255) + constant 2; cannot overflow signed int (INT32-C precedent)"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 2699,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "pos[1] is u8 (max 255) + constant 2; cannot overflow signed int (INT32-C precedent)"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 2700,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "pos[1] is u8 (max 255) + constant 2; cannot overflow signed int (INT32-C precedent)"
+    },
+    {
+      "rule": "MSC04-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 2864,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "chain routes through wpa_supplicant_event dispatch + state guards; not genuine same-stack synchronous recursion"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 2892,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sme_assoc_comeback_timer(void*,void*) is an eloop_timeout_handler callback contract, not a real const opportunity"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 2918,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "plain static helper sme_try_assoc_comeback; data only read, not a dispatch/callback contract"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 2938,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "elems is populated by ieee802_11_parse_elems() output-param call checked for ParseFailed before use"
+    },
+    {
+      "rule": "INT10-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 2963,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "comeback_usec is unsigned long, not signed; INT10-C wrong-type claim"
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 2969,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "internal-only API; wpa_s guaranteed non-NULL by caller (API00-C internal-API pedantry precedent)"
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 2969,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "internal-only API; data is the union wpa_event_data payload, always populated by caller (API00-C pedantry)"
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 2969,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "internal-only API; link_bssids only dereferenced by callee if non-NULL (API00-C pedantry)"
+    },
+    {
+      "rule": "MSC04-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 2969,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "chain routes through wpa_supplicant_event dispatch + state guards; not genuine same-stack synchronous recursion"
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3062,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "internal-only API; wpa_s guaranteed non-NULL by caller (API00-C internal-API pedantry precedent)"
+    },
+    {
+      "rule": "MSC04-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3062,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "chain routes through wpa_supplicant_event dispatch + state guards; not genuine same-stack synchronous recursion"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3063,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "sme_event_auth_timed_out is a plain function (not a dispatch table entry); data param is entirely unused"
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3071,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "internal-only API; wpa_s guaranteed non-NULL by caller (API00-C internal-API pedantry precedent)"
+    },
+    {
+      "rule": "MSC04-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3071,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "chain routes through wpa_supplicant_event dispatch + state guards; not genuine same-stack synchronous recursion"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3072,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "sme_event_assoc_timed_out is a plain function (not a dispatch table entry); data param is entirely unused"
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3080,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "internal-only API; wpa_s guaranteed non-NULL by caller (API00-C internal-API pedantry precedent)"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3081,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "sme_event_disassoc is a plain function (not a dispatch table entry); info param is entirely unused"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3099,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sme_auth_timer(void*,void*) is an eloop_timeout_handler callback contract, not a real const opportunity"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3109,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sme_assoc_timer(void*,void*) is an eloop_timeout_handler callback contract, not a real const opportunity"
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3119,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "internal-only API; wpa_s guaranteed non-NULL by caller (API00-C internal-API pedantry precedent)"
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3131,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "internal-only API; wpa_s guaranteed non-NULL by caller (API00-C internal-API pedantry precedent)"
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3147,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "internal-only API; wpa_s guaranteed non-NULL by caller (API00-C internal-API pedantry precedent)"
+    },
+    {
+      "rule": "ARR39-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3176,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "2 + sizeof(...) + sizeof(...) is a plain wpabuf_alloc size computation, not pointer arithmetic at all"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3186,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "bc_ie assigned via wpabuf_put() immediately before use; write-destination, not a dereference of uninitialized ptr"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3193,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ic_report assigned via wpabuf_put() immediately before use; write-destination, not a dereference of uninitialized ptr"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3201,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpa_s->bssid/own_addr and wpabuf_head/len are pure reads; no side effects to unsequence"
+    },
+    {
+      "rule": "ENV01-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3217,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no getenv()/environment-variable use anywhere near this line; chan_list is unrelated local array (misfire)"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3308,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "no-match branch intentionally keeps default (MSC01-C convention)"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3335,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no bitwise operation on 'mode' anywhere in this function; pure misfire"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3351,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sme_obss_scan_timeout(void*,void*) is an eloop_timeout_handler callback contract, not a real const opportunity"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3418,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "hw_mode is checked via !hw_mode in the same short-circuited if condition before the -> access"
+    },
+    {
+      "rule": "MSC04-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3453,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "chain routes through wpa_supplicant_event dispatch + state guards; not genuine same-stack synchronous recursion"
+    },
+    {
+      "rule": "FLP03-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3459,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "passed.sec/usec are os_time_t (integer) fields; this is integer division, not floating point"
+    },
+    {
+      "rule": "MEM05-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3475,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "req[2+WLAN_SA_QUERY_TR_ID_LEN+OCV_OCI_EXTENDED_LEN] is a #define-constant-sized array, not a VLA"
+    },
+    {
+      "rule": "MSC04-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3521,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "chain routes through wpa_supplicant_event dispatch + state guards; not genuine same-stack synchronous recursion"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3521,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sme_sa_query_timer(void*,void*) is an eloop_timeout_handler callback contract, not a real const opportunity"
+    },
+    {
+      "rule": "EXP43-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3531,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "os_realloc_array on wpa_s->sme.sa_query_trans_id is standard single-pointer growth realloc, not overlapping regions"
+    },
+    {
+      "rule": "INT10-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3554,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "timeout is unsigned int, not signed; INT10-C wrong-type claim"
+    },
+    {
+      "rule": "MSC04-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3564,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "sme_start_sa_query -> sme_sa_query_timer direct call is guarded by sa_query_count==0, cannot immediately recurse"
+    },
+    {
+      "rule": "MSC04-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3581,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "chain routes through wpa_supplicant_event dispatch + state guards; not genuine same-stack synchronous recursion"
+    },
+    {
+      "rule": "DCL37-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3619,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "_rand is a block-scope local inside sme_event_ch_switch, not file-scope"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3631,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "_rand is assigned on both the os_get_random success and failure branches; never read uninitialized"
+    },
+    {
+      "rule": "INT33-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3631,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sa_query_ch_switch_max_delay is a static const 5000, provably never zero (+1 = 5001)"
+    },
+    {
+      "rule": "MEM05-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3640,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "resp[2+WLAN_SA_QUERY_TR_ID_LEN+OCV_OCI_EXTENDED_LEN] is a #define-constant-sized array, not a VLA"
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3719,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "internal-only API; wpa_s guaranteed non-NULL by caller (API00-C internal-API pedantry precedent)"
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3719,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "internal-only API; sa length-validated indirectly via len check before use (API00-C pedantry)"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3725,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "MAC2STR pure accessor pairs passed to wpa_printf; no side effects to unsequence"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3753,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "elems is populated by ieee802_11_parse_elems() output-param call checked for ParseFailed before use"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "wpa_supplicant/sme.c",
+      "line": 3767,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "no-match branch intentionally keeps default (MSC01-C convention)"
+    }
+  ],
+  "fns": [],
+  "files_clean_for_fn": [],
+  "summary": {
+    "tp": 18,
+    "fp": 108,
+    "fn": 0
+  }
+}

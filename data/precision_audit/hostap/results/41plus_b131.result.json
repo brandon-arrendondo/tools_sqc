@@ -1,0 +1,1219 @@
+{
+ "labels": [
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 36,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_drivers has extern decl in driver.h; needs external linkage"
+  },
+  {
+   "rule": "DCL19-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 36,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same: extern-linked array can't be scope-reduced"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 36,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "confirmed pattern: driver array size varies per CONFIG_DRIVER_*"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 93,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd_logger_cb ctx: fixed hostapd_logger_cb_func typedef contract"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 93,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same dispatch-contract callback, ctx pinned by typedef"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 94,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "addr param, same fixed callback typedef, API05 misapplied"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 105,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "attr never modified in add_extra_attr; real const opportunity"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 110,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no getenv() anywhere in add_extra_attr; confirmed ENV01 misfire"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 110,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is fixed macro-sized array, not a VLA"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 126,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "len&1/len/2 is idiomatic hex-decode parity/halving, not confusing"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 131,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is hexstr2bin's output arg (write target), not read"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 137,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "unchecked atoi() on -N attribute value, no validation at all"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 137,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "unchecked atoi() on -N attribute value, no validation at all"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 156,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "attrs never modified; plain internal helper, real opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 168,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "attrs never modified; plain internal helper, real opportunity"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 173,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p points into heap-allocated list nodes, not local automatic storage"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 183,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no getenv() in ieee802_1x_encapsulate_radius"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 183,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed macro-sized buffer, not a VLA"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 223,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label frees msg; goto does not leak (confirmed pattern)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 230,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label frees msg; goto does not leak (confirmed pattern)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 237,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label frees msg; goto does not leak (confirmed pattern)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 247,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label frees msg; goto does not leak (confirmed pattern)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 256,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label frees msg; goto does not leak (confirmed pattern)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 263,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label frees msg; goto does not leak (confirmed pattern)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 270,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label frees msg; goto does not leak (confirmed pattern)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 278,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label frees msg; goto does not leak (confirmed pattern)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 286,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label frees msg; goto does not leak (confirmed pattern)"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 297,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no #ifdef anywhere in this printf's arguments"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 297,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no #ifdef anywhere in this printf's arguments"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 299,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto fail frees msg at the target label"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 310,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "radius_client_send() transfers msg ownership via radius_client_list_add on success"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 312,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label is reached via goto, not actually unreachable"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 317,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05 misapplied to void* ctx callback param"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 317,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx is eapol_ctx.eapol_send fixed callback field"
+  },
+  {
+   "rule": "INT00-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 320,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "explicit (unsigned long) cast to match %lu is the correct fix, not a violation"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 320,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no #ifdef in this printf's arguments"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 324,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "eapol_test is a static global fully init'd by main() before this runtime callback fires"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 330,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx is eapol_ctx.set_config_blob fixed callback field"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 333,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "e never reassigned; real low-value const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 339,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx is eapol_ctx.get_config_blob fixed callback field"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 341,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "e never reassigned; real low-value const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 346,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx is eapol_ctx.eapol_done_cb fixed callback field"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 348,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "e never reassigned; real low-value const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 356,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_timeout_handler fixed typedef dispatch contract"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 378,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "guard-clause if/else-if chain; default ret=1 already correct behavior"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 387,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "guard-clause if/else-if chain; default ret=1 already correct behavior"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 389,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "guard-clause if/else-if chain; default ret=1 already correct behavior"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 396,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mismatch/ok counters: no action needed when no_mppe_keys is set"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 425,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eapol param pinned by struct eapol_ctx.cb fixed callback typedef; also unused"
+  },
+  {
+   "rule": "CON32-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 430,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eapol_test is single-threaded; no pthreads anywhere in this tool"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 430,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eapol_test is single-threaded; no pthreads anywhere in this tool"
+  },
+  {
+   "rule": "CON32-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 431,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eapol_test is single-threaded; no pthreads anywhere in this tool"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 443,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "FILE* f later passed to fprintf(), which requires non-const FILE*; won't compile const"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 448,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/wpabuf_len are pure read-only accessors, no side effects"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 451,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no #ifdef anywhere in this fprintf's arguments"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 451,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no #ifdef anywhere in this fprintf's arguments"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 458,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx is eapol_ctx.cert_cb fixed callback field"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 461,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "e never reassigned; real low-value const opportunity"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 494,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf here is eap_param_needed's own heap alloc (line 481), freed only at line 498; sqc cites unrelated buf from a different function (line 774) as the alloc site"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 494,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same cross-function buf conflation; wrong allocation site/size attributed"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 496,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf here is eap_param_needed's own heap alloc (line 481), freed only at line 498; sqc cites unrelated buf from a different function (line 774) as the alloc site"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 505,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx/cert types pinned by struct eapol_ctx.cert_cb fixed callback field type"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 505,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx/cert types pinned by struct eapol_ctx.cert_cb fixed callback field type"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 508,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "e never reassigned; real low-value const opportunity"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 522,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/wpabuf_len are pure read-only accessors, no side effects"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 542,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05 misapplied to void* ctx + fixed callback contract"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 542,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx is eapol_ctx.set_anon_id fixed callback field"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 544,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "e never reassigned; real low-value const opportunity"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 555,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C fires on any plain NULL check; confirmed FP class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 556,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set's value param is already const char *; literal is safe"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 556,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set's value param is already const char *; literal is safe"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 564,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set's value param is already const char *; literal is safe"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 573,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx is wpa_sm_ctx.get_state fixed callback field"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 575,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "e never reassigned; real low-value const opportunity"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 589,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr) is a non-evaluated context, not a dereference"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 622,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr) is a non-evaluated context, not a dereference"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 686,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_s->ctrl_iface is struct ctrl_iface_priv*, not eapol_test_data's bitfield; name conflation across distinct structs"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 702,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_ctx/timeout_ctx pinned by eloop_timeout_handler fixed typedef"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 702,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_ctx/timeout_ctx pinned by eloop_timeout_handler fixed typedef"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 709,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr=(cast)buf is a cast/address-of, not a read of buf's contents"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 728,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "timeout_ctx pinned by eloop_timeout_handler fixed typedef"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 794,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*hdr)/sizeof(*dot1x) non-evaluated context, not a dereference"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 843,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*hdr)/sizeof(*dot1x) non-evaluated context, not a dereference"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 848,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/wpabuf_len are pure read-only accessors, no side effects"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 903,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "keys reassigned at line 872 immediately after first free; later free targets the new value, not a double free"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 920,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data pinned by RadiusRxResult handler fixed typedef; API05 misapplied to void*"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 927,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "radius_msg_get_hdr() always returns a valid pointer for a successfully-parsed msg"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 933,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "guard-clause if/else-if; falling through after either branch is intentional"
+  },
+  {
+   "rule": "CON32-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 969,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "single-threaded test tool"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 977,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv pinned by wpa_driver_ops.get_ssid fixed vtable field type"
+  },
+  {
+   "rule": "CON32-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 988,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "single-threaded test tool"
+  },
+  {
+   "rule": "CON32-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 988,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "single-threaded test tool"
+  },
+  {
+   "rule": "CON32-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 991,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "single-threaded test tool"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 991,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "single-threaded test tool"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1000,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv pinned by wpa_driver_ops.get_capa fixed vtable field type"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1002,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*capa) is the correct idiom for a struct pointer param"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1008,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "single-threaded test tool"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1008,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "eapol_test_drv_ops only referenced within this file, no extern elsewhere"
+  },
+  {
+   "rule": "DCL19-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1008,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "used across two functions; can't be function-scoped, DCL15 static already the fix"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1031,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(wpa_s->ifname) sizes the array member itself, correct idiom"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1042,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sscanf() return value genuinely never checked"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1042,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sscanf() return value genuinely never checked"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1042,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sscanf() return value genuinely never checked"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1042,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "confirmed rule bug: FIO47 misidentifies scanf-family pointer args as type mismatch"
+  },
+  {
+   "rule": "INT05-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1042,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "per confirmed precedent: real if low-severity, sscanf errno/ERANGE not reliably signaled"
+  },
+  {
+   "rule": "MSC24-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1042,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf_s is C11 Annex K, unavailable on glibc/Linux; not a real substitute"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1042,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no cast present at all in sscanf(authsrv, ...) call"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1042,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "a[] may be partially uninitialized since sscanf's return is never checked"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1044,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pos stays within the bounds of the single addr.u.v4 member, doesn't cross sibling struct members"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1045,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pos stays within the bounds of the single addr.u.v4 member, doesn't cross sibling struct members"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1046,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pos stays within the bounds of the single addr.u.v4 member, doesn't cross sibling struct members"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1047,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pos stays within the bounds of the single addr.u.v4 member, doesn't cross sibling struct members"
+  },
+  {
+   "rule": "DCL03-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1054,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "assert(0) is inside a runtime-conditional error branch; static_assert(0) would always fail to compile"
+  },
+  {
+   "rule": "DCL03-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1079,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "assert(0) is inside a runtime-conditional error branch; static_assert(0) would always fail to compile"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1092,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "e never reassigned in scard_test; real low-value const opportunity"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1097,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "_rand is a block-scope local, not file-scope"
+  },
+  {
+   "rule": "ARR32-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1103,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "num_triplets is a #define macro (5), not a variable; not a VLA"
+  },
+  {
+   "rule": "ARR32-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1104,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "num_triplets is a #define macro (5), not a variable; not a VLA"
+  },
+  {
+   "rule": "ARR32-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1105,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "num_triplets is a #define macro (5), not a variable; not a VLA"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1118,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no getenv() in scard_test"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1149,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "num_triplets is a macro constant, not an uninitialized variable"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1150,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "rand_ populated via scard_gsm_auth() output params in the preceding loop"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1150,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "rand_ populated via scard_gsm_auth() output params in the preceding loop"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1151,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "rand_ populated via scard_gsm_auth() output params in the preceding loop"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1151,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sres_ populated via scard_gsm_auth() output param in preceding loop"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1151,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "kc_ populated via scard_gsm_auth() output param in preceding loop"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1155,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "num_triplets is a macro constant, not an uninitialized variable"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1161,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "rand_ populated via scard_gsm_auth() output params in the preceding loop"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1164,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sres_ populated via scard_gsm_auth() output param in preceding loop"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1167,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "kc_ populated via scard_gsm_auth() output param in preceding loop"
+  },
+  {
+   "rule": "MSC09-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1175,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "raw hex-escaped byte-pattern AKA test vector, not human-readable text"
+  },
+  {
+   "rule": "MSC09-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1176,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "raw hex-escaped byte-pattern AKA test vector, not human-readable text"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1201,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "e never reassigned in scard_get_triplets"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1201,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "argv only read (os_strcmp/atoi/const-char* param); could be const-qualified"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1206,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "_rand is a block-scope local, not file-scope"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1213,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "atoi() result checked <=0 (rejects 0); range-checked-atoi confirmed FP class"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1213,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "atoi() result checked <=0 (rejects 0); range-checked-atoi confirmed FP class"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1276,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "first usage() printf genuinely has #ifdef CONFIG_RADIUS_TLS/#endif spanning its args"
+  },
+  {
+   "rule": "FIO30-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1276,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "format string is a hardcoded literal concatenation, not user input"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1276,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same call, genuinely embedded preprocessor directive in the argument list"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1288,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same call, genuinely embedded preprocessor directive in the argument list"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1292,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "second (options:) printf has no #ifdef anywhere in its arguments"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1292,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "second (options:) printf has no #ifdef anywhere in its arguments"
+  },
+  {
+   "rule": "STR05-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1337,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "as_addr holds a string literal in non-const char*; real, if pedantic"
+  },
+  {
+   "rule": "MEM03-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1339,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "as_secret aliases a literal or argv-owned memory, not an owned buffer safe to zero"
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1385,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "case 'i' has an explicit break; next label sits behind #ifdef, confirmed MSC17 ifdef-blind misfire"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1413,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "fclose() return value genuinely never checked"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1413,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "fclose() return value genuinely never checked"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1414,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fopen() result IS checked on the very next line (1415)"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1414,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fopen() result IS checked on the very next line (1415)"
+  }
+ ],
+ "fns": [
+  {
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 624,
+   "rule": "MEM31-C",
+   "desc": "test_eapol(): if wctx alloc fails after eapol_sm_init(ctx) already succeeded (ctx ownership transferred to wpa_s->eapol->ctx), os_free(ctx) frees memory still referenced by the live eapol_sm object, creating a dangling reference / latent double-free if eapol_sm_deinit is later invoked on wpa_s->eapol",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 27,
+  "fp": 123,
+  "fn": 1
+ }
+}

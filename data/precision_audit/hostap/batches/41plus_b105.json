@@ -1,0 +1,1354 @@
+{
+ "wpa_supplicant/interworking.c#part1of2": [
+  {
+   "column": 1,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 49,
+   "message": "Function has pointer parameter without size argument: 'static struct wpa_cred * interworking_credentials_available_realm(' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'int *excluded' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 52,
+   "message": "Function has pointer parameter without size argument: 'static struct wpa_cred * interworking_credentials_available_3gpp(' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'int *excluded' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 59,
+   "message": "Potential null pointer dereference in member access of variable 'a'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'a' is not NULL before member access"
+  },
+  {
+   "column": 20,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 59,
+   "message": "Potential null pointer dereference in member access of variable 'b'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'b' is not NULL before member access"
+  },
+  {
+   "column": 43,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 97,
+   "message": "Pointer parameter 'info_ids' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *info_ids'"
+  },
+  {
+   "column": 25,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 112,
+   "message": "Reading from uninitialized array 'info_ids' inside a loop. Array was declared but never initialized before being read.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize array 'info_ids' before reading: int info_ids[N] = {0}; or assign values before use"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 120,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 63,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 142,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 49,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 158,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 54,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 170,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 51,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 186,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 57,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 201,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 55,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 216,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 62,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 240,
+   "message": "Pointer parameter 'sock_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sock_ctx'"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 351,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 367,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 373,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 386,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 394,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 407,
+   "message": "Dereferencing pointer in switch statement may create double-fetch vulnerability",
+   "rule_id": "CON43-C",
+   "severity": "High",
+   "suggestion": "Store dereferenced value in a local variable or use atomic operations"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 459,
+   "message": "Function returns pointer to local variable 'e_end' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 470,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 478,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 28,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 481,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 514,
+   "message": "Loop uses uninitialized variable 'e' as bound for array access. This has indeterminate value and can cause out-of-bounds access.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize 'e' to a valid value before using it in the loop"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 516,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 520,
+   "message": "Function returns pointer to local variable 'f_end' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 531,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 564,
+   "message": "Function returns pointer to local variable 'realm' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 45,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 568,
+   "message": "Pointer parameter 'realm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *realm'"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 587,
+   "message": "Pointer dereference '*end' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 29,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 604,
+   "message": "Pointer parameter 'eap' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *eap'"
+  },
+  {
+   "column": 32,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 674,
+   "message": "Pointer parameter 'eap' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *eap'"
+  },
+  {
+   "column": 24,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 696,
+   "message": "Pointer parameter 'cred' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *cred'"
+  },
+  {
+   "column": 25,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 697,
+   "message": "Pointer parameter 'realm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *realm'"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 752,
+   "message": "Variable 'imsi' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 760,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 763,
+   "message": "Variable 'pos' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 766,
+   "message": "Potential null pointer dereference of variable 'pos'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'pos' is not NULL before dereferencing"
+  },
+  {
+   "column": 32,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 817,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 32,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 817,
+   "message": "Pointer parameter 'nai' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *nai'"
+  },
+  {
+   "column": 65,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 817,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 851,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 856,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 858,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 859,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 860,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 862,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 863,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 864,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 878,
+   "message": "Passing string literal to function 'wpa_config_set_quoted' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 25,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 885,
+   "message": "Pointer parameter 'cred' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *cred'"
+  },
+  {
+   "column": 47,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 885,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 911,
+   "message": "Pointer parameter 'cred' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *cred'"
+  },
+  {
+   "column": 25,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 912,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 964,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 965,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 965,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 966,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 969,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 969,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1031,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1031,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1035,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1035,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1039,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1039,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 52,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1051,
+   "message": "Variable 'prefix' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'prefix' before use, e.g., at its declaration"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1057,
+   "message": "Passing string literal to function 'wpa_config_set_quoted' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1060,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1061,
+   "message": "Passing string literal to function 'wpa_config_set_quoted' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1061,
+   "message": "Passing string literal to function 'wpa_config_set_quoted' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1064,
+   "message": "Passing string literal to function 'wpa_config_set_quoted' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1070,
+   "message": "Passing string literal to function 'wpa_config_set_quoted' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1076,
+   "message": "Passing string literal to function 'wpa_config_set_quoted' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1101,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1118,
+   "message": "Variable 'lens' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1143,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 54,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1202,
+   "message": "Pointer parameter 'cred' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *cred'"
+  },
+  {
+   "column": 47,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1229,
+   "message": "Pointer parameter 'cred' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *cred'"
+  },
+  {
+   "column": 69,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1229,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1237,
+   "message": "Variable 'e' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const e = ..."
+  },
+  {
+   "column": 46,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1248,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1258,
+   "message": "Potential null pointer dereference in member access of variable 'cred'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'cred' is not NULL before member access"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1314,
+   "message": "Potential null pointer dereference in member access of variable 'cred'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'cred' is not NULL before member access"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1334,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1347,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 46,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1361,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1369,
+   "message": "Potential null pointer dereference in member access of variable 'cred'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'cred' is not NULL before member access"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1450,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1485,
+   "message": "sizeof applied to pointer/array parameter 'cred' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*cred->eap_method)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1499,
+   "message": "Function returns without releasing all resources. Leaked: ssid->eap.eap_methods, anon. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 34,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1502,
+   "message": "'pos' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1505,
+   "message": "Function returns without releasing all resources. Leaked: ssid->eap.eap_methods, anon, anon. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1510,
+   "message": "Function returns without releasing all resources. Leaked: ssid->eap.eap_methods, anon, anon. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1512,
+   "message": "Passing string literal to function 'wpa_config_set_quoted' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1515,
+   "message": "Function returns without releasing all resources. Leaked: ssid->eap.eap_methods, anon, anon. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1531,
+   "message": "Function returns without releasing all resources. Leaked: ssid->eap.eap_methods, anon, anon, id. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1533,
+   "message": "Passing string literal to function 'wpa_config_set_quoted' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1536,
+   "message": "Function returns without releasing all resources. Leaked: ssid->eap.eap_methods, anon, anon, id. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1537,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1538,
+   "message": "Passing string literal to function 'wpa_config_set_quoted' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1539,
+   "message": "Function returns without releasing all resources. Leaked: ssid->eap.eap_methods, anon, anon, id. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1543,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1544,
+   "message": "Function returns without releasing all resources. Leaked: ssid->eap.eap_methods, anon, anon, id. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1546,
+   "message": "Passing string literal to function 'wpa_config_set_quoted' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1548,
+   "message": "Function returns without releasing all resources. Leaked: ssid->eap.eap_methods, anon, anon, id. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1552,
+   "message": "Passing string literal to function 'wpa_config_set_quoted' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1553,
+   "message": "Function returns without releasing all resources. Leaked: ssid->eap.eap_methods, anon, anon, id. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1559,
+   "message": "Passing string literal to function 'wpa_config_set_quoted' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1559,
+   "message": "Passing string literal to function 'wpa_config_set_quoted' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1560,
+   "message": "Passing string literal to function 'wpa_config_set_quoted' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1562,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1562,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1563,
+   "message": "Function returns without releasing all resources. Leaked: ssid->eap.eap_methods, anon, anon, id. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1567,
+   "message": "Passing string literal to function 'wpa_config_set_quoted' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1568,
+   "message": "Function returns without releasing all resources. Leaked: ssid->eap.eap_methods, anon, anon, id. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1571,
+   "message": "Passing string literal to function 'wpa_config_set_quoted' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1573,
+   "message": "Function returns without releasing all resources. Leaked: ssid->eap.eap_methods, anon, anon, id. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1576,
+   "message": "Passing string literal to function 'wpa_config_set_quoted' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1577,
+   "message": "Function returns without releasing all resources. Leaked: ssid->eap.eap_methods, anon, anon, id. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1580,
+   "message": "Passing string literal to function 'wpa_config_set_quoted' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1581,
+   "message": "Function returns without releasing all resources. Leaked: ssid->eap.eap_methods, anon, anon, id. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1584,
+   "message": "Passing string literal to function 'wpa_config_set_quoted' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1585,
+   "message": "Function returns without releasing all resources. Leaked: ssid->eap.eap_methods, anon, anon, id. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1588,
+   "message": "Passing string literal to function 'wpa_config_set_quoted' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1589,
+   "message": "Function returns without releasing all resources. Leaked: ssid->eap.eap_methods, anon, anon, id. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1603,
+   "message": "Passing string literal to function 'wpa_config_set_quoted' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1604,
+   "message": "Function returns without releasing all resources. Leaked: ssid->eap.eap_methods, anon, anon, id. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1607,
+   "message": "Passing string literal to function 'wpa_config_set_quoted' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1609,
+   "message": "Function returns without releasing all resources. Leaked: ssid->eap.eap_methods, anon, anon, id. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1613,
+   "message": "Function returns without releasing all resources. Leaked: ssid->eap.eap_methods, anon, anon, id. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1692,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1708,
+   "message": "Value assigned to 'excluded' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1745,
+   "message": "Static variable 'interworking_credentials_available_realm' used without explicit initialization",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'interworking_credentials_available_realm' before use, e.g., at its declaration"
+  },
+  {
+   "column": 14,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1754,
+   "message": "Static variable 'interworking_credentials_available_3gpp' used without explicit initialization",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'interworking_credentials_available_3gpp' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1794,
+   "message": "Value assigned to 'excl' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1873,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1884,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1890,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1890,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1895,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1895,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1900,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1900,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1905,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1905,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1911,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1911,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1919,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  }
+ ]
+}

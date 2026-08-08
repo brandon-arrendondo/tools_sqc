@@ -1,0 +1,1354 @@
+{
+ "src/common/dpp_crypto.c#part1of2": [
+  {
+   "column": 38,
+   "file": "src/common/dpp_crypto.c",
+   "line": 25,
+   "message": "Array declaration 'dpp_curves[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 80,
+   "message": "Function 'dpp_debug_print_key' does not validate pointer parameter 'key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 82,
+   "message": "Value assigned to 'der' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 18,
+   "file": "src/common/dpp_crypto.c",
+   "line": 114,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 169,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp_crypto.c",
+   "line": 194,
+   "message": "Function 'dpp_hmac' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 16,
+   "file": "src/common/dpp_crypto.c",
+   "line": 211,
+   "message": "Pointer to const assigned to non-const pointer without cast: *pos = buf: '*pos = buf'",
+   "rule_id": "EXP40-C",
+   "severity": "Low",
+   "suggestion": "Either remove const qualifier if the object should be modifiable, or use explicit casts to show intentional const removal"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 213,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 232,
+   "message": "Function 'dpp_set_pubkey_point' does not validate pointer parameter 'group_key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'group_key' at the start of the function, e.g., 'if (!group_key) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 232,
+   "message": "Function 'dpp_set_pubkey_point' does not validate integer parameter 'len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 6,
+   "file": "src/common/dpp_crypto.c",
+   "line": 237,
+   "message": "Variable 'len' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 12,
+   "file": "src/common/dpp_crypto.c",
+   "line": 252,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 9,
+   "file": "src/common/dpp_crypto.c",
+   "line": 253,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 26,
+   "file": "src/common/dpp_crypto.c",
+   "line": 278,
+   "message": "Hard-coded sensitive information detected passed to `dpp_debug_print_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Own generated key\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 280,
+   "message": "Function returns pointer to local variable 'key' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 284,
+   "message": "Function 'dpp_set_keypair' does not validate pointer parameter 'privkey' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'privkey' at the start of the function, e.g., 'if (!privkey) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 311,
+   "message": "Function returns pointer to local variable 'key' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 8,
+   "file": "src/common/dpp_crypto.c",
+   "line": 325,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 58,
+   "file": "src/common/dpp_crypto.c",
+   "line": 333,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 6,
+   "file": "src/common/dpp_crypto.c",
+   "line": 361,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 11,
+   "file": "src/common/dpp_crypto.c",
+   "line": 366,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 3,
+   "file": "src/common/dpp_crypto.c",
+   "line": 377,
+   "message": "Function 'os_memmove' called with overlapping memory regions. If parameters are restrict-qualified, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure memory regions do not overlap when using restrict pointers"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 382,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 10,
+   "file": "src/common/dpp_crypto.c",
+   "line": 383,
+   "message": "Passing null pointer 'base64' to 'os_free' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'base64' is not NULL before passing to 'os_free'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 384,
+   "message": "Double free detected: 'der' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 389,
+   "message": "Function 'dpp_derive_k1' does not validate pointer parameter 'k1' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'k1' at the start of the function, e.g., 'if (!k1) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 391,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 6,
+   "file": "src/common/dpp_crypto.c",
+   "line": 399,
+   "message": "Function 'dpp_hmac' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 8,
+   "file": "src/common/dpp_crypto.c",
+   "line": 405,
+   "message": "Function 'dpp_hkdf_expand' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 416,
+   "message": "Function 'dpp_derive_k2' does not validate pointer parameter 'Nx' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'Nx' at the start of the function, e.g., 'if (!Nx) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 416,
+   "message": "Function 'dpp_derive_k2' does not validate pointer parameter 'k2' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'k2' at the start of the function, e.g., 'if (!k2) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 418,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 8,
+   "file": "src/common/dpp_crypto.c",
+   "line": 426,
+   "message": "Function 'dpp_hmac' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 8,
+   "file": "src/common/dpp_crypto.c",
+   "line": 433,
+   "message": "Function 'dpp_hkdf_expand' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 48,
+   "file": "src/common/dpp_crypto.c",
+   "line": 444,
+   "message": "Pointer parameter 'auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *auth'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 448,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 448,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 42,
+   "file": "src/common/dpp_crypto.c",
+   "line": 480,
+   "message": "Unsigned integer multiplication '2 * nonce_len' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (a > UINT_MAX / b) { /* handle error */ }"
+  },
+  {
+   "column": 8,
+   "file": "src/common/dpp_crypto.c",
+   "line": 489,
+   "message": "Function 'dpp_hkdf_expand' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 15,
+   "file": "src/common/dpp_crypto.c",
+   "line": 524,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 537,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 50,
+   "file": "src/common/dpp_crypto.c",
+   "line": 548,
+   "message": "Pointer parameter 'bi' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bi'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 601,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 12,
+   "file": "src/common/dpp_crypto.c",
+   "line": 692,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 9,
+   "file": "src/common/dpp_crypto.c",
+   "line": 693,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 21,
+   "file": "src/common/dpp_crypto.c",
+   "line": 737,
+   "message": "sizeof applied to pointer/array parameter 'info' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*info)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 6,
+   "file": "src/common/dpp_crypto.c",
+   "line": 804,
+   "message": "Variable 'signature_len' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 15,
+   "file": "src/common/dpp_crypto.c",
+   "line": 816,
+   "message": "Subtracting pointers from different arrays ('signed_end' from 'end' and 'signed_start' from 'pos'). Pointer subtraction is only defined for pointers within the same array object.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Only subtract pointers that point to elements within the same array object."
+  },
+  {
+   "column": 15,
+   "file": "src/common/dpp_crypto.c",
+   "line": 816,
+   "message": "Signed integer addition 'signed_end - signed_start + 1' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 15,
+   "file": "src/common/dpp_crypto.c",
+   "line": 816,
+   "message": "Signed integer subtraction 'signed_end - signed_start' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b < 0 && a > INT_MAX + b) || (b > 0 && a < INT_MIN + b)) { /* handle error */ }"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 855,
+   "message": "Function 'dpp_check_signed_connector' does not validate pointer parameter 'csign_key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'csign_key' at the start of the function, e.g., 'if (!csign_key) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 855,
+   "message": "Function 'dpp_check_signed_connector' does not validate integer parameter 'peer_connector_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'peer_connector_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 877,
+   "message": "Potentially unsafe array access with unvalidated function parameter index 'peer_connector_len'",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking for function parameter before using as array index."
+  },
+  {
+   "column": 46,
+   "file": "src/common/dpp_crypto.c",
+   "line": 886,
+   "message": "Pointer parameter 'auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *auth'"
+  },
+  {
+   "column": 46,
+   "file": "src/common/dpp_crypto.c",
+   "line": 969,
+   "message": "Pointer parameter 'auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *auth'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 971,
+   "message": "Value assigned to 'pix' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 971,
+   "message": "Value assigned to 'prx' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 971,
+   "message": "Value assigned to 'bix' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 41,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1081,
+   "message": "sizeof applied to pointer/array parameter 'auth' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(auth->Lx)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 41,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1123,
+   "message": "sizeof applied to pointer/array parameter 'auth' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(auth->Lx)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1142,
+   "message": "Function 'dpp_derive_pmk' does not validate pointer parameter 'pmk' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pmk' at the start of the function, e.g., 'if (!pmk) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1144,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 6,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1152,
+   "message": "Function 'dpp_hmac' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 8,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1158,
+   "message": "Function 'dpp_hkdf_expand' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1169,
+   "message": "Function 'dpp_derive_pmkid' does not validate pointer parameter 'peer_key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'peer_key' at the start of the function, e.g., 'if (!peer_key) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1169,
+   "message": "Function 'dpp_derive_pmkid' does not validate pointer parameter 'pmkid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pmkid' at the start of the function, e.g., 'if (!pmkid) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1459,
+   "message": "Function 'dpp_pkex_derive_Qi' does not validate pointer parameter 'curve' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'curve' at the start of the function, e.g., 'if (!curve) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1459,
+   "message": "Function 'dpp_pkex_derive_Qi' does not validate pointer parameter 'code' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'code' at the start of the function, e.g., 'if (!code) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1459,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 17,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1461,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 52,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1461,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1464,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 39,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1493,
+   "message": "Variable 'addr' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'addr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 3,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1523,
+   "message": "Local variable 'ec' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1527,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1534,
+   "message": "Function 'dpp_pkex_derive_Qr' does not validate pointer parameter 'curve' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'curve' at the start of the function, e.g., 'if (!curve) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1534,
+   "message": "Function 'dpp_pkex_derive_Qr' does not validate pointer parameter 'code' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'code' at the start of the function, e.g., 'if (!code) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1534,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 17,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1536,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 52,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1536,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1539,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 39,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1568,
+   "message": "Variable 'addr' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'addr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 3,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1599,
+   "message": "Local variable 'ec' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1603,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1610,
+   "message": "Function 'dpp_pkex_derive_z' does not validate pointer parameter 'Mx' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'Mx' at the start of the function, e.g., 'if (!Mx) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1610,
+   "message": "Function 'dpp_pkex_derive_z' does not validate pointer parameter 'code' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'code' at the start of the function, e.g., 'if (!code) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1610,
+   "message": "Function 'dpp_pkex_derive_z' does not validate pointer parameter 'z' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'z' at the start of the function, e.g., 'if (!z) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1610,
+   "message": "Function 'dpp_pkex_derive_z' does not validate integer parameter 'Mx_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'Mx_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1610,
+   "message": "Function 'dpp_pkex_derive_z' does not validate integer parameter 'Nx_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'Nx_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1610,
+   "message": "Function 'dpp_pkex_derive_z' does not validate integer parameter 'code_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'code_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 20,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1614,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1618,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 6,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1631,
+   "message": "Function 'dpp_hmac' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1682,
+   "message": "Function 'dpp_reconfig_derive_ke_responder' does not validate pointer parameter 'net_access_key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'net_access_key' at the start of the function, e.g., 'if (!net_access_key) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1687,
+   "message": "Value assigned to 'own_key' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1692,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1693,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1696,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1696,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 6,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1759,
+   "message": "Function 'dpp_hkdf_expand' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1789,
+   "message": "Value assigned to 'pr' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1793,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1794,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1797,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1797,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 22,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1805,
+   "message": "Hard-coded sensitive information detected passed to `dpp_debug_print_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Peer (Responder) Protocol Key\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 6,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1852,
+   "message": "Function 'dpp_hkdf_expand' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 23,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1864,
+   "message": "Passing null pointer 'pr' to 'crypto_ec_key_deinit' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'pr' is not NULL before passing to 'crypto_ec_key_deinit'"
+  },
+  {
+   "column": 48,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1876,
+   "message": "Pointer parameter 'conf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conf'"
+  },
+  {
+   "column": 12,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1891,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1895,
+   "message": "Function returns pointer to local variable 'signed1' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 50,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1900,
+   "message": "Pointer parameter 'conf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conf'"
+  },
+  {
+   "column": 16,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1901,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 16,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1902,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1908,
+   "message": "Variable 'dot' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const dot = ..."
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1908,
+   "message": "Pointer variable '(unknown)' is assigned a string literal without const qualification. String literals are immutable and should be declared as 'const char *' or 'const wchar_t *'.",
+   "rule_id": "STR05-C",
+   "severity": "Low",
+   "suggestion": "Add 'const' qualifier to the pointee type (e.g., change 'char *' to 'const char *')."
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1948,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 12,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1950,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1962,
+   "message": "Value assigned to 'signed1' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1962,
+   "message": "Value assigned to 'signed2' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 12,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1967,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1983,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1986,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 1989,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 2001,
+   "message": "Function 'dpp_pfs_init' does not validate pointer parameter 'net_access_key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'net_access_key' at the start of the function, e.g., 'if (!net_access_key) { return error_code; }'"
+  },
+  {
+   "column": 25,
+   "file": "src/common/dpp_crypto.c",
+   "line": 2008,
+   "message": "Dereference of uninitialized pointer 'pfs'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'pfs' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 2041,
+   "message": "Function returns pointer to local variable 'pfs' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 2042,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 2043,
+   "message": "Double-free: 'pub' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 2043,
+   "message": "Double free detected: 'pub' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 2089,
+   "message": "Sensitive buffer 'password' not cleared before function exit",
+   "rule_id": "MEM03-C",
+   "severity": "Medium",
+   "suggestion": "Call SecureZeroMemory(password, size) or memset(password, 0, size) before the buffer goes out of scope"
+  },
+  {
+   "column": 6,
+   "file": "src/common/dpp_crypto.c",
+   "line": 2113,
+   "message": "Function 'dpp_hkdf_expand' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 2151,
+   "message": "Function 'dpp_validate_csr' does not validate pointer parameter 'csrbuf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'csrbuf' at the start of the function, e.g., 'if (!csrbuf) { return error_code; }'"
+  },
+  {
+   "column": 48,
+   "file": "src/common/dpp_crypto.c",
+   "line": 2151,
+   "message": "Pointer parameter 'auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *auth'"
+  },
+  {
+   "column": 6,
+   "file": "src/common/dpp_crypto.c",
+   "line": 2205,
+   "message": "Function 'dpp_hkdf_expand' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 2225,
+   "message": "Function 'dpp_gen_reconfig_id' does not validate pointer parameter 'csign_key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'csign_key' at the start of the function, e.g., 'if (!csign_key) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 2225,
+   "message": "Function 'dpp_gen_reconfig_id' does not validate pointer parameter 'pp_key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pp_key' at the start of the function, e.g., 'if (!pp_key) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 2230,
+   "message": "Value assigned to 'csign' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 2286,
+   "message": "Function 'dpp_update_reconfig_id' does not validate pointer parameter 'id' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'id' at the start of the function, e.g., 'if (!id) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 2353,
+   "message": "Value assigned to 'pp' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 2354,
+   "message": "Value assigned to 'e_id' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 26,
+   "file": "src/common/dpp_crypto.c",
+   "line": 2373,
+   "message": "Passing null pointer 'e_id' to 'crypto_ec_point_deinit' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'e_id' is not NULL before passing to 'crypto_ec_point_deinit'"
+  },
+  {
+   "column": 49,
+   "file": "src/common/dpp_crypto.c",
+   "line": 2393,
+   "message": "Pointer parameter 'auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *auth'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 2396,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_crypto.c",
+   "line": 2402,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 8,
+   "file": "src/common/dpp_crypto.c",
+   "line": 2431,
+   "message": "Function 'dpp_hmac_vector' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 8,
+   "file": "src/common/dpp_crypto.c",
+   "line": 2438,
+   "message": "Function 'dpp_hkdf_expand' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 6,
+   "file": "src/common/dpp_crypto.c",
+   "line": 2466,
+   "message": "Function 'dpp_hmac_vector' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_crypto.c",
+   "line": 2526,
+   "message": "Function 'dpp_test_gen_invalid_key' does not validate pointer parameter 'curve' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'curve' at the start of the function, e.g., 'if (!curve) { return error_code; }'"
+  },
+  {
+   "column": 25,
+   "file": "src/common/dpp_crypto.c",
+   "line": 2563,
+   "message": "Passing null pointer 'p' to 'crypto_ec_point_deinit' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'p' is not NULL before passing to 'crypto_ec_point_deinit'"
+  }
+ ]
+}

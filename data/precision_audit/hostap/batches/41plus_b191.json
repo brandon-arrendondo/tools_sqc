@@ -1,0 +1,904 @@
+{
+ "src/ap/wpa_auth_ie.c": [
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 12,
+   "message": "Header file 'ieee802_11_defs.h' has the same first 8 characters (case-insensitive) as 'ieee802_11.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_defs.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 17,
+   "message": "Header file 'wpa_auth.h' has the same first 8 characters (case-insensitive) as 'wpa_auth_ie.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'wpa_auth.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 17,
+   "message": "Header file 'wpa_auth.h' has the same first 8 characters (case-insensitive) as 'wpa_auth_i.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'wpa_auth.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 19,
+   "message": "Header file 'wpa_auth_ie.h' has the same first 8 characters (case-insensitive) as 'wpa_auth_i.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'wpa_auth_ie.h' -> unique name)"
+  },
+  {
+   "column": 52,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 28,
+   "message": "Pointer parameter 'conf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conf'"
+  },
+  {
+   "column": 62,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 28,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 13,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 86,
+   "message": "Signed integer subtraction '(pos - buf) - 2' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b < 0 && a > INT_MAX + b) || (b > 0 && a < INT_MIN + b)) { /* handle error */ }"
+  },
+  {
+   "column": 53,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 92,
+   "message": "Pointer parameter 'conf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conf'"
+  },
+  {
+   "column": 32,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 123,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 380,
+   "message": "Variable 'pmkid_count_set' is initialized but never read.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Use the variable or remove it"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 400,
+   "message": "Function 'wpa_write_rsn_ie' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  },
+  {
+   "column": 13,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 418,
+   "message": "Signed integer subtraction '(pos - buf) - 2' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b < 0 && a > INT_MAX + b) || (b > 0 && a < INT_MIN + b)) { /* handle error */ }"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 427,
+   "message": "Variable 'pos' should be declared volatile - modified around function calls that may have external side effects",
+   "rule_id": "DCL22-C",
+   "severity": "Low",
+   "suggestion": "Declare as 'volatile' to prevent compiler optimizations that assume variable state is unchanged across function calls"
+  },
+  {
+   "column": 13,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 448,
+   "message": "Signed integer subtraction '(pos - buf) - 2' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b < 0 && a > INT_MAX + b) || (b > 0 && a < INT_MIN + b)) { /* handle error */ }"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 457,
+   "message": "Variable 'pos' should be declared volatile - modified around function calls that may have external side effects",
+   "rule_id": "DCL22-C",
+   "severity": "Low",
+   "suggestion": "Declare as 'volatile' to prevent compiler optimizations that assume variable state is unchanged across function calls"
+  },
+  {
+   "column": 13,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 478,
+   "message": "Signed integer subtraction '(pos - buf) - 2' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b < 0 && a > INT_MAX + b) || (b > 0 && a < INT_MIN + b)) { /* handle error */ }"
+  },
+  {
+   "column": 47,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 484,
+   "message": "Pointer parameter 'conf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conf'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 534,
+   "message": "Function 'wpa_write_rsnxe' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  },
+  {
+   "column": 54,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 534,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 537,
+   "message": "Value assigned to 'capab' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 556,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'pos' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 592,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'pos' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 632,
+   "message": "Unsigned integer subtraction 'sizeof(buf) - (pos - buf)' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 17,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 642,
+   "message": "Scaled integer arithmetic with pointer: 'buf + sizeof(buf)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 653,
+   "message": "Unsigned integer subtraction 'sizeof(buf) - (pos - buf)' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 666,
+   "message": "Scaled integer arithmetic with pointer: 'buf + sizeof(buf)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 10,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 677,
+   "message": "Scaled integer arithmetic with pointer: 'buf + sizeof(buf)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 17,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 685,
+   "message": "Scaled integer arithmetic with pointer: 'buf + sizeof(buf)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 698,
+   "message": "Unsigned integer subtraction 'sizeof(buf) - (pos - buf)' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 17,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 708,
+   "message": "Scaled integer arithmetic with pointer: 'buf + sizeof(buf)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 724,
+   "message": "Unsigned integer subtraction 'sizeof(buf) - (pos - buf)' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 734,
+   "message": "Scaled integer arithmetic with pointer: 'buf + sizeof(buf)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 751,
+   "message": "Unsigned integer subtraction 'sizeof(buf) - (pos - buf)' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 13,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 761,
+   "message": "Scaled integer arithmetic with pointer: 'buf + sizeof(buf)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 782,
+   "message": "Function 'wpa_add_kde' does not validate pointer parameter 'pos' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pos' at the start of the function, e.g., 'if (!pos) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 782,
+   "message": "Function 'wpa_add_kde' does not validate pointer parameter 'data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'data' at the start of the function, e.g., 'if (!data) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 782,
+   "message": "Function 'wpa_add_kde' does not validate integer parameter 'data_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'data_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 782,
+   "message": "Function 'wpa_add_kde' does not validate integer parameter 'data2_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'data2_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 55,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 807,
+   "message": "Pointer parameter 'a' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *a'"
+  },
+  {
+   "column": 57,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 827,
+   "message": "Pointer parameter 'a' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *a'"
+  },
+  {
+   "column": 32,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 851,
+   "message": "Pointer parameter 'assoc_sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *assoc_sm'"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 903,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 907,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 17,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 907,
+   "message": "Variable 'key_mgmt' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'key_mgmt' before use, e.g., at its declaration"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 909,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 912,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 914,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 919,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 922,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 924,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 927,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 929,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 932,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 934,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 936,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 938,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 941,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 943,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 946,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 950,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 954,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 976,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1021,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1025,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1027,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1030,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1032,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1037,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1040,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1042,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1046,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1049,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1051,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1054,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1056,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1058,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1060,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1063,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1066,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1070,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 30,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1158,
+   "message": "Bitwise operator '&' used on signed operand 'ciphers' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'ciphers' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1166,
+   "message": "Bitwise operator '&' used on signed operand 'ciphers' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'ciphers' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1185,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1294,
+   "message": "Hard-coded sensitive information detected passed to `wpa_auth_vlogger`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"OKC match for PMKID\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 5,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1391,
+   "message": "Function returns without releasing all resources. Leaked: sm->wpa_ie, sm->rsnxe. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1401,
+   "message": "Function returns without releasing all resources. Leaked: sm->wpa_ie, sm->rsnxe. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1405,
+   "message": "Function 'wpa_auth_uses_mfp' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 48,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1405,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1411,
+   "message": "Function 'wpa_auth_uses_spp_amsdu' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 54,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1411,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 48,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1425,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1434,
+   "message": "Function 'wpa_auth_write_assoc_resp_owe' does not validate pointer parameter 'pos' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pos' at the start of the function, e.g., 'if (!pos) { return error_code; }'"
+  },
+  {
+   "column": 61,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1434,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1467,
+   "message": "Function 'wpa_auth_write_assoc_resp_fils' does not validate pointer parameter 'pos' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pos' at the start of the function, e.g., 'if (!pos) { return error_code; }'"
+  },
+  {
+   "column": 58,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1484,
+   "message": "Pointer parameter 'wpa_auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_auth'"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1492,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1518,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  },
+  {
+   "column": 15,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1541,
+   "message": "Do not assume constant values in expressions: 'cipher << 12'",
+   "rule_id": "EXP07-C",
+   "severity": "Low",
+   "suggestion": "Use the constant identifier directly instead of assuming its numeric value"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1556,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 15,
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1559,
+   "message": "Do not assume constant values in expressions: 'selector << 18'",
+   "rule_id": "EXP07-C",
+   "severity": "Low",
+   "suggestion": "Use the constant identifier directly instead of assuming its numeric value"
+  }
+ ]
+}

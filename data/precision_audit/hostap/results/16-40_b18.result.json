@@ -1,0 +1,928 @@
+{
+ "labels": [
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_common/eap_sake_common.c",
+   "line": 165,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR01-C: attr is a struct pointer param, never an array; sizeof(*attr) is a correct dereference, not decayed-array sizing (eap_pax.c-style ARR01-C misclassification)"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_common/eap_sake_common.c",
+   "line": 193,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT30-C: pos is const u8* (pointer), not an unsigned integer; rule mislabels pointer arithmetic as integer overflow. Also already bounded by 'attr_len > end - pos' check just above"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_common/eap_sake_common.c",
+   "line": 216,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C: key/data/data2/buf each already paired with own *_len param (key_len/data_len/data2_len/buf_len) - confirmed paired-len idiom FP"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/eap_common/eap_sake_common.c",
+   "line": 224,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR34-C: no char-to-int conversion occurs at this line; label is used only as a pointer arg to os_strlen(), rule fired without an actual widening conversion"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/eap_common/eap_sake_common.c",
+   "line": 228,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP05-C: cast-away-const with no write-through; result stored into addr[0] which is itself const-qualified (const unsigned char *addr[4]), only ever read by hmac_sha1_vector"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_common/eap_sake_common.c",
+   "line": 244,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT30-C bounded-loop FP: pos here is a size_t loop index in eap_sake_kdf, only incremented when plen>=SHA1_MAC_LEN i.e. buf_len-pos>=SHA1_MAC_LEN, so pos+SHA1_MAC_LEN<=buf_len always - matches confirmed bounded-loop INT30-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_common/eap_sake_common.c",
+   "line": 272,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C: eap_sake_derive_keys is an internal EAP-SAKE crypto helper, msk always a caller-owned fixed buffer at closed call sites - internal-only API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_common/eap_sake_common.c",
+   "line": 272,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C: same reasoning, emsk always a caller-owned fixed buffer at closed call sites"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/eap_common/eap_sake_common.c",
+   "line": 278,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM05-C: key_buf sized by EAP_MSK_LEN+EAP_EMSK_LEN, both compile-time #define constants; not a VLA at all - confirmed macro-sized-array MEM05-C FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_common/eap_sake_common.c",
+   "line": 311,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C: key_buf is written by eap_sake_kdf(...,key_buf,sizeof(key_buf)) at line 307-309 (output-param write) before this read at line 311 - sqc misses the cross-call write, same as WPS-parse output-param FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_common/eap_sake_common.c",
+   "line": 335,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C: eap_sake_compute_mic is an internal EAP-SAKE crypto helper called only with fixed valid tek_auth - internal-only API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_common/eap_sake_common.c",
+   "line": 335,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C: same, eap always a valid EAP packet pointer supplied by internal caller"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_common/eap_sake_common.c",
+   "line": 335,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C: serverid_len is sourced from a u8 attr_len field (<=255) in eap_sake_parse_add_attr; protocol-bounded, tmplen arithmetic cannot overflow size_t"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_common/eap_sake_common.c",
+   "line": 335,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C: peerid_len likewise bounded by u8 attr_len (<=255) from wire parsing; protocol-bounded, no realistic overflow"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_common/eap_sake_common.c",
+   "line": 335,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C: 'peer' is a boolean 0/1 flag only ever used in 'if (peer)' - never used in arithmetic at all; rule bug flagging a non-arithmetic boolean as needing overflow validation"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_common/eap_sake_common.c",
+   "line": 335,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C: eap_len is a real EAP packet length, bounded by realistic EAP frame size; same protocol-bounded reasoning as serverid_len/peerid_len"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/eap_common/eap_sake_common.c",
+   "line": 342,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM05-C: _rand sized 2*EAP_SAKE_RAND_LEN, a compile-time macro constant; not a VLA - confirmed macro-sized-array FP class"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/eap_common/eap_sake_common.c",
+   "line": 342,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL37-C: _rand is a block-scope local inside eap_sake_compute_mic, not a file-scope identifier; per C 7.1.3 the single-underscore reserved-identifier rule only applies at file scope - confirmed misapplication pattern"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_common/eap_sake_common.c",
+   "line": 355,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT30-C: pos is u8* (pointer) here, not an unsigned integer; mislabeled pointer arithmetic. Also bounded by tmplen = serverid_len+1+peerid_len+1+eap_len, the exact size tmp was malloc'd with"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_common/eap_sake_common.c",
+   "line": 357,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT30-C: same pointer-mislabel + bounded-by-allocation reasoning"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_common/eap_sake_common.c",
+   "line": 360,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT30-C: same pointer-mislabel + bounded-by-allocation reasoning"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_common/eap_sake_common.c",
+   "line": 362,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT30-C: same pointer-mislabel + bounded-by-allocation reasoning"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_common/eap_sake_common.c",
+   "line": 370,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT30-C: same pointer-mislabel + bounded-by-allocation reasoning"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_common/eap_sake_common.c",
+   "line": 372,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT30-C: same pointer-mislabel + bounded-by-allocation reasoning"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_common/eap_sake_common.c",
+   "line": 375,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT30-C: same pointer-mislabel + bounded-by-allocation reasoning"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_common/eap_sake_common.c",
+   "line": 377,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT30-C: same pointer-mislabel + bounded-by-allocation reasoning"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_common/eap_sake_common.c",
+   "line": 385,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT30-C: pos+(mic_pos-eap) is pointer arithmetic (pos is u8*), mislabeled as unsigned-int overflow; also bounded by tmplen allocation"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/eap_common/eap_sake_common.c",
+   "line": 385,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR36-C: verified via caller (eap_server_sake.c:200-203) that mic_pos and eap both derive from the same wpabuf (eap=wpabuf_head(msg), mic_pos=mic=wpabuf_put(msg,...)) - same underlying buffer, provenance lost interprocedurally"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_common/eap_sake_common.c",
+   "line": 398,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C: len in eap_sake_add_attr is an internal-only attribute length, protocol-bounded (<256 per attribute), and stored via wpabuf_put_u8 which itself bounds-checks"
+  },
+  {
+   "rule": "FLP03-C",
+   "file": "src/ap/gas_query_ap.c",
+   "line": 85,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "FLP03-C: res.sec*1000 + res.usec/1000 operates on plain int fields of struct os_reltime; no floating-point operation exists at this line"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/gas_query_ap.c",
+   "line": 94,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C: gas_query_ap_init has one call site (hostapd.c:1682) always passing a valid hapd - internal-only API FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/gas_query_ap.c",
+   "line": 99,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C: os_zalloc(sizeof(*gas)) - sizeof never evaluates its operand for a non-VLA type, not a real dereference"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/gas_query_ap.c",
+   "line": 107,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C: gas points to heap memory from os_zalloc(), not automatic storage; rule confuses local pointer variable with local storage duration"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/gas_query_ap.c",
+   "line": 148,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "EXP30-C: MAC2STR(query->addr) is a pure array-read macro, no side effects to unsequence with the sibling args"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/ap/gas_query_ap.c",
+   "line": 172,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MEM10-C: fires on an ordinary 'if (ptr == NULL)' guard - the check IS present, purely stylistic"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/gas_query_ap.c",
+   "line": 190,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C: q is a traversal pointer into heap-allocated gas_query_pending nodes (linked via dl_list), not automatic-storage local; same pointer-var-vs-storage misclassification"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/gas_query_ap.c",
+   "line": 260,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "DCL13-C: gas_query_tx is a plain static internal helper (not an eloop/EAP-method dispatch callback); gas is only ever read (gas->hapd) and never forwarded itself to a vtable call - genuine low-severity const opportunity per the established 'plain internal helper' distinction"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/gas_query_ap.c",
+   "line": 266,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "EXP30-C: MAC2STR/wpabuf_len are pure accessor calls, no unsequenced side effects"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/gas_query_ap.c",
+   "line": 272,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "EXP34-C: categ = wpabuf_mhead_u8(req) where req is the same wpabuf already used via wpabuf_len(req) earlier in this function without incident - no realistic NULL path for a valid allocated wpabuf's internal pointer"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/gas_query_ap.c",
+   "line": 275,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "EXP30-C: wpabuf_head(req)/wpabuf_len(req) are pure accessor calls, no unsequenced side effects"
+  },
+  {
+   "rule": "CON32-C",
+   "file": "src/ap/gas_query_ap.c",
+   "line": 315,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON32-C: gas_query_rx_comeback_timeout runs only via the single-threaded eloop callback model; no pthread usage anywhere in hostapd's ap/ core - confirmed CON32/POS49 categorical FP for hostap core"
+  },
+  {
+   "rule": "CON32-C",
+   "file": "src/ap/gas_query_ap.c",
+   "line": 316,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON32-C: same single-threaded-eloop reasoning"
+  },
+  {
+   "rule": "CON32-C",
+   "file": "src/ap/gas_query_ap.c",
+   "line": 323,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON32-C: same single-threaded-eloop reasoning"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/ap/gas_query_ap.c",
+   "line": 323,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "POS49-C: same single-threaded-eloop reasoning"
+  },
+  {
+   "rule": "CON32-C",
+   "file": "src/ap/gas_query_ap.c",
+   "line": 326,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON32-C: same single-threaded-eloop reasoning, wait_comeback bitfield"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/ap/gas_query_ap.c",
+   "line": 326,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "POS49-C: same single-threaded-eloop reasoning"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/ap/gas_query_ap.c",
+   "line": 380,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "POS49-C: same single-threaded-eloop reasoning"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/gas_query_ap.c",
+   "line": 409,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "EXP30-C: MAC2STR pure accessor macro args"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/gas_query_ap.c",
+   "line": 468,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C: sa is mgmt->sa, a fixed-size array field of a received management frame struct (always present, never NULL) - internal-only API FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/gas_query_ap.c",
+   "line": 507,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "EXP30-C: ms_from_time()/MAC2STR(sa) are effectively side-effect-free w.r.t. observable program state for this ordering concern"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/gas_query_ap.c",
+   "line": 525,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT14-C: bitwise ops (*pos & 0x7f, *pos & 0x80) apply to the dereferenced byte value, while pos++ is separate pointer arithmetic on the pointer itself - conflates dereferenced-value bitwise use with pointer-itself arithmetic, same as the confirmed member/deref-conflation INT14-C class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/gas_query_ap.c",
+   "line": 530,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC01-C: standard guard-clause if/else-if chain where falling through to the code after the chain IS the correct handling of the remaining case (success path) - stylistic pedantry, not a missing case"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "src/ap/gas_query_ap.c",
+   "line": 659,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON03-C: next_start is a static local only ever touched from the single-threaded eloop context; no pthread usage in this codebase area - same reasoning as CON32/POS49"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/gas_query_ap.c",
+   "line": 670,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC13-C: next_start is a static local whose value is read on the *next* invocation of gas_query_new_dialog_token (line 664); intra-function liveness view misses cross-call significance - confirmed static/global MSC13-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/gas_query_ap.c",
+   "line": 686,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C: dst always a valid MAC address buffer at the one production call site (dpp_hostapd.c) - internal-only API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/gas_query_ap.c",
+   "line": 686,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C: cb is always a fixed, non-null function pointer supplied by internal callers - internal-only API FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/gas_query_ap.c",
+   "line": 704,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C: os_zalloc(sizeof(*query)) - sizeof never evaluates its operand, not a real dereference"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/wmm.c",
+   "line": 14,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE08-C: legacy 8.3-filesystem header-name-collision concern, not applicable to this modern POSIX/embedded codebase - confirmed categorical FP for hostap"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/wmm.c",
+   "line": 14,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE08-C: same reasoning"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/wmm.c",
+   "line": 15,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE08-C: same reasoning"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/wmm.c",
+   "line": 27,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "INT14-C: aifsn is an int but config-validated to a small non-negative WMM AIFSN value; shift used for standard 802.11 WMM field bit-packing, extends the confirmed EXP07-C 'deliberate protocol bit-packing' FP reasoning to this INT14-C signed-shift variant"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/wmm.c",
+   "line": 30,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "INT14-C: aci likewise config-validated small non-negative value used for protocol bit-packing"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/wmm.c",
+   "line": 37,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "INT14-C: ecwmin likewise config-validated small non-negative value used for protocol bit-packing"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/wmm.c",
+   "line": 38,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "INT14-C: ecwmax likewise config-validated small non-negative value used for protocol bit-packing"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/wmm.c",
+   "line": 71,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR01-C: hapd->iconf->wmm_ac_params is a genuine fixed-size array FIELD (int[4]) reached through the hapd pointer, not a decayed parameter array - confirmed ARR01-C misclassification-of-struct-field-array pattern"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/wmm.c",
+   "line": 90,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR01-C: same reasoning"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/wmm.c",
+   "line": 92,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR01-C: same reasoning"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wmm.c",
+   "line": 102,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C: hostapd_eid_wmm's hapd is always supplied internally by beacon/probe-response IE builders, non-null by construction - internal-only API FP class"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "src/ap/wmm.c",
+   "line": 104,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP40-C: rule bug - eid is declared 'u8 *eid' (NOT const-qualified) in this function's own signature; 'pos = eid' assigns a non-const pointer to a non-const pointer, no const is involved at all"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/wmm.c",
+   "line": 113,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C: eid is this function's own parameter pointing to the caller's buffer, not automatic storage of this function - confirmed DCL30-C-on-parameter misclassification"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/wmm.c",
+   "line": 145,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C: pos is a local alias of the eid parameter (pos = eid), same caller-owned-buffer reasoning"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wmm.c",
+   "line": 154,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C: hostapd_eid_wmm_valid's hapd is always supplied internally, non-null by construction - internal-only API FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wmm.c",
+   "line": 154,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C: hapd is a completely unused parameter in hostapd_eid_wmm_valid's body (function never references it) - trivially real, if low-value, const opportunity; plain internal helper, not a dispatch-bound signature"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/ap/wmm.c",
+   "line": 166,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP05-C: cast-away-const on eid with no write through wmm afterward - only oui/oui_subtype/version/qos_info fields are read - confirmed 'cast-away-const with no write follows' FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wmm.c",
+   "line": 186,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C: (struct ieee80211_mgmt *) buf only takes the array's address (equivalent to &buf[0]), it does not read buf's contents; buf is os_memset to 0 at line 194 before any content is used - not a real uninitialized-use"
+  },
+  {
+   "rule": "DCL22-C",
+   "file": "src/ap/wmm.c",
+   "line": 217,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "DCL22-C: val (u16 val, surplus;) is an ordinary local used only for protocol-field bookkeeping in wmm_process_tspec; no setjmp/longjmp or signal-handler context anywhere in the function - confirmed DCL22-C-with-no-setjmp-context FP class (4th instance)"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/wmm.c",
+   "line": 219,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT14-C: tspec is a struct pointer whose *member* ts_info[1] is used bitwise (>>3 &0x07), while pointer arithmetic on tspec itself happens elsewhere (tspec+1 at line 295) - conflates member bitwise-use with pointer-itself arithmetic, confirmed pattern"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/wmm.c",
+   "line": 227,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "INT14-C: val (u16) is genuinely used for bitmask-extract (val & 0x7fff/0x8000) and later plain arithmetic (val-1, /val) - matches the confirmed stylistic-pedantry INT14-C FP class (parity/bitfield-extract followed by unrelated arithmetic), not a real defect"
+  },
+  {
+   "rule": "EXP07-C",
+   "file": "src/ap/wmm.c",
+   "line": 234,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP07-C: val >> 13 is deliberate fixed-point protocol bit-packing (surplus bandwidth allowance format, documented in the comment above) on a width-explicit u16 - confirmed EXP07-C bit-packing FP class"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/wmm.c",
+   "line": 251,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT14-C: rule bug - flags 'le_to_host16', the callee function/macro name, as if it were a variable used with both bitwise and arithmetic operations; the actual variable is 'val'"
+  },
+  {
+   "rule": "INT33-C",
+   "file": "src/ap/wmm.c",
+   "line": 251,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT33-C: minimum_phy_rate is guarded 'if (le_to_host32(tspec->minimum_phy_rate) < 1000000) return ...' a few lines earlier in the same function, guaranteeing the divisor (.../1000000) is >=1 - confirmed earlier-same-function-guard INT33-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wmm.c",
+   "line": 314,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C: hostapd_wmm_action's hapd always supplied internally from the single dispatch call site in ieee802_11.c - internal-only API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wmm.c",
+   "line": 314,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C: mgmt is the received management-frame buffer, always non-null at the point of dispatch - internal-only API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wmm.c",
+   "line": 314,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C: len is checked immediately (int left = len - IEEE80211_HDRLEN - 4; if (left<0) return;) right after use - defensive check already present"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wmm.c",
+   "line": 349,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C: elems is written by ieee802_11_parse_elems() which does os_memset(elems,0,sizeof(*elems)) as its unconditional first statement before this read - confirmed write-first-output-param FP class (same as WPS attr_parse pattern)"
+  },
+  {
+   "rule": "API01-C",
+   "file": "src/common/dpp.h",
+   "line": 357,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API01-C: the flagged 'buffer' is a whole nested struct type (dpp_config_obj) containing char*/wpabuf* fields after its own u8 ssid[]/char passphrase[] arrays, not a single overflowable buffer directly adjacent to conf_key_pkg in memory; every buffer field inside is written via bounded os_memcpy/os_strlcpy-style calls in dpp.c - confirmed categorical API01-C FP (fires on layout only, not real write paths)"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "src/common/dpp.h",
+   "line": 357,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR00-C: rule bug - no 'signed char' field exists anywhere in struct dpp_config_obj; ssid is u8 (uint8_t, unsigned), the finding names a field type that isn't present in the struct"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/dpp.h",
+   "line": 577,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "DCL40-C: dpp_pkex_ephemeral_key_override_len is literally a '_len' suffix of dpp_pkex_ephemeral_key_override; technically shares 31 chars per rule text, but all modern toolchains (GCC/Clang/MSVC) support far more than 31 significant external characters and this codebase never targets legacy C89-strict linkers - not practically actionable, same reasoning as the confirmed PRE08-C 'technically true, not applicable' class"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/dpp.h",
+   "line": 580,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ENV01-C: dpp_nonce_override is a plain fixed-size testing-override buffer with zero getenv/putenv anywhere in this header or its use sites - confirmed ENV01-C wholesale-misfire-on-fixed-buffers FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp.h",
+   "line": 604,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API05-C: auth (struct dpp_authentication *) is a single opaque object handle, not an array - API05-C conformant-array-syntax concern is inapplicable to a single-object pointer"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/common/dpp.h",
+   "line": 614,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API02-C: opclasses is a self-terminating int array (consumed via int_array_len() in dpp.c:995, sentinel-terminated like similar hostap int-array idioms), no separate size param needed by design"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/common/dpp.h",
+   "line": 653,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API02-C: ssid is immediately paired with its own size_t *ssid_len output param right after it - confirmed paired-len-idiom FP class"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/common/dpp.h",
+   "line": 653,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API02-C: channel_list is a char** out-param (single string reference), not an array requiring a size - confirmed T**-out-param FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp.h",
+   "line": 658,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C: ssid immediately paired with ssid_len right after it - confirmed paired-len-idiom FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp.h",
+   "line": 662,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API05-C: channel_list is a plain NUL-terminated C string parameter - standard string convention, no separate length needed"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp.h",
+   "line": 670,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C: buf immediately paired with size_t buflen right after it - confirmed paired-len-idiom FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp.h",
+   "line": 676,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C: net_access_key/csign_key/peer_connector are each immediately paired with their own _len params - confirmed paired-len-idiom FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp.h",
+   "line": 676,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C: same paired-len-idiom reasoning for the second flagged pointer in this signature"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp.h",
+   "line": 683,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API05-C: own_mac is a fixed 6-byte ETH_ALEN MAC address, a well-known fixed-size convention throughout hostap requiring no separate length param"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp.h",
+   "line": 685,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API05-C: identifier is a plain NUL-terminated string parameter - standard convention, no length needed"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp.h",
+   "line": 685,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C: code is immediately paired with size_t code_len right after it - confirmed paired-len-idiom FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp.h",
+   "line": 687,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API05-C: msg_ctx is an opaque void* context handle, never treated as an array - confirmed opaque-handle API05-C FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp.h",
+   "line": 691,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API05-C: identifier is a plain NUL-terminated string parameter - standard convention"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp.h",
+   "line": 692,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C: code immediately paired with size_t code_len right after it - confirmed paired-len-idiom FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp.h",
+   "line": 753,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C: buf immediately paired with size_t buflen right after it - confirmed paired-len-idiom FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp.h",
+   "line": 768,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API05-C: cb_ctx is an opaque void* context handle - confirmed opaque-handle FP class"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/common/dpp.h",
+   "line": 782,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API02-C: pkex_done is a function-pointer callback parameter, not an array at all - confirmed callback-param API02-C misfire class"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/common/dpp.h",
+   "line": 787,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API02-C: process_conf_obj is a function-pointer callback parameter, not an array - confirmed callback-param API02-C misfire class"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/common/dpp.h",
+   "line": 798,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API02-C: process_conf_obj is a function-pointer callback parameter, not an array - confirmed callback-param API02-C misfire class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp.h",
+   "line": 811,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API05-C: channel_list is a plain NUL-terminated C string parameter - standard convention, no length needed"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp.h",
+   "line": 841,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API05-C: msg_ctx is an opaque void* context handle - confirmed opaque-handle FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp.h",
+   "line": 846,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API05-C: msg_ctx is an opaque void* context handle - confirmed opaque-handle FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp.h",
+   "line": 847,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API05-C: own_connector is a plain NUL-terminated connector-string parameter - standard string convention, no length needed"
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/ap/gas_query_ap.c",
+   "line": 588,
+   "rule": "INT30-C",
+   "desc": "'left = data + len - pos;' in gas_query_ap_rx: pos is advanced through several attacker-controlled TLV fields (adv_proto length pos[1], resp_len) with per-step bounds checks against data+len - reviewed for wire-parsing FN focus, looks correctly guarded, no exploitable miss found.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [
+  "src/eap_common/eap_sake_common.c",
+  "src/ap/gas_query_ap.c",
+  "src/ap/wmm.c",
+  "src/common/dpp.h"
+ ],
+ "summary": {
+  "tp": 2,
+  "fp": 111,
+  "fn": 1
+ }
+}

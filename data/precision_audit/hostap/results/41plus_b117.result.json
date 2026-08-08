@@ -1,0 +1,1213 @@
+{
+ "labels": [
+  {
+   "rule": "PRE08-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 15,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ieee802_* headers share 8-char prefix; literally true but low-value convention"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 15,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ieee802_* headers share 8-char prefix; literally true but low-value convention"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 23,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ieee802_* headers share 8-char prefix; literally true but low-value convention"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 23,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ieee802_* headers share 8-char prefix; literally true but low-value convention"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 26,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ieee802_* headers share 8-char prefix; literally true but low-value convention"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 48,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain static helper, mode read-only, no dispatch typedef"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 49,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain static helper, conf read-only, no dispatch typedef"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 55,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mode guaranteed non-null: caller chain guards !mode before this call path"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 71,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain static helper, ssid read-only throughout function"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 76,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "center_chan=0 unconditionally overwritten by every switch case before use"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 106,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd_get_oper_centr_freq_seg{0,1}_idx are pure getters, no side effects"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 185,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain static helper, wpa_s read-only (only wpa_s->hw fields)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 198,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mode points into wpa_s->hw.modes[] array, not automatic-storage local"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mode guaranteed non-null: caller guards !mode before wpas_conf_ap_he_6ghz call"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 233,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "he_chanwidth genuinely declared int (signed); literal rule violation, low severity"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 235,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "he_chanwidth genuinely declared int (signed); literal rule violation, low severity"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 288,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "mode=NULL at decl unconditionally overwritten by get_mode() before any read"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 354,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "if/else-if with no final else; stylistic pedantry, established low-value convention"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 383,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "if/else-if with no final else; stylistic pedantry, established low-value convention"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 561,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "list ownership transferred to bss->basic_rates/supported_rates before every flagged return"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 598,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "list ownership transferred to bss->basic_rates/supported_rates before every flagged return"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 605,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "if/else-if with no final else; stylistic pedantry, established low-value convention"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 615,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "list ownership transferred to bss->basic_rates/supported_rates before every flagged return"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 626,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*pw) is not a dereference; pw written via os_zalloc(sizeof(*pw)) right after"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 628,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "list ownership transferred to bss->basic_rates/supported_rates before every flagged return"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 633,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "list ownership transferred to bss->basic_rates/supported_rates before every flagged return"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 640,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "list ownership transferred to bss->basic_rates/supported_rates before every flagged return"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 674,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "if/else-if with no final else; stylistic pedantry, established low-value convention"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 679,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "if/else-if with no final else; stylistic pedantry, established low-value convention"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 747,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "if/else-if with no final else; stylistic pedantry, established low-value convention"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 818,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bss->vendor_elements freed later via wpabuf_free(conf->vendor_elements) in ap_config.c:949"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 822,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bss->assocresp_elements is a struct field freed elsewhere (ap_config.c), ownership transfer"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 830,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "list ownership already transferred to bss->basic_rates/supported_rates, not leaked"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 830,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bss->vendor_elements ownership transferred to struct field, freed in ap_config.c:949"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 830,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bss->assocresp_elements ownership transferred to struct field, freed elsewhere"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 834,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic T*ptr,size_t len pair; not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 854,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ap_wps_event_cb assigned to wps_event_cb field (wps.h); fixed dispatch-contract signature"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 888,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic T*ptr,size_t len pair; not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 900,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic T*ptr,size_t len pair; not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 918,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic T*ptr,size_t len pair; not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 981,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid guaranteed non-null: sole caller already dereferences ssid->mode before this call"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1091,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(wpa_s->conf->wmm_ac_params) sizes a true fixed array struct member, not decayed wpa_s"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1094,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(wpa_s->conf->tx_queue) sizes a true fixed array struct member, not decayed wpa_s"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1110,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "if/else-if with no final else; stylistic pedantry, established low-value convention"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1221,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_tx_status is an internal driver-event handler called only from events.c with driver-supplied data"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1221,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_tx_status is an internal driver-event handler called only from events.c with driver-supplied data"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1221,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic T*ptr,size_t len pair; not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1221,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper called directly by name (not a stored callback field); ctx only read"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1231,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_eapol_tx_status internal-only, called only from events.c with driver-supplied data"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1231,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_eapol_tx_status internal-only, called only from events.c with driver-supplied data"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic T*ptr,size_t len pair; not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1231,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper called directly by name (not a stored callback field); ctx only read"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1243,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper called directly by name (not a stored callback field); ctx only read"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1253,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_rx_from_unknown_sta internal-only driver-event handler, addr never externally nullable"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1253,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper called directly by name (not a stored callback field); ctx only read"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1262,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper called directly by name (not a stored callback field); ctx only read"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1277,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_mgmt_tx_cb internal-only driver-event handler, buf never externally nullable"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1277,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic T*ptr,size_t len pair; not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1277,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper called directly by name (not a stored callback field); ctx only read"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1286,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only, single caller (wpa_supplicant.c) with already-non-null wpa_s"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1286,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain function, wpa_s read-only, not bound to any callback typedef"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1297,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "wpa_supplicant_ap_wps_pbc internal-only API, wpa_s always valid from its single caller"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1297,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain function, wpa_s read-only"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1307,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain function, wpa_s read-only"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1310,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "reg_sel=0 unconditionally overwritten by wps_registrar_wps_cancel() before any read"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1310,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wps_sta=0 unconditionally overwritten by ap_for_each_sta() before any read"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1337,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "wpa_supplicant_ap_wps_pin internal-only API, wpa_s always valid"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1337,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain function, wpa_s read-only"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1338,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic T*ptr,size_t len pair; not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1338,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic T*ptr,size_t len pair; not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1346,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic ad-hoc-NULL-check suggestion, not a real defect"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1355,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "if/else-if with no final else; stylistic pedantry, established low-value convention"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1369,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_wps_ap_pin_timeout matches eloop_timeout_handler typedef; dispatch-contract FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1429,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain function, wpa_s read-only, not a dispatch-bound callback"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1462,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain function, wpa_s read-only, not a dispatch-bound callback"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1489,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain function, wpa_s read-only, not a dispatch-bound callback"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1501,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain function, wpa_s read-only, not a dispatch-bound callback"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1513,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain function, wpa_s read-only, not a dispatch-bound callback"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1532,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_ctrl_iface_sta_first internal ctrl_iface handler, dispatched only with valid wpa_s/buf"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1532,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_ctrl_iface_sta_first internal ctrl_iface handler, dispatched only with valid wpa_s/buf"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1532,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain ctrl_iface handler, wpa_s read-only"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1533,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic T*ptr,size_t len pair; not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1547,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_ctrl_iface_sta internal ctrl_iface handler, always invoked with valid wpa_s/txtaddr/buf"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1547,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_ctrl_iface_sta internal ctrl_iface handler, always invoked with valid wpa_s/txtaddr/buf"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1547,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_ctrl_iface_sta internal ctrl_iface handler, always invoked with valid wpa_s/txtaddr/buf"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1547,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain ctrl_iface handler, wpa_s read-only"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1547,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic T*ptr,size_t len pair; not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1548,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic T*ptr,size_t len pair; not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1562,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_ctrl_iface_sta_next internal ctrl_iface handler, always invoked with valid pointers"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1562,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_ctrl_iface_sta_next internal ctrl_iface handler, always invoked with valid pointers"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1562,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_ctrl_iface_sta_next internal ctrl_iface handler, always invoked with valid pointers"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1562,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain ctrl_iface handler, wpa_s read-only"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1562,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic T*ptr,size_t len pair; not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1563,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic T*ptr,size_t len pair; not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1577,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_ctrl_iface_sta_disassociate internal ctrl_iface handler, txtaddr always supplied"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1577,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain ctrl_iface handler, wpa_s read-only"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1587,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_ctrl_iface_sta_deauthenticate internal ctrl_iface handler, txtaddr always supplied"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1587,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain ctrl_iface handler, wpa_s read-only"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1597,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_ctrl_iface_wpa_get_status internal-only, buf/buflen supplied by ctrl_iface dispatch, always valid"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1597,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_ctrl_iface_wpa_get_status internal-only, buf/buflen supplied by ctrl_iface dispatch, always valid"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1597,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain ctrl_iface handler, wpa_s read-only"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1597,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic T*ptr,size_t len pair; not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1600,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "neither buf nor pos is const-qualified; EXP40-C premise (cast-away-const) doesn't apply"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1611,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_cipher_txt/wpa_key_mgmt_txt are pure switch-return accessors, no side effects"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1628,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_ctrl_iface_disassoc_imminent internal-only ctrl_iface handler, always valid pointers"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1628,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_ctrl_iface_disassoc_imminent internal-only ctrl_iface handler, always valid pointers"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1628,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain ctrl_iface handler, wpa_s read-only"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1641,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_ctrl_iface_ess_disassoc internal-only ctrl_iface handler"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1641,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_ctrl_iface_ess_disassoc internal-only ctrl_iface handler"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1641,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain ctrl_iface handler, wpa_s read-only"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1653,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_ctrl_iface_bss_tm_req internal-only ctrl_iface handler"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1653,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_ctrl_iface_bss_tm_req internal-only ctrl_iface handler"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1653,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain ctrl_iface handler, wpa_s read-only"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1667,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_ctrl_iface_acl_add_mac internal-only ctrl_iface handler"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1667,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain ctrl_iface handler, wpa_s read-only"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1693,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_ctrl_iface_acl_del_mac internal-only ctrl_iface handler"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1693,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain ctrl_iface handler, wpa_s read-only"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1719,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_ctrl_iface_acl_show_mac internal-only ctrl_iface handler"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1719,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain ctrl_iface handler, wpa_s read-only"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1720,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic T*ptr,size_t len pair; not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1743,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_ctrl_iface_acl_clear_list internal-only ctrl_iface handler"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1743,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain ctrl_iface handler, wpa_s read-only"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1758,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "if/else-if with no final else; stylistic pedantry, established low-value convention"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1764,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_ctrl_iface_disassoc_deny_mac internal-only ctrl_iface handler"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1764,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain ctrl_iface handler, wpa_s read-only"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1777,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_ctrl_iface_disassoc_accept_mac internal-only ctrl_iface handler"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1777,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain ctrl_iface handler, wpa_s read-only"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1790,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_ctrl_iface_set_acl internal-only ctrl_iface handler"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1790,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain ctrl_iface handler, wpa_s read-only"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1805,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain function, wpa_s read-only"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1819,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "if/else-if with no final else; stylistic pedantry, established low-value convention"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1834,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_switch_channel internal-only, always called with valid wpa_s from its two callers"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1834,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "both #ifdef NEED_AP_MLME and #else branches return; preprocessor-branch-blind misfire"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1834,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain function, wpa_s read-only"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1842,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "if/else-if with no final else; stylistic pedantry, established low-value convention"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1858,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_ctrl_iface_chanswitch internal-only ctrl_iface handler"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1858,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ap_ctrl_iface_chanswitch internal-only ctrl_iface handler"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1887,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "wpas_ap_ch_switch internal-only, single caller (events.c) with always-valid wpa_s"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1906,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain function, wpa_s read-only"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1931,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic ad-hoc-NULL-check suggestion, not a real defect"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1948,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "body ternary-guards pw (pw ? wpabuf_head(pw) : NULL) -- factually already validated inline"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1948,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain function, wpa_s read-only"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1968,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps->dh_privkey ownership retained in wps_context, freed later via wps_hostapd.c:1077"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1970,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps->dh_pubkey ownership retained in wps_context, freed later via wps_hostapd.c:1076"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1972,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps->dh_privkey freshly reassigned via wpabuf_dup at :1968 before this NULL check; not freed-then-used"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1972,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps->dh_pubkey freshly reassigned via wpabuf_dup at :1970 before this NULL check; not freed-then-used"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1974,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "frees the fresh (possibly-NULL) dup from :1970, not the earlier value freed at :1966"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1976,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "frees the fresh (possibly-NULL) dup from :1968, not the earlier value freed at :1967"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1978,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "already freed+NULLed at :1974-1977 on this path; free-then-NULL-reset-before-return misfire"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/ap.c",
+   "line": 1978,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "already freed+NULLed at :1974-1977 on this path; free-then-NULL-reset-before-return misfire"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "wpa_supplicant/ap.c"
+ ],
+ "summary": {
+  "tp": 61,
+  "fp": 89,
+  "fn": 0
+ }
+}

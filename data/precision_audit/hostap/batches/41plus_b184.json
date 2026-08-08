@@ -1,0 +1,949 @@
+{
+ "src/eap_peer/eap_ttls.c": [
+  {
+   "column": 9,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 84,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 26,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 99,
+   "message": "Dereference of uninitialized pointer 'data'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'data' before dereferencing"
+  },
+  {
+   "column": 46,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 118,
+   "message": "Hard-coded sensitive information detected passed to `cstr_token`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \" \\t\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 190,
+   "message": "Function returns pointer to local variable 'data' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 226,
+   "message": "Double-free: 'data' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 33,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 230,
+   "message": "Pointer parameter 'avphdr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *avphdr'"
+  },
+  {
+   "column": 33,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 248,
+   "message": "Variable 'hdrlen' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 33,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 248,
+   "message": "Variable 'len' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 259,
+   "message": "Variable 'pos' should be declared volatile - modified around function calls that may have external side effects",
+   "rule_id": "DCL22-C",
+   "severity": "Low",
+   "suggestion": "Declare as 'volatile' to prevent compiler optimizations that assume variable state is unchanged across function calls"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 264,
+   "message": "Function returns pointer to local variable 'pos' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 274,
+   "message": "Memory allocated with 'wpabuf_alloc' for variable 'msg' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(msg)' before the variable goes out of scope"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 283,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 288,
+   "message": "Local variable 'msg' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 289,
+   "message": "Memory leak: 'msg' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'msg' before this return statement"
+  },
+  {
+   "column": 11,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 297,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 19,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 310,
+   "message": "Use-after-free: passing freed pointer 'data' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 47,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 310,
+   "message": "Use-after-free: dereferencing freed pointer 'data'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access memory after freeing it."
+  },
+  {
+   "column": 48,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 310,
+   "message": "Use-after-free: accessing member of freed pointer 'data'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 7,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 314,
+   "message": "Use-after-free: accessing member of freed pointer 'data'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 319,
+   "message": "Use-after-free: passing freed pointer 'data' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 4,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 320,
+   "message": "Use-after-free: accessing member of freed pointer 'data'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 4,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 322,
+   "message": "Use-after-free: pointer arithmetic on freed pointer 'data'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not use freed pointers in arithmetic."
+  },
+  {
+   "column": 4,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 322,
+   "message": "Use-after-free: accessing member of freed pointer 'data'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 21,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 326,
+   "message": "Use-after-free: passing freed pointer 'data' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 21,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 326,
+   "message": "Use-after-free: passing freed pointer 'data' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 56,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 326,
+   "message": "Use-after-free: dereferencing freed pointer 'data'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access memory after freeing it."
+  },
+  {
+   "column": 57,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 326,
+   "message": "Use-after-free: accessing member of freed pointer 'data'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 52,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 328,
+   "message": "Use-after-free: dereferencing freed pointer 'data'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access memory after freeing it."
+  },
+  {
+   "column": 53,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 328,
+   "message": "Use-after-free: accessing member of freed pointer 'data'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 6,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 329,
+   "message": "Use-after-free: accessing freed pointer 'data->session_id'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 330,
+   "message": "Use-after-free: passing freed pointer 'data' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 330,
+   "message": "Use-after-free: passing freed pointer 'data' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 8,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 331,
+   "message": "Use-after-free: accessing freed pointer 'data->session_id'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 26,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 331,
+   "message": "Use-after-free: accessing member of freed pointer 'data'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 49,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 344,
+   "message": "Hard-coded sensitive information detected passed to `eap_peer_tls_derive_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"ttls challenge\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 33,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 373,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 490,
+   "message": "Dereferencing pointer in switch statement may create double-fetch vulnerability",
+   "rule_id": "CON43-C",
+   "severity": "High",
+   "suggestion": "Store dereferenced value in a local variable or use atomic operations"
+  },
+  {
+   "column": 7,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 501,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 7,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 516,
+   "message": "Potential null pointer dereference in member access of variable 'config'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'config' is not NULL before member access"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 530,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 32,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 532,
+   "message": "Pointer parameter 'ret' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ret'"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 553,
+   "message": "Memory allocated with 'wpabuf_alloc' for variable 'msg' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(msg)' before the variable goes out of scope"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 616,
+   "message": "Memory leak: 'msg' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'msg' before this return statement"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 619,
+   "message": "Memory leak: 'msg' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'msg' before this return statement"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 625,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 647,
+   "message": "Memory allocated with 'wpabuf_alloc' for variable 'msg' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(msg)' before the variable goes out of scope"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 723,
+   "message": "Memory leak: 'msg' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'msg' before this return statement"
+  },
+  {
+   "column": 33,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 729,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 746,
+   "message": "Memory allocated with 'wpabuf_alloc' for variable 'msg' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(msg)' before the variable goes out of scope"
+  },
+  {
+   "column": 21,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 746,
+   "message": "Variable 'password_len' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 771,
+   "message": "Local variable 'msg' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 778,
+   "message": "Memory leak: 'msg' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'msg' before this return statement"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 782,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 803,
+   "message": "Memory allocated with 'wpabuf_alloc' for variable 'msg' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(msg)' before the variable goes out of scope"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 858,
+   "message": "Memory leak: 'msg' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'msg' before this return statement"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 869,
+   "message": "Value assigned to 'res' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 34,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 968,
+   "message": "Pointer parameter 'pos' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pos'"
+  },
+  {
+   "column": 14,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 979,
+   "message": "Bitwise operator '&' used on signed operand 'avp_length' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'avp_length' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 14,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 979,
+   "message": "Variable 'avp_length' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 22,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1074,
+   "message": "sizeof applied to pointer/array parameter 'parse' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*parse)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 9,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1081,
+   "message": "Bitwise operator '&' used on signed operand 'avp_length' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'avp_length' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 9,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1081,
+   "message": "Variable 'avp_length' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 25,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1100,
+   "message": "Dereference of uninitialized pointer 'hdr'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'hdr' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1113,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 5,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1122,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 34,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1144,
+   "message": "Pointer parameter 'parse' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *parse'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1197,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 59,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1197,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 32,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1200,
+   "message": "Pointer parameter 'parse' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *parse'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1315,
+   "message": "Value assigned to 'res' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1330,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 9,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1351,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 13,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1351,
+   "message": "Potential null pointer dereference in member access of variable 'config'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'config' is not NULL before member access"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1370,
+   "message": "Value assigned to 'retval' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1389,
+   "message": "Potential null pointer dereference in member access of variable 'config'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'config' is not NULL before member access"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1454,
+   "message": "Value assigned to 'retval' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 27,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1502,
+   "message": "Testing 'wpabuf_len(in_decrypted)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: wpabuf_len(in_decrypted) != 0"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1507,
+   "message": "Double free detected: 'in_decrypted' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1523,
+   "message": "Double free detected: 'in_decrypted' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_clear_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 7,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1547,
+   "message": "Potential null pointer dereference in member access of variable 'config'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'config' is not NULL before member access"
+  },
+  {
+   "column": 54,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1628,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 9,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1658,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1724,
+   "message": "Function returns pointer to local variable 'resp' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 52,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1728,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 62,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1728,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1763,
+   "message": "Double-free: 'data' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1773,
+   "message": "Function returns pointer to local variable 'priv' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1773,
+   "message": "Use-after-free: returning freed pointer 'priv'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not return freed memory from functions."
+  },
+  {
+   "column": 56,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1777,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 68,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1777,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 51,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1820,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 61,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1820,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 43,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1827,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 53,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1827,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 53,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1827,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1841,
+   "message": "Function returns pointer to local variable 'key' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 51,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1845,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 61,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1845,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 61,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1845,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1859,
+   "message": "Function returns pointer to local variable 'id' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 45,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1863,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 55,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1863,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 55,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1863,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1877,
+   "message": "Function returns pointer to local variable 'key' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_peer/eap_ttls.c",
+   "line": 1885,
+   "message": "Memory allocated with 'eap_peer_method_alloc' for variable 'eap' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(eap)' before the variable goes out of scope"
+  }
+ ]
+}

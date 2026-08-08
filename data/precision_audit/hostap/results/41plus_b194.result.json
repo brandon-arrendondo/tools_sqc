@@ -1,0 +1,810 @@
+{
+ "labels": [
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 114,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto nla_put_failure frees msg before return; no leak"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 119,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg points to heap memory from nlmsg_alloc, not automatic storage"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 121,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "label is a goto target reached from an earlier error branch, not dead code"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 127,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_put_rxsc_config returns on every path incl. the goto-label branch"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 140,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "label is a goto target reached from an earlier error branch, not dead code"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 149,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx->sk ownership transferred to struct field, freed in macsec_drv_macsec_deinit"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 158,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto out_free frees ctx->sk before return"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 164,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto out_free frees ctx->sk before return"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 173,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx->sk persists in struct, freed later by macsec_drv_macsec_deinit"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 175,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "label is a goto target reached from an earlier error branch, not dead code"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 178,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx->sk already freed+NULLed at out_free right before this return"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 193,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "rtnl_link_change() failure path (line 210 return err) leaks 'change'; only success path frees it"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 266,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'change' is block-scoped, already freed via rtnl_link_put at line 212, long before this return"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 293,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto out_free frees sk via nl_socket_free before return"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 299,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto out_free frees sk via nl_socket_free before return"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 317,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*drv) is a compile-time type query, not a dereference; drv assigned next line"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 326,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "drv points to heap memory from os_zalloc, not automatic storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 330,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "params pinned by struct wpa_driver_ops.macsec_init dispatch contract"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 337,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "drv->sk ownership transferred to struct field, freed in macsec_drv_macsec_deinit"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 372,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "label is a goto target reached from an earlier error branch, not dead code"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 403,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv pinned by struct wpa_driver_ops.macsec_get_capability dispatch contract"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 486,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macsec_drv_set_offload returns on every path in both #ifdef branches"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 547,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sa_policy is a read-only file-scope lookup table, never mutated after init"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 547,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sa_policy sized by an enum constant (MACSEC_*_ATTR_MAX+1), not a VLA"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 554,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sc_policy is a read-only file-scope lookup table, never mutated after init"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 554,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sc_policy sized by an enum constant (MACSEC_*_ATTR_MAX+1), not a VLA"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 560,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "main_policy is a read-only file-scope lookup table, never mutated after init"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 560,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "main_policy sized by an enum constant (MACSEC_*_ATTR_MAX+1), not a VLA"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 567,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "argp pinned by libnl nl_recvmsg_msg_cb_t typedef, registered via nl_socket_modify_cb"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 570,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tb_msg sized by an enum constant (MACSEC_*_ATTR_MAX+1), not a VLA"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 578,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "genlmsg_attrdata/genlmsg_attrlen are pure accessors on gnlh, no side effects to unsequence"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 578,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tb_msg is nla_parse's output array param, decays to pointer, never read before being filled"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 591,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "if/else-if chain has no final else; literal rule-text violation, low value (falls through intentionally)"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 596,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tb sized by an enum constant (MACSEC_*_ATTR_MAX+1), not a VLA"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 598,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tb is nla_parse_nested's output array param, decays to pointer, never read before being filled"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 623,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tb sized by an enum constant (MACSEC_*_ATTR_MAX+1), not a VLA"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 638,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tb_sa sized by an enum constant (MACSEC_*_ATTR_MAX+1), not a VLA"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 640,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tb_sa is nla_parse_nested's output array param, decays to pointer, never read before being filled"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 713,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto out_free_msg frees msg via nlmsg_free before return"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 758,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv pinned by struct wpa_driver_ops.set_receive_lowest_pn dispatch contract"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 825,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv pinned by struct wpa_driver_ops.create_receive_sc dispatch contract"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 825,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sc pinned by struct wpa_driver_ops.create_receive_sc dispatch contract"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 875,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv pinned by struct wpa_driver_ops.delete_receive_sc dispatch contract"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 915,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv pinned by struct wpa_driver_ops.create_receive_sa dispatch contract"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 951,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv pinned by struct wpa_driver_ops.delete_receive_sa dispatch contract"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 967,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(sa->pkey->key_identifier) is sizeof a struct member, not the decayed 'sa' pointer param"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 968,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'SA key' is the wpa_hexdump_key log title/label, not an embedded secret"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 985,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(sa->pkey->key_identifier) is sizeof a struct member, not the decayed 'sa' pointer param"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1010,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv pinned by struct wpa_driver_ops.enable_receive_sa dispatch contract"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1091,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv pinned by struct wpa_driver_ops.disable_receive_sa dispatch contract"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1111,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv pinned by struct wpa_driver_ops.create_transmit_sc dispatch contract"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1131,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "needle freed via rtnl_link_put on every path (NULL-check path allocates nothing)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1175,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "link freed via rtnl_link_put on every one of its 3 branches (busy/fail/success)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1199,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "if/else-if chain has no final else; literal rule-text violation, low value (falls through intentionally)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1203,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "link already freed via rtnl_link_put at line 1200 immediately before this return"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1223,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "drv->link ownership transferred to struct field, freed later in macsec_drv_delete_transmit_sc"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1226,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "drv->link alloc failed (NULL) at this return; nothing allocated to leak"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1233,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "drv->link ownership transferred to struct field, freed in macsec_drv_delete_transmit_sc"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1233,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "local 'link' already put()/reassigned earlier at line 1221, not live here"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1243,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sc pinned by struct wpa_driver_ops.delete_transmit_sc dispatch contract"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1278,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv pinned by struct wpa_driver_ops.create_transmit_sa dispatch contract"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1293,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(sa->pkey->key_identifier) is sizeof a struct member, not the decayed 'sa' pointer param"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1294,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'SA key' is the wpa_hexdump_key log title/label, not an embedded secret"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1307,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(sa->pkey->key_identifier) is sizeof a struct member, not the decayed 'sa' pointer param"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1333,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv pinned by struct wpa_driver_ops.delete_transmit_sa dispatch contract"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1333,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sa pinned by struct wpa_driver_ops.delete_transmit_sa dispatch contract"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1438,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv pinned by struct wpa_driver_ops.disable_transmit_sa dispatch contract"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1438,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sa pinned by struct wpa_driver_ops.disable_transmit_sa dispatch contract"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1451,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf+buflen is the standard pointer+size idiom"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1451,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv pinned by struct wpa_driver_ops.status dispatch contract"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1451,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf+buflen is the standard pointer+size idiom"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1451,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf pinned by struct wpa_driver_ops.status dispatch contract"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1477,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf+len is the standard pointer+size idiom"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1477,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf+len is the standard pointer+size idiom"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1477,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "macsec_drv_handle_data is a plain internal helper (not itself vtable/callback-bound); buf is genuinely read-only"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1517,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sock_ctx pinned by eloop_sock_handler typedef, registered via eloop_register_read_sock"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1525,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() non-thread-safety FP: file has no pthread_create/mutex anywhere"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1525,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() non-thread-safety FP: file has no pthread_create/mutex anywhere"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1535,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "macsec_drv_init_sockets returns on every path in the #ifdef __linux__ branch"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1544,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() non-thread-safety FP: file has no pthread_create/mutex anywhere"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1544,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() non-thread-safety FP: file has no pthread_create/mutex anywhere"
+  },
+  {
+   "rule": "DCL39-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1556,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ifr is os_memset(0) before the ioctl call; no uninitialized padding, and direction is into the kernel not out to a peer"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1558,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() non-thread-safety FP: file has no pthread_create/mutex anywhere"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1558,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() non-thread-safety FP: file has no pthread_create/mutex anywhere"
+  },
+  {
+   "rule": "POS02-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1568,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bind() on a raw packet socket has no applicable privilege-drop step in this driver"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1570,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() non-thread-safety FP: file has no pthread_create/mutex anywhere"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1570,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() non-thread-safety FP: file has no pthread_create/mutex anywhere"
+  },
+  {
+   "rule": "DCL39-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1584,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ifr is os_memset(0) before the ioctl call; no uninitialized padding, and direction is into the kernel not out to a peer"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1586,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() non-thread-safety FP: file has no pthread_create/mutex anywhere"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1586,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() non-thread-safety FP: file has no pthread_create/mutex anywhere"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1626,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "drv points to heap memory from os_zalloc, not automatic storage"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1643,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data+data_len paired idiom; addr/own_addr are fixed ETH_ALEN wire buffers"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1643,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv pinned by struct wpa_driver_ops.hapd_send_eapol dispatch contract"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1653,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*hdr) is a compile-time type query, not a dereference; hdr assigned next line"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1676,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() non-thread-safety FP: file has no pthread_create/mutex anywhere"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1676,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() non-thread-safety FP: file has no pthread_create/mutex anywhere"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1683,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_driver_macsec_linux_ops is extern-declared in driver.h and used in drivers.c; needs external linkage"
+  },
+  {
+   "rule": "DCL19-C",
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1683,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_driver_macsec_linux_ops is extern-declared in driver.h and used in drivers.c; needs external linkage"
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 1548,
+   "rule": "FIO42-C",
+   "desc": "macsec_drv_init_sockets() opens drv->common.sock and eloop_register_read_sock()s it, then leaks both fd and eloop registration on all 5 later failure returns (SIOCGIFINDEX ioctl, bind(), multicast membership, SIOCGIFHWADDR ioctl, bad hwaddr family); caller just os_free(drv)s. 3rd instance of this exact shape after driver_roboswitch.c and driver_macsec_qca.c.",
+   "upstream_present": "unknown"
+  },
+  {
+   "file": "src/drivers/driver_macsec_linux.c",
+   "line": 382,
+   "rule": "MEM31-C",
+   "desc": "macsec_drv_macsec_deinit() frees drv->sk/link_cache/ctx.sk but never drv->link; if reached while a transmit SC is still active (delete_transmit_sc not called first), drv->link leaks. Lower confidence: depends on caller teardown discipline not verified in this file.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 4,
+  "fp": 94,
+  "fn": 2
+ }
+}

@@ -1,0 +1,1354 @@
+{
+ "src/ap/dpp_hostapd.c#part1of2": [
+  {
+   "column": 1,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 56,
+   "message": "Function 'hostapd_dpp_qr_code' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 56,
+   "message": "Function 'hostapd_dpp_qr_code' does not validate pointer parameter 'cmd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cmd' at the start of the function, e.g., 'if (!cmd) { return error_code; }'"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 66,
+   "message": "Testing 'dpp_notify_new_qr_code(auth, bi)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: dpp_notify_new_qr_code(auth, bi) != 0"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 73,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 93,
+   "message": "Function 'hostapd_dpp_nfc_uri' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 93,
+   "message": "Function 'hostapd_dpp_nfc_uri' does not validate pointer parameter 'cmd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cmd' at the start of the function, e.g., 'if (!cmd) { return error_code; }'"
+  },
+  {
+   "column": 45,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 93,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 105,
+   "message": "Function 'hostapd_dpp_nfc_handover_req' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 105,
+   "message": "Function 'hostapd_dpp_nfc_handover_req' does not validate pointer parameter 'cmd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cmd' at the start of the function, e.g., 'if (!cmd) { return error_code; }'"
+  },
+  {
+   "column": 54,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 105,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 62,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 114,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 62,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 114,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 136,
+   "message": "Function 'hostapd_dpp_nfc_handover_sel' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 136,
+   "message": "Function 'hostapd_dpp_nfc_handover_sel' does not validate pointer parameter 'cmd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cmd' at the start of the function, e.g., 'if (!cmd) { return error_code; }'"
+  },
+  {
+   "column": 54,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 136,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 62,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 145,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 62,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 145,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 171,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 185,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 22,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 222,
+   "message": "Modulo operator used with potentially signed operands. The result of % with negative operands is implementation-defined and can be negative. Use unsigned types (size_t, unsigned int) or explicitly handle negative remainders.",
+   "rule_id": "INT10-C",
+   "severity": "Medium",
+   "suggestion": "Convert operands to unsigned types (size_t, unsigned int) or add explicit checks for negative values"
+  },
+  {
+   "column": 53,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 227,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 260,
+   "message": "Recursive function can cause excessive stack allocation",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Consider iterative approach or limit recursion depth"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 272,
+   "message": "Testing 'hostapd_dpp_allow_ir(hapd, pkex->freq)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: hostapd_dpp_allow_ir(hapd, pkex->freq) != 0"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 321,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 321,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 412,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 66,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 421,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 456,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 491,
+   "message": "Function 'hostapd_dpp_tx_status' does not validate pointer parameter 'dst' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dst' at the start of the function, e.g., 'if (!dst) { return error_code; }'"
+  },
+  {
+   "column": 66,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 607,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 30,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 622,
+   "message": "Floating-point division without error checking (consider using feclearexcept/fetestexcept)",
+   "rule_id": "FLP03-C",
+   "severity": "Low",
+   "suggestion": "Use feclearexcept(FE_ALL_EXCEPT) before and fetestexcept(FE_ALL_EXCEPT) after floating-point operations"
+  },
+  {
+   "column": 54,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 674,
+   "message": "Modulo operator used with potentially signed operands. The result of % with negative operands is implementation-defined and can be negative. Use unsigned types (size_t, unsigned int) or explicitly handle negative remainders.",
+   "rule_id": "INT10-C",
+   "severity": "Medium",
+   "suggestion": "Convert operands to unsigned types (size_t, unsigned int) or add explicit checks for negative values"
+  },
+  {
+   "column": 18,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 680,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 60,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 716,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 28,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 766,
+   "message": "Floating-point division without error checking (consider using feclearexcept/fetestexcept)",
+   "rule_id": "FLP03-C",
+   "severity": "Low",
+   "suggestion": "Use feclearexcept(FE_ALL_EXCEPT) before and fetestexcept(FE_ALL_EXCEPT) after floating-point operations"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 767,
+   "message": "Pointer comparison '>' between pointers from different arrays: 'diff.sec' and 'max_wait_time'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before comparison"
+  },
+  {
+   "column": 23,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 774,
+   "message": "Modulo operator used with potentially signed operands. The result of % with negative operands is implementation-defined and can be negative. Use unsigned types (size_t, unsigned int) or explicitly handle negative remainders.",
+   "rule_id": "INT10-C",
+   "severity": "Medium",
+   "suggestion": "Convert operands to unsigned types (size_t, unsigned int) or add explicit checks for negative values"
+  },
+  {
+   "column": 54,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 796,
+   "message": "Modulo operator used with potentially signed operands. The result of % with negative operands is implementation-defined and can be negative. Use unsigned types (size_t, unsigned int) or explicitly handle negative remainders.",
+   "rule_id": "INT10-C",
+   "severity": "Medium",
+   "suggestion": "Convert operands to unsigned types (size_t, unsigned int) or add explicit checks for negative values"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 809,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 832,
+   "message": "Function 'hostapd_dpp_auth_init' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 832,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 63,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 850,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 63,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 850,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 14,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 861,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 14,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 861,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 875,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 890,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 890,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 14,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 921,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 14,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 921,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 969,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 974,
+   "message": "Function 'hostapd_dpp_listen' does not validate pointer parameter 'cmd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cmd' at the start of the function, e.g., 'if (!cmd) { return error_code; }'"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 978,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 978,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 1133,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 63,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 1139,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 34,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 1140,
+   "message": "Pointer parameter 'auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *auth'"
+  },
+  {
+   "column": 30,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 1141,
+   "message": "Pointer parameter 'conf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conf'"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 1159,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 1166,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 1167,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 1180,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 1195,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 1206,
+   "message": "Double free detected: 'hex' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 59,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 1212,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 61,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 1240,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 1280,
+   "message": "Variable(s) 'pos' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 1280,
+   "message": "Variable(s) 'pos' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 1280,
+   "message": "Variable(s) 'pos' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 1280,
+   "message": "Variable(s) 'pos' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 1280,
+   "message": "Variable(s) 'pos' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 1280,
+   "message": "Variable(s) 'pos' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 1280,
+   "message": "Variable(s) 'pos' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 1281,
+   "message": "Value assigned to 'pos' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 1281,
+   "message": "Assignment in if statement condition: 'pos = wpabuf_head(adv_proto)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 1282,
+   "message": "Potential null pointer dereference in array access of variable 'pos'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'pos' is not NULL before array access"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 1336,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 56,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 1385,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 1470,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 15,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 1509,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 13,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 1526,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 55,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 1545,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 60,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 1554,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 1658,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 16,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 1758,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 1860,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 1902,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 2042,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 62,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 2048,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 2111,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 16,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 2157,
+   "message": "arithmetic operator '-' applied directly to time_t-typed 'expire' -- the encoding of time_t is unspecified",
+   "rule_id": "MSC05-C",
+   "severity": "Low",
+   "suggestion": "Use difftime() to compute a duration between two time_t values instead of subtracting/adding them directly"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 2249,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 2262,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 2311,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 2354,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 2442,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 2442,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 2444,
+   "message": "Sensitive buffer 'password' not cleared before function exit",
+   "rule_id": "MEM03-C",
+   "severity": "Medium",
+   "suggestion": "Call SecureZeroMemory(password, size) or memset(password, 0, size) before the buffer goes out of scope"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 2457,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 2529,
+   "message": "Function returns without releasing all resources. Leaked: hapd->dpp_pkex_auth_cmd, pass_hex. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 2543,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 18,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 2562,
+   "message": "Passing null pointer 'pass_hex' to 'str_clear_free' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'pass_hex' is not NULL before passing to 'str_clear_free'"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 2564,
+   "message": "Function returns without releasing all resources. Leaked: hapd->dpp_pkex_auth_cmd, pass_hex. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 2566,
+   "message": "Double-free: 'pass_hex' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 3,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 2577,
+   "message": "Function returns without releasing all resources. Leaked: hapd->dpp_pkex_auth_cmd, pass_hex, hapd->dpp_pkex_auth_cmd. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 2584,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 2731,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 2808,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 2867,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 14,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 2891,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 2899,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 2907,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 16,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 2942,
+   "message": "arithmetic operator '-' applied directly to time_t-typed 'expire' -- the encoding of time_t is unspecified",
+   "rule_id": "MSC05-C",
+   "severity": "Low",
+   "suggestion": "Use difftime() to compute a duration between two time_t values instead of subtracting/adding them directly"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3037,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3060,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3117,
+   "message": "Function 'hostapd_dpp_gas_req_handler' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3166,
+   "message": "Function returns pointer to local variable 'resp' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3170,
+   "message": "Function 'hostapd_dpp_gas_status_handler' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3233,
+   "message": "Function 'hostapd_dpp_configurator_sign' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3233,
+   "message": "Function 'hostapd_dpp_configurator_sign' does not validate pointer parameter 'cmd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cmd' at the start of the function, e.g., 'if (!cmd) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3237,
+   "message": "Value assigned to 'curve' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3258,
+   "message": "Function 'hostapd_dpp_pkex_add' does not validate pointer parameter 'cmd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cmd' at the start of the function, e.g., 'if (!cmd) { return error_code; }'"
+  },
+  {
+   "column": 14,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3276,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 14,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3276,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 62,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3295,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 62,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3295,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3338,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3338,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3375,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3375,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3398,
+   "message": "Function 'hostapd_dpp_stop' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 39,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3413,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3478,
+   "message": "Function 'hostapd_dpp_add_controller' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3478,
+   "message": "Function 'hostapd_dpp_add_controller' does not validate pointer parameter 'cmd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cmd' at the start of the function, e.g., 'if (!cmd) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3494,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3517,
+   "message": "Function 'hostapd_dpp_remove_controller' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 56,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3517,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3535,
+   "message": "Function 'hostapd_dpp_init' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3592,
+   "message": "Function 'hostapd_dpp_controller_start' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 22,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3607,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 22,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3607,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 61,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3633,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3654,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 34,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3664,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 57,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3683,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3713,
+   "message": "Loop uses uninitialized variable 'c' as bound for array access. This has indeterminate value and can cause out-of-bounds access.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize 'c' to a valid value before using it in the loop"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3744,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 35,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3770,
+   "message": "Pointer arithmetic 'bss + 1' goes 1 elements past the end of array 'bss[0]'. This exceeds array bounds.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Ensure pointer arithmetic stays within array bounds (0 to 0)"
+  },
+  {
+   "column": 58,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3785,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 14,
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3806,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  }
+ ]
+}

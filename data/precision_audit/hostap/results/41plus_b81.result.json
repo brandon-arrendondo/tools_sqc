@@ -1,0 +1,1211 @@
+{
+ "labels": [
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2401,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cross-function local-variable conflation (confirmed pattern): each event handler declares its own local union wpa_event_data; the cited 'already-written' member belongs to a different function's instance, never this one."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2406,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2407,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2408,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2428,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cross-function local-variable conflation (confirmed pattern): each event handler declares its own local union wpa_event_data; the cited 'already-written' member belongs to a different function's instance, never this one."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2433,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2434,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "CON03-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2437,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Static const nla_policy lookup table, write-once/read-only; hostap driver layer is single-threaded/eloop-driven, no pthread anywhere (established CON03-C FP class)."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2455,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Output array of nla_parse()/nla_parse_nested() (libnl zero-fills before parsing); established EXP33-C 'uninitialized' FP class for this idiom."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2457,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Index is a compile-time enum member of the same enum whose max defines the array size (e.g. NUM_NL80211_REKEY_DATA=5 sizes rekey_info[], REPLAY_CTR=3<5); not a variable, always in-bounds by construction."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2461,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cross-function local-variable conflation (confirmed pattern): each event handler declares its own local union wpa_event_data; the cited 'already-written' member belongs to a different function's instance, never this one."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2465,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Index is a compile-time enum member of the same enum whose max defines the array size (e.g. NUM_NL80211_REKEY_DATA=5 sizes rekey_info[], REPLAY_CTR=3<5); not a variable, always in-bounds by construction."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2472,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2473,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "CON03-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2476,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Static const nla_policy lookup table, write-once/read-only; hostap driver layer is single-threaded/eloop-driven, no pthread anywhere (established CON03-C FP class)."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2489,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Output array of nla_parse()/nla_parse_nested() (libnl zero-fills before parsing); established EXP33-C 'uninitialized' FP class for this idiom."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2491,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Index is a compile-time enum member of the same enum whose max defines the array size (e.g. NUM_NL80211_REKEY_DATA=5 sizes rekey_info[], REPLAY_CTR=3<5); not a variable, always in-bounds by construction."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2492,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Index is a compile-time enum member of the same enum whose max defines the array size (e.g. NUM_NL80211_REKEY_DATA=5 sizes rekey_info[], REPLAY_CTR=3<5); not a variable, always in-bounds by construction."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2496,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cross-function local-variable conflation (confirmed pattern): each event handler declares its own local union wpa_event_data; the cited 'already-written' member belongs to a different function's instance, never this one."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2497,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Index is a compile-time enum member of the same enum whose max defines the array size (e.g. NUM_NL80211_REKEY_DATA=5 sizes rekey_info[], REPLAY_CTR=3<5); not a variable, always in-bounds by construction."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2499,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Index is a compile-time enum member of the same enum whose max defines the array size (e.g. NUM_NL80211_REKEY_DATA=5 sizes rekey_info[], REPLAY_CTR=3<5); not a variable, always in-bounds by construction."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2501,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Index is a compile-time enum member of the same enum whose max defines the array size (e.g. NUM_NL80211_REKEY_DATA=5 sizes rekey_info[], REPLAY_CTR=3<5); not a variable, always in-bounds by construction."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2506,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2507,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2526,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cross-function local-variable conflation (confirmed pattern): each event handler declares its own local union wpa_event_data; the cited 'already-written' member belongs to a different function's instance, never this one."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2531,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2532,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2542,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cross-function local-variable conflation (confirmed pattern): each event handler declares its own local union wpa_event_data; the cited 'already-written' member belongs to a different function's instance, never this one."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2574,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2592,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nl80211_get_link() (driver_nl80211.c:4664) never returns NULL \u2014 returns bss->flink or &bss->links[link_id], both non-null addresses."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2602,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2603,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2614,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cross-function local-variable conflation (confirmed pattern): each event handler declares its own local union wpa_event_data; the cited 'already-written' member belongs to a different function's instance, never this one."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2639,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2645,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cross-function local-variable conflation (confirmed pattern): each event handler declares its own local union wpa_event_data; the cited 'already-written' member belongs to a different function's instance, never this one."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2679,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2679,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2700,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause/exhaustive-enum switch or if/else-if chain; the omitted default/final-else is an intentional no-op leaving prior default values in place (established MSC01-C pedantry FP class)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2785,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2795,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cross-function local-variable conflation (confirmed pattern): each event handler declares its own local union wpa_event_data; the cited 'already-written' member belongs to a different function's instance, never this one."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2807,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2815,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Genuine alignment-1-to-4 cast of a raw byte buffer (const u8 *data/char*) to a typed struct/nlattr pointer; buffer alignment is not proven anywhere in-function (established EXP36-C low-severity TP disposition)."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2835,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cross-function local-variable conflation (confirmed pattern): each event handler declares its own local union wpa_event_data; the cited 'already-written' member belongs to a different function's instance, never this one."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2873,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2919,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2922,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "struct nlattr *tb[X_MAX + 1] is the standard libnl attribute-table idiom sized by a compile-time enum/#define constant, not a VLA (established MEM05-C FP class)."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2930,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Output array of nla_parse()/nla_parse_nested() (libnl zero-fills before parsing); established EXP33-C 'uninitialized' FP class for this idiom."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2931,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "The enclosing function's 'data' parameter is declared 'const u8 *data'; casting to non-const 'struct nlattr *' genuinely casts away const (verified against the function signature), unlike the 'never-const-to-begin-with' FP class."
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2931,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Genuine alignment-1-to-4 cast of a raw byte buffer (const u8 *data/char*) to a typed struct/nlattr pointer; buffer alignment is not proven anywhere in-function (established EXP36-C low-severity TP disposition)."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2939,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cross-function local-variable conflation (confirmed pattern): each event handler declares its own local union wpa_event_data; the cited 'already-written' member belongs to a different function's instance, never this one."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3018,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "struct nlattr *tb[X_MAX + 1] is the standard libnl attribute-table idiom sized by a compile-time enum/#define constant, not a VLA (established MEM05-C FP class)."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3024,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Output array of nla_parse()/nla_parse_nested() (libnl zero-fills before parsing); established EXP33-C 'uninitialized' FP class for this idiom."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3025,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "The enclosing function's 'data' parameter is declared 'const u8 *data'; casting to non-const 'struct nlattr *' genuinely casts away const (verified against the function signature), unlike the 'never-const-to-begin-with' FP class."
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3025,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Genuine alignment-1-to-4 cast of a raw byte buffer (const u8 *data/char*) to a typed struct/nlattr pointer; buffer alignment is not proven anywhere in-function (established EXP36-C low-severity TP disposition)."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3086,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "struct nlattr *tb[X_MAX + 1] is the standard libnl attribute-table idiom sized by a compile-time enum/#define constant, not a VLA (established MEM05-C FP class)."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3091,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Output array of nla_parse()/nla_parse_nested() (libnl zero-fills before parsing); established EXP33-C 'uninitialized' FP class for this idiom."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3108,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause/exhaustive-enum switch or if/else-if chain; the omitted default/final-else is an intentional no-op leaving prior default values in place (established MSC01-C pedantry FP class)."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3121,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause/exhaustive-enum switch or if/else-if chain; the omitted default/final-else is an intentional no-op leaving prior default values in place (established MSC01-C pedantry FP class)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3177,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3180,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "struct nlattr *tb[X_MAX + 1] is the standard libnl attribute-table idiom sized by a compile-time enum/#define constant, not a VLA (established MEM05-C FP class)."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3181,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Genuine dead initializer: the declared value (cookie=0 / ret=-EINVAL) is unconditionally overwritten before its only read(s), matching the established genuine dead-init MSC13-C TP class."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3186,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Output array of nla_parse()/nla_parse_nested() (libnl zero-fills before parsing); established EXP33-C 'uninitialized' FP class for this idiom."
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3187,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Genuine alignment-1-to-4 cast of a raw byte buffer (const u8 *data/char*) to a typed struct/nlattr pointer; buffer alignment is not proven anywhere in-function (established EXP36-C low-severity TP disposition)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3208,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3209,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3215,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Ordinary fixed-size local array (int freqs[MAX_REPORT_FREQS]); no getenv() anywhere in the function (established wholesale ENV01-C misfire FP class)."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3246,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-literal assignment '*pos = ...'; not a widening char-to-int conversion, which is what STR34-C is actually about (established plain char-to-char FP class)."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3255,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'pos' inside the nla_for_each_nested loop IS read on the next iteration's os_snprintf() call for every iteration but the last; sqc's 'never read on any execution path' claim is false for the general case."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3273,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "struct nlattr *tb[X_MAX + 1] is the standard libnl attribute-table idiom sized by a compile-time enum/#define constant, not a VLA (established MEM05-C FP class)."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3274,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Genuine dead initializer: the declared value (cookie=0 / ret=-EINVAL) is unconditionally overwritten before its only read(s), matching the established genuine dead-init MSC13-C TP class."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3279,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Output array of nla_parse()/nla_parse_nested() (libnl zero-fills before parsing); established EXP33-C 'uninitialized' FP class for this idiom."
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3280,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Genuine alignment-1-to-4 cast of a raw byte buffer (const u8 *data/char*) to a typed struct/nlattr pointer; buffer alignment is not proven anywhere in-function (established EXP36-C low-severity TP disposition)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3311,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3314,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "struct nlattr *tb[X_MAX + 1] is the standard libnl attribute-table idiom sized by a compile-time enum/#define constant, not a VLA (established MEM05-C FP class)."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3320,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Output array of nla_parse()/nla_parse_nested() (libnl zero-fills before parsing); established EXP33-C 'uninitialized' FP class for this idiom."
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3321,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Genuine alignment-1-to-4 cast of a raw byte buffer (const u8 *data/char*) to a typed struct/nlattr pointer; buffer alignment is not proven anywhere in-function (established EXP36-C low-severity TP disposition)."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3326,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cross-function local-variable conflation (confirmed pattern): each event handler declares its own local union wpa_event_data; the cited 'already-written' member belongs to a different function's instance, never this one."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3338,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3340,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Genuine dead initializer: the declared value (cookie=0 / ret=-EINVAL) is unconditionally overwritten before its only read(s), matching the established genuine dead-init MSC13-C TP class."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3342,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "struct nlattr *tb[X_MAX + 1] is the standard libnl attribute-table idiom sized by a compile-time enum/#define constant, not a VLA (established MEM05-C FP class)."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3343,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "struct nlattr *tb[X_MAX + 1] is the standard libnl attribute-table idiom sized by a compile-time enum/#define constant, not a VLA (established MEM05-C FP class)."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3350,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Output array of nla_parse()/nla_parse_nested() (libnl zero-fills before parsing); established EXP33-C 'uninitialized' FP class for this idiom."
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3351,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Genuine alignment-1-to-4 cast of a raw byte buffer (const u8 *data/char*) to a typed struct/nlattr pointer; buffer alignment is not proven anywhere in-function (established EXP36-C low-severity TP disposition)."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3362,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cross-function local-variable conflation (confirmed pattern): each event handler declares its own local union wpa_event_data; the cited 'already-written' member belongs to a different function's instance, never this one."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3385,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Output array of nla_parse()/nla_parse_nested() (libnl zero-fills before parsing); established EXP33-C 'uninitialized' FP class for this idiom."
+  },
+  {
+   "rule": "MEM03-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3414,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'password' is a borrowed const char* alias into the received netlink attribute (nla_data()), not an owned buffer this function should clear; the actual owned copy pw[idx] IS cleared via str_clear_free() at the fail: label on every path (established borrowed-pointer-alias MEM03-C FP class)."
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3464,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "#ifdef/#endif intervenes between this case's break and the next case label; established MSC17-C fallthrough-misfire-near-preprocessor-directive FP class (the case in question already ends in a break)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3516,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3519,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "struct nlattr *tb[X_MAX + 1] is the standard libnl attribute-table idiom sized by a compile-time enum/#define constant, not a VLA (established MEM05-C FP class)."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3525,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Output array of nla_parse()/nla_parse_nested() (libnl zero-fills before parsing); established EXP33-C 'uninitialized' FP class for this idiom."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3525,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "The enclosing function's 'data' parameter is declared 'const u8 *data'; casting to non-const 'struct nlattr *' genuinely casts away const (verified against the function signature), unlike the 'never-const-to-begin-with' FP class."
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3525,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Genuine alignment-1-to-4 cast of a raw byte buffer (const u8 *data/char*) to a typed struct/nlattr pointer; buffer alignment is not proven anywhere in-function (established EXP36-C low-severity TP disposition)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3595,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3642,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "#ifdef/#endif intervenes between this case's break and the next case label; established MSC17-C fallthrough-misfire-near-preprocessor-directive FP class (the case in question already ends in a break)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3657,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3658,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3673,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cross-function local-variable conflation (confirmed pattern): each event handler declares its own local union wpa_event_data; the cited 'already-written' member belongs to a different function's instance, never this one."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3690,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause/exhaustive-enum switch or if/else-if chain; the omitted default/final-else is an intentional no-op leaving prior default values in place (established MSC01-C pedantry FP class)."
+  },
+  {
+   "rule": "CON03-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3723,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Static const nla_policy lookup table, write-once/read-only; hostap driver layer is single-threaded/eloop-driven, no pthread anywhere (established CON03-C FP class)."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3723,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "struct nlattr *tb[X_MAX + 1] is the standard libnl attribute-table idiom sized by a compile-time enum/#define constant, not a VLA (established MEM05-C FP class)."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3730,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "struct nlattr *tb[X_MAX + 1] is the standard libnl attribute-table idiom sized by a compile-time enum/#define constant, not a VLA (established MEM05-C FP class)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3733,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "All flagged calls are pure read-accessors (nla_data/nla_len/genlmsg_attrdata/genlmsg_attrlen/MAC2STR) with no side effects; established EXP30-C pure-accessor-args FP class."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3733,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Output array of nla_parse()/nla_parse_nested() (libnl zero-fills before parsing); established EXP33-C 'uninitialized' FP class for this idiom."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3760,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3761,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3782,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3783,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3799,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cross-function local-variable conflation (confirmed pattern): each event handler declares its own local union wpa_event_data; the cited 'already-written' member belongs to a different function's instance, never this one."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3826,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "All flagged calls are pure read-accessors (nla_data/nla_len/genlmsg_attrdata/genlmsg_attrlen/MAC2STR) with no side effects; established EXP30-C pure-accessor-args FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3837,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3838,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3854,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cross-function local-variable conflation (confirmed pattern): each event handler declares its own local union wpa_event_data; the cited 'already-written' member belongs to a different function's instance, never this one."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3858,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause/exhaustive-enum switch or if/else-if chain; the omitted default/final-else is an intentional no-op leaving prior default values in place (established MSC01-C pedantry FP class)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3864,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "All flagged calls are pure read-accessors (nla_data/nla_len/genlmsg_attrdata/genlmsg_attrlen/MAC2STR) with no side effects; established EXP30-C pure-accessor-args FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3885,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3886,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3897,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cross-function local-variable conflation (confirmed pattern): each event handler declares its own local union wpa_event_data; the cited 'already-written' member belongs to a different function's instance, never this one."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3958,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3958,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3987,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "All flagged calls are pure read-accessors (nla_data/nla_len/genlmsg_attrdata/genlmsg_attrlen/MAC2STR) with no side effects; established EXP30-C pure-accessor-args FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4003,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4005,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4018,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cross-function local-variable conflation (confirmed pattern): each event handler declares its own local union wpa_event_data; the cited 'already-written' member belongs to a different function's instance, never this one."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4071,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4076,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "All flagged calls are pure read-accessors (nla_data/nla_len/genlmsg_attrdata/genlmsg_attrlen/MAC2STR) with no side effects; established EXP30-C pure-accessor-args FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4084,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4086,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4092,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cross-function local-variable conflation (confirmed pattern): each event handler declares its own local union wpa_event_data; the cited 'already-written' member belongs to a different function's instance, never this one."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4148,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4149,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4160,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cross-function local-variable conflation (confirmed pattern): each event handler declares its own local union wpa_event_data; the cited 'already-written' member belongs to a different function's instance, never this one."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4168,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4169,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal event-handler helper (not bound to any vtable/callback typedef), param genuinely only read, not forwarded to a non-const callee \u2014 real low-severity DCL13-C per established plain-helper clarification."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4180,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cross-function local-variable conflation (confirmed pattern): each event handler declares its own local union wpa_event_data; the cited 'already-written' member belongs to a different function's instance, never this one."
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4196,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nl80211_command_to_string() is defined earlier in this same file (line 30), before both call sites \u2014 the 'called without prior declaration' premise is factually wrong."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4427,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "All flagged calls are pure read-accessors (nla_data/nla_len/genlmsg_attrdata/genlmsg_attrlen/MAC2STR) with no side effects; established EXP30-C pure-accessor-args FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4433,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "All flagged calls are pure read-accessors (nla_data/nla_len/genlmsg_attrdata/genlmsg_attrlen/MAC2STR) with no side effects; established EXP30-C pure-accessor-args FP class."
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4442,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "#ifdef/#endif intervenes between this case's break and the next case label; established MSC17-C fallthrough-misfire-near-preprocessor-directive FP class (the case in question already ends in a break)."
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4457,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "#ifdef/#endif intervenes between this case's break and the next case label; established MSC17-C fallthrough-misfire-near-preprocessor-directive FP class (the case in question already ends in a break)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4458,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "All flagged calls are pure read-accessors (nla_data/nla_len/genlmsg_attrdata/genlmsg_attrlen/MAC2STR) with no side effects; established EXP30-C pure-accessor-args FP class."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4491,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "process_global_event/process_bss_event are libnl nl_recvmsg_msg_cb_t netlink callbacks (int(*)(struct nl_msg*, void*)); libnl always calls them with a valid msg it built and a non-NULL registered arg \u2014 established API00-C internal-only-closed-callsite FP class."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4491,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "process_global_event/process_bss_event are libnl nl_recvmsg_msg_cb_t netlink callbacks (int(*)(struct nl_msg*, void*)); libnl always calls them with a valid msg it built and a non-NULL registered arg \u2014 established API00-C internal-only-closed-callsite FP class."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4495,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "struct nlattr *tb[X_MAX + 1] is the standard libnl attribute-table idiom sized by a compile-time enum/#define constant, not a VLA (established MEM05-C FP class)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4533,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "All flagged calls are pure read-accessors (nla_data/nla_len/genlmsg_attrdata/genlmsg_attrlen/MAC2STR) with no side effects; established EXP30-C pure-accessor-args FP class."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4533,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Output array of nla_parse()/nla_parse_nested() (libnl zero-fills before parsing); established EXP33-C 'uninitialized' FP class for this idiom."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4541,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause/exhaustive-enum switch or if/else-if chain; the omitted default/final-else is an intentional no-op leaving prior default values in place (established MSC01-C pedantry FP class)."
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4601,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nl80211_command_to_string() is defined earlier in this same file (line 30), before both call sites \u2014 the 'called without prior declaration' premise is factually wrong."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4608,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "process_global_event/process_bss_event are libnl nl_recvmsg_msg_cb_t netlink callbacks (int(*)(struct nl_msg*, void*)); libnl always calls them with a valid msg it built and a non-NULL registered arg \u2014 established API00-C internal-only-closed-callsite FP class."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4608,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "process_global_event/process_bss_event are libnl nl_recvmsg_msg_cb_t netlink callbacks (int(*)(struct nl_msg*, void*)); libnl always calls them with a valid msg it built and a non-NULL registered arg \u2014 established API00-C internal-only-closed-callsite FP class."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4612,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "struct nlattr *tb[X_MAX + 1] is the standard libnl attribute-table idiom sized by a compile-time enum/#define constant, not a VLA (established MEM05-C FP class)."
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 63,
+  "fp": 87,
+  "fn": 0
+ }
+}

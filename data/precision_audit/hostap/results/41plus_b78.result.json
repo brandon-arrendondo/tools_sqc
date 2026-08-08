@@ -1,0 +1,1211 @@
+{
+ "labels": [
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp.c",
+   "line": 2767,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf(...,&year,&month,&day,&hour,&min,&sec)!=6 guards this read; all 4 vars set on every reaching path"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp.c",
+   "line": 2767,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf(...,&year,&month,&day,&hour,&min,&sec)!=6 guards this read; all 4 vars set on every reaching path"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp.c",
+   "line": 2767,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf(...,&year,&month,&day,&hour,&min,&sec)!=6 guards this read; all 4 vars set on every reaching path"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp.c",
+   "line": 2767,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf(...,&year,&month,&day,&hour,&min,&sec)!=6 guards this read; all 4 vars set on every reaching path"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/common/dpp.c",
+   "line": 2780,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "items IS checked via 'if (items < 1) return 1;' on next line"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/common/dpp.c",
+   "line": 2780,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf return checked via items<1 guard immediately after"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/common/dpp.c",
+   "line": 2780,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "checked sscanf (items<1 guard); established checked-sscanf FP convention"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "src/common/dpp.c",
+   "line": 2780,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "FIO47-C self-referential bug: flags format string itself as mismatched arg1"
+  },
+  {
+   "rule": "INT05-C",
+   "file": "src/common/dpp.c",
+   "line": 2780,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "%02u caps field width to 2 digits (0-99); unsigned int can't ERANGE on that range"
+  },
+  {
+   "rule": "MSC24-C",
+   "file": "src/common/dpp.c",
+   "line": 2780,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf not on CERT obsolescent list; sscanf_s (C11 Annex K) unused/unavailable here"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/common/dpp.c",
+   "line": 2780,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos is const char*; sscanf's str param is const char* -- no const cast at all"
+  },
+  {
+   "rule": "MSC05-C",
+   "file": "src/common/dpp.c",
+   "line": 2788,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "adjusting one time_t by a scalar TZ offset, not diffing two time_t values -- difftime() fix doesn't even apply"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/common/dpp.c",
+   "line": 2788,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hour/min bounded 0-99 by sscanf %02u max-field-width; 3600*99/60*99 nowhere near int overflow"
+  },
+  {
+   "rule": "MSC05-C",
+   "file": "src/common/dpp.c",
+   "line": 2790,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "adjusting one time_t by a scalar TZ offset, not diffing two time_t values -- difftime() fix doesn't even apply"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/common/dpp.c",
+   "line": 2790,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hour/min bounded 0-99 by sscanf %02u max-field-width; 3600*99/60*99 nowhere near int overflow"
+  },
+  {
+   "rule": "MSC05-C",
+   "file": "src/common/dpp.c",
+   "line": 2793,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "adjusting one time_t by a scalar TZ offset, not diffing two time_t values -- difftime() fix doesn't even apply"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/common/dpp.c",
+   "line": 2793,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hour/min bounded 0-99 by sscanf %02u max-field-width; 3600*99/60*99 nowhere near int overflow"
+  },
+  {
+   "rule": "MSC05-C",
+   "file": "src/common/dpp.c",
+   "line": 2795,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "adjusting one time_t by a scalar TZ offset, not diffing two time_t values -- difftime() fix doesn't even apply"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/common/dpp.c",
+   "line": 2795,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hour/min bounded 0-99 by sscanf %02u max-field-width; 3600*99/60*99 nowhere near int overflow"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp.c",
+   "line": 2823,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "dpp_parse_connector's conf param is completely unused in the function body"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp.c",
+   "line": 2948,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "dpp_copy_netaccesskey's conf param is completely unused in the function body"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/common/dpp.c",
+   "line": 3182,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NUL-terminated string scan (while(*pos)/while(*val)), inherently bounded by terminator"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/common/dpp.c",
+   "line": 3195,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "deliberate guard-clause chain; unset dpp/psk/sae/dot1x flags staying 0 is the correct default"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 3235,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_auth_fail(auth, txt) just wpa_msg()'s a plain status/error string, not secret material"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 3247,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_auth_fail(auth, txt) just wpa_msg()'s a plain status/error string, not secret material"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/common/dpp.c",
+   "line": 3259,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() (or similar pure accessor) sibling-argument pair, no real side effects"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 3262,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_auth_fail(auth, txt) just wpa_msg()'s a plain status/error string, not secret material"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 3276,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_auth_fail(auth, txt) just wpa_msg()'s a plain status/error string, not secret material"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 3343,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_auth_fail(auth, txt) just wpa_msg()'s a plain status/error string, not secret material"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/common/dpp.c",
+   "line": 3377,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misapplied to `const u8 *addr[1]`/`size_t len[1]` pointer/size arrays, not char arrays"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/common/dpp.c",
+   "line": 3378,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misapplied to `const u8 *addr[1]`/`size_t len[1]` pointer/size arrays, not char arrays"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/common/dpp.c",
+   "line": 3385,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() (or similar pure accessor) sibling-argument pair, no real side effects"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/common/dpp.c",
+   "line": 3390,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() (or similar pure accessor) sibling-argument pair, no real side effects"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 3395,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_auth_fail(auth, txt) just wpa_msg()'s a plain status/error string, not secret material"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/common/dpp.c",
+   "line": 3401,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wrapped_data_len - AES_BLOCK_SIZE is plain u16/int subtraction, no pointer involved"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 3413,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_auth_fail(auth, txt) just wpa_msg()'s a plain status/error string, not secret material"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 3429,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_auth_fail(auth, txt) just wpa_msg()'s a plain status/error string, not secret material"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 3434,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_auth_fail(auth, txt) just wpa_msg()'s a plain status/error string, not secret material"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/common/dpp.c",
+   "line": 3438,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() (or similar pure accessor) sibling-argument pair, no real side effects"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 3442,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_auth_fail(auth, txt) just wpa_msg()'s a plain status/error string, not secret material"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 3458,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_auth_fail(auth, txt) just wpa_msg()'s a plain status/error string, not secret material"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 3483,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_auth_fail(auth, txt) just wpa_msg()'s a plain status/error string, not secret material"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 3494,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_auth_fail(auth, txt) just wpa_msg()'s a plain status/error string, not secret material"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 3514,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_auth_fail(auth, txt) just wpa_msg()'s a plain status/error string, not secret material"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 3525,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_debug_print_key(title, key) -- flagged text is the debug-log title, real key is the separate key arg"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 3536,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_auth_fail(auth, txt) just wpa_msg()'s a plain status/error string, not secret material"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 3552,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_auth_fail(auth, txt) just wpa_msg()'s a plain status/error string, not secret material"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp.c",
+   "line": 3585,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr is an internal frame-parsing arg from sqc's own dispatch, never externally nullable"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 3601,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_auth_fail(auth, txt) just wpa_msg()'s a plain status/error string, not secret material"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/common/dpp.c",
+   "line": 3611,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misattributes size/decl-site from an unrelated addr[1] in dpp_configurator_gen_kid (line 3988); this function's addr[2] makes index 1 valid"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/common/dpp.c",
+   "line": 3614,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misattributes size/decl-site from an unrelated addr[1] in dpp_configurator_gen_kid (line 3988); this function's addr[2] makes index 1 valid"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/common/dpp.c",
+   "line": 3617,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wrapped_data_len - AES_BLOCK_SIZE is plain u16/int subtraction, no pointer involved"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 3624,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_auth_fail(auth, txt) just wpa_msg()'s a plain status/error string, not secret material"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 3640,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_auth_fail(auth, txt) just wpa_msg()'s a plain status/error string, not secret material"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 3645,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_auth_fail(auth, txt) just wpa_msg()'s a plain status/error string, not secret material"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 3655,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_auth_fail(auth, txt) just wpa_msg()'s a plain status/error string, not secret material"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp.c",
+   "line": 3667,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "dpp_build_conf_result's auth param is only read (auth->curve, auth->e_nonce), never mutated"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/common/dpp.c",
+   "line": 3678,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "4 + clear_len + AES_BLOCK_SIZE is a plain integer sum, no pointer involved"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/common/dpp.c",
+   "line": 3698,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misattributes size/decl-site from an unrelated addr[1] in dpp_configurator_gen_kid (line 3988); this function's addr[2] makes index 1 valid"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/common/dpp.c",
+   "line": 3700,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misattributes size/decl-site from an unrelated addr[1] in dpp_configurator_gen_kid (line 3988); this function's addr[2] makes index 1 valid"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/common/dpp.c",
+   "line": 3708,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() (or similar pure accessor) sibling-argument pair, no real side effects"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp.c",
+   "line": 3715,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg comes from dpp_alloc_msg()->wpabuf_alloc(), heap storage, not a stack local"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp.c",
+   "line": 3716,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto-blindness: CFG doesn't connect goto fail/label to its target, straight-line code after return is reached via goto"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/common/dpp.c",
+   "line": 3717,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "frees on mutually exclusive paths (normal-return free vs goto-fail free), not a same-path double free"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp.c",
+   "line": 3717,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "frees on mutually exclusive paths (normal-return free vs goto-fail free), not a same-path double free"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/common/dpp.c",
+   "line": 3725,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NUL-terminated string scan (while(*pos)/while(*val)), inherently bounded by terminator"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp.c",
+   "line": 3736,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr is an internal frame-parsing arg from sqc's own dispatch, never externally nullable"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp.c",
+   "line": 3741,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic pointer+size (or pointer+len) parameter pair, or double-pointer out-param; not a real conformant-array gap"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/common/dpp.c",
+   "line": 3754,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*channel_list = os_strdup(...) assigns a pointer through a char**, not a char needing sign-extension cast"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 3760,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_auth_fail(auth, txt) just wpa_msg()'s a plain status/error string, not secret material"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/common/dpp.c",
+   "line": 3770,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misattributes size/decl-site from an unrelated addr[1] in dpp_configurator_gen_kid (line 3988); this function's addr[2] makes index 1 valid"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/common/dpp.c",
+   "line": 3773,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misattributes size/decl-site from an unrelated addr[1] in dpp_configurator_gen_kid (line 3988); this function's addr[2] makes index 1 valid"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/common/dpp.c",
+   "line": 3776,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wrapped_data_len - AES_BLOCK_SIZE is plain u16/int subtraction, no pointer involved"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 3783,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_auth_fail(auth, txt) just wpa_msg()'s a plain status/error string, not secret material"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 3799,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_auth_fail(auth, txt) just wpa_msg()'s a plain status/error string, not secret material"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 3804,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_auth_fail(auth, txt) just wpa_msg()'s a plain status/error string, not secret material"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/common/dpp.c",
+   "line": 3814,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_auth_fail(auth, txt) just wpa_msg()'s a plain status/error string, not secret material"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/common/dpp.c",
+   "line": 3836,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*channel_list = os_strdup(...) assigns a pointer through a char**, not a char needing sign-extension cast"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp.c",
+   "line": 3855,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic pointer+size (or pointer+len) parameter pair, or double-pointer out-param; not a real conformant-array gap"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/common/dpp.c",
+   "line": 3876,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() (or similar pure accessor) sibling-argument pair, no real side effects"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp.c",
+   "line": 3879,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "json comes from wpabuf_alloc(1000), heap storage, not a stack local"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp.c",
+   "line": 3883,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid/channel_list are forwarded to dpp_build_conn_status which already NULL-checks them (`if (ssid)`/`if (channel_list)`) -- NULL is a supported, handled value"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp.c",
+   "line": 3883,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid/channel_list are forwarded to dpp_build_conn_status which already NULL-checks them (`if (ssid)`/`if (channel_list)`) -- NULL is a supported, handled value"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp.c",
+   "line": 3883,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "dpp_build_conn_status_result's auth param is only read (auth->curve, auth->e_nonce), never mutated"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp.c",
+   "line": 3886,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic pointer+size (or pointer+len) parameter pair, or double-pointer out-param; not a real conformant-array gap"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/common/dpp.c",
+   "line": 3888,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "msg/clear's `= NULL` initializer is unconditionally overwritten by wpabuf_alloc/dpp_alloc_msg before any read on every path"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/common/dpp.c",
+   "line": 3888,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "msg/clear's `= NULL` initializer is unconditionally overwritten by wpabuf_alloc/dpp_alloc_msg before any read on every path"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/common/dpp.c",
+   "line": 3900,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "4 + clear_len + AES_BLOCK_SIZE is a plain integer sum, no pointer involved"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/common/dpp.c",
+   "line": 3922,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misattributes size/decl-site from an unrelated addr[1] in dpp_configurator_gen_kid (line 3988); this function's addr[2] makes index 1 valid"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/common/dpp.c",
+   "line": 3924,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misattributes size/decl-site from an unrelated addr[1] in dpp_configurator_gen_kid (line 3988); this function's addr[2] makes index 1 valid"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/common/dpp.c",
+   "line": 3932,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() (or similar pure accessor) sibling-argument pair, no real side effects"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp.c",
+   "line": 3942,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto-blindness: CFG doesn't connect goto fail/label to its target, straight-line code after return is reached via goto"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/common/dpp.c",
+   "line": 3943,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "frees on mutually exclusive paths (normal-return free vs goto-fail free), not a same-path double free"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp.c",
+   "line": 3943,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "frees on mutually exclusive paths (normal-return free vs goto-fail free), not a same-path double free"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/common/dpp.c",
+   "line": 3944,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "frees on mutually exclusive paths (normal-return free vs goto-fail free), not a same-path double free"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp.c",
+   "line": 3944,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "frees on mutually exclusive paths (normal-return free vs goto-fail free), not a same-path double free"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp.c",
+   "line": 3965,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is the ctrl_iface caller-supplied output buffer, always valid by dispatcher contract"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp.c",
+   "line": 3965,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic buf+buflen pointer+size parameter pair"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/common/dpp.c",
+   "line": 3978,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() (or similar pure accessor) sibling-argument pair, no real side effects"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/common/dpp.c",
+   "line": 3988,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misapplied to `const u8 *addr[1]`/`size_t len[1]` pointer/size arrays, not char arrays"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/common/dpp.c",
+   "line": 3989,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misapplied to `const u8 *addr[1]`/`size_t len[1]` pointer/size arrays, not char arrays"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/common/dpp.c",
+   "line": 4009,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(conf->kid_hash)/sizeof(*intro) on a real struct member or *ptr, not a decayed array parameter"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp.c",
+   "line": 4016,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic pointer+size (or pointer+len) parameter pair, or double-pointer out-param; not a real conformant-array gap"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp.c",
+   "line": 4021,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr) is a non-evaluating context; *ptr is not actually dereferenced at runtime"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp.c",
+   "line": 4048,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conf comes from os_zalloc(sizeof(*conf)) in dpp_keygen_configurator, heap storage"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp.c",
+   "line": 4049,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto-blindness: CFG doesn't connect goto fail/label to its target, straight-line code after return is reached via goto"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/common/dpp.c",
+   "line": 4089,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() (or similar pure accessor) sibling-argument pair, no real side effects"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp.c",
+   "line": 4117,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "role is checked via `if (!role || role->type != JSON_STRING) continue/goto` before every use"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp.c",
+   "line": 4154,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "role is checked via `if (!role || role->type != JSON_STRING) continue/goto` before every use"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp.c",
+   "line": 4184,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "own_connector is this device's own already-stored connector, sourced internally, never externally nullable"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp.c",
+   "line": 4214,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "own_root comes from json_parse()->json_alloc_token()->os_zalloc(), heap storage, not a stack local"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp.c",
+   "line": 4218,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "own_connector/net_access_key/csign_key are internal-only args from local config, never externally nullable"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp.c",
+   "line": 4218,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "own_connector/net_access_key/csign_key are internal-only args from local config, never externally nullable"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp.c",
+   "line": 4218,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "own_connector/net_access_key/csign_key are internal-only args from local config, never externally nullable"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp.c",
+   "line": 4219,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic pointer+size parameter pairs (net_access_key/net_access_key_len, csign_key/csign_key_len)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp.c",
+   "line": 4219,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic pointer+size parameter pairs (net_access_key/net_access_key_len, csign_key/csign_key_len)"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/dpp.c",
+   "line": 4233,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wholesale misfire: no getenv() call anywhere in this file; Nx[] is an unrelated fixed crypto buffer"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/common/dpp.c",
+   "line": 4235,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(conf->kid_hash)/sizeof(*intro) on a real struct member or *ptr, not a decayed array parameter"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/common/dpp.c",
+   "line": 4369,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(conf->kid_hash)/sizeof(*intro) on a real struct member or *ptr, not a decayed array parameter"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp.c",
+   "line": 4374,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "connector is an internal-only arg from local config, never externally nullable"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp.c",
+   "line": 4414,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tmp is dl_list_for_each_safe's macro-internal next-pointer, initialized in the macro's for-loop init clause"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp.c",
+   "line": 4433,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "uri is a ctrl_iface command string, already validated non-NULL by the ctrl_iface dispatcher"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp.c",
+   "line": 4448,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bi comes from dpp_parse_uri()'s os_zalloc (heap) or from dpp->bootstrap's persistent dl_list, not stack storage"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp.c",
+   "line": 4467,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bi comes from dpp_parse_uri()'s os_zalloc (heap) or from dpp->bootstrap's persistent dl_list, not stack storage"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp.c",
+   "line": 4520,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr) is a non-evaluating context; *ptr is not actually dereferenced at runtime"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp.c",
+   "line": 4585,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bi comes from dpp_parse_uri()'s os_zalloc (heap) or from dpp->bootstrap's persistent dl_list, not stack storage"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/common/dpp.c",
+   "line": 4598,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "atoi() result is immediately range-checked via `if (id_val == 0) return -1;`, rejecting non-numeric input"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/common/dpp.c",
+   "line": 4598,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "atoi() result is immediately range-checked via `if (id_val == 0) return -1;`, rejecting non-numeric input"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp.c",
+   "line": 4618,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reply is the ctrl_iface caller-supplied output buffer, always valid by dispatcher contract"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/common/dpp.c",
+   "line": 4622,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pkhash[2*SHA256_MAC_LEN+1] is a fixed compile-time-constant-sized array, not a VLA"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/common/dpp.c",
+   "line": 4637,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "&supp_curves[sizeof(supp_curves)] is the standard one-past-the-end `end` pointer idiom, never dereferenced"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/common/dpp.c",
+   "line": 4655,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos[-1] is a relative offset from a pointer already advanced past 'supp_curves=' + at least one entry, not a negative absolute index"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/common/dpp.c",
+   "line": 4655,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos[-1] is a relative offset from a pointer already advanced past 'supp_curves=' + at least one entry, not a negative absolute index"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/common/dpp.c",
+   "line": 4656,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos[-1] is a relative offset from a pointer already advanced past 'supp_curves=' + at least one entry, not a negative absolute index"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/common/dpp.c",
+   "line": 4656,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos[-1] is a relative offset from a pointer already advanced past 'supp_curves=' + at least one entry, not a negative absolute index"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/common/dpp.c",
+   "line": 4672,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() (or similar pure accessor) sibling-argument pair, no real side effects"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp.c",
+   "line": 4731,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bi is the dl_list_for_each loop var over dpp->bootstrap, a persistent heap-backed list, not a function-local stack object -- assigning it through the out-param is the function's whole purpose"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp.c",
+   "line": 4739,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bi is the dl_list_for_each loop var over dpp->bootstrap, a persistent heap-backed list, not a function-local stack object -- assigning it through the out-param is the function's whole purpose"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp.c",
+   "line": 4760,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bi comes from dl_list_for_each over dpp->bootstrap's persistent list, not stack storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp.c",
+   "line": 4817,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "dpp_nfc_update_bi_key only reads peer_bi->curve, never writes through peer_bi"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp.c",
+   "line": 4833,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto-blindness: CFG doesn't connect goto fail/label to its target, straight-line code after return is reached via goto"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp.c",
+   "line": 4864,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp/cmd are internal ctrl_iface dispatch args (global dpp handle + command string), never externally nullable"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp.c",
+   "line": 4864,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp/cmd are internal ctrl_iface dispatch args (global dpp handle + command string), never externally nullable"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp.c",
+   "line": 4917,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "curve is freed then reassigned via a fresh get_param() call before the second free -- not a double free of the same allocation"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/common/dpp.c",
+   "line": 4923,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "success path falls straight through into the shared fail: cleanup label (no goto needed), so bin_clear_free(privkey/pp_key) always runs -- goto/label-blindness"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp.c",
+   "line": 4927,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cmd is an internal ctrl_iface command string, never externally nullable"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/common/dpp.c",
+   "line": 4933,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "id=atoi(cmd) used as a bare lookup key with no narrow range check -- matches the established 'lookup-key atoi' TP convention"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/common/dpp.c",
+   "line": 4933,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "id=atoi(cmd) used as a bare lookup key with no narrow range check -- matches the established 'lookup-key atoi' TP convention"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp.c",
+   "line": 4961,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tmp is dl_list_for_each_safe's macro-internal next-pointer, initialized in the macro's for-loop init clause"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/common/dpp.c",
+   "line": 4983,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "atoi() result is immediately range-checked via `if (id_val == 0) return -1;`, rejecting non-numeric input"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 9,
+  "fp": 141,
+  "fn": 0
+ }
+}

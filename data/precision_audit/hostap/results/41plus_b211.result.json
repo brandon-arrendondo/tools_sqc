@@ -1,0 +1,693 @@
+{
+ "labels": [
+  {
+   "rule": "PRE08-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 12,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "8.3-legacy-filesystem PRE08-C convention; ieee802_11_defs.h/ieee802_11_common.h not ambiguous on any real modern system"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 46,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only-API FP class; p2p never NULL from any real caller"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 51,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*group) is a compile-time type query, not a dereference; group is unread until after the NULL check"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 55,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_realloc_array single-pointer-arg misfire, established FP class (sta_info.c precedent)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 71,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "group is os_zalloc'd heap memory, not automatic-storage; local-variable-vs-heap-storage FP class"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 103,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL check stylistic pedantry, established FP class"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 108,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "g is initialized to 0 in the for-loop's own init clause before use as bound"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 123,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "only one os_free(group) call in the function; p2p_group_free_members/os_free(group->cfg)/wpabuf_free calls free other objects, not group itself"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 127,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain static helper called directly by name (not a dispatch table); m read-only except passed to os_free, low-value"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 137,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain static helper, group only read, directly called by name"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 166,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL check stylistic pedantry"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 181,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL check stylistic pedantry"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 204,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ie is wpabuf_alloc'd heap memory, not automatic storage"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 208,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only-API FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 261,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2p2_ie is consumed and freed by wpabuf_concat(p2p2_ie, ie) two lines later; wpabuf_concat-always-frees-both-inputs FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 271,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ie is heap memory (wpabuf_alloc/wpabuf_concat result), not automatic storage"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 271,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2p2_ie already consumed by wpabuf_concat before this return; wpabuf_concat FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 277,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only-API FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 277,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain accessor, directly called by name, g only read"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 288,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL check stylistic pedantry"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 309,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ie is wpabuf_alloc'd heap memory"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 314,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain static helper, m only read, directly called by name"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 382,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain static helper, group only read, directly called by name"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 430,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wfd_ie returned from wifi_display_encaps() is heap (wpabuf_alloc), not automatic storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 442,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, group only read, directly called by name"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 464,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only-API FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 464,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, group only read, directly called by name"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 496,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "extra consumed/freed by wpabuf_concat(extra, ie) on the next line; wpabuf_concat FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 502,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wfd consumed/freed by wpabuf_concat(wfd, ie) on the next line; wpabuf_concat FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 507,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2p2_ie consumed/freed by wpabuf_concat(p2p2_ie, ie) a few lines later; wpabuf_concat FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 510,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "extra/wfd already consumed by earlier wpabuf_concat calls before this early return; wpabuf_concat FP class (duplicate finding for extra+wfd)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 510,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "extra/wfd already consumed by earlier wpabuf_concat calls before this early return; wpabuf_concat FP class (duplicate finding for extra+wfd)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 516,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ie is heap memory throughout (wpabuf_alloc/wpabuf_concat chain)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 516,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "extra/wfd/p2p2_ie all already consumed by earlier wpabuf_concat calls before this return; wpabuf_concat FP class (triplicate finding)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 516,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "extra/wfd/p2p2_ie all already consumed by earlier wpabuf_concat calls before this return; wpabuf_concat FP class (triplicate finding)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 516,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "extra/wfd/p2p2_ie all already consumed by earlier wpabuf_concat calls before this return; wpabuf_concat FP class (triplicate finding)"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 569,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL check stylistic pedantry"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 606,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is wpabuf_alloc'd heap memory"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 614,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL check stylistic pedantry"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 640,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only-API FP class; addr/ie always valid caller-owned buffers"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 640,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only-API FP class; addr/ie always valid caller-owned buffers"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 645,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL check stylistic pedantry"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 650,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*m) in os_zalloc(sizeof(*m)) is a compile-time type query, not a dereference"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 684,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only-API FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 684,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, group only read, directly called by name"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 726,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2p2_ie consumed/freed by wpabuf_concat(p2p2_ie, resp) a few lines later; wpabuf_concat FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 736,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "resp is wpabuf_alloc'd/wpabuf_concat heap memory"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 736,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2p2_ie already consumed by wpabuf_concat before this return; wpabuf_concat FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 740,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only-API FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 766,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain static helper, m only read, directly called by name"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 786,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "attr is an output param fully zeroed by wps_parse_msg()'s unconditional os_memset(attr,0,sizeof(*attr)) before this read; output-param FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 809,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, group only read, directly called by name"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 826,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, group only read, directly called by name"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 853,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL check stylistic pedantry"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 861,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only-API FP class"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 864,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL check stylistic pedantry"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 891,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain static helper p2p_group_get_client, group only read, directly called by name"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 898,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "m walks a heap-allocated linked list (group->members, os_zalloc'd nodes), not an automatic-storage local"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 920,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain static helper p2p_group_get_client_iface, group only read, directly called by name"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 926,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "m walks a heap-allocated linked list, not automatic storage"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 937,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL check stylistic pedantry"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 956,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is wpabuf_alloc'd heap memory"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 960,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only-API FP class (duplicate finding for group+dev_id)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 960,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only-API FP class (duplicate finding for group+dev_id)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 991,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head(req)/wpabuf_len(req) are pure read-only accessors; pure-accessor-args EXP30-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 1006,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only-API FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 1006,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, group only read, directly called by name"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 1012,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only-API FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 1050,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, group only read, directly called by name"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 1059,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, group only read, directly called by name"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 1068,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only-API FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 1068,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, group only read, directly called by name"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 1077,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "iter aliases the heap-allocated group->members list (or NULL); storing it via the *next output param is safe, same heap-vs-local-storage confusion as the return-value DCL30-C class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 1086,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only-API FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 1086,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, group only read, directly called by name"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 1099,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, group only read, directly called by name"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 1111,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 1118,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only-API FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 1118,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, group only read, directly called by name"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 1124,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only-API FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 1124,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, group only read, directly called by name"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 1130,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only-API FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 1130,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, p2p only read, directly called by name (not itself a callback)"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 1138,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "group_callback is a function-pointer PARAMETER (declared in the signature), not an undeclared function; exact precedent already documented for this same function"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/p2p/p2p_group.c",
+   "line": 1157,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "p2p_channels_union's a/b/res params are not restrict-qualified; EXP43-C's restrict-aliasing concern doesn't apply to non-restrict callees, established FP class (note: internally os_memcpy(res,a,...) does self-copy when res==a, but this is a benign no-op, not a real bug)"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "src/p2p/p2p_group.c"
+ ],
+ "summary": {
+  "tp": 22,
+  "fp": 63,
+  "fn": 0
+ }
+}

@@ -1,0 +1,1354 @@
+{
+ "wpa_supplicant/p2p_supplicant.c#part1of3": [
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 15,
+   "message": "Header file 'ieee802_11_common.h' has the same first 8 characters (case-insensitive) as 'ieee802_11_defs.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_common.h' -> unique name)"
+  },
+  {
+   "column": 67,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 174,
+   "message": "Pointer parameter 'mode' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *mode'"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 295,
+   "message": "Potential null pointer dereference in member access of variable 'scan_res'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'scan_res' is not NULL before member access"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 347,
+   "message": "Function 'wpas_p2p_scan_freqs' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 65,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 410,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 435,
+   "message": "Array declaration 'social_channels_freq[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 523,
+   "message": "Double free detected: 'wps_ie' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 534,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 537,
+   "message": "Double free detected: 'ies' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 543,
+   "message": "Function returns without releasing all resources. Leaked: n, params->freqs, params->freqs, params->freqs, n. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 545,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 547,
+   "message": "Function returns without releasing all resources. Leaked: n, params->freqs, params->freqs, params->freqs, n. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 73,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 566,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 30,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 568,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 59,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 591,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 601,
+   "message": "Function 'wpas_p2p_disconnect_safely' participates in indirect recursion: wpas_p2p_disconnect_safely -> wpas_p2p_disconnect -> wpas_p2p_group_delete -> wpa_supplicant_deauthenticate -> wpa_supplicant_event -> wpas_event_deauth -> wpas_event_disconnect -> wpa_supplicant_event_disassoc_finish -> wpas_connection_failed -> wpa_supplicant_fast_associate -> wpas_select_network_from_last_scan -> wpas_p2p_scan_no_go_seen -> wpas_p2p_fallback_to_go_neg -> wpas_p2p_connect -> wpas_p2p_join -> wpas_p2p_join_scan_req -> wpas_p2p_scan_res_join -> wpas_p2p_join_start -> wpas_p2p_get_group_iface -> wpas_p2p_init_group_interface -> wpa_supplicant_remove_iface -> wpa_supplicant_deinit_iface -> wpas_p2p_group_remove -> wpas_p2p_disconnect_safely",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to eliminate the recursion cycle"
+  },
+  {
+   "column": 33,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 602,
+   "message": "Pointer parameter 'calling_wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *calling_wpa_s'"
+  },
+  {
+   "column": 74,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 646,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 50,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 708,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 714,
+   "message": "Function returns pointer to local variable 's' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 732,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 902,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 919,
+   "message": "Function 'wpas_p2p_group_delete' participates in indirect recursion: wpas_p2p_group_delete -> wpa_supplicant_remove_iface -> wpa_supplicant_deinit_iface -> wpa_supplicant_deauthenticate -> wpa_supplicant_event -> wpas_event_deauth -> wpas_event_disconnect -> wpas_p2p_deauth_notif -> wpas_p2p_group_delete",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to eliminate the recursion cycle"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 1176,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 1209,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 1308,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 1312,
+   "message": "Function 'os_memmove' called with overlapping memory regions. If parameters are restrict-qualified, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure memory regions do not overlap when using restrict pointers"
+  },
+  {
+   "column": 72,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 1319,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 1373,
+   "message": "Function 'os_realloc_array' called with overlapping memory regions. If parameters are restrict-qualified, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure memory regions do not overlap when using restrict pointers"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 1383,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 58,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 1404,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 32,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 1405,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 56,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 1452,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 58,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 1468,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 1509,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 61,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 1515,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 1555,
+   "message": "Function 'wpas_group_formation_completed' participates in indirect recursion: wpas_group_formation_completed -> wpas_p2p_group_delete -> wpa_supplicant_deauthenticate -> wpa_supplicant_event -> wpas_event_deauth -> wpas_event_disconnect -> wpa_supplicant_event_disassoc_finish -> wpas_connection_failed -> wpa_supplicant_fast_associate -> wpas_select_network_from_last_scan -> wpas_p2p_scan_no_go_seen -> wpas_p2p_fallback_to_go_neg -> wpas_p2p_connect -> wpas_p2p_join -> wpas_p2p_join_scan_req -> wpas_p2p_scan_res_join -> wpas_p2p_join_start -> wpas_start_wps_enrollee -> wpas_wps_start_pbc -> wpa_supplicant_wps_event -> wpa_supplicant_wps_event_success -> wpas_p2p_wps_success -> wpas_group_formation_completed",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to eliminate the recursion cycle"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 1574,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 1665,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 1673,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 17,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 1689,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 27,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 1816,
+   "message": "Dereference of uninitialized pointer 'awork'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'awork' before dereferencing"
+  },
+  {
+   "column": 34,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 1838,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 48,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 1840,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 1854,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 1972,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 27,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 1987,
+   "message": "Dereference of uninitialized pointer 'awork'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'awork' before dereferencing"
+  },
+  {
+   "column": 32,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2012,
+   "message": "sizeof applied to pointer/array parameter 'params' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*params)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 38,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2016,
+   "message": "sizeof applied to pointer/array parameter 'params' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*params)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2021,
+   "message": "Function 'wpas_start_gc' participates in indirect recursion: wpas_start_gc -> wpa_supplicant_select_network -> wpa_supplicant_fast_associate -> wpas_select_network_from_last_scan -> wpas_p2p_scan_no_go_seen -> wpas_p2p_fallback_to_go_neg -> wpas_p2p_connect -> wpas_p2p_join -> wpas_p2p_join_scan_req -> wpas_p2p_scan_res_join -> wpas_p2p_join_start -> wpas_start_gc",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to eliminate the recursion cycle"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2034,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 28,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2068,
+   "message": "Dereference of uninitialized pointer 'entry'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'entry' before dereferencing"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2089,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 14,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2089,
+   "message": "Bitwise operator '&' used on signed operand 'res' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'res' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2124,
+   "message": "Function 'wpas_start_wps_enrollee' participates in indirect recursion: wpas_start_wps_enrollee -> wpas_wps_start_pin -> wpas_wps_start_dev_pw -> wpas_wps_reassoc -> wpas_wps_temp_disable -> wpa_supplicant_deauthenticate -> wpa_supplicant_event -> wpas_event_deauth -> wpas_event_disconnect -> wpa_supplicant_event_disassoc_finish -> wpas_connection_failed -> wpa_supplicant_fast_associate -> wpas_select_network_from_last_scan -> wpas_p2p_scan_no_go_seen -> wpas_p2p_fallback_to_go_neg -> wpas_p2p_connect -> wpas_p2p_join -> wpas_p2p_join_scan_req -> wpas_p2p_scan_res_join -> wpas_p2p_join_start -> wpas_start_wps_enrollee",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to eliminate the recursion cycle"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2128,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 23,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2163,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 27,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2186,
+   "message": "Dereference of uninitialized pointer 'hpsk'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'hpsk' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2202,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2202,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2216,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 35,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2223,
+   "message": "Pointer parameter 'params' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *params'"
+  },
+  {
+   "column": 52,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2243,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 28,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2256,
+   "message": "Pointer to const assigned to non-const pointer without cast: *params = data: '*params = data'",
+   "rule_id": "EXP40-C",
+   "severity": "Low",
+   "suggestion": "Either remove const qualifier if the object should be modifiable, or use explicit casts to show intentional const removal"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2379,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 64,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2398,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 18,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2405,
+   "message": "Array declaration 'chanwidth[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2456,
+   "message": "Variable 'op_channel' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'op_channel' before use, e.g., at its declaration"
+  },
+  {
+   "column": 25,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2456,
+   "message": "Variable 'op_class' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'op_class' before use, e.g., at its declaration"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2504,
+   "message": "Passing pointer to uninitialized variable 'op_class' to 'wpas_p2p_freq_to_edmg_channel' which reads the value",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'op_class' before passing its address to 'wpas_p2p_freq_to_edmg_channel'"
+  },
+  {
+   "column": 25,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2506,
+   "message": "Variable 'op_channel' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'op_channel' before use, e.g., at its declaration"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2558,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 57,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2594,
+   "message": "Pointer parameter 'dst' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *dst'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2603,
+   "message": "Function-like macro 'C' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2603,
+   "message": "Macro parameter 'n' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'n' in parentheses: (n) instead of n"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2603,
+   "message": "Macro evaluates parameter 'n' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 27,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2643,
+   "message": "Memory allocated with 'wpabuf_dup' for variable 'd->wps_nfc_dh_privkey' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(d->wps_nfc_dh_privkey)' before the variable goes out of scope"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2644,
+   "message": "Memory allocated with 'wpabuf_dup' for variable 'd->wps_nfc_dh_pubkey' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(d->wps_nfc_dh_pubkey)' before the variable goes out of scope"
+  },
+  {
+   "column": 61,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2657,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 16,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2658,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2723,
+   "message": "sizeof applied to pointer/array parameter 'wpa_s' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(wpa_s->pending_interface_name)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2726,
+   "message": "sizeof applied to pointer/array parameter 'wpa_s' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(wpa_s->pending_interface_name)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2752,
+   "message": "Function 'wpas_p2p_init_group_interface' participates in indirect recursion: wpas_p2p_init_group_interface -> wpa_supplicant_add_iface -> wpa_supplicant_deinit_iface -> wpa_supplicant_deauthenticate -> wpa_supplicant_event -> wpas_event_deauth -> wpas_event_disconnect -> wpa_supplicant_event_disassoc_finish -> wpas_connection_failed -> wpa_supplicant_fast_associate -> wpas_select_network_from_last_scan -> wpas_p2p_scan_no_go_seen -> wpas_p2p_fallback_to_go_neg -> wpas_p2p_connect -> wpas_p2p_join -> wpas_p2p_join_scan_req -> wpas_p2p_scan_res_join -> wpas_p2p_join_start -> wpas_p2p_get_group_iface -> wpas_p2p_init_group_interface",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to eliminate the recursion cycle"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2822,
+   "message": "Function returns pointer to local variable 'group_wpa_s' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 16,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2827,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2843,
+   "message": "Function 'wpas_p2p_group_formation_failed' participates in indirect recursion: wpas_p2p_group_formation_failed -> wpas_group_formation_completed -> wpas_p2p_group_delete -> wpas_p2p_group_formation_failed",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to eliminate the recursion cycle"
+  },
+  {
+   "column": 53,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2872,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 58,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2884,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 32,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2900,
+   "message": "Pointer parameter 'params' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *params'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2923,
+   "message": "Value assigned to 'ifs' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 2996,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3108,
+   "message": "Scaled integer assignment to pointer: 'buf += sizeof(u32)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Use unscaled integer increment without sizeof()"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3110,
+   "message": "Scaled integer assignment to pointer: 'buf += sizeof(u16)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Use unscaled integer increment without sizeof()"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3115,
+   "message": "Potentially unsafe array access with variable index 'str_len': Buffer 'str' with size 256 (allocated at line 3096)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 11,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3117,
+   "message": "Scaled integer arithmetic with pointer: 'str_len + sizeof(u32) + sizeof(u16) + sizeof(u8)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 11,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3117,
+   "message": "Scaled integer arithmetic with pointer: 'str_len + sizeof(u32) + sizeof(u16)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3119,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3141,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3196,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 27,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3282,
+   "message": "Dereference of uninitialized pointer 'lwork'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'lwork' before dereferencing"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3288,
+   "message": "Memory allocated with 'wpabuf_dup' for variable 'lwork->probe_resp_ie' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(lwork->probe_resp_ie)' before the variable goes out of scope"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3301,
+   "message": "Memory leak: 'lwork->probe_resp_ie' allocated with 'wpabuf_dup' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'lwork->probe_resp_ie' before this return statement"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3339,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 37,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3361,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 22,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3363,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3388,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3392,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3417,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3450,
+   "message": "Out-of-bounds array access: 'sizeof(params) - 1' evaluates to 299: Buffer 'params' with size 20 (allocated at line 3431)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3466,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 52,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3582,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 27,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3583,
+   "message": "Pointer parameter 'sta' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sta'"
+  },
+  {
+   "column": 67,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3594,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 63,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3608,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 32,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3609,
+   "message": "Pointer parameter 'freqs' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *freqs'"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3640,
+   "message": "Potentially unsafe array access with variable index 'c': Buffer 'freqs' with size 2 (allocated at line 6623)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 40,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3706,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 28,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3708,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 11,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3709,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3719,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3725,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3771,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3784,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3816,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3836,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3861,
+   "message": "Local variable 'P2P_MAX_PREF_CHANNELS' assigned to global/static variable 'num_pref_freq' - creates dangling pointer",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage for local variable or copy data instead of assigning pointer"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3887,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 43,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3902,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3919,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3928,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3936,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3953,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3955,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3976,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 3983,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4015,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4055,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4078,
+   "message": "Variable 'buf' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'buf' before use, e.g., at its declaration"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4082,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4115,
+   "message": "Value assigned to 'pos' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4121,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 41,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4127,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 25,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4285,
+   "message": "sizeof applied to pointer/array parameter 'cli_chan' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*cli_chan)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 34,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4340,
+   "message": "Pointer parameter 'mode' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *mode'"
+  },
+  {
+   "column": 18,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4350,
+   "message": "Potential null pointer dereference in member access of variable 'mode'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'mode' is not NULL before member access"
+  },
+  {
+   "column": 60,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4368,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 34,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4369,
+   "message": "Pointer parameter 'mode' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *mode'"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4375,
+   "message": "Potential null pointer dereference in member access of variable 'mode'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'mode' is not NULL before member access"
+  },
+  {
+   "column": 17,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4391,
+   "message": "Array declaration 'center_channels_5ghz_80mhz[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 17,
+   "file": "wpa_supplicant/p2p_supplicant.c",
+   "line": 4393,
+   "message": "Array declaration 'center_channels_6ghz_80mhz[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  }
+ ]
+}

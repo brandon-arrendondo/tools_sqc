@@ -1,0 +1,1211 @@
+{
+ "labels": [
+  {
+   "rule": "EXP05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4739,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cast-away-const on read-only wire-frame overlay (mgmt fields only read, never written); matches confirmed EXP05-C read-only-overlay pattern."
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4739,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "char*->struct ieee80211_mgmt* cast (align 1->4) with no alignment guarantee shown at this call site; real per CERT EXP36-C text though low practical risk."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4741,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Args are MAC2STR/fc2str, side-effect-free logging accessors; matches confirmed EXP30-C macro-arg FP pattern."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4826,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nl80211_get_link() always returns non-NULL (falls back to bss->flink); link can never be NULL here."
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4857,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "u8 rates[NL80211_MAX_SUPP_RATES] fixed local array; no getenv/env-var code anywhere in file. Matches confirmed ENV01-C wholesale-misfire pattern."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4878,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`if (!(msg=f())||nla_put(msg,...)...)`: || guarantees a sequence point after each operand (C11 6.5.14p4), so msg read is fully sequenced after its assignment. New confirmed pattern."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4878,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`if (!(msg=f())||nla_put(msg,...)...)`: || guarantees a sequence point after each operand (C11 6.5.14p4), so msg read is fully sequenced after its assignment. New confirmed pattern."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4878,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`if (!(msg=f())||nla_put(msg,...)...)`: || guarantees a sequence point after each operand (C11 6.5.14p4), so msg read is fully sequenced after its assignment. New confirmed pattern."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4878,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`if (!(msg=f())||nla_put(msg,...)...)`: || guarantees a sequence point after each operand (C11 6.5.14p4), so msg read is fully sequenced after its assignment. New confirmed pattern."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4878,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`if (!(msg=f())||nla_put(msg,...)...)`: || guarantees a sequence point after each operand (C11 6.5.14p4), so msg read is fully sequenced after its assignment. New confirmed pattern."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4878,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`if (!(msg=f())||nla_put(msg,...)...)`: || guarantees a sequence point after each operand (C11 6.5.14p4), so msg read is fully sequenced after its assignment. New confirmed pattern."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4878,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`if (!(msg=f())||nla_put(msg,...)...)`: || guarantees a sequence point after each operand (C11 6.5.14p4), so msg read is fully sequenced after its assignment. New confirmed pattern."
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4878,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "!(msg = f()) is the parenthesized deliberate-assignment idiom (matches confirmed EXP45-C-already-parenthesized pattern), not an accidental =/== typo."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4900,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_driver_nl80211_set_acl is a struct wpa_driver_ops vtable member (.set_acl=...); signature pinned by dispatch contract, extends confirmed EAP-method/eloop DCL13-C FP family."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4901,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same vtable-member dispatch-contract FP as priv above (wpa_driver_ops.set_acl)."
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4938,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "GENL_HDRLEN + nla_total_size(4)*2 + nla_total_size(acl_nla_sz) is pure size_t integer arithmetic, no pointer operand; matches confirmed ARR39-C pure-integer-sum FP pattern."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4942,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same || sequence-point misfire as 4878 (msg=nl80211_ifindex_msg_build(...) then read in later || operands)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4942,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same || sequence-point misfire as 4878 (msg=nl80211_ifindex_msg_build(...) then read in later || operands)."
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4942,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Parenthesized !(msg=...) deliberate-assignment idiom."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4958,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() in single-threaded driver code; matches confirmed CON33/34-C wpa_supplicant/driver FP pattern (no pthread usage in file)."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4958,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same strerror() thread-safety FP as CON33-C above."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4958,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ret is a small negative errno-range value from send_and_recv_cmd(); -ret can never realistically equal INT_MIN. New confirmed 'errno-negation' INT32-C FP pattern."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5011,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() single-threaded FP, same as 4958."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5011,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() single-threaded FP, same as 4958."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5011,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "-ret errno-negation FP, same as 4958."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5020,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "nl80211_put_beacon_rate is a plain internal helper (not a vtable member); params genuinely only read. Low-severity but real per confirmed 16-40_b6 internal-helper clarification."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5173,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() single-threaded FP, same as 4958."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5173,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() single-threaded FP, same as 4958."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5173,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "-ret errno-negation FP, same as 4958."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5206,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "nl80211_fils_discovery is a plain internal helper, not a vtable member; bss only read. Low-severity genuine TP per internal-helper clarification."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5207,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Same function; params only read (fd_min_int/fd_max_int/fd_frame_tmpl fields forwarded to nla_put), never modified."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5237,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "nl80211_unsol_bcast_probe_resp internal helper; bss only read."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5239,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Same function; ubpr only read, never modified."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5268,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "nl80211_mbssid internal helper; params only read (offs is a local copy of a pointer field)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5362,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "|| sequence-point misfire, same as 4878 (msg=nl80211_bss_msg(... VENDOR))."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5362,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "|| sequence-point misfire, same as 4878 (msg=nl80211_bss_msg(... VENDOR))."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5362,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "|| sequence-point misfire, same as 4878 (msg=nl80211_bss_msg(... VENDOR))."
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5362,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Parenthesized !(msg=...) deliberate-assignment idiom."
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5366,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "!(params = nla_nest_start(...)) is the same parenthesized deliberate-assignment idiom."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5390,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() single-threaded FP (qca_set_allowed_ap_freqs)."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5390,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() single-threaded FP (qca_set_allowed_ap_freqs)."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5393,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "err: label is a real goto target reached from earlier failure branches (qca_set_allowed_ap_freqs), not truly unreachable. Matches confirmed MSC07-C goto-target FP family."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5401,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "nl80211_put_freq_params internal helper; bss only read (bss->drv->puncturing)."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5547,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Guard-clause chain; unhandled combination is the default single-link case already handled by link=bss->flink init. Matches confirmed MSC01-C no-final-else FP family."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5552,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "link came from nl80211_get_link(), which never returns NULL."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5558,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cmd pre-initialized to NL80211_CMD_NEW_BEACON; unhandled case leaves the sane default in place. Guard-clause FP."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5572,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "|| sequence-point misfire, same as 4878."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5572,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "|| sequence-point misfire, same as 4878."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5572,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "|| sequence-point misfire, same as 4878."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5572,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "|| sequence-point misfire, same as 4878."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5572,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "|| sequence-point misfire, same as 4878."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5572,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "|| sequence-point misfire, same as 4878."
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5572,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Parenthesized !(msg=...) deliberate-assignment idiom."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5659,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Unhandled num_suites==0 case is a deliberate no-op (nothing to add). Guard-clause FP."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5727,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_len()/wpabuf_head() are pure accessors with no side effects; matches confirmed EXP30-C pure-accessor-arg FP family."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5735,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same wpabuf_len/head pure-accessor FP."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5743,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same wpabuf_len/head pure-accessor FP."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5790,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same wpabuf_len/head pure-accessor FP."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5794,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same wpabuf_len/head pure-accessor FP."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5828,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "params->he_spr_bss_color_bitmap is a genuine u8[8] struct member accessed via ->; not a decayed parameter. Matches confirmed ARR01-C member-array FP pattern."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5831,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "params->he_spr_partial_bssid_bitmap is a genuine u8[8] struct member; same FP as above."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5894,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() single-threaded FP."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5894,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() single-threaded FP."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5914,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() single-threaded FP."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5914,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() single-threaded FP."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5920,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Remaining combination (beacon_set unchanged or no freq change) needs no action; guard-clause FP."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5942,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label is a real goto target reached from earlier failure branches (wpa_driver_nl80211_set_ap), not truly unreachable. Matches confirmed MSC07-C goto-target FP family."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5984,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() single-threaded FP."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5984,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() single-threaded FP."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 5984,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "-ret errno-negation FP, same as 4958."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6042,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_driver_nl80211_sta_add is a wpa_driver_ops vtable member (.sta_add=...); dispatch-contract FP."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6098,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*params->ht_capabilities) dereferences then sizes the pointee type; correct idiom, nothing decayed."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6100,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same sizeof(*ptr) correct-idiom FP as above."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6108,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*params->vht_capabilities); same correct-idiom FP."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6110,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same as above."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6126,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*params->he_6ghz_capab); same correct-idiom FP."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6128,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same as above."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6192,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Unhandled remaining case needs no attribute added; guard-clause FP."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6252,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Inner if/else-if's unhandled case (FULL_AP_CLIENT_STATE_SUPP && !TDLS/!unset) needs no mask change; guard-clause FP."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6342,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() single-threaded FP."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6342,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() single-threaded FP."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6342,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "-ret errno-negation FP, same as 4958."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6351,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "rtnl_neigh_delete_fdb_entry internal helper (not a vtable member); bss only read."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6369,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "(void*)addr cast purely to pass a read-only MAC address into nla_put(), which copies data; no write through the cast pointer. Matches confirmed EXP05-C read-only-overlay FP."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6375,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR(addr) is a side-effect-free macro logging arg; matches confirmed EXP30-C macro-arg FP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6393,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "rtnl_neigh_add_fdb_entry internal helper; bss only read."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6414,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same (void*)addr read-only cast-away-const FP as 6369."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6420,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR(addr) side-effect-free macro-arg FP."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6445,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "|| sequence-point misfire, same as 4878 (msg=nl80211_bss_msg(...DEL_STATION))."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6445,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "|| sequence-point misfire, same as 4878 (msg=nl80211_bss_msg(...DEL_STATION))."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6445,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "|| sequence-point misfire, same as 4878 (msg=nl80211_bss_msg(...DEL_STATION))."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6445,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "|| sequence-point misfire, same as 4878 (msg=nl80211_bss_msg(...DEL_STATION))."
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6445,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Parenthesized !(msg=...) deliberate-assignment idiom."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6460,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR(addr) side-effect-free macro-arg FP in wpa_printf."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6462,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() single-threaded FP."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6462,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() single-threaded FP."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6462,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "-ret errno-negation FP, same as 4958."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6606,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() single-threaded FP."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6606,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() single-threaded FP."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6606,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "-ret errno-negation FP, same as 4958."
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6613,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if_nametoindex() is a standard POSIX function declared in <net/if.h>; extends confirmed 'external system header unresolved' DCL31-C FP class (previously seen for libdbus)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6633,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "addr is guarded by `addr &&` as the first operand of the very same && condition before being passed to linux_set_ifhwaddr; extends confirmed short-circuit guard-blindness family from || to &&."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6642,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nl80211_create_iface is an internal-only entry point called from within this driver's own call graph (drv param). Matches confirmed API00-C internal-API FP pattern."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6642,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same internal-only-API FP as above (addr param)."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6642,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same internal-only-API FP as above (handler param)."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6642,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same internal-only-API FP as above (arg param)."
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6654,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if_nametoindex() external system-header FP, same as 6613."
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6673,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if_nametoindex() external system-header FP, same as 6613."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6743,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "const u8 *buf, size_t len is the idiomatic ptr+len pair; matches confirmed API05-C FP class."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6778,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() single-threaded FP."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6778,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() single-threaded FP."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6815,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror(errno) single-threaded FP (EAPOL TX error path)."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6815,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same as above."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6822,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "const u8 *data, size_t data_len ptr+len pair idiom; matches confirmed API05-C FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6856,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "|| sequence-point misfire, same as 4878 (msg=nl80211_bss_msg(...SET_STATION))."
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6856,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Parenthesized !(msg=...) deliberate-assignment idiom."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6887,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label is a real goto target; matches confirmed MSC07-C goto-target FP family."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6904,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "|| sequence-point misfire, same as 4878."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6904,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "|| sequence-point misfire, same as 4878."
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6904,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Parenthesized !(msg=...) deliberate-assignment idiom."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6913,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() single-threaded FP."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6913,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() single-threaded FP."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6913,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "-ret errno-negation FP, same as 4958."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6916,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label is a real goto target; matches confirmed MSC07-C goto-target FP family."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6922,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_driver_nl80211_ap internal helper (not itself a vtable member); drv only read."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6962,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() single-threaded FP."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6962,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() single-threaded FP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 6979,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "nl80211_ht_vht_overrides internal helper; params only read."
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 7051,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Parenthesized !(msg=...) deliberate-assignment idiom (JOIN_IBSS)."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 7113,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() single-threaded FP."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 7113,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() single-threaded FP."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 7128,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "The -EALREADY retry branch frees msg then goto retry (jumps back, never reaching this fail: label); this fail: nlmsg_free is only reached on disjoint paths where msg was never freed. Mutually-exclusive-branch free-tracking FP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 7133,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "nl80211_put_fils_connect_params internal helper; drv only read."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 7134,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Same function; params only read (all nla_put source args)."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 7179,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "val &= val - 1; is the standard Kernighan lowest-set-bit-clear idiom; combining bitwise-AND with arithmetic-decrement of the same value is the whole point of the trick, not sloppy mixing."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 7213,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "for_each_link() macro expands to for ((i)=0; ...; (i)++) so link_id is unconditionally initialized in the loop's own init clause before use; macro-blind for-loop-init family, new macro instance."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 7304,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "drv->ssid is a genuine fixed-size array field accessed via ->; not a decayed parameter."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 7334,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "drv is only ever a member-access base (drv->capa.enc); the struct-pointer itself is never used bitwise or arithmetically. Matches confirmed INT14-C struct-pointer-conflated-with-member FP."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 7340,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Unhandled group_suite==NONE case needs no attribute; guard-clause FP."
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 7485,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "\"  * PSK\" is the wpa_hexdump_key debug-log title/label, not the secret (params->psk is the separate runtime data argument). Matches confirmed MSC41-C title-string FP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 7557,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "connect_ext_feature_set writes through *idx_byte |= ... (an alias of features[idx/8]); the 'unmodified' premise is factually false, so const is not actually applicable."
+  },
+  {
+   "rule": "INT10-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 7562,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "idx is an enum qca_wlan_connect_ext_features parameter; call sites always pass small non-negative named constants, so no negative-modulo path is realistically reachable."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 7574,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "u8 features[(NUM_QCA_CONNECT_EXT_FEATURES + 7) / 8] is a fixed-size array sized by a compile-time macro constant, not a VLA."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 7582,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "|| sequence-point misfire, same as 4878 (msg=nl80211_bss_msg(...VENDOR))."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 7582,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same || sequence-point misfire as above (2nd instance on this line)."
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 7582,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Parenthesized !(msg=...) deliberate-assignment idiom."
+  },
+  {
+   "rule": "MEM03-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 7680,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "password is a const char* alias into caller-owned params->sae_password/passphrase, never copied into a local buffer this function owns; nothing to clear without corrupting caller state."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 7736,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() single-threaded FP."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 7736,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() single-threaded FP."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 7791,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ret = -1 at declaration is always overwritten before any read on every path reaching the shared fail:/return site; genuine (low-severity) dead initializer."
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 15,
+  "fp": 135,
+  "fn": 0
+ }
+}

@@ -1,0 +1,1354 @@
+{
+ "src/crypto/tls_openssl.c#part2of4": [
+  {
+   "column": 16,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2179,
+   "message": "Variable 'cn' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'cn' before use, e.g., at its declaration"
+  },
+  {
+   "column": 59,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2326,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2349,
+   "message": "Testing 'domain_suffix_match(gen->d.dNSName->data,\n\t\t\t\t\tgen->d.dNSName->length,\n\t\t\t\t\tmatch, match_len, full)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: domain_suffix_match(gen->d.dNSName->data,\n\t\t\t\t\tgen->d.dNSName->length,\n\t\t\t\t\tmatch, match_len, full) != 0"
+  },
+  {
+   "column": 16,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2369,
+   "message": "Variable 'cn' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'cn' before use, e.g., at its declaration"
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2382,
+   "message": "Testing 'domain_suffix_match(cn->data, cn->length,\n\t\t\t\t\tmatch, match_len, full)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: domain_suffix_match(cn->data, cn->length,\n\t\t\t\t\tmatch, match_len, full) != 0"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2397,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 17,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2459,
+   "message": "Function 'i2d_X509' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2468,
+   "message": "Function 'i2d_X509' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2469,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 58,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2473,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2479,
+   "message": "Value assigned to 'cert' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2487,
+   "message": "Accessing union 'ev' member 'cert_fail' after writing to 'alert' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2520,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 58,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2529,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2554,
+   "message": "Accessing union 'ev' member 'peer_cert' after writing to 'alert' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 13,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2558,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 10,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2559,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2573,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 9,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2581,
+   "message": "Variable 'pos' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'pos' before use, e.g., at its declaration"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2613,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2694,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 29,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2705,
+   "message": "Function 'X509_get_notBefore' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 10,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2711,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 36,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2711,
+   "message": "Function 'X509_get_notAfter' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 14,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2758,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 11,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2759,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 11,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2767,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 4,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2790,
+   "message": "Declaration is missing an explicit type specifier",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Add an explicit type specifier to the declaration"
+  },
+  {
+   "column": 9,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2854,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 10,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2915,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 44,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2939,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 11,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2945,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2975,
+   "message": "Testing 'X509_STORE_add_cert(SSL_CTX_get_cert_store(ssl_ctx), cert)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: X509_STORE_add_cert(SSL_CTX_get_cert_store(ssl_ctx), cert) != 0"
+  },
+  {
+   "column": 18,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2998,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 43,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 2999,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 10,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3008,
+   "message": "Memory allocated with 'X509_STORE_new' for variable 'store' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(store)' before the variable goes out of scope"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3017,
+   "message": "Bit-field 'ca_cert_verify' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3022,
+   "message": "Bit-field 'cert_probe' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3023,
+   "message": "Bit-field 'ca_cert_verify' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3024,
+   "message": "Memory leak: 'store' allocated with 'X509_STORE_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'store' before this return statement"
+  },
+  {
+   "column": 28,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3027,
+   "message": "Passing null pointer 'ca_cert' to 'os_strncmp' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'ca_cert' is not NULL before passing to 'os_strncmp'"
+  },
+  {
+   "column": 4,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3033,
+   "message": "Memory leak: 'store' allocated with 'X509_STORE_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'store' before this return statement"
+  },
+  {
+   "column": 4,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3039,
+   "message": "Memory leak: 'store' allocated with 'X509_STORE_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'store' before this return statement"
+  },
+  {
+   "column": 4,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3044,
+   "message": "Memory leak: 'store' allocated with 'X509_STORE_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'store' before this return statement"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3046,
+   "message": "Bit-field 'server_cert_only' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3049,
+   "message": "Memory leak: 'store' allocated with 'X509_STORE_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'store' before this return statement"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3053,
+   "message": "Memory leak: 'store' allocated with 'X509_STORE_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'store' before this return statement"
+  },
+  {
+   "column": 10,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3063,
+   "message": "Function 'd2i_X509' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3068,
+   "message": "Function 'X509_free' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3069,
+   "message": "Memory leak: 'store' allocated with 'X509_STORE_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'store' before this return statement"
+  },
+  {
+   "column": 4,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3075,
+   "message": "Function 'X509_free' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 4,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3076,
+   "message": "Memory leak: 'store' allocated with 'X509_STORE_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'store' before this return statement"
+  },
+  {
+   "column": 19,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3082,
+   "message": "Function 'PEM_read_bio_X509' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 34,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3091,
+   "message": "Passing null pointer 'cert' to 'tls_add_ca_cert' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'cert' is not NULL before passing to 'tls_add_ca_cert'"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3092,
+   "message": "Function 'X509_free' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3094,
+   "message": "Memory leak: 'store' allocated with 'X509_STORE_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'store' before this return statement"
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3096,
+   "message": "Function 'X509_free' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 4,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3104,
+   "message": "Memory leak: 'store' allocated with 'X509_STORE_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'store' before this return statement"
+  },
+  {
+   "column": 4,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3113,
+   "message": "Memory leak: 'store' allocated with 'X509_STORE_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'store' before this return statement"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3121,
+   "message": "Memory leak: 'store' allocated with 'X509_STORE_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'store' before this return statement"
+  },
+  {
+   "column": 43,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3126,
+   "message": "Passing null pointer 'ca_cert' to 'os_strncmp' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'ca_cert' is not NULL before passing to 'os_strncmp'"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3131,
+   "message": "Memory leak: 'store' allocated with 'X509_STORE_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'store' before this return statement"
+  },
+  {
+   "column": 44,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3135,
+   "message": "Passing null pointer 'ca_cert' to 'os_strncmp' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'ca_cert' is not NULL before passing to 'os_strncmp'"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3160,
+   "message": "Memory leak: 'store' allocated with 'X509_STORE_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'store' before this return statement"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3169,
+   "message": "Memory leak: 'store' allocated with 'X509_STORE_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'store' before this return statement"
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3185,
+   "message": "Memory leak: 'store' allocated with 'X509_STORE_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'store' before this return statement"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3194,
+   "message": "Memory leak: 'store' allocated with 'X509_STORE_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'store' before this return statement"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3199,
+   "message": "Bit-field 'ca_cert_verify' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3202,
+   "message": "Memory leak: 'store' allocated with 'X509_STORE_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'store' before this return statement"
+  },
+  {
+   "column": 31,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3313,
+   "message": "Pointer parameter 'ssl' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssl'"
+  },
+  {
+   "column": 42,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3313,
+   "message": "Pointer parameter 'arg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *arg'"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3348,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3355,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3360,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3366,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3372,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3378,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3384,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3391,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 12,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3393,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3395,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 12,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3395,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3420,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3441,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 9,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3455,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 13,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3455,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3461,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3499,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 9,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3504,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 9,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3523,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 12,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3539,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3540,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3556,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3573,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3611,
+   "message": "Function 'tls_connection_set_verify' performs compound operation on shared static variable 'counter' without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 36,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3611,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 36,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3611,
+   "message": "Pointer parameter 'ssl_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssl_ctx'"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3615,
+   "message": "Shared variable 'counter' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3618,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 0,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3622,
+   "message": "Function 'tls_connection_set_verify' accesses bit-field 'tls_connection.ca_cert_verify' without mutex protection in a multi-threaded context",
+   "rule_id": "CON32-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field accesses with mutex locks or use separate byte-sized members instead of bit-fields"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3622,
+   "message": "Bit-field 'ca_cert_verify' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 0,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3626,
+   "message": "Function 'tls_connection_set_verify' accesses bit-field 'tls_connection.ca_cert_verify' without mutex protection in a multi-threaded context",
+   "rule_id": "CON32-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field accesses with mutex locks or use separate byte-sized members instead of bit-fields"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3626,
+   "message": "Bit-field 'ca_cert_verify' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 0,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3631,
+   "message": "Function 'tls_connection_set_verify' accesses bit-field 'tls_connection.ca_cert_verify' without mutex protection in a multi-threaded context",
+   "rule_id": "CON32-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field accesses with mutex locks or use separate byte-sized members instead of bit-fields"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3631,
+   "message": "Bit-field 'ca_cert_verify' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 9,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3651,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 61,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3660,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 22,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3661,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3680,
+   "message": "Testing 'SSL_use_certificate_ASN1(conn->ssl, (u8 *) client_cert_blob,\n\t\t\t\t     client_cert_blob_len)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: SSL_use_certificate_ASN1(conn->ssl, (u8 *) client_cert_blob,\n\t\t\t\t     client_cert_blob_len) != 0"
+  },
+  {
+   "column": 42,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3680,
+   "message": "Do not cast away const qualification: '(u8 *) client_cert_blob'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 9,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3685,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 9,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3695,
+   "message": "Memory allocated with 'BIO_new' for variable 'bio' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(bio)' before the variable goes out of scope"
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3718,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3730,
+   "message": "Testing 'SSL_use_certificate(conn->ssl, x509)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: SSL_use_certificate(conn->ssl, x509) != 0"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3751,
+   "message": "Testing 'SSL_use_certificate_file(conn->ssl, client_cert,\n\t\t\t\t     SSL_FILETYPE_ASN1)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: SSL_use_certificate_file(conn->ssl, client_cert,\n\t\t\t\t     SSL_FILETYPE_ASN1) != 0"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3755,
+   "message": "Memory leak: 'bio' allocated with 'BIO_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'bio' before this return statement"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3760,
+   "message": "Testing 'SSL_use_certificate_chain_file(conn->ssl, client_cert)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: SSL_use_certificate_chain_file(conn->ssl, client_cert) != 0"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3764,
+   "message": "Memory leak: 'bio' allocated with 'BIO_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'bio' before this return statement"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3767,
+   "message": "Testing 'SSL_use_certificate_file(conn->ssl, client_cert,\n\t\t\t\t     SSL_FILETYPE_PEM)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: SSL_use_certificate_file(conn->ssl, client_cert,\n\t\t\t\t     SSL_FILETYPE_PEM) != 0"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3772,
+   "message": "Memory leak: 'bio' allocated with 'BIO_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'bio' before this return statement"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3782,
+   "message": "Memory leak: 'bio' allocated with 'BIO_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'bio' before this return statement"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3786,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 51,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3786,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3792,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3806,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3881,
+   "message": "Double free detected: 'cert' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate X509_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 4,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3884,
+   "message": "Double free detected: 'cert' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate X509_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 10,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3904,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3927,
+   "message": "Double free detected: 'cert' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate X509_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3932,
+   "message": "Double free detected: 'certs' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate sk_X509_pop_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3932,
+   "message": "Double free detected: 'X509_free' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate sk_X509_pop_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3946,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3953,
+   "message": "Return value of 'fopen' assigned to 'f' but not checked for errors: 'fopen(private_key, \"rb\")' - Returns NULL if file cannot be opened",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (file == NULL) before using the file pointer"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3953,
+   "message": "Return value from fopen() should be checked for errors",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Check if fopen() returned an error value (NULL, -1, etc.)"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3953,
+   "message": "File opened for reading using variable filename 'private_key' without verifying file attributes (fstat + st_uid/st_gid check)",
+   "rule_id": "FIO05-C",
+   "severity": "Medium",
+   "suggestion": "Use fstat() to check file ownership (st_uid, st_gid) before reading untrusted files"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3953,
+   "message": "fopen() called without 'N' flag in mode string \"rb\". On Windows, file handles are inheritable by default unless the 'N' flag is specified.",
+   "rule_id": "WIN03-C",
+   "severity": "High",
+   "suggestion": "Add 'N' flag to the mode string (e.g., \"rwN\") to disable handle inheritance on Windows."
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3958,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3958,
+   "message": "Return value of 'fclose' ignored: 'fclose(f)' - Returns non-zero on error",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (fclose(file) != 0) for close errors"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3976,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 44,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 3977,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 54,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4000,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4023,
+   "message": "Variable 'params' of type char used in numeric operation. Use explicit 'signed char' or 'unsigned char' for numeric values.",
+   "rule_id": "INT07-C",
+   "severity": "Medium",
+   "suggestion": "Change declaration of 'params' from 'char' to 'signed char' or 'unsigned char'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4034,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4065,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 58,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4065,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 10,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4084,
+   "message": "Memory allocated with 'X509_STORE_new' for variable 'store' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(store)' before the variable goes out of scope"
+  },
+  {
+   "column": 4,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4104,
+   "message": "Memory leak: 'store' allocated with 'X509_STORE_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'store' before this return statement"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4107,
+   "message": "Double-free: 'cert' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4112,
+   "message": "Bit-field 'ca_cert_verify' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4114,
+   "message": "Memory leak: 'store' allocated with 'X509_STORE_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'store' before this return statement"
+  }
+ ]
+}

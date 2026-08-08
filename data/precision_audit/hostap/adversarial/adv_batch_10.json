@@ -1,0 +1,346 @@
+[
+ {
+  "rule": "POS49-C",
+  "file": "src/common/dpp_tcp.c",
+  "line": 232,
+  "verdict": "FP",
+  "reason": "No pthread usage anywhere in this codebase; hostap's eloop is single-threaded, so no concurrent-access hazard exists.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "POS49-C",
+  "file": "src/common/dpp_tcp.c",
+  "line": 239,
+  "verdict": "FP",
+  "reason": "No pthread usage anywhere in this codebase; hostap's eloop is single-threaded, so no concurrent-access hazard exists.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "POS49-C",
+  "file": "src/common/dpp_tcp.c",
+  "line": 263,
+  "verdict": "FP",
+  "reason": "No pthread usage anywhere in this codebase; hostap's eloop is single-threaded, so no concurrent-access hazard exists.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "POS49-C",
+  "file": "src/common/dpp_tcp.c",
+  "line": 285,
+  "verdict": "FP",
+  "reason": "No pthread usage anywhere in this codebase; hostap's eloop is single-threaded, so no concurrent-access hazard exists.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "POS49-C",
+  "file": "src/common/dpp_tcp.c",
+  "line": 294,
+  "verdict": "FP",
+  "reason": "No pthread usage anywhere in this codebase; hostap's eloop is single-threaded, so no concurrent-access hazard exists.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "POS49-C",
+  "file": "src/common/dpp_tcp.c",
+  "line": 298,
+  "verdict": "FP",
+  "reason": "No pthread usage anywhere in this codebase; hostap's eloop is single-threaded, so no concurrent-access hazard exists.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "POS49-C",
+  "file": "src/common/dpp_tcp.c",
+  "line": 309,
+  "verdict": "FP",
+  "reason": "No pthread usage anywhere in this codebase; hostap's eloop is single-threaded, so no concurrent-access hazard exists.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "PRE30-C",
+  "file": "src/common/common_module_tests.c",
+  "line": 116,
+  "verdict": "FP",
+  "reason": "ieee802_11_vendor_ie_concat is a plain function call, not a macro; no token concatenation exists to create a UCN",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "STR01-C",
+  "file": "hostapd/hostapd_cli.c",
+  "line": 129,
+  "verdict": "FP",
+  "reason": "Compares unrelated variables in different functions (cfile here vs. an unrelated local buf[4096] in _wpa_ctrl_command at line 203); not a real mixed-management pattern",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "STR01-C",
+  "file": "src/utils/os_internal.c",
+  "line": 269,
+  "verdict": "FP",
+  "reason": "generic cross-file style comparison; the cited 'static char array at line 524' is actually an array of pointers (argv), not a string buffer at all",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "STR01-C",
+  "file": "src/utils/os_unix.c",
+  "line": 486,
+  "verdict": "FP",
+  "reason": "calloc() call at 486 misclassified as \"string management\"; unrelated to the static array at 550",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "STR01-C",
+  "file": "src/utils/trace.c",
+  "line": 68,
+  "verdict": "FP",
+  "reason": "phantom finding: no static char array exists anywhere near the cited line 363; file has no such construct",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "STR01-C",
+  "file": "wpa_supplicant/win_if_list.c",
+  "line": 84,
+  "verdict": "FP",
+  "reason": "b is a struct ioctl buffer, not a string; comparing it to the unrelated name[256] array is a category error",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "STR30-C",
+  "file": "src/ap/gas_serv.c",
+  "line": 860,
+  "verdict": "FP",
+  "reason": "set_anqp_req's name param is declared const char*, only passed to wpa_printf; never modified",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "STR30-C",
+  "file": "src/ap/gas_serv.c",
+  "line": 864,
+  "verdict": "FP",
+  "reason": "same set_anqp_req const-char* name param, read-only",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "STR30-C",
+  "file": "src/ap/gas_serv.c",
+  "line": 868,
+  "verdict": "FP",
+  "reason": "same set_anqp_req const-char* name param, read-only",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "STR30-C",
+  "file": "src/ap/gas_serv.c",
+  "line": 873,
+  "verdict": "FP",
+  "reason": "same set_anqp_req const-char* name param, read-only",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "STR30-C",
+  "file": "src/ap/gas_serv.c",
+  "line": 877,
+  "verdict": "FP",
+  "reason": "same set_anqp_req const-char* name param, read-only",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "STR30-C",
+  "file": "src/ap/gas_serv.c",
+  "line": 881,
+  "verdict": "FP",
+  "reason": "same set_anqp_req const-char* name param, read-only",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "STR30-C",
+  "file": "src/ap/gas_serv.c",
+  "line": 886,
+  "verdict": "FP",
+  "reason": "same set_anqp_req const-char* name param, read-only",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "STR30-C",
+  "file": "src/ap/gas_serv.c",
+  "line": 890,
+  "verdict": "FP",
+  "reason": "same set_anqp_req const-char* name param, read-only",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "STR30-C",
+  "file": "src/ap/gas_serv.c",
+  "line": 895,
+  "verdict": "FP",
+  "reason": "same set_anqp_req const-char* name param, read-only",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "STR30-C",
+  "file": "src/ap/gas_serv.c",
+  "line": 900,
+  "verdict": "FP",
+  "reason": "same set_anqp_req const-char* name param, read-only",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "STR31-C",
+  "file": "hostapd/config_file.c",
+  "line": 378,
+  "verdict": "FP",
+  "reason": "the `while(*start)` loop parses comma-separated EAP method tokens via os_strchr, not a manual char-by-char string copy",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "STR31-C",
+  "file": "hostapd/config_file.c",
+  "line": 1612,
+  "verdict": "FP",
+  "reason": "loop splits/NUL-terminates realm_buf in place; no copying occurs at all, mischaracterized as a copy loop",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "STR31-C",
+  "file": "hostapd/config_file.c",
+  "line": 4245,
+  "verdict": "FP",
+  "reason": "misattributed: line is 'conf->ecsa_ie_only = atoi(pos);', no char array or string-copy operation present at all; STR31-C category-error/mislocation",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "STR31-C",
+  "file": "hostapd/hlr_auc_gw.c",
+  "line": 1020,
+  "verdict": "FP",
+  "reason": "main()'s argc/argv guaranteed valid by the C runtime; no defensive check needed",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "STR31-C",
+  "file": "hostapd/hostapd_cli.c",
+  "line": 2250,
+  "verdict": "FP",
+  "reason": "main()'s argc/argv are guaranteed valid by the C standard; the NO_CTRL_IFACE stub main doesn't even reference argv",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "STR31-C",
+  "file": "hostapd/hostapd_cli.c",
+  "line": 2404,
+  "verdict": "FP",
+  "reason": "main()'s argc/argv are guaranteed valid by the C standard; the NO_CTRL_IFACE stub main doesn't even reference argv",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "STR31-C",
+  "file": "hostapd/sae_pk_gen.c",
+  "line": 138,
+  "verdict": "FP",
+  "reason": "manual copy loop is bounded by the NUL terminator guaranteed by base64_encode()'s contract, same reasoning as the ARR30-C finding on this line",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "STR31-C",
+  "file": "src/ap/eap_user_db.c",
+  "line": 35,
+  "verdict": "FP",
+  "reason": "no string copying occurs here at all - just strchr tokenizing + a single NUL write; same bounded-NUL-traversal reasoning as the ARR30 finding on this line",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "STR31-C",
+  "file": "src/ap/hostapd.c",
+  "line": 914,
+  "verdict": "FP",
+  "reason": "Not a string-copy loop at all: mask[i] is a BSSID mask byte being right-shifted to count bits, not copied into another buffer",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "STR31-C",
+  "file": "src/ap/ndisc_snoop.c",
+  "line": 33,
+  "verdict": "FP",
+  "reason": "'u8 opt_lladdr[0]' is a deliberate flexible/trailing array member idiom, not an undersized string buffer",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "WIN04-C",
+  "file": "src/ap/wpa_auth_ft.c",
+  "line": 3032,
+  "verdict": "FP",
+  "reason": "Windows-only EncodePointer() rule misapplied to POSIX/Linux hostapd code",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "WIN04-C",
+  "file": "src/ap/wpa_auth_ft.c",
+  "line": 3035,
+  "verdict": "FP",
+  "reason": "same Windows-only rule misapplication",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "WIN04-C",
+  "file": "src/ap/wpa_auth_ft.c",
+  "line": 3038,
+  "verdict": "FP",
+  "reason": "same Windows-only rule misapplication",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "WIN04-C",
+  "file": "src/ap/wpa_auth_ft.c",
+  "line": 3040,
+  "verdict": "FP",
+  "reason": "fires on a bare '#endif' preprocessor directive line, not a function-pointer store at all (preprocessor-branch-blind CFG bug)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "WIN04-C",
+  "file": "src/ap/wpa_auth_ie.c",
+  "line": 907,
+  "verdict": "FP",
+  "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "WIN04-C",
+  "file": "src/ap/wpa_auth_ie.c",
+  "line": 909,
+  "verdict": "FP",
+  "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "WIN04-C",
+  "file": "src/ap/wpa_auth_ie.c",
+  "line": 912,
+  "verdict": "FP",
+  "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "WIN04-C",
+  "file": "src/ap/wpa_auth_ie.c",
+  "line": 914,
+  "verdict": "FP",
+  "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "WIN04-C",
+  "file": "src/ap/wpa_auth_ie.c",
+  "line": 919,
+  "verdict": "FP",
+  "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "WIN04-C",
+  "file": "src/ap/wpa_auth_ie.c",
+  "line": 922,
+  "verdict": "FP",
+  "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all",
+  "set": "SAFE_FP"
+ }
+]

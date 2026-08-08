@@ -1,0 +1,31 @@
+{
+ "labels": [
+  {"rule": "ERR34-C", "file": "src/common/dpp.c", "line": 4983, "verdict": "FP", "confidence": "med", "reason": "atoi() result immediately checked (==0 -> return -1); extends sae_pk_gen.c range-checked-atoi FP judgment."},
+  {"rule": "API00-C", "file": "src/common/dpp.c", "line": 4992, "verdict": "FP", "confidence": "med", "reason": "Internal-only API, buf forwarded unchecked to dpp_configurator_get_key; matches confirmed API00-C internal-API default."},
+  {"rule": "API05-C", "file": "src/common/dpp.c", "line": 4993, "verdict": "FP", "confidence": "high", "reason": "buf/buflen is the confirmed ptr+size_t companion-param idiom, not a real conformant-array-syntax gap."},
+  {"rule": "EXP33-C", "file": "src/common/dpp.c", "line": 5034, "verdict": "FP", "confidence": "high", "reason": "sizeof(*conf) is a non-evaluated context; confirmed sizeof(*ptr) EXP33-C misfire class."},
+  {"rule": "DCL30-C", "file": "src/common/dpp.c", "line": 5065, "verdict": "FP", "confidence": "high", "reason": "conf is a dl_list_for_each iteration var pointing into a heap-linked list node, not automatic storage; confirmed FP sub-class."},
+  {"rule": "EXP33-C", "file": "src/common/dpp.c", "line": 5077, "verdict": "FP", "confidence": "high", "reason": "sizeof(*dpp) never evaluates operand; confirmed sizeof(*ptr) EXP33-C misfire class."},
+  {"rule": "DCL30-C", "file": "src/common/dpp.c", "line": 5093, "verdict": "FP", "confidence": "high", "reason": "dpp is os_zalloc'd heap memory, not automatic storage; confirmed comeback_token.c-style DCL30-C FP class."},
+  {"rule": "API00-C", "file": "src/common/dpp.c", "line": 5112, "verdict": "FP", "confidence": "high", "reason": "dpp_global_clear() already NULL-checks internally and os_free(NULL) is safe; no real risk."},
+  {"rule": "DCL13-C", "file": "src/common/dpp.c", "line": 5119, "verdict": "TP", "confidence": "low", "reason": "Plain read-only helper; auth only reaches nested fields (msg_ctx), never itself forwarded to a non-const/vtable call - genuine low-severity const opportunity."},
+  {"rule": "MEM05-C", "file": "src/common/dpp.c", "line": 5122, "verdict": "FP", "confidence": "high", "reason": "hex[SHA256_MAC_LEN*2+1] is a fixed-size array sized by macro constants, not a VLA; confirmed MEM05-C misfire class."},
+  {"rule": "DCL13-C", "file": "src/common/dpp.c", "line": 5139, "verdict": "TP", "confidence": "low", "reason": "bi only read to reach bi->pubkey_hash_chirp forwarded as const u8*; never itself passed to a fixed-signature callback - genuine low-severity opportunity."},
+  {"rule": "DCL30-C", "file": "src/common/dpp.c", "line": 5153, "verdict": "FP", "confidence": "high", "reason": "msg comes from dpp_alloc_msg()->wpabuf_alloc() (heap), not automatic storage; confirmed DCL30-C heap FP class."},
+  {"rule": "API00-C", "file": "src/common/dpp.c", "line": 5157, "verdict": "FP", "confidence": "med", "reason": "msg_ctx forwarded to logging wpa_msg(); internal notify path, no NULL-check convention elsewhere in file."},
+  {"rule": "API00-C", "file": "src/common/dpp.c", "line": 5157, "verdict": "FP", "confidence": "med", "reason": "src only used via MAC2STR macro (read-only), internal-only chirp-notify API, matches API00-C internal default."},
+  {"rule": "MEM05-C", "file": "src/common/dpp.c", "line": 5160, "verdict": "FP", "confidence": "high", "reason": "hex[SHA256_MAC_LEN*2+1] fixed-size macro-sized array, not a VLA; confirmed MEM05-C misfire class."},
+  {"rule": "API00-C", "file": "src/common/dpp.c", "line": 5173, "verdict": "FP", "confidence": "med", "reason": "bi dereferenced unconditionally, but no NULL-check convention exists for bi anywhere in this file (no internal-consistency argument); internal-only API default."},
+  {"rule": "DCL13-C", "file": "src/common/dpp.c", "line": 5173, "verdict": "TP", "confidence": "low", "reason": "bi read-only, only bi->pubkey_hash_chirp field forwarded (as const); genuine low-severity const opportunity, same class as line 5139."},
+  {"rule": "DCL30-C", "file": "src/common/dpp.c", "line": 5204, "verdict": "FP", "confidence": "high", "reason": "msg from dpp_alloc_msg() heap allocation; confirmed DCL30-C heap FP class."},
+  {"rule": "API00-C", "file": "src/common/dpp.c", "line": 5208, "verdict": "FP", "confidence": "med", "reason": "bi dereferenced unconditionally but no file-wide NULL-check convention for bi; internal-only API default."},
+  {"rule": "API00-C", "file": "src/common/dpp.c", "line": 5208, "verdict": "FP", "confidence": "med", "reason": "c_nonce only used via wpabuf_put_data with a caller-owned fixed-length buffer; internal-only API default."},
+  {"rule": "API00-C", "file": "src/common/dpp.c", "line": 5208, "verdict": "FP", "confidence": "high", "reason": "c_nonce_len is ifaces->dpp_pb_bi->curve->nonce_len (internal curve-derived constant, not attacker-controlled) - no overflow path."},
+  {"rule": "DCL13-C", "file": "src/common/dpp.c", "line": 5208, "verdict": "TP", "confidence": "low", "reason": "bi read-only, only bi->pubkey_hash_chirp field forwarded (as const); same genuine low-severity class as lines 5139/5173."},
+  {"rule": "MSC01-C", "file": "src/common/dpp.c", "line": 5234, "verdict": "FP", "confidence": "high", "reason": "CONFIG_TESTING_OPTIONS-gated if/else-if debug-injection branches; non-exhaustive by design, normal case is neither condition; confirmed MSC01-C guard-clause FP class."},
+  {"rule": "DCL30-C", "file": "src/common/dpp.c", "line": 5260, "verdict": "FP", "confidence": "high", "reason": "msg from dpp_alloc_msg() heap allocation; confirmed DCL30-C heap FP class."}
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {"tp": 4, "fp": 20, "fn": 0}
+}

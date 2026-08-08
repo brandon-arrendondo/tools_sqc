@@ -1,0 +1,631 @@
+rule,project,file,line,verdict,reason,provenance,confidence
+CON03-C,hostap,src/eap_server/tncs.c,102,FP,no-pthread FP class; tncs_global_data mutated only from single-threaded eloop context,hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/eap_server/tncs.c,114,FP,"imv points into persistent config-parsed heap list, not automatic storage",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/eap_server/tncs.c,131,FP,"tncs points into heap-allocated connections list, not automatic storage",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_server/tncs.c,267,FP,"TNC IF-IMV fixed dispatch-contract signature (bound via TNC_TNCS_BindFunction), extends eloop-callback FP class",hostap_full_audit_0.4.169,high
+MEM10-C,hostap,src/eap_server/tncs.c,299,FP,"ad-hoc NULL-check stylistic pedantry, established FP class",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/eap_server/tncs.c,329,FP,"fptr is a dlsym()-returned code address returned by value, not a pointer to automatic storage",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_server/tncs.c,372,TP,"plain internal helper, imv only read; genuine-if-low-value const opportunity",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/eap_server/tncs.c,388,TP,"plain internal helper, imv only read",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/eap_server/tncs.c,405,TP,"plain internal helper, imv only read",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/eap_server/tncs.c,419,TP,"plain internal helper, imv only read",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/eap_server/tncs.c,469,TP,"tncs_free_imv only reads imv fields via os_free(), imv itself unmodified",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/eap_server/tncs.c,487,TP,"plain internal helper, imv only read",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/eap_server/tncs.c,511,TP,"plain internal helper, tncs only read",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/eap_server/tncs.c,535,TP,"plain internal helper, tncs only read",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/eap_server/tncs.c,553,TP,"plain internal helper, tncs only read",hostap_full_audit_0.4.169,med
+API00-C,hostap,src/eap_server/tncs.c,572,FP,internal-only API; sole caller only invokes with data->tncs guaranteed non-NULL by eap_tnc_init's failure path,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/eap_server/tncs.c,593,FP,"internal-only API, same tncs invariant as :572",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_server/tncs.c,593,TP,"plain internal helper, tncs only read",hostap_full_audit_0.4.169,med
+API00-C,hostap,src/eap_server/tncs.c,606,FP,"internal-only API, tncs invariant as :572",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/eap_server/tncs.c,606,FP,"pos is caller-owned output buffer pointer, always valid at call sites",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/eap_server/tncs.c,634,FP,"internal-only API, tncs invariant as :572",hostap_full_audit_0.4.169,high
+ERR01-C,hostap,src/eap_server/tncs.c,661,TP,"strtoul() on wire-derived hex string, no downstream range check catches ERANGE",hostap_full_audit_0.4.169,low
+ERR30-C,hostap,src/eap_server/tncs.c,661,TP,"errno never reset before strtoul(), literal rule violation",hostap_full_audit_0.4.169,low
+API05-C,hostap,src/eap_server/tncs.c,666,FP,"ptr+size_t/NUL-terminated-string idiom; decoded_len is an output length, not an input bound pairing with start",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/eap_server/tncs.c,679,FP,"*pos2='\0' is plain char-to-char literal assignment, not a widening/sign-extension conversion",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/eap_server/tncs.c,682,FP,*pos2='<' plain char-to-char assignment,hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/eap_server/tncs.c,687,FP,"decoded holds a base64_decode() heap allocation, not automatic storage",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/eap_server/tncs.c,799,FP,*end='\0' plain char-to-char assignment,hostap_full_audit_0.4.169,high
+ERR07-C,hostap,src/eap_server/tncs.c,810,TP,"atoi() on peer-supplied BatchId with no error detection, literal-rule-text default",hostap_full_audit_0.4.169,low
+ERR34-C,hostap,src/eap_server/tncs.c,810,TP,"same atoi() usage, no errno/range check",hostap_full_audit_0.4.169,low
+INT32-C,hostap,src/eap_server/tncs.c,845,FP,"pos+17 is char* pointer arithmetic, not integer addition; category error",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/eap_server/tncs.c,849,FP,*end='\0' plain char-to-char assignment,hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/eap_server/tncs.c,854,FP,*endpos='<' plain char-to-char assignment,hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/eap_server/tncs.c,862,FP,*endpos='<' plain char-to-char assignment,hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/eap_server/tncs.c,885,FP,xml set NULL unconditionally at :908 before any conditional read,hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/eap_server/tncs.c,885,FP,xmlend set NULL unconditionally at :909 before any conditional read,hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/eap_server/tncs.c,885,FP,endpos always assigned at :896 before its first conditional read at :900,hostap_full_audit_0.4.169,high
+INT32-C,hostap,src/eap_server/tncs.c,890,FP,"pos+19 is char* pointer arithmetic, not integer addition",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/eap_server/tncs.c,894,FP,*end='\0' plain char-to-char assignment,hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/eap_server/tncs.c,899,FP,*endpos='<' plain char-to-char assignment,hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/eap_server/tncs.c,915,FP,*endpos='<' plain char-to-char assignment,hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/eap_server/tncs.c,924,FP,*endpos='<' plain char-to-char assignment,hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/eap_server/tncs.c,933,FP,"decoded_len only read guarded by decoded!=NULL, which implies tncs_get_base64 set it via base64_decode()",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/eap_server/tncs.c,934,FP,"single os_free guarded by if(decoded); decoded is reset to NULL at :907 and freshly reassigned each loop2 iteration, no double free across the two while-loops sharing the variable name",hostap_full_audit_0.4.169,high
+ARR00-C,hostap,src/eap_server/tncs.c,941,FP,xml/xmlend (pos/pos2) both derive from the same dup_binstr() buf array via nested os_strstr calls,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_server/tncs.c,958,TP,"plain internal helper tncs_parse_imv, end param only read/compared, never written",hostap_full_audit_0.4.169,med
+EXP33-C,hostap,src/eap_server/tncs.c,969,FP,"sizeof(*imv) is not a dereference, established FP class",hostap_full_audit_0.4.169,high
+ARR36-C,hostap,src/eap_server/tncs.c,988,FP,pos2/end both derive from the same start/end buffer passed into tncs_parse_imv from tncs_read_config's config array,hostap_full_audit_0.4.169,high
+ARR36-C,hostap,src/eap_server/tncs.c,990,FP,same underlying config buffer as :988,hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/eap_server/tncs.c,996,FP,*pos2='\0' plain char-to-char assignment,hostap_full_audit_0.4.169,high
+ARR36-C,hostap,src/eap_server/tncs.c,1001,FP,pos/end same underlying config buffer as :988,hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/eap_server/tncs.c,1012,FP,"imv is heap-allocated via os_zalloc, not automatic storage",hostap_full_audit_0.4.169,high
+ARR36-C,hostap,src/eap_server/tncs.c,1036,FP,"message misattributes the comparison as pos/config, but actual code compares line_end<end, both derived from the same config buffer; same-array either way",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/eap_server/tncs.c,1038,FP,*line_end='\0' plain char-to-char assignment,hostap_full_audit_0.4.169,high
+INT32-C,hostap,src/eap_server/tncs.c,1043,FP,"pos+4 is char* pointer arithmetic, not integer addition",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/eap_server/tncs.c,1069,FP,sizeof(*tncs) is not a dereference,hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/eap_server/tncs.c,1075,FP,"tncs is a heap pointer from os_zalloc, not a local array/VLA; misclassified stack-escape",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/eap_server/tncs.c,1077,FP,"tncs is heap-allocated via os_zalloc, not automatic storage",hostap_full_audit_0.4.169,high
+MEM10-C,hostap,src/eap_server/tncs.c,1086,FP,ad-hoc NULL-check stylistic pedantry,hostap_full_audit_0.4.169,high
+EXP34-C,hostap,src/eap_server/tncs.c,1093,FP,tncs_global_data is an internal invariant non-NULL here: tncs_deinit is only ever called on a tncs obtained while global data existed (eap_tnc_init requires successful tncs_init()),hostap_full_audit_0.4.169,high
+MSC07-C,hostap,src/eap_server/tncs.c,1137,FP,"goto-target-label-after-return; 'failed:' is reached via goto from earlier in tncs_global_init, not actually unreachable",hostap_full_audit_0.4.169,high
+MSC13-C,hostap,src/eap_server/tncs.c,1160,FP,"final cleanup assignment to a global whose value is read by future tncs_global_init() calls, not a dead store",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/eap_server/tncs.c,1186,FP,"buf is a wpabuf_alloc() heap allocation, not automatic storage",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/eap_server/tncs.c,1190,FP,"internal-only API, sole caller in eap_server_peap.c always passes a valid parsed-TLV pointer",hostap_full_audit_0.4.169,high
+API05-C,hostap,src/eap_server/tncs.c,1191,FP,"ptr+size_t idiom (soh_tlv/soh_tlv_len), established FP class",hostap_full_audit_0.4.169,high
+PRE08-C,hostap,src/ap/hw_features.c,15,FP,ieee802_11_defs.h/ieee802_11_common.h 8.3-collision; confirmed FP per 41plus_b12/b244.,hostap_full_audit_0.4.169,high
+PRE08-C,hostap,src/ap/hw_features.c,15,FP,ieee802_11_defs.h vs ieee802_11.h same header-family 8.3 FP convention.,hostap_full_audit_0.4.169,high
+PRE08-C,hostap,src/ap/hw_features.c,16,FP,"ieee802_11_common.h vs ieee802_11.h, same confirmed 8.3-collision FP family.",hostap_full_audit_0.4.169,high
+PRE08-C,hostap,src/ap/hw_features.c,18,FP,"hw_features_common.h vs hw_features.h, same 8.3-collision FP convention.",hostap_full_audit_0.4.169,high
+MEM10-C,hostap,src/ap/hw_features.c,33,FP,Ad-hoc NULL-check stylistic pedantry; the check is present and correct.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/ap/hw_features.c,46,TP,"chan param never modified in dfs_info; plain helper, real if low-value const opportunity.",hostap_full_audit_0.4.169,med
+INT13-C,hostap,src/ap/hw_features.c,51,FP,Misattributes chan->flag (int field) bitwise op to pointer 'chan' itself.,hostap_full_audit_0.4.169,high
+ARR00-C,hostap,src/ap/hw_features.c,70,FP,"info is `static char info[256]`, static storage, not destroyed on return.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/ap/hw_features.c,94,TP,new_feature pointer never reassigned; genuine if low-value const opportunity.,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/ap/hw_features.c,95,TP,old_feature pointer never reassigned; genuine if low-value const opportunity.,hostap_full_audit_0.4.169,med
+EXP33-C,hostap,src/ap/hw_features.c,101,FP,old_chan is always assigned (line 106) before any use within the same loop iteration.,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/ap/hw_features.c,118,FP,Internal-only API; all callers (hostapd.c) pass fixed non-NULL iface.,hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/ap/hw_features.c,185,FP,"Deliberate guard-clause if/else-if; no-op default (dfs=0, flag unchanged) is correct.",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/ap/hw_features.c,253,FP,"Internal-only API; callers always pass hapd->iface->current_mode, non-NULL.",hostap_full_audit_0.4.169,high
+DCL00-C,hostap,src/ap/hw_features.c,258,TP,basic_rates_a never modified; genuinely could be static const.,hostap_full_audit_0.4.169,med
+ARR02-C,hostap,src/ap/hw_features.c,258,FP,"0-terminated sentinel array; consumers (int_array_includes/dup) loop until the 0, no bound mismatch possible.",hostap_full_audit_0.4.169,high
+DCL00-C,hostap,src/ap/hw_features.c,259,TP,basic_rates_b never modified; genuinely could be static const.,hostap_full_audit_0.4.169,med
+ARR02-C,hostap,src/ap/hw_features.c,259,FP,Same 0-terminated sentinel array FP as line 258.,hostap_full_audit_0.4.169,high
+DCL00-C,hostap,src/ap/hw_features.c,260,TP,basic_rates_g never modified; genuinely could be static const.,hostap_full_audit_0.4.169,med
+ARR02-C,hostap,src/ap/hw_features.c,260,FP,Same 0-terminated sentinel array FP as line 258.,hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/ap/hw_features.c,296,FP,rate is either skipped via continue or assigned (line 302) before any use.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/ap/hw_features.c,325,TP,iface never modified in this static helper; genuine if low-value const opportunity.,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/ap/hw_features.c,397,TP,iface never modified; genuine if low-value const opportunity.,hostap_full_audit_0.4.169,med
+INT14-C,hostap,src/ap/hw_features.c,438,FP,"Arithmetic is on iface->conf->channel, bitwise on iface->drv_flags; misattributed to base pointer 'iface'.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/ap/hw_features.c,481,TP,iface never modified; genuine if low-value const opportunity.,hostap_full_audit_0.4.169,med
+INT13-C,hostap,src/ap/hw_features.c,516,FP,Misattributes chan->flag bitwise op to pointer 'chan'.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/ap/hw_features.c,526,TP,iface never modified; genuine if low-value const opportunity.,hostap_full_audit_0.4.169,med
+INT13-C,hostap,src/ap/hw_features.c,557,FP,Misattributes chan->flag bitwise op to pointer 'chan'.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/ap/hw_features.c,567,FP,user_data is an eloop_timeout_handler callback param; signature pinned by dispatch contract.,hostap_full_audit_0.4.169,high
+CON33-C,hostap,src/ap/hw_features.c,588,FP,strerror() no-pthread FP; hostapd has no threading in this codepath.,hostap_full_audit_0.4.169,high
+CON34-C,hostap,src/ap/hw_features.c,588,FP,Same no-pthread strerror() FP.,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/ap/hw_features.c,610,FP,Internal-only API; both callers (hostapd.c) pass fixed non-NULL iface.,hostap_full_audit_0.4.169,high
+CON33-C,hostap,src/ap/hw_features.c,640,FP,strerror() no-pthread FP.,hostap_full_audit_0.4.169,high
+CON34-C,hostap,src/ap/hw_features.c,640,FP,strerror() no-pthread FP.,hostap_full_audit_0.4.169,high
+CON33-C,hostap,src/ap/hw_features.c,650,FP,strerror() no-pthread FP.,hostap_full_audit_0.4.169,high
+CON34-C,hostap,src/ap/hw_features.c,650,FP,strerror() no-pthread FP.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/ap/hw_features.c,660,TP,iface never modified; genuine if low-value const opportunity.,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/ap/hw_features.c,750,TP,iface never modified; genuine if low-value const opportunity.,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/ap/hw_features.c,783,TP,iface never modified; genuine if low-value const opportunity.,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/ap/hw_features.c,791,TP,iface never modified; genuine if low-value const opportunity.,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/ap/hw_features.c,846,TP,iface never modified; genuine if low-value const opportunity.,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/ap/hw_features.c,872,TP,iface never modified; genuine if low-value const opportunity.,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/ap/hw_features.c,922,TP,iface never modified; genuine if low-value const opportunity.,hostap_full_audit_0.4.169,med
+INT13-C,hostap,src/ap/hw_features.c,936,FP,Misattributes chan->flag bitwise op to pointer 'chan'.,hostap_full_audit_0.4.169,high
+INT13-C,hostap,src/ap/hw_features.c,943,FP,Misattributes chan->flag bitwise op to pointer 'chan'.,hostap_full_audit_0.4.169,high
+INT13-C,hostap,src/ap/hw_features.c,944,FP,Misattributes chan->flag bitwise op to pointer 'chan'.,hostap_full_audit_0.4.169,high
+INT13-C,hostap,src/ap/hw_features.c,946,FP,Misattributes chan->flag bitwise op to pointer 'chan'.,hostap_full_audit_0.4.169,high
+INT14-C,hostap,src/ap/hw_features.c,977,FP,"Ops are on pri_chan->chan (arithmetic -1, bitwise via BIT()), not on pointer pri_chan.",hostap_full_audit_0.4.169,high
+INT14-C,hostap,src/ap/hw_features.c,982,FP,"Loop counter i used as plain arithmetic index and BIT(i) shift-index; benign idiom, no type confusion.",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/ap/hw_features.c,1027,TP,iface never modified; genuine if low-value const opportunity.,hostap_full_audit_0.4.169,med
+INT13-C,hostap,src/ap/hw_features.c,1127,FP,"Misattributes pri_chan->allowed_bw (u32, unsigned) bitwise op to pointer 'pri_chan', wrongly claimed int/signed.",hostap_full_audit_0.4.169,high
+INT13-C,hostap,src/ap/hw_features.c,1130,FP,Same allowed_bw (u32) misattribution to pointer pri_chan.,hostap_full_audit_0.4.169,high
+INT13-C,hostap,src/ap/hw_features.c,1139,FP,Same allowed_bw (u32) misattribution to pointer pri_chan.,hostap_full_audit_0.4.169,high
+INT13-C,hostap,src/ap/hw_features.c,1146,FP,Same allowed_bw (u32) misattribution to pointer pri_chan.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/ap/hw_features.c,1155,TP,iface never modified in skip_mode; genuine if low-value const opportunity.,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/ap/hw_features.c,1244,TP,iface never modified; genuine if low-value const opportunity.,hostap_full_audit_0.4.169,med
+API00-C,hostap,src/ap/hw_features.c,1266,FP,"Internal-only API; callers (acs.c, drv_callbacks.c) pass fixed non-NULL iface.",hostap_full_audit_0.4.169,high
+MSC37-C,hostap,src/ap/hw_features.c,1266,FP,Every path (switch cases + goto out) reaches the explicit `return hostapd_setup_interface_complete(...)` at out:.,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/ap/hw_features.c,1424,FP,"Internal-only API; callers (ieee802_11.c, ieee802_11_ht.c, hostapd.c) pass fixed non-NULL hapd.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/ap/hw_features.c,1424,TP,hapd never modified; genuine if low-value const opportunity.,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/ap/hw_features.c,1430,TP,hapd never modified; genuine if low-value const opportunity.,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/ap/hw_features.c,1459,TP,iface never modified; genuine if low-value const opportunity.,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/ap/hw_features.c,1460,TP,mode never modified; genuine if low-value const opportunity.,hostap_full_audit_0.4.169,med
+API00-C,hostap,src/ap/hw_features.c,1476,FP,os_free(NULL) is safe; also internal-only API with fixed non-NULL callers.,hostap_full_audit_0.4.169,high
+PRE08-C,hostap,src/p2p/p2p_go_neg.c,13,FP,"ieee802_ header-family 8-char convention, standing FP class.",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/p2p/p2p_go_neg.c,36,FP,"channel_list: internal fn, all callers pass msg.channel_list checked non-NULL upstream.",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/p2p/p2p_go_neg.c,36,FP,channel_list_len: function itself bounds-checks via end-pos comparisons before use.,hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/p2p/p2p_go_neg.c,83,FP,"intersection filled by p2p_channels_intersect (os_memset+fill, write-only) before this read.",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/p2p/p2p_go_neg.c,198,FP,p2p_pref_channel_filter os_memsets res param before filling; write-only output-param FP.,hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/p2p/p2p_go_neg.c,236,FP,"buf is a heap pointer (wpabuf_alloc), not local automatic-storage array.",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/p2p/p2p_go_neg.c,240,FP,internal-only-API FP; p2p param always valid at all call sites.,hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/p2p/p2p_go_neg.c,263,FP,deliberate guard-clause chain; fallthrough continues to normal send-request path.,hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/p2p/p2p_go_neg.c,287,FP,"wpabuf_head(req)/wpabuf_len(req) pure-accessor pair, standing FP class.",hostap_full_audit_0.4.169,high
+INT13-C,hostap,src/p2p/p2p_go_neg.c,354,FP,"tie_breaker is declared u8 (unsigned), not signed int; wrong-type-claim FP.",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/p2p/p2p_go_neg.c,375,FP,"pref_chanlist filled by p2p_pref_channel_filter (write-only, memset-first) before use.",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/p2p/p2p_go_neg.c,396,FP,res filled by p2p_channels_intersect (write-only output param) immediately before use.,hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/p2p/p2p_go_neg.c,428,FP,"buf is heap pointer (wpabuf_alloc), not automatic-storage array.",hostap_full_audit_0.4.169,high
+ARR02-C,hostap,src/p2p/p2p_go_neg.c,450,FP,"op_classes_5ghz[] is 0-sentinel-terminated, traversed via p2p_channel_select loop-until-0, no sizeof/hardcoded-length consumer.",hostap_full_audit_0.4.169,high
+ARR02-C,hostap,src/p2p/p2p_go_neg.c,451,FP,op_classes_ht40[] same 0-sentinel-terminated shape.,hostap_full_audit_0.4.169,high
+ARR02-C,hostap,src/p2p/p2p_go_neg.c,452,FP,op_classes_vht[] same 0-sentinel-terminated shape.,hostap_full_audit_0.4.169,high
+ARR02-C,hostap,src/p2p/p2p_go_neg.c,453,FP,op_classes_edmg[] same 0-sentinel-terminated shape.,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/p2p/p2p_go_neg.c,574,FP,"internal static fn, all 4 call sites pass a checked-non-NULL dev.",hostap_full_audit_0.4.169,high
+EXP34-C,hostap,src/p2p/p2p_go_neg.c,580,FP,"same internal-invariant-non-null dev, verified across all call sites.",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/p2p/p2p_go_neg.c,581,FP,tmp filled by p2p_channels_intersect (write-only output param) at this exact call.,hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/p2p/p2p_go_neg.c,588,FP,intersection assigned at line 585 by p2p_channels_intersect before this read; write-only-output-param blind spot.,hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/p2p/p2p_go_neg.c,606,FP,deliberate guard-clause chain; no-op fallthrough intentional (keep prior op channel).,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/p2p/p2p_go_neg.c,623,TP,"plain static helper (not eloop/vtable), dev only read through pointer; genuine low-value TP.",hostap_full_audit_0.4.169,low
+DCL13-C,hostap,src/p2p/p2p_go_neg.c,624,TP,"same helper, msg only read; genuine low-value TP, not a dispatch-contract.",hostap_full_audit_0.4.169,low
+DCL13-C,hostap,src/p2p/p2p_go_neg.c,672,TP,"plain static helper p2p_check_pref_chan_recv, dev read-only; genuine low-value TP.",hostap_full_audit_0.4.169,low
+DCL13-C,hostap,src/p2p/p2p_go_neg.c,673,TP,"same helper, msg read-only; genuine low-value TP.",hostap_full_audit_0.4.169,low
+EXP34-C,hostap,src/p2p/p2p_go_neg.c,733,FP,p2p_check_pref_chan's dev verified non-NULL at all 4 call sites.,hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/p2p/p2p_go_neg.c,790,FP,"*pos = '\0' is plain char literal into plain char*, no widening/sign-extension involved.",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/p2p/p2p_go_neg.c,832,FP,"sa is internal rx-path pointer, always valid fixed-size buffer from caller.",hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/p2p/p2p_go_neg.c,893,FP,"two MAC2STR() macro expansions, pure array-read accessor, no side effects.",hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/p2p/p2p_go_neg.c,931,FP,deliberate guard-clause dispatch on dev state; no-op fallthrough intentional.,hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/p2p/p2p_go_neg.c,1153,FP,"resp is a heap wpabuf* returned from p2p_build_go_neg_resp(), not local automatic storage.",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/p2p/p2p_go_neg.c,1157,FP,"p2p: internal-only-API FP, always valid at call sites.",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/p2p/p2p_go_neg.c,1157,FP,"sa: internal rx-path pointer, always valid.",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/p2p/p2p_go_neg.c,1157,FP,"data: internal rx-path pointer, always valid.",hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/p2p/p2p_go_neg.c,1180,FP,wpabuf_head(resp)/wpabuf_len(resp) pure-accessor pair.,hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/p2p/p2p_go_neg.c,1249,FP,res filled by p2p_channels_intersect (write-only output param) immediately before use.,hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/p2p/p2p_go_neg.c,1269,FP,"buf is heap pointer (wpabuf_alloc), not automatic-storage array.",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/p2p/p2p_go_neg.c,1273,FP,"sa: internal rx-path pointer, always valid.",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/p2p/p2p_go_neg.c,1273,FP,"len: only forwarded to p2p_parse, no arithmetic overflow use in this function.",hostap_full_audit_0.4.169,high
+MSC13-C,hostap,src/p2p/p2p_go_neg.c,1282,TP,"conf=NULL initializer never read via the variable itself; all early exits return literal NULL, success path overwrites conf before any read.",hostap_full_audit_0.4.169,med
+INT14-C,hostap,src/p2p/p2p_go_neg.c,1368,FP,"bitwise/arithmetic ops are on msg.go_intent member, misattributed to container variable msg.",hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/p2p/p2p_go_neg.c,1386,FP,deliberate guard-clause; the go==true case is handled elsewhere in the function.,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/p2p/p2p_go_neg.c,1406,FP,dev->info.wfd_subelems is a persistent p2p_device-struct field freed/re-dup'd via the standing free-then-dup idiom; not a local leak.,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/p2p/p2p_go_neg.c,1416,FP,"same persistent-struct-field ownership; goto fail does not lose the dup, it stays owned by dev.",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/p2p/p2p_go_neg.c,1421,FP,same persistent-struct-field ownership pattern.,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/p2p/p2p_go_neg.c,1428,FP,same persistent-struct-field ownership pattern.,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/p2p/p2p_go_neg.c,1449,FP,same persistent-struct-field ownership pattern.,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/p2p/p2p_go_neg.c,1458,FP,same persistent-struct-field ownership pattern.,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/p2p/p2p_go_neg.c,1467,FP,same persistent-struct-field ownership pattern.,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/p2p/p2p_go_neg.c,1476,FP,same persistent-struct-field ownership pattern.,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/p2p/p2p_go_neg.c,1487,FP,same persistent-struct-field ownership pattern.,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/p2p/p2p_go_neg.c,1494,FP,same persistent-struct-field ownership pattern.,hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/p2p/p2p_go_neg.c,1521,FP,"dev->go_neg_conf reassigned to fresh p2p_build_go_neg_conf() result at line 1517, right after the free at 1516; this read is of the new value, not the freed one.",hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/p2p/p2p_go_neg.c,1524,FP,same reassignment-between-free-and-use blind spot; wpabuf_dup(dev->go_neg_conf) dups the fresh value.,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/p2p/p2p_go_neg.c,1544,FP,wfd_subelems remains owned by the persistent dev struct at function return; not a leak.,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/p2p/p2p_go_neg.c,1548,FP,p2p: internal-only-API FP.,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/p2p/p2p_go_neg.c,1548,FP,"sa: internal rx-path pointer, always valid.",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/p2p/p2p_go_neg.c,1548,FP,"data: internal rx-path pointer, always valid.",hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/p2p/p2p_go_neg.c,1571,FP,wpabuf_head(dev->go_neg_conf)/wpabuf_len(dev->go_neg_conf) pure-accessor pair.,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/p2p/p2p_go_neg.c,1585,FP,"sa: internal rx-path pointer, always valid.",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/p2p/p2p_go_neg.c,1585,FP,"len: only forwarded to p2p_parse, no arithmetic overflow use here.",hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/p2p/p2p_go_neg.c,1642,FP,deliberate guard-clause; LOCAL_GO fallthrough is intentional no-op.,hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/p2p/p2p_go_neg.c,1656,FP,deliberate guard-clause; LOCAL_GO fallthrough (no remote-freq re-check needed) is intentional.,hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/eap_server/eap_server_teap.c,111,FP,"eap_teap_state_txt() calls are pure switch-returning-string reads, no side effects to unsequence.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_server/eap_server_teap.c,126,TP,"sm only read (sm->cfg->ssl_ctx); plain static helper, not vtable-bound.",hostap_full_audit_0.4.169,low
+EXP33-C,hostap,src/eap_server/eap_server_teap.c,198,FP,"sizeof(*data) never evaluates its operand, not a dereference.",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/eap_server/eap_server_teap.c,237,FP,"data is heap-allocated via os_zalloc, not automatic storage.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_server/eap_server_teap.c,264,TP,"sm only read via sm->cfg->...; plain static helper, no vtable binding.",hostap_full_audit_0.4.169,low
+INT14-C,hostap,src/eap_server/eap_server_teap.c,268,FP,no bitwise op on 'data' anywhere in file; misattributed container-vs-member class.,hostap_full_audit_0.4.169,med
+MEM31-C,hostap,src/eap_server/eap_server_teap.c,295,TP,req (eap_msg_alloc) genuinely leaked when wpabuf_alloc_copy() for server_outer_tlvs fails.,hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/eap_server/eap_server_teap.c,300,FP,"req is heap wpabuf from eap_msg_alloc, not automatic storage.",hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/eap_server/eap_server_teap.c,346,TP,cfg->eap_teap_id is set via atoi() with zero range validation (config_file.c:2535); switch can receive an out-of-enum value with no default.,hostap_full_audit_0.4.169,med
+POS49-C,hostap,src/eap_server/eap_server_teap.c,371,FP,no pthread anywhere in file; no-pthread bitfield FP.,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/eap_server/eap_server_teap.c,372,FP,"req consumed by wpabuf_concat(req,id_tlv), which unconditionally frees both operands.",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/eap_server/eap_server_teap.c,378,FP,"same wpabuf_concat ownership-transfer as :372, duplicate instance.",hostap_full_audit_0.4.169,high
+POS49-C,hostap,src/eap_server/eap_server_teap.c,382,FP,no-pthread bitfield FP.,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/eap_server/eap_server_teap.c,387,FP,req is not yet assigned at this return (allocated only later at line 390); phantom leak.,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/eap_server/eap_server_teap.c,398,FP,"req passed to eap_teap_tlv_eap_payload(req), which unconditionally frees buf on both success and failure paths.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_server/eap_server_teap.c,403,TP,"sm only read via sm->cfg; plain static helper, not vtable-bound.",hostap_full_audit_0.4.169,low
+ARR39-C,hostap,src/eap_server/eap_server_teap.c,410,FP,"'2*sizeof(*result)+sizeof(*cb)' is a plain scalar alloc-size expression, no pointer arithmetic at all.",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/eap_server/eap_server_teap.c,410,FP,sizeof(*result) is not a dereference.,hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/eap_server/eap_server_teap.c,410,FP,sizeof(*cb) is not a dereference.,hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/eap_server/eap_server_teap.c,495,FP,buf is heap-allocated via wpabuf_alloc.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_server/eap_server_teap.c,647,FP,eap_teap_check is bound to eap->check vtable slot; sm unused per fixed dispatch signature.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_server/eap_server_teap.c,647,FP,same vtable contract as sm; priv also unused.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_server/eap_server_teap.c,690,TP,"sm only read (sm->cfg->eap_teap_id); plain static helper, no vtable binding.",hostap_full_audit_0.4.169,low
+DCL13-C,hostap,src/eap_server/eap_server_teap.c,690,TP,data only read (data->cur_id_type); plain static helper.,hostap_full_audit_0.4.169,low
+EXP36-C,hostap,src/eap_server/eap_server_teap.c,731,FP,struct eap_hdr is STRUCT_PACKED (alignment 1); cast from char*/u8* carries no real alignment hazard.,hostap_full_audit_0.4.169,med
+POS49-C,hostap,src/eap_server/eap_server_teap.c,823,FP,no-pthread bitfield FP.,hostap_full_audit_0.4.169,high
+MSC07-C,hostap,src/eap_server/eap_server_teap.c,837,FP,"""unreachable"" code is the next case label after break, normal switch structure, not dead code.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_server/eap_server_teap.c,851,TP,"in_data only read; plain static helper, no vtable binding.",hostap_full_audit_0.4.169,low
+EXP36-C,hostap,src/eap_server/eap_server_teap.c,857,FP,"same STRUCT_PACKED struct eap_hdr target, alignment 1, no real hazard.",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/eap_server/eap_server_teap.c,893,TP,in_data only read (only pos=in_data copy is advanced); plain static helper.,hostap_full_audit_0.4.169,low
+POS49-C,hostap,src/eap_server/eap_server_teap.c,986,FP,no-pthread bitfield FP.,hostap_full_audit_0.4.169,high
+ARR01-C,hostap,src/eap_server/eap_server_teap.c,1000,FP,sizeof(*tlv) is the correct idiom for os_memset sizing; tlv never was an array.,hostap_full_audit_0.4.169,high
+INT14-C,hostap,src/eap_server/eap_server_teap.c,1003,FP,"bitwise ops are on *pos/pos[0] values, not on pointer 'pos' itself, which only ever does pointer arithmetic.",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/eap_server/eap_server_teap.c,1045,FP,"data->simck is genuinely mutated via os_memcpy(data->simck,...) later in this function; rule misses the write-through-pointer.",hostap_full_audit_0.4.169,high
+ARR01-C,hostap,src/eap_server/eap_server_teap.c,1057,FP,"sizeof(cb->nonce) on a genuine fixed-size array struct member, correct idiom.",hostap_full_audit_0.4.169,high
+ARR01-C,hostap,src/eap_server/eap_server_teap.c,1059,FP,"sizeof(cb->emsk_compound_mac), same correct idiom.",hostap_full_audit_0.4.169,high
+ARR01-C,hostap,src/eap_server/eap_server_teap.c,1061,FP,"sizeof(cb->msk_compound_mac), same correct idiom.",hostap_full_audit_0.4.169,high
+INT14-C,hostap,src/eap_server/eap_server_teap.c,1086,FP,bitwise '|1' is on the array element value; EAP_TEAP_NONCE_LEN itself only appears in index arithmetic.,hostap_full_audit_0.4.169,med
+MSC01-C,hostap,src/eap_server/eap_server_teap.c,1149,FP,"deliberate no-op default: if neither flag matches, data->simck keeps its already-derived S-IMCK[0] value.",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/eap_server/eap_server_teap.c,1175,FP,"tlv is fully initialized (memset+fields) inside eap_teap_parse_tlvs(in_data,&tlv) just called above; interprocedural init miss.",hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/eap_server/eap_server_teap.c,1182,FP,"WPA_GET_BE32/WPA_GET_BE16 are pure byte-extraction reads, no side effects.",hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/eap_server/eap_server_teap.c,1230,FP,deliberate no-op default; waits for further phase2 processing later in the function.,hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/eap_server/eap_server_teap.c,1268,FP,"deliberate no-op default, same reasoning as :1230.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_server/eap_server_teap.c,1327,FP,eap_teap_process_version is passed as a fixed-signature callback to eap_server_tls_process; sm unused per that contract.,hostap_full_audit_0.4.169,high
+EXP40-C,hostap,src/eap_server/eap_server_teap.c,1476,FP,"respData is declared plain 'struct wpabuf *respData', not const; neither side is const.",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/eap_server/eap_server_teap.c,1545,TP,"resp leaked on the peer_outer_tlvs-alloc-failure return (:1565) and the post-removal invalid-frame return (:1577), both skip freeing resp.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_server/eap_server_teap.c,1594,FP,eap_teap_isDone bound to eap->isDone vtable slot; sm unused per fixed signature.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_server/eap_server_teap.c,1594,FP,same vtable contract; priv only read.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_server/eap_server_teap.c,1602,FP,eap_teap_getKey bound to eap->getKey vtable slot; sm unused.,hostap_full_audit_0.4.169,high
+API05-C,hostap,src/eap_server/eap_server_teap.c,1602,FP,priv+len is the idiomatic ptr+size_t output-param pattern.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_server/eap_server_teap.c,1602,FP,"priv only read/cast, vtable contract.",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/eap_server/eap_server_teap.c,1621,FP,eapKeyData is heap-allocated via os_malloc.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_server/eap_server_teap.c,1625,FP,eap_teap_get_emsk bound to eap->get_emsk vtable slot; sm unused.,hostap_full_audit_0.4.169,high
+API05-C,hostap,src/eap_server/eap_server_teap.c,1625,FP,ptr+size_t idiom.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_server/eap_server_teap.c,1625,FP,"priv only read, vtable contract.",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/eap_server/eap_server_teap.c,1644,FP,eapKeyData heap via os_malloc.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_server/eap_server_teap.c,1648,FP,eap_teap_isSuccess bound to eap->isSuccess vtable slot; sm unused.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_server/eap_server_teap.c,1648,FP,"priv only read, vtable contract.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_server/eap_server_teap.c,1656,FP,eap_teap_get_session_id bound to eap->getSessionId vtable slot; sm unused.,hostap_full_audit_0.4.169,high
+API05-C,hostap,src/eap_server/eap_server_teap.c,1656,FP,ptr+size_t idiom.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_server/eap_server_teap.c,1656,FP,"priv only read, vtable contract.",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/eap_server/eap_server_teap.c,1680,FP,id heap-allocated via os_malloc.,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/eap_server/eap_server_teap.c,1688,FP,"eap passed to eap_server_method_register(eap), whose doc explicitly states caller must not free it regardless of return value; ownership transferred.",hostap_full_audit_0.4.169,high
+DCL15-C,hostap,src/tls/asn1.c,15,FP,"asn1_sha1_oid declared extern in asn1.h, used cross-file in dpp_backup.c; needs external linkage",hostap_full_audit_0.4.169,high
+DCL19-C,hostap,src/tls/asn1.c,15,FP,same extern-in-header OID table; minimal-scope suggestion wrong for a public API constant,hostap_full_audit_0.4.169,high
+DCL15-C,hostap,src/tls/asn1.c,20,FP,"asn1_sha256_oid extern in asn1.h, cross-TU use",hostap_full_audit_0.4.169,high
+DCL19-C,hostap,src/tls/asn1.c,20,FP,"extern-in-header OID constant, needs external linkage",hostap_full_audit_0.4.169,high
+DCL15-C,hostap,src/tls/asn1.c,25,FP,"asn1_ec_public_key_oid extern in asn1.h, used in dpp_backup.c",hostap_full_audit_0.4.169,high
+DCL19-C,hostap,src/tls/asn1.c,25,FP,extern-in-header OID constant,hostap_full_audit_0.4.169,high
+DCL15-C,hostap,src/tls/asn1.c,30,FP,"asn1_prime256v1_oid extern in asn1.h, cross-TU use",hostap_full_audit_0.4.169,high
+DCL19-C,hostap,src/tls/asn1.c,30,FP,extern-in-header OID constant,hostap_full_audit_0.4.169,high
+DCL15-C,hostap,src/tls/asn1.c,35,FP,"asn1_secp384r1_oid extern in asn1.h, cross-TU use",hostap_full_audit_0.4.169,high
+DCL19-C,hostap,src/tls/asn1.c,35,FP,extern-in-header OID constant,hostap_full_audit_0.4.169,high
+DCL15-C,hostap,src/tls/asn1.c,40,FP,"asn1_secp521r1_oid extern in asn1.h, cross-TU use",hostap_full_audit_0.4.169,high
+DCL19-C,hostap,src/tls/asn1.c,40,FP,extern-in-header OID constant,hostap_full_audit_0.4.169,high
+DCL15-C,hostap,src/tls/asn1.c,45,FP,"asn1_brainpoolP256r1_oid extern in asn1.h, cross-TU use",hostap_full_audit_0.4.169,high
+DCL19-C,hostap,src/tls/asn1.c,45,FP,extern-in-header OID constant,hostap_full_audit_0.4.169,high
+DCL15-C,hostap,src/tls/asn1.c,50,FP,"asn1_brainpoolP384r1_oid extern in asn1.h, cross-TU use",hostap_full_audit_0.4.169,high
+DCL19-C,hostap,src/tls/asn1.c,50,FP,extern-in-header OID constant,hostap_full_audit_0.4.169,high
+DCL15-C,hostap,src/tls/asn1.c,55,FP,"asn1_brainpoolP512r1_oid extern in asn1.h, cross-TU use",hostap_full_audit_0.4.169,high
+DCL19-C,hostap,src/tls/asn1.c,55,FP,extern-in-header OID constant,hostap_full_audit_0.4.169,high
+DCL15-C,hostap,src/tls/asn1.c,60,FP,"asn1_aes_siv_cmac_aead_256_oid extern in asn1.h, cross-TU use",hostap_full_audit_0.4.169,high
+DCL19-C,hostap,src/tls/asn1.c,60,FP,extern-in-header OID constant,hostap_full_audit_0.4.169,high
+DCL15-C,hostap,src/tls/asn1.c,65,FP,"asn1_aes_siv_cmac_aead_384_oid extern in asn1.h, cross-TU use",hostap_full_audit_0.4.169,high
+DCL19-C,hostap,src/tls/asn1.c,65,FP,extern-in-header OID constant,hostap_full_audit_0.4.169,high
+DCL15-C,hostap,src/tls/asn1.c,70,FP,"asn1_aes_siv_cmac_aead_512_oid extern in asn1.h, cross-TU use",hostap_full_audit_0.4.169,high
+DCL19-C,hostap,src/tls/asn1.c,70,FP,extern-in-header OID constant,hostap_full_audit_0.4.169,high
+DCL15-C,hostap,src/tls/asn1.c,75,FP,"asn1_pbkdf2_oid extern in asn1.h, cross-TU use",hostap_full_audit_0.4.169,high
+DCL19-C,hostap,src/tls/asn1.c,75,FP,extern-in-header OID constant,hostap_full_audit_0.4.169,high
+DCL15-C,hostap,src/tls/asn1.c,80,FP,"asn1_pbkdf2_hmac_sha256_oid extern in asn1.h, cross-TU use",hostap_full_audit_0.4.169,high
+DCL19-C,hostap,src/tls/asn1.c,80,FP,extern-in-header OID constant,hostap_full_audit_0.4.169,high
+DCL15-C,hostap,src/tls/asn1.c,85,FP,"asn1_pbkdf2_hmac_sha384_oid extern in asn1.h, cross-TU use",hostap_full_audit_0.4.169,high
+DCL19-C,hostap,src/tls/asn1.c,85,FP,extern-in-header OID constant,hostap_full_audit_0.4.169,high
+DCL15-C,hostap,src/tls/asn1.c,90,FP,"asn1_pbkdf2_hmac_sha512_oid extern in asn1.h, cross-TU use",hostap_full_audit_0.4.169,high
+DCL19-C,hostap,src/tls/asn1.c,90,FP,extern-in-header OID constant,hostap_full_audit_0.4.169,high
+DCL15-C,hostap,src/tls/asn1.c,95,FP,"asn1_dpp_config_params_oid extern in asn1.h, cross-TU use",hostap_full_audit_0.4.169,high
+DCL19-C,hostap,src/tls/asn1.c,95,FP,extern-in-header OID constant,hostap_full_audit_0.4.169,high
+DCL15-C,hostap,src/tls/asn1.c,100,FP,"asn1_dpp_asymmetric_key_package_oid extern in asn1.h, cross-TU use",hostap_full_audit_0.4.169,high
+DCL19-C,hostap,src/tls/asn1.c,100,FP,extern-in-header OID constant,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/tls/asn1.c,106,TP,"asn1_valid_der_boolean's hdr param only read (hdr->length, hdr->payload); genuine plain-helper const opportunity",hostap_full_audit_0.4.169,med
+API00-C,hostap,src/tls/asn1.c,171,FP,"internal-only asn1_get_next; len always a real, bounded buffer length from parsing, not near SIZE_MAX",hostap_full_audit_0.4.169,med
+ARR01-C,hostap,src/tls/asn1.c,176,FP,"sizeof(*hdr) is correct dereference idiom on struct pointer param, not a decayed array",hostap_full_audit_0.4.169,high
+INT14-C,hostap,src/tls/asn1.c,185,FP,"container-vs-member misattribution: bitwise/shift ops are on hdr->identifier/hdr->class members, not on hdr itself",hostap_full_audit_0.4.169,high
+FLP02-C,hostap,src/tls/asn1.c,188,FP,"line is `(hdr->identifier & 0x1f) == 0x1f`, a plain integer bitmask comparison; no floating-point involved at all",hostap_full_audit_0.4.169,high
+INT14-C,hostap,src/tls/asn1.c,192,FP,"pointer-vs-dereference misattribution: bitwise op is on *pos (u8 value), pos itself only used via pointer compare/increment",hostap_full_audit_0.4.169,high
+ARR01-C,hostap,src/tls/asn1.c,212,FP,"sizeof(hdr->tag) sizes a struct member field, not a decayed array/pointer parameter",hostap_full_audit_0.4.169,high
+ARR30-C,hostap,src/tls/asn1.c,243,FP,while(tmp--) is bounded by tmp (checked <=4 earlier) plus an explicit pos>=end check before every dereference/increment,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/tls/asn1.c,290,FP,internal-only asn1_parse_oid; buf always hdr.payload from a validated asn1_get_next call,hostap_full_audit_0.4.169,med
+API00-C,hostap,src/tls/asn1.c,290,FP,"internal-only; len derived from validated hdr.length, not attacker-controlled near-overflow value",hostap_full_audit_0.4.169,med
+ARR01-C,hostap,src/tls/asn1.c,296,FP,sizeof(*oid) correct dereference idiom on struct pointer param,hostap_full_audit_0.4.169,high
+INT14-C,hostap,src/tls/asn1.c,308,TP,"val genuinely mixed: bitwise <<,| here, then / and - arithmetic later (lines 321,324) to split OID components",hostap_full_audit_0.4.169,low
+API05-C,hostap,src/tls/asn1.c,351,FP,"idiomatic ptr+size_t buf/len pair, categorically confirmed FP shape",hostap_full_audit_0.4.169,high
+EXP40-C,hostap,src/tls/asn1.c,353,FP,"buf param is plain char*, not const; neither side of `pos = buf` is const-qualified",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/tls/asn1.c,391,FP,internal-only asn1_bit_string_to_long; buf always hdr.payload from a caller-validated length>=1 check,hostap_full_audit_0.4.169,med
+API05-C,hostap,src/tls/asn1.c,433,FP,"idiomatic ptr+size_t buf/len pair with out-params, same confirmed FP shape",hostap_full_audit_0.4.169,high
+ARR30-C,hostap,src/tls/asn1.c,455,FP,"while(left) is bounded by left (hdr.length, itself bounds-checked in asn1_get_next), decremented each iteration",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/tls/asn1.c,480,FP,internal-only asn1_get_alg_id; buf always caller-owned parsing buffer,hostap_full_audit_0.4.169,med
+API00-C,hostap,src/tls/asn1.c,480,FP,params_len is already guarded: only dereferenced inside `if (params && params_len)`,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/tls/asn1.c,480,FP,"internal-only; len bounded, not attacker-near-overflow",hostap_full_audit_0.4.169,med
+EXP33-C,hostap,src/tls/asn1.c,492,FP,hdr is fully populated by asn1_get_sequence->asn1_get_next (which os_memset's + fills it) before this use; interprocedural init not tracked by sqc,hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/tls/asn1.c,496,FP,"pos is an offset into the caller-owned external buf, not a local/automatic-storage object; valid after return",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/tls/asn1.c,559,FP,bytes[] is written (idx>=1 guaranteed via loop or the idx==0 fallback branch) before any read in the second while loop,hostap_full_audit_0.4.169,high
+INT13-C,hostap,src/tls/asn1.c,563,FP,"idx is only the ternary condition (idx ? 0x80 : 0x00), not itself an operand of the bitwise '|'",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/tls/asn1.c,604,FP,"internal-only asn1_put_utf8string; val always a fixed caller-provided string, never NULL in practice",hostap_full_audit_0.4.169,med
+MEM31-C,hostap,src/tls/asn1.c,627,FP,"buf ownership is transferred into asn1_encaps(buf,...), which unconditionally wpabuf_clear_free()s it",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/tls/asn1.c,649,FP,"res is a local pointer variable holding a wpabuf_alloc heap allocation, not automatic-storage data itself",hostap_full_audit_0.4.169,high
+PRE08-C,hostap,src/wps/wps_upnp_web.c,19,FP,"8.3-legacy-filesystem FP class: wps_upnp.h/wps_upnp_i.h share 8-char prefix, no real ambiguity.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/wps/wps_upnp_web.c,182,TP,"iface only read via iface->wps->..., not a callback typedef; genuine low-value const opportunity.",hostap_full_audit_0.4.169,med
+DCL13-C,hostap,src/wps/wps_upnp_web.c,183,TP,sm param is entirely unused in function body; genuine low-value const/removal opportunity.,hostap_full_audit_0.4.169,med
+DCL22-C,hostap,src/wps/wps_upnp_web.c,186,FP,"Ordinary local const char* pointer, no signal/setjmp context anywhere in file.",hostap_full_audit_0.4.169,high
+MSC13-C,hostap,src/wps/wps_upnp_web.c,313,TP,"extra_len=0 init is overwritten in every branch before use, or unread on the not-found goto path; genuine dead store.",hostap_full_audit_0.4.169,med
+MEM31-C,hostap,src/wps/wps_upnp_web.c,351,FP,"buf reaches send_buf: -> http_request_send_and_deinit(), which frees it via wpabuf_free inside http_request_send().",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/wps/wps_upnp_web.c,365,FP,"goto target send_buf: calls http_request_send_and_deinit(hreq,buf), which frees buf. Not a leak.",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/wps/wps_upnp_web.c,439,FP,"sizeof(*peer) is a non-evaluating context, not a real dereference of uninitialized peer.",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/wps/wps_upnp_web.c,483,FP,"replyname is const char**; *replyname=name is a pointer assignment, not a char conversion.",hostap_full_audit_0.4.169,high
+MSC13-C,hostap,src/wps/wps_upnp_web.c,493,FP,static const char *name is genuinely read at line 568 (*replyname=name); flag is factually wrong.,hostap_full_audit_0.4.169,high
+MSC13-C,hostap,src/wps/wps_upnp_web.c,524,FP,peer=NULL is read at if(!peer) right after the dl_list_for_each loop on the zero-match path.,hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/wps/wps_upnp_web.c,528,FP,attr is unconditionally os_memset-zeroed as wps_parse_msg()'s first statement before this read.,hostap_full_audit_0.4.169,high
+MSC13-C,hostap,src/wps/wps_upnp_web.c,539,FP,peer=tmp is read at if(!peer) immediately after the break exits the loop.,hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/wps/wps_upnp_web.c,568,FP,"replyname is const char**; *replyname=name is a pointer assignment, not a char conversion.",hostap_full_audit_0.4.169,high
+ERR07-C,hostap,src/wps/wps_upnp_web.c,605,TP,atol(val) on attacker-controlled UPnP NewWLANEventType XML value with zero range/error checking.,hostap_full_audit_0.4.169,med
+ERR34-C,hostap,src/wps/wps_upnp_web.c,605,TP,"atol(val) on attacker-controlled UPnP XML value, no strtol/errno/range validation.",hostap_full_audit_0.4.169,med
+EXP33-C,hostap,src/wps/wps_upnp_web.c,620,FP,"wps_parse_msg(msg,&attr) zeroes attr as its first statement, evaluated before attr.version2 in the same ||.",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/wps/wps_upnp_web.c,622,FP,"Mutually exclusive early-return branch; val freed exactly once on this path, not a double free.",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/wps/wps_upnp_web.c,638,FP,Mutually exclusive early-return branch (hwaddr_aton2 fail); val freed exactly once here.,hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/wps/wps_upnp_web.c,642,FP,"Fall-through path only reached when neither earlier branch (:622,:638) freed val; single free per path.",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/wps/wps_upnp_web.c,642,FP,"Fall-through path only reached when neither earlier branch (:622,:638) freed val; single free per path.",hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/wps/wps_upnp_web.c,645,FP,Every earlier wpabuf_free(msg) sits behind its own immediate return; msg is not freed on this path.,hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/wps/wps_upnp_web.c,656,FP,Every earlier wpabuf_free(msg) sits behind its own immediate return; msg is not freed on this path.,hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/wps/wps_upnp_web.c,665,FP,"First and only free on the !ok early-return branch, mutually exclusive with the :668 fall-through free.",hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/wps/wps_upnp_web.c,668,FP,"Fall-through free only reached when ok is true, mutually exclusive with the :665 early-return free.",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/wps/wps_upnp_web.c,669,FP,"replyname is const char**; *replyname=NULL is a pointer assignment, not a char conversion.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/wps/wps_upnp_web.c,675,TP,"cli only read via cli->sin_addr.s_addr, never modified; genuine low-value const opportunity.",hostap_full_audit_0.4.169,med
+DCL30-C,hostap,src/wps/wps_upnp_web.c,693,FP,"s is a dl_list_for_each loop variable aliasing a persistent heap-backed subscription list member, not a stack object.",hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/wps/wps_upnp_web.c,729,FP,"replyname is const char**; *replyname=NULL is a pointer assignment, not a char conversion.",hostap_full_audit_0.4.169,high
+MSC13-C,hostap,src/wps/wps_upnp_web.c,763,TP,put_length_here=NULL is overwritten by wpabuf_put() before its only read; the later &&-guard is dead code.,hostap_full_audit_0.4.169,med
+MSC13-C,hostap,src/wps/wps_upnp_web.c,764,TP,body_start=NULL is overwritten by wpabuf_put() before its only read; the later &&-guard is dead code.,hostap_full_audit_0.4.169,med
+EXP30-C,hostap,src/wps/wps_upnp_web.c,768,FP,wpabuf_head(reply)/wpabuf_len(reply) are pure accessors with no side effects to unsequence.,hostap_full_audit_0.4.169,high
+STR34-C,hostap,src/wps/wps_upnp_web.c,851,FP,"Pointer subtraction (ptrdiff_t) cast to int; body_start is char*, not a char scalar conversion.",hostap_full_audit_0.4.169,high
+STR00-C,hostap,src/wps/wps_upnp_web.c,884,TP,isgraph(*b) missing (unsigned char) cast on directly network-received HTTP header byte; matches httpread.c precedent.,hostap_full_audit_0.4.169,low
+STR37-C,hostap,src/wps/wps_upnp_web.c,884,TP,isgraph(*b) missing (unsigned char) cast on directly network-received HTTP header byte; matches httpread.c precedent.,hostap_full_audit_0.4.169,low
+STR00-C,hostap,src/wps/wps_upnp_web.c,891,TP,isgraph(*b) missing (unsigned char) cast on directly network-received HTTP header byte; matches httpread.c precedent.,hostap_full_audit_0.4.169,low
+STR37-C,hostap,src/wps/wps_upnp_web.c,891,TP,isgraph(*b) missing (unsigned char) cast on directly network-received HTTP header byte; matches httpread.c precedent.,hostap_full_audit_0.4.169,low
+DCL30-C,hostap,src/wps/wps_upnp_web.c,896,FP,"action points into the request's own owned header buffer (http_request_get_hdr_line), not a stack array.",hostap_full_audit_0.4.169,high
+MSC13-C,hostap,src/wps/wps_upnp_web.c,999,TP,s=NULL is reassigned before use or skipped via goto error entirely on every path; genuine dead store.,hostap_full_audit_0.4.169,med
+MSC13-C,hostap,src/wps/wps_upnp_web.c,1000,TP,ret's initial value is reassigned immediately before every goto error site; genuine dead store.,hostap_full_audit_0.4.169,med
+EXP05-C,hostap,src/wps/wps_upnp_web.c,1009,FP,hdr is declared plain non-const char*; no const qualifier exists anywhere to cast away.,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/wps/wps_upnp_web.c,1018,FP,"goto error reaches error: label, which calls http_request_send_and_deinit(req,buf), freeing buf.",hostap_full_audit_0.4.169,high
+ARR30-C,hostap,src/wps/wps_upnp_web.c,1023,FP,Header-line loop bounded by the request's own NUL-terminated buffer via os_strchr; not unbounded.,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/wps/wps_upnp_web.c,1043,FP,"goto error reaches error: label, which calls http_request_send_and_deinit(req,buf), freeing buf.",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/wps/wps_upnp_web.c,1074,FP,"goto error reaches error: label, which calls http_request_send_and_deinit(req,buf), freeing buf.",hostap_full_audit_0.4.169,high
+ARR00-C,hostap,src/wps/wps_upnp_web.c,1076,FP,callback_urls freed at :1070 then immediately reassigned via dup_binstr() at :1071 before this access.,hostap_full_audit_0.4.169,high
+ARR00-C,hostap,src/wps/wps_upnp_web.c,1077,FP,callback_urls freed at :1070 then immediately reassigned via dup_binstr() at :1071 before this access.,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/wps/wps_upnp_web.c,1091,FP,"goto error reaches error: label, which calls http_request_send_and_deinit(req,buf), freeing buf.",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/wps/wps_upnp_web.c,1098,FP,"goto error reaches error: label, which calls http_request_send_and_deinit(req,buf), freeing buf.",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/wps/wps_upnp_web.c,1113,FP,"goto error reaches error: label, which calls http_request_send_and_deinit(req,buf), freeing buf.",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/wps/wps_upnp_web.c,1122,FP,"goto error reaches error: label, which calls http_request_send_and_deinit(req,buf), freeing buf.",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/wps/wps_upnp_web.c,1128,FP,"goto error reaches error: label, which calls http_request_send_and_deinit(req,buf), freeing buf.",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/wps/wps_upnp_web.c,1133,FP,"goto error reaches error: label, which calls http_request_send_and_deinit(req,buf), freeing buf.",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/wps/wps_upnp_web.c,1137,FP,"goto error reaches error: label, which calls http_request_send_and_deinit(req,buf), freeing buf.",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/wps/wps_upnp_web.c,1157,FP,"Success-path free of callback_urls, mutually exclusive with the disjoint error:-label free at :1186; not a double free.",hostap_full_audit_0.4.169,high
+MSC07-C,hostap,src/wps/wps_upnp_web.c,1161,FP,"error: is a goto target label reached from multiple earlier goto error statements, not unreachable code.",hostap_full_audit_0.4.169,high
+MEM30-C,hostap,src/wps/wps_upnp_web.c,1186,FP,"error:-label free, mutually exclusive with the disjoint success-path free at :1157; not a double free.",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/wps/wps_upnp_web.c,1186,FP,"error:-label free, mutually exclusive with the disjoint success-path free at :1157; not a double free.",hostap_full_audit_0.4.169,high
+MSC13-C,hostap,src/wps/wps_upnp_web.c,1217,TP,s=NULL is only read inside the got_uuid branch; genuinely unread on the else path (goto send_msg).,hostap_full_audit_0.4.169,med
+MSC13-C,hostap,src/wps/wps_upnp_web.c,1218,TP,ret's initial value is reassigned immediately before every goto send_msg site; genuine dead store.,hostap_full_audit_0.4.169,med
+ARR30-C,hostap,src/wps/wps_upnp_web.c,1232,FP,Header-line loop bounded by the request's own NUL-terminated buffer via os_strchr; not unbounded.,hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/wps/wps_upnp_web.c,1364,FP,inet_ntoa(cli->sin_addr) and htons(cli->sin_port) have no shared/errno side effects to unsequence.,hostap_full_audit_0.4.169,high
+CON34-C,hostap,src/wps/wps_upnp_web.c,1365,FP,No pthread usage anywhere in this file; standard no-pthread inet_ntoa() FP class.,hostap_full_audit_0.4.169,high
+PRE08-C,hostap,wpa_supplicant/wnm_sta.c,12,TP,ieee802_11_defs.h/ieee802_11_common.h genuinely share the 8-char 'ieee802_' prefix; established low-value-TP header convention.,hostap_full_audit_0.4.169,med
+EXP05-C,hostap,wpa_supplicant/wnm_sta.c,50,FP,buf cast to u8* only to pass into wpa_drv_wnm_oper's set-op; read-only-overlay cast-away-const FP class.,hostap_full_audit_0.4.169,med
+API00-C,hostap,wpa_supplicant/wnm_sta.c,55,FP,"wpa_s is the core supplicant state pointer, always valid; internal-only-API FP class.",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,wpa_supplicant/wnm_sta.c,152,FP,"mgmt=os_zalloc(sizeof(*mgmt)+...) is the write-destination assignment via sizeof(*ptr), not a dereference; established FP class.",hostap_full_audit_0.4.169,high
+ARR36-C,hostap,wpa_supplicant/wnm_sta.c,217,FP,tfsresp_ie_start/end both derived from the same 'pos' iterating over caller's frm buffer; paired-bounds-pair ARR36-C FP class.,hostap_full_audit_0.4.169,high
+EXP05-C,hostap,wpa_supplicant/wnm_sta.c,244,FP,"frm cast to u8* used only for read-only pointer arithmetic (ptr/end) within the function, never written through.",hostap_full_audit_0.4.169,med
+EXP30-C,hostap,wpa_supplicant/wnm_sta.c,333,FP,MAC2STR(da)/MAC2STR(sa) are pure accessor macros with no side effects; established EXP30-C pure-accessor FP class.,hostap_full_audit_0.4.169,high
+EXP05-C,hostap,wpa_supplicant/wnm_sta.c,360,FP,"pos cast to struct wnm_sleep_element* then only read (action_type/status/intval), never written.",hostap_full_audit_0.4.169,high
+MSC01-C,hostap,wpa_supplicant/wnm_sta.c,412,FP,if(ENTER){}else if(EXIT){} deliberately no-ops for any other action_type; guard-clause pedantry FP class.,hostap_full_audit_0.4.169,high
+MSC01-C,hostap,wpa_supplicant/wnm_sta.c,422,FP,Same guard-clause shape as :412 on the reject path.,hostap_full_audit_0.4.169,high
+API00-C,hostap,wpa_supplicant/wnm_sta.c,429,FP,wnm_btm_reset(wpa_s) internal-only-API FP class.,hostap_full_audit_0.4.169,high
+INT14-C,hostap,wpa_supplicant/wnm_sta.c,508,FP,The bitwise '&' is on pos[9] (a dereferenced byte); pos itself only undergoes pointer arithmetic. Container-vs-member misattribution.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/wnm_sta.c,665,TP,wnm_nei_get_chan's wpa_s param is only read (wpa_s->current_bss); genuine if low-value internal-helper const opportunity.,hostap_full_audit_0.4.169,med
+MSC01-C,hostap,wpa_supplicant/wnm_sta.c,689,FP,"chan-range guard clause; freq keeps its prior (possibly <=0) value when no range matches -- intentional fallback, not a gap.",hostap_full_audit_0.4.169,high
+EXP34-C,hostap,wpa_supplicant/wnm_sta.c,821,FP,ie_a[1] access is guarded by the immediately preceding '!ie_a ||' in the same condition; short-circuit prevents any null deref.,hostap_full_audit_0.4.169,high
+EXP34-C,hostap,wpa_supplicant/wnm_sta.c,821,FP,Same short-circuit-guarded condition protects ie_b as well.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/wnm_sta.c,828,TP,wnm_get_bss_info's wpa_s is only read (wpa_s->current_bss); low-value internal-helper const opportunity.,hostap_full_audit_0.4.169,med
+MSC13-C,hostap,wpa_supplicant/wnm_sta.c,893,TP,chanwidth=0 initializer is unconditionally overwritten by get_operation_channel_width() at :903 before any read; genuine dead store.,hostap_full_audit_0.4.169,high
+EXP33-C,hostap,wpa_supplicant/wnm_sta.c,908,FP,"elems is passed to ieee802_11_parse_elems() which either fully populates it or the function returns -2 on ParseFailed; write-destination FP, matches documented ieee802_11_elems pattern.",hostap_full_audit_0.4.169,high
+MSC01-C,hostap,wpa_supplicant/wnm_sta.c,915,FP,sec_chan defaults to 0 at declaration; else-if only overrides it for the BELOW case -- deliberate default-preserved guard.,hostap_full_audit_0.4.169,high
+PRE02-C,hostap,wpa_supplicant/wnm_sta.c,984,TP,"#define BTM_RESP_MIN_SIZE 5 + ETH_ALEN genuinely lacks parens around the replacement list; literal rule-text violation, low severity since currently used bare.",hostap_full_audit_0.4.169,med
+MSC01-C,hostap,wpa_supplicant/wnm_sta.c,1025,FP,target_bssid / status==ACCEPT guard clause; no BSSID field write is needed in the unmatched case.,hostap_full_audit_0.4.169,high
+EXP30-C,hostap,wpa_supplicant/wnm_sta.c,1059,FP,"wpabuf_head_u8(buf)/wpabuf_len(buf) pure accessors, established EXP30-C FP class.",hostap_full_audit_0.4.169,high
+MSC04-C,hostap,wpa_supplicant/wnm_sta.c,1073,FP,"Cycle closes via wpa_supplicant_deauthenticate->wpa_supplicant_event->wnm_btm_resp_tx_status, but that handler is dispatched only under case EVENT_TX_STATUS (events.c:6735) while deauthenticate() always passes EVENT_DEAUTH -- false cycle per the established event-type-mismatch refinement.",hostap_full_audit_0.4.169,high
+EXP30-C,hostap,wpa_supplicant/wnm_sta.c,1079,FP,MAC2STR(bss->bssid)/MAC2STR(wpa_s->bssid) pure accessors in a wpa_dbg call.,hostap_full_audit_0.4.169,high
+MSC04-C,hostap,wpa_supplicant/wnm_sta.c,1123,FP,"Cycle closes via wpa_supplicant_event->wpa_supplicant_event_scan_results, dispatched under case EVENT_SCAN_RESULTS (events.c:6652), not EVENT_DEAUTH -- false cycle.",hostap_full_audit_0.4.169,high
+MSC07-C,hostap,wpa_supplicant/wnm_sta.c,1244,FP,"send_bss_resp_fail: is a goto target reached from :1231/:1142, not fallthrough after :1242's return; goto-label blindness FP class.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/wnm_sta.c,1289,TP,wnm_sort_cand_list's wpa_s only read; low-value internal-helper const opportunity.,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,wpa_supplicant/wnm_sta.c,1299,TP,wnm_dump_cand_list's wpa_s only read; low-value internal-helper const opportunity.,hostap_full_audit_0.4.169,med
+DCL00-C,hostap,wpa_supplicant/wnm_sta.c,1308,FP,"mld_info IS modified, via os_snprintf() at :1313 when an MLD addr is present; factually wrong 'never modified' claim, and the array couldn't be const-qualified anyway since it's written into.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/wnm_sta.c,1328,TP,chan_supported's wpa_s only read via wpa_s->hw; low-value internal-helper const opportunity.,hostap_full_audit_0.4.169,med
+EXP20-C,hostap,wpa_supplicant/wnm_sta.c,1420,FP,"Testing for exactly 1 channel is the deliberate semantic (single-6GHz-channel passive-scan optimization), not a boolean-like misuse.",hostap_full_audit_0.4.169,med
+ARR36-C,hostap,wpa_supplicant/wnm_sta.c,1466,FP,pos/end both come from the same caller-supplied frame buffer (ieee802_11_rx_bss_trans_mgmt_req's pos/end); paired-buffer ARR36-C FP class.,hostap_full_audit_0.4.169,high
+ARR36-C,hostap,wpa_supplicant/wnm_sta.c,1472,FP,Same pos/end pair as :1466.,hostap_full_audit_0.4.169,high
+MSC04-C,hostap,wpa_supplicant/wnm_sta.c,1508,FP,"Cycle closes via wpas_event_rx_mgmt_action, dispatched under case EVENT_RX_MGMT (events.c:6975), not EVENT_DEAUTH -- false cycle.",hostap_full_audit_0.4.169,high
+ARR36-C,hostap,wpa_supplicant/wnm_sta.c,1523,FP,"pos/end paired-buffer FP class, same underlying frame buffer.",hostap_full_audit_0.4.169,high
+INT14-C,hostap,wpa_supplicant/wnm_sta.c,1565,FP,The bitwise '&' is on wpa_s->wnm_mode (a struct member); wpa_s itself only appears in ordinary pointer/member accesses. Container-vs-member misattribution.,hostap_full_audit_0.4.169,high
+ARR36-C,hostap,wpa_supplicant/wnm_sta.c,1566,FP,pos/end paired-buffer FP class.,hostap_full_audit_0.4.169,high
+ARR36-C,hostap,wpa_supplicant/wnm_sta.c,1578,FP,pos/end paired-buffer FP class.,hostap_full_audit_0.4.169,high
+ARR36-C,hostap,wpa_supplicant/wnm_sta.c,1584,FP,pos/end paired-buffer FP class.,hostap_full_audit_0.4.169,high
+ARR30-C,hostap,wpa_supplicant/wnm_sta.c,1590,FP,"url_len is u8 (max 255), bound-checked at :1584 against remaining frame length; url[url_len] max index 255 fits inside char url[256].",hostap_full_audit_0.4.169,high
+MSC13-C,hostap,wpa_supplicant/wnm_sta.c,1620,TP,disassoc_imminent=false at :1620 is followed only by a response send + goto reset; the value is never read on that path before the function returns. Genuine dead store.,hostap_full_audit_0.4.169,high
+ARR36-C,hostap,wpa_supplicant/wnm_sta.c,1649,FP,pos/end paired-buffer FP class (used for get_ie() length arg).,hostap_full_audit_0.4.169,high
+MSC01-C,hostap,wpa_supplicant/wnm_sta.c,1681,FP,num_neighbor_report/disassoc_imminent guard clause; falls through to continue the main flow when neither branch matches -- intentional.,hostap_full_audit_0.4.169,high
+MSC07-C,hostap,wpa_supplicant/wnm_sta.c,1751,FP,"reset: is a goto target reached from many earlier goto sites, not fallthrough after :1749's return; goto-label blindness.",hostap_full_audit_0.4.169,high
+MSC04-C,hostap,wpa_supplicant/wnm_sta.c,1756,FP,Same EVENT_TX_STATUS-vs-EVENT_DEAUTH mismatch false-cycle as :1073.,hostap_full_audit_0.4.169,high
+EXP36-C,hostap,wpa_supplicant/wnm_sta.c,1760,TP,"char* (data) to struct ieee80211_mgmt* cast, alignment 1->4; genuine low-severity TP per established disposition (real struct target, source alignment unproven in-function).",hostap_full_audit_0.4.169,med
+API00-C,hostap,wpa_supplicant/wnm_sta.c,1791,FP,wpa_s internal-only-API FP class.,hostap_full_audit_0.4.169,high
+EXP30-C,hostap,wpa_supplicant/wnm_sta.c,1836,FP,wpabuf_head_u8(buf)/wpabuf_len(buf) pure accessors.,hostap_full_audit_0.4.169,high
+ARR30-C,hostap,wpa_supplicant/wnm_sta.c,1899,FP,url = os_malloc(url_len + 1); url[url_len] is exactly the last valid byte of a correctly-sized allocation.,hostap_full_audit_0.4.169,high
+ARR00-C,hostap,wpa_supplicant/wnm_sta.c,1926,FP,"This 'url' is the char *url declared at :1912 inside the T&C-Acceptance if-block (:1907-1931), a different variable/allocation than the one freed at :1902 inside the sibling Deauth-Notice if-block (:1874-1905). Same-name-different-scope conflation, not a real use-after-free. New pattern, added to categorical_patterns.md.",hostap_full_audit_0.4.169,high
+ARR30-C,hostap,wpa_supplicant/wnm_sta.c,1926,FP,Same correctly-sized os_malloc(url_len+1) pattern as :1899.,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,wpa_supplicant/wnm_sta.c,1928,FP,"os_free(url) at :1928 frees the :1912-scoped url, which was never freed earlier in that same if-block; cross-block same-name-variable conflation with the sibling block's url (:1879/:1902), not a real double free.",hostap_full_audit_0.4.169,high
+EXP30-C,hostap,wpa_supplicant/wnm_sta.c,1947,FP,MAC2STR(da)/MAC2STR(sa) pure accessors.,hostap_full_audit_0.4.169,high
+MSC04-C,hostap,wpa_supplicant/wnm_sta.c,2032,FP,"Cycle closes via wpas_event_rx_mgmt_action (case EVENT_RX_MGMT), not EVENT_DEAUTH -- false cycle.",hostap_full_audit_0.4.169,high
+INT14-C,hostap,wpa_supplicant/wnm_sta.c,2041,FP,The bitwise '&' is on mgmt->da[0] (a struct member); mgmt itself only undergoes pointer-cast arithmetic. Container-vs-member misattribution.,hostap_full_audit_0.4.169,high
+EXP30-C,hostap,wpa_supplicant/wnm_sta.c,2102,FP,wpabuf_head_u8(buf)/wpabuf_len(buf) pure accessors.,hostap_full_audit_0.4.169,high
+API00-C,hostap,wpa_supplicant/wnm_sta.c,2110,FP,wpa_s internal-only-API FP class.,hostap_full_audit_0.4.169,high
+MEM31-C,hostap,wpa_supplicant/wnm_sta.c,2132,FP,"elems is freed and reset to NULL at :2114-2115 only when wpabuf_len==0; the unconditional free at :2132 is then a safe free(NULL)-equivalent, not a double free.",hostap_full_audit_0.4.169,high
+API00-C,hostap,wpa_supplicant/wnm_sta.c,2136,FP,wpa_s internal-only-API FP class.,hostap_full_audit_0.4.169,high
+API00-C,hostap,wpa_supplicant/wnm_sta.c,2143,FP,"bss param: every caller passes a live struct wpa_bss from scan results or wpa_s->current_bss, never NULL.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,wpa_supplicant/wnm_sta.c,2143,TP,wnm_is_bss_excluded's wpa_s param is only read; low-value internal-helper const opportunity.,hostap_full_audit_0.4.169,med
+DCL13-C,hostap,wpa_supplicant/wnm_sta.c,2143,TP,wnm_is_bss_excluded's bss param is only read (bss->bssid/bss->mld_addr); low-value internal-helper const opportunity.,hostap_full_audit_0.4.169,med
+API00-C,hostap,src/common/dpp_reconfig.c,34,FP,API00-C internal-only-API FP; called only with caller-validated pointers,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/common/dpp_reconfig.c,34,FP,API00-C internal-only-API FP; net_access_key always caller-supplied,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/common/dpp_reconfig.c,34,FP,API00-C internal-only-API FP; id caller-owned struct pointer,hostap_full_audit_0.4.169,high
+MSC13-C,hostap,src/common/dpp_reconfig.c,41,TP,MSC13-C genuine: csign=NULL initializer never read before line 61 overwrite/goto fail,hostap_full_audit_0.4.169,low
+STR31-C,hostap,src/common/dpp_reconfig.c,44,FP,"STR31-C misapplied: const u8 *addr[1] is a pointer array, not a char string buffer",hostap_full_audit_0.4.169,high
+STR31-C,hostap,src/common/dpp_reconfig.c,45,FP,STR31-C misapplied: size_t len[1] not a char array at all,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/common/dpp_reconfig.c,130,TP,"DCL13-C genuine: plain static helper, auth only read, not a dispatch/vtable param",hostap_full_audit_0.4.169,low
+DCL30-C,hostap,src/common/dpp_reconfig.c,182,FP,"DCL30-C heap-vs-local confusion: msg is dpp_alloc_msg() heap buffer, not automatic storage",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/common/dpp_reconfig.c,237,FP,API00-C internal-only-API FP; dpp caller-guaranteed valid,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/common/dpp_reconfig.c,237,FP,API00-C internal-only-API FP; msg_ctx opaque caller context,hostap_full_audit_0.4.169,high
+MSC37-C,hostap,src/common/dpp_reconfig.c,237,FP,MSC37-C goto-label blindness: function always reaches out:/return via fail->goto out,hostap_full_audit_0.4.169,high
+API05-C,hostap,src/common/dpp_reconfig.c,238,FP,"API05-C ptr+size_t idiom (a_nonce_attr/len, e_id_attr/len)",hostap_full_audit_0.4.169,med
+MSC41-C,hostap,src/common/dpp_reconfig.c,278,FP,"MSC41-C hexdump/log-label FP: ""E'-id"" is dpp_debug_print_key's log title, not secret data",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/common/dpp_reconfig.c,320,FP,DCL30-C heap-vs-local confusion: auth is dpp_alloc_auth() heap struct,hostap_full_audit_0.4.169,high
+MSC37-C,hostap,src/common/dpp_reconfig.c,328,FP,MSC37-C goto-label blindness: dpp_reconfig_build_resp always returns via out:,hostap_full_audit_0.4.169,high
+ARR39-C,hostap,src/common/dpp_reconfig.c,360,FP,"ARR39-C misfire: plain integer sum of lengths/constants, no pointer arithmetic present",hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/common/dpp_reconfig.c,414,FP,EXP30-C pure-accessor misfire: wpabuf_head/wpabuf_len have no side effects,hostap_full_audit_0.4.169,high
+MSC07-C,hostap,src/common/dpp_reconfig.c,431,FP,MSC07-C goto-label blindness: fail: label reached via goto fail earlier in function,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/common/dpp_reconfig.c,437,FP,API00-C internal-only-API FP; dpp caller-guaranteed,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/common/dpp_reconfig.c,437,FP,API00-C internal-only-API FP; msg_ctx opaque context,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/common/dpp_reconfig.c,437,FP,API00-C internal-only-API FP; own_connector caller-provided string,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/common/dpp_reconfig.c,437,FP,API00-C internal-only-API FP; csign_key caller-provided buffer,hostap_full_audit_0.4.169,high
+MSC37-C,hostap,src/common/dpp_reconfig.c,437,FP,MSC37-C goto-label blindness: dpp_reconfig_auth_req_rx always returns via out:,hostap_full_audit_0.4.169,high
+API05-C,hostap,src/common/dpp_reconfig.c,438,FP,API05-C ptr+size_t idiom on adjacent net_access_key/csign_key + len params,hostap_full_audit_0.4.169,med
+API05-C,hostap,src/common/dpp_reconfig.c,439,FP,"API05-C ptr+size_t idiom, same signature",hostap_full_audit_0.4.169,med
+EXP34-C,hostap,src/common/dpp_reconfig.c,466,FP,EXP34-C FP: version[0] access guarded by short-circuit !version in same condition,hostap_full_audit_0.4.169,high
+EXP34-C,hostap,src/common/dpp_reconfig.c,560,FP,EXP34-C FP: os_free(NULL) is well-defined no-op; own_conn is always NULL here,hostap_full_audit_0.4.169,high
+MSC07-C,hostap,src/common/dpp_reconfig.c,565,FP,MSC07-C goto-label blindness: fail: reached via goto fail elsewhere in function,hostap_full_audit_0.4.169,high
+MSC37-C,hostap,src/common/dpp_reconfig.c,572,FP,MSC37-C goto-label blindness: dpp_reconfig_build_conf always returns via out:,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/common/dpp_reconfig.c,573,TP,"DCL13-C genuine: plain static helper, auth only read",hostap_full_audit_0.4.169,low
+ARR39-C,hostap,src/common/dpp_reconfig.c,615,FP,"ARR39-C misfire: plain integer sum '4 + wpabuf_len(clear) + AES_BLOCK_SIZE', no pointer arithmetic",hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/common/dpp_reconfig.c,644,FP,EXP30-C pure-accessor misfire: wpabuf_head/wpabuf_len,hostap_full_audit_0.4.169,high
+MSC07-C,hostap,src/common/dpp_reconfig.c,656,FP,MSC07-C goto-label blindness: fail: reached via goto fail earlier,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/common/dpp_reconfig.c,663,FP,API00-C internal-only-API FP; hdr is caller-parsed frame buffer,hostap_full_audit_0.4.169,high
+MSC37-C,hostap,src/common/dpp_reconfig.c,663,FP,MSC37-C goto-label blindness: dpp_reconfig_auth_resp_rx always returns via out:,hostap_full_audit_0.4.169,high
+MSC41-C,hostap,src/common/dpp_reconfig.c,690,FP,"MSC41-C FP: plain protocol-error description passed to dpp_auth_fail, not secret material",hostap_full_audit_0.4.169,high
+MSC41-C,hostap,src/common/dpp_reconfig.c,700,FP,"MSC41-C FP: dpp_auth_fail log text, not sensitive data",hostap_full_audit_0.4.169,high
+MSC41-C,hostap,src/common/dpp_reconfig.c,704,FP,"MSC41-C FP: dpp_auth_fail log text, not sensitive data",hostap_full_audit_0.4.169,high
+EXP34-C,hostap,src/common/dpp_reconfig.c,710,FP,EXP34-C FP: version[0] guarded by short-circuit !version,hostap_full_audit_0.4.169,high
+MSC41-C,hostap,src/common/dpp_reconfig.c,712,FP,MSC41-C FP: dpp_auth_fail log text,hostap_full_audit_0.4.169,high
+MSC41-C,hostap,src/common/dpp_reconfig.c,722,FP,MSC41-C FP: dpp_auth_fail log text,hostap_full_audit_0.4.169,high
+MSC41-C,hostap,src/common/dpp_reconfig.c,731,FP,MSC41-C FP: dpp_auth_fail log text,hostap_full_audit_0.4.169,high
+MSC41-C,hostap,src/common/dpp_reconfig.c,741,FP,MSC41-C FP: dpp_auth_fail log text,hostap_full_audit_0.4.169,high
+ARR39-C,hostap,src/common/dpp_reconfig.c,787,FP,"ARR39-C misfire: plain size_t subtraction 'wrapped_data_len - AES_BLOCK_SIZE', no pointer involved",hostap_full_audit_0.4.169,high
+MSC41-C,hostap,src/common/dpp_reconfig.c,794,FP,MSC41-C FP: dpp_auth_fail log text,hostap_full_audit_0.4.169,high
+MSC41-C,hostap,src/common/dpp_reconfig.c,809,FP,MSC41-C FP: dpp_auth_fail log text,hostap_full_audit_0.4.169,high
+MSC41-C,hostap,src/common/dpp_reconfig.c,817,FP,MSC41-C FP: dpp_auth_fail log text,hostap_full_audit_0.4.169,high
+MEM12-C,hostap,src/common/dpp_reconfig.c,841,FP,MEM12-C flow-insensitive FP: both signed_connector and unwrapped are freed at out: via goto,hostap_full_audit_0.4.169,high
+MSC07-C,hostap,src/common/dpp_reconfig.c,842,FP,MSC07-C goto-label blindness: fail: reached via goto fail earlier,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/common/dpp_reconfig.c,849,FP,API00-C internal-only-API FP; hdr caller-parsed frame buffer,hostap_full_audit_0.4.169,high
+MSC41-C,hostap,src/common/dpp_reconfig.c,870,FP,MSC41-C FP: dpp_auth_fail log text,hostap_full_audit_0.4.169,high
+MSC41-C,hostap,src/common/dpp_reconfig.c,881,FP,MSC41-C FP: dpp_auth_fail log text,hostap_full_audit_0.4.169,high
+MSC41-C,hostap,src/common/dpp_reconfig.c,887,FP,MSC41-C FP: dpp_auth_fail log text,hostap_full_audit_0.4.169,high
+ARR39-C,hostap,src/common/dpp_reconfig.c,899,FP,"ARR39-C misfire: plain size_t subtraction, no pointer",hostap_full_audit_0.4.169,high
+MSC41-C,hostap,src/common/dpp_reconfig.c,906,FP,MSC41-C FP: dpp_auth_fail log text,hostap_full_audit_0.4.169,high
+EXP34-C,hostap,src/common/dpp_reconfig.c,920,FP,EXP34-C FP: trans_id[0] guarded by short-circuit !trans_id in same condition,hostap_full_audit_0.4.169,high
+MSC41-C,hostap,src/common/dpp_reconfig.c,922,FP,MSC41-C FP: dpp_auth_fail log text,hostap_full_audit_0.4.169,high
+EXP34-C,hostap,src/common/dpp_reconfig.c,928,FP,EXP34-C FP: version[0] guarded by short-circuit !version,hostap_full_audit_0.4.169,high
+MSC41-C,hostap,src/common/dpp_reconfig.c,930,FP,MSC41-C FP: dpp_auth_fail log text,hostap_full_audit_0.4.169,high
+MSC41-C,hostap,src/common/dpp_reconfig.c,938,FP,MSC41-C FP: dpp_auth_fail log text,hostap_full_audit_0.4.169,high
+MSC41-C,hostap,src/common/dpp_reconfig.c,947,FP,MSC41-C FP: dpp_auth_fail log text,hostap_full_audit_0.4.169,high
+MSC41-C,hostap,src/common/dpp_reconfig.c,956,FP,MSC41-C FP: dpp_auth_fail log text,hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/eap_peer/eap_gpsk.c,69,FP,"eap_gpsk_state_txt() is a pure switch-return, no side effects to unsequence.",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/eap_peer/eap_gpsk.c,92,FP,"sizeof(*data) is non-evaluating; data assigned same statement, not a deref.",hostap_full_audit_0.4.169,high
+ERR07-C,hostap,src/eap_peer/eap_gpsk.c,113,TP,"atoi(pos+7) on phase1 config string, no range check; local config not wire data.",hostap_full_audit_0.4.169,low
+ERR34-C,hostap,src/eap_peer/eap_gpsk.c,113,TP,"Same atoi() call, audit's literal-rule-text default for unchecked atoi.",hostap_full_audit_0.4.169,low
+DCL30-C,hostap,src/eap_peer/eap_gpsk.c,126,FP,"data is os_zalloc'd heap memory, not local automatic storage.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_peer/eap_gpsk.c,130,FP,sm is eap->deinit vtable param; signature pinned by struct eap_method contract.,hostap_full_audit_0.4.169,high
+ARR36-C,hostap,src/eap_peer/eap_gpsk.c,148,FP,pos/end both derive from the same payload buffer; established pos/end-pair FP class.,hostap_full_audit_0.4.169,high
+ARR36-C,hostap,src/eap_peer/eap_gpsk.c,154,FP,"Same pos/end same-buffer pair, established FP class.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_peer/eap_gpsk.c,173,FP,"data IS mutated: os_memcpy(data->rand_server,...) writes through pointer; mutation-detector miss.",hostap_full_audit_0.4.169,high
+MEM10-C,hostap,src/eap_peer/eap_gpsk.c,176,FP,Genuine defensive NULL guard on chained parser result; ad-hoc-NULL-check stylistic pedantry.,hostap_full_audit_0.4.169,high
+ARR36-C,hostap,src/eap_peer/eap_gpsk.c,179,FP,"pos/end same-buffer pair, established FP class.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_peer/eap_gpsk.c,192,TP,"sm only read (sm->msg_ctx); plain internal helper, not a vtable/callback slot.",hostap_full_audit_0.4.169,low
+EXP33-C,hostap,src/eap_peer/eap_gpsk.c,301,FP,"'eap_gpsk_send_gpsk_2' is a forward-declared static FUNCTION, not a variable; category error.",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/eap_peer/eap_gpsk.c,308,FP,"resp is heap memory from eap_msg_alloc() returned by eap_gpsk_send_gpsk_2, not automatic storage.",hostap_full_audit_0.4.169,high
+ARR39-C,hostap,src/eap_peer/eap_gpsk.c,325,FP,Pure size_t integer sum for an allocation length; no pointer arithmetic or scaling involved.,hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/eap_peer/eap_gpsk.c,360,FP,"sizeof(*csuite) is non-evaluating context; csuite assigned on same statement, not a deref.",hostap_full_audit_0.4.169,high
+EXP05-C,hostap,src/eap_peer/eap_gpsk.c,203,FP,csuite only read via WPA_GET_BE32/BE16 after cast; cast-away-const-read-only-overlay FP class.,hostap_full_audit_0.4.169,high
+MEM10-C,hostap,src/eap_peer/eap_gpsk.c,241,FP,Genuine defensive NULL guard on chained parser result; stylistic pedantry.,hostap_full_audit_0.4.169,high
+ARR36-C,hostap,src/eap_peer/eap_gpsk.c,244,FP,"pos/end same-buffer pair, established FP class.",hostap_full_audit_0.4.169,high
+ARR36-C,hostap,src/eap_peer/eap_gpsk.c,250,FP,"pos/end same-buffer pair, established FP class.",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/eap_peer/eap_gpsk.c,405,FP,"resp is heap memory from eap_msg_alloc() (eap_gpsk_send_gpsk_2's own return), not automatic storage.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_peer/eap_gpsk.c,409,TP,data only read (os_memcmp against data->rand_peer/rand_server); plain internal helper.,hostap_full_audit_0.4.169,low
+ARR36-C,hostap,src/eap_peer/eap_gpsk.c,412,FP,"pos/end same-buffer pair, established FP class.",hostap_full_audit_0.4.169,high
+ARR36-C,hostap,src/eap_peer/eap_gpsk.c,428,FP,"pos/end same-buffer pair, established FP class.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_peer/eap_gpsk.c,448,TP,data only read (id_server_len/id_server compare); plain internal helper.,hostap_full_audit_0.4.169,low
+MEM10-C,hostap,src/eap_peer/eap_gpsk.c,453,FP,Genuine defensive NULL guard on chained parser result; stylistic pedantry.,hostap_full_audit_0.4.169,high
+ARR36-C,hostap,src/eap_peer/eap_gpsk.c,456,FP,"pos/end same-buffer pair, established FP class.",hostap_full_audit_0.4.169,high
+ARR36-C,hostap,src/eap_peer/eap_gpsk.c,465,FP,"pos/end same-buffer pair, established FP class.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_peer/eap_gpsk.c,488,TP,data only read (vendor/specifier compare); plain internal helper.,hostap_full_audit_0.4.169,low
+MEM10-C,hostap,src/eap_peer/eap_gpsk.c,494,FP,Genuine defensive NULL guard on chained parser result; stylistic pedantry.,hostap_full_audit_0.4.169,high
+ARR36-C,hostap,src/eap_peer/eap_gpsk.c,497,FP,"pos/end same-buffer pair, established FP class.",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/eap_peer/eap_gpsk.c,497,FP,"sizeof(*csuite) is non-evaluating context, not a dereference of uninitialized csuite.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_peer/eap_gpsk.c,517,TP,data param is genuinely entirely unused in eap_gpsk_validate_pd_payload_2 body.,hostap_full_audit_0.4.169,low
+MEM10-C,hostap,src/eap_peer/eap_gpsk.c,522,FP,Genuine defensive NULL guard on chained parser result; stylistic pedantry.,hostap_full_audit_0.4.169,high
+ARR36-C,hostap,src/eap_peer/eap_gpsk.c,525,FP,"pos/end same-buffer pair, established FP class.",hostap_full_audit_0.4.169,high
+ARR36-C,hostap,src/eap_peer/eap_gpsk.c,532,FP,"pos/end same-buffer pair, established FP class.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_peer/eap_gpsk.c,544,TP,data only read (vendor/specifier/sk/sk_len); plain internal helper.,hostap_full_audit_0.4.169,low
+ENV01-C,hostap,src/eap_peer/eap_gpsk.c,549,FP,mic[] is a plain fixed MIC buffer; no getenv() anywhere in this file.,hostap_full_audit_0.4.169,high
+MEM10-C,hostap,src/eap_peer/eap_gpsk.c,551,FP,Genuine defensive NULL guard on chained parser result; stylistic pedantry.,hostap_full_audit_0.4.169,high
+ARR36-C,hostap,src/eap_peer/eap_gpsk.c,555,FP,"pos/end same-buffer pair, established FP class.",hostap_full_audit_0.4.169,high
+ARR36-C,hostap,src/eap_peer/eap_gpsk.c,558,FP,"pos/end same-buffer pair (format-string arg), established FP class.",hostap_full_audit_0.4.169,high
+ARR36-C,hostap,src/eap_peer/eap_gpsk.c,563,FP,pos and payload are the same underlying buffer (pos advanced from payload).,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_peer/eap_gpsk.c,580,TP,"sm is genuinely unused in eap_gpsk_process_gpsk_3's body; plain internal helper, not itself a vtable slot.",hostap_full_audit_0.4.169,low
+EXP33-C,hostap,src/eap_peer/eap_gpsk.c,615,FP,"'eap_gpsk_send_gpsk_4' is a forward-declared static FUNCTION, not a variable; category error.",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/eap_peer/eap_gpsk.c,623,FP,"resp is heap memory from eap_msg_alloc(), not automatic storage.",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/eap_peer/eap_gpsk.c,658,FP,"resp is heap memory from eap_msg_alloc(), not automatic storage.",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/eap_peer/eap_gpsk.c,703,FP,"resp is a pointer variable holding a heap-returned value from a callee, not local storage.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_peer/eap_gpsk.c,707,FP,sm/priv are eap->isKeyAvailable vtable params; signature pinned by struct eap_method contract.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_peer/eap_gpsk.c,707,FP,priv is eap->isKeyAvailable vtable param; signature pinned by struct eap_method contract.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_peer/eap_gpsk.c,714,FP,sm is eap->getKey vtable param; signature pinned by struct eap_method contract.,hostap_full_audit_0.4.169,high
+API05-C,hostap,src/eap_peer/eap_gpsk.c,714,FP,"priv is an opaque void* handle, not an array; canonical API05-C opaque-handle FP.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_peer/eap_gpsk.c,714,FP,priv is eap->getKey vtable param; signature pinned by struct eap_method contract.,hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/eap_peer/eap_gpsk.c,727,FP,"key is heap memory from os_memdup(), not automatic storage.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_peer/eap_gpsk.c,731,FP,sm is eap->get_emsk vtable param; signature pinned by struct eap_method contract.,hostap_full_audit_0.4.169,high
+API05-C,hostap,src/eap_peer/eap_gpsk.c,731,FP,"priv is an opaque void* handle, not an array; canonical API05-C opaque-handle FP.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_peer/eap_gpsk.c,731,FP,priv is eap->get_emsk vtable param; signature pinned by struct eap_method contract.,hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/eap_peer/eap_gpsk.c,744,FP,"key is heap memory from os_memdup(), not automatic storage.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_peer/eap_gpsk.c,748,FP,sm is eap->getSessionId vtable param; signature pinned by struct eap_method contract.,hostap_full_audit_0.4.169,high
+API05-C,hostap,src/eap_peer/eap_gpsk.c,748,FP,"priv is an opaque void* handle, not an array; canonical API05-C opaque-handle FP.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eap_peer/eap_gpsk.c,748,FP,priv is eap->getSessionId vtable param; signature pinned by struct eap_method contract.,hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/eap_peer/eap_gpsk.c,761,FP,"sid is heap memory from os_memdup(), not automatic storage.",hostap_full_audit_0.4.169,high
+MEM31-C,hostap,src/eap_peer/eap_gpsk.c,769,FP,"eap is passed to eap_peer_method_register(eap), which takes ownership/frees regardless of return value (doc-confirmed precedent).",hostap_full_audit_0.4.169,high
+PRE08-C,hostap,src/eapol_auth/eapol_auth_sm.c,18,FP,8.3-legacy-filesystem FP class (eapol_auth_sm.h vs _sm_i.h share 8 chars).,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eapol_auth/eapol_auth_sm.c,49,TP,"eapol_auth_logger's eapol param never mutated; plain helper, not bound to any callback typedef.",hostap_full_audit_0.4.169,high
+ERR33-C,hostap,src/eapol_auth/eapol_auth_sm.c,77,TP,"vsnprintf return genuinely ignored; low-severity literal-rule-text violation, no truncation handling.",hostap_full_audit_0.4.169,med
+MSC41-C,hostap,src/eapol_auth/eapol_auth_sm.c,113,FP,"Plain human-readable debug-log string, not secret material; established MSC41-C log-string misfire class.",hostap_full_audit_0.4.169,high
+MSC41-C,hostap,src/eapol_auth/eapol_auth_sm.c,114,FP,"Same log-string continuation, not a secret; same class as :113.",hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/eapol_auth/eapol_auth_sm.c,129,FP,"wpabuf_head/wpabuf_len pure-accessor sibling-args misfire, established FP class.",hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/eapol_auth/eapol_auth_sm.c,227,FP,No-final-else guard-clause pedantry; stat-counter if/else-if chain needs no default action.,hostap_full_audit_0.4.169,high
+STR05-C,hostap,src/eapol_auth/eapol_auth_sm.c,307,TP,"char *extra assigned string literals without const; genuine trivial idiom TP, never mutated.",hostap_full_audit_0.4.169,low
+MSC01-C,hostap,src/eapol_auth/eapol_auth_sm.c,319,FP,"if/else-if sets 'extra' from a pre-initialized default (""""); no final else needed.",hostap_full_audit_0.4.169,high
+MSC37-C,hostap,src/eapol_auth/eapol_auth_sm.c,390,FP,SM_STEP macro (state_machine.h:126) expands to 'static void'; MSC37-C misreads it as non-void.,hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/eapol_auth/eapol_auth_sm.c,404,FP,SM_STEP switch on auth_pae_state; no-default means deliberately stay in current state.,hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/eapol_auth/eapol_auth_sm.c,423,FP,State-machine case if/else-if chain; no-transition-if-none-match is IEEE 802.1X spec intent.,hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/eapol_auth/eapol_auth_sm.c,431,FP,Same SM_STEP case guard-clause pattern as :423.,hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/eapol_auth/eapol_auth_sm.c,440,FP,Same SM_STEP case guard-clause pattern as :423.,hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/eapol_auth/eapol_auth_sm.c,447,FP,Same SM_STEP case guard-clause pattern as :423.,hostap_full_audit_0.4.169,high
+MSC37-C,hostap,src/eapol_auth/eapol_auth_sm.c,556,FP,SM_STEP(BE_AUTH) macro-hidden void return; same class as :390.,hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/eapol_auth/eapol_auth_sm.c,563,FP,"SM_STEP(BE_AUTH) switch, no-default deliberate stay-in-state.",hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/eapol_auth/eapol_auth_sm.c,572,FP,"BE_AUTH_REQUEST case if/else-if chain, guard-clause pedantry.",hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/eapol_auth/eapol_auth_sm.c,586,FP,"BE_AUTH_RESPONSE case if/else-if chain, guard-clause pedantry.",hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/eapol_auth/eapol_auth_sm.c,605,FP,"BE_AUTH_IDLE case if/else-if chain, guard-clause pedantry.",hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/eapol_auth/eapol_auth_sm.c,613,FP,"BE_AUTH_IGNORE case if/else-if chain, guard-clause pedantry.",hostap_full_audit_0.4.169,high
+MSC37-C,hostap,src/eapol_auth/eapol_auth_sm.c,641,FP,SM_STEP(REAUTH_TIMER) macro-hidden void return; same class as :390.,hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/eapol_auth/eapol_auth_sm.c,649,FP,"SM_STEP(REAUTH_TIMER) switch, no-default deliberate stay-in-state.",hostap_full_audit_0.4.169,high
+MSC37-C,hostap,src/eapol_auth/eapol_auth_sm.c,682,FP,SM_STEP(AUTH_KEY_TX) macro-hidden void return; same class as :390.,hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/eapol_auth/eapol_auth_sm.c,689,FP,"SM_STEP(AUTH_KEY_TX) switch, no-default deliberate stay-in-state.",hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/eapol_auth/eapol_auth_sm.c,698,FP,"AUTH_KEY_TX_KEY_TRANSMIT case if/else-if chain, guard-clause pedantry.",hostap_full_audit_0.4.169,high
+MSC37-C,hostap,src/eapol_auth/eapol_auth_sm.c,723,FP,SM_STEP(KEY_RX) macro-hidden void return; same class as :390.,hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/eapol_auth/eapol_auth_sm.c,730,FP,"SM_STEP(KEY_RX) switch, no-default deliberate stay-in-state.",hostap_full_audit_0.4.169,high
+MSC37-C,hostap,src/eapol_auth/eapol_auth_sm.c,762,FP,SM_STEP(CTRL_DIR) macro-hidden void return; same class as :390.,hostap_full_audit_0.4.169,high
+MSC01-C,hostap,src/eapol_auth/eapol_auth_sm.c,769,FP,"SM_STEP(CTRL_DIR) switch, no-default deliberate stay-in-state.",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/eapol_auth/eapol_auth_sm.c,786,FP,"addr param: sole caller passes sta->addr, a fixed array address, never NULL.",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/eapol_auth/eapol_auth_sm.c,786,FP,"assoc_wps_ie is optional, only stored not dereferenced here; internal-only-API FP.",hostap_full_audit_0.4.169,high
+API00-C,hostap,src/eapol_auth/eapol_auth_sm.c,786,FP,"assoc_p2p_ie is optional, only stored not dereferenced here; internal-only-API FP.",hostap_full_audit_0.4.169,high
+MEM10-C,hostap,src/eapol_auth/eapol_auth_sm.c,795,FP,"Ad-hoc-NULL-check stylistic pedantry, established FP class.",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/eapol_auth/eapol_auth_sm.c,798,FP,"sizeof(*sm) is a non-evaluating context, not a real dereference of uninitialized sm.",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/eapol_auth/eapol_auth_sm.c,874,FP,"sm is os_zalloc'd heap memory, not automatic-storage local; heap-vs-stack confusion FP.",hostap_full_audit_0.4.169,high
+MEM10-C,hostap,src/eapol_auth/eapol_auth_sm.c,880,FP,"Ad-hoc-NULL-check stylistic pedantry, established FP class.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eapol_auth/eapol_auth_sm.c,894,TP,"eapol_sm_sta_entry_alive's eapol param never mutated, plain helper, no dispatch typedef.",hostap_full_audit_0.4.169,high
+EXP30-C,hostap,src/eapol_auth/eapol_auth_sm.c,969,FP,"wpabuf_head/wpabuf_len pure-accessor sibling-args misfire, same class as :129.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eapol_auth/eapol_auth_sm.c,982,FP,eapol_sm_step_cb matches eloop_timeout_handler typedef; eloop-callback dispatch-contract FP.,hostap_full_audit_0.4.169,high
+API05-C,hostap,src/eapol_auth/eapol_auth_sm.c,1025,FP,Flags generic void *ctx with no companion size/array semantics at all; nonsense application.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eapol_auth/eapol_auth_sm.c,1025,FP,ctx matches eap.h's fixed get_eap_user callback typedef; dispatch-contract FP.,hostap_full_audit_0.4.169,high
+API05-C,hostap,src/eapol_auth/eapol_auth_sm.c,1036,FP,"Flags scalar size_t *len out-param, not an array; nonsense application, same class as :1025.",hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eapol_auth/eapol_auth_sm.c,1036,FP,ctx matches eap.h's fixed get_eap_req_id_text callback typedef; dispatch-contract FP.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eapol_auth/eapol_auth_sm.c,1044,FP,ctx matches eap.h's fixed get_erp_send_reauth_start callback typedef; dispatch-contract FP.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eapol_auth/eapol_auth_sm.c,1051,FP,ctx matches eap.h's fixed get_erp_domain callback typedef; dispatch-contract FP.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eapol_auth/eapol_auth_sm.c,1058,FP,ctx matches eap.h's fixed erp_get_key callback typedef; dispatch-contract FP.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eapol_auth/eapol_auth_sm.c,1066,FP,ctx matches eap.h's fixed erp_add_key callback typedef; dispatch-contract FP.,hostap_full_audit_0.4.169,high
+DCL13-C,hostap,src/eapol_auth/eapol_auth_sm.c,1085,TP,"eapol_auth_eap_pending_cb's ctx only compared, never dispatched as a fn ptr; plain public API, real low-value TP.",hostap_full_audit_0.4.169,med
+API00-C,hostap,src/eapol_auth/eapol_auth_sm.c,1097,FP,sm param: both callers in ctrl_iface.c explicitly guard !sta->eapol_sm before calling.,hostap_full_audit_0.4.169,high
+API00-C,hostap,src/eapol_auth/eapol_auth_sm.c,1106,FP,"value param: sole caller passes a NUL-terminated remainder pointer, never NULL.",hostap_full_audit_0.4.169,high
+ERR07-C,hostap,src/eapol_auth/eapol_auth_sm.c,1138,TP,"atoi(value) on ctrl_iface config input, no range/error check; literal-rule-text TP.",hostap_full_audit_0.4.169,med
+ERR34-C,hostap,src/eapol_auth/eapol_auth_sm.c,1138,TP,"Same atoi() call, no errno/end-pointer/range validation.",hostap_full_audit_0.4.169,med
+ERR07-C,hostap,src/eapol_auth/eapol_auth_sm.c,1143,TP,"atoi(value) on ctrl_iface config input, no range/error check.",hostap_full_audit_0.4.169,med
+ERR34-C,hostap,src/eapol_auth/eapol_auth_sm.c,1143,TP,"Same atoi() call, no errno/end-pointer/range validation.",hostap_full_audit_0.4.169,med
+ERR07-C,hostap,src/eapol_auth/eapol_auth_sm.c,1148,TP,"atoi(value) on ctrl_iface config input, no range/error check.",hostap_full_audit_0.4.169,med
+ERR34-C,hostap,src/eapol_auth/eapol_auth_sm.c,1148,TP,"Same atoi() call, no errno/end-pointer/range validation.",hostap_full_audit_0.4.169,med
+MSC07-C,hostap,src/eapol_auth/eapol_auth_sm.c,1212,FP,"'fail:' is a real goto target reached from :1204, not unreachable code.",hostap_full_audit_0.4.169,high
+EXP33-C,hostap,src/eapol_auth/eapol_auth_sm.c,1232,FP,"sizeof(*eapol) is a non-evaluating context, not a real dereference.",hostap_full_audit_0.4.169,high
+DCL30-C,hostap,src/eapol_auth/eapol_auth_sm.c,1261,FP,"eapol is os_zalloc'd heap memory, not automatic-storage local.",hostap_full_audit_0.4.169,high
+MEM10-C,hostap,src/eapol_auth/eapol_auth_sm.c,1267,FP,"Ad-hoc-NULL-check stylistic pedantry, established FP class.",hostap_full_audit_0.4.169,high

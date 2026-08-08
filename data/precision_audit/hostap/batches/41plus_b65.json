@@ -1,0 +1,1354 @@
+{
+ "src/rsn_supp/wpa.c#part1of3": [
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 21,
+   "message": "Header file 'ieee802_11_defs.h' has the same first 8 characters (case-insensitive) as 'ieee802_11_common.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_defs.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 39,
+   "message": "Function has pointer parameter without size argument: 'static const u8 * wpa_sm_get_ap_rsnxe(struct wpa_sm *sm, size_t *len);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 65,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 42,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 21,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 43,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 64,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 67,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 20,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 68,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 68,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 74,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 17,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 75,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 93,
+   "message": "Function 'wpa_eapol_key_send' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 93,
+   "message": "Function 'wpa_eapol_key_send' does not validate pointer parameter 'dest' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dest' at the start of the function, e.g., 'if (!dest) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 93,
+   "message": "Function 'wpa_eapol_key_send' does not validate integer parameter 'msg_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'msg_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 58,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 93,
+   "message": "Pointer parameter 'ptk' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ptk'"
+  },
+  {
+   "column": 11,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 128,
+   "message": "Passing null pointer 'key_mic' to 'wpa_eapol_key_mic' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'key_mic' is not NULL before passing to 'wpa_eapol_key_mic'"
+  },
+  {
+   "column": 8,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 138,
+   "message": "Passing null pointer 'key_mic' to 'wpa_hexdump' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'key_mic' is not NULL before passing to 'wpa_hexdump'"
+  },
+  {
+   "column": 20,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 145,
+   "message": "Unsigned integer addition 'msg_len + AES_BLOCK_SIZE' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }"
+  },
+  {
+   "column": 13,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 148,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 10,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 149,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 18,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 154,
+   "message": "Scaled integer arithmetic with pointer: 'msg_len - sizeof(struct ieee802_1x_hdr) -\n\t\t\tsizeof(struct wpa_eapol_key)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 18,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 154,
+   "message": "Unsigned integer subtraction 'msg_len - sizeof(struct ieee802_1x_hdr) -\n\t\t\tsizeof(struct wpa_eapol_key)' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 18,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 154,
+   "message": "Unsigned integer subtraction 'msg_len - sizeof(struct ieee802_1x_hdr)' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 18,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 255,
+   "message": "Dereference of uninitialized pointer 'reply'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'reply' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 261,
+   "message": "Potential null pointer dereference in member access of variable 'reply'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'reply' is not NULL before member access"
+  },
+  {
+   "column": 9,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 360,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 3,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 363,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 6,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 426,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"machines\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 10,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 442,
+   "message": "Passing null pointer 'pmkid' to 'pmksa_cache_get' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'pmkid' is not NULL before passing to 'pmksa_cache_get'"
+  },
+  {
+   "column": 11,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 447,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 11,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 478,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 7,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 488,
+   "message": "Variable 'buf' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'buf' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 526,
+   "message": "Function 'wpa_supplicant_send_2_of_4' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 526,
+   "message": "Function 'wpa_supplicant_send_2_of_4' does not validate pointer parameter 'dst' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dst' at the start of the function, e.g., 'if (!dst) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 526,
+   "message": "Function 'wpa_supplicant_send_2_of_4' does not validate pointer parameter 'key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 526,
+   "message": "Function 'wpa_supplicant_send_2_of_4' does not validate pointer parameter 'nonce' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'nonce' at the start of the function, e.g., 'if (!nonce) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 526,
+   "message": "Function 'wpa_supplicant_send_2_of_4' does not validate integer parameter 'wpa_ie_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'wpa_ie_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 71,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 526,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 5,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 541,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 4,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 591,
+   "message": "Function returns without releasing all resources. Leaked: rsn_ie_buf, buf2. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 3,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 598,
+   "message": "Pointer arithmetic moves 4 elements beyond buffer bounds (effective size: 2): Buffer 'pos' with size 2 (allocated at line 7161)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 4,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 608,
+   "message": "Function returns without releasing all resources. Leaked: rsn_ie_buf, buf2. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 616,
+   "message": "Use-after-free: passing freed pointer 'wpa_ie' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 18,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 630,
+   "message": "Dereference of uninitialized pointer 'reply'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'reply' before dereferencing"
+  },
+  {
+   "column": 3,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 637,
+   "message": "Function returns without releasing all resources. Leaked: rsn_ie_buf, buf2. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 640,
+   "message": "Potential null pointer dereference in member access of variable 'reply'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'reply' is not NULL before member access"
+  },
+  {
+   "column": 2,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 668,
+   "message": "Use-after-free: passing freed pointer 'wpa_ie' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 3,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 673,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 4,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 690,
+   "message": "Function returns without releasing all resources. Leaked: rsn_ie_buf, buf2. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 10,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 693,
+   "message": "Subtracting pointers from different arrays ('plain_len' from 'wpa_ie_len' and 'pad_len' from '8'). Pointer subtraction is only defined for pointers within the same array object.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Only subtract pointers that point to elements within the same array object."
+  },
+  {
+   "column": 4,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 701,
+   "message": "Function returns without releasing all resources. Leaked: rsn_ie_buf, buf2. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 713,
+   "message": "Function returns without releasing all resources. Leaked: rsn_ie_buf, buf2. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 13,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 726,
+   "message": "Static variable 'wpa_sm_get_ap_rsnxe' used without explicit initialization",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'wpa_sm_get_ap_rsnxe' before use, e.g., at its declaration"
+  },
+  {
+   "column": 32,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 778,
+   "message": "Pointer parameter 'kde' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *kde'"
+  },
+  {
+   "column": 50,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 835,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 32,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 841,
+   "message": "Variable 'i' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'i' before use, e.g., at its declaration"
+  },
+  {
+   "column": 44,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 849,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 2,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 852,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 32,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 855,
+   "message": "Variable 'i' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'i' before use, e.g., at its declaration"
+  },
+  {
+   "column": 12,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 860,
+   "message": "Bitwise operator '&' used on signed operand 'i' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'i' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 51,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 869,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 32,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 889,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 951,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 28,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 957,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 8,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 1127,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 13,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 1130,
+   "message": "Subtracting pointers from different arrays ('pos' from '0' and 'kde' from 'NULL'). Pointer subtraction is only defined for pointers within the same array object.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Only subtract pointers that point to elements within the same array object."
+  },
+  {
+   "column": 13,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 1146,
+   "message": "Subtracting pointers from different arrays ('pos' from '0' and 'kde' from 'NULL'). Pointer subtraction is only defined for pointers within the same array object.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Only subtract pointers that point to elements within the same array object."
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 1157,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 1158,
+   "message": "Double-free: 'kde_buf' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 1158,
+   "message": "Double free detected: 'kde_buf' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 56,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 1163,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 2,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 1173,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 52,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 1218,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 13,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 1293,
+   "message": "Static variable 'wpa_sm_get_ap_rsnxe' used without explicit initialization",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'wpa_sm_get_ap_rsnxe' before use, e.g., at its declaration"
+  },
+  {
+   "column": 60,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 1348,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 12,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 1388,
+   "message": "File-scope identifier '_gtk' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 9,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 1426,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 14,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 1581,
+   "message": "Variable 'gtk' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 35,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 1613,
+   "message": "Pointer parameter 'ie' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ie'"
+  },
+  {
+   "column": 46,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 1621,
+   "message": "Variable 'i' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'i' before use, e.g., at its declaration"
+  },
+  {
+   "column": 14,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 1657,
+   "message": "Variable 'gtk' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 28,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 1716,
+   "message": "sizeof applied to pointer/array parameter 'igtk' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(igtk->pn)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 29,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 1785,
+   "message": "sizeof applied to pointer/array parameter 'bigtk' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(bigtk->pn)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 7,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 1838,
+   "message": "sizeof applied to pointer/array parameter 'igtk' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(igtk->pn)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 7,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 1898,
+   "message": "sizeof applied to pointer/array parameter 'bigtk' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(bigtk->pn)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 35,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 1922,
+   "message": "Pointer parameter 'ie' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ie'"
+  },
+  {
+   "column": 36,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 1968,
+   "message": "Variable 'i' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'i' before use, e.g., at its declaration"
+  },
+  {
+   "column": 37,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 1977,
+   "message": "Pointer parameter 'ie' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ie'"
+  },
+  {
+   "column": 19,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 2014,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 43,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 2053,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 34,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 2055,
+   "message": "Pointer parameter 'ie' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ie'"
+  },
+  {
+   "column": 43,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 2084,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 34,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 2086,
+   "message": "Pointer parameter 'ie' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ie'"
+  },
+  {
+   "column": 5,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 2095,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 44,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 2112,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 35,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 2114,
+   "message": "Pointer parameter 'ie' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ie'"
+  },
+  {
+   "column": 3,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 2160,
+   "message": "Dereferencing pointer in switch statement may create double-fetch vulnerability",
+   "rule_id": "CON43-C",
+   "severity": "High",
+   "suggestion": "Store dereferenced value in a local variable or use atomic operations"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 2333,
+   "message": "Function 'wpa_supplicant_send_4_of_4' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 2333,
+   "message": "Function 'wpa_supplicant_send_4_of_4' does not validate pointer parameter 'dst' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dst' at the start of the function, e.g., 'if (!dst) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 2333,
+   "message": "Function 'wpa_supplicant_send_4_of_4' does not validate pointer parameter 'key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+  },
+  {
+   "column": 18,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 2374,
+   "message": "Dereference of uninitialized pointer 'reply'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'reply' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 2383,
+   "message": "Potential null pointer dereference in member access of variable 'reply'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'reply' is not NULL before member access"
+  },
+  {
+   "column": 3,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 2413,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 10,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 2433,
+   "message": "Subtracting pointers from different arrays ('plain_len' from 'pos' and 'pad_len' from '8'). Pointer subtraction is only defined for pointers within the same array object.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Only subtract pointers that point to elements within the same array object."
+  },
+  {
+   "column": 3,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 2477,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 6,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 2486,
+   "message": "Variable 'link_kde' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 2630,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 59,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 2636,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 36,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 2638,
+   "message": "Pointer parameter 'ie' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ie'"
+  },
+  {
+   "column": 3,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 2696,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 2727,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 51,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 2732,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 7,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 2751,
+   "message": "Memory allocated with 'wpabuf_array_alloc' for variable 'wa' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(wa)' before the variable goes out of scope"
+  },
+  {
+   "column": 3,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 2911,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 25,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 2922,
+   "message": "sizeof applied to pointer/array parameter 'sm' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(sm->p2p_ip_addr)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 9,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 3017,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 3064,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 18,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 3091,
+   "message": "Dereference of uninitialized pointer 'reply'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'reply' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 3097,
+   "message": "Potential null pointer dereference in member access of variable 'reply'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'reply' is not NULL before member access"
+  },
+  {
+   "column": 32,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 3152,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 34,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 3225,
+   "message": "Variable 'i' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'i' before use, e.g., at its declaration"
+  },
+  {
+   "column": 2,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 3233,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 3243,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 32,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 3249,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 3,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 3363,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 3378,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 28,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 3385,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 3489,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 3499,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 33,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 3509,
+   "message": "sizeof applied to pointer/array parameter 'sm' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(sm->ptk)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 26,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 3510,
+   "message": "sizeof applied to pointer/array parameter 'sm' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(sm->tptk)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 30,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 3521,
+   "message": "sizeof applied to pointer/array parameter 'sm' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(sm->last_kck)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 34,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 3529,
+   "message": "Pointer parameter 'key' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *key'"
+  },
+  {
+   "column": 2,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 3533,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 58,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 3606,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 30,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 3607,
+   "message": "Pointer parameter 'key' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *key'"
+  },
+  {
+   "column": 46,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 3719,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 3,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 3733,
+   "message": "Do not assume constant values in expressions: '(key_info & (BIT(13) | BIT(14) | BIT(15))) >> 13'",
+   "rule_id": "EXP07-C",
+   "severity": "Low",
+   "suggestion": "Use the constant identifier directly instead of assuming its numeric value"
+  },
+  {
+   "column": 56,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 3757,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 12,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 3764,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 9,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 3765,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 2,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 3782,
+   "message": "Pointer arithmetic moves 2 elements beyond buffer bounds (effective size: 2): Buffer 'pos' with size 2 (allocated at line 7161)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 2,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 3800,
+   "message": "Scaled integer assignment to pointer: '(*key_data_len) -= AES_BLOCK_SIZE'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Use unscaled integer increment without sizeof()"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 3922,
+   "message": "Function 'wpa_sm_rx_eapol' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 3922,
+   "message": "Function 'wpa_sm_rx_eapol' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  },
+  {
+   "column": 21,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 3942,
+   "message": "Dereference of uninitialized pointer 'key'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'key' before dereferencing"
+  },
+  {
+   "column": 19,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 3944,
+   "message": "Dereference of uninitialized pointer 'hdr'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'hdr' before dereferencing"
+  },
+  {
+   "column": 9,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 4127,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 45,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 4215,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 2,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 4222,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 4255,
+   "message": "Function-like macro 'RSN_SUITE_ARG' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 4255,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (((s) >> 24) & 0xff, ((s) >> 16) & 0xff, ((s) >> 8) & 0xff, (s) & 0xff)"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa.c",
+   "line": 4255,
+   "message": "Macro evaluates parameter 's' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  }
+ ]
+}

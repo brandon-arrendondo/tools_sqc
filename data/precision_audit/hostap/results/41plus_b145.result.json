@@ -1,0 +1,1226 @@
+{
+ "labels": [
+  {
+   "rule": "CON03-C",
+   "file": "src/utils/os_unix.c",
+   "line": 35,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON03-C no-thread codebase FP class; hostapd/wpa_supplicant core is single-threaded"
+  },
+  {
+   "rule": "MSC05-C",
+   "file": "src/utils/os_unix.c",
+   "line": 53,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "usec*1000 is unit conversion of a duration, not time_t point arithmetic"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/utils/os_unix.c",
+   "line": 76,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "while(1) loop only exits via return/switch-return; never falls off function end"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "src/utils/os_unix.c",
+   "line": 84,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON03-C no-thread codebase FP class"
+  },
+  {
+   "rule": "FLP03-C",
+   "file": "src/utils/os_unix.c",
+   "line": 96,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ts.tv_nsec/1000 is integer division misclassified as floating-point"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/utils/os_unix.c",
+   "line": 99,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "switch guard-clause pedantry; no realistic unmatched clock_id value"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "src/utils/os_unix.c",
+   "line": 116,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON03-C no-thread codebase FP class"
+  },
+  {
+   "rule": "FLP03-C",
+   "file": "src/utils/os_unix.c",
+   "line": 124,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "integer (uint32/uint64) arithmetic misclassified as floating-point division"
+  },
+  {
+   "rule": "INT33-C",
+   "file": "src/utils/os_unix.c",
+   "line": 124,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "info.denom checked non-zero via mach_timebase_info success guard just above"
+  },
+  {
+   "rule": "INT33-C",
+   "file": "src/utils/os_unix.c",
+   "line": 126,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NSEC_PER_SEC is a nonzero compile-time macro constant, never zero"
+  },
+  {
+   "rule": "INT33-C",
+   "file": "src/utils/os_unix.c",
+   "line": 127,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NSEC_PER_USEC is a nonzero compile-time macro constant, never zero"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/utils/os_unix.c",
+   "line": 154,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "mktime() return value genuinely never checked for the (time_t)-1 error indicator"
+  },
+  {
+   "rule": "ENV34-C",
+   "file": "src/utils/os_unix.c",
+   "line": 157,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "localtime() result consumed immediately via mktime(tm1), never stored across calls"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/utils/os_unix.c",
+   "line": 157,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "checked via `if (tm1)` on the very next line"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/utils/os_unix.c",
+   "line": 157,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33-C no-thread codebase FP class"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/utils/os_unix.c",
+   "line": 157,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON34-C no-thread codebase FP class"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/utils/os_unix.c",
+   "line": 159,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "mktime() return value genuinely never checked"
+  },
+  {
+   "rule": "ENV30-C",
+   "file": "src/utils/os_unix.c",
+   "line": 159,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "tm1 here is from localtime() (line 157), not gmtime(); message misattributes source call"
+  },
+  {
+   "rule": "ENV34-C",
+   "file": "src/utils/os_unix.c",
+   "line": 160,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "gmtime() result consumed immediately via mktime(tm1), not stored across calls"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/utils/os_unix.c",
+   "line": 160,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "checked via `if (tm1)` on the very next line"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/utils/os_unix.c",
+   "line": 160,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33-C no-thread codebase FP class"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/utils/os_unix.c",
+   "line": 160,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON34-C no-thread codebase FP class"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/utils/os_unix.c",
+   "line": 162,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "mktime() return value genuinely never checked"
+  },
+  {
+   "rule": "ENV30-C",
+   "file": "src/utils/os_unix.c",
+   "line": 162,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "tm1 (from gmtime) discarded right after mktime(tm1); no re-read of stale data"
+  },
+  {
+   "rule": "MSC05-C",
+   "file": "src/utils/os_unix.c",
+   "line": 163,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "tz_offset = t2 - t1 is direct subtraction of two time_t values, real MSC05-C case"
+  },
+  {
+   "rule": "MSC05-C",
+   "file": "src/utils/os_unix.c",
+   "line": 169,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "t_local - tz_offset applies arithmetic directly to a time_t-derived value"
+  },
+  {
+   "rule": "ENV34-C",
+   "file": "src/utils/os_unix.c",
+   "line": 179,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "gmtime() result consumed immediately, function returns right after"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/utils/os_unix.c",
+   "line": 179,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33-C no-thread codebase FP class"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/utils/os_unix.c",
+   "line": 179,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON34-C no-thread codebase FP class"
+  },
+  {
+   "rule": "POS01-C",
+   "file": "src/utils/os_unix.c",
+   "line": 201,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hardcoded /dev/null path, not attacker-controlled; matches confirmed hardcoded-path POS01-C FP class"
+  },
+  {
+   "rule": "FIO24-C",
+   "file": "src/utils/os_unix.c",
+   "line": 211,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "close(devnull) sits in a branch that returns immediately; mutually exclusive with the other closes"
+  },
+  {
+   "rule": "FIO24-C",
+   "file": "src/utils/os_unix.c",
+   "line": 216,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same mutually-exclusive early-return branch pattern as line 211"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/utils/os_unix.c",
+   "line": 227,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "#if/#else both branches return; preprocessor-branch-blind MSC37-C misfire"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/utils/os_unix.c",
+   "line": 238,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fopen() return is checked via `if (f)`"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/utils/os_unix.c",
+   "line": 238,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "checked via `if (f)`"
+  },
+  {
+   "rule": "FIO03-C",
+   "file": "src/utils/os_unix.c",
+   "line": 238,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "pid-file rewrite via fopen(...,\"w\") has no exclusive-creation guard"
+  },
+  {
+   "rule": "FIO06-C",
+   "file": "src/utils/os_unix.c",
+   "line": 238,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "same rewrite provides no explicit permission specification"
+  },
+  {
+   "rule": "WIN03-C",
+   "file": "src/utils/os_unix.c",
+   "line": 238,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_unix.c is the POSIX-only source file; WIN03-C is inapplicable here"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/utils/os_unix.c",
+   "line": 241,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "write-stream fclose() return genuinely ignored; flush failure could lose the pid write"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/utils/os_unix.c",
+   "line": 241,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same ignored write-stream fclose()"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/utils/os_unix.c",
+   "line": 257,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "every #ifdef/#else branch of os_get_random returns; never falls off the end"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/os_unix.c",
+   "line": 257,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic buf+len pointer/size parameter pair"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/utils/os_unix.c",
+   "line": 263,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "i is declared `size_t i` (unsigned), not int as the message claims"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/utils/os_unix.c",
+   "line": 272,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fopen() return checked via `if (f == NULL)`"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/utils/os_unix.c",
+   "line": 272,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "checked via `if (f == NULL)`"
+  },
+  {
+   "rule": "WIN03-C",
+   "file": "src/utils/os_unix.c",
+   "line": 272,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_unix.c is POSIX-only; WIN03-C inapplicable"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/utils/os_unix.c",
+   "line": 278,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "checked via the `rc != len` comparison in the return statement"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/utils/os_unix.c",
+   "line": 278,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "checked via the return-statement comparison"
+  },
+  {
+   "rule": "FIO17-C",
+   "file": "src/utils/os_unix.c",
+   "line": 278,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is a raw binary random-byte buffer, not a NUL-terminated C string"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/utils/os_unix.c",
+   "line": 279,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "read-stream fclose() ignored; established convention grades read-stream ignored fclose as FP"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/utils/os_unix.c",
+   "line": 279,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same read-stream fclose() ignore"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/os_unix.c",
+   "line": 288,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "random() is POSIX-declared via stdlib.h/includes.h; DCL31-C header-resolution FP class"
+  },
+  {
+   "rule": "MSC32-C",
+   "file": "src/utils/os_unix.c",
+   "line": 288,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "seeded via srandom() in os_program_init(), a cross-function call sqc doesn't see"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/utils/os_unix.c",
+   "line": 294,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "buf=NULL is unconditionally overwritten by os_malloc() before any read; harmless dead init"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/os_unix.c",
+   "line": 318,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf[len-1] write is in the success (else) branch, mutually exclusive with the free() branch"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/utils/os_unix.c",
+   "line": 333,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "loop retries with a freshly os_malloc'd buf each iteration; not a double free of the same block"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/utils/os_unix.c",
+   "line": 334,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is freed the line immediately before; ret is intentionally returned to the caller"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/utils/os_unix.c",
+   "line": 348,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "initializer-sized array; ARR02-C implicit-bounds FP class"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/utils/os_unix.c",
+   "line": 350,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "initializer-sized array"
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/utils/os_unix.c",
+   "line": 365,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CAP_NET_ADMIN is a fixed, small, always-in-range kernel capability constant"
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/utils/os_unix.c",
+   "line": 365,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CAP_NET_RAW is likewise a fixed, always-in-range kernel constant"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/os_unix.c",
+   "line": 371,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "srandom() is POSIX-declared via stdlib.h"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/utils/os_unix.c",
+   "line": 371,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "seed is written by address inside os_get_random() and only read after a checked 0 return"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/utils/os_unix.c",
+   "line": 404,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "setenv() is POSIX-declared via stdlib.h"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/utils/os_unix.c",
+   "line": 408,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "both #if/#else branches of os_unsetenv return a value"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/os_unix.c",
+   "line": 420,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic name+len_out pointer parameter pair"
+  },
+  {
+   "rule": "FIO05-C",
+   "file": "src/utils/os_unix.c",
+   "line": 426,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "os_readfile is a generic internal utility, not directly exposed to untrusted network input"
+  },
+  {
+   "rule": "WIN03-C",
+   "file": "src/utils/os_unix.c",
+   "line": 426,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_unix.c is POSIX-only; WIN03-C inapplicable"
+  },
+  {
+   "rule": "FIO14-C",
+   "file": "src/utils/os_unix.c",
+   "line": 430,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "file is POSIX-only (os_unix.c); the text/binary-mode portability concern doesn't apply"
+  },
+  {
+   "rule": "FIO19-C",
+   "file": "src/utils/os_unix.c",
+   "line": 430,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "fseek/ftell used to size an arbitrary caller-supplied file instead of fstat()"
+  },
+  {
+   "rule": "FIO32-C",
+   "file": "src/utils/os_unix.c",
+   "line": 430,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "no evidence the opened path is a device file; os_readfile takes arbitrary regular-file paths"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/utils/os_unix.c",
+   "line": 430,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "checked via `(pos = ftell(f)) < 0`"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/utils/os_unix.c",
+   "line": 430,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "checked via the same condition"
+  },
+  {
+   "rule": "FIO32-C",
+   "file": "src/utils/os_unix.c",
+   "line": 430,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "duplicate device-file speculation on ftell(), same reasoning as the fseek instance"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/utils/os_unix.c",
+   "line": 431,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "read-stream fclose() ignore; established read-stream FP convention"
+  },
+  {
+   "rule": "FIO32-C",
+   "file": "src/utils/os_unix.c",
+   "line": 435,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "no evidence file is a device file"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/utils/os_unix.c",
+   "line": 436,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "read-stream fclose() ignore"
+  },
+  {
+   "rule": "FIO24-C",
+   "file": "src/utils/os_unix.c",
+   "line": 436,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "this fclose is in a branch mutually exclusive with the one at line 431"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/utils/os_unix.c",
+   "line": 442,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "read-stream fclose() ignore"
+  },
+  {
+   "rule": "FIO24-C",
+   "file": "src/utils/os_unix.c",
+   "line": 442,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mutually exclusive early-return branch vs. line 431's close"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/utils/os_unix.c",
+   "line": 443,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is NULL on this path (malloc failed); nothing was allocated to leak"
+  },
+  {
+   "rule": "FIO17-C",
+   "file": "src/utils/os_unix.c",
+   "line": 446,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "fread reads a raw byte blob into buf, not a NUL-terminated string"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/utils/os_unix.c",
+   "line": 447,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "read-stream fclose() ignore"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/utils/os_unix.c",
+   "line": 447,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "read-stream fclose() ignore"
+  },
+  {
+   "rule": "FIO24-C",
+   "file": "src/utils/os_unix.c",
+   "line": 447,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mutually exclusive early-return branch vs. line 431's close"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/utils/os_unix.c",
+   "line": 449,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is freed via os_free() the line immediately before this return"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/utils/os_unix.c",
+   "line": 452,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "read-stream fclose() ignore on the success path"
+  },
+  {
+   "rule": "FIO24-C",
+   "file": "src/utils/os_unix.c",
+   "line": 452,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mutually exclusive branch vs. the earlier error-path closes of the same stream"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/utils/os_unix.c",
+   "line": 454,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is heap memory from os_malloc(), not automatic/stack storage"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/utils/os_unix.c",
+   "line": 454,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is intentionally returned to the caller; ownership transfer, not a leak"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/os_unix.c",
+   "line": 464,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only OS-abstraction wrapper, never exposed to untrusted external input"
+  },
+  {
+   "rule": "STR01-C",
+   "file": "src/utils/os_unix.c",
+   "line": 486,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "calloc() call at 486 misclassified as \"string management\"; unrelated to the static array at 550"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/utils/os_unix.c",
+   "line": 486,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "calloc(1, size): count is the literal 1, no multiplication overflow possible"
+  },
+  {
+   "rule": "MEM04-C",
+   "file": "src/utils/os_unix.c",
+   "line": 486,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "num argument is the literal 1, never zero"
+  },
+  {
+   "rule": "MEM06-C",
+   "file": "src/utils/os_unix.c",
+   "line": 486,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_zalloc is a generic allocator, not specific to sensitive data"
+  },
+  {
+   "rule": "MEM07-C",
+   "file": "src/utils/os_unix.c",
+   "line": 486,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "count fixed to literal 1; no wrap possible on multiplication"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/os_unix.c",
+   "line": 491,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only utility, called only by trusted internal callers"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/os_unix.c",
+   "line": 491,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic dest+siz pointer/size pair"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/os_unix.c",
+   "line": 491,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic src pointer alongside a size parameter"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/utils/os_unix.c",
+   "line": 498,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "loop is bounded by `--left != 0`; classic bounded strlcpy copy idiom, not unbounded"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/utils/os_unix.c",
+   "line": 499,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*dest++ = *s++ is a plain char pointer copy, not a flexible-array struct assignment"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/os_unix.c",
+   "line": 499,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char-to-char assignment; no widening/sign-extension occurs"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/os_unix.c",
+   "line": 499,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char-to-char assignment, no widening"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/os_unix.c",
+   "line": 499,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char-to-char assignment, no widening"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/os_unix.c",
+   "line": 507,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "assigning literal '\\0' to a char destination; no widening/sign-extension"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/os_unix.c",
+   "line": 516,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic a/b pointer + len parameter pair"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/os_unix.c",
+   "line": 516,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic pointer + len pair"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/os_unix.c",
+   "line": 530,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic src + len pair"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "src/utils/os_unix.c",
+   "line": 532,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "r is genuinely never reassigned after init; const-qualifiable"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/utils/os_unix.c",
+   "line": 550,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "initializer-sized array"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/os_unix.c",
+   "line": 561,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idx is explicitly initialized to 0 in the for-loop's own init clause"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/utils/os_unix.c",
+   "line": 561,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_trace_test_fail is a static array, zero-initialized by the C standard"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/utils/os_unix.c",
+   "line": 568,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "func[] is filled as an output array by wpa_trace_calling_func(), not read uninitialized"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/utils/os_unix.c",
+   "line": 606,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "deliberate optional-prefix guard clause; no error case requires a final else"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/utils/os_unix.c",
+   "line": 655,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "both #ifdef/#else branches of testing_set_fail_pattern return"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/utils/os_unix.c",
+   "line": 663,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "is_alloc is normalized to 0/1 via `!!` two lines above; always in-bounds"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/utils/os_unix.c",
+   "line": 663,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "static array, zero-initialized by the C standard"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/utils/os_unix.c",
+   "line": 664,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "is_alloc normalized to 0/1 before use"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/utils/os_unix.c",
+   "line": 667,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "deliberately double-parenthesized tokenizer assignment-in-while idiom, not an accidental typo"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/utils/os_unix.c",
+   "line": 667,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "\" \\n\\r\\t\" is a tokenizer delimiter string, not sensitive data"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/utils/os_unix.c",
+   "line": 668,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "is_alloc normalized to 0/1 before use"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/utils/os_unix.c",
+   "line": 669,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "is_alloc normalized to 0/1 before use"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/utils/os_unix.c",
+   "line": 669,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "is_alloc normalized; idx already bounds-checked by the enclosing while condition"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/utils/os_unix.c",
+   "line": 669,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "fail_after = atoi(token) stored with zero downstream range validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/utils/os_unix.c",
+   "line": 669,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "same atoi() call, zero downstream validation"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/utils/os_unix.c",
+   "line": 672,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "is_alloc normalized to 0/1 before use"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/utils/os_unix.c",
+   "line": 673,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "is_alloc normalized to 0/1 before use"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/utils/os_unix.c",
+   "line": 677,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "is_alloc normalized; idx bounds-checked by the while condition"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/utils/os_unix.c",
+   "line": 677,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same as above, duplicate finding on the same statement"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/utils/os_unix.c",
+   "line": 679,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "is_alloc normalized to 0/1 before use"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/utils/os_unix.c",
+   "line": 679,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same as above, duplicate finding"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/os_unix.c",
+   "line": 690,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal testing-only function, always invoked with a valid internal test buffer"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/os_unix.c",
+   "line": 690,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal testing-only function; buflen supplied only by internal callers"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/utils/os_unix.c",
+   "line": 690,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "both #ifdef/#else branches of testing_get_fail_pattern return"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/os_unix.c",
+   "line": 690,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic buf+buflen pointer/size pair"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/os_unix.c",
+   "line": 699,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idx is explicitly initialized to 0 in the for-loop's own init clause"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/utils/os_unix.c",
+   "line": 699,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "static array, zero-initialized by the C standard"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/os_unix.c",
+   "line": 719,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "size is not bounds-checked before sizeof(*a)+size arithmetic in the core allocator"
+  },
+  {
+   "rule": "MEM02-C",
+   "file": "src/utils/os_unix.c",
+   "line": 726,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "implicit void* to struct* conversion is valid, idiomatic C; no cast required"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/utils/os_unix.c",
+   "line": 726,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sizeof(*a)+size could theoretically wrap for an adversarial/very large size argument"
+  },
+  {
+   "rule": "MEM06-C",
+   "file": "src/utils/os_unix.c",
+   "line": 726,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_malloc is a completely generic allocator, not specific to sensitive data"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/utils/os_unix.c",
+   "line": 726,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ownership of the block is intentionally transferred to the caller via `return a + 1`"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/utils/os_unix.c",
+   "line": 726,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "a is checked for NULL immediately after malloc, before any dereference"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/os_unix.c",
+   "line": 737,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic ptr+size pointer/size pair"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/utils/os_unix.c",
+   "line": 743,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "stylistic nag; the NULL check is present and correct realloc(NULL,size)==malloc(size) idiom"
+  },
+  {
+   "rule": "ERR05-C",
+   "file": "src/utils/os_unix.c",
+   "line": 752,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "abort() fires only on a detected heap-corruption invariant violation in a debug trace build"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/utils/os_unix.c",
+   "line": 762,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "n is heap memory from os_malloc(), not automatic/stack storage"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/utils/os_unix.c",
+   "line": 770,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "stylistic nag; NULL check present, mirrors standard free(NULL) no-op semantics"
+  },
+  {
+   "rule": "ERR05-C",
+   "file": "src/utils/os_unix.c",
+   "line": 778,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same heap-corruption-detection design rationale as os_realloc's abort()"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/utils/os_unix.c",
+   "line": 784,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'a' is read multiple times afterward: dl_list_del, magic write, and free(a)"
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/utils/os_unix.c",
+   "line": 831,
+   "rule": "ERR33-C",
+   "desc": "os_exec(): os_strdup(program) return unchecked; if malloc fails, NULL is placed in argv[0] and passed to execv(), causing a NULL-argument crash in the forked child",
+   "upstream_present": "unknown"
+  },
+  {
+   "file": "src/utils/os_unix.c",
+   "line": 832,
+   "rule": "EXP34-C",
+   "desc": "os_exec(): _arg = os_strdup(arg) is called unconditionally; if a caller passes arg==NULL, os_strdup()->os_strlen(NULL) dereferences a NULL pointer in the forked child",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 16,
+  "fp": 134,
+  "fn": 2
+ }
+}

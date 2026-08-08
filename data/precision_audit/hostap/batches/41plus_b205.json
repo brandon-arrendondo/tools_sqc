@@ -1,0 +1,805 @@
+{
+ "src/eap_server/eap_server_aka.c": [
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 16,
+   "message": "Header file 'eap_sim_common.h' has the same first 8 characters (case-insensitive) as 'eap_sim_db.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'eap_sim_common.h' -> unique name)"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 85,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 120,
+   "message": "sizeof applied to pointer/array parameter 'data' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(data->permanent)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 8,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 123,
+   "message": "sizeof applied to pointer/array parameter 'sm' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(sm->sim_aka_permanent)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 6,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 137,
+   "message": "sizeof applied to pointer/array parameter 'data' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(data->permanent)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 7,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 187,
+   "message": "sizeof applied to pointer/array parameter 'data' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(data->permanent)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 7,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 193,
+   "message": "Array/pointer 'username' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'username' after calling free(). Set pointer to NULL after freeing: free(username); username = NULL;"
+  },
+  {
+   "column": 7,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 195,
+   "message": "Array/pointer 'username' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'username' after calling free(). Set pointer to NULL after freeing: free(username); username = NULL;"
+  },
+  {
+   "column": 7,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 209,
+   "message": "sizeof applied to pointer/array parameter 'data' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(data->permanent)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 26,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 230,
+   "message": "Dereference of uninitialized pointer 'data'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'data' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 240,
+   "message": "Function returns pointer to local variable 'data' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 249,
+   "message": "Variable 'network_name' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const network_name = ..."
+  },
+  {
+   "column": 7,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 249,
+   "message": "Pointer variable '(unknown)' is assigned a string literal without const qualification. String literals are immutable and should be declared as 'const char *' or 'const wchar_t *'.",
+   "rule_id": "STR05-C",
+   "severity": "Low",
+   "suggestion": "Add 'const' qualifier to the pointee type (e.g., change 'char *' to 'const char *')."
+  },
+  {
+   "column": 26,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 256,
+   "message": "Dereference of uninitialized pointer 'data'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'data' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 273,
+   "message": "Function returns pointer to local variable 'data' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 41,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 278,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 5,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 292,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 55,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 308,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 57,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 341,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 5,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 349,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 61,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 389,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 427,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 45,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 431,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 487,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 496,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 641,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 65,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 645,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 29,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 646,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 41,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 707,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 51,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 707,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 52,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 725,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 789,
+   "message": "Array/pointer 'username' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'username' after calling free(). Set pointer to NULL after freeing: free(username); username = NULL;"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 791,
+   "message": "Array/pointer 'username' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'username' after calling free(). Set pointer to NULL after freeing: free(username); username = NULL;"
+  },
+  {
+   "column": 7,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 800,
+   "message": "Array/pointer 'username' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'username' after calling free(). Set pointer to NULL after freeing: free(username); username = NULL;"
+  },
+  {
+   "column": 7,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 802,
+   "message": "Array/pointer 'username' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'username' after calling free(). Set pointer to NULL after freeing: free(username); username = NULL;"
+  },
+  {
+   "column": 7,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 816,
+   "message": "sizeof applied to pointer/array parameter 'data' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(data->permanent)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 7,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 818,
+   "message": "Array/pointer 'username' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'username' after calling free(). Set pointer to NULL after freeing: free(username); username = NULL;"
+  },
+  {
+   "column": 7,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 820,
+   "message": "Array/pointer 'username' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'username' after calling free(). Set pointer to NULL after freeing: free(username); username = NULL;"
+  },
+  {
+   "column": 41,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 823,
+   "message": "sizeof applied to pointer/array parameter 'data' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(data->permanent)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 33,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 843,
+   "message": "Increment/decrement operation 'pos++' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 873,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 14,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 875,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 12,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 880,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 4,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 882,
+   "message": "Double free detected: 'dec' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 888,
+   "message": "Double free detected: 'dec' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 41,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 889,
+   "message": "sizeof applied to pointer/array parameter 'data' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(data->permanent)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 890,
+   "message": "Double free detected: 'username' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 897,
+   "message": "Unreachable code after unconditional 'goto'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 903,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 45,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 926,
+   "message": "sizeof applied to pointer/array parameter 'sm' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(sm->imsi)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 51,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1027,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 53,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1039,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 4,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1125,
+   "message": "Function 'eap_sim_db_add_reauth_prime' called with overlapping memory regions. If parameters are restrict-qualified, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure memory regions do not overlap when using restrict pointers"
+  },
+  {
+   "column": 4,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1133,
+   "message": "Function 'eap_sim_db_add_reauth' called with overlapping memory regions. If parameters are restrict-qualified, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure memory regions do not overlap when using restrict pointers"
+  },
+  {
+   "column": 21,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1146,
+   "message": "Pointer parameter 'respData' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *respData'"
+  },
+  {
+   "column": 28,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1147,
+   "message": "Pointer parameter 'attr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *attr'"
+  },
+  {
+   "column": 29,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1180,
+   "message": "Pointer parameter 'attr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *attr'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1217,
+   "message": "Value assigned to 'decrypted' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 4,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1240,
+   "message": "Function 'eap_sim_db_add_reauth_prime' called with overlapping memory regions. If parameters are restrict-qualified, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure memory regions do not overlap when using restrict pointers"
+  },
+  {
+   "column": 4,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1248,
+   "message": "Function 'eap_sim_db_add_reauth' called with overlapping memory regions. If parameters are restrict-qualified, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure memory regions do not overlap when using restrict pointers"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1263,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1268,
+   "message": "Double free detected: 'decrypted' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 56,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1272,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 21,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1274,
+   "message": "Pointer parameter 'respData' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *respData'"
+  },
+  {
+   "column": 28,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1275,
+   "message": "Pointer parameter 'attr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *attr'"
+  },
+  {
+   "column": 16,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1287,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 16,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1288,
+   "message": "Pointer parameter 'respData' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *respData'"
+  },
+  {
+   "column": 48,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1288,
+   "message": "Pointer parameter 'attr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *attr'"
+  },
+  {
+   "column": 56,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1295,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 21,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1297,
+   "message": "Pointer parameter 'respData' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *respData'"
+  },
+  {
+   "column": 28,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1298,
+   "message": "Pointer parameter 'attr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *attr'"
+  },
+  {
+   "column": 42,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1380,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 52,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1380,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 42,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1387,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 52,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1387,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 52,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1387,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1399,
+   "message": "Function returns pointer to local variable 'key' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 44,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1403,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 54,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1403,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 54,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1403,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1415,
+   "message": "Function returns pointer to local variable 'key' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 45,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1419,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 55,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1419,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 50,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1426,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 60,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1426,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 60,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1426,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1454,
+   "message": "Function returns pointer to local variable 'id' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1462,
+   "message": "Memory allocated with 'eap_server_method_alloc' for variable 'eap' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(eap)' before the variable goes out of scope"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1487,
+   "message": "Memory allocated with 'eap_server_method_alloc' for variable 'eap' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(eap)' before the variable goes out of scope"
+  }
+ ]
+}

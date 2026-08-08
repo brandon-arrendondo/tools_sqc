@@ -1,0 +1,1211 @@
+{
+ "labels": [
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3412,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_s guaranteed non-NULL: loop only breaks with found=1 when wpa_s matched, checked before this line (categorical: guard-clause-before-deref)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3457,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char pointer-increment assignment, no widening conversion occurs (confirmed STR34-C char-to-char FP pattern)"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3458,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() genuinely used with no range/format validation on the parsed value; literal rule violation, low severity on local ctrl_iface"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3458,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() genuinely used with no range/format validation on the parsed value; literal rule violation, low severity on local ctrl_iface"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3487,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "parity test (payload_len & 1) followed by unrelated arithmetic on same var; confirmed INT14-C stylistic-pedantry FP pattern"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3527,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() genuinely used with no range/format validation on the parsed value; literal rule violation, low severity on local ctrl_iface"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3527,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() genuinely used with no range/format validation on the parsed value; literal rule violation, low severity on local ctrl_iface"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3545,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'pos + 6' is pointer arithmetic passed as an argument, not a char-to-int conversion; STR34-C category error"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3571,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() genuinely used with no range/format validation on the parsed value; literal rule violation, low severity on local ctrl_iface"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3571,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() genuinely used with no range/format validation on the parsed value; literal rule violation, low severity on local ctrl_iface"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3610,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() genuinely used with no range/format validation on the parsed value; literal rule violation, low severity on local ctrl_iface"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3610,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() genuinely used with no range/format validation on the parsed value; literal rule violation, low severity on local ctrl_iface"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3633,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic ptr+len pair or bare NUL-terminated C-string parameter; confirmed API05-C conformant-array FP class"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3663,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() genuinely used with no range/format validation on the parsed value; literal rule violation, low severity on local ctrl_iface"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3663,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() genuinely used with no range/format validation on the parsed value; literal rule violation, low severity on local ctrl_iface"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3730,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "deliberate independent guard-clause if/else-if chain; omitted final else is a correct no-op, not a missing case (confirmed MSC01-C FP pattern)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3749,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char pointer-increment assignment, no widening conversion occurs (confirmed STR34-C char-to-char FP pattern)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3754,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char pointer-increment assignment, no widening conversion occurs (confirmed STR34-C char-to-char FP pattern)"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3756,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() genuinely used with no range/format validation on the parsed value; literal rule violation, low severity on local ctrl_iface"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3756,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() genuinely used with no range/format validation on the parsed value; literal rule violation, low severity on local ctrl_iface"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3788,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper; wpa_s only read, never forwarded to a vtable/callback, so const-qualification is a genuine (low-value) opportunity"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3788,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic ptr+len pair or bare NUL-terminated C-string parameter; confirmed API05-C conformant-array FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3788,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic ptr+len pair or bare NUL-terminated C-string parameter; confirmed API05-C conformant-array FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3799,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char pointer-increment assignment, no widening conversion occurs (confirmed STR34-C char-to-char FP pattern)"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3801,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() genuinely used with no range/format validation on the parsed value; literal rule violation, low severity on local ctrl_iface"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3801,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() genuinely used with no range/format validation on the parsed value; literal rule violation, low severity on local ctrl_iface"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3832,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper; wpa_s only read, never forwarded to a vtable/callback, so const-qualification is a genuine (low-value) opportunity"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3843,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char pointer-increment assignment, no widening conversion occurs (confirmed STR34-C char-to-char FP pattern)"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3843,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'id' is a char* pointer (`char *name, *id, *value;`), not a signed int; INT32-C misclassifies pointer increment as integer arithmetic"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3848,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char pointer-increment assignment, no widening conversion occurs (confirmed STR34-C char-to-char FP pattern)"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3850,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() genuinely used with no range/format validation on the parsed value; literal rule violation, low severity on local ctrl_iface"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3850,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() genuinely used with no range/format validation on the parsed value; literal rule violation, low severity on local ctrl_iface"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3851,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() genuinely used with no range/format validation on the parsed value; literal rule violation, low severity on local ctrl_iface"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3851,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() genuinely used with no range/format validation on the parsed value; literal rule violation, low severity on local ctrl_iface"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3887,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper; wpa_s only read, never forwarded to a vtable/callback, so const-qualification is a genuine (low-value) opportunity"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3888,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic ptr+len pair or bare NUL-terminated C-string parameter; confirmed API05-C conformant-array FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3888,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'buf' is aliased via 'pos = buf;' then written through pos (os_snprintf); confirmed DCL13-C aliased-output-buffer FP nuance"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3921,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic ptr+len pair or bare NUL-terminated C-string parameter; confirmed API05-C conformant-array FP class"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3989,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() genuinely used with no range/format validation on the parsed value; literal rule violation, low severity on local ctrl_iface"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 3989,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() genuinely used with no range/format validation on the parsed value; literal rule violation, low severity on local ctrl_iface"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4008,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char pointer-increment assignment, no widening conversion occurs (confirmed STR34-C char-to-char FP pattern)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4013,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char pointer-increment assignment, no widening conversion occurs (confirmed STR34-C char-to-char FP pattern)"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4015,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() genuinely used with no range/format validation on the parsed value; literal rule violation, low severity on local ctrl_iface"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4015,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() genuinely used with no range/format validation on the parsed value; literal rule violation, low severity on local ctrl_iface"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4040,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper; wpa_s only read, never forwarded to a vtable/callback, so const-qualification is a genuine (low-value) opportunity"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4041,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic ptr+len pair or bare NUL-terminated C-string parameter; confirmed API05-C conformant-array FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4041,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic ptr+len pair or bare NUL-terminated C-string parameter; confirmed API05-C conformant-array FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4053,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char pointer-increment assignment, no widening conversion occurs (confirmed STR34-C char-to-char FP pattern)"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4055,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() genuinely used with no range/format validation on the parsed value; literal rule violation, low severity on local ctrl_iface"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4055,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() genuinely used with no range/format validation on the parsed value; literal rule violation, low severity on local ctrl_iface"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4086,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper; wpa_s only read, never forwarded to a vtable/callback, so const-qualification is a genuine (low-value) opportunity"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4116,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "array size always retrieved via ARRAY_SIZE()/sizeof(), never hardcoded separately; confirmed ARR02-C FP class"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4131,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "array size always retrieved via ARRAY_SIZE()/sizeof(), never hardcoded separately; confirmed ARR02-C FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4140,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'capa' is only read (bitwise tests on capa->enc/key_mgmt/flags), never forwarded to a vtable call; genuine low-value const opportunity"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4141,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic ptr+len pair or bare NUL-terminated C-string parameter; confirmed API05-C conformant-array FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4180,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'capa' is only read (bitwise tests on capa->enc/key_mgmt/flags), never forwarded to a vtable call; genuine low-value const opportunity"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4181,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic ptr+len pair or bare NUL-terminated C-string parameter; confirmed API05-C conformant-array FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4228,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'capa' is only read (bitwise tests on capa->enc/key_mgmt/flags), never forwarded to a vtable call; genuine low-value const opportunity"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4229,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic ptr+len pair or bare NUL-terminated C-string parameter; confirmed API05-C conformant-array FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4229,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'buf' is aliased via 'pos = buf;' then written through pos (os_snprintf); confirmed DCL13-C aliased-output-buffer FP nuance"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4293,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'capa' is only read (bitwise tests on capa->enc/key_mgmt/flags), never forwarded to a vtable call; genuine low-value const opportunity"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4294,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic ptr+len pair or bare NUL-terminated C-string parameter; confirmed API05-C conformant-array FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4295,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic ptr+len pair or bare NUL-terminated C-string parameter; confirmed API05-C conformant-array FP class"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4321,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'iftype' is declared 'enum wpa_driver_if_type', not char; STR00-C's own type claim is factually wrong (confirmed pattern)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4506,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'capa' is only read (bitwise tests on capa->enc/key_mgmt/flags), never forwarded to a vtable call; genuine low-value const opportunity"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4507,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic ptr+len pair or bare NUL-terminated C-string parameter; confirmed API05-C conformant-array FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4549,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'capa' is only read (bitwise tests on capa->enc/key_mgmt/flags), never forwarded to a vtable call; genuine low-value const opportunity"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4550,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic ptr+len pair or bare NUL-terminated C-string parameter; confirmed API05-C conformant-array FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4636,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'capa' is only read (bitwise tests on capa->enc/key_mgmt/flags), never forwarded to a vtable call; genuine low-value const opportunity"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4637,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic ptr+len pair or bare NUL-terminated C-string parameter; confirmed API05-C conformant-array FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4685,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper; wpa_s only read, never forwarded to a vtable/callback, so const-qualification is a genuine (low-value) opportunity"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4686,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic ptr+len pair or bare NUL-terminated C-string parameter; confirmed API05-C conformant-array FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4686,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'buf' is aliased via 'pos = buf;' then written through pos (os_snprintf); confirmed DCL13-C aliased-output-buffer FP nuance"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4735,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper; wpa_s only read, never forwarded to a vtable/callback, so const-qualification is a genuine (low-value) opportunity"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4736,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic ptr+len pair or bare NUL-terminated C-string parameter; confirmed API05-C conformant-array FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4736,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'buf' is aliased via 'pos = buf;' then written through pos (os_snprintf); confirmed DCL13-C aliased-output-buffer FP nuance"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4793,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic ptr+len pair or bare NUL-terminated C-string parameter; confirmed API05-C conformant-array FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4793,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic ptr+len pair or bare NUL-terminated C-string parameter; confirmed API05-C conformant-array FP class"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4809,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "next_param scans within fixed 'char field[50]' already length-checked via os_strlcpy; provably bounded NUL-terminated scan"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4810,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char pointer-increment assignment, no widening conversion occurs (confirmed STR34-C char-to-char FP pattern)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4815,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char pointer-increment assignment, no widening conversion occurs (confirmed STR34-C char-to-char FP pattern)"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 4945,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no const-qualified pointer exists in scope (buf/pos both plain char*); EXP40-C fires on a scenario that doesn't exist (confirmed rule bug)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5038,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'end' is a plain bounds pointer, genuinely never written in the function; real (low-value) const opportunity"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5041,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no const-qualified pointer exists in scope (buf/pos both plain char*); EXP40-C fires on a scenario that doesn't exist (confirmed rule bug)"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5046,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fires on an ordinary if (ptr == NULL) guard; stylistic, confirmed MEM10-C FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5047,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "returns 'start'/'pos', a local alias of the function's own 'pos' parameter (caller-owned buffer), not real automatic storage; confirmed DCL30-C parameter-alias FP class"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5049,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5050,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5051,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "returns 'start'/'pos', a local alias of the function's own 'pos' parameter (caller-owned buffer), not real automatic storage; confirmed DCL30-C parameter-alias FP class"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5052,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ret is bounded by end-pos and validated via os_snprintf_error() before every 'pos += ret'; no realistic overflow path"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5056,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5057,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5058,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "returns 'start'/'pos', a local alias of the function's own 'pos' parameter (caller-owned buffer), not real automatic storage; confirmed DCL30-C parameter-alias FP class"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5059,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ret is bounded by end-pos and validated via os_snprintf_error() before every 'pos += ret'; no realistic overflow path"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5062,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5063,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5064,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "returns 'start'/'pos', a local alias of the function's own 'pos' parameter (caller-owned buffer), not real automatic storage; confirmed DCL30-C parameter-alias FP class"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5065,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ret is bounded by end-pos and validated via os_snprintf_error() before every 'pos += ret'; no realistic overflow path"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5067,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "returns 'start'/'pos', a local alias of the function's own 'pos' parameter (caller-owned buffer), not real automatic storage; confirmed DCL30-C parameter-alias FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5073,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'end' is a plain bounds pointer, genuinely never written in the function; real (low-value) const opportunity"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5075,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no const-qualified pointer exists in scope (buf/pos both plain char*); EXP40-C fires on a scenario that doesn't exist (confirmed rule bug)"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5090,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5091,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5093,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ret is bounded by end-pos and validated via os_snprintf_error() before every 'pos += ret'; no realistic overflow path"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5099,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5101,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5103,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ret is bounded by end-pos and validated via os_snprintf_error() before every 'pos += ret'; no realistic overflow path"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5111,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5113,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5115,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ret is bounded by end-pos and validated via os_snprintf_error() before every 'pos += ret'; no realistic overflow path"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5123,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5124,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5126,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ret is bounded by end-pos and validated via os_snprintf_error() before every 'pos += ret'; no realistic overflow path"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5128,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5131,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ret is bounded by end-pos and validated via os_snprintf_error() before every 'pos += ret'; no realistic overflow path"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5132,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "'ie += realms * 2;' is the last write to ie in this branch; function returns immediately after without reading it again - genuine dead store"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5133,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5134,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5136,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ret is bounded by end-pos and validated via os_snprintf_error() before every 'pos += ret'; no realistic overflow path"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5144,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'end' is a plain bounds pointer, genuinely never written in the function; real (low-value) const opportunity"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5146,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no const-qualified pointer exists in scope (buf/pos both plain char*); EXP40-C fires on a scenario that doesn't exist (confirmed rule bug)"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5176,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5181,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5183,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ret is bounded by end-pos and validated via os_snprintf_error() before every 'pos += ret'; no realistic overflow path"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5186,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5188,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5192,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ret is bounded by end-pos and validated via os_snprintf_error() before every 'pos += ret'; no realistic overflow path"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5196,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5199,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5203,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ret is bounded by end-pos and validated via os_snprintf_error() before every 'pos += ret'; no realistic overflow path"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5207,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5210,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5214,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ret is bounded by end-pos and validated via os_snprintf_error() before every 'pos += ret'; no realistic overflow path"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5218,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5220,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5224,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ret is bounded by end-pos and validated via os_snprintf_error() before every 'pos += ret'; no realistic overflow path"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5228,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5230,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5234,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ret is bounded by end-pos and validated via os_snprintf_error() before every 'pos += ret'; no realistic overflow path"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5238,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5241,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5245,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ret is bounded by end-pos and validated via os_snprintf_error() before every 'pos += ret'; no realistic overflow path"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5248,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5249,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5251,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ret is bounded by end-pos and validated via os_snprintf_error() before every 'pos += ret'; no realistic overflow path"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5263,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'end' is a plain bounds pointer, genuinely never written in the function; real (low-value) const opportunity"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5266,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no const-qualified pointer exists in scope (buf/pos both plain char*); EXP40-C fires on a scenario that doesn't exist (confirmed rule bug)"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5288,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5291,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end both derive from the same caller buffer threaded through parser helper params; confirmed ARR36-C pos/end-through-helper FP class"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 5293,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ret is bounded by end-pos and validated via os_snprintf_error() before every 'pos += ret'; no realistic overflow path"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 43,
+  "fp": 107,
+  "fn": 0
+ }
+}

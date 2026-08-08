@@ -1,0 +1,884 @@
+{
+  "labels": [
+    {
+      "rule": "DCL13-C",
+      "file": "src/tls/pkcs1.c",
+      "line": 20,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "out written via aliased local 'pos'; DCL13-C misses alias mutation (established pattern)"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/tls/pkcs1.c",
+      "line": 20,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "outlen only read in this static helper; genuine if low-value const opportunity"
+    },
+    {
+      "rule": "INT00-C",
+      "file": "src/tls/pkcs1.c",
+      "line": 47,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "modlen-inlen-3 guarded by inlen>modlen-11 check 12 lines earlier, same function"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/tls/pkcs1.c",
+      "line": 81,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API, key always caller-validated struct pointer"
+    },
+    {
+      "rule": "EXP43-C",
+      "file": "src/tls/pkcs1.c",
+      "line": 93,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "rsa_exptmod in-place bignum idiom; in copied to bignum before out written, no restrict"
+    },
+    {
+      "rule": "INT30-C",
+      "file": "src/tls/pkcs1.c",
+      "line": 125,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "pos-out <= *outlen by construction (pos bounded by end=out+*outlen); no underflow"
+    },
+    {
+      "rule": "MSC41-C",
+      "file": "src/tls/pkcs1.c",
+      "line": 160,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpa_hexdump_key dumps runtime decrypted buffer, not a hardcoded secret literal"
+    },
+    {
+      "rule": "MSC41-C",
+      "file": "src/tls/pkcs1.c",
+      "line": 169,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpa_hexdump_key dumps runtime decrypted buffer, not a hardcoded secret literal"
+    },
+    {
+      "rule": "MSC41-C",
+      "file": "src/tls/pkcs1.c",
+      "line": 179,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpa_hexdump_key dumps runtime decrypted buffer, not a hardcoded secret literal"
+    },
+    {
+      "rule": "MSC41-C",
+      "file": "src/tls/pkcs1.c",
+      "line": 186,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpa_hexdump_key dumps runtime decrypted buffer, not a hardcoded secret literal"
+    },
+    {
+      "rule": "ARR37-C",
+      "file": "src/tls/pkcs1.c",
+      "line": 190,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "len is a size_t scalar, not a pointer; ARR37-C category error"
+    },
+    {
+      "rule": "INT30-C",
+      "file": "src/tls/pkcs1.c",
+      "line": 190,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "pos-plain <= len by construction; no underflow"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/tls/pkcs1.c",
+      "line": 200,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API, pk always caller-validated struct pointer"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/utils/browser-system.c",
+      "line": 22,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "browser_timeout matches eloop_timeout_handler dispatch-contract typedef"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/utils/browser-system.c",
+      "line": 22,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "browser_timeout matches eloop_timeout_handler dispatch-contract typedef"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/utils/browser-system.c",
+      "line": 43,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "no-final-else guard-clause pedantry; unmatched url leaves done=0 by design"
+    },
+    {
+      "rule": "ERR07-C",
+      "file": "src/utils/browser-system.c",
+      "line": 44,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "atoi(url+5) on OSU redirect substring, no error/range checking"
+    },
+    {
+      "rule": "ERR34-C",
+      "file": "src/utils/browser-system.c",
+      "line": 44,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "atoi(url+5) on OSU redirect substring, no error detection"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/utils/browser-system.c",
+      "line": 65,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "url comes from argv[] in osu_client.c CLI, guaranteed-valid main()-argv pattern"
+    },
+    {
+      "rule": "CON33-C",
+      "file": "src/utils/browser-system.c",
+      "line": 90,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "single-threaded eloop-based app, no pthread usage; strerror() no-pthread FP"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/utils/browser-system.c",
+      "line": 90,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "single-threaded eloop-based app, no pthread usage; strerror() no-pthread FP"
+    },
+    {
+      "rule": "EXP05-C",
+      "file": "src/utils/browser-system.c",
+      "line": 101,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "const char *url genuinely cast to (void*) for argv[]; execv's char*const argv sig requires it"
+    },
+    {
+      "rule": "CON33-C",
+      "file": "src/utils/browser-system.c",
+      "line": 105,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "single-threaded eloop-based app, no pthread usage; strerror() no-pthread FP"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/utils/browser-system.c",
+      "line": 105,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "single-threaded eloop-based app, no pthread usage; strerror() no-pthread FP"
+    },
+    {
+      "rule": "ERR05-C",
+      "file": "src/utils/browser-system.c",
+      "line": 106,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "exit() in forked child after execv failure is the standard fork/exec idiom (established)"
+    },
+    {
+      "rule": "MSC07-C",
+      "file": "src/utils/browser-system.c",
+      "line": 107,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "genuinely unreachable return after exit(0) noreturn call, harmless dead code"
+    },
+    {
+      "rule": "API05-C",
+      "file": "wpa_supplicant/pr_supplicant.h",
+      "line": 21,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "password is a bare NUL-terminated string; no size param needed"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/pr_supplicant.h",
+      "line": 39,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "CONFIG_PR-undefined no-op stub; global genuinely unused in body"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/pr_supplicant.h",
+      "line": 40,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "CONFIG_PR-undefined no-op stub; wpa_s genuinely unused in body"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/pr_supplicant.h",
+      "line": 46,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "no-op stub; wpa_s genuinely unused"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/pr_supplicant.h",
+      "line": 50,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "no-op stub; wpa_s genuinely unused"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/pr_supplicant.h",
+      "line": 54,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "no-op stub; wpa_s genuinely unused"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/pr_supplicant.h",
+      "line": 58,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "no-op stub; wpa_s genuinely unused"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/pr_supplicant.h",
+      "line": 62,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "no-op stub (wpas_pr_set_dev_ik); wpa_s genuinely unused"
+    },
+    {
+      "rule": "API05-C",
+      "file": "wpa_supplicant/pr_supplicant.h",
+      "line": 63,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "dik is a fixed-length key (DEVICE_IDENTITY_KEY_LEN) with no runtime size param anywhere in this API"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/pr_supplicant.h",
+      "line": 68,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "no-op stub (wpas_pr_usd_elems); wpa_s genuinely unused"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/pr_supplicant.h",
+      "line": 73,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "no-op stub; wpa_s genuinely unused"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/pr_supplicant.h",
+      "line": 82,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "no-op stub; wpa_s genuinely unused"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/pr_supplicant.h",
+      "line": 89,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "no-op stub; wpa_s genuinely unused"
+    },
+    {
+      "rule": "MSC04-C",
+      "file": "wpa_supplicant/wpa_gui-qt4/eventhistory.h",
+      "line": 16,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "C++ class declaration misparsed as C function"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "wpa_supplicant/wpa_gui-qt4/eventhistory.h",
+      "line": 16,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "C++ class declaration misparsed as C function"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "wpa_supplicant/wpa_gui-qt4/eventhistory.h",
+      "line": 21,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "C++ constructor member-init misparsed as dead store"
+    },
+    {
+      "rule": "WIN04-C",
+      "file": "wpa_supplicant/wpa_gui-qt4/eventhistory.h",
+      "line": 21,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "C++ constructor decl misparsed as function pointer"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "wpa_supplicant/wpa_gui-qt4/eventhistory.h",
+      "line": 27,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "C++ method decl misparsed as dead store"
+    },
+    {
+      "rule": "WIN04-C",
+      "file": "wpa_supplicant/wpa_gui-qt4/eventhistory.h",
+      "line": 27,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "C++ method decl misparsed as function pointer"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "wpa_supplicant/wpa_gui-qt4/eventhistory.h",
+      "line": 32,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "class member declaration misclassified as unused local var"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "wpa_supplicant/wpa_gui-qt4/eventhistory.h",
+      "line": 33,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "class member declaration misclassified as unused local var"
+    },
+    {
+      "rule": "WIN04-C",
+      "file": "wpa_supplicant/wpa_gui-qt4/eventhistory.h",
+      "line": 42,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "C++ constructor/dtor decl misparsed as function pointer"
+    },
+    {
+      "rule": "WIN04-C",
+      "file": "wpa_supplicant/wpa_gui-qt4/eventhistory.h",
+      "line": 42,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "C++ constructor/dtor decl misparsed as function pointer"
+    },
+    {
+      "rule": "WIN04-C",
+      "file": "wpa_supplicant/wpa_gui-qt4/eventhistory.h",
+      "line": 43,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "C++ constructor/dtor decl misparsed as function pointer"
+    },
+    {
+      "rule": "WIN04-C",
+      "file": "wpa_supplicant/wpa_gui-qt4/eventhistory.h",
+      "line": 43,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "C++ constructor/dtor decl misparsed as function pointer"
+    },
+    {
+      "rule": "DCL20-C",
+      "file": "wpa_supplicant/wpa_gui-qt4/eventhistory.h",
+      "line": 51,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "C++ () already means zero params; DCL20-C premise is C89-only"
+    },
+    {
+      "rule": "PRE08-C",
+      "file": "src/ap/ap_config.h",
+      "line": 16,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "8.3-legacy shared-header-prefix FP (ieee802_11_defs.h/ieee802_11_common.h), not practically actionable"
+    },
+    {
+      "rule": "API01-C",
+      "file": "src/ap/ap_config.h",
+      "line": 107,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "vlan[] written via bounded os_strlcpy/os_memcpy(sizeof), no unbounded write onto adjacent pointer"
+    },
+    {
+      "rule": "PRE02-C",
+      "file": "src/ap/ap_config.h",
+      "line": 134,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "#define VLAN_ID_WILDCARD -1 is a single-token negative literal, no precedence hazard"
+    },
+    {
+      "rule": "API01-C",
+      "file": "src/ap/ap_config.h",
+      "line": 230,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "realm_buf written via bounded os_memcpy(len<=MAX_NAI_REALMLEN), no unbounded write onto realm[] pointer array"
+    },
+    {
+      "rule": "API01-C",
+      "file": "src/ap/ap_config.h",
+      "line": 285,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "iface[] written via bounded os_strlcpy(sizeof), no unbounded write onto eap_user pointer"
+    },
+    {
+      "rule": "API01-C",
+      "file": "src/ap/ap_config.h",
+      "line": 286,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "bridge[] written via bounded os_strlcpy(sizeof), no unbounded write onto eap_user pointer"
+    },
+    {
+      "rule": "API01-C",
+      "file": "src/ap/ap_config.h",
+      "line": 287,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "vlan_bridge[] written via bounded os_strlcpy(sizeof), no unbounded write onto eap_user pointer"
+    },
+    {
+      "rule": "API01-C",
+      "file": "src/ap/ap_config.h",
+      "line": 288,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wds_bridge[] written via bounded os_strlcpy(sizeof), no unbounded write onto eap_user pointer"
+    },
+    {
+      "rule": "API01-C",
+      "file": "src/ap/ap_config.h",
+      "line": 1083,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "country[3] written via bounded 3-byte copy, no unbounded write onto lci pointer"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/ap_config.h",
+      "line": 1259,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "hostapd_get_oper_chwidth is a pure read-only getter of conf; genuine const opportunity"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/ap_config.h",
+      "line": 1290,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "hostapd_get_oper_centr_freq_seg0_idx is a pure read-only getter; genuine const opportunity"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/ap_config.h",
+      "line": 1323,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "hostapd_get_oper_centr_freq_seg1_idx is a pure read-only getter; genuine const opportunity"
+    },
+    {
+      "rule": "API02-C",
+      "file": "src/ap/ap_config.h",
+      "line": 1393,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "addr/p2p_dev_addr/prev_psk are fixed ETH_ALEN MAC addresses, no runtime size needed"
+    },
+    {
+      "rule": "API02-C",
+      "file": "src/ap/ap_config.h",
+      "line": 1414,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "addr is a fixed ETH_ALEN MAC address; num is the acl-array count, unrelated to addr sizing"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/common/dragonfly.c",
+      "line": 53,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API, prime always caller-validated crypto_bignum pointer"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "src/common/dragonfly.c",
+      "line": 65,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "crypto_bignum_deinit is NULL-safe (wraps BN_free/mp_clear+os_free with NULL guard)"
+    },
+    {
+      "rule": "EXP43-C",
+      "file": "src/common/dragonfly.c",
+      "line": 101,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "crypto_bignum_add in-place accumulator idiom, no restrict qualifier"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "src/common/dragonfly.c",
+      "line": 102,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "crypto_bignum_deinit is NULL-safe"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/common/dragonfly.c",
+      "line": 108,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "tmp is heap-allocated via crypto_bignum_init(), not automatic storage"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/common/dragonfly.c",
+      "line": 112,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API, ec always caller-validated pointer"
+    },
+    {
+      "rule": "ENV01-C",
+      "file": "src/common/dragonfly.c",
+      "line": 118,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ENV01-C misfire, no getenv() anywhere in this function"
+    },
+    {
+      "rule": "EXP43-C",
+      "file": "src/common/dragonfly.c",
+      "line": 142,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "crypto_bignum_mulmod(num,...,num) in-place accumulator idiom, no restrict"
+    },
+    {
+      "rule": "EXP43-C",
+      "file": "src/common/dragonfly.c",
+      "line": 162,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "crypto_bignum_mulmod(num,...,num) in-place accumulator idiom, no restrict"
+    },
+    {
+      "rule": "EXP43-C",
+      "file": "src/common/dragonfly.c",
+      "line": 207,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "crypto_bignum_mod(scalar,order,scalar) in-place idiom, no restrict"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/common/dragonfly.c",
+      "line": 222,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API, ec always caller-validated pointer"
+    },
+    {
+      "rule": "ENV01-C",
+      "file": "src/common/dragonfly.c",
+      "line": 228,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ENV01-C misfire, no getenv() anywhere in this function"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "src/common/dragonfly.c",
+      "line": 240,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "bitwise op is on prime_bin[prime_len-1] element; arithmetic is the index calc on prime_len, not conflated"
+    },
+    {
+      "rule": "EXP43-C",
+      "file": "src/common/dragonfly.c",
+      "line": 244,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "crypto_bignum_rshift(tmp,2,tmp) in-place idiom, no restrict"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/crypto_internal.c",
+      "line": 39,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API, key always caller-validated pointer"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/crypto/crypto_internal.c",
+      "line": 47,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*ctx) never evaluates the operand; not a real dereference"
+    },
+    {
+      "rule": "MSC17-C",
+      "file": "src/crypto/crypto_internal.c",
+      "line": 57,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "case has its own break; label directly preceded by prior case's real break, nothing to fall through"
+    },
+    {
+      "rule": "MSC17-C",
+      "file": "src/crypto/crypto_internal.c",
+      "line": 94,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "case label directly preceded by prior case's real unconditional break"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/crypto/crypto_internal.c",
+      "line": 139,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ctx is heap-allocated via os_zalloc, not automatic storage"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_internal.c",
+      "line": 139,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ctx only freed on the mutually-exclusive default: branch which returns immediately, never reaching this return"
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/crypto/crypto_internal.c",
+      "line": 145,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "ad-hoc NULL-check stylistic pedantry"
+    },
+    {
+      "rule": "MSC17-C",
+      "file": "src/crypto/crypto_internal.c",
+      "line": 154,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "stacked/grouped case labels sharing one body with zero code between them, not a real fallthrough"
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/crypto/crypto_internal.c",
+      "line": 184,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "ad-hoc NULL-check stylistic pedantry"
+    },
+    {
+      "rule": "MSC17-C",
+      "file": "src/crypto/crypto_internal.c",
+      "line": 202,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "case label directly preceded by prior case's real unconditional break"
+    },
+    {
+      "rule": "MSC17-C",
+      "file": "src/crypto/crypto_internal.c",
+      "line": 264,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "case label directly preceded by prior case's real unconditional break"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/crypto/crypto_internal.c",
+      "line": 311,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "all earlier os_free(ctx) sites are on mutually-exclusive branches that return immediately; this line is a disjoint normal-completion path"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/crypto/crypto_internal.c",
+      "line": 311,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "mutually-exclusive branch confusion; earlier frees are on branches that already returned"
+    },
+    {
+      "rule": "DCL15-C",
+      "file": "src/crypto/crypto_internal.c",
+      "line": 320,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "crypto_global_init is a real external API declared in crypto.h, called from tlsv1_client.c/tlsv1_server.c"
+    },
+    {
+      "rule": "API01-C",
+      "file": "src/crypto/tls.h",
+      "line": 58,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "altsubject[] is an array of pointers, not a raw byte buffer; API01-C overflow premise doesn't apply"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/crypto/tls.h",
+      "line": 370,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "tls_ctx is an opaque context handle (void*), not an array needing conformant syntax"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/crypto/tls.h",
+      "line": 403,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "tls_ctx opaque context handle, not an array"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/crypto/tls.h",
+      "line": 405,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "label is a bare NUL-terminated string, no size param needed"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/crypto/tls.h",
+      "line": 422,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "tls_ctx opaque context handle, not an array"
+    },
+    {
+      "rule": "API02-C",
+      "file": "src/crypto/tls.h",
+      "line": 458,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "in_data is a self-sized struct wpabuf (carries its own length via wpabuf_len), no raw size_t needed"
+    },
+    {
+      "rule": "API02-C",
+      "file": "src/crypto/tls.h",
+      "line": 509,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "in_data is a self-sized struct wpabuf, no raw size_t needed"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/crypto/tls.h",
+      "line": 554,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "tls_ctx opaque context handle, not an array"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/crypto/tls.h",
+      "line": 555,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf paired with adjacent buflen; ptr+size idiom"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/crypto/tls.h",
+      "line": 567,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "tls_ctx opaque context handle, not an array"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/crypto/tls.h",
+      "line": 568,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf paired with adjacent buflen; ptr+size idiom"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/crypto/tls.h",
+      "line": 591,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "tls_ctx opaque context handle, not an array"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/crypto/tls.h",
+      "line": 647,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf paired with adjacent buf_len; ptr+size idiom"
+    },
+    {
+      "rule": "DCL40-C",
+      "file": "src/crypto/tls.h",
+      "line": 652,
+      "verdict": "FP",
+      "confidence": "low",
+      "reason": "31-char judgment call: tls_connection_set_success_data is exactly 31 chars, genuinely shares full prefix; graded FP per established not-practically-actionable convention"
+    }
+  ],
+  "fns": [],
+  "files_clean_for_fn": [
+    "src/tls/pkcs1.c",
+    "src/utils/browser-system.c",
+    "wpa_supplicant/pr_supplicant.h",
+    "wpa_supplicant/wpa_gui-qt4/eventhistory.h",
+    "src/ap/ap_config.h",
+    "src/common/dragonfly.c",
+    "src/crypto/crypto_internal.c",
+    "src/crypto/tls.h"
+  ],
+  "summary": {
+    "tp": 19,
+    "fp": 89,
+    "fn": 0
+  }
+}

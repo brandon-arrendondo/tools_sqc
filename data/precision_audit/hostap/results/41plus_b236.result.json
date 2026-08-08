@@ -1,0 +1,581 @@
+{
+  "labels": [
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 31,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only-API: sha1_vector call sites all pass fixed non-NULL addr/len/mac (grep-verified)"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 31,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only-API: sha1_vector call sites all pass fixed non-NULL addr/len/mac (grep-verified)"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 31,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only-API: sha1_vector call sites all pass fixed non-NULL addr/len/mac (grep-verified)"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 130,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "crypto round-macro (rol) real multi-eval hazard; MD4/SHA256 definition-graded precedent"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 130,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "crypto round-macro (rol) real multi-eval hazard; MD4/SHA256 definition-graded precedent"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 135,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "blk0(i): i appears 3x, real multi-eval hazard; MD4/SHA256 precedent"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 135,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "i used only as array subscript (block->l[i]); subscript brackets already delimit, no precedence hazard"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 135,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "blk0(i): i appears 3x, real multi-eval hazard; MD4/SHA256 precedent"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 138,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "bigendian blk0(i)=block->l[i]; single subscript use, no precedence hazard"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 140,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "blk(i): i appears 4x, real multi-eval hazard"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 140,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "blk(i): bare i in `i & 15`/`(i+13)&15`, real bitwise-vs-arithmetic precedence hazard"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 140,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "blk(i): i appears 4x, real multi-eval hazard"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 144,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "round macro genuinely evaluates w/v multiple times (v inside rol(), w as both operand and reassignment target)"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 144,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "bare rvalue operand under bitwise &/^/| in round macro; real precedence hazard, SHA256 Ch/Maj precedent"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 144,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "bare rvalue operand under bitwise &/^/| in round macro; real precedence hazard, SHA256 Ch/Maj precedent"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 144,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "z used only as compound-assignment lvalue (z += ...); matches SHA256 `d += t0` PRE01-C FP precedent"
+    },
+    {
+      "rule": "PRE02-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 144,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "multi-statement macro body (2 `;`-separated statements); whole-macro parenthesization is invalid C"
+    },
+    {
+      "rule": "PRE10-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 144,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "multi-statement macro not do-while(0)-wrapped; real unbraced-if hazard, SHA256 RND precedent"
+    },
+    {
+      "rule": "PRE11-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 144,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "macro body genuinely ends with `;`; real hazard when used bare"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 144,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "round macro genuinely evaluates w/v multiple times (v inside rol(), w as both operand and reassignment target)"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 147,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "round macro genuinely evaluates w/v multiple times (v inside rol(), w as both operand and reassignment target)"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 147,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "bare rvalue operand under bitwise &/^/| in round macro; real precedence hazard, SHA256 Ch/Maj precedent"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 147,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "bare rvalue operand under bitwise &/^/| in round macro; real precedence hazard, SHA256 Ch/Maj precedent"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 147,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "z used only as compound-assignment lvalue (z += ...); matches SHA256 `d += t0` PRE01-C FP precedent"
+    },
+    {
+      "rule": "PRE02-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 147,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "multi-statement macro body (2 `;`-separated statements); whole-macro parenthesization is invalid C"
+    },
+    {
+      "rule": "PRE10-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 147,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "multi-statement macro not do-while(0)-wrapped; real unbraced-if hazard, SHA256 RND precedent"
+    },
+    {
+      "rule": "PRE11-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 147,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "macro body genuinely ends with `;`; real hazard when used bare"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 147,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "round macro genuinely evaluates w/v multiple times (v inside rol(), w as both operand and reassignment target)"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 150,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "round macro genuinely evaluates w/v multiple times (v inside rol(), w as both operand and reassignment target)"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 150,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "bare rvalue operand under bitwise &/^/| in round macro; real precedence hazard, SHA256 Ch/Maj precedent"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 150,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "bare rvalue operand under bitwise &/^/| in round macro; real precedence hazard, SHA256 Ch/Maj precedent"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 150,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "z used only as compound-assignment lvalue (z += ...); matches SHA256 `d += t0` PRE01-C FP precedent"
+    },
+    {
+      "rule": "PRE02-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 150,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "multi-statement macro body (2 `;`-separated statements); whole-macro parenthesization is invalid C"
+    },
+    {
+      "rule": "PRE10-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 150,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "multi-statement macro not do-while(0)-wrapped; real unbraced-if hazard, SHA256 RND precedent"
+    },
+    {
+      "rule": "PRE11-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 150,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "macro body genuinely ends with `;`; real hazard when used bare"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 150,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "round macro genuinely evaluates w/v multiple times (v inside rol(), w as both operand and reassignment target)"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 152,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "round macro genuinely evaluates w/v multiple times (v inside rol(), w as both operand and reassignment target)"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 152,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "bare rvalue operand under bitwise &/^/| in round macro; real precedence hazard, SHA256 Ch/Maj precedent"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 152,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "z used only as compound-assignment lvalue (z += ...); matches SHA256 `d += t0` PRE01-C FP precedent"
+    },
+    {
+      "rule": "PRE02-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 152,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "multi-statement macro body (2 `;`-separated statements); whole-macro parenthesization is invalid C"
+    },
+    {
+      "rule": "PRE10-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 152,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "multi-statement macro not do-while(0)-wrapped; real unbraced-if hazard, SHA256 RND precedent"
+    },
+    {
+      "rule": "PRE11-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 152,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "macro body genuinely ends with `;`; real hazard when used bare"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 152,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "round macro genuinely evaluates w/v multiple times (v inside rol(), w as both operand and reassignment target)"
+    },
+    {
+      "rule": "PRE00-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 155,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "round macro genuinely evaluates w/v multiple times (v inside rol(), w as both operand and reassignment target)"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 155,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "bare rvalue operand under bitwise &/^/| in round macro; real precedence hazard, SHA256 Ch/Maj precedent"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 155,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "bare rvalue operand under bitwise &/^/| in round macro; real precedence hazard, SHA256 Ch/Maj precedent"
+    },
+    {
+      "rule": "PRE01-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 155,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "z used only as compound-assignment lvalue (z += ...); matches SHA256 `d += t0` PRE01-C FP precedent"
+    },
+    {
+      "rule": "PRE02-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 155,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "multi-statement macro body (2 `;`-separated statements); whole-macro parenthesization is invalid C"
+    },
+    {
+      "rule": "PRE10-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 155,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "multi-statement macro not do-while(0)-wrapped; real unbraced-if hazard, SHA256 RND precedent"
+    },
+    {
+      "rule": "PRE11-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 155,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "macro body genuinely ends with `;`; real hazard when used bare"
+    },
+    {
+      "rule": "PRE12-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 155,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "round macro genuinely evaluates w/v multiple times (v inside rol(), w as both operand and reassignment target)"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 161,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "SHAPrintContext is VERBOSE-only debug helper, called from 2 fixed non-NULL sites in this file"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 161,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "SHAPrintContext is VERBOSE-only debug helper, called from 2 fixed non-NULL sites in this file"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 161,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "genuine low-value: context/msg only read/printed, never modified, could be const"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 161,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "genuine low-value: context/msg only read/printed, never modified, could be const"
+    },
+    {
+      "rule": "PRE32-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 163,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "phantom-directive misfire: #ifdef VERBOSE wraps the whole function, not the printf call's arguments"
+    },
+    {
+      "rule": "EXP05-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 189,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "dead code: SHA1HANDSOFF unconditionally #define'd at line 128 in same file, #else branch unreachable in this TU"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 225,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "sensitive-state wipe `a=b=c=d=e=0` uses plain non-volatile assignment (unlike block's forced_memzero); compiler may eliminate as dead store, defeating the wipe"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 234,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only-API: SHA1Init always called with &ctx stack address"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 248,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only-API: SHA1Update always called with fixed &ctx"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 257,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "bitwise+arithmetic stylistic-pedantry FP on len (<<,>> mixed with +=)"
+    },
+    {
+      "rule": "EXP07-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 259,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "fixed-width u32 bit-length-counter shift, not an opaque-constant assumption (sae_pk_gen.c precedent)"
+    },
+    {
+      "rule": "FIO50-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 259,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "category error: len is a plain u32 arithmetic operand, not a FILE stream"
+    },
+    {
+      "rule": "FIO50-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 259,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "category error: len is a plain u32 arithmetic operand, not a FILE stream"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 263,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "i is initialized as a side effect of the memcpy call argument `(i = 64-j)` two lines above; sqc's dataflow doesn't see assignment nested inside a call argument"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 278,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only-API: SHA1Final always called with fixed &ctx"
+    },
+    {
+      "rule": "EXP00-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 285,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "expression is already fully parenthesized exactly per the suggested fix; no ambiguity"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 285,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "bitwise+arithmetic stylistic-pedantry FP on i (& mixed with ternary/arithmetic)"
+    },
+    {
+      "rule": "EXP00-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 285,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "expression is already fully parenthesized exactly per the suggested fix; no ambiguity"
+    },
+    {
+      "rule": "MSC09-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 288,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "raw byte-pattern-not-text: \"\\200\" is the SHA1 0x80 padding byte, not human-readable text"
+    },
+    {
+      "rule": "ARR30-C",
+      "file": "src/crypto/sha1-internal.c",
+      "line": 296,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "i bounded [0,19] by loop guard i<20; i>>2 in [0,4], provably within state[5]"
+    }
+  ],
+  "fns": [],
+  "files_clean_for_fn": [
+    "src/crypto/sha1-internal.c"
+  ],
+  "summary": {
+    "tp": 39,
+    "fp": 32,
+    "fn": 0
+  }
+}

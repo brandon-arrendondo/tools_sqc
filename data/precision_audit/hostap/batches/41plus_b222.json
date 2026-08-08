@@ -1,0 +1,715 @@
+{
+ "src/eap_peer/tncc.c": [
+  {
+   "column": 1,
+   "file": "src/eap_peer/tncc.c",
+   "line": 102,
+   "message": "Shared variable 'tnc_imc' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 5,
+   "file": "src/eap_peer/tncc.c",
+   "line": 236,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/tncc.c",
+   "line": 271,
+   "message": "Function returns pointer to local variable 'fptr' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 50,
+   "file": "src/eap_peer/tncc.c",
+   "line": 313,
+   "message": "Pointer parameter 'imc' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *imc'"
+  },
+  {
+   "column": 49,
+   "file": "src/eap_peer/tncc.c",
+   "line": 329,
+   "message": "Pointer parameter 'imc' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *imc'"
+  },
+  {
+   "column": 61,
+   "file": "src/eap_peer/tncc.c",
+   "line": 346,
+   "message": "Pointer parameter 'imc' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *imc'"
+  },
+  {
+   "column": 64,
+   "file": "src/eap_peer/tncc.c",
+   "line": 360,
+   "message": "Pointer parameter 'imc' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *imc'"
+  },
+  {
+   "column": 55,
+   "file": "src/eap_peer/tncc.c",
+   "line": 379,
+   "message": "Pointer parameter 'imc' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *imc'"
+  },
+  {
+   "column": 19,
+   "file": "src/eap_peer/tncc.c",
+   "line": 408,
+   "message": "Using LoadLibrary() without specifying search paths enables DLL hijacking attacks. An attacker could place a malicious DLL on the search path.",
+   "rule_id": "WIN00-C",
+   "severity": "High",
+   "suggestion": "Use LoadLibraryEx() with explicit search flags like LOAD_LIBRARY_SEARCH_APPLICATION_DIR or LOAD_LIBRARY_SEARCH_SYSTEM32 to control DLL search paths."
+  },
+  {
+   "column": 18,
+   "file": "src/eap_peer/tncc.c",
+   "line": 412,
+   "message": "Using LoadLibrary() without specifying search paths enables DLL hijacking attacks. An attacker could place a malicious DLL on the search path.",
+   "rule_id": "WIN00-C",
+   "severity": "High",
+   "suggestion": "Use LoadLibraryEx() with explicit search flags like LOAD_LIBRARY_SEARCH_APPLICATION_DIR or LOAD_LIBRARY_SEARCH_SYSTEM32 to control DLL search paths."
+  },
+  {
+   "column": 11,
+   "file": "src/eap_peer/tncc.c",
+   "line": 452,
+   "message": "Use-after-free: accessing freed pointer 'imc->dlhandle'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 50,
+   "file": "src/eap_peer/tncc.c",
+   "line": 462,
+   "message": "Pointer parameter 'imc' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *imc'"
+  },
+  {
+   "column": 48,
+   "file": "src/eap_peer/tncc.c",
+   "line": 486,
+   "message": "Pointer parameter 'tncc' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tncc'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/tncc.c",
+   "line": 510,
+   "message": "Function 'tncc_init_connection' does not validate pointer parameter 'tncc' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'tncc' at the start of the function, e.g., 'if (!tncc) { return error_code; }'"
+  },
+  {
+   "column": 44,
+   "file": "src/eap_peer/tncc.c",
+   "line": 510,
+   "message": "Pointer parameter 'tncc' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tncc'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/tncc.c",
+   "line": 529,
+   "message": "Function 'tncc_total_send_len' does not validate pointer parameter 'tncc' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'tncc' at the start of the function, e.g., 'if (!tncc) { return error_code; }'"
+  },
+  {
+   "column": 45,
+   "file": "src/eap_peer/tncc.c",
+   "line": 529,
+   "message": "Pointer parameter 'tncc' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tncc'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/tncc.c",
+   "line": 540,
+   "message": "Function 'tncc_copy_send_buf' does not validate pointer parameter 'tncc' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'tncc' at the start of the function, e.g., 'if (!tncc) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/tncc.c",
+   "line": 540,
+   "message": "Function 'tncc_copy_send_buf' does not validate pointer parameter 'pos' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pos' at the start of the function, e.g., 'if (!pos) { return error_code; }'"
+  },
+  {
+   "column": 42,
+   "file": "src/eap_peer/tncc.c",
+   "line": 540,
+   "message": "Pointer parameter 'tncc' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tncc'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/tncc.c",
+   "line": 559,
+   "message": "Function 'tncc_if_tnccs_start' does not validate pointer parameter 'tncc' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'tncc' at the start of the function, e.g., 'if (!tncc) { return error_code; }'"
+  },
+  {
+   "column": 57,
+   "file": "src/eap_peer/tncc.c",
+   "line": 580,
+   "message": "Pointer parameter 'tncc' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tncc'"
+  },
+  {
+   "column": 10,
+   "file": "src/eap_peer/tncc.c",
+   "line": 612,
+   "message": "strtoul() can set errno but errno is not checked after the call",
+   "rule_id": "ERR01-C",
+   "severity": "Low",
+   "suggestion": "Set errno to 0 before calling strtoul() and check errno afterward to detect errors"
+  },
+  {
+   "column": 10,
+   "file": "src/eap_peer/tncc.c",
+   "line": 612,
+   "message": "In-band function 'strtoul' called without setting errno = 0 first - errno must be reset before calling in-band functions",
+   "rule_id": "ERR30-C",
+   "severity": "Medium",
+   "suggestion": "Set errno before call: 'errno = 0; val = strtoul(...); if (errno == ERANGE) { ... }'"
+  },
+  {
+   "column": 45,
+   "file": "src/eap_peer/tncc.c",
+   "line": 617,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/tncc.c",
+   "line": 630,
+   "message": "Pointer dereference '*pos2' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/tncc.c",
+   "line": 633,
+   "message": "Pointer dereference '*pos2' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/tncc.c",
+   "line": 638,
+   "message": "Function returns pointer to local variable 'decoded' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 10,
+   "file": "src/eap_peer/tncc.c",
+   "line": 667,
+   "message": "Pointer dereference '*pos2' (char type) assigned to larger type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment: (unsigned char)*ptr"
+  },
+  {
+   "column": 10,
+   "file": "src/eap_peer/tncc.c",
+   "line": 667,
+   "message": "Pointer dereference '*pos2' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/tncc.c",
+   "line": 668,
+   "message": "Pointer dereference '*pos2' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 7,
+   "file": "src/eap_peer/tncc.c",
+   "line": 676,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/tncc.c",
+   "line": 679,
+   "message": "Local variable 'saved' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/tncc.c",
+   "line": 679,
+   "message": "Pointer dereference '*pos2' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/tncc.c",
+   "line": 685,
+   "message": "Function 'tncc_process_if_tnccs' does not validate pointer parameter 'msg' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'msg' at the start of the function, e.g., 'if (!msg) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/tncc.c",
+   "line": 711,
+   "message": "Pointer dereference '*end' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 13,
+   "file": "src/eap_peer/tncc.c",
+   "line": 722,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 13,
+   "file": "src/eap_peer/tncc.c",
+   "line": 722,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 11,
+   "file": "src/eap_peer/tncc.c",
+   "line": 757,
+   "message": "Signed integer addition 'pos + 17' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/tncc.c",
+   "line": 761,
+   "message": "Pointer dereference '*end' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 4,
+   "file": "src/eap_peer/tncc.c",
+   "line": 766,
+   "message": "Pointer dereference '*endpos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 4,
+   "file": "src/eap_peer/tncc.c",
+   "line": 774,
+   "message": "Pointer dereference '*endpos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 9,
+   "file": "src/eap_peer/tncc.c",
+   "line": 797,
+   "message": "Variable 'xml' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'xml' before use, e.g., at its declaration"
+  },
+  {
+   "column": 15,
+   "file": "src/eap_peer/tncc.c",
+   "line": 797,
+   "message": "Variable 'xmlend' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'xmlend' before use, e.g., at its declaration"
+  },
+  {
+   "column": 24,
+   "file": "src/eap_peer/tncc.c",
+   "line": 797,
+   "message": "Variable 'endpos' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'endpos' before use, e.g., at its declaration"
+  },
+  {
+   "column": 11,
+   "file": "src/eap_peer/tncc.c",
+   "line": 802,
+   "message": "Signed integer addition 'pos + 19' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/tncc.c",
+   "line": 806,
+   "message": "Pointer dereference '*end' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 4,
+   "file": "src/eap_peer/tncc.c",
+   "line": 811,
+   "message": "Pointer dereference '*endpos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 5,
+   "file": "src/eap_peer/tncc.c",
+   "line": 827,
+   "message": "Pointer dereference '*endpos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 5,
+   "file": "src/eap_peer/tncc.c",
+   "line": 836,
+   "message": "Pointer dereference '*endpos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 17,
+   "file": "src/eap_peer/tncc.c",
+   "line": 845,
+   "message": "Variable 'decoded_len' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'decoded_len' before use, e.g., at its declaration"
+  },
+  {
+   "column": 4,
+   "file": "src/eap_peer/tncc.c",
+   "line": 846,
+   "message": "Double free detected: 'decoded' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_peer/tncc.c",
+   "line": 853,
+   "message": "Subtracting pointers from different arrays ('xmlend' from 'pos2' and 'xml' from 'pos'). Pointer subtraction is only defined for pointers within the same array object.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Only subtract pointers that point to elements within the same array object."
+  },
+  {
+   "column": 4,
+   "file": "src/eap_peer/tncc.c",
+   "line": 861,
+   "message": "Potential null pointer dereference of variable 'xmlend'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'xmlend' is not NULL before dereferencing"
+  },
+  {
+   "column": 4,
+   "file": "src/eap_peer/tncc.c",
+   "line": 861,
+   "message": "Pointer dereference '*xmlend' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 4,
+   "file": "src/eap_peer/tncc.c",
+   "line": 863,
+   "message": "Pointer dereference '*xmlend' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 21,
+   "file": "src/eap_peer/tncc.c",
+   "line": 898,
+   "message": "Variable 'val' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'val' before use, e.g., at its declaration"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/tncc.c",
+   "line": 916,
+   "message": "Out-of-bounds array access at index 255: Buffer 'name' with size 255 (allocated at line 898)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 4,
+   "file": "src/eap_peer/tncc.c",
+   "line": 961,
+   "message": "Double free detected: 'val' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 26,
+   "file": "src/eap_peer/tncc.c",
+   "line": 965,
+   "message": "Dereference of uninitialized pointer 'imc'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'imc' before dereferencing"
+  },
+  {
+   "column": 4,
+   "file": "src/eap_peer/tncc.c",
+   "line": 967,
+   "message": "Double free detected: 'val' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/tncc.c",
+   "line": 977,
+   "message": "Double free detected: 'val' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 61,
+   "file": "src/eap_peer/tncc.c",
+   "line": 1004,
+   "message": "Pointer parameter 'end' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *end'"
+  },
+  {
+   "column": 25,
+   "file": "src/eap_peer/tncc.c",
+   "line": 1019,
+   "message": "Dereference of uninitialized pointer 'imc'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'imc' before dereferencing"
+  },
+  {
+   "column": 9,
+   "file": "src/eap_peer/tncc.c",
+   "line": 1038,
+   "message": "Pointer comparison '<' between pointers from different arrays: 'param:start' and 'param:end'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before comparison"
+  },
+  {
+   "column": 6,
+   "file": "src/eap_peer/tncc.c",
+   "line": 1040,
+   "message": "Pointer comparison '>=' between pointers from different arrays: 'param:start' and 'param:end'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before comparison"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/tncc.c",
+   "line": 1046,
+   "message": "Pointer dereference '*pos2' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 6,
+   "file": "src/eap_peer/tncc.c",
+   "line": 1051,
+   "message": "Pointer comparison '>=' between pointers from different arrays: 'param:start' and 'param:end'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before comparison"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/tncc.c",
+   "line": 1064,
+   "message": "Function returns pointer to local variable 'imc' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 10,
+   "file": "src/eap_peer/tncc.c",
+   "line": 1087,
+   "message": "Pointer comparison '<' between pointers from different arrays: 'pos' and 'config'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before comparison"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/tncc.c",
+   "line": 1089,
+   "message": "Pointer dereference '*line_end' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 25,
+   "file": "src/eap_peer/tncc.c",
+   "line": 1094,
+   "message": "Signed integer addition 'pos + 4' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 26,
+   "file": "src/eap_peer/tncc.c",
+   "line": 1122,
+   "message": "Dereference of uninitialized pointer 'tncc'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'tncc' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/tncc.c",
+   "line": 1144,
+   "message": "Function returns pointer to local variable 'tncc' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/tncc.c",
+   "line": 1146,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/tncc.c",
+   "line": 1175,
+   "message": "Variable 'machinename' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const machinename = ..."
+  },
+  {
+   "column": 7,
+   "file": "src/eap_peer/tncc.c",
+   "line": 1175,
+   "message": "Pointer variable '(unknown)' is assigned a string literal without const qualification. String literals are immutable and should be declared as 'const char *' or 'const wchar_t *'.",
+   "rule_id": "STR05-C",
+   "severity": "Low",
+   "suggestion": "Add 'const' qualifier to the pointee type (e.g., change 'char *' to 'const char *')."
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/tncc.c",
+   "line": 1278,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/tncc.c",
+   "line": 1282,
+   "message": "Function 'tncc_process_soh_request' does not validate pointer parameter 'data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'data' at the start of the function, e.g., 'if (!data) { return error_code; }'"
+  }
+ ]
+}

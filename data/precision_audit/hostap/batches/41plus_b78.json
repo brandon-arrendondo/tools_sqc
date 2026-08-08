@@ -1,0 +1,1354 @@
+{
+ "src/common/dpp.c#part2of3": [
+  {
+   "column": 29,
+   "file": "src/common/dpp.c",
+   "line": 2767,
+   "message": "Variable 'day' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'day' before use, e.g., at its declaration"
+  },
+  {
+   "column": 34,
+   "file": "src/common/dpp.c",
+   "line": 2767,
+   "message": "Variable 'hour' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'hour' before use, e.g., at its declaration"
+  },
+  {
+   "column": 40,
+   "file": "src/common/dpp.c",
+   "line": 2767,
+   "message": "Variable 'min' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'min' before use, e.g., at its declaration"
+  },
+  {
+   "column": 45,
+   "file": "src/common/dpp.c",
+   "line": 2767,
+   "message": "Variable 'sec' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'sec' before use, e.g., at its declaration"
+  },
+  {
+   "column": 3,
+   "file": "src/common/dpp.c",
+   "line": 2780,
+   "message": "Return value of 'sscanf' assigned to 'items' but not checked for errors: 'sscanf(pos + 1, \"%02u:%02u\", &hour, &min)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  },
+  {
+   "column": 11,
+   "file": "src/common/dpp.c",
+   "line": 2780,
+   "message": "Return value from sscanf() should be checked for errors",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Check if sscanf() returned an error value (NULL, -1, etc.)"
+  },
+  {
+   "column": 11,
+   "file": "src/common/dpp.c",
+   "line": 2780,
+   "message": "Use of 'sscanf()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace sscanf() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 11,
+   "file": "src/common/dpp.c",
+   "line": 2780,
+   "message": "Type mismatch in sscanf(): format specifier '%u' expects Integer but argument 1 ('\"%02u:%02u\"') is Pointer",
+   "rule_id": "FIO47-C",
+   "severity": "High",
+   "suggestion": "Ensure format specifiers match argument types"
+  },
+  {
+   "column": 11,
+   "file": "src/common/dpp.c",
+   "line": 2780,
+   "message": "Input function 'sscanf' used for integer conversion without errno check for ERANGE",
+   "rule_id": "INT05-C",
+   "severity": "Medium",
+   "suggestion": "Either use fgets() + strtol/strtoll() for safe conversion, or check errno for ERANGE after scanf"
+  },
+  {
+   "column": 11,
+   "file": "src/common/dpp.c",
+   "line": 2780,
+   "message": "'sscanf' is deprecated/obsolescent -- prefer sscanf_s()",
+   "rule_id": "MSC24-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'sscanf' with sscanf_s()"
+  },
+  {
+   "column": 18,
+   "file": "src/common/dpp.c",
+   "line": 2780,
+   "message": "Do not cast away const qualification: 'pos + 1'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 4,
+   "file": "src/common/dpp.c",
+   "line": 2788,
+   "message": "arithmetic operator '+=' applied directly to time_t-typed 'utime' -- the encoding of time_t is unspecified",
+   "rule_id": "MSC05-C",
+   "severity": "Low",
+   "suggestion": "Use difftime() to compute a duration between two time_t values instead of subtracting/adding them directly"
+  },
+  {
+   "column": 13,
+   "file": "src/common/dpp.c",
+   "line": 2788,
+   "message": "Signed integer multiplication '3600 * hour' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check using complex multiplication overflow detection"
+  },
+  {
+   "column": 4,
+   "file": "src/common/dpp.c",
+   "line": 2790,
+   "message": "arithmetic operator '-=' applied directly to time_t-typed 'utime' -- the encoding of time_t is unspecified",
+   "rule_id": "MSC05-C",
+   "severity": "Low",
+   "suggestion": "Use difftime() to compute a duration between two time_t values instead of subtracting/adding them directly"
+  },
+  {
+   "column": 13,
+   "file": "src/common/dpp.c",
+   "line": 2790,
+   "message": "Signed integer multiplication '3600 * hour' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check using complex multiplication overflow detection"
+  },
+  {
+   "column": 5,
+   "file": "src/common/dpp.c",
+   "line": 2793,
+   "message": "arithmetic operator '+=' applied directly to time_t-typed 'utime' -- the encoding of time_t is unspecified",
+   "rule_id": "MSC05-C",
+   "severity": "Low",
+   "suggestion": "Use difftime() to compute a duration between two time_t values instead of subtracting/adding them directly"
+  },
+  {
+   "column": 14,
+   "file": "src/common/dpp.c",
+   "line": 2793,
+   "message": "Signed integer multiplication '60 * min' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check using complex multiplication overflow detection"
+  },
+  {
+   "column": 5,
+   "file": "src/common/dpp.c",
+   "line": 2795,
+   "message": "arithmetic operator '-=' applied directly to time_t-typed 'utime' -- the encoding of time_t is unspecified",
+   "rule_id": "MSC05-C",
+   "severity": "Low",
+   "suggestion": "Use difftime() to compute a duration between two time_t values instead of subtracting/adding them directly"
+  },
+  {
+   "column": 14,
+   "file": "src/common/dpp.c",
+   "line": 2795,
+   "message": "Signed integer multiplication '60 * min' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check using complex multiplication overflow detection"
+  },
+  {
+   "column": 33,
+   "file": "src/common/dpp.c",
+   "line": 2823,
+   "message": "Pointer parameter 'conf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conf'"
+  },
+  {
+   "column": 29,
+   "file": "src/common/dpp.c",
+   "line": 2948,
+   "message": "Pointer parameter 'conf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conf'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 3182,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'pos' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 8,
+   "file": "src/common/dpp.c",
+   "line": 3195,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 23,
+   "file": "src/common/dpp.c",
+   "line": 3235,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"JSON root is not an object\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 23,
+   "file": "src/common/dpp.c",
+   "line": 3247,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Unsupported wi-fi_tech value\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 3,
+   "file": "src/common/dpp.c",
+   "line": 3259,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 24,
+   "file": "src/common/dpp.c",
+   "line": 3262,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Too long discovery::ssid64 value\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 11,
+   "file": "src/common/dpp.c",
+   "line": 3276,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Too long discovery::ssid string value\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 23,
+   "file": "src/common/dpp.c",
+   "line": 3343,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Unsupported akm\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 12,
+   "file": "src/common/dpp.c",
+   "line": 3377,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 9,
+   "file": "src/common/dpp.c",
+   "line": 3378,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 6,
+   "file": "src/common/dpp.c",
+   "line": 3385,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 17,
+   "file": "src/common/dpp.c",
+   "line": 3390,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 10,
+   "file": "src/common/dpp.c",
+   "line": 3395,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Missing or invalid required Wrapped Data attribute\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 18,
+   "file": "src/common/dpp.c",
+   "line": 3401,
+   "message": "Scaled integer arithmetic with pointer: 'wrapped_data_len - AES_BLOCK_SIZE'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 23,
+   "file": "src/common/dpp.c",
+   "line": 3413,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"AES-SIV decryption failed\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 10,
+   "file": "src/common/dpp.c",
+   "line": 3429,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Missing or invalid Enrollee Nonce attribute\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 23,
+   "file": "src/common/dpp.c",
+   "line": 3434,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Enrollee Nonce mismatch\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 11,
+   "file": "src/common/dpp.c",
+   "line": 3438,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 10,
+   "file": "src/common/dpp.c",
+   "line": 3442,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Missing or invalid required DPP Status attribute\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 11,
+   "file": "src/common/dpp.c",
+   "line": 3458,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Missing or invalid CSR Attributes Request attribute\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 11,
+   "file": "src/common/dpp.c",
+   "line": 3483,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Missing or invalid required Finite Cyclic Group attribute\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 11,
+   "file": "src/common/dpp.c",
+   "line": 3494,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Unsupported group for new protocol key\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 11,
+   "file": "src/common/dpp.c",
+   "line": 3514,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Missing required Responder Protocol Key attribute (Pc)\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 23,
+   "file": "src/common/dpp.c",
+   "line": 3525,
+   "message": "Hard-coded sensitive information detected passed to `dpp_debug_print_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"New Peer Protocol Key (Pc)\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 23,
+   "file": "src/common/dpp.c",
+   "line": 3536,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Configurator rejected configuration\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 10,
+   "file": "src/common/dpp.c",
+   "line": 3552,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Missing required Configuration Object attribute\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 3585,
+   "message": "Function 'dpp_conf_result_rx' does not validate pointer parameter 'hdr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hdr' at the start of the function, e.g., 'if (!hdr) { return error_code; }'"
+  },
+  {
+   "column": 10,
+   "file": "src/common/dpp.c",
+   "line": 3601,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Missing or invalid required Wrapped Data attribute\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 3611,
+   "message": "Out-of-bounds array access at index 1: Buffer 'addr' with size 1 (allocated at line 3988)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 47,
+   "file": "src/common/dpp.c",
+   "line": 3614,
+   "message": "Out-of-bounds array access at index 1: Buffer 'addr' with size 1 (allocated at line 3988)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 18,
+   "file": "src/common/dpp.c",
+   "line": 3617,
+   "message": "Scaled integer arithmetic with pointer: 'wrapped_data_len - AES_BLOCK_SIZE'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 23,
+   "file": "src/common/dpp.c",
+   "line": 3624,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"AES-SIV decryption failed\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 10,
+   "file": "src/common/dpp.c",
+   "line": 3640,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Missing or invalid Enrollee Nonce attribute\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 23,
+   "file": "src/common/dpp.c",
+   "line": 3645,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Enrollee Nonce mismatch\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 10,
+   "file": "src/common/dpp.c",
+   "line": 3655,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Missing or invalid required DPP Status attribute\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 65,
+   "file": "src/common/dpp.c",
+   "line": 3667,
+   "message": "Pointer parameter 'auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *auth'"
+  },
+  {
+   "column": 13,
+   "file": "src/common/dpp.c",
+   "line": 3678,
+   "message": "Scaled integer arithmetic with pointer: '4 + clear_len + AES_BLOCK_SIZE'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 3698,
+   "message": "Out-of-bounds array access at index 1: Buffer 'addr' with size 1 (allocated at line 3988)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 47,
+   "file": "src/common/dpp.c",
+   "line": 3700,
+   "message": "Out-of-bounds array access at index 1: Buffer 'addr' with size 1 (allocated at line 3988)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 6,
+   "file": "src/common/dpp.c",
+   "line": 3708,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 3715,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 3716,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 3717,
+   "message": "Double-free: 'clear' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 3717,
+   "message": "Double free detected: 'clear' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 3725,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'val' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 3736,
+   "message": "Function 'dpp_conn_status_result_rx' does not validate pointer parameter 'hdr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hdr' at the start of the function, e.g., 'if (!hdr) { return error_code; }'"
+  },
+  {
+   "column": 12,
+   "file": "src/common/dpp.c",
+   "line": 3741,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 3754,
+   "message": "Pointer dereference '*channel_list' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 10,
+   "file": "src/common/dpp.c",
+   "line": 3760,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Missing or invalid required Wrapped Data attribute\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 3770,
+   "message": "Out-of-bounds array access at index 1: Buffer 'addr' with size 1 (allocated at line 3988)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 47,
+   "file": "src/common/dpp.c",
+   "line": 3773,
+   "message": "Out-of-bounds array access at index 1: Buffer 'addr' with size 1 (allocated at line 3988)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 18,
+   "file": "src/common/dpp.c",
+   "line": 3776,
+   "message": "Scaled integer arithmetic with pointer: 'wrapped_data_len - AES_BLOCK_SIZE'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 23,
+   "file": "src/common/dpp.c",
+   "line": 3783,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"AES-SIV decryption failed\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 10,
+   "file": "src/common/dpp.c",
+   "line": 3799,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Missing or invalid Enrollee Nonce attribute\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 23,
+   "file": "src/common/dpp.c",
+   "line": 3804,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Enrollee Nonce mismatch\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 10,
+   "file": "src/common/dpp.c",
+   "line": 3814,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Missing required DPP Connection Status attribute\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 3,
+   "file": "src/common/dpp.c",
+   "line": 3836,
+   "message": "Pointer dereference '*channel_list' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 22,
+   "file": "src/common/dpp.c",
+   "line": 3855,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 3876,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 3879,
+   "message": "Function returns pointer to local variable 'json' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 3883,
+   "message": "Function 'dpp_build_conn_status_result' does not validate pointer parameter 'ssid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ssid' at the start of the function, e.g., 'if (!ssid) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 3883,
+   "message": "Function 'dpp_build_conn_status_result' does not validate pointer parameter 'channel_list' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'channel_list' at the start of the function, e.g., 'if (!channel_list) { return error_code; }'"
+  },
+  {
+   "column": 72,
+   "file": "src/common/dpp.c",
+   "line": 3883,
+   "message": "Pointer parameter 'auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *auth'"
+  },
+  {
+   "column": 22,
+   "file": "src/common/dpp.c",
+   "line": 3886,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 3888,
+   "message": "Value assigned to 'msg' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 3888,
+   "message": "Value assigned to 'clear' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 13,
+   "file": "src/common/dpp.c",
+   "line": 3900,
+   "message": "Scaled integer arithmetic with pointer: '4 + clear_len + AES_BLOCK_SIZE'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 3922,
+   "message": "Out-of-bounds array access at index 1: Buffer 'addr' with size 1 (allocated at line 3988)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 47,
+   "file": "src/common/dpp.c",
+   "line": 3924,
+   "message": "Out-of-bounds array access at index 1: Buffer 'addr' with size 1 (allocated at line 3988)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 6,
+   "file": "src/common/dpp.c",
+   "line": 3932,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 3942,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 3943,
+   "message": "Double-free: 'json' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 3943,
+   "message": "Double free detected: 'json' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 3944,
+   "message": "Double-free: 'clear' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 3944,
+   "message": "Double free detected: 'clear' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 3965,
+   "message": "Function 'dpp_configurator_get_key' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  },
+  {
+   "column": 72,
+   "file": "src/common/dpp.c",
+   "line": 3965,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 8,
+   "file": "src/common/dpp.c",
+   "line": 3978,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 12,
+   "file": "src/common/dpp.c",
+   "line": 3988,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 9,
+   "file": "src/common/dpp.c",
+   "line": 3989,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 48,
+   "file": "src/common/dpp.c",
+   "line": 4009,
+   "message": "sizeof applied to pointer/array parameter 'conf' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(conf->kid_hash)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 36,
+   "file": "src/common/dpp.c",
+   "line": 4016,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 26,
+   "file": "src/common/dpp.c",
+   "line": 4021,
+   "message": "Dereference of uninitialized pointer 'conf'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'conf' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 4048,
+   "message": "Function returns pointer to local variable 'conf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 4049,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 8,
+   "file": "src/common/dpp.c",
+   "line": 4089,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 27,
+   "file": "src/common/dpp.c",
+   "line": 4117,
+   "message": "Variable 'role' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'role' before use, e.g., at its declaration"
+  },
+  {
+   "column": 27,
+   "file": "src/common/dpp.c",
+   "line": 4154,
+   "message": "Variable 'role' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'role' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 4184,
+   "message": "Function 'dpp_parse_own_connector' does not validate pointer parameter 'own_connector' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'own_connector' at the start of the function, e.g., 'if (!own_connector) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 4214,
+   "message": "Function returns pointer to local variable 'own_root' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 4218,
+   "message": "Function 'dpp_peer_intro' does not validate pointer parameter 'own_connector' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'own_connector' at the start of the function, e.g., 'if (!own_connector) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 4218,
+   "message": "Function 'dpp_peer_intro' does not validate pointer parameter 'net_access_key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'net_access_key' at the start of the function, e.g., 'if (!net_access_key) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 4218,
+   "message": "Function 'dpp_peer_intro' does not validate pointer parameter 'csign_key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'csign_key' at the start of the function, e.g., 'if (!csign_key) { return error_code; }'"
+  },
+  {
+   "column": 40,
+   "file": "src/common/dpp.c",
+   "line": 4219,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 59,
+   "file": "src/common/dpp.c",
+   "line": 4219,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 4233,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 22,
+   "file": "src/common/dpp.c",
+   "line": 4235,
+   "message": "sizeof applied to pointer/array parameter 'intro' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*intro)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 22,
+   "file": "src/common/dpp.c",
+   "line": 4369,
+   "message": "sizeof applied to pointer/array parameter 'intro' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*intro)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 4374,
+   "message": "Function 'dpp_get_connector_version' does not validate pointer parameter 'connector' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'connector' at the start of the function, e.g., 'if (!connector) { return error_code; }'"
+  },
+  {
+   "column": 28,
+   "file": "src/common/dpp.c",
+   "line": 4414,
+   "message": "Variable 'tmp' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tmp' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 4433,
+   "message": "Function 'dpp_add_qr_code' does not validate pointer parameter 'uri' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'uri' at the start of the function, e.g., 'if (!uri) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 4448,
+   "message": "Function returns pointer to local variable 'bi' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 4467,
+   "message": "Function returns pointer to local variable 'bi' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 24,
+   "file": "src/common/dpp.c",
+   "line": 4520,
+   "message": "Dereference of uninitialized pointer 'bi'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'bi' before dereferencing"
+  },
+  {
+   "column": 4,
+   "file": "src/common/dpp.c",
+   "line": 4585,
+   "message": "Function returns pointer to local variable 'bi' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 12,
+   "file": "src/common/dpp.c",
+   "line": 4598,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 12,
+   "file": "src/common/dpp.c",
+   "line": 4598,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 4618,
+   "message": "Function 'dpp_bootstrap_info' does not validate pointer parameter 'reply' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'reply' at the start of the function, e.g., 'if (!reply) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 4622,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 16,
+   "file": "src/common/dpp.c",
+   "line": 4637,
+   "message": "Potentially unsafe array access with variable index 'sizeof(supp_curves)': Buffer 'supp_curves' with size 100 (allocated at line 4623)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp.c",
+   "line": 4655,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'pos' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp.c",
+   "line": 4655,
+   "message": "Out-of-bounds array access at index -1: Buffer 'pos' with size 100 (allocated at line 4623)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 4,
+   "file": "src/common/dpp.c",
+   "line": 4656,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'pos' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 4,
+   "file": "src/common/dpp.c",
+   "line": 4656,
+   "message": "Out-of-bounds array access at index -1: Buffer 'pos' with size 100 (allocated at line 4623)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 9,
+   "file": "src/common/dpp.c",
+   "line": 4672,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 4,
+   "file": "src/common/dpp.c",
+   "line": 4731,
+   "message": "Local variable 'bi' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 4,
+   "file": "src/common/dpp.c",
+   "line": 4739,
+   "message": "Local variable 'bi' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 4,
+   "file": "src/common/dpp.c",
+   "line": 4760,
+   "message": "Function returns pointer to local variable 'bi' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 32,
+   "file": "src/common/dpp.c",
+   "line": 4817,
+   "message": "Pointer parameter 'peer_bi' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *peer_bi'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 4833,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 4864,
+   "message": "Function 'dpp_configurator_add' does not validate pointer parameter 'dpp' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dpp' at the start of the function, e.g., 'if (!dpp) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 4864,
+   "message": "Function 'dpp_configurator_add' does not validate pointer parameter 'cmd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cmd' at the start of the function, e.g., 'if (!cmd) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 4917,
+   "message": "Double free detected: 'curve' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 4923,
+   "message": "Function returns without releasing all resources. Leaked: privkey, pp_key. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 4927,
+   "message": "Function 'dpp_configurator_set' does not validate pointer parameter 'cmd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cmd' at the start of the function, e.g., 'if (!cmd) { return error_code; }'"
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp.c",
+   "line": 4933,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp.c",
+   "line": 4933,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 30,
+   "file": "src/common/dpp.c",
+   "line": 4961,
+   "message": "Variable 'tmp' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tmp' before use, e.g., at its declaration"
+  },
+  {
+   "column": 12,
+   "file": "src/common/dpp.c",
+   "line": 4983,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  }
+ ]
+}

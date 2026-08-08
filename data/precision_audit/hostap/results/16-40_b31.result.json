@@ -1,0 +1,906 @@
+{
+ "labels": [
+  {
+   "rule": "EXP34-C",
+   "file": "src/wps/upnp_xml.c",
+   "line": 81,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "httpread_data_get always returns \"\" not NULL for empty body; 'in' traces to network XML data that is never NULL despite stale doc comment"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/wps/upnp_xml.c",
+   "line": 85,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'*out' is const char** deref => type is 'const char *' (pointer), not char; category error, not a sign-extension case"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/wps/upnp_xml.c",
+   "line": 88,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same pointer-misclassified-as-char category error as line 85"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "src/wps/upnp_xml.c",
+   "line": 89,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "*in can carry high-bit-set bytes per file's own UTF-8 doc comments; isalnum(*in) on a negative plain char is real UB"
+  },
+  {
+   "rule": "STR37-C",
+   "file": "src/wps/upnp_xml.c",
+   "line": 89,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same real UB as STR00-C at this line: unguarded signed-char arg to isalnum() over UTF-8 data"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/wps/upnp_xml.c",
+   "line": 92,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'*out_tagname = ++in;' assigns a pointer, not a char; same category error"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/wps/upnp_xml.c",
+   "line": 97,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'*end = ++in;' assigns a pointer, not a char; same category error"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/wps/upnp_xml.c",
+   "line": 121,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; data traces to network XML body that is never NULL"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "src/wps/upnp_xml.c",
+   "line": 125,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'u8 c' assigned once per loop iteration and never reassigned in that scope; trivial const opportunity"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/wps/upnp_xml.c",
+   "line": 125,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "cast-away-const is read-only (only used to index for reading, never written through the cast pointer)"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "src/wps/upnp_xml.c",
+   "line": 125,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "factually wrong: u8/unsigned char has alignment 1, not 4; no real alignment hazard"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/wps/upnp_xml.c",
+   "line": 161,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; data immediately passed to os_strlen which would already crash on NULL, no caller passes NULL"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/wps/upnp_xml.c",
+   "line": 190,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; doc traces to network XML body that is never NULL"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/wps/upnp_xml.c",
+   "line": 193,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'item' is 'const char *item' (pointer param), not a char; category error"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "src/wps/upnp_xml.c",
+   "line": 209,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "tagname[match_len] can carry high-bit-set bytes; isgraph on negative plain char is real UB, same class as line 89"
+  },
+  {
+   "rule": "STR37-C",
+   "file": "src/wps/upnp_xml.c",
+   "line": 209,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same real UB as STR00-C at this line"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/wps/upnp_xml.c",
+   "line": 220,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'value' is a local pointer VARIABLE holding heap memory from os_zalloc(), not automatic storage"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/wps/upnp_xml.c",
+   "line": 224,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; data traces to network XML body that is never NULL"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/wps/upnp_xml.c",
+   "line": 251,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'buf' holds heap memory from wpabuf_alloc_ext_data(), not automatic storage; heap-vs-local-storage confusion"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_attr_process.c",
+   "line": 16,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'wps' only read (wps->last_msg, wps->authkey); genuine if low-value const opportunity"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_attr_process.c",
+   "line": 23,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc-NULL-check stylistic pedantry, established categorical FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_attr_process.c",
+   "line": 54,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'wps' only read (wps->authkey); genuine if low-value const opportunity"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_attr_process.c",
+   "line": 61,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc-NULL-check stylistic pedantry, established categorical FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_attr_process.c",
+   "line": 84,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'cred' entirely unused in wps_process_cred_network_idx body; trivially const-able"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_attr_process.c",
+   "line": 87,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc-NULL-check stylistic pedantry, established categorical FP"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_attr_process.c",
+   "line": 102,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc-NULL-check stylistic pedantry, established categorical FP"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/wps/wps_attr_process.c",
+   "line": 113,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(cred->ssid) is a fixed struct-member array, not sizeof of decayed pointer 'cred' itself"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_attr_process.c",
+   "line": 125,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc-NULL-check stylistic pedantry, established categorical FP"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_attr_process.c",
+   "line": 142,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc-NULL-check stylistic pedantry, established categorical FP"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_attr_process.c",
+   "line": 159,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc-NULL-check stylistic pedantry, established categorical FP"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_attr_process.c",
+   "line": 172,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc-NULL-check stylistic pedantry, established categorical FP"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/wps/wps_attr_process.c",
+   "line": 186,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(cred->key) is a fixed struct-member array, same correct-idiom FP as line 113"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_attr_process.c",
+   "line": 195,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misses real mutation: os_memcpy(cred->mac_addr, mac_addr, ETH_ALEN) writes through cred two lines later"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_attr_process.c",
+   "line": 198,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc-NULL-check stylistic pedantry, established categorical FP"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/wps/wps_attr_process.c",
+   "line": 213,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise op is on cred->auth_type, arithmetic on cred->key_len/cred->key[]; container-vs-member misattribution, not 'cred' itself"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_attr_process.c",
+   "line": 247,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'attr' fields only read (network_idx/ssid/auth_type/etc forwarded by value), attr pointer itself never mutated"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_attr_process.c",
+   "line": 267,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "same as line 247, plain read-only forwarding helper"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/wps/wps_attr_process.c",
+   "line": 271,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_memset(cred, 0, sizeof(*cred)) is the correct sizeof(*ptr) idiom, not decayed-pointer misuse"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 22,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "function returns 'wpa_s' itself on multiple paths; constifying the param would break the non-const return type contract"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 63,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'iface' is a local pointer variable walking wpa_s->global->ifaces (heap-backed linked list) / wpa_s->parent, never stack storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 70,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed eloop_timeout_handler callback signature (registered via eloop_register_timeout); dispatch-contract FP"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 100,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_get_tx_interface() never returns NULL (always returns wpa_s, wpa_s->parent, or a found list entry)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 145,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() are pure accessors as sibling args; established EXP30-C pure-accessor FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 159,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same wpabuf_head/wpabuf_len pure-accessor FP"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 179,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; TX status data comes from own driver event, and the subtraction underflow (if any) only makes the guard fail-safe, no OOB"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 197,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/wpabuf_len sibling-arg pure-accessor FP"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 259,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; src always a caller-supplied MAC address buffer"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 259,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "tx_cb is an optional (NULL-allowed by design) function pointer per its own doc comment, not a missing-check bug"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 270,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR() pure array-read macro misread as side-effecting; established FP class"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 307,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bitwise op is on wpa_s->drv_flags, not on 'wpa_s' itself; container-vs-member misattribution"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 316,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/wpabuf_len sibling-arg pure-accessor FP"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 331,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_get_tx_interface() never returns NULL, same as line 100"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 363,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "deliberate fallback: leaves caller-supplied wait_time unchanged when within bounds, not an unhandled case"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 405,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "deliberate no-op fallback when neither offchannel mechanism is pending; intended behavior"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 423,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only driver-event callback; wpa_s always the registered context pointer"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 440,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only driver-event callback; wpa_s always the registered context pointer"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 457,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "forwards wpa_s to offchannel_clear_pending_action_tx() which mutates wpa_s->pending_action_tx; cannot be const"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/hw_features.h",
+   "line": 37,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "#ifdef NEED_AP_MLME .../#else no-op static-inline stub; param is 100% unused in this branch body, established TP-low-value pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/hw_features.h",
+   "line": 42,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "#ifdef NEED_AP_MLME .../#else no-op static-inline stub; param is 100% unused in this branch body, established TP-low-value pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/hw_features.h",
+   "line": 47,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "#ifdef NEED_AP_MLME .../#else no-op static-inline stub; param is 100% unused in this branch body, established TP-low-value pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/hw_features.h",
+   "line": 52,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "#ifdef NEED_AP_MLME .../#else no-op static-inline stub; param is 100% unused in this branch body, established TP-low-value pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/hw_features.h",
+   "line": 57,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "#ifdef NEED_AP_MLME .../#else no-op static-inline stub; param is 100% unused in this branch body, established TP-low-value pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/hw_features.h",
+   "line": 67,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "#ifdef NEED_AP_MLME .../#else no-op static-inline stub; param is 100% unused in this branch body, established TP-low-value pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/hw_features.h",
+   "line": 72,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "#ifdef NEED_AP_MLME .../#else no-op static-inline stub; param is 100% unused in this branch body, established TP-low-value pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/hw_features.h",
+   "line": 77,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "#ifdef NEED_AP_MLME .../#else no-op static-inline stub; param is 100% unused in this branch body, established TP-low-value pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/hw_features.h",
+   "line": 82,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "#ifdef NEED_AP_MLME .../#else no-op static-inline stub; param is 100% unused in this branch body, established TP-low-value pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/hw_features.h",
+   "line": 83,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "#ifdef NEED_AP_MLME .../#else no-op static-inline stub; param is 100% unused in this branch body, established TP-low-value pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/hw_features.h",
+   "line": 88,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "#ifdef NEED_AP_MLME .../#else no-op static-inline stub; param is 100% unused in this branch body, established TP-low-value pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/hw_features.h",
+   "line": 92,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "#ifdef NEED_AP_MLME .../#else no-op static-inline stub; param is 100% unused in this branch body, established TP-low-value pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/hw_features.h",
+   "line": 93,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "#ifdef NEED_AP_MLME .../#else no-op static-inline stub; param is 100% unused in this branch body, established TP-low-value pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/hw_features.h",
+   "line": 98,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "#ifdef NEED_AP_MLME .../#else no-op static-inline stub; param is 100% unused in this branch body, established TP-low-value pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/hw_features.h",
+   "line": 103,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "#ifdef NEED_AP_MLME .../#else no-op static-inline stub; param is 100% unused in this branch body, established TP-low-value pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/hw_features.h",
+   "line": 109,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "#ifdef NEED_AP_MLME .../#else no-op static-inline stub; param is 100% unused in this branch body, established TP-low-value pattern"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/ap/hw_features.h",
+   "line": 113,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "real signature (hw_features.c) and stub disagree (int vs u32 oper_freq), but the two declarations sit in mutually-exclusive #ifdef/#else branches and are never simultaneously visible to a single compile"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/hw_features.h",
+   "line": 113,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "stub param unused, same established pattern"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 25,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "genuinely shares first 8 chars ('ieee802_') with ieee802_1x.h; low-value 8.3-legacy-filesystem convention hit"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 25,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "genuinely shares first 8 chars with ieee802_11_auth.h"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 26,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "genuinely shares first 8 chars ('ieee802_') with ieee802_11_auth.h"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 66,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "acl_cache is forwarded to hostapd_acl_cache_free_entry() (non-const, calls os_free) each iteration; cannot be const"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 78,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hapd only read (hapd->acl_cache traversal) in hostapd_acl_cache_get"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 197,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'fail:' is a real goto target reached from ~10 earlier goto statements in this function; not unreachable"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 211,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hapd only read (hapd->conf->accept_mac/deny_mac/macaddr_acl) in hostapd_check_acl"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 250,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; hapd always valid in this call chain"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 250,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; addr always a caller-supplied MAC address buffer"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 256,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_memset(out, 0, sizeof(*out)) is the correct sizeof(*ptr) idiom"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 275,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(out->vlan_id) is a fixed struct-member size, not decayed-pointer misuse"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 399,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; hapd always valid (eloop timeout callback context)"
+  },
+  {
+   "rule": "MEM03-C",
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 417,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "RADIUS Tunnel-Password secret freed via plain os_free(passphrase) with no memset/bin_clear_free beforehand"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 458,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "two branches (hex-key-length vs normal-length) exhaustively partition the range already bounded by the earlier passphraselen guard"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 488,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ptr+size_t idiom (shared_secret/shared_secret_len); established categorical FP regardless of parameter ordering"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 499,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "radius_msg_get_hdr() always returns msg->hdr, which is unconditionally set in radius_msg_new()/radius_msg_parse(); never NULL"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 528,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*cache) on the still-unassigned pointer is not a dereference; established sizeof(*ptr)-not-a-deref FP"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 727,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*query) on the still-unassigned pointer is not a dereference, same FP class as line 528"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 33,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'u8 opt_lladdr[0]' is a deliberate flexible/trailing array member idiom, not an undersized string buffer"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 45,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ip6addr) inside os_zalloc(sizeof(*ip6addr)) is not a dereference; established FP class"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 49,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*addr) is the correct dereferenced-type-size idiom for a fixed struct in6_addr, not decayed-pointer misuse"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 57,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; hapd always valid in sta_ip6addr_del's call chain"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 57,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; sta always valid in sta_ip6addr_del's call chain"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 61,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ip6addr/prev are distinct loop variables, &sta->ip6addr a third distinct object; established dl_list_for_each_safe macro FP"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 61,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dl_list_for_each_safe's own internal iteration mechanics; established dl_list-macro EXP33-C FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 70,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'addr' (struct in6_addr *) only read via addr->s6_addr32[...] in sta_has_ip6addr"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 74,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same dl_list_for_each macro FP as line 61"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 74,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same dl_list_for_each macro FP as line 61"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 93,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "cast-away-const on a const u8 *buf packet param, forwarded to x_snoop_mcast_to_ucast_convert_send() which actually os_memcpy()-overwrites the buffer's dest MAC in place"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 98,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ptr+size_t idiom (buf/len); established categorical FP"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 106,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'char addrtxt[INET6_ADDRSTRLEN + 1]' is a fixed compile-time-constant size, not a runtime-sized VLA"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 108,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pure integer-sum length comparison (ETH_HLEN + sizeof(...) + sizeof(...)), no pointer operand at all; established ARR39-C misfire class"
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 112,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "the NEIGHBOR_SOLICITATION case ends with an explicit break; no fallthrough occurs"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 177,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "file uses no pthreads; established strerror()-no-pthread FP class"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 177,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same no-pthread FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 185,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; hapd always valid on the hostapd lifecycle deinit path"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "src/wps/upnp_xml.c",
+  "src/wps/wps_attr_process.c",
+  "wpa_supplicant/offchannel.c",
+  "src/ap/hw_features.h",
+  "src/ap/ieee802_11_auth.c",
+  "src/ap/ndisc_snoop.c"
+ ],
+ "summary": {
+  "tp": 35,
+  "fp": 76,
+  "fn": 0
+ }
+}

@@ -1,0 +1,1354 @@
+{
+ "wpa_supplicant/events.c#part1of2": [
+  {
+   "column": 1,
+   "file": "wpa_supplicant/events.c",
+   "line": 31,
+   "message": "Header file 'ieee802_11_defs.h' has the same first 8 characters (case-insensitive) as 'ieee802_11_common.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_defs.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/events.c",
+   "line": 70,
+   "message": "Function 'wpas_temp_disabled' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 51,
+   "file": "wpa_supplicant/events.c",
+   "line": 126,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 25,
+   "file": "wpa_supplicant/events.c",
+   "line": 142,
+   "message": "Reserved identifier '__wpa_supplicant_get_new_bss' should not be used as function name",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Use a non-reserved function name"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/events.c",
+   "line": 161,
+   "message": "Function returns pointer to local variable 'bss' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/events.c",
+   "line": 174,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/events.c",
+   "line": 206,
+   "message": "Function returns pointer to local variable 'bss' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 27,
+   "file": "wpa_supplicant/events.c",
+   "line": 221,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/events.c",
+   "line": 225,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 64,
+   "file": "wpa_supplicant/events.c",
+   "line": 324,
+   "message": "Pointer parameter 'sock_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sock_ctx'"
+  },
+  {
+   "column": 29,
+   "file": "wpa_supplicant/events.c",
+   "line": 358,
+   "message": "sizeof applied to pointer/array parameter 'wpa_s' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(wpa_s->links)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 31,
+   "file": "wpa_supplicant/events.c",
+   "line": 429,
+   "message": "sizeof applied to pointer/array parameter 'wpa_s' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(wpa_s->last_tk)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 29,
+   "file": "wpa_supplicant/events.c",
+   "line": 491,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/events.c",
+   "line": 493,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 62,
+   "file": "wpa_supplicant/events.c",
+   "line": 510,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/events.c",
+   "line": 542,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/events.c",
+   "line": 562,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 40,
+   "file": "wpa_supplicant/events.c",
+   "line": 605,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 56,
+   "file": "wpa_supplicant/events.c",
+   "line": 619,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/events.c",
+   "line": 678,
+   "message": "Variable 'ssid' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 29,
+   "file": "wpa_supplicant/events.c",
+   "line": 942,
+   "message": "Pointer parameter 'freqs' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *freqs'"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/events.c",
+   "line": 946,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/events.c",
+   "line": 999,
+   "message": "Variable 'rate_ie' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 21,
+   "file": "wpa_supplicant/events.c",
+   "line": 1000,
+   "message": "Variable 'j' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/events.c",
+   "line": 1001,
+   "message": "Variable 'r' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const r = ..."
+  },
+  {
+   "column": 17,
+   "file": "wpa_supplicant/events.c",
+   "line": 1086,
+   "message": "Modulo operator used with potentially signed operands. The result of % with negative operands is implementation-defined and can be negative. Use unsigned types (size_t, unsigned int) or explicitly handle negative remainders.",
+   "rule_id": "INT10-C",
+   "severity": "Medium",
+   "suggestion": "Convert operands to unsigned types (size_t, unsigned int) or add explicit checks for negative values"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/events.c",
+   "line": 1155,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 41,
+   "file": "wpa_supplicant/events.c",
+   "line": 1197,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/events.c",
+   "line": 1226,
+   "message": "Function 'sae_pk_acceptable_bss_with_pk' participates in indirect recursion: sae_pk_acceptable_bss_with_pk -> wpa_scan_res_ok -> sae_pk_acceptable_bss_with_pk",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to eliminate the recursion cycle"
+  },
+  {
+   "column": 23,
+   "file": "wpa_supplicant/events.c",
+   "line": 1227,
+   "message": "Pointer parameter 'orig_bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *orig_bss'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/events.c",
+   "line": 1261,
+   "message": "Function 'wpa_scan_res_ok' participates in indirect recursion: wpa_scan_res_ok -> sae_pk_acceptable_bss_with_pk -> wpa_scan_res_ok",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to eliminate the recursion cycle"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/events.c",
+   "line": 1267,
+   "message": "Value assigned to 'check_ssid' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/events.c",
+   "line": 1286,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 17,
+   "file": "wpa_supplicant/events.c",
+   "line": 1592,
+   "message": "Passing null pointer 'owe_ssid' to 'os_memcmp' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'owe_ssid' is not NULL before passing to 'os_memcmp'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/events.c",
+   "line": 1619,
+   "message": "Function 'wpa_scan_res_match' does not validate pointer parameter 'group' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'group' at the start of the function, e.g., 'if (!group) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/events.c",
+   "line": 1619,
+   "message": "Function 'wpa_scan_res_match' does not validate integer parameter 'i' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'i' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/events.c",
+   "line": 1621,
+   "message": "Pointer parameter 'group' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *group'"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/events.c",
+   "line": 1639,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/events.c",
+   "line": 1655,
+   "message": "Testing 'wpa_supplicant_enabled_networks(wpa_s)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: wpa_supplicant_enabled_networks(wpa_s) != 0"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/events.c",
+   "line": 1713,
+   "message": "Function returns pointer to local variable 'ssid' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/events.c",
+   "line": 1721,
+   "message": "Function 'wpa_supplicant_select_bss' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/events.c",
+   "line": 1721,
+   "message": "Function 'wpa_supplicant_select_bss' does not validate pointer parameter 'group' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'group' at the start of the function, e.g., 'if (!group) { return error_code; }'"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/events.c",
+   "line": 1750,
+   "message": "Potential null pointer dereference in member access of variable 'group'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'group' is not NULL before member access"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/events.c",
+   "line": 1764,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/events.c",
+   "line": 1800,
+   "message": "Loop uses uninitialized variable 'prio' as bound for array access. This has indeterminate value and can cause out-of-bounds access.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize 'prio' to a valid value before using it in the loop"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/events.c",
+   "line": 1823,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/events.c",
+   "line": 1924,
+   "message": "Potential null pointer dereference in member access of variable 'selected'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'selected' is not NULL before member access"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/events.c",
+   "line": 1977,
+   "message": "Function 'wpa_supplicant_connect' participates in indirect recursion: wpa_supplicant_connect -> wpas_wps_cancel -> wpas_clear_wps -> wpa_supplicant_deauthenticate -> wpa_supplicant_event -> wnm_btm_resp_tx_status -> wnm_bss_tm_connect -> wpa_supplicant_connect",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to eliminate the recursion cycle"
+  },
+  {
+   "column": 32,
+   "file": "wpa_supplicant/events.c",
+   "line": 1982,
+   "message": "Potential null pointer dereference in member access of variable 'ssid'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'ssid' is not NULL before member access"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/events.c",
+   "line": 2006,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 31,
+   "file": "wpa_supplicant/events.c",
+   "line": 2010,
+   "message": "Potential null pointer dereference in member access of variable 'selected'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'selected' is not NULL before member access"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/events.c",
+   "line": 2054,
+   "message": "Loop uses uninitialized variable 'prio' as bound for array access. This has indeterminate value and can cause out-of-bounds access.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize 'prio' to a valid value before using it in the loop"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/events.c",
+   "line": 2073,
+   "message": "Function returns pointer to local variable 'ssid' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/events.c",
+   "line": 2159,
+   "message": "Value assigned to 'cur_snr' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/events.c",
+   "line": 2160,
+   "message": "Value assigned to 'ret' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 11,
+   "file": "wpa_supplicant/events.c",
+   "line": 2294,
+   "message": "Pointer comparison '>' between pointers from different arrays: 'current_bss->est_throughput' and 'selected->est_throughput'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before comparison"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/events.c",
+   "line": 2302,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 11,
+   "file": "wpa_supplicant/events.c",
+   "line": 2302,
+   "message": "Pointer comparison '>' between pointers from different arrays: 'selected->est_throughput' and 'current_bss->est_throughput'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before comparison"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/events.c",
+   "line": 2311,
+   "message": "Pointer subtraction between pointers from different arrays: 'selected->level' and 'current_bss->level'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/events.c",
+   "line": 2323,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/events.c",
+   "line": 2337,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 28,
+   "file": "wpa_supplicant/events.c",
+   "line": 2339,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 18,
+   "file": "wpa_supplicant/events.c",
+   "line": 2395,
+   "message": "Potential null pointer dereference in member access of variable 'data'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'data' is not NULL before member access"
+  },
+  {
+   "column": 57,
+   "file": "wpa_supplicant/events.c",
+   "line": 2412,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 31,
+   "file": "wpa_supplicant/events.c",
+   "line": 2413,
+   "message": "Pointer parameter 'scan_res' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *scan_res'"
+  },
+  {
+   "column": 22,
+   "file": "wpa_supplicant/events.c",
+   "line": 2421,
+   "message": "Variable 'ie_end' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'ie_end' before use, e.g., at its declaration"
+  },
+  {
+   "column": 44,
+   "file": "wpa_supplicant/events.c",
+   "line": 2422,
+   "message": "Variable 'info' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'info' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/events.c",
+   "line": 2467,
+   "message": "Function '_wpa_supplicant_event_scan_results' participates in indirect recursion: _wpa_supplicant_event_scan_results -> wpas_wps_partner_link_scan_done -> wpa_wps_supplicant_fast_associate -> wpas_select_network_from_last_scan -> wpa_supplicant_deauthenticate -> wpa_supplicant_event -> wpa_supplicant_event_scan_results -> _wpa_supplicant_event_scan_results",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to eliminate the recursion cycle"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/events.c",
+   "line": 2471,
+   "message": "Value assigned to 'scan_res' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/events.c",
+   "line": 2501,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/events.c",
+   "line": 2533,
+   "message": "Bitwise operator '&' used on signed operand 'res' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'res' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/events.c",
+   "line": 2534,
+   "message": "Bitwise operator '&' used on signed operand 'res' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'res' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/events.c",
+   "line": 2535,
+   "message": "Bitwise operator '&' used on signed operand 'res' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'res' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/events.c",
+   "line": 2536,
+   "message": "Bitwise operator '&' used on signed operand 'res' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'res' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/events.c",
+   "line": 2546,
+   "message": "Loop uses uninitialized variable 'idx' as bound for array access. This has indeterminate value and can cause out-of-bounds access.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize 'idx' to a valid value before using it in the loop"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/events.c",
+   "line": 2635,
+   "message": "Testing 'bgscan_notify_scan(wpa_s, scan_res)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: bgscan_notify_scan(wpa_s, scan_res) != 0"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/events.c",
+   "line": 2685,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/events.c",
+   "line": 2686,
+   "message": "Double-free: 'scan_res' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/events.c",
+   "line": 2686,
+   "message": "Double free detected: 'scan_res' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpa_scan_results_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/events.c",
+   "line": 2706,
+   "message": "Function 'wpas_select_network_from_last_scan' participates in indirect recursion: wpas_select_network_from_last_scan -> wpas_p2p_scan_no_go_seen -> wpas_p2p_fallback_to_go_neg -> wpas_p2p_group_delete -> wpa_supplicant_deauthenticate -> wpa_supplicant_event -> wpas_event_deauth -> wpas_event_disconnect -> wpa_supplicant_event_disassoc_finish -> wpas_connection_failed -> wpa_supplicant_fast_associate -> wpas_select_network_from_last_scan",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to eliminate the recursion cycle"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/events.c",
+   "line": 2713,
+   "message": "Variable 'time_to_reenable' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const time_to_reenable = ..."
+  },
+  {
+   "column": 56,
+   "file": "wpa_supplicant/events.c",
+   "line": 2745,
+   "message": "Passing null pointer 'ssid' to 'wpa_supplicant_need_to_roam' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'ssid' is not NULL before passing to 'wpa_supplicant_need_to_roam'"
+  },
+  {
+   "column": 47,
+   "file": "wpa_supplicant/events.c",
+   "line": 2761,
+   "message": "Passing null pointer 'ssid' to 'wpa_supplicant_connect' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'ssid' is not NULL before passing to 'wpa_supplicant_connect'"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/events.c",
+   "line": 2784,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 56,
+   "file": "wpa_supplicant/events.c",
+   "line": 2876,
+   "message": "Pointer parameter 'self' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *self'"
+  },
+  {
+   "column": 28,
+   "file": "wpa_supplicant/events.c",
+   "line": 2877,
+   "message": "Pointer parameter 'other' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *other'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/events.c",
+   "line": 2890,
+   "message": "Function 'wpa_supplicant_event_scan_results' participates in indirect recursion: wpa_supplicant_event_scan_results -> _wpa_supplicant_event_scan_results -> wpas_select_network_from_last_scan -> wpa_supplicant_deauthenticate -> wpa_supplicant_event -> wpa_supplicant_event_scan_results",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to eliminate the recursion cycle"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/events.c",
+   "line": 2945,
+   "message": "Function 'wpa_supplicant_fast_associate' participates in indirect recursion: wpa_supplicant_fast_associate -> wpas_select_network_from_last_scan -> wpa_supplicant_deauthenticate -> wpa_supplicant_event -> wpas_event_deauth -> wpas_event_disconnect -> wpa_supplicant_event_disassoc_finish -> wpas_connection_failed -> wpa_supplicant_fast_associate",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to eliminate the recursion cycle"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/events.c",
+   "line": 2945,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/events.c",
+   "line": 2962,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/events.c",
+   "line": 2972,
+   "message": "Function 'wpa_wps_supplicant_fast_associate' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/events.c",
+   "line": 2972,
+   "message": "Function 'wpa_wps_supplicant_fast_associate' participates in indirect recursion: wpa_wps_supplicant_fast_associate -> wpas_select_network_from_last_scan -> wpa_supplicant_deauthenticate -> wpa_supplicant_event -> wpa_supplicant_event_scan_results -> _wpa_supplicant_event_scan_results -> wpas_wps_partner_link_scan_done -> wpa_wps_supplicant_fast_associate",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to eliminate the recursion cycle"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/events.c",
+   "line": 2972,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 54,
+   "file": "wpa_supplicant/events.c",
+   "line": 2984,
+   "message": "Pointer parameter 'sock_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sock_ctx'"
+  },
+  {
+   "column": 44,
+   "file": "wpa_supplicant/events.c",
+   "line": 3008,
+   "message": "Modulo operator used with potentially signed operands. The result of % with negative operands is implementation-defined and can be negative. Use unsigned types (size_t, unsigned int) or explicitly handle negative remainders.",
+   "rule_id": "INT10-C",
+   "severity": "Medium",
+   "suggestion": "Convert operands to unsigned types (size_t, unsigned int) or add explicit checks for negative values"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/events.c",
+   "line": 3020,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/events.c",
+   "line": 3027,
+   "message": "Variable 'elems' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'elems' before use, e.g., at its declaration"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/events.c",
+   "line": 3037,
+   "message": "Variable 'wpa_s' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/events.c",
+   "line": 3084,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/events.c",
+   "line": 3090,
+   "message": "Variable 'elems' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'elems' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/events.c",
+   "line": 3097,
+   "message": "Function 'wpa_supplicant_set_4addr_mode' participates in indirect recursion: wpa_supplicant_set_4addr_mode -> wpa_supplicant_deauthenticate -> wpa_supplicant_event -> wpa_supplicant_event_assoc -> multi_ap_set_4addr_mode -> wpa_supplicant_set_4addr_mode",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to eliminate the recursion cycle"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/events.c",
+   "line": 3112,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/events.c",
+   "line": 3128,
+   "message": "Variable 'elems' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'elems' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/events.c",
+   "line": 3144,
+   "message": "Function 'multi_ap_set_4addr_mode' participates in indirect recursion: multi_ap_set_4addr_mode -> wpa_supplicant_set_4addr_mode -> wpa_supplicant_deauthenticate -> wpa_supplicant_event -> wpa_supplicant_event_assoc -> multi_ap_set_4addr_mode",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to eliminate the recursion cycle"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/events.c",
+   "line": 3171,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 36,
+   "file": "wpa_supplicant/events.c",
+   "line": 3200,
+   "message": "Pointer arithmetic 'ie + 2' goes 1 elements past the end of array 'ie[1]'. This exceeds array bounds.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Ensure pointer arithmetic stays within array bounds (0 to 1)"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/events.c",
+   "line": 3220,
+   "message": "Function 'wpa_supplicant_use_own_rsne_params' participates in indirect recursion: wpa_supplicant_use_own_rsne_params -> wpa_supplicant_deauthenticate -> wpa_supplicant_event -> wpa_supplicant_event_assoc -> wpa_supplicant_use_own_rsne_params",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to eliminate the recursion cycle"
+  },
+  {
+   "column": 33,
+   "file": "wpa_supplicant/events.c",
+   "line": 3221,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/events.c",
+   "line": 3235,
+   "message": "Potential null pointer dereference in member access of variable 'data'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'data' is not NULL before member access"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/events.c",
+   "line": 3240,
+   "message": "Pointer comparison '>' between pointers from different arrays: 'p[1]' and 'data->assoc_info.req_ies_len'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before comparison"
+  },
+  {
+   "column": 27,
+   "file": "wpa_supplicant/events.c",
+   "line": 3246,
+   "message": "string/character literal contains a non-ASCII byte (>= 0x80) -- not portable across locales/national ASCII variants",
+   "rule_id": "MSC09-C",
+   "severity": "Low",
+   "suggestion": "Restrict string and character literals to the portable ASCII subset (letters, digits, space, and basic punctuation)"
+  },
+  {
+   "column": 27,
+   "file": "wpa_supplicant/events.c",
+   "line": 3248,
+   "message": "string/character literal contains a non-ASCII byte (>= 0x80) -- not portable across locales/national ASCII variants",
+   "rule_id": "MSC09-C",
+   "severity": "Low",
+   "suggestion": "Restrict string and character literals to the portable ASCII subset (letters, digits, space, and basic punctuation)"
+  },
+  {
+   "column": 36,
+   "file": "wpa_supplicant/events.c",
+   "line": 3257,
+   "message": "Variable 'len' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'len' before use, e.g., at its declaration"
+  },
+  {
+   "column": 28,
+   "file": "wpa_supplicant/events.c",
+   "line": 3302,
+   "message": "Hard-coded sensitive information detected passed to `wpas_auth_failed`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"NO_PSK_AVAILABLE\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/events.c",
+   "line": 3361,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 34,
+   "file": "wpa_supplicant/events.c",
+   "line": 3452,
+   "message": "Pointer parameter 'req_elems' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *req_elems'"
+  },
+  {
+   "column": 34,
+   "file": "wpa_supplicant/events.c",
+   "line": 3453,
+   "message": "Pointer parameter 'resp_elems' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *resp_elems'"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/events.c",
+   "line": 3488,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/events.c",
+   "line": 3494,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 25,
+   "file": "wpa_supplicant/events.c",
+   "line": 3523,
+   "message": "Variable 'req_elems' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'req_elems' before use, e.g., at its declaration"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/events.c",
+   "line": 3524,
+   "message": "Variable 'resp_elems' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'resp_elems' before use, e.g., at its declaration"
+  },
+  {
+   "column": 43,
+   "file": "wpa_supplicant/events.c",
+   "line": 3573,
+   "message": "Variable 'i' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'i' before use, e.g., at its declaration"
+  },
+  {
+   "column": 63,
+   "file": "wpa_supplicant/events.c",
+   "line": 3590,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 51,
+   "file": "wpa_supplicant/events.c",
+   "line": 3616,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/events.c",
+   "line": 3642,
+   "message": "Function 'wpa_supplicant_event_associnfo' participates in indirect recursion: wpa_supplicant_event_associnfo -> wpa_supplicant_deauthenticate -> wpa_supplicant_event -> wpa_supplicant_event_assoc -> wpa_supplicant_event_associnfo",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to eliminate the recursion cycle"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/events.c",
+   "line": 3666,
+   "message": "Potential null pointer dereference in member access of variable 'data'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'data' is not NULL before member access"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/events.c",
+   "line": 3710,
+   "message": "Pointer comparison '>' between pointers from different arrays: 'p[1]' and 'data->assoc_info.beacon_ies_len'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before comparison"
+  },
+  {
+   "column": 27,
+   "file": "wpa_supplicant/events.c",
+   "line": 3717,
+   "message": "string/character literal contains a non-ASCII byte (>= 0x80) -- not portable across locales/national ASCII variants",
+   "rule_id": "MSC09-C",
+   "severity": "Low",
+   "suggestion": "Restrict string and character literals to the portable ASCII subset (letters, digits, space, and basic punctuation)"
+  },
+  {
+   "column": 27,
+   "file": "wpa_supplicant/events.c",
+   "line": 3719,
+   "message": "string/character literal contains a non-ASCII byte (>= 0x80) -- not portable across locales/national ASCII variants",
+   "rule_id": "MSC09-C",
+   "severity": "Low",
+   "suggestion": "Restrict string and character literals to the portable ASCII subset (letters, digits, space, and basic punctuation)"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/events.c",
+   "line": 3748,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/events.c",
+   "line": 3812,
+   "message": "Variable 'elems' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'elems' before use, e.g., at its declaration"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/events.c",
+   "line": 3872,
+   "message": "Pointer comparison '>' between pointers from different arrays: 'p[1]' and 'data->assoc_info.beacon_ies_len'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before comparison"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/events.c",
+   "line": 3929,
+   "message": "Pointer comparison '>' between pointers from different arrays: 'p[1]' and 'data->assoc_info.beacon_ies_len'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before comparison"
+  },
+  {
+   "column": 24,
+   "file": "wpa_supplicant/events.c",
+   "line": 3936,
+   "message": "string/character literal contains a non-ASCII byte (>= 0x80) -- not portable across locales/national ASCII variants",
+   "rule_id": "MSC09-C",
+   "severity": "Low",
+   "suggestion": "Restrict string and character literals to the portable ASCII subset (letters, digits, space, and basic punctuation)"
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/events.c",
+   "line": 4001,
+   "message": "Variable 'bss' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'bss' before use, e.g., at its declaration"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/events.c",
+   "line": 4015,
+   "message": "Passing pointer to uninitialized variable 'resp_elems_local' to 'ieee802_11_parse_elems' which reads the value",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'resp_elems_local' before passing its address to 'ieee802_11_parse_elems'"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/events.c",
+   "line": 4027,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 65,
+   "file": "wpa_supplicant/events.c",
+   "line": 4070,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/events.c",
+   "line": 4072,
+   "message": "Value assigned to 'bss_wpa' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/events.c",
+   "line": 4072,
+   "message": "Value assigned to 'bss_rsn' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/events.c",
+   "line": 4072,
+   "message": "Value assigned to 'bss_rsnx' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 31,
+   "file": "wpa_supplicant/events.c",
+   "line": 4111,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/events.c",
+   "line": 4143,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 63,
+   "file": "wpa_supplicant/events.c",
+   "line": 4149,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 30,
+   "file": "wpa_supplicant/events.c",
+   "line": 4150,
+   "message": "Pointer parameter 'elems' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *elems'"
+  },
+  {
+   "column": 24,
+   "file": "wpa_supplicant/events.c",
+   "line": 4178,
+   "message": "sizeof applied to pointer/array parameter 'ml_info' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*ml_info)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/events.c",
+   "line": 4254,
+   "message": "Value assigned to 'pos' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/events.c",
+   "line": 4269,
+   "message": "Variable 'end' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'end' before use, e.g., at its declaration"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/events.c",
+   "line": 4292,
+   "message": "Dereferencing pointer in switch statement may create double-fetch vulnerability",
+   "rule_id": "CON43-C",
+   "severity": "High",
+   "suggestion": "Store dereferenced value in a local variable or use atomic operations"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/events.c",
+   "line": 4309,
+   "message": "Unsigned integer addition 'pos + 2 + sub_elem_len' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }"
+  }
+ ]
+}

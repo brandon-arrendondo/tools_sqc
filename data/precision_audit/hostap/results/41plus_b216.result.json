@@ -1,0 +1,690 @@
+{
+ "labels": [
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 25,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "31-sig-char judgment call, not practically actionable on modern toolchains (dpp.h precedent)"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 29,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ifdef-branch-blind; function always returns via out:/fail: funnel"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 33,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Initial Qi=NULL dead-init, unconditionally overwritten at :43 before any read"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 159,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto-target label after return, reached via goto fail"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 167,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "dpp_pkex_fail's pkex genuinely unmodified, plain internal helper (low-value)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 173,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "bi param: internal-only API, caller always passes hapd/wpa_s owned bootstrap info"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 173,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "own_mac param: internal-only API, caller always passes wpa_s/hapd own_addr"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 173,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "code param: internal-only API, caller always passes local config value"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 173,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bi is a struct pointer, not an array; API05-C idiom misfire"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 175,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "identifier is a NUL-terminated string param, not an unbounded array"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 175,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "code paired with code_len on next line, ptr+size idiom"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 188,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*pkex) is a type query, not a dereference"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 208,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pkex is os_zalloc'd heap object, not automatic storage"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 209,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto-target label after return, reached via goto fail"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 216,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pkex IS modified: os_memcpy(pkex->Nx,...) at :298, DCL13-C misses write-through-member mutation"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 220,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Initial msg=NULL dead-init, unconditionally overwritten at :234 before any read"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 309,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto-target label after return, reached via goto fail"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 332,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "attr_id && identifier guard in same condition before os_memcmp"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 341,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "msg_ctx param: internal-only API, always hapd->msg_ctx/wpa_s"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 341,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "code param: internal-only API, local config value"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 341,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ifdef-branch-blind; function always returns pkex via out:/fail: funnel"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 341,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "code paired with code_len param, ptr+size idiom"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 345,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf paired with len param, ptr+size idiom"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 346,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ptr+size idiom misfire"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 358,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "zero getenv() calls anywhere in this file"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 376,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "!version || version[0] short-circuit guard in same condition"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 435,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "attr_key_len & 0x01 combined with /2 division in same guard, genuine mixed bitwise+arithmetic"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 575,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "x_coord/y_coord already os_free'd two lines earlier in same out: block"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 576,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto-target label after return, reached via goto fail"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 584,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ifdef-branch-blind; function always returns via out:/fail: funnel"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 585,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "pkex genuinely unmodified in this helper, plain internal helper (low-value)"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 589,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Initial msg=NULL dead-init, unconditionally overwritten before any read"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 591,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Initial clear=NULL dead-init, unconditionally overwritten before any read"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 598,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "curve has zero bitwise operators anywhere in this function; misattribution"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 600,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "attr_len/clear_len are plain size_t, no pointer operand at all"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 612,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto stays in-function, always funnels to out: which frees clear"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 620,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto skip_bootstrap_key stays in-function, reaches out: free"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 633,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto skip_i_auth_tag stays in-function, reaches out: free"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 641,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto skip_i_auth_tag stays in-function, reaches out: free"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 654,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto skip_wrapped_data stays in-function, reaches out: free"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 671,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head(clear)/wpabuf_len(clear) are pure accessors, no side effects"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 690,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto-target label after return, reached via goto fail"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 697,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ifdef-branch-blind; function always returns via out:/fail: funnel"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 706,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Initial Qr=NULL dead-init, unconditionally overwritten before any read"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 709,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "zero getenv() calls anywhere in this file"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 713,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "zero getenv() calls anywhere in this file"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 741,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "!version || version[0] short-circuit guard in same condition"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 792,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "attr_key_len & 0x01 combined with /2 division, genuine mixed bitwise+arithmetic"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 860,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "addr[]/len[] counted partial-fill vector, only addr[0..num_elem-1] read"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 898,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "x_coord/y_coord already os_free'd two lines earlier in same out: block"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 899,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto-target label after return, reached via goto fail"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 905,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ifdef-branch-blind; function always returns via out:/fail: funnel"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 906,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "pkex genuinely unmodified in this helper, plain internal helper (low-value)"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 910,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Initial msg=NULL dead-init, unconditionally overwritten before any read"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 915,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Initial clear=NULL dead-init, unconditionally overwritten before any read"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 919,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "curve has zero bitwise operators anywhere in this function; misattribution"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 921,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "attr_len/clear_len are plain size_t, no pointer operand at all"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 933,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto stays in-function, always funnels to out: which frees clear"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 941,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto skip_bootstrap_key stays in-function, reaches out: free"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 954,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto skip_r_auth_tag stays in-function, reaches out: free"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 962,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto skip_r_auth_tag stays in-function, reaches out: free"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 975,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto skip_wrapped_data stays in-function, reaches out: free"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 992,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head(clear)/wpabuf_len(clear) are pure accessors, no side effects"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 1011,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto-target label after return, reached via goto fail"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 1018,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "hdr param: internal-only, caller passes fixed action-frame header offset"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 1018,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ifdef-branch-blind; function always returns via out:/fail: funnel"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 1024,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "zero getenv() calls anywhere in this file"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 1025,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "zero getenv() calls anywhere in this file"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 1033,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Initial unwrapped_len=0 dead-init, unconditionally overwritten/never read on goto-fail path"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 1036,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "zero getenv() calls anywhere in this file"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 1061,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "unwrapped_len/wrapped_data_len are plain u16/size_t, no pointer operand"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 1145,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_hexdump explicitly NULL-checks buf on every code path (wpa_debug.c:272), safe by callee contract"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 1193,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto-target label after return, reached via goto fail"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 1200,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "hdr param: internal-only, caller passes fixed action-frame header offset"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 1200,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ifdef-branch-blind; function always returns via out:/fail: funnel"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 1211,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Initial unwrapped_len=0 dead-init, unconditionally overwritten/never read on goto-fail path"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 1213,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "zero getenv() calls anywhere in this file"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 1215,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "zero getenv() calls anywhere in this file"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 1241,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "unwrapped_len/wrapped_data_len are plain u16/size_t, no pointer operand"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 1324,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_hexdump explicitly NULL-checks buf on every code path, safe by callee contract"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 1337,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto-target label after return, reached via goto fail"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 1348,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*bi) is a type query, not a dereference"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/dpp_pkex.c",
+   "line": 1370,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bi is os_zalloc'd heap object, not automatic storage"
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/common/dpp_pkex.c",
+   "line": 1362,
+   "rule": "MEM31-C",
+   "desc": "dpp_pkex_finish() leaks the entire pkex object (x/y crypto keys, code, identifier, z, wpabufs) when dpp_bootstrap_key_hash(bi) fails: that branch frees only bi and returns NULL without calling dpp_pkex_free(pkex), unlike the success path 3 lines below. No caller (dpp_hostapd.c:2359,2392; dpp_supplicant.c:3352) frees pkex on the !bi return either.",
+   "upstream_present": "unknown"
+  },
+  {
+   "file": "src/common/dpp_pkex.c",
+   "line": 149,
+   "rule": "EXP34-C",
+   "desc": "pkex->enc_key = wpabuf_alloc_copy(Mx, 2*curve->prime_len) is never NULL-checked (unlike every other allocation in this file); low-confidence, deferred-use only.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 14,
+  "fp": 69,
+  "fn": 2
+ }
+}

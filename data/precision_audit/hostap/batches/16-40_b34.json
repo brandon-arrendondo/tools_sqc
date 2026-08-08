@@ -1,0 +1,586 @@
+{
+ "src/common/ocv.c": [
+  {
+   "column": 7,
+   "file": "src/common/ocv.c",
+   "line": 48,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 48,
+   "file": "src/common/ocv.c",
+   "line": 49,
+   "message": "Modulo operator used with potentially signed operands. The result of % with negative operands is implementation-defined and can be negative. Use unsigned types (size_t, unsigned int) or explicitly handle negative remainders.",
+   "rule_id": "INT10-C",
+   "severity": "Medium",
+   "suggestion": "Convert operands to unsigned types (size_t, unsigned int) or add explicit checks for negative values"
+  },
+  {
+   "column": 44,
+   "file": "src/common/ocv.c",
+   "line": 55,
+   "message": "Pointer parameter 'ci' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ci'"
+  },
+  {
+   "column": 3,
+   "file": "src/common/ocv.c",
+   "line": 68,
+   "message": "Increment/decrement operation 'pos++' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 3,
+   "file": "src/common/ocv.c",
+   "line": 69,
+   "message": "Increment/decrement operation 'pos++' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 3,
+   "file": "src/common/ocv.c",
+   "line": 70,
+   "message": "Increment/decrement operation 'pos++' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 2,
+   "file": "src/common/ocv.c",
+   "line": 72,
+   "message": "Local variable 'pos' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ocv.c",
+   "line": 77,
+   "message": "Function 'ocv_insert_oci_kde' does not validate pointer parameter 'ci' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ci' at the start of the function, e.g., 'if (!ci) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ocv.c",
+   "line": 77,
+   "message": "Function 'ocv_insert_oci_kde' does not validate pointer parameter 'argpos' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'argpos' at the start of the function, e.g., 'if (!argpos) { return error_code; }'"
+  },
+  {
+   "column": 3,
+   "file": "src/common/ocv.c",
+   "line": 81,
+   "message": "Increment/decrement operation 'pos++' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 3,
+   "file": "src/common/ocv.c",
+   "line": 82,
+   "message": "Increment/decrement operation 'pos++' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 2,
+   "file": "src/common/ocv.c",
+   "line": 84,
+   "message": "Compound assignment 'pos += RSN_SELECTOR_LEN' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 2,
+   "file": "src/common/ocv.c",
+   "line": 86,
+   "message": "Local variable 'pos' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ocv.c",
+   "line": 91,
+   "message": "Function 'ocv_insert_extended_oci' does not validate pointer parameter 'pos' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pos' at the start of the function, e.g., 'if (!pos) { return error_code; }'"
+  },
+  {
+   "column": 61,
+   "file": "src/common/ocv.c",
+   "line": 91,
+   "message": "Pointer parameter 'pos' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pos'"
+  },
+  {
+   "column": 32,
+   "file": "src/common/ocv.c",
+   "line": 102,
+   "message": "Pointer parameter 'ci' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ci'"
+  }
+ ],
+ "src/tls/rsa.c": [
+  {
+   "column": 5,
+   "file": "src/tls/rsa.c",
+   "line": 36,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 25,
+   "file": "src/tls/rsa.c",
+   "line": 39,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 25,
+   "file": "src/tls/rsa.c",
+   "line": 67,
+   "message": "Dereference of uninitialized pointer 'key'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'key' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/rsa.c",
+   "line": 106,
+   "message": "Function returns pointer to local variable 'key' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/rsa.c",
+   "line": 108,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 25,
+   "file": "src/tls/rsa.c",
+   "line": 120,
+   "message": "Dereference of uninitialized pointer 'key'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'key' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/rsa.c",
+   "line": 133,
+   "message": "Function returns pointer to local variable 'key' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 25,
+   "file": "src/tls/rsa.c",
+   "line": 151,
+   "message": "Dereference of uninitialized pointer 'key'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'key' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/rsa.c",
+   "line": 227,
+   "message": "Function returns pointer to local variable 'key' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/rsa.c",
+   "line": 229,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/rsa.c",
+   "line": 240,
+   "message": "Function 'crypto_rsa_get_modulus_len' does not validate pointer parameter 'key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+  },
+  {
+   "column": 57,
+   "file": "src/tls/rsa.c",
+   "line": 240,
+   "message": "Pointer parameter 'key' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *key'"
+  },
+  {
+   "column": 7,
+   "file": "src/tls/rsa.c",
+   "line": 306,
+   "message": "Function 'bignum_mulmod' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 7,
+   "file": "src/tls/rsa.c",
+   "line": 310,
+   "message": "Function 'bignum_mul' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 7,
+   "file": "src/tls/rsa.c",
+   "line": 311,
+   "message": "Function 'bignum_add' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 7,
+   "file": "src/tls/rsa.c",
+   "line": 316,
+   "message": "Function 'bignum_exptmod' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  }
+ ],
+ "src/utils/radiotap.c": [
+  {
+   "column": 41,
+   "file": "src/utils/radiotap.c",
+   "line": 19,
+   "message": "Array declaration 'rtap_namespace_sizes[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/radiotap.c",
+   "line": 90,
+   "message": "Function 'ieee80211_radiotap_iterator_init' does not validate pointer parameter 'iterator' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'iterator' at the start of the function, e.g., 'if (!iterator) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/radiotap.c",
+   "line": 90,
+   "message": "Function 'ieee80211_radiotap_iterator_init' does not validate pointer parameter 'vns' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'vns' at the start of the function, e.g., 'if (!vns) { return error_code; }'"
+  },
+  {
+   "column": 19,
+   "file": "src/utils/radiotap.c",
+   "line": 111,
+   "message": "Scaled integer arithmetic with pointer: '(uint8_t *)radiotap_header + sizeof(*radiotap_header)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 48,
+   "file": "src/utils/radiotap.c",
+   "line": 111,
+   "message": "sizeof applied to pointer/array parameter 'radiotap_header' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*radiotap_header)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 37,
+   "file": "src/utils/radiotap.c",
+   "line": 114,
+   "message": "Pointer arithmetic on struct pointer with byte offset. Cast to char* before adding offset.",
+   "rule_id": "EXP08-C",
+   "severity": "Medium",
+   "suggestion": null
+  },
+  {
+   "column": 6,
+   "file": "src/utils/radiotap.c",
+   "line": 126,
+   "message": "Variable 'iterator' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 7,
+   "file": "src/utils/radiotap.c",
+   "line": 127,
+   "message": "Scaled integer arithmetic with pointer: '(unsigned long)iterator->_arg -\n\t\t    (unsigned long)iterator->_rtheader + sizeof(uint32_t)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 8,
+   "file": "src/utils/radiotap.c",
+   "line": 141,
+   "message": "Scaled integer arithmetic with pointer: '(unsigned long)iterator->_arg -\n\t\t\t    (unsigned long)iterator->_rtheader +\n\t\t\t    sizeof(uint32_t)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 61,
+   "file": "src/utils/radiotap.c",
+   "line": 188,
+   "message": "Pointer parameter 'iterator' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iterator'"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/radiotap.c",
+   "line": 234,
+   "message": "Function 'ieee80211_radiotap_iterator_next' does not validate pointer parameter 'iterator' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'iterator' at the start of the function, e.g., 'if (!iterator) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/radiotap.c",
+   "line": 234,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 8,
+   "file": "src/utils/radiotap.c",
+   "line": 243,
+   "message": "Variable 'iterator' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/radiotap.c",
+   "line": 298,
+   "message": "Variable 'align' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 49,
+   "file": "src/utils/radiotap.c",
+   "line": 299,
+   "message": "Variable 'align' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'align' before use, e.g., at its declaration"
+  },
+  {
+   "column": 40,
+   "file": "src/utils/radiotap.c",
+   "line": 307,
+   "message": "Variable 'size' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'size' before use, e.g., at its declaration"
+  }
+ ],
+ "wpa_supplicant/ap.h": [
+  {
+   "column": 21,
+   "file": "wpa_supplicant/ap.h",
+   "line": 24,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 32,
+   "file": "wpa_supplicant/ap.h",
+   "line": 24,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/ap.h",
+   "line": 33,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 64,
+   "file": "wpa_supplicant/ap.h",
+   "line": 34,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 14,
+   "file": "wpa_supplicant/ap.h",
+   "line": 35,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 69,
+   "file": "wpa_supplicant/ap.h",
+   "line": 36,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/ap.h",
+   "line": 37,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 69,
+   "file": "wpa_supplicant/ap.h",
+   "line": 42,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 43,
+   "file": "wpa_supplicant/ap.h",
+   "line": 53,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 24,
+   "file": "wpa_supplicant/ap.h",
+   "line": 60,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 30,
+   "file": "wpa_supplicant/ap.h",
+   "line": 62,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 25,
+   "file": "wpa_supplicant/ap.h",
+   "line": 67,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 52,
+   "file": "wpa_supplicant/ap.h",
+   "line": 85,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 65,
+   "file": "wpa_supplicant/ap.h",
+   "line": 105,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/ap.h",
+   "line": 109,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/ap.h",
+   "line": 110,
+   "message": "Function has pointer parameter without size argument: 'int wpas_ap_pmksa_cache_add_external(struct wpa_supplicant *wpa_s, char *cmd);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'char *cmd' to specify the maximum number of elements in the array"
+  }
+ ]
+}

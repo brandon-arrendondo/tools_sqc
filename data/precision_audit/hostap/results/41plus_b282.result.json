@@ -1,0 +1,718 @@
+{
+ "labels": [
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 90,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only API; bss already deref'd (bss->beacon_newer) at the only call site before use"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 97,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "assoc_disallow points into bss IE data via wpas_mbo_get_bss_attr, not local automatic storage"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 103,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only API; wpa_s always valid at both call sites"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 132,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_s genuinely never mutated in this plain internal helper"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 213,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "non_pref->oper_class only evaluated when !non_pref is false (same-condition short-circuit)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 232,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only API; buf always a valid buffer pointer from the two callers"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 238,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Misattribution: the bitwise & is on wpa_s->enable_oce, not on the constant OCE_STA itself; no arithmetic use of OCE_STA exists"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 238,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Misattribution: wpa_s is a pointer; the bitwise & is on wpa_s->enable_oce (a field), not on wpa_s, and wpa_s is never used arithmetically"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 265,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head_u8()/wpabuf_len() are pure accessors, no side effects to unsequence"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 303,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() plus plain struct-field reads; no side effects"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 323,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head_u8()/wpabuf_len() pure accessors"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 330,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain comparator helper; 'a' never modified"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 331,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain comparator helper; 'b' never modified"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 383,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "_oper_class is a block-scope local inside the while loop, not file-scope"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 384,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "_chan is a block-scope local, not file-scope"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 385,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "_preference is a block-scope local, not file-scope"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 386,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "_reason is a block-scope local, not file-scope"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 391,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*chans) is a compile-time type query, not a dereference; chans is also not yet freed at this point"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 400,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "chans is guaranteed non-NULL here: num==size always triggers the realloc branch first, and realloc failure goes to fail: instead of reaching this line"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 402,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf's return value IS checked on the very next line (ret != 4 ...)"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 402,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Return value is checked immediately (ret != 4)"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 402,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "sscanf %u has no errno/ERANGE detection on overflow (UB per C11); the later range check doesn't fully compensate, though input is local/admin-supplied, low severity"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 402,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Message miscounts arguments (treats the format-string literal itself as 'argument 1'); all four %u conversions correctly match unsigned int* pointers"
+  },
+  {
+   "rule": "INT05-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 402,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Same underlying no-errno-check-on-%u-overflow issue as ERR34-C; low severity, local input"
+  },
+  {
+   "rule": "MSC24-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 402,
+   "verdict": "FP",
+   "confidence": "medium",
+   "reason": "sscanf is not among CERT's obsolescent-function list (gets(), etc.); sscanf_s is an Annex K optional extension, rule misapplied"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 403,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No const qualification exists anywhere on _chan or the sscanf call; phantom cast-away-const"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 405,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "_oper_class is set by sscanf; read only in the same short-circuited condition guarded by ret==4"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 405,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "_chan set by sscanf on the ret==4 success path before this read"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 406,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "_preference set by sscanf before this read, guarded by ret==4"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 406,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "_reason set by sscanf before this read, guarded by ret==4"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 452,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: is a goto target (reached from 4 'goto fail;' sites), not unreachable fallthrough"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 454,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cmd is freed exactly once per path: either at line 437 (success) or here in the fail: branch (mutually exclusive)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 454,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same mutually-exclusive success/fail branch; not a double free"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 459,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_s only read in wpas_mbo_scan_ie, genuinely const-eligible"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 464,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Misattribution: bitwise & is on wpa_s->enable_oce, not on OCE_STA itself"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 464,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Misattribution: wpa_s is a pointer, never used arithmetically or bitwise itself"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 485,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only API; wpa_s always valid from its single caller"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 579,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: is a goto target reached from 5 'goto fail;' sites inside the parsing loop"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 585,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_s is entirely unused in wpas_mbo_ie_bss_trans_reject's body"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 624,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_s is entirely unused in mbo_build_anqp_buf's body"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 657,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "anqp_buf is heap memory from wpabuf_alloc(), not local automatic storage"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 661,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only API; wpa_s not even dereferenced in this function body"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 661,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only API; sa forwarded only to MAC2STR()/wpa_msg(), single caller always passes a valid address"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mbo.c",
+   "line": 662,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "bss param is entirely unused in mbo_parse_rx_anqp_resp's body"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 72,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "_tspec is a block-scope local inside wmm_ac_add_ts, not file-scope"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 76,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "up is masked to 0-7 by wmm_ac_get_user_priority()'s '& 0x07'; up_to_ac[8] access is always in-bounds"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 90,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*_tspec) is a compile-time type query on the line assigning _tspec, not a dereference"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 164,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wmm_ac_get_tsid()/wmm_ac_get_user_priority() are pure bit-read accessors, no side effects"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 183,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "req->tspec is a fixed-size struct member; sizeof(req->tspec) is correct, not a decayed array"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 193,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same struct-member sizeof idiom, correct"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 195,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure accessors"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 216,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*tspec) through a pointer parameter is the correct idiom to get the pointee's struct size"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 227,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same sizeof(*tspec) correct idiom"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 229,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure accessors"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 241,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_s only read (wpa_s->tspecs) in wmm_ac_find_tsid"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 272,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*addts_req) on the os_zalloc size argument, not a dereference"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 310,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "addts_req is heap memory from os_zalloc(), not local automatic storage"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 380,
+   "verdict": "FP",
+   "confidence": "medium",
+   "reason": "'field' is always substituted as a bare struct-member identifier, never an expression with side effects; #field is compile-time stringification, not a second runtime evaluation"
+  },
+  {
+   "rule": "PRE05-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 380,
+   "verdict": "FP",
+   "confidence": "medium",
+   "reason": "All call sites pass plain identifiers (tsid, user_priority, ...) as field, never a macro, so the stringification-blocks-expansion hazard never materializes"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 380,
+   "verdict": "FP",
+   "confidence": "medium",
+   "reason": "field is evaluated at runtime exactly once (params->field); #field is lexical stringification, not a second evaluation"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 418,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_s only read (wpa_s->tspecs) in wmm_ac_should_replace_ts"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 432,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "elems is unconditionally os_memset(0)'d inside ieee802_11_parse_elems() before any field is read, regardless of parse result"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 437,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*wmm_params) is compile-time, not a dereference; also only reached after the elems.wmm != NULL guard"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 444,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*assoc_data) on the os_zalloc size argument, not a dereference"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 459,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "assoc_data is heap memory from os_zalloc(), not local automatic storage"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 479,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_s->tspecs is a fixed-size struct array member; sizeof(wpa_s->tspecs) is correct, not a decayed pointer parameter"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 625,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "err: is a goto target reached from 'goto err;' at line 618, not unreachable fallthrough"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 670,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "up masked to 0-7 by wmm_ac_get_user_priority(); up_to_ac[8] access always in-bounds"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 712,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR(sa) and le_to_host16(tspec->medium_time) are pure reads, no side effects"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 723,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "err_delts:/err_msg: are goto targets, not unreachable"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 790,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "elems memset(0) inside ieee802_11_parse_elems() before any field read; guarded by != ParseOK check"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 847,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only API via ctrl_iface.c; wpa_s always valid"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 847,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only API; buflen always a valid reply_size from ctrl_iface"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 847,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_s only read throughout wpas_wmm_ac_status"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 847,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic char *buf, size_t buflen pair, not a conformant-array-syntax gap"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 855,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_scnprintf() always returns <= its size argument (capped at size-1), so pos never exceeds buflen; buflen-pos can't underflow"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 859,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos is bounded by the reply buffer size (far below INT_MAX); wpa_scnprintf()'s own clamping prevents any realistic overflow"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 859,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same wpa_scnprintf()-bounded pos <= buflen invariant"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 864,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same bounded pos+=wpa_scnprintf() idiom"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 864,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same pos <= buflen invariant"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 873,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dir_str is unconditionally assigned via get_direction_str() immediately after declaration, before any use, on the only reachable path"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 886,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same bounded pos+=wpa_scnprintf() idiom"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 886,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR(wpa_s->bssid) and le_to_host16(tspec->medium_time) are pure reads"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 886,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same pos <= buflen invariant"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 898,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same bounded pos+=wpa_scnprintf() idiom"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 898,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same pos <= buflen invariant"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 907,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_s only read (wpa_s->tspecs) in wmm_ac_get_tspecs_count"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/wmm_ac.c",
+   "line": 941,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*wpa_s->last_tspecs) dereferences the last_tspecs field (correct calloc-element-size idiom), not wpa_s or a decayed array parameter"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "wpa_supplicant/mbo.c",
+  "wpa_supplicant/wmm_ac.c"
+ ],
+ "summary": {
+  "tp": 13,
+  "fp": 75,
+  "fn": 0
+ }
+}

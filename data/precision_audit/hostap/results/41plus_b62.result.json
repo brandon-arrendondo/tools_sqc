@@ -1,0 +1,1211 @@
+{
+ "labels": [
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 23,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE08-C 8.3-legacy-filesystem header-name-collision, confirmed categorical FP for hostap (not actionable on modern POSIX build)"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 23,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE08-C 8.3-legacy-filesystem header-name-collision, confirmed categorical FP for hostap (not actionable on modern POSIX build)"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 23,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE08-C 8.3-legacy-filesystem header-name-collision, confirmed categorical FP for hostap (not actionable on modern POSIX build)"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 23,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE08-C 8.3-legacy-filesystem header-name-collision, confirmed categorical FP for hostap (not actionable on modern POSIX build)"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 24,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE08-C 8.3-legacy-filesystem header-name-collision, confirmed categorical FP for hostap (not actionable on modern POSIX build)"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 24,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE08-C 8.3-legacy-filesystem header-name-collision, confirmed categorical FP for hostap (not actionable on modern POSIX build)"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 24,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE08-C 8.3-legacy-filesystem header-name-collision, confirmed categorical FP for hostap (not actionable on modern POSIX build)"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 40,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE08-C 8.3-legacy-filesystem header-name-collision, confirmed categorical FP for hostap (not actionable on modern POSIX build)"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 40,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE08-C 8.3-legacy-filesystem header-name-collision, confirmed categorical FP for hostap (not actionable on modern POSIX build)"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 42,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE08-C 8.3-legacy-filesystem header-name-collision, confirmed categorical FP for hostap (not actionable on modern POSIX build)"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 68,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API02-C misfires on forward decl with paired msk/msk_len size arg elsewhere in sig and a scalar int* out-param (is_pub), confirmed API02-C last-pointer-only misfire class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 74,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C confirmed categorical FP: idiomatic ptr+size-param pairing (or fixed-size/scalar out-param), not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 123,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param is genuinely read-only in this static/internal helper (no vtable/eloop dispatch contract, no field write through the pointer); real if low-severity const opportunity"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 125,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Rule misfires: 'buf' param is plain u8* (not const-qualified) so 'pos = buf' involves no const-to-non-const assignment at all"
+  },
+  {
+   "rule": "FLP03-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 132,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd_rate_data.rate is declared int; 'rate / 5' is integer division, not floating point -- FLP03-C misidentifies the operand type"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 132,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Base-identifier-only matching bug: bitwise/arithmetic ops are on different struct MEMBER fields of this variable, not on the pointer/int variable itself; extends the confirmed INT14-C member-conflation FP class"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 132,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Base-identifier-only matching bug: bitwise/arithmetic ops are on different struct MEMBER fields of this variable, not on the pointer/int variable itself; extends the confirmed INT14-C member-conflation FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 169,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'eid'/'pos'/'buf' is a local alias into the caller-supplied EID buffer passed in as a parameter, not automatic-storage-duration memory; confirmed DCL30-C local-variable-vs-local-storage FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 179,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'eid'/'pos'/'buf' is a local alias into the caller-supplied EID buffer passed in as a parameter, not automatic-storage-duration memory; confirmed DCL30-C local-variable-vs-local-storage FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 183,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only hostapd API, always called with valid caller-controlled pointers from a small internal call set; confirmed API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 192,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'eid'/'pos'/'buf' is a local alias into the caller-supplied EID buffer passed in as a parameter, not automatic-storage-duration memory; confirmed DCL30-C local-variable-vs-local-storage FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 199,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'eid'/'pos'/'buf' is a local alias into the caller-supplied EID buffer passed in as a parameter, not automatic-storage-duration memory; confirmed DCL30-C local-variable-vs-local-storage FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 203,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only hostapd API, always called with valid caller-controlled pointers from a small internal call set; confirmed API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 203,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only hostapd API, always called with valid caller-controlled pointers from a small internal call set; confirmed API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 203,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param is genuinely read-only in this static/internal helper (no vtable/eloop dispatch contract, no field write through the pointer); real if low-severity const opportunity"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 224,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only hostapd API, always called with valid caller-controlled pointers from a small internal call set; confirmed API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 224,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param is genuinely read-only in this static/internal helper (no vtable/eloop dispatch contract, no field write through the pointer); real if low-severity const opportunity"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 348,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C confirmed categorical FP: idiomatic ptr+size-param pairing (or fixed-size/scalar out-param), not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 365,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'sizeof(reply->u.auth)' never evaluates its operand (non-VLA type) so accessing reply->u.auth inside sizeof is not a dereference; confirmed EXP33-C sizeof(*ptr)/sizeof(ptr->member) idiom FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 390,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "All flagged 'multiple function calls' are pure accessor/getter calls (wpabuf_head/len, MAC2STR, WPA_GET_LE16/BE32, sae_state_txt, pasn_get_*, wpa_auth_sta_key_mgmt, ap_sta_is_mld) with no side effects; confirmed EXP30-C pure-accessor-args FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 444,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C confirmed categorical FP: idiomatic ptr+size-param pairing (or fixed-size/scalar out-param), not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 454,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "The flagged string is a debug-log dbg/state-label tag passed to send_auth_reply/sae_set_state (e.g. \"auth-ft-finish\", \"sae-send-commit\"), not actual secret material; extends confirmed MSC41-C debug-label FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 483,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "All flagged 'multiple function calls' are pure accessor/getter calls (wpabuf_head/len, MAC2STR, WPA_GET_LE16/BE32, sae_state_txt, pasn_get_*, wpa_auth_sta_key_mgmt, ap_sta_is_mld) with no side effects; confirmed EXP30-C pure-accessor-args FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 504,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param is genuinely read-only in this static/internal helper (no vtable/eloop dispatch contract, no field write through the pointer); real if low-severity const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 504,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param is genuinely read-only in this static/internal helper (no vtable/eloop dispatch contract, no field write through the pointer); real if low-severity const opportunity"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 506,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Genuine (harmless) dead-NULL-init: variable is always reassigned before any read on every path; matches confirmed MSC13-C dead-default-init correct-detection precedent"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 514,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'pw' is a local pointer variable but points into hapd->conf->sae_passwords (config-owned list), not local automatic storage; confirmed DCL30-C FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 521,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param is genuinely read-only in this static/internal helper (no vtable/eloop dispatch contract, no field write through the pointer); real if low-severity const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 522,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param is genuinely read-only in this static/internal helper (no vtable/eloop dispatch contract, no field write through the pointer); real if low-severity const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 523,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param is genuinely read-only in this static/internal helper (no vtable/eloop dispatch contract, no field write through the pointer); real if low-severity const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 547,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param is genuinely read-only in this static/internal helper (no vtable/eloop dispatch contract, no field write through the pointer); real if low-severity const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 548,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param is genuinely read-only in this static/internal helper (no vtable/eloop dispatch contract, no field write through the pointer); real if low-severity const opportunity"
+  },
+  {
+   "rule": "INT33-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 584,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pw->num_success_mac is guaranteed non-zero: both callers (sae_password_track_success, sae_password_bind) check hapd->conf->sae_track_password!=0 before reaching this code, and num_success_mac is set from that same value; rule doesn't see the caller-side guard"
+  },
+  {
+   "rule": "INT33-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 632,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pw->num_fail_mac is guaranteed non-zero: this same function checks hapd->conf->sae_track_password!=0 at its own top (line 610) before reaching this modulo; rule misses the in-function guard"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 638,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only hostapd API, always called with valid caller-controlled pointers from a small internal call set; confirmed API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 659,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sae_get_password is internal-only; pw_entry is an optional out-param checked at point of use (if (pw_entry) *pw_entry = pw;) -- confirmed API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 659,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Tool miss: sae_get_password explicitly NULL-checks 'sta' before every dereference (lines 678,713-714,733,789) -- the validation IS present"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 659,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sae_get_password is internal-only; pw_entry is an optional out-param checked at point of use (if (pw_entry) *pw_entry = pw;) -- confirmed API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 659,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param is genuinely read-only in this static/internal helper (no vtable/eloop dispatch contract, no field write through the pointer); real if low-severity const opportunity"
+  },
+  {
+   "rule": "MEM03-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 666,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'password' is a borrowed const pointer into externally-owned storage (sae_passwords list / ssid.wpa_passphrase / psk->passphrase), not a local buffer this function allocated/owns; confirmed MEM03-C borrowed-secret-pointer FP class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 670,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Genuine (harmless) dead-NULL-init: variable is always reassigned before any read on every path; matches confirmed MSC13-C dead-default-init correct-detection precedent"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 754,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "All flagged 'multiple function calls' are pure accessor/getter calls (wpabuf_head/len, MAC2STR, WPA_GET_LE16/BE32, sae_state_txt, pasn_get_*, wpa_auth_sta_key_mgmt, ap_sta_is_mld) with no side effects; confirmed EXP30-C pure-accessor-args FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 765,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "All flagged 'multiple function calls' are pure accessor/getter calls (wpabuf_head/len, MAC2STR, WPA_GET_LE16/BE32, sae_state_txt, pasn_get_*, wpa_auth_sta_key_mgmt, ap_sta_is_mld) with no side effects; confirmed EXP30-C pure-accessor-args FP class"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 769,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'pos' derives via pointer arithmetic from 'plain', which was NULL-checked ~15 lines earlier (line 752) before any of this code runs; rule doesn't see the earlier same-function guard"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 773,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'id' and 'pos' are both offsets into the SAME allocated buffer 'plain' (id = pos = plain + 4, pos advanced in-place); not a cross-array subtraction, matches confirmed same-buffer-offset ARR00-C FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 811,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pw/pt/pk are local pointer variables aliasing config-owned or transferred-ownership objects (sae_passwords list / sae_pt / sae_pk), not addresses of local stack objects; confirmed DCL30-C FP class extended to out-param writes"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 813,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pw/pt/pk are local pointer variables aliasing config-owned or transferred-ownership objects (sae_passwords list / sae_pt / sae_pk), not addresses of local stack objects; confirmed DCL30-C FP class extended to out-param writes"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 815,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pw/pt/pk are local pointer variables aliasing config-owned or transferred-ownership objects (sae_passwords list / sae_pt / sae_pk), not addresses of local stack objects; confirmed DCL30-C FP class extended to out-param writes"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 826,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Genuine (harmless) dead-NULL-init: variable is always reassigned before any read on every path; matches confirmed MSC13-C dead-default-init correct-detection precedent"
+  },
+  {
+   "rule": "MEM03-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 826,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'password' is a borrowed const pointer into externally-owned storage (sae_passwords list / ssid.wpa_passphrase / psk->passphrase), not a local buffer this function allocated/owns; confirmed MEM03-C borrowed-secret-pointer FP class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 857,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Missing final else is a deliberate no-op/guard-clause: the variable already holds its correct default value (set at declaration or by an earlier statement) when no arm matches; confirmed MSC01-C guard-clause/default-value FP class"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 907,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sae_prepare_commit's 'password' parameter is itself declared const u8 * -- the (u8*) cast is a pointless no-op, not a real const-removal-then-mutate hazard; no write follows"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 935,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'eid'/'pos'/'buf' is a local alias into the caller-supplied EID buffer passed in as a parameter, not automatic-storage-duration memory; confirmed DCL30-C local-variable-vs-local-storage FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 960,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'eid'/'pos'/'buf' is a local alias into the caller-supplied EID buffer passed in as a parameter, not automatic-storage-duration memory; confirmed DCL30-C local-variable-vs-local-storage FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 994,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "All flagged 'multiple function calls' are pure accessor/getter calls (wpabuf_head/len, MAC2STR, WPA_GET_LE16/BE32, sae_state_txt, pasn_get_*, wpa_auth_sta_key_mgmt, ap_sta_is_mld) with no side effects; confirmed EXP30-C pure-accessor-args FP class"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 997,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "The flagged string is a debug-log dbg/state-label tag passed to send_auth_reply/sae_set_state (e.g. \"auth-ft-finish\", \"sae-send-commit\"), not actual secret material; extends confirmed MSC41-C debug-label FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1015,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "All flagged 'multiple function calls' are pure accessor/getter calls (wpabuf_head/len, MAC2STR, WPA_GET_LE16/BE32, sae_state_txt, pasn_get_*, wpa_auth_sta_key_mgmt, ap_sta_is_mld) with no side effects; confirmed EXP30-C pure-accessor-args FP class"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1018,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "The flagged string is a debug-log dbg/state-label tag passed to send_auth_reply/sae_set_state (e.g. \"auth-ft-finish\", \"sae-send-commit\"), not actual secret material; extends confirmed MSC41-C debug-label FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1070,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param is genuinely read-only in this static/internal helper (no vtable/eloop dispatch contract, no field write through the pointer); real if low-severity const opportunity"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1073,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sae_set_state's 'reason' parameter is declared const char *, and the function only reads it (wpa_printf %s) -- confirmed STR30-C rule-logic-bug FP class (const-qualified callee param disproves the finding)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1088,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param is genuinely read-only in this static/internal helper (no vtable/eloop dispatch contract, no field write through the pointer); real if low-severity const opportunity"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1119,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "All flagged 'multiple function calls' are pure accessor/getter calls (wpabuf_head/len, MAC2STR, WPA_GET_LE16/BE32, sae_state_txt, pasn_get_*, wpa_auth_sta_key_mgmt, ap_sta_is_mld) with no side effects; confirmed EXP30-C pure-accessor-args FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1147,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only hostapd API, always called with valid caller-controlled pointers from a small internal call set; confirmed API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1147,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only hostapd API, always called with valid caller-controlled pointers from a small internal call set; confirmed API00-C internal-API FP class"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1156,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Base-identifier-only matching bug: bitwise/arithmetic ops are on different struct MEMBER fields of this variable, not on the pointer/int variable itself; extends the confirmed INT14-C member-conflation FP class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1239,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sae_set_state's 'reason' parameter is declared const char *, and the function only reads it (wpa_printf %s) -- confirmed STR30-C rule-logic-bug FP class (const-qualified callee param disproves the finding)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1257,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Missing final else is a deliberate no-op/guard-clause: the variable already holds its correct default value (set at declaration or by an earlier statement) when no arm matches; confirmed MSC01-C guard-clause/default-value FP class"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1265,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "sae_sm_step does self-recurse once (line ~1424) on a specific SAE state transition; genuine recursion, though depth is provably bounded to one extra level by the state machine, so practical stack risk is minimal"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1277,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "All flagged 'multiple function calls' are pure accessor/getter calls (wpabuf_head/len, MAC2STR, WPA_GET_LE16/BE32, sae_state_txt, pasn_get_*, wpa_auth_sta_key_mgmt, ap_sta_is_mld) with no side effects; confirmed EXP30-C pure-accessor-args FP class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1321,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sae_set_state's 'reason' parameter is declared const char *, and the function only reads it (wpa_printf %s) -- confirmed STR30-C rule-logic-bug FP class (const-qualified callee param disproves the finding)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1360,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sae_set_state's 'reason' parameter is declared const char *, and the function only reads it (wpa_printf %s) -- confirmed STR30-C rule-logic-bug FP class (const-qualified callee param disproves the finding)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1390,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sae_set_state's 'reason' parameter is declared const char *, and the function only reads it (wpa_printf %s) -- confirmed STR30-C rule-logic-bug FP class (const-qualified callee param disproves the finding)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1417,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sae_set_state's 'reason' parameter is declared const char *, and the function only reads it (wpa_printf %s) -- confirmed STR30-C rule-logic-bug FP class (const-qualified callee param disproves the finding)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1466,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sae_set_state's 'reason' parameter is declared const char *, and the function only reads it (wpa_printf %s) -- confirmed STR30-C rule-logic-bug FP class (const-qualified callee param disproves the finding)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1492,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param is genuinely read-only in this static/internal helper (no vtable/eloop dispatch contract, no field write through the pointer); real if low-severity const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1492,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param is genuinely read-only in this static/internal helper (no vtable/eloop dispatch contract, no field write through the pointer); real if low-severity const opportunity"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1497,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'default_groups[]' is a local array consumed via sentinel-terminated traversal (groups[i] > 0), sized exactly to its initializer; confirmed ARR02-C implicit-bounds-on-initialized-local FP class"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1512,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cross-function variable-name conflation bug: sqc attributes this 'groups' pointer's bound to the unrelated 2-element 'int groups[2]' local declared at line 872 inside a completely different function (auth_build_sae_commit); this function's 'groups' is conf->sae_groups or the 3-element default_groups[]"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1513,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cross-function variable-name conflation bug: sqc attributes this 'groups' pointer's bound to the unrelated 2-element 'int groups[2]' local declared at line 872 inside a completely different function (auth_build_sae_commit); this function's 'groups' is conf->sae_groups or the 3-element default_groups[]"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1540,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param is genuinely read-only in this static/internal helper (no vtable/eloop dispatch contract, no field write through the pointer); real if low-severity const opportunity"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1549,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Missing final else is a deliberate no-op/guard-clause: the variable already holds its correct default value (set at declaration or by an earlier statement) when no arm matches; confirmed MSC01-C guard-clause/default-value FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1574,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param is genuinely read-only in this static/internal helper (no vtable/eloop dispatch contract, no field write through the pointer); real if low-severity const opportunity"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1578,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'default_groups[]' is a local array consumed via sentinel-terminated traversal (groups[i] > 0), sized exactly to its initializer; confirmed ARR02-C implicit-bounds-on-initialized-local FP class"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1589,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cross-function variable-name conflation bug: sqc attributes this 'groups' pointer's bound to the unrelated 2-element 'int groups[2]' local declared at line 872 inside a completely different function (auth_build_sae_commit); this function's 'groups' is conf->sae_groups or the 3-element default_groups[]"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1590,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cross-function variable-name conflation bug: sqc attributes this 'groups' pointer's bound to the unrelated 2-element 'int groups[2]' local declared at line 872 inside a completely different function (auth_build_sae_commit); this function's 'groups' is conf->sae_groups or the 3-element default_groups[]"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1599,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param is genuinely read-only in this static/internal helper (no vtable/eloop dispatch contract, no field write through the pointer); real if low-severity const opportunity"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1613,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'len' is used with real bitwise '&' (len & 1) and real arithmetic '/' (len / 2) in the same function on the same variable -- genuine (low-severity) hit"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1626,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cross-function variable-name conflation bug: the cited 'allocated at line 4118' is 'const u8 *addr[2];' in an unrelated OWE-key-derivation function, not this function's 'pos' (which walks a dynamically-sized wpabuf bounded by a correctly-computed loop count)"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1646,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'default_groups[]' is a local array consumed via sentinel-terminated traversal (groups[i] > 0), sized exactly to its initializer; confirmed ARR02-C implicit-bounds-on-initialized-local FP class"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1669,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "The flagged string is a debug-log dbg/state-label tag passed to send_auth_reply/sae_set_state (e.g. \"auth-ft-finish\", \"sae-send-commit\"), not actual secret material; extends confirmed MSC41-C debug-label FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1676,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "All flagged 'multiple function calls' are pure accessor/getter calls (wpabuf_head/len, MAC2STR, WPA_GET_LE16/BE32, sae_state_txt, pasn_get_*, wpa_auth_sta_key_mgmt, ap_sta_is_mld) with no side effects; confirmed EXP30-C pure-accessor-args FP class"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1681,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "The flagged string is a debug-log dbg/state-label tag passed to send_auth_reply/sae_set_state (e.g. \"auth-ft-finish\", \"sae-send-commit\"), not actual secret material; extends confirmed MSC41-C debug-label FP class"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1693,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'sizeof(*sta->sae)' dereferences a struct pointer FIELD (sae), not a decayed array parameter; 'sta' itself was never an array -- rule's own premise doesn't apply"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1700,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sae_set_state's 'reason' parameter is declared const char *, and the function only reads it (wpa_printf %s) -- confirmed STR30-C rule-logic-bug FP class (const-qualified callee param disproves the finding)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1764,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sae_set_state's 'reason' parameter is declared const char *, and the function only reads it (wpa_printf %s) -- confirmed STR30-C rule-logic-bug FP class (const-qualified callee param disproves the finding)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1809,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sae_set_state's 'reason' parameter is declared const char *, and the function only reads it (wpa_printf %s) -- confirmed STR30-C rule-logic-bug FP class (const-qualified callee param disproves the finding)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1813,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sae_set_state's 'reason' parameter is declared const char *, and the function only reads it (wpa_printf %s) -- confirmed STR30-C rule-logic-bug FP class (const-qualified callee param disproves the finding)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1838,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sae_set_state's 'reason' parameter is declared const char *, and the function only reads it (wpa_printf %s) -- confirmed STR30-C rule-logic-bug FP class (const-qualified callee param disproves the finding)"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1848,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "check_comeback_token() is only called inside 'if (token && ... < 0)' -- short-circuit '&&' already guards against token==NULL; extends confirmed short-circuit-blindness EXP34-C FP class"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1881,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hapd->comeback_pending_idx is a genuine fixed-size array FIELD (u16 comeback_pending_idx[COMEBACK_PENDING_IDX_SIZE]); member arrays retain full array type through '->' access, nothing decayed"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1886,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sae_set_state's 'reason' parameter is declared const char *, and the function only reads it (wpa_printf %s) -- confirmed STR30-C rule-logic-bug FP class (const-qualified callee param disproves the finding)"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1907,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'(u8 *) mgmt' is used purely for read-only pointer-arithmetic bounds computation (((u8*)mgmt)+len), never written through; confirmed EXP05-C read-only-traversal-pointer FP class"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 1974,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "The flagged string is a debug-log dbg/state-label tag passed to send_auth_reply/sae_set_state (e.g. \"auth-ft-finish\", \"sae-send-commit\"), not actual secret material; extends confirmed MSC41-C debug-label FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2002,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only hostapd API, always called with valid caller-controlled pointers from a small internal call set; confirmed API00-C internal-API FP class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2016,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sae_set_state's 'reason' parameter is declared const char *, and the function only reads it (wpa_printf %s) -- confirmed STR30-C rule-logic-bug FP class (const-qualified callee param disproves the finding)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2024,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_register_timeout callback matches fixed void(*)(void*,void*) eloop_timeout_handler contract; confirmed eloop-callback DCL13-C FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2068,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'sizeof(*q)' never evaluates/dereferences q; confirmed EXP33-C sizeof(*ptr) FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2165,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "handle_auth_fils is internal-only, invoked solely from hostapd's own auth dispatcher with always-valid hapd/pos; confirmed API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2165,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "handle_auth_fils is internal-only, invoked solely from hostapd's own auth dispatcher with always-valid hapd/pos; confirmed API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2165,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "handle_auth_fils is an internal dispatch-only function; len/pos are already sanity-checked by the frame-parsing caller before this handler runs -- internal-API-invariant FP class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2172,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Factually wrong: 'resp' keeps its initial WLAN_STATUS_SUCCESS value on the success path (no goto fail hit) and that value IS read via cb(hapd,sta,resp,data,pub) -- not dead"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2205,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cross-function variable-name conflation bug: the cited 'allocated at line 4118' is 'const u8 *addr[2];' in an unrelated OWE-key-derivation function, not this function's 'pos' (which walks a dynamically-sized wpabuf bounded by a correctly-computed loop count)"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2246,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'sta->fils_dh_ss' is freed then immediately REASSIGNED via crypto_ecdh_set_peerkey() on the very next line (2244); lines 2246/2251 read the fresh reassigned pointer, not the freed one -- extends the mem30-reassign-and-fresh-binding fix class to wpabuf_clear_free(), which the existing fix apparently doesn't cover"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2251,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'sta->fils_dh_ss' is freed then immediately REASSIGNED via crypto_ecdh_set_peerkey() on the very next line (2244); lines 2246/2251 read the fresh reassigned pointer, not the freed one -- extends the mem30-reassign-and-fresh-binding fix class to wpabuf_clear_free(), which the existing fix apparently doesn't cover"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2270,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'elems' is fully populated by ieee802_11_parse_elems(pos, len, &elems, 1) a few lines earlier (address-of output-param call, ParseFailed already handled/returned); the read is after initialization, not before -- confirmed EXP33-C write-only-output-param FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2411,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param is genuinely read-only in this static/internal helper (no vtable/eloop dispatch contract, no field write through the pointer); real if low-severity const opportunity"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2414,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C confirmed categorical FP: idiomatic ptr+size-param pairing (or fixed-size/scalar out-param), not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2423,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No getenv()/environment-variable code anywhere in this function; fires on a plain fixed-size local buffer alone -- confirmed ENV01-C wholesale misfire class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2495,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "All flagged 'multiple function calls' are pure accessor/getter calls (wpabuf_head/len, MAC2STR, WPA_GET_LE16/BE32, sae_state_txt, pasn_get_*, wpa_auth_sta_key_mgmt, ap_sta_is_mld) with no side effects; confirmed EXP30-C pure-accessor-args FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2567,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "All flagged 'multiple function calls' are pure accessor/getter calls (wpabuf_head/len, MAC2STR, WPA_GET_LE16/BE32, sae_state_txt, pasn_get_*, wpa_auth_sta_key_mgmt, ap_sta_is_mld) with no side effects; confirmed EXP30-C pure-accessor-args FP class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2578,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Missing final else is a deliberate no-op/guard-clause: the variable already holds its correct default value (set at declaration or by an earlier statement) when no arm matches; confirmed MSC01-C guard-clause/default-value FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2586,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Each wpabuf_free(data)+goto fail is on its own mutually-exclusive error branch (each sets data=NULL and jumps straight past the other); confirmed MEM31-C mutually-exclusive-branch double-free FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2599,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Each wpabuf_free(data)+goto fail is on its own mutually-exclusive error branch (each sets data=NULL and jumps straight past the other); confirmed MEM31-C mutually-exclusive-branch double-free FP class"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2630,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "The flagged string is a debug-log dbg/state-label tag passed to send_auth_reply/sae_set_state (e.g. \"auth-ft-finish\", \"sae-send-commit\"), not actual secret material; extends confirmed MSC41-C debug-label FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2645,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only hostapd API, always called with valid caller-controlled pointers from a small internal call set; confirmed API00-C internal-API FP class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2674,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Missing final else is a deliberate no-op/guard-clause: the variable already holds its correct default value (set at declaration or by an earlier statement) when no arm matches; confirmed MSC01-C guard-clause/default-value FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2714,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Param is genuinely read-only in this static/internal helper (no vtable/eloop dispatch contract, no field write through the pointer); real if low-severity const opportunity"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2740,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'&sta->psk' is address-of, passed as an OUT-param destination for hostapd_copy_psk_list() to write a fresh value into -- not a read of the just-freed list content; extends the confirmed MEM30-C address-of-freed-field misfire family"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2782,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No getenv()/environment-variable code anywhere in this function; fires on a plain fixed-size local buffer alone -- confirmed ENV01-C wholesale misfire class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2812,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "All flagged 'multiple function calls' are pure accessor/getter calls (wpabuf_head/len, MAC2STR, WPA_GET_LE16/BE32, sae_state_txt, pasn_get_*, wpa_auth_sta_key_mgmt, ap_sta_is_mld) with no side effects; confirmed EXP30-C pure-accessor-args FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2825,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "All flagged 'multiple function calls' are pure accessor/getter calls (wpabuf_head/len, MAC2STR, WPA_GET_LE16/BE32, sae_state_txt, pasn_get_*, wpa_auth_sta_key_mgmt, ap_sta_is_mld) with no side effects; confirmed EXP30-C pure-accessor-args FP class"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2853,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'fail:' is a real goto target reached from 5 earlier 'goto fail;' statements in the same function; not unreachable -- confirmed MSC07-C goto-target-after-return FP class"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2858,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Function body is #ifdef CONFIG_NO_RADIUS / #else two mutually-exclusive branches, each ending in its own return; only one is ever compiled, so every compiled version returns on every path -- confirmed MSC37-C #ifdef-branch-blind FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2916,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'elems' is fully populated by ieee802_11_parse_elems(pos, len, &elems, 1) a few lines earlier (address-of output-param call, ParseFailed already handled/returned); the read is after initialization, not before -- confirmed EXP33-C write-only-output-param FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2962,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "All flagged 'multiple function calls' are pure accessor/getter calls (wpabuf_head/len, MAC2STR, WPA_GET_LE16/BE32, sae_state_txt, pasn_get_*, wpa_auth_sta_key_mgmt, ap_sta_is_mld) with no side effects; confirmed EXP30-C pure-accessor-args FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2973,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "All flagged 'multiple function calls' are pure accessor/getter calls (wpabuf_head/len, MAC2STR, WPA_GET_LE16/BE32, sae_state_txt, pasn_get_*, wpa_auth_sta_key_mgmt, ap_sta_is_mld) with no side effects; confirmed EXP30-C pure-accessor-args FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2985,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C confirmed categorical FP: idiomatic ptr+size-param pairing (or fixed-size/scalar out-param), not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 2995,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C confirmed categorical FP: idiomatic ptr+size-param pairing (or fixed-size/scalar out-param), not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3032,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pasn->pasn_groups ownership is transferred into the long-lived 'pasn' struct and freed later by its own deinit (src/pasn/pasn_common.c:37 os_free(pasn->pasn_groups)); intraprocedural leak-tracking can't see the cross-function free -- confirmed struct-field-ownership-transfer MEM31-C FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 3078,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "All flagged 'multiple function calls' are pure accessor/getter calls (wpabuf_head/len, MAC2STR, WPA_GET_LE16/BE32, sae_state_txt, pasn_get_*, wpa_auth_sta_key_mgmt, ap_sta_is_mld) with no side effects; confirmed EXP30-C pure-accessor-args FP class"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 25,
+  "fp": 125,
+  "fn": 0
+ }
+}

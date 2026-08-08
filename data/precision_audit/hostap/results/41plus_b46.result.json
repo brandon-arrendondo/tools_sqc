@@ -1,0 +1,1233 @@
+{
+ "labels": [
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4116,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "store leaked-claim on ANDROID #else branch where store doesn't exist; real path transfers ownership via SSL_CTX_set_cert_store (ownership-transfer FP class)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4121,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "static internal helper tls_connection_engine_private_key, not tls.h-pinned; conn genuinely never modified"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4128,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "SSL_check_private_key documented 1/0 contract; implicit test extends OpenSSL-1/0-contract EXP20-C FP class"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4148,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC37-C preprocessor-branch-blind: #ifndef OPENSSL_NO_STDIO/#else both return"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4148,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "static internal tls_use_private_key_file, not tls.h-pinned; data only read via data->ssl"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4172,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "read-only cast to satisfy tls_passwd_cb's void* userdata param (external-callback-cast FP class)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4173,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bio freed then reassigned via fresh BIO_new_file() before 2nd free (mem30-reassign-and-fresh-binding FP class)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4196,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "static internal tls_connection_private_key, not tls.h-pinned; conn only read"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4197,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C conformant-array-syntax categorical FP: pointer+len idiom (private_key_blob/private_key_blob_len)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4198,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C conformant-array-syntax categorical FP: pointer+len idiom (private_key_blob/private_key_blob_len)"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4210,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "SSL_use_PrivateKey_ASN1 documented 1/0 OpenSSL contract; ==1 EXP20-C FP class"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4211,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "cast-away-const to satisfy SSL_use_PrivateKey_ASN1's non-const u8* param, read-only"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4219,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL 1/0 contract EXP20-C FP class"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4220,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "read-only cast-away-const for external non-const API param"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4229,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "OpenSSL 1/0 contract EXP20-C FP class"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4230,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "read-only cast-away-const for external non-const API param"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4240,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "SSL_use_RSAPrivateKey_ASN1 documented 1/0 contract; EXP20-C FP class"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4241,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "read-only cast-away-const for external non-const API param"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4250,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "read-only cast-away-const for BIO_new_mem_buf's non-const u8* param"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4255,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PEM_read_bio_PrivateKey declared in transitively-included OpenSSL header (DCL31-C third-party-header FP class)"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4257,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "read-only cast-away-const for tls_passwd_cb void* param"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4259,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "SSL_use_PrivateKey documented 1/0 contract; EXP20-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4267,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mutually-exclusive if/break branches: pkey/bio each freed on at most one path (mutually-exclusive-branch FP class)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4269,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mutually-exclusive if/break branches: pkey/bio each freed on at most one path (mutually-exclusive-branch FP class)"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4316,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "SSL_check_private_key 1/0 contract; implicit-boolean-test extension of OpenSSL-contract EXP20-C FP class"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4333,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic 'use validation function' fires on any plain NULL check; check IS present"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4346,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "SSL_CTX_check_private_key 1/0 contract; EXP20-C FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4368,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bld/params/ctx assigned then read across separate || operands; each || is a C sequence point (EXP30-C ||-chain-sequence-point FP class)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4368,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bld/params/ctx assigned then read across separate || operands; each || is a C sequence point (EXP30-C ||-chain-sequence-point FP class)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4368,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bld/params/ctx assigned then read across separate || operands; each || is a C sequence point (EXP30-C ||-chain-sequence-point FP class)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4368,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bld/params/ctx assigned then read across separate || operands; each || is a C sequence point (EXP30-C ||-chain-sequence-point FP class)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4368,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bld/params/ctx assigned then read across separate || operands; each || is a C sequence point (EXP30-C ||-chain-sequence-point FP class)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4368,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bld/params/ctx assigned then read across separate || operands; each || is a C sequence point (EXP30-C ||-chain-sequence-point FP class)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4368,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bld/params/ctx assigned then read across separate || operands; each || is a C sequence point (EXP30-C ||-chain-sequence-point FP class)"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4371,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "assignment double-wrapped in ! and parens signals deliberate assignment, not mistyped == (EXP45-C already-parenthesized FP class)"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4375,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "assignment double-wrapped in ! and parens signals deliberate assignment, not mistyped == (EXP45-C already-parenthesized FP class)"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4376,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "assignment double-wrapped in ! and parens signals deliberate assignment, not mistyped == (EXP45-C already-parenthesized FP class)"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4376,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "EVP_PKEY_CTX_new_from_name(NULL,\"DHX\",NULL) both-NULL args, no real aliasing (EXP43-C NULL,NULL FP class)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4389,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pkey is heap EVP_PKEY* from EVP_PKEY_fromdata, not automatic storage (DCL30-C local-variable-vs-local-storage FP class)"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4395,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC37-C preprocessor-branch-blind: nested #ifdef OPENSSL_NO_DH/#else all paths return"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4395,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "static internal tls_global_dh, not tls.h-pinned; data only read via data->ssl"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4398,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic FP"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4407,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ctx initialized NULL, unconditionally overwritten before any read (genuine dead-init MSC13-C, low severity)"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4454,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM30-C UAF misfire: tmpkey's only free (DSA branch) is mutually exclusive (guarded by dsa flag) from the !dsa branch reading tmpkey"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4455,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM30-C UAF misfire: tmpkey's only free (DSA branch) is mutually exclusive (guarded by dsa flag) from the !dsa branch reading tmpkey"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4464,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "tmpkey=NULL after ownership transfer to pkey is never subsequently read (dead per rule text, defensive idiom)"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4467,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "statement-ordering confusion: sqc treats the later EVP_PKEY_free(pkey) (error branch) as already-executed at/before line 4467; only one free exists on this path (retroactive-free-misattribution class, cf. cryptoapi_finish precedent)"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4471,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "statement-ordering confusion: sqc treats the later EVP_PKEY_free(pkey) (error branch) as already-executed at/before line 4467; only one free exists on this path (retroactive-free-misattribution class, cf. cryptoapi_finish precedent)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4496,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bio freed then reassigned via fresh BIO_new_file() before 2nd free (mem30-reassign-and-fresh-binding FP class)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4507,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bio freed then reassigned via fresh BIO_new_file() before 2nd free (mem30-reassign-and-fresh-binding FP class)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4546,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls_connection_get_random is tls.h-pinned public API (ssl_ctx); DCL13-C dispatch-contract FP class"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4557,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*keys) correctly dereferences to get pointee struct size, exact idiom the rule wants (ARR01-C sizeof(*ptr) FP class)"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4560,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conn->client_random/server_random are real fixed-size struct-member arrays, not decayed parameters (ARR01-C struct-field-array FP class)"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4563,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conn->client_random/server_random are real fixed-size struct-member arrays, not decayed parameters (ARR01-C struct-field-array FP class)"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4570,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC37-C preprocessor-branch-blind: #if OPENSSL_VERSION_NUMBER<... /#else both return"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4590,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "EVP_CIPHER_key_length/iv_length are pure accessors, no side effects to unsequence (EXP30-C pure-accessor-args FP class)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4644,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C conformant-array-syntax categorical FP: pointer+len idiom (data/context_len, out/out_len)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4644,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls_connection_export_key is tls.h-pinned public API (tls_ctx/conn); DCL13-C dispatch-contract FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4644,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls_connection_export_key is tls.h-pinned public API (tls_ctx/conn); DCL13-C dispatch-contract FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4645,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C conformant-array-syntax categorical FP: pointer+len idiom (data/context_len, out/out_len)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4657,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "tls_connection_get_eap_fast_key is internal-only tls.h-dispatched API; out_len is a fixed EAP-FAST-derived size, not adversarial (API00-C internal-API FP class)"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4657,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC37-C preprocessor-branch-blind: #ifdef OPENSSL_NEED_EAP_FAST_PRF/#else both return"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4657,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C conformant-array-syntax categorical FP: pointer+len idiom (data/context_len, out/out_len)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4657,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls_connection_get_eap_fast_key is tls.h-pinned public API (tls_ctx/conn); DCL13-C dispatch-contract FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4657,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls_connection_get_eap_fast_key is tls.h-pinned public API (tls_ctx/conn); DCL13-C dispatch-contract FP class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4665,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "skip/tmp_out/_out initial values (0/NULL/out) are unconditionally overwritten before any read (genuine dead-init MSC13-C, low severity)"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4666,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "skip/tmp_out/_out initial values (0/NULL/out) are unconditionally overwritten before any read (genuine dead-init MSC13-C, low severity)"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4667,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "skip/tmp_out/_out initial values (0/NULL/out) are unconditionally overwritten before any read (genuine dead-init MSC13-C, low severity)"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4667,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "_out is a block-scope local, not file-scope; DCL37-C file-scope-vs-block-scope FP class"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4680,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic FP"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4701,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tmp_out is freed on the same line immediately before return; rnd was never allocated on this path (rnd alloc failed) -- MEM12-C false-leak-already-freed/never-allocated FP class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4717,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ret pre-set to -1 (failure default); no final else is the deliberate default-value guard shape (MSC01-C low-severity reconfirmed)"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4728,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tmp_out (bin_clear_free) and rnd (os_free) both already freed earlier in the same path; MEM12-C false-leak-already-freed FP class"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4732,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "under #else /* !OPENSSL_NEED_EAP_FAST_PRF */, tmp_out/rnd don't even exist in this branch; MEM12-C preprocessor-branch-blind FP"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4749,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "wpabuf_len/wpabuf_head are pure accessors inside a short-circuit && condition, each && is a sequence point (EXP30-C FP class)"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4799,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "POS49-C bit-field/thread-safety: wpa_supplicant/hostapd core is single-threaded eloop, no pthread boundary (CON32-C/POS49-C FP class)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4861,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "out_data is heap wpabuf from wpabuf_alloc, not automatic storage (DCL30-C FP class)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4866,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "static internal openssl_get_appl_data, not tls.h-pinned; conn only read"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4875,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "wpabuf_mhead/wpabuf_size pure accessors (EXP30-C FP class)"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4894,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "flagged text is the debug-log title string, not actual secret data (MSC41-C hexdump-title FP class)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4896,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "appl_data is heap wpabuf (DCL30-C FP class)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4954,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "out_data passthrough from openssl_handshake, heap wpabuf (DCL30-C FP class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4958,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "tls_connection_handshake is internal tls.h-dispatched API; in_data always supplied by the internal EAP/TLS state machine (API00-C internal-API FP class)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4959,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls_connection_handshake is tls.h-pinned public API (ssl_ctx); DCL13-C dispatch-contract FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4967,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "tls_connection_server_handshake is internal tls.h-dispatched API, params never externally nullable (API00-C internal-API FP class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4967,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "tls_connection_server_handshake is internal tls.h-dispatched API, params never externally nullable (API00-C internal-API FP class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4967,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "tls_connection_server_handshake is internal tls.h-dispatched API, params never externally nullable (API00-C internal-API FP class)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4967,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls_connection_server_handshake is tls.h-pinned public API (tls_ctx); DCL13-C dispatch-contract FP class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4972,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "POS49-C single-threaded eloop FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4977,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls_connection_encrypt is tls.h-pinned public API (tls_ctx/conn); DCL13-C dispatch-contract FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4978,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls_connection_encrypt is tls.h-pinned public API (tls_ctx/conn); DCL13-C dispatch-contract FP class"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4984,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic FP"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4988,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "res assigned then immediately compared (<0) in the same || operand -- that IS a read; ||'s sequence point makes this well-defined (MSC13-C ||-chain-blindness FP class)"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4989,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "res assigned then immediately compared (<0) in the same || operand -- that IS a read; ||'s sequence point makes this well-defined (MSC13-C ||-chain-blindness FP class)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4993,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "wpabuf_head/wpabuf_len and wpabuf_mhead/wpabuf_size are pure accessors (EXP30-C FP class)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5004,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "wpabuf_head/wpabuf_len and wpabuf_mhead/wpabuf_size are pure accessors (EXP30-C FP class)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5013,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is heap wpabuf from wpabuf_alloc (DCL30-C FP class)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5017,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls_connection_decrypt is tls.h-pinned public API (tls_ctx/conn); DCL13-C dispatch-contract FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5018,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls_connection_decrypt is tls.h-pinned public API (tls_ctx/conn); DCL13-C dispatch-contract FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5025,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "wpabuf_head/wpabuf_len pure accessors (EXP30-C FP class)"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5025,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "conn is an internal tls.h-dispatched param, never actually NULL at this internal call site (extends internal-API-never-null EXP34-C reasoning); NOTE: unlike sibling tls_connection_encrypt, this function lacks a NULL guard on conn -- worth flagging as a defense-in-depth gap even though not exploitable via documented callers"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5047,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "SSL_read args are pure accessors wpabuf_mhead/wpabuf_size (EXP30-C FP class)"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5062,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf's only free+return is on the SSL_read-error branch which returns immediately; the flagged line is only reached when that branch was NOT taken (mutually-exclusive-branch/return-after-free FP class)"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5066,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf's only free+return is on the SSL_read-error branch which returns immediately; the flagged line is only reached when that branch was NOT taken (mutually-exclusive-branch/return-after-free FP class)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5070,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is heap wpabuf (DCL30-C FP class)"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5070,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same mutually-exclusive-branch/return-after-free FP class as index 102/103"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5074,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls_connection_resumed is tls.h-pinned public API (ssl_ctx/conn); DCL13-C dispatch-contract FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5074,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls_connection_resumed is tls.h-pinned public API (ssl_ctx/conn); DCL13-C dispatch-contract FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5076,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "SSL_session_reused declared in transitively-included OpenSSL header (DCL31-C third-party-header FP class)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5080,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls_connection_set_cipher_list is tls.h-pinned public API (tls_ctx/conn, both non-const in the header too); DCL13-C dispatch-contract FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5080,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls_connection_set_cipher_list is tls.h-pinned public API (tls_ctx/conn, both non-const in the header too); DCL13-C dispatch-contract FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5081,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ciphers param is u8* (non-const) in the tls.h declaration itself; DCL13-C dispatch-contract FP class"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5095,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "loop scans a TLS_CIPHER_NONE-sentinel-terminated array per tls.h's documented @ciphers contract (ARR30-C sentinel-terminated-scan FP class)"
+  },
+  {
+   "rule": "CON43-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5098,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "c is a local scan pointer into a caller-owned array in a single-threaded eloop codebase, no concurrent modifier exists (CON43-C extends single-threaded FP class)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5144,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "intentional no-op fallthrough (neither branch needs an else; MSC01-C low-severity reconfirmed)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5161,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C pointer+len idiom FP class (115) and tls_get_version tls.h-pinned ssl_ctx/conn DCL13-C FP class (116,117)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5161,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C pointer+len idiom FP class (115) and tls_get_version tls.h-pinned ssl_ctx/conn DCL13-C FP class (116,117)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5161,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C pointer+len idiom FP class (115) and tls_get_version tls.h-pinned ssl_ctx/conn DCL13-C FP class (116,117)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5162,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf/buflen pointer+len idiom (API05-C FP class)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5177,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same API05-C pointer+len (119) / tls_get_cipher tls.h-pinned ssl_ctx/conn DCL13-C FP class (120,121)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5177,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same API05-C pointer+len (119) / tls_get_cipher tls.h-pinned ssl_ctx/conn DCL13-C FP class (120,121)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5177,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same API05-C pointer+len (119) / tls_get_cipher tls.h-pinned ssl_ctx/conn DCL13-C FP class (120,121)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5178,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf/buflen pointer+len idiom (API05-C FP class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5193,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "tls_connection_enable_workaround is internal tls.h-dispatched API, conn never externally nullable (API00-C internal-API FP class)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5193,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls_connection_enable_workaround is tls.h-pinned public API (ssl_ctx/conn); DCL13-C dispatch-contract FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5194,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls_connection_enable_workaround is tls.h-pinned public API (ssl_ctx/conn); DCL13-C dispatch-contract FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5206,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C pointer+len idiom (data/data_len, 126) and tls_connection_client_hello_ext tls.h-pinned ssl_ctx/conn DCL13-C FP class (127,128)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5206,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C pointer+len idiom (data/data_len, 126) and tls_connection_client_hello_ext tls.h-pinned ssl_ctx/conn DCL13-C FP class (127,128)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5206,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C pointer+len idiom (data/data_len, 126) and tls_connection_client_hello_ext tls.h-pinned ssl_ctx/conn DCL13-C FP class (127,128)"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5213,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "cast-away-const for SSL_set_session_ticket_ext's non-const void* extension-data param, read-only"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5222,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls_connection_get_failed is tls.h-pinned public API (ssl_ctx/conn); DCL13-C dispatch-contract FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5222,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls_connection_get_failed is tls.h-pinned public API (ssl_ctx/conn); DCL13-C dispatch-contract FP class"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5224,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5230,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls_connection_get_read_alerts is tls.h-pinned public API (ssl_ctx/conn); DCL13-C dispatch-contract FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5230,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls_connection_get_read_alerts is tls.h-pinned public API (ssl_ctx/conn); DCL13-C dispatch-contract FP class"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5232,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5238,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls_connection_get_write_alerts is tls.h-pinned public API (ssl_ctx/conn); DCL13-C dispatch-contract FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5238,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls_connection_get_write_alerts is tls.h-pinned public API (ssl_ctx/conn); DCL13-C dispatch-contract FP class"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5240,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5282,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "arg is OpenSSL's fixed SSL_CTX_set_tlsext_status_cb callback contract (void (*)(SSL*, void*)); extends eloop/vtable-callback DCL13-C FP class to OpenSSL callback prototypes"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5371,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "certs is set NULL on the failure path (sk_X509_free+NULL) before the unconditional sk_X509_pop_free(certs,...) which safely no-ops on NULL -- reassign-to-NULL-then-safe-free FP class, not a double free"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5434,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "OCSP_check_validity documented 1/0-ish success contract; implicit-boolean-test extension of OpenSSL-contract EXP20-C FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5461,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "arg is OpenSSL's fixed SSL_CTX_set_tlsext_status_cb callback contract; DCL13-C callback-contract FP class"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5467,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "tls_global is a module singleton initialized during tls_init() before any SSL callback can fire; extends the init-ordering-guaranteed-non-NULL EXP34-C FP class (l2_ndisuio_global precedent)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5502,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_strlen(*p) passes a whole const char* argument; STR34-C misidentifies the pointer dereference as a scalar char sign-extension case (STR34-C pointer-treated-as-scalar-char FP class)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5502,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_strlen(*p) passes a whole const char* argument; STR34-C misidentifies the pointer dereference as a scalar char sign-extension case (STR34-C pointer-treated-as-scalar-char FP class)"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5524,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fopen's return IS checked on the very next line (if (!f) {...}); factually wrong ERR00-C"
+  },
+  {
+   "rule": "FIO05-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5524,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "path is an admin-configured private-key/cert file path, same trust boundary as hostapd's own config-file family (FIO05-C admin-config-path FP class)"
+  },
+  {
+   "rule": "WIN03-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5524,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "literally true per rule text (mode string is \"r\", no N flag) though Windows-build-conditional and low real-world severity"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5527,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is freed on the same line immediately before return; f was never opened on this path (fopen failed) -- MEM12-C false-leak-already-freed/never-allocated FP class"
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4084,
+   "rule": "MEM12-C",
+   "desc": "tls_connection_engine_ca_cert: if X509_STORE_add_cert() fails with a non-ALREADY_IN_HASH_TABLE error, function returns -1 without freeing 'store' (X509_STORE_new'd) -- store was never handed to ssl_ctx via SSL_CTX_set_cert_store before this error path in the ANDROID engine/provider variant; genuine leak of an X509_STORE on the certificate-load-failure path.",
+   "upstream_present": "unknown"
+  },
+  {
+   "file": "src/crypto/tls_openssl.c",
+   "line": 4650,
+   "rule": "API00-C",
+   "desc": "tls_connection_export_key passes context_len (attacker/EAP-layer supplied length paired with 'context') straight into SSL_export_keying_material with no upper bound check; not a classical overflow but worth a defensive bound given it's a public tls.h entry point reachable from EAP method key-derivation paths.",
+   "upstream_present": "unknown"
+  },
+  {
+   "file": "src/crypto/tls_openssl.c",
+   "line": 5017,
+   "rule": "EXP34-C",
+   "desc": "tls_connection_decrypt (unlike its sibling tls_connection_encrypt) does not NULL-check 'conn' before dereferencing conn->ssl_in; if ever reached with conn==NULL from a future caller this is an unguarded NULL deref -- an inconsistency versus the encrypt/handshake siblings' explicit guards.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 13,
+  "fp": 137,
+  "fn": 3
+ }
+}

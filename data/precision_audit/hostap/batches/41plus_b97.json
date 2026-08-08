@@ -1,0 +1,1354 @@
+{
+ "src/drivers/driver_nl80211_capa.c#part1of2": [
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 17,
+   "message": "Header file 'qca-vendor.h' has the same first 8 characters (case-insensitive) as 'qca-vendor-attr.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'qca-vendor.h' -> unique name)"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 26,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 29,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 29,
+   "message": "Variable 'tb_msg' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb_msg' before use, e.g., at its declaration"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 44,
+   "message": "Memory allocated with 'nlmsg_alloc' for variable 'msg' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(msg)' before the variable goes out of scope"
+  },
+  {
+   "column": 5,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 112,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 116,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 131,
+   "message": "Bit-field 'p2p_go_supported' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 134,
+   "message": "Bit-field 'p2p_client_supported' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 152,
+   "message": "Shared variable 'iface_combination_policy' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 25,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 165,
+   "message": "Variable 'tb_comb' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb_comb' before use, e.g., at its declaration"
+  },
+  {
+   "column": 14,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 167,
+   "message": "Potentially unsafe array access with variable index 'NL80211_IFACE_COMB_LIMITS': Buffer 'tb_comb' with size 8 (allocated at line 147)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 168,
+   "message": "Potentially unsafe array access with variable index 'NL80211_IFACE_COMB_MAXNUM': Buffer 'tb_comb' with size 8 (allocated at line 147)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 169,
+   "message": "Potentially unsafe array access with variable index 'NL80211_IFACE_COMB_NUM_CHANNELS': Buffer 'tb_comb' with size 8 (allocated at line 147)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 172,
+   "message": "Potentially unsafe array access with variable index 'NL80211_IFACE_COMB_RADAR_DETECT_WIDTHS': Buffer 'tb_comb' with size 8 (allocated at line 147)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 32,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 175,
+   "message": "Potentially unsafe array access with variable index 'NL80211_IFACE_COMB_LIMITS': Buffer 'tb_comb' with size 8 (allocated at line 147)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 26,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 177,
+   "message": "Variable 'tb_limit' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb_limit' before use, e.g., at its declaration"
+  },
+  {
+   "column": 15,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 179,
+   "message": "Potentially unsafe array access with variable index 'NL80211_IFACE_LIMIT_TYPES': Buffer 'tb_limit' with size 3 (allocated at line 148)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 9,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 183,
+   "message": "Potentially unsafe array access with variable index 'NL80211_IFACE_LIMIT_TYPES': Buffer 'tb_limit' with size 3 (allocated at line 148)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 16,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 198,
+   "message": "Potentially unsafe array access with variable index 'NL80211_IFACE_COMB_NUM_CHANNELS': Buffer 'tb_comb' with size 8 (allocated at line 147)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 200,
+   "message": "Bit-field 'p2p_concurrent' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 5,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 215,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 231,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 235,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 237,
+   "message": "Bit-field 'auth_supported' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 240,
+   "message": "Bit-field 'connect_supported' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 246,
+   "message": "Bit-field 'poll_command_supported' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 249,
+   "message": "Bit-field 'channel_switch_supported' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 252,
+   "message": "Bit-field 'set_qos_map_supported' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 255,
+   "message": "Bit-field 'update_ft_ies_supported' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 274,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 350,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 358,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 358,
+   "message": "Variable 'tb' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb' before use, e.g., at its declaration"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 365,
+   "message": "Bit-field 'has_key_mgmt_iftype' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 431,
+   "message": "Bit-field 'has_key_mgmt' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 5,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 444,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 450,
+   "message": "Variable 'c' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const c = ..."
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 453,
+   "message": "Bitwise operator '>>' used on signed operand 'c' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'c' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 16,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 453,
+   "message": "Bitwise operator '&' used on signed operand 'c' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'c' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 454,
+   "message": "Bitwise operator '&' used on signed operand 'c' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'c' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 24,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 454,
+   "message": "Bitwise operator '&' used on signed operand 'c' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'c' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 455,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  },
+  {
+   "column": 73,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 505,
+   "message": "Pointer parameter 'tdls' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tdls'"
+  },
+  {
+   "column": 22,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 506,
+   "message": "Pointer parameter 'ext_setup' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ext_setup'"
+  },
+  {
+   "column": 5,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 508,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 526,
+   "message": "Variable 'ftidx' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 30,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 530,
+   "message": "Modulo operator used with potentially signed operands. The result of % with negative operands is implementation-defined and can be negative. Use unsigned types (size_t, unsigned int) or explicitly handle negative remainders.",
+   "rule_id": "INT10-C",
+   "severity": "Medium",
+   "suggestion": "Convert operands to unsigned types (size_t, unsigned int) or add explicit checks for negative values"
+  },
+  {
+   "column": 5,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 541,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 747,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 752,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 753,
+   "message": "Bit-field 'data_tx_status' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 755,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 758,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 761,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 764,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 769,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 774,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 775,
+   "message": "Bit-field 'p2p_go_ctwindow_supported' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 777,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 778,
+   "message": "Bit-field 'have_low_prio_scan' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 780,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 781,
+   "message": "Bit-field 'mac_addr_rand_scan_supported' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 783,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 784,
+   "message": "Bit-field 'mac_addr_rand_sched_scan_supported' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 786,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 787,
+   "message": "Bit-field 'wmm_ac_supported' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 789,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 792,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 795,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 798,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 801,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 804,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 807,
+   "message": "Bitwise operator '&' used on signed operand 'flags' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'flags' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 808,
+   "message": "Bit-field 'support_ap_scan' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 5,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 817,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 831,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 5,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 833,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 23,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 836,
+   "message": "Variable 'triggers' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'triggers' before use, e.g., at its declaration"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 861,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 870,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 13,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 870,
+   "message": "Variable 'tb1' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb1' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 923,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 938,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 23,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 940,
+   "message": "Variable 'config' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'config' before use, e.g., at its declaration"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 962,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 968,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 968,
+   "message": "Variable 'tb' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb' before use, e.g., at its declaration"
+  },
+  {
+   "column": 0,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1045,
+   "message": "Function 'wiphy_info_handler' accesses bit-field 'wiphy_info_data.device_ap_sme' without mutex protection in a multi-threaded context",
+   "rule_id": "CON32-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field accesses with mutex locks or use separate byte-sized members instead of bit-fields"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1045,
+   "message": "Bit-field 'device_ap_sme' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1058,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1070,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 30,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1092,
+   "message": "Dereference of uninitialized pointer 'vinfo'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'vinfo' before dereferencing"
+  },
+  {
+   "column": 11,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1153,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1225,
+   "message": "Shared variable 'nan_capa_policy' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1225,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1231,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 24,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1233,
+   "message": "Variable 'tb_nan_capa' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb_nan_capa' before use, e.g., at its declaration"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1239,
+   "message": "Function returns without releasing all resources. Leaked: drv->extended_capa, drv->extended_capa_mask. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1258,
+   "message": "Function returns without releasing all resources. Leaked: drv->extended_capa, drv->extended_capa_mask. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 21,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1269,
+   "message": "sizeof applied to pointer/array parameter 'info' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*info)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1291,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1294,
+   "message": "Bit-field 'error' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1318,
+   "message": "Bit-field 'wmm_ac_supported' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 31,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1318,
+   "message": "Bit-field 'wmm_ac_supported' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1320,
+   "message": "Bit-field 'mac_addr_rand_sched_scan_supported' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1321,
+   "message": "Bit-field 'mac_addr_rand_sched_scan_supported' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1322,
+   "message": "Bit-field 'mac_addr_rand_scan_supported' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1323,
+   "message": "Bit-field 'mac_addr_rand_scan_supported' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1351,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1355,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1355,
+   "message": "Variable 'tb' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb' before use, e.g., at its declaration"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1360,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1362,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 13,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1362,
+   "message": "Variable 'tb_vendor' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb_vendor' before use, e.g., at its declaration"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1387,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1387,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1387,
+   "message": "Assignment in if statement condition: 'msg = nl80211_drv_msg(drv, 0, NL80211_CMD_VENDOR)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1410,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1415,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1415,
+   "message": "Variable 'tb' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb' before use, e.g., at its declaration"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1420,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1422,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 13,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1422,
+   "message": "Variable 'tb_vendor' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb_vendor' before use, e.g., at its declaration"
+  },
+  {
+   "column": 26,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1454,
+   "message": "Pointer parameter 'info' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *info'"
+  },
+  {
+   "column": 15,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1456,
+   "message": "Variable 'feature' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 35,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1459,
+   "message": "Modulo operator used with potentially signed operands. The result of % with negative operands is implementation-defined and can be negative. Use unsigned types (size_t, unsigned int) or explicitly handle negative remainders.",
+   "rule_id": "INT10-C",
+   "severity": "Medium",
+   "suggestion": "Convert operands to unsigned types (size_t, unsigned int) or add explicit checks for negative values"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1472,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1472,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1472,
+   "message": "Assignment in if statement condition: 'msg = nl80211_drv_msg(drv, 0, NL80211_CMD_VENDOR)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1587,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 9,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1607,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1647,
+   "message": "Bit-field 'device_ap_sme' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 23,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1647,
+   "message": "Bit-field 'device_ap_sme' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1648,
+   "message": "Bit-field 'poll_command_supported' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 32,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1648,
+   "message": "Bit-field 'poll_command_supported' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1649,
+   "message": "Bit-field 'data_tx_status' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 24,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1649,
+   "message": "Bit-field 'data_tx_status' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1650,
+   "message": "Bit-field 'p2p_go_ctwindow_supported' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 35,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1650,
+   "message": "Bit-field 'p2p_go_ctwindow_supported' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1653,
+   "message": "Bit-field 'have_low_prio_scan' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 28,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1653,
+   "message": "Bit-field 'have_low_prio_scan' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1654,
+   "message": "Bit-field 'support_ap_scan' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 25,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1654,
+   "message": "Bit-field 'support_ap_scan' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 16,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1767,
+   "message": "loop termination uses '!=' with a step other than +-1 -- the counter can skip over the target value and never terminate",
+   "rule_id": "MSC21-C",
+   "severity": "Low",
+   "suggestion": "Use a relational operator (<, <=, >, >=) to terminate the loop instead of an equality operator, unless the step is exactly 1"
+  },
+  {
+   "column": 51,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1774,
+   "message": "Pointer parameter 'mode' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *mode'"
+  },
+  {
+   "column": 20,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1776,
+   "message": "Pointer parameter 'tb_freq' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tb_freq'"
+  },
+  {
+   "column": 21,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1780,
+   "message": "sizeof applied to pointer/array parameter 'chan' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*chan)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1822,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1842,
+   "message": "Shared variable 'wmm_policy' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  }
+ ]
+}

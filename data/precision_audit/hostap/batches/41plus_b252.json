@@ -1,0 +1,562 @@
+{
+ "src/common/dpp_reconfig.c": [
+  {
+   "column": 1,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 34,
+   "message": "Function 'dpp_build_reconfig_announcement' does not validate pointer parameter 'csign_key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'csign_key' at the start of the function, e.g., 'if (!csign_key) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 34,
+   "message": "Function 'dpp_build_reconfig_announcement' does not validate pointer parameter 'net_access_key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'net_access_key' at the start of the function, e.g., 'if (!net_access_key) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 34,
+   "message": "Function 'dpp_build_reconfig_announcement' does not validate pointer parameter 'id' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'id' at the start of the function, e.g., 'if (!id) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 41,
+   "message": "Value assigned to 'csign' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 12,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 44,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 9,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 45,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 73,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 130,
+   "message": "Pointer parameter 'auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *auth'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 182,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 237,
+   "message": "Function 'dpp_reconfig_init' does not validate pointer parameter 'dpp' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dpp' at the start of the function, e.g., 'if (!dpp) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 237,
+   "message": "Function 'dpp_reconfig_init' does not validate pointer parameter 'msg_ctx' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'msg_ctx' at the start of the function, e.g., 'if (!msg_ctx) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 237,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 48,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 238,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 22,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 278,
+   "message": "Hard-coded sensitive information detected passed to `dpp_debug_print_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"E'-id\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 320,
+   "message": "Function returns pointer to local variable 'auth' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 328,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 13,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 360,
+   "message": "Scaled integer arithmetic with pointer: '4 + 1 + 4 + 1 +\n\t\t4 + os_strlen(own_connector) +\n\t\t4 + auth->curve->nonce_len +\n\t\t4 + wpabuf_len(pr) +\n\t\t4 + wpabuf_len(clear) + AES_BLOCK_SIZE'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 6,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 414,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 431,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 437,
+   "message": "Function 'dpp_reconfig_auth_req_rx' does not validate pointer parameter 'dpp' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dpp' at the start of the function, e.g., 'if (!dpp) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 437,
+   "message": "Function 'dpp_reconfig_auth_req_rx' does not validate pointer parameter 'msg_ctx' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'msg_ctx' at the start of the function, e.g., 'if (!msg_ctx) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 437,
+   "message": "Function 'dpp_reconfig_auth_req_rx' does not validate pointer parameter 'own_connector' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'own_connector' at the start of the function, e.g., 'if (!own_connector) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 437,
+   "message": "Function 'dpp_reconfig_auth_req_rx' does not validate pointer parameter 'csign_key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'csign_key' at the start of the function, e.g., 'if (!csign_key) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 437,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 55,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 438,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 16,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 439,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 37,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 466,
+   "message": "Potential null pointer dereference in array access of variable 'version'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'version' is not NULL before array access"
+  },
+  {
+   "column": 10,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 560,
+   "message": "Passing null pointer 'own_conn' to 'os_free' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'own_conn' is not NULL before passing to 'os_free'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 565,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 572,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 51,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 573,
+   "message": "Pointer parameter 'auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *auth'"
+  },
+  {
+   "column": 13,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 615,
+   "message": "Scaled integer arithmetic with pointer: '4 + wpabuf_len(clear) + AES_BLOCK_SIZE'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 6,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 644,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 656,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 663,
+   "message": "Function 'dpp_reconfig_auth_resp_rx' does not validate pointer parameter 'hdr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hdr' at the start of the function, e.g., 'if (!hdr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 663,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 10,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 690,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Missing or invalid required Wrapped Data attribute\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 23,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 700,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Peer did not include Transaction ID\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 23,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 704,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Transaction ID mismatch\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 37,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 710,
+   "message": "Potential null pointer dereference in array access of variable 'version'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'version' is not NULL before array access"
+  },
+  {
+   "column": 10,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 712,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Missing or invalid Protocol Version attribute\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 23,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 722,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \" Missing R-Connector attribute\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 23,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 731,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Missing or invalid E-nonce\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 10,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 741,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Missing required Responder Protocol Key attribute\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 18,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 787,
+   "message": "Scaled integer arithmetic with pointer: 'wrapped_data_len - AES_BLOCK_SIZE'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 23,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 794,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"AES-SIV decryption failed\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 23,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 809,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Missing or invalid C-nonce\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 23,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 817,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Missing Connection Status attribute\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 841,
+   "message": "Function returns without releasing all resources. Leaked: signed_connector, unwrapped. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 842,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 849,
+   "message": "Function 'dpp_reconfig_auth_conf_rx' does not validate pointer parameter 'hdr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hdr' at the start of the function, e.g., 'if (!hdr) { return error_code; }'"
+  },
+  {
+   "column": 10,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 870,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Missing or invalid required Wrapped Data attribute\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 10,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 881,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Missing or invalid required DPP Status attribute\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 10,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 887,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Reconfiguration did not complete successfully\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 18,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 899,
+   "message": "Scaled integer arithmetic with pointer: 'wrapped_data_len - AES_BLOCK_SIZE'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 23,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 906,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"AES-SIV decryption failed\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 6,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 920,
+   "message": "Potential null pointer dereference in array access of variable 'trans_id'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'trans_id' is not NULL before array access"
+  },
+  {
+   "column": 10,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 922,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Peer did not include valid Transaction ID\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 37,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 928,
+   "message": "Potential null pointer dereference in array access of variable 'version'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'version' is not NULL before array access"
+  },
+  {
+   "column": 10,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 930,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Missing or invalid Protocol Version attribute\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 23,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 938,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Missing or invalid C-nonce\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 23,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 947,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Missing or invalid E-nonce\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 23,
+   "file": "src/common/dpp_reconfig.c",
+   "line": 956,
+   "message": "Hard-coded sensitive information detected passed to `dpp_auth_fail`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Missing or invalid Reconfig-Flags\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  }
+ ]
+}

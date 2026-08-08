@@ -1,0 +1,1013 @@
+{
+ "src/wps/upnp_xml.c": [
+  {
+   "column": 9,
+   "file": "src/wps/upnp_xml.c",
+   "line": 81,
+   "message": "Potential null pointer dereference of variable 'in'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'in' is not NULL before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/upnp_xml.c",
+   "line": 85,
+   "message": "Pointer dereference '*out' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/upnp_xml.c",
+   "line": 88,
+   "message": "Pointer dereference '*out_tagname' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 9,
+   "file": "src/wps/upnp_xml.c",
+   "line": 89,
+   "message": "Plain 'char' passed to 'isalnum()' without cast to 'unsigned char'",
+   "rule_id": "STR00-C",
+   "severity": "Medium",
+   "suggestion": "Cast to '(unsigned char)' before passing to 'isalnum()': isalnum((unsigned char)*in)"
+  },
+  {
+   "column": 17,
+   "file": "src/wps/upnp_xml.c",
+   "line": 89,
+   "message": "Argument to 'isalnum()' is not cast to unsigned char. This can cause undefined behavior if the argument has a negative value.",
+   "rule_id": "STR37-C",
+   "severity": "Medium",
+   "suggestion": "Cast the argument to unsigned char: 'isalnum((unsigned char)...)'"
+  },
+  {
+   "column": 3,
+   "file": "src/wps/upnp_xml.c",
+   "line": 92,
+   "message": "Pointer dereference '*out_tagname' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/upnp_xml.c",
+   "line": 97,
+   "message": "Pointer dereference '*end' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/upnp_xml.c",
+   "line": 121,
+   "message": "Function 'xml_data_encode' does not validate pointer parameter 'data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'data' at the start of the function, e.g., 'if (!data) { return error_code; }'"
+  },
+  {
+   "column": 3,
+   "file": "src/wps/upnp_xml.c",
+   "line": 125,
+   "message": "Variable 'c' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const c = ..."
+  },
+  {
+   "column": 11,
+   "file": "src/wps/upnp_xml.c",
+   "line": 125,
+   "message": "Do not cast away const qualification: '(u8 *) data'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 11,
+   "file": "src/wps/upnp_xml.c",
+   "line": 125,
+   "message": "Casting from char * (alignment 1) to u8 * (alignment 4) may cause alignment issues",
+   "rule_id": "EXP36-C",
+   "severity": "Low",
+   "suggestion": "Use memcpy or ensure proper alignment before casting"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/upnp_xml.c",
+   "line": 161,
+   "message": "Function 'xml_add_tagged_data' does not validate pointer parameter 'data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'data' at the start of the function, e.g., 'if (!data) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/upnp_xml.c",
+   "line": 190,
+   "message": "Function 'xml_get_first_item' does not validate pointer parameter 'doc' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'doc' at the start of the function, e.g., 'if (!doc) { return error_code; }'"
+  },
+  {
+   "column": 28,
+   "file": "src/wps/upnp_xml.c",
+   "line": 193,
+   "message": "'item' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 9,
+   "file": "src/wps/upnp_xml.c",
+   "line": 209,
+   "message": "Plain 'char' passed to 'isgraph()' without cast to 'unsigned char'",
+   "rule_id": "STR00-C",
+   "severity": "Medium",
+   "suggestion": "Cast to '(unsigned char)' before passing to 'isgraph()': isgraph((unsigned char)tagname[match_len])"
+  },
+  {
+   "column": 17,
+   "file": "src/wps/upnp_xml.c",
+   "line": 209,
+   "message": "Argument to 'isgraph()' is not cast to unsigned char. This can cause undefined behavior if the argument has a negative value.",
+   "rule_id": "STR37-C",
+   "severity": "Medium",
+   "suggestion": "Cast the argument to unsigned char: 'isgraph((unsigned char)...)'"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/upnp_xml.c",
+   "line": 220,
+   "message": "Function returns pointer to local variable 'value' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/upnp_xml.c",
+   "line": 224,
+   "message": "Function 'xml_get_base64_item' does not validate pointer parameter 'data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'data' at the start of the function, e.g., 'if (!data) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/upnp_xml.c",
+   "line": 251,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  }
+ ],
+ "src/wps/wps_attr_process.c": [
+  {
+   "column": 47,
+   "file": "src/wps/wps_attr_process.c",
+   "line": 16,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_attr_process.c",
+   "line": 23,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 47,
+   "file": "src/wps/wps_attr_process.c",
+   "line": 54,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_attr_process.c",
+   "line": 61,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 63,
+   "file": "src/wps/wps_attr_process.c",
+   "line": 84,
+   "message": "Pointer parameter 'cred' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *cred'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_attr_process.c",
+   "line": 87,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_attr_process.c",
+   "line": 102,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 18,
+   "file": "src/wps/wps_attr_process.c",
+   "line": 113,
+   "message": "sizeof applied to pointer/array parameter 'cred' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(cred->ssid)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_attr_process.c",
+   "line": 125,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_attr_process.c",
+   "line": 142,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_attr_process.c",
+   "line": 159,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_attr_process.c",
+   "line": 172,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 17,
+   "file": "src/wps/wps_attr_process.c",
+   "line": 186,
+   "message": "sizeof applied to pointer/array parameter 'cred' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(cred->key)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 60,
+   "file": "src/wps/wps_attr_process.c",
+   "line": 195,
+   "message": "Pointer parameter 'cred' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *cred'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_attr_process.c",
+   "line": 198,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 6,
+   "file": "src/wps/wps_attr_process.c",
+   "line": 213,
+   "message": "Variable 'cred' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 44,
+   "file": "src/wps/wps_attr_process.c",
+   "line": 247,
+   "message": "Pointer parameter 'attr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *attr'"
+  },
+  {
+   "column": 51,
+   "file": "src/wps/wps_attr_process.c",
+   "line": 267,
+   "message": "Pointer parameter 'attr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *attr'"
+  },
+  {
+   "column": 21,
+   "file": "src/wps/wps_attr_process.c",
+   "line": 271,
+   "message": "sizeof applied to pointer/array parameter 'cred' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*cred)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  }
+ ],
+ "wpa_supplicant/offchannel.c": [
+  {
+   "column": 45,
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 22,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 63,
+   "message": "Function returns pointer to local variable 'iface' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 55,
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 70,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 36,
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 100,
+   "message": "Potential null pointer dereference in member access of variable 'iface'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'iface' is not NULL before member access"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 145,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 159,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 179,
+   "message": "Function 'offchannel_send_action_tx_status' does not validate integer parameter 'data_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'data_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 197,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 259,
+   "message": "Function 'offchannel_send_action' does not validate pointer parameter 'src' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'src' at the start of the function, e.g., 'if (!src) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 259,
+   "message": "Function 'offchannel_send_action' does not validate pointer parameter 'tx_cb' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'tx_cb' at the start of the function, e.g., 'if (!tx_cb) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 270,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 307,
+   "message": "Variable 'wpa_s' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 316,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 331,
+   "message": "Potential null pointer dereference in member access of variable 'tx_iface'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'tx_iface' is not NULL before member access"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 363,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 405,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 423,
+   "message": "Function 'offchannel_remain_on_channel_cb' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 440,
+   "message": "Function 'offchannel_cancel_remain_on_channel_cb' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 65,
+   "file": "wpa_supplicant/offchannel.c",
+   "line": 457,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  }
+ ],
+ "src/ap/hw_features.h": [
+  {
+   "column": 50,
+   "file": "src/ap/hw_features.h",
+   "line": 37,
+   "message": "Pointer parameter 'hw_features' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hw_features'"
+  },
+  {
+   "column": 64,
+   "file": "src/ap/hw_features.h",
+   "line": 42,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 66,
+   "file": "src/ap/hw_features.h",
+   "line": 47,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 62,
+   "file": "src/ap/hw_features.h",
+   "line": 52,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 63,
+   "file": "src/ap/hw_features.h",
+   "line": 57,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 59,
+   "file": "src/ap/hw_features.h",
+   "line": 67,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 63,
+   "file": "src/ap/hw_features.h",
+   "line": 72,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 65,
+   "file": "src/ap/hw_features.h",
+   "line": 77,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 61,
+   "file": "src/ap/hw_features.h",
+   "line": 82,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 30,
+   "file": "src/ap/hw_features.h",
+   "line": 83,
+   "message": "Pointer parameter 'mode' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *mode'"
+  },
+  {
+   "column": 67,
+   "file": "src/ap/hw_features.h",
+   "line": 88,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 61,
+   "file": "src/ap/hw_features.h",
+   "line": 92,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 36,
+   "file": "src/ap/hw_features.h",
+   "line": 93,
+   "message": "Pointer parameter 'mode' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *mode'"
+  },
+  {
+   "column": 68,
+   "file": "src/ap/hw_features.h",
+   "line": 98,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 63,
+   "file": "src/ap/hw_features.h",
+   "line": 103,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 62,
+   "file": "src/ap/hw_features.h",
+   "line": 109,
+   "message": "Pointer parameter 'multi_hw_info' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *multi_hw_info'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hw_features.h",
+   "line": 113,
+   "message": "Incompatible declarations of function 'hostapd_set_current_hw_info': parameter types differ",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same function have identical signatures"
+  },
+  {
+   "column": 68,
+   "file": "src/ap/hw_features.h",
+   "line": 113,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  }
+ ],
+ "src/ap/ieee802_11_auth.c": [
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 25,
+   "message": "Header file 'ieee802_11.h' has the same first 8 characters (case-insensitive) as 'ieee802_1x.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 25,
+   "message": "Header file 'ieee802_11.h' has the same first 8 characters (case-insensitive) as 'ieee802_11_auth.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 26,
+   "message": "Header file 'ieee802_1x.h' has the same first 8 characters (case-insensitive) as 'ieee802_11_auth.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_1x.h' -> unique name)"
+  },
+  {
+   "column": 69,
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 66,
+   "message": "Pointer parameter 'acl_cache' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *acl_cache'"
+  },
+  {
+   "column": 54,
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 78,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 197,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 43,
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 211,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 250,
+   "message": "Function 'hostapd_allowed_address' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 250,
+   "message": "Function 'hostapd_allowed_address' does not validate pointer parameter 'addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'addr' at the start of the function, e.g., 'if (!addr) { return error_code; }'"
+  },
+  {
+   "column": 20,
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 256,
+   "message": "sizeof applied to pointer/array parameter 'out' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*out)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 32,
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 275,
+   "message": "sizeof applied to pointer/array parameter 'out' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(out->vlan_id)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 399,
+   "message": "Function 'hostapd_acl_expire' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 417,
+   "message": "Sensitive buffer 'passphrase' not cleared before function exit",
+   "rule_id": "MEM03-C",
+   "severity": "Medium",
+   "suggestion": "Call SecureZeroMemory(passphrase, size) or memset(passphrase, 0, size) before the buffer goes out of scope"
+  },
+  {
+   "column": 11,
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 458,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 488,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 27,
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 499,
+   "message": "Potential null pointer dereference in member access of variable 'hdr'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'hdr' is not NULL before member access"
+  },
+  {
+   "column": 27,
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 528,
+   "message": "Dereference of uninitialized pointer 'cache'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'cache' before dereferencing"
+  },
+  {
+   "column": 27,
+   "file": "src/ap/ieee802_11_auth.c",
+   "line": 727,
+   "message": "Dereference of uninitialized pointer 'query'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'query' before dereferencing"
+  }
+ ],
+ "src/ap/ndisc_snoop.c": [
+  {
+   "column": 5,
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 33,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 29,
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 45,
+   "message": "Dereference of uninitialized pointer 'ip6addr'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ip6addr' before dereferencing"
+  },
+  {
+   "column": 34,
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 49,
+   "message": "sizeof applied to pointer/array parameter 'addr' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*addr)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 57,
+   "message": "Function 'sta_ip6addr_del' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 57,
+   "message": "Function 'sta_ip6addr_del' does not validate pointer parameter 'sta' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sta' at the start of the function, e.g., 'if (!sta) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 61,
+   "message": "Function 'dl_list_for_each_safe' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 61,
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 61,
+   "message": "Variable 'ip6addr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'ip6addr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 66,
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 70,
+   "message": "Pointer parameter 'addr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *addr'"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 74,
+   "message": "Function 'dl_list_for_each' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 50,
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 74,
+   "message": "Variable 'ip6addr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'ip6addr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 50,
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 93,
+   "message": "Do not cast away const qualification: '(u8 *) buf'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 31,
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 98,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 106,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 108,
+   "message": "Scaled integer arithmetic with pointer: 'ETH_HLEN + sizeof(struct ip6_hdr) + sizeof(struct icmp6_hdr)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 112,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 177,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 177,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ndisc_snoop.c",
+   "line": 185,
+   "message": "Function 'ndisc_snoop_deinit' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  }
+ ]
+}

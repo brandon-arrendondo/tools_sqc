@@ -1,0 +1,722 @@
+[
+ {
+  "rule": "API01-C",
+  "file": "src/p2p/p2p_i.h",
+  "line": 108,
+  "verdict": "TP",
+  "reason": "char country[3] declared before pointer field go_neg_conf in struct p2p_device",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "API01-C",
+  "file": "src/p2p/p2p_i.h",
+  "line": 191,
+  "verdict": "TP",
+  "reason": "char password[100] declared before pointer field pasn in struct p2p_device",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "API01-C",
+  "file": "src/p2p/p2p_i.h",
+  "line": 767,
+  "verdict": "TP",
+  "reason": "device_name buffer precedes wps_pri_dev_type pointer in struct; not strictly adjacent but matches rule as written",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "API02-C",
+  "file": "src/drivers/linux_ioctl.h",
+  "line": 20,
+  "verdict": "TP",
+  "reason": "linux_br_get writes brname via os_strlcpy bounded to a hardcoded IFNAMSIZ never passed by the caller; current callers all happen to use IFNAMSIZ buffers but the API gives no compile/runtime guarantee",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "API02-C",
+  "file": "src/drivers/linux_ioctl.h",
+  "line": 21,
+  "verdict": "TP",
+  "reason": "linux_master_get has the same implicit hardcoded-IFNAMSIZ contract with no size parameter",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "ARR01-C",
+  "file": "src/eap_server/eap_server.c",
+  "line": 2086,
+  "verdict": "TP",
+  "reason": "same as ARR00-C above: sizeof applied directly to the decayed pointer parameter itself, not to *ptr or ptr->member",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "ARR36-C",
+  "file": "src/utils/os_internal.c",
+  "line": 297,
+  "verdict": "TP",
+  "reason": "dest<src overlap-direction check is the textbook memmove idiom (mirrors every real libc's implementation); technically compares pointers from possibly-different objects per strict ISO C, but unavoidable for this function's purpose",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "ARR37-C",
+  "file": "src/ap/wnm_ap.c",
+  "line": 1089,
+  "verdict": "TP",
+  "reason": "pos incremented from address of a single scalar struct field (non-array object); textbook ARR37-C violation, though harmless here in practice.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "ARR39-C",
+  "file": "src/drivers/driver_ndis.c",
+  "line": 1631,
+  "verdict": "TP",
+  "reason": "'sizeof(status)' takes the size of the pointer variable, not sizeof(*status) (the struct); genuine sizeof-pointer-vs-sizeof-struct bug, latent on 64-bit builds",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "ARR39-C",
+  "file": "src/drivers/driver_ndis.c",
+  "line": 1632,
+  "verdict": "TP",
+  "reason": "Same sizeof(status)-vs-sizeof(*status) pointer/struct-size confusion feeding data_len; can underflow data_len on 64-bit",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "DCL39-C",
+  "file": "src/drivers/driver_bsd.c",
+  "line": 1105,
+  "verdict": "TP",
+  "reason": "struct ieee80211_bssid bs is never zeroed before SIOCG80211BSSID ioctl (only i_name field set); genuine (low-severity) uninitialized-padding-to-kernel case, unlike sibling zeroed instances",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "DCL39-C",
+  "file": "src/wps/wps_upnp.c",
+  "line": 935,
+  "verdict": "TP",
+  "reason": "req is never os_memset-zeroed before this first ioctl(SIOCGIFADDR); matches the established zeroed-vs-not-zeroed distinguishing test (not-zeroed side)",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "DCL39-C",
+  "file": "src/wps/wps_upnp.c",
+  "line": 960,
+  "verdict": "TP",
+  "reason": "req reused from the SIOCGIFADDR call without an intervening os_memset; only ifr_name overwritten via strlcpy, not-zeroed side of the distinguishing test",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "DCL39-C",
+  "file": "wpa_supplicant/wpa_priv.c",
+  "line": 443,
+  "verdict": "TP",
+  "reason": "capa is never os_memset-zeroed (unlike the msg/msghdr sendmsg cases in this file which are); struct populated only via field assignments, so compiler padding bytes can leak uninitialized stack data over sendto()",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "DCL40-C",
+  "file": "src/ap/ieee802_11_eht.c",
+  "line": 2773,
+  "verdict": "TP",
+  "reason": "hostapd_eid_eht_ml_tid_to_link_map/_len genuinely share their first 31 significant characters ('hostapd_eid_eht_ml_tid_to_link_'); technically true per rule text though not practically actionable on any modern toolchain (established 31-char-judgment-call convention)",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "DCL40-C",
+  "file": "src/crypto/ms_funcs.h",
+  "line": 26,
+  "verdict": "TP",
+  "reason": "verified: first 31 chars of both identifiers are byte-identical, genuine C90 external-name collision",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "DCL40-C",
+  "file": "src/crypto/tls_gnutls.c",
+  "line": 1783,
+  "verdict": "TP",
+  "reason": "Genuine 31-significant-character collision: 'tls_connection_set_success_data' is exactly 31 chars, 'tls_connection_set_success_data_resumed' shares that prefix - literally true per rule text, though virtually no modern linker enforces this limit",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "DCL40-C",
+  "file": "wpa_supplicant/dbus/dbus_new_handlers.h",
+  "line": 306,
+  "verdict": "TP",
+  "reason": "verified: first 31 chars of wpas_dbus_handler_nan_subscribe_stop_listen and wpas_dbus_handler_nan_subscribe are identical",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "DCL40-C",
+  "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.h",
+  "line": 77,
+  "verdict": "TP",
+  "reason": "verified: first 31 chars of _sd_res and _sd_req variants are identical",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "DCL40-C",
+  "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.h",
+  "line": 80,
+  "verdict": "TP",
+  "reason": "verified: first 31 chars of _sd_cancel_req and _sd_req variants are identical",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "DCL40-C",
+  "file": "wpa_supplicant/wpa_supplicant_i.h",
+  "line": 1760,
+  "verdict": "TP",
+  "reason": "Literal 31-sig-char external-identifier collision per rule text, low practical impact",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "DCL40-C",
+  "file": "wpa_supplicant/wpa_supplicant_i.h",
+  "line": 2100,
+  "verdict": "TP",
+  "reason": "Literal 31-sig-char external-identifier collision per rule text",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "ENV03-C",
+  "file": "src/utils/browser-android.c",
+  "line": 121,
+  "verdict": "TP",
+  "reason": "real system() call with no prior environment sanitization, though the command is a fixed absolute-path string with no attacker-controlled input.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "ENV30-C",
+  "file": "src/utils/os_win32.c",
+  "line": 87,
+  "verdict": "TP",
+  "reason": "tm1 at this point is from localtime() (message misattributes to gmtime()) but is still passed to mktime(), which normalizes/modifies the struct pointed to by a listed-function's return value; genuine per rule text despite the wrong function-name attribution",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "ENV30-C",
+  "file": "src/utils/os_win32.c",
+  "line": 90,
+  "verdict": "TP",
+  "reason": "tm1 is genuinely gmtime()'s return, passed to mktime() which modifies it in place -- this is the textbook CERT ENV30-C noncompliant example verbatim",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "ERR02-C",
+  "file": "src/ap/taxonomy.c",
+  "line": 199,
+  "verdict": "TP",
+  "reason": "os_snprintf return added into pointer p with no error check, unlike the file's os_snprintf_error() idiom used elsewhere.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "ERR02-C",
+  "file": "src/ap/taxonomy.c",
+  "line": 208,
+  "verdict": "TP",
+  "reason": "Same unchecked-return-into-pointer gap inside the extcap hex-dump loop.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "ERR02-C",
+  "file": "src/common/ieee802_11_common.h",
+  "line": 388,
+  "verdict": "TP",
+  "reason": "ssize_t return does mix -1 error indicator with fragment-count data per CERT text, though it's a common POSIX-style idiom; low-severity real finding.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "ERR02-C",
+  "file": "src/eap_peer/eap.c",
+  "line": 201,
+  "verdict": "TP",
+  "reason": "pos += os_snprintf(...) result used directly in pointer arithmetic with no os_snprintf_error() check -- matches the established genuine-if-low-severity TP shape for this idiom.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "ERR02-C",
+  "file": "src/eap_peer/eap_aka.c",
+  "line": 206,
+  "verdict": "TP",
+  "reason": "plain os_snprintf return consumed via pos+= with no negative-return check",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "ERR02-C",
+  "file": "src/eap_peer/eap_aka.c",
+  "line": 207,
+  "verdict": "TP",
+  "reason": "same unchecked os_snprintf pattern",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "ERR02-C",
+  "file": "src/eap_peer/eap_aka.c",
+  "line": 209,
+  "verdict": "TP",
+  "reason": "plain os_snprintf return consumed via pos+= with no negative-return check",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "ERR02-C",
+  "file": "src/eap_peer/eap_sim.c",
+  "line": 213,
+  "verdict": "TP",
+  "reason": "pos += os_snprintf(...) with no os_snprintf_error() check anywhere in eap_sim_ext_sim_req",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "ERR02-C",
+  "file": "src/eap_peer/eap_sim.c",
+  "line": 215,
+  "verdict": "TP",
+  "reason": "same unchecked os_snprintf() consumption pattern",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "ERR02-C",
+  "file": "src/eap_server/eap_sim_db.c",
+  "line": 257,
+  "verdict": "TP",
+  "reason": "os_snprintf() return consumed via pos+=... with zero os_snprintf_error() checks anywhere in db_add_reauth; real (low-severity, buffer generously sized) gap",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "ERR02-C",
+  "file": "src/eap_server/eap_sim_db.c",
+  "line": 268,
+  "verdict": "TP",
+  "reason": "os_snprintf() return consumed via pos+=... with zero os_snprintf_error() checks anywhere in db_add_reauth; real (low-severity, buffer generously sized) gap",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "ERR02-C",
+  "file": "src/eap_server/eap_sim_db.c",
+  "line": 270,
+  "verdict": "TP",
+  "reason": "os_snprintf() return consumed via pos+=... with zero os_snprintf_error() checks anywhere in db_add_reauth; real (low-severity, buffer generously sized) gap",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "ERR02-C",
+  "file": "src/eap_server/eap_sim_db.c",
+  "line": 274,
+  "verdict": "TP",
+  "reason": "os_snprintf() return consumed via pos+=... with zero os_snprintf_error() checks anywhere in db_add_reauth; real (low-severity, buffer generously sized) gap",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "ERR02-C",
+  "file": "src/eap_server/eap_sim_db.c",
+  "line": 277,
+  "verdict": "TP",
+  "reason": "os_snprintf() return consumed via pos+=... with zero os_snprintf_error() checks anywhere in db_add_reauth; real (low-severity, buffer generously sized) gap",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "ERR02-C",
+  "file": "src/eap_server/eap_sim_db.c",
+  "line": 281,
+  "verdict": "TP",
+  "reason": "os_snprintf() return consumed via pos+=... with zero os_snprintf_error() checks anywhere in db_add_reauth; real (low-severity, buffer generously sized) gap",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "ERR02-C",
+  "file": "src/eap_server/eap_sim_db.c",
+  "line": 284,
+  "verdict": "TP",
+  "reason": "os_snprintf() return consumed via pos+=... with zero os_snprintf_error() checks anywhere in db_add_reauth; real (low-severity, buffer generously sized) gap",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "ERR02-C",
+  "file": "src/eap_server/eap_sim_db.c",
+  "line": 288,
+  "verdict": "TP",
+  "reason": "os_snprintf() return consumed via pos+=... with zero os_snprintf_error() checks anywhere in db_add_reauth; real (low-severity, buffer generously sized) gap",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "ERR02-C",
+  "file": "src/eap_server/eap_sim_db.c",
+  "line": 291,
+  "verdict": "TP",
+  "reason": "os_snprintf() return consumed via pos+=... with zero os_snprintf_error() checks anywhere in db_add_reauth; real (low-severity, buffer generously sized) gap",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "ERR02-C",
+  "file": "src/utils/common.c",
+  "line": 515,
+  "verdict": "TP",
+  "reason": "txt += os_snprintf(...) return value is used directly without checking os_snprintf_error(), unlike the rest of this file's convention; no reachable overflow given the loop's 4-byte headroom guard, but the check is genuinely absent",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "ERR02-C",
+  "file": "src/utils/json.c",
+  "line": 53,
+  "verdict": "TP",
+  "reason": "os_snprintf return used unchecked to advance txt; on truncation txt can land past end, causing OOB *txt='\\0' write at line 60",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "ERR05-C",
+  "file": "src/utils/wpabuf.c",
+  "line": 43,
+  "verdict": "TP",
+  "reason": "wpabuf is reusable/shared code across hostapd+wpa_supplicant; abort() on corruption is a literal ERR05-C violation (deliberate fail-fast, low severity)",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "ERR05-C",
+  "file": "src/utils/wpabuf.c",
+  "line": 65,
+  "verdict": "TP",
+  "reason": "same abort()-in-reusable-library-code violation as line 43",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "ERR05-C",
+  "file": "src/utils/wpabuf.c",
+  "line": 197,
+  "verdict": "TP",
+  "reason": "same abort()-in-reusable-library-code violation as lines 43/65",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "ERR05-C",
+  "file": "wpa_supplicant/preauth_test.c",
+  "line": 269,
+  "verdict": "TP",
+  "reason": "wpa_init_conf genuinely calls exit(-1) directly instead of returning an error code to its caller",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "EXP30-C",
+  "file": "src/common/dpp_tcp.c",
+  "line": 1799,
+  "verdict": "TP",
+  "reason": "wpabuf_put(buf,0) writes buf->used (even though +0) while wpabuf_tailroom(buf) reads it in the same unsequenced call; literally true per rule text, but harmless (+0).",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "EXP30-C",
+  "file": "src/common/wpa_ctrl.c",
+  "line": 426,
+  "verdict": "TP",
+  "reason": "strerror(errno) argument unsequenced vs inet_ntop() which can itself set errno on failure",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "EXP30-C",
+  "file": "src/common/wpa_ctrl.c",
+  "line": 432,
+  "verdict": "TP",
+  "reason": "strerror(errno) unsequenced vs inet_ntoa() which can set errno; same shape as :426",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "EXP36-C",
+  "file": "src/ap/ieee802_11_ht.c",
+  "line": 280,
+  "verdict": "TP",
+  "reason": "data offset by fixed header+2 bytes with no alignment guarantee before cast to 4-byte-aligned struct; real portability concern parsing wire frame",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "EXP36-C",
+  "file": "src/ap/ieee802_11_ht.c",
+  "line": 343,
+  "verdict": "TP",
+  "reason": "data further advanced by attacker-controlled bc_ie->length before this cast, alignment definitely not guaranteed",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "EXP36-C",
+  "file": "src/ap/wpa_auth.c",
+  "line": 1685,
+  "verdict": "TP",
+  "reason": "genuine alignment-increasing cast from a byte pointer of arbitrary provenance to a struct pointer",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "EXP36-C",
+  "file": "src/ap/wpa_auth.c",
+  "line": 2394,
+  "verdict": "TP",
+  "reason": "genuine alignment-increasing cast from a byte pointer of arbitrary provenance to a struct pointer",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "EXP36-C",
+  "file": "src/common/proximity_ranging.c",
+  "line": 1991,
+  "verdict": "TP",
+  "reason": "Cast target is a real multi-field struct ieee80211_mgmt (genuine >1-byte alignment requirement) from a u8*/char* source whose alignment is unproven in-function; matches established low-severity TP disposition for real-struct-target alignment casts.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "EXP36-C",
+  "file": "src/common/wpa_common.c",
+  "line": 4351,
+  "verdict": "TP",
+  "reason": "Cast from u8* (align 1) to struct pointer (align 4) on wire-derived data with alignment unproven in-function; genuine low-severity per established disposition.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "EXP36-C",
+  "file": "src/drivers/driver_ndis.c",
+  "line": 1552,
+  "verdict": "TP",
+  "reason": "NDIS_802_11_AUTHENTICATION_REQUEST contains ULONG fields (genuinely 4-byte-aligned); source buffer alignment unproven in-function, established disposition",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "EXP36-C",
+  "file": "src/drivers/driver_ndis.c",
+  "line": 1586,
+  "verdict": "TP",
+  "reason": "NDIS_802_11_PMKID_CANDIDATE_LIST contains ULONG fields; source buffer alignment unproven in-function",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "EXP36-C",
+  "file": "src/drivers/driver_ndis.c",
+  "line": 1630,
+  "verdict": "TP",
+  "reason": "NDIS_802_11_STATUS_INDICATION contains an enum field (genuinely 4-byte-aligned); source alignment unproven in-function",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "EXP36-C",
+  "file": "src/drivers/driver_nl80211.c",
+  "line": 4739,
+  "verdict": "TP",
+  "reason": "char*->struct ieee80211_mgmt* cast (align 1->4) with no alignment guarantee shown at this call site; real per CERT EXP36-C text though low practical risk.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "EXP36-C",
+  "file": "src/drivers/driver_nl80211_event.c",
+  "line": 447,
+  "verdict": "TP",
+  "reason": "Cast from char* netlink attr data to struct nlattr* \u2014 alignment not proven in-function; graded genuine low-severity TP per established EXP36-C disposition.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "EXP36-C",
+  "file": "src/drivers/driver_nl80211_event.c",
+  "line": 823,
+  "verdict": "TP",
+  "reason": "Cast from char* netlink data to struct nlattr*, alignment unproven in-function; same low-severity TP disposition as :447.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "EXP36-C",
+  "file": "src/drivers/driver_nl80211_event.c",
+  "line": 1843,
+  "verdict": "TP",
+  "reason": "Cast from char* netlink data to const struct ieee80211_mgmt*, alignment unproven in-function; same low-severity TP disposition as :447.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "EXP36-C",
+  "file": "src/drivers/driver_nl80211_event.c",
+  "line": 2815,
+  "verdict": "TP",
+  "reason": "Genuine alignment-1-to-4 cast of a raw byte buffer (const u8 *data/char*) to a typed struct/nlattr pointer; buffer alignment is not proven anywhere in-function (established EXP36-C low-severity TP disposition).",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "EXP36-C",
+  "file": "src/drivers/driver_nl80211_event.c",
+  "line": 2931,
+  "verdict": "TP",
+  "reason": "Genuine alignment-1-to-4 cast of a raw byte buffer (const u8 *data/char*) to a typed struct/nlattr pointer; buffer alignment is not proven anywhere in-function (established EXP36-C low-severity TP disposition).",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "EXP36-C",
+  "file": "src/drivers/driver_nl80211_event.c",
+  "line": 3025,
+  "verdict": "TP",
+  "reason": "Genuine alignment-1-to-4 cast of a raw byte buffer (const u8 *data/char*) to a typed struct/nlattr pointer; buffer alignment is not proven anywhere in-function (established EXP36-C low-severity TP disposition).",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "EXP36-C",
+  "file": "src/drivers/driver_nl80211_event.c",
+  "line": 3187,
+  "verdict": "TP",
+  "reason": "Genuine alignment-1-to-4 cast of a raw byte buffer (const u8 *data/char*) to a typed struct/nlattr pointer; buffer alignment is not proven anywhere in-function (established EXP36-C low-severity TP disposition).",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "EXP36-C",
+  "file": "src/drivers/driver_nl80211_event.c",
+  "line": 3280,
+  "verdict": "TP",
+  "reason": "Genuine alignment-1-to-4 cast of a raw byte buffer (const u8 *data/char*) to a typed struct/nlattr pointer; buffer alignment is not proven anywhere in-function (established EXP36-C low-severity TP disposition).",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "EXP36-C",
+  "file": "src/drivers/driver_nl80211_event.c",
+  "line": 3321,
+  "verdict": "TP",
+  "reason": "Genuine alignment-1-to-4 cast of a raw byte buffer (const u8 *data/char*) to a typed struct/nlattr pointer; buffer alignment is not proven anywhere in-function (established EXP36-C low-severity TP disposition).",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "EXP36-C",
+  "file": "src/drivers/driver_nl80211_event.c",
+  "line": 3351,
+  "verdict": "TP",
+  "reason": "Genuine alignment-1-to-4 cast of a raw byte buffer (const u8 *data/char*) to a typed struct/nlattr pointer; buffer alignment is not proven anywhere in-function (established EXP36-C low-severity TP disposition).",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "EXP36-C",
+  "file": "src/drivers/driver_nl80211_event.c",
+  "line": 3525,
+  "verdict": "TP",
+  "reason": "Genuine alignment-1-to-4 cast of a raw byte buffer (const u8 *data/char*) to a typed struct/nlattr pointer; buffer alignment is not proven anywhere in-function (established EXP36-C low-severity TP disposition).",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "EXP36-C",
+  "file": "src/l2_packet/l2_packet_winpcap.c",
+  "line": 111,
+  "verdict": "TP",
+  "reason": "genuine potential alignment mismatch casting raw pcap byte buffer to struct l2_ethhdr* on strict-alignment platforms",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "EXP36-C",
+  "file": "src/p2p/p2p.c",
+  "line": 7129,
+  "verdict": "TP",
+  "reason": "Cast from const u8* (alignment 1) to struct ieee80211_mgmt* (alignment >1); buffer's actual alignment unproven in-function -- graded genuine low-severity TP per established EXP36-C disposition",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "EXP36-C",
+  "file": "src/pasn/pasn_common.c",
+  "line": 336,
+  "verdict": "TP",
+  "reason": "casts a raw wire byte buffer (const u8*) to a struct pointer of higher alignment requirement without ensuring alignment - real (if idiomatic) CERT violation",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "EXP36-C",
+  "file": "src/pasn/pasn_initiator.c",
+  "line": 1162,
+  "verdict": "TP",
+  "reason": "Casting char* wire data to const struct ieee80211_mgmt* (align 1->4); real struct target, alignment unproven, established low-severity TP convention.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "EXP36-C",
+  "file": "src/pasn/pasn_initiator.c",
+  "line": 1477,
+  "verdict": "TP",
+  "reason": "Casting char* wire data to const struct ieee80211_mgmt* (align 1->4) in wpa_pasn_auth_tx_status; established low-severity TP convention.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "EXP36-C",
+  "file": "src/radius/radius.c",
+  "line": 859,
+  "verdict": "TP",
+  "reason": "data is an attacker-controlled wire buffer with no alignment guarantee; casting char* to struct radius_hdr* risks unaligned access on strict-alignment platforms",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "EXP36-C",
+  "file": "wpa_supplicant/wnm_sta.c",
+  "line": 1760,
+  "verdict": "TP",
+  "reason": "char* (data) to struct ieee80211_mgmt* cast, alignment 1->4; genuine low-severity TP per established disposition (real struct target, source alignment unproven in-function).",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "EXP39-C",
+  "file": "src/tls/tlsv1_client_read.c",
+  "line": 341,
+  "verdict": "TP",
+  "reason": "ev.peer_cert.subject write after ev.cert_fail.depth write relies on the common-initial-sequence layout shared by cert_fail/peer_cert (both start with depth,subject) - deliberate but exactly the layout-reliance EXP39-C targets",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "FIO02-C",
+  "file": "src/crypto/tls_openssl.c",
+  "line": 1822,
+  "verdict": "TP",
+  "reason": "filename from getenv(SSLKEYLOGFILE) opened without canonicalization -- real per rule text, though gated behind CONFIG_TESTING_OPTIONS debug-only feature",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "FIO03-C",
+  "file": "hostapd/hlr_auc_gw.c",
+  "line": 512,
+  "verdict": "TP",
+  "reason": "fopen(name, \"w\") has no O_EXCL-equivalent exclusivity for this data-file rewrite.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "FIO03-C",
+  "file": "src/ap/wps_hostapd.c",
+  "line": 548,
+  "verdict": "TP",
+  "reason": "literal FIO03-C gap on a fixed sibling temp filename; low realistic risk (root-owned config dir)",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "FIO03-C",
+  "file": "src/crypto/random.c",
+  "line": 404,
+  "verdict": "TP",
+  "reason": "fopen(...,\"wb\") gives no exclusive-creation guarantee; literal rule match, low severity for a local entropy-cache file.",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "FIO03-C",
+  "file": "src/eap_peer/eap_fast_pac.c",
+  "line": 554,
+  "verdict": "TP",
+  "reason": "fopen(\"wb\") intentionally overwrites the named PAC file; matches established data-file-rewrite genuine-TP precedent",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "FIO03-C",
+  "file": "src/utils/edit.c",
+  "line": 300,
+  "verdict": "TP",
+  "reason": "fopen(w) history-file rewrite with no exclusive-creation guarantee, literal low-severity TP",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "FIO03-C",
+  "file": "src/utils/http_curl.c",
+  "line": 660,
+  "verdict": "TP",
+  "reason": "fopen(fname, \"wb\") for a downloaded file has no O_EXCL-equivalent exclusive-creation guard; matches established genuine (low-severity) data-file-rewrite TP precedent (hlr_auc_gw.c/eap_fast.c)",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "FIO03-C",
+  "file": "src/utils/os_unix.c",
+  "line": 238,
+  "verdict": "TP",
+  "reason": "pid-file rewrite via fopen(...,\"w\") has no exclusive-creation guard",
+  "set": "RISKY_TP"
+ },
+ {
+  "rule": "FIO03-C",
+  "file": "src/utils/xml-utils.c",
+  "line": 178,
+  "verdict": "TP",
+  "reason": "Genuine data-file rewrite with no O_EXCL-equivalent; matches established low-sev TP class.",
+  "set": "RISKY_TP"
+ }
+]

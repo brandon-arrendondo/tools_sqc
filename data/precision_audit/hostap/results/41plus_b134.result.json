@@ -1,0 +1,32 @@
+{
+  "labels": [
+    {"rule": "DCL37-C", "file": "src/crypto/tls_wolfssl.c", "line": 2488, "verdict": "FP", "confidence": "high", "reason": "block-scope local '_out' misclassified as file-scope; established DCL37-C block-scope misclassification FP class"},
+    {"rule": "MSC13-C", "file": "src/crypto/tls_wolfssl.c", "line": 2489, "verdict": "TP", "confidence": "low", "reason": "skip=0 unconditionally overwritten at line 2501 before any read; genuine dead-init class (harmless, low severity)"},
+    {"rule": "API05-C", "file": "src/crypto/tls_wolfssl.c", "line": 2542, "verdict": "FP", "confidence": "high", "reason": "void *ssl_ctx is an opaque unused context handle, not an array buffer; matches opaque-handle API05-C FP class"},
+    {"rule": "DCL13-C", "file": "src/crypto/tls_wolfssl.c", "line": 2542, "verdict": "FP", "confidence": "high", "reason": "ssl_ctx/conn params of tls_connection_client_hello_ext, declared verbatim in tls.h (line 591) shared across all TLS backends; tls.h cross-backend contract FP class"},
+    {"rule": "DCL13-C", "file": "src/crypto/tls_wolfssl.c", "line": 2542, "verdict": "FP", "confidence": "high", "reason": "same tls.h contract FP class as ssl_ctx above, applied to conn param"},
+    {"rule": "DCL13-C", "file": "src/crypto/tls_wolfssl.c", "line": 2559, "verdict": "FP", "confidence": "high", "reason": "tls_sess_sec_cb's 'arg' is pinned by wolfSSL_set_session_secret_cb's external callback signature; DCL13-C fixed-callback-contract FP class"},
+    {"rule": "API00-C", "file": "src/crypto/tls_wolfssl.c", "line": 2594, "verdict": "FP", "confidence": "med", "reason": "tls_connection_set_session_ticket_cb's conn is always a valid connection from internal call sites; API00-C internal-only-API FP default"},
+    {"rule": "MSC37-C", "file": "src/crypto/tls_wolfssl.c", "line": 2594, "verdict": "FP", "confidence": "high", "reason": "every #if/#else branch returns (0/-1); MSC37-C preprocessor-branch-blind reach-end FP class"},
+    {"rule": "DCL13-C", "file": "src/crypto/tls_wolfssl.c", "line": 2594, "verdict": "FP", "confidence": "high", "reason": "tls_ctx param of tls.h-declared tls_connection_set_session_ticket_cb (line 628); tls.h contract FP class"},
+    {"rule": "DCL13-C", "file": "src/crypto/tls_wolfssl.c", "line": 2619, "verdict": "FP", "confidence": "high", "reason": "conn param of tls.h-declared tls_connection_set_success_data_resumed (line 652); tls.h contract FP class"},
+    {"rule": "API00-C", "file": "src/crypto/tls_wolfssl.c", "line": 2626, "verdict": "FP", "confidence": "med", "reason": "tls_connection_remove_session's conn always valid from internal call sites; API00-C internal-only-API FP default"},
+    {"rule": "DCL13-C", "file": "src/crypto/tls_wolfssl.c", "line": 2626, "verdict": "FP", "confidence": "high", "reason": "conn param of tls.h-declared tls_connection_remove_session; tls.h contract FP class"},
+    {"rule": "API00-C", "file": "src/crypto/tls_wolfssl.c", "line": 2640, "verdict": "FP", "confidence": "med", "reason": "tls_get_tls_unique's conn always valid from internal call sites; API00-C internal-only-API FP default"},
+    {"rule": "DCL13-C", "file": "src/crypto/tls_wolfssl.c", "line": 2640, "verdict": "FP", "confidence": "high", "reason": "conn param of tls.h-declared tls_get_tls_unique (line 670); tls.h contract FP class"},
+    {"rule": "API00-C", "file": "src/crypto/tls_wolfssl.c", "line": 2659, "verdict": "FP", "confidence": "med", "reason": "tls_connection_get_cipher_suite's conn always valid from internal call sites; API00-C internal-only-API FP default"},
+    {"rule": "DCL13-C", "file": "src/crypto/tls_wolfssl.c", "line": 2659, "verdict": "FP", "confidence": "high", "reason": "conn param of tls.h-declared tls_connection_get_cipher_suite (line 677); tls.h contract FP class"},
+    {"rule": "DCL13-C", "file": "src/crypto/tls_wolfssl.c", "line": 2665, "verdict": "FP", "confidence": "high", "reason": "conn param of tls.h-declared tls_connection_get_peer_subject; function even inline-guards conn, reinforcing FP"},
+    {"rule": "API00-C", "file": "src/crypto/tls_wolfssl.c", "line": 2673, "verdict": "FP", "confidence": "med", "reason": "tls_connection_set_success_data's conn always valid from internal call sites; API00-C internal-only-API FP default"},
+    {"rule": "DCL40-C", "file": "src/crypto/tls_wolfssl.c", "line": 2673, "verdict": "FP", "confidence": "high", "reason": "tls_connection_set_success_data vs _resumed share exactly the first 31 significant chars; established DCL40-C 31-char not-practically-actionable convention"},
+    {"rule": "POS49-C", "file": "src/crypto/tls_wolfssl.c", "line": 2698, "verdict": "FP", "confidence": "high", "reason": "success_data bit-field access in single-threaded wpa_supplicant/hostapd eloop core, no pthread; established no-pthread CON32-C/POS49-C FP class"},
+    {"rule": "MSC07-C", "file": "src/crypto/tls_wolfssl.c", "line": 2701, "verdict": "FP", "confidence": "high", "reason": "'fail:' goto-target label reached via goto before the preceding unconditional return; established MSC07-C goto-label-blindness FP class"},
+    {"rule": "API00-C", "file": "src/crypto/tls_wolfssl.c", "line": 2707, "verdict": "FP", "confidence": "med", "reason": "tls_connection_get_success_data's conn always valid from internal call sites; API00-C internal-only-API FP default"},
+    {"rule": "DCL13-C", "file": "src/crypto/tls_wolfssl.c", "line": 2708, "verdict": "FP", "confidence": "high", "reason": "conn param of tls.h-declared tls_connection_get_success_data (line 655); tls.h contract FP class"},
+    {"rule": "DCL13-C", "file": "src/crypto/tls_wolfssl.c", "line": 2721, "verdict": "FP", "confidence": "high", "reason": "conn param of tls.h-declared tls_connection_get_own_cert_used (line 691); tls.h contract FP class"},
+    {"rule": "DCL31-C", "file": "src/crypto/tls_wolfssl.c", "line": 2724, "verdict": "FP", "confidence": "high", "reason": "wolfSSL_get_certificate is declared in system header /usr/include/wolfssl/ssl.h, included at line 19; established DCL31-C external-library-header FP class"}
+  ],
+  "fns": [],
+  "files_clean_for_fn": [],
+  "summary": {"tp": 1, "fp": 24, "fn": 0}
+}

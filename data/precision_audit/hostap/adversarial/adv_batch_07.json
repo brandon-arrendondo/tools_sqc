@@ -1,0 +1,722 @@
+[
+ {
+  "rule": "EXP40-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 5628,
+  "verdict": "FP",
+  "reason": "char *p_start = cmd; -- cmd is a plain non-const char*; no const qualifier is involved anywhere, category-error misfire.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP40-C",
+  "file": "src/ap/acs.c",
+  "line": 745,
+  "verdict": "FP",
+  "reason": "phantom cast-away-const: neither 'chan' nor 'first_chan' is const-qualified in this function's signature",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP40-C",
+  "file": "src/ap/beacon.c",
+  "line": 189,
+  "verdict": "FP",
+  "reason": "Neither pos nor local_pwr_constraint is const-qualified; EXP40-C 'cast-away-const' phantom, established FP class (neither side const).",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP40-C",
+  "file": "src/ap/beacon.c",
+  "line": 191,
+  "verdict": "FP",
+  "reason": "Same phantom cast-away-const; hapd->iconf->local_pwr_constraint and pos are not const.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP40-C",
+  "file": "src/ap/drv_callbacks.c",
+  "line": 56,
+  "verdict": "FP",
+  "reason": "'*p = buf' is a declarator initializer (u8 *p = buf;), not an assignment; buf is not const-qualified",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP43-C",
+  "file": "hostapd/config_file.c",
+  "line": 882,
+  "verdict": "FP",
+  "reason": "os_realloc_array is a single-pointer reallocation, not two overlapping restrict-qualified buffers; confirmed EXP43-C non-restrict-function FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP43-C",
+  "file": "hostapd/config_file.c",
+  "line": 1304,
+  "verdict": "FP",
+  "reason": "os_realloc_array single-pointer reallocation, not restrict-qualified overlapping buffers; confirmed FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP43-C",
+  "file": "hostapd/config_file.c",
+  "line": 1397,
+  "verdict": "FP",
+  "reason": "os_realloc_array single-pointer reallocation, confirmed FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP43-C",
+  "file": "hostapd/config_file.c",
+  "line": 1514,
+  "verdict": "FP",
+  "reason": "os_realloc_array params are not restrict-qualified; confirmed EXP43-C non-restrict FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP43-C",
+  "file": "hostapd/config_file.c",
+  "line": 1735,
+  "verdict": "FP",
+  "reason": "os_realloc is not restrict-qualified; confirmed EXP43-C non-restrict FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP43-C",
+  "file": "hostapd/config_file.c",
+  "line": 2581,
+  "verdict": "FP",
+  "reason": "os_memmove has no restrict-qualified params; EXP43-C UB only applies to restrict pointers (confirmed EXP43-C-no-restrict FP class)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP43-C",
+  "file": "src/ap/acs.c",
+  "line": 1465,
+  "verdict": "FP",
+  "reason": "wpa_printf call has no pointer arguments at all (all int), nothing can overlap",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP43-C",
+  "file": "src/ap/acs.c",
+  "line": 1469,
+  "verdict": "FP",
+  "reason": "same as line 1465, all-integer wpa_printf args",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP43-C",
+  "file": "src/ap/ctrl_iface_ap.c",
+  "line": 363,
+  "verdict": "FP",
+  "reason": "wpa_snprintf_hex's params (common.h:530) are plain u8*/char*, not restrict-qualified, and buf vs sta->supp_op_classes are genuinely distinct heap buffers -- no aliasing.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP43-C",
+  "file": "src/ap/ctrl_iface_ap.c",
+  "line": 443,
+  "verdict": "FP",
+  "reason": "No restrict qualifiers on wpa_snprintf_hex, and buf vs sta->ext_capability are distinct buffers.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO09-C",
+  "file": "src/crypto/random.c",
+  "line": 412,
+  "verdict": "FP",
+  "reason": "Only plain byte buffers (u8/char[]) are written, no struct padding or multi-byte integers; minimal real endianness risk for a local-only cache file.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO10-C",
+  "file": "hostapd/hlr_auc_gw.c",
+  "line": 557,
+  "verdict": "FP",
+  "reason": "Deliberate POSIX rename()-based backup-rotation idiom; program is never built for Windows.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO10-C",
+  "file": "hostapd/hlr_auc_gw.c",
+  "line": 563,
+  "verdict": "FP",
+  "reason": "Deliberate POSIX rename()-based backup-rotation idiom; program is never built for Windows.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO10-C",
+  "file": "src/ap/wps_hostapd.c",
+  "line": 695,
+  "verdict": "FP",
+  "reason": "rename() used deliberately for atomic POSIX config replacement; Windows implementation-defined behavior isn't relevant to this daemon's primary target",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO10-C",
+  "file": "wpa_supplicant/config_file.c",
+  "line": 1913,
+  "verdict": "FP",
+  "reason": "Atomic rename-over-existing-destination is the intentional tmp+rename idiom on POSIX (this function's only real target, no Windows accommodation exists anywhere in it).",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO14-C",
+  "file": "src/utils/os_internal.c",
+  "line": 230,
+  "verdict": "FP",
+  "reason": "stream opened \"rb\" (binary mode); the SEEK_END/ftell undefined-behavior concern applies to text streams, not binary streams - rule has the standard backwards",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO14-C",
+  "file": "src/utils/os_unix.c",
+  "line": 430,
+  "verdict": "FP",
+  "reason": "file is POSIX-only (os_unix.c); the text/binary-mode portability concern doesn't apply",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO14-C",
+  "file": "src/utils/os_win32.c",
+  "line": 202,
+  "verdict": "FP",
+  "reason": "Rule has it backwards: the ftell/SEEK_END portability concern applies to text streams; f was opened \"rb\" (binary), the well-defined case",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO18-C",
+  "file": "src/eap_peer/eap_fast_pac.c",
+  "line": 560,
+  "verdict": "FP",
+  "reason": "len is a precisely tracked byte count (pos-buf), safer than strlen-derived sizing which the rule mistakenly demands",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO23-C",
+  "file": "hostapd/hlr_auc_gw.c",
+  "line": 117,
+  "verdict": "FP",
+  "reason": "Misattributed: cited line is inside db_table_exists, not main(); exit() flushes stdout regardless per C std.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO23-C",
+  "file": "hostapd/main.c",
+  "line": 58,
+  "verdict": "FP",
+  "reason": "misattributed: this return is inside hostapd_logger_cb, not main()",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO23-C",
+  "file": "hostapd/nt_password_hash.c",
+  "line": 26,
+  "verdict": "FP",
+  "reason": "return from main() auto-flushes stdout per C standard; same misfire as nfc_pw_token.c",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO23-C",
+  "file": "hostapd/sae_pk_gen.c",
+  "line": 195,
+  "verdict": "FP",
+  "reason": "matches confirmed FIO23-C FP pattern: return from main() is equivalent to exit(), which flushes all open streams including stdout",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO23-C",
+  "file": "wpa_supplicant/libwpa_test.c",
+  "line": 19,
+  "verdict": "FP",
+  "reason": "no explicit stdout writes in this file; OS/libc flushes stdio at normal process exit regardless",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO23-C",
+  "file": "wpa_supplicant/main_none.c",
+  "line": 26,
+  "verdict": "FP",
+  "reason": "exit path returns exitcode from wpa_supplicant_run normally; not calling fclose(stdout) is not a genuine defect, streams flush at exit",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO23-C",
+  "file": "wpa_supplicant/main_winsvc.c",
+  "line": 75,
+  "verdict": "FP",
+  "reason": "return at :75 is inside read_interface not main(); also exit() flushes stdout per C std",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO23-C",
+  "file": "wpa_supplicant/nfc_pw_token.c",
+  "line": 24,
+  "verdict": "FP",
+  "reason": "return from main() is equivalent to exit(), which the C standard guarantees flushes open streams incl. stdout; explicit fclose unnecessary",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO23-C",
+  "file": "wpa_supplicant/win_if_list.c",
+  "line": 58,
+  "verdict": "FP",
+  "reason": "Reaching end of main() is equivalent to exit(), which flushes all open streams per the C standard",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO23-C",
+  "file": "wpa_supplicant/wpa_passphrase.c",
+  "line": 28,
+  "verdict": "FP",
+  "reason": "return from main() is equivalent to exit(), which flushes stdout",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO24-C",
+  "file": "hostapd/config_file.c",
+  "line": 86,
+  "verdict": "FP",
+  "reason": "mutually-exclusive early-return branches (each closes+returns independently); same class as confirmed MEM31-C/mutually-exclusive-branch FPs",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO24-C",
+  "file": "hostapd/config_file.c",
+  "line": 101,
+  "verdict": "FP",
+  "reason": "mutually-exclusive early-return branches, not a real double close",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO24-C",
+  "file": "hostapd/config_file.c",
+  "line": 114,
+  "verdict": "FP",
+  "reason": "mutually-exclusive early-return branches (114 is the only-reached success-path close), not a real double close",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO24-C",
+  "file": "hostapd/config_file.c",
+  "line": 180,
+  "verdict": "FP",
+  "reason": "mutually-exclusive early-return branches, not a real double close",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO24-C",
+  "file": "hostapd/config_file.c",
+  "line": 185,
+  "verdict": "FP",
+  "reason": "mutually-exclusive early-return branches, not a real double close",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO24-C",
+  "file": "hostapd/config_file.c",
+  "line": 2141,
+  "verdict": "FP",
+  "reason": "the two closes are on mutually exclusive branches (error return vs success path); confirmed mutually-exclusive-branch FIO24-C FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO24-C",
+  "file": "hostapd/config_file.c",
+  "line": 5019,
+  "verdict": "FP",
+  "reason": "FIO24-C mutually-exclusive-branch double-close pattern (b20): each fclose(f) is its own early-return branch, at most one executes",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO24-C",
+  "file": "hostapd/config_file.c",
+  "line": 5056,
+  "verdict": "FP",
+  "reason": "FIO24-C mutually-exclusive-branch double-close pattern (b20): the :5010/:5019 closes are on distinct early-return paths, never reached alongside this one",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO24-C",
+  "file": "hostapd/hlr_auc_gw.c",
+  "line": 554,
+  "verdict": "FP",
+  "reason": "The two fclose(f) calls (line 515 and line 554) sit on mutually-exclusive branches (515 is inside the f2==NULL failure branch, which returns immediately); never both execute (confirmed FIO24-C branch-blind double-close class).",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO24-C",
+  "file": "src/ap/fils_hlp.c",
+  "line": 428,
+  "verdict": "FP",
+  "reason": "FIO24-C double-close-mutually-exclusive-branches FP: :422 close is in the bind()-failure branch, :428 close is in the separate eloop_register_sock-failure branch, never both reached",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO30-C",
+  "file": "hostapd/hostapd_cli.c",
+  "line": 56,
+  "verdict": "FP",
+  "reason": "Compile-time literal (with #ifdef fragments), not user input, passed correctly as format string",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO30-C",
+  "file": "hostapd/main.c",
+  "line": 614,
+  "verdict": "FP",
+  "reason": "resulting literal is compile-time-constant, not user input used as a format string",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO30-C",
+  "file": "wpa_supplicant/eapol_test.c",
+  "line": 1276,
+  "verdict": "FP",
+  "reason": "format string is a hardcoded literal concatenation, not user input",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO30-C",
+  "file": "wpa_supplicant/main.c",
+  "line": 25,
+  "verdict": "FP",
+  "reason": "format string is a 100% compile-time literal (usage text); wpa_supplicant_version/license are passed correctly as %s args, not as the format string -- no user input involved",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO30-C",
+  "file": "wpa_supplicant/main.c",
+  "line": 67,
+  "verdict": "FP",
+  "reason": "compile-time literal help text, not user input -- same as line 25 FIO30-C",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO32-C",
+  "file": "src/utils/os_internal.c",
+  "line": 230,
+  "verdict": "FP",
+  "reason": "no evidence the opened file is a device file; os_readfile() is used for regular config/cert files",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO32-C",
+  "file": "src/utils/os_internal.c",
+  "line": 231,
+  "verdict": "FP",
+  "reason": "same device-file heuristic misfire as line 230",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO32-C",
+  "file": "src/utils/os_internal.c",
+  "line": 232,
+  "verdict": "FP",
+  "reason": "same device-file heuristic misfire",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO32-C",
+  "file": "src/utils/os_unix.c",
+  "line": 430,
+  "verdict": "FP",
+  "reason": "no evidence the opened path is a device file; os_readfile takes arbitrary regular-file paths",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO32-C",
+  "file": "src/utils/os_unix.c",
+  "line": 435,
+  "verdict": "FP",
+  "reason": "no evidence file is a device file",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO39-C",
+  "file": "hostapd/hlr_auc_gw.c",
+  "line": 550,
+  "verdict": "FP",
+  "reason": "'f' (input) and 'f2' (output) are two entirely different FILE* streams; the rule's same-stream-repositioning concern doesn't apply across distinct handles.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO39-C",
+  "file": "src/ap/wps_hostapd.c",
+  "line": 668,
+  "verdict": "FP",
+  "reason": "fgets reads from oconf, fprintf writes to nconf - two independent FILE* streams, FIO39-C's same-stream requirement doesn't apply",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO39-C",
+  "file": "src/ap/wps_hostapd.c",
+  "line": 687,
+  "verdict": "FP",
+  "reason": "same reasoning: fprintf(nconf,...) and fgets(oconf,...) are different streams",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO39-C",
+  "file": "wpa_supplicant/wpa_passphrase.c",
+  "line": 54,
+  "verdict": "FP",
+  "reason": "fprintf(stderr,...) and fgets(stdin,...) are different, unrelated streams; rule conflates them",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO39-C",
+  "file": "wpa_supplicant/wpa_passphrase.c",
+  "line": 55,
+  "verdict": "FP",
+  "reason": "cross-stream conflation (stderr vs stdin), no real same-stream sequencing hazard",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO40-C",
+  "file": "hostapd/nt_password_hash.c",
+  "line": 24,
+  "verdict": "FP",
+  "reason": "buf is never touched after the fgets-failure branch (function returns immediately); no indeterminate read occurs",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO40-C",
+  "file": "src/eap_peer/eap_fast_pac.c",
+  "line": 194,
+  "verdict": "FP",
+  "reason": "Function returns -1 immediately on fgets failure; stale rc->buf is never subsequently read by caller",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO40-C",
+  "file": "wpa_supplicant/wpa_passphrase.c",
+  "line": 54,
+  "verdict": "FP",
+  "reason": "function returns immediately on fgets failure; buf never used after failure branch",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO42-C",
+  "file": "src/crypto/random.c",
+  "line": 454,
+  "verdict": "FP",
+  "reason": "random_fd is closed via random_close_fd() (:324), called from random_deinit()/random_read_fd(); interprocedural blindness.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO42-C",
+  "file": "src/eap_peer/eap_fast_pac.c",
+  "line": 276,
+  "verdict": "FP",
+  "reason": "rc->f is closed later via eap_fast_deinit_pac_data() in every caller path; cross-function close not tracked",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO47-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 3661,
+  "verdict": "FP",
+  "reason": "sscanf(...,\"key=%i\",&v)==1 single-specifier chained idiom - confirmed EXP20/ERR34/FIO47/INT05/MSC24 bundle FP (categorical_patterns.md sscanf bundle)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO47-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 3689,
+  "verdict": "FP",
+  "reason": "sscanf(...,\"key=%i\",&v)==1 single-specifier chained idiom - confirmed EXP20/ERR34/FIO47/INT05/MSC24 bundle FP (categorical_patterns.md sscanf bundle)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO47-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 3791,
+  "verdict": "FP",
+  "reason": "sscanf(...,\"key=%i\",&v)==1 single-specifier chained idiom - confirmed EXP20/ERR34/FIO47/INT05/MSC24 bundle FP (categorical_patterns.md sscanf bundle)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO47-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 3822,
+  "verdict": "FP",
+  "reason": "sscanf(...,\"key=%i\",&v)==1 single-specifier chained idiom - confirmed EXP20/ERR34/FIO47/INT05/MSC24 bundle FP (categorical_patterns.md sscanf bundle)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO47-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 3825,
+  "verdict": "FP",
+  "reason": "sscanf(...,\"key=%i\",&v)==1 single-specifier chained idiom - confirmed EXP20/ERR34/FIO47/INT05/MSC24 bundle FP (categorical_patterns.md sscanf bundle)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO47-C",
+  "file": "hostapd/hlr_auc_gw.c",
+  "line": 550,
+  "verdict": "FP",
+  "reason": "'buf' is 'char buf[500]', a string \u2014 not an Integer; type-classification bug.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO47-C",
+  "file": "hostapd/hlr_auc_gw.c",
+  "line": 914,
+  "verdict": "FP",
+  "reason": "buf is char buf[1000], a Pointer after array decay, not Integer",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO47-C",
+  "file": "hostapd/hlr_auc_gw.c",
+  "line": 926,
+  "verdict": "FP",
+  "reason": "resp is char resp[1000], a Pointer after array decay, not Integer",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO47-C",
+  "file": "hostapd/hlr_auc_gw.c",
+  "line": 1111,
+  "verdict": "FP",
+  "reason": "buf is char buf[1000], a Pointer after array decay, not Integer",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO47-C",
+  "file": "hostapd/hostapd_cli.c",
+  "line": 223,
+  "verdict": "FP",
+  "reason": "buf/addr are char arrays that decay to a pointer for %s; engine Integer-vs-Pointer classification is simply wrong, established FIO47-C misidentification class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO50-C",
+  "file": "hostapd/sae_pk_gen.c",
+  "line": 162,
+  "verdict": "FP",
+  "reason": "duplicate misfire of the same bogus file-stream-sequencing flag on a non-I/O arithmetic statement",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO50-C",
+  "file": "src/ap/ieee802_11_vht.c",
+  "line": 67,
+  "verdict": "FP",
+  "reason": "hapd_nsts is a plain u32 local variable, not a file stream; rule misfires on the name/shape, no FILE* exists here.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO50-C",
+  "file": "src/common/sae_pk.c",
+  "line": 404,
+  "verdict": "FP",
+  "reason": "'val' is a local u32, not a FILE*; no stream I/O anywhere near this line, confirmed rule bug.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO50-C",
+  "file": "src/common/sae_pk.c",
+  "line": 411,
+  "verdict": "FP",
+  "reason": "Same non-I/O 'val' misfire as line 404.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO50-C",
+  "file": "src/crypto/aes-internal-dec.c",
+  "line": 123,
+  "verdict": "FP",
+  "reason": "Nr is a plain int, not a FILE stream; no I/O anywhere near this line, confirmed FIO50-C non-I/O misfire family",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO50-C",
+  "file": "src/crypto/aes-internal-enc.c",
+  "line": 70,
+  "verdict": "FP",
+  "reason": "Nr is a plain int parameter, no FILE* stream exists in this function",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO50-C",
+  "file": "src/crypto/aes_i.h",
+  "line": 72,
+  "verdict": "FP",
+  "reason": "'val' is a u32 parameter, not a file stream; nonsensical rule misfire",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO50-C",
+  "file": "src/crypto/crypto_gnutls.c",
+  "line": 59,
+  "verdict": "FP",
+  "reason": "tmp is plain u8 scalar, zero FILE*/stdio nearby; name-heuristic misfire",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO50-C",
+  "file": "src/crypto/crypto_libtomcrypt.c",
+  "line": 49,
+  "verdict": "FP",
+  "reason": "'tmp' is a plain u8 byte, no FILE*/I/O anywhere; established FIO50-C plain-arithmetic misfire class.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO50-C",
+  "file": "src/crypto/crypto_linux.c",
+  "line": 625,
+  "verdict": "FP",
+  "reason": "'tmp' here is a plain u8 byte variable (parity-bit computation), not a FILE*/stream at all \u2014 no I/O anywhere near this line; established FIO50-C name-based-misfire-on-non-stream-variable FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FIO51-C",
+  "file": "src/eap_peer/eap_fast_pac.c",
+  "line": 276,
+  "verdict": "FP",
+  "reason": "Same cross-function fclose via eap_fast_deinit_pac_data as FIO42-C",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FLP02-C",
+  "file": "src/common/ieee802_11_common.c",
+  "line": 3016,
+  "verdict": "FP",
+  "reason": "plain integer bitwise-equality on u8 idx; no floating point involved",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FLP02-C",
+  "file": "src/common/ieee802_11_common.c",
+  "line": 3019,
+  "verdict": "FP",
+  "reason": "plain integer bitwise-equality on u8 idx; no floating point involved",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FLP02-C",
+  "file": "src/tls/asn1.c",
+  "line": 188,
+  "verdict": "FP",
+  "reason": "line is `(hdr->identifier & 0x1f) == 0x1f`, a plain integer bitmask comparison; no floating-point involved at all",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FLP03-C",
+  "file": "hostapd/sae_pk_gen.c",
+  "line": 117,
+  "verdict": "FP",
+  "reason": "division by 'expected' (provably >=256 via expected*=256 loop) for a progress-percentage display; no realistic div-by-zero/exception risk, feclearexcept overhead not warranted",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "FLP03-C",
+  "file": "src/ap/acs.c",
+  "line": 393,
+  "verdict": "FP",
+  "reason": "division is nf/5.0L, denominator is a hardcoded nonzero literal; no realistic division error",
+  "set": "SAFE_FP"
+ }
+]

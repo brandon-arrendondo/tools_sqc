@@ -1,0 +1,1219 @@
+{
+ "labels": [
+  {
+   "rule": "ENV01-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 1997,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ENV01-C fires on any fixed-size buffer with zero getenv/putenv nearby (confirmed categorical FP)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2103,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2107,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "harmless dead NULL/default init unconditionally reassigned before any read on every path; confirmed low-severity but genuine MSC13-C TP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2117,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus system-header API (dbus_message_* / dbus/dbus.h) misfires wholesale as \"no prior declaration\" (confirmed pattern)"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2128,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto-target label (nomem:/err:) right after an earlier return; reached via prior goto, not fallthrough (confirmed MSC07-C goto-label FP)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2144,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2165,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2165,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2168,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "harmless dead NULL/default init unconditionally reassigned before any read on every path; confirmed low-severity but genuine MSC13-C TP class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2171,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "path_buf IS used: its address is taken via 'path = path_buf' and written through the alias pointer 'path' (aliased-pointer FP shape, extends the DCL13-C aliased-pointer family)"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2171,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ENV01-C fires on any fixed-size buffer with zero getenv/putenv nearby (confirmed categorical FP)"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2174,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus system-header API (dbus_message_* / dbus/dbus.h) misfires wholesale as \"no prior declaration\" (confirmed pattern)"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2204,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus system-header API (dbus_message_* / dbus/dbus.h) misfires wholesale as \"no prior declaration\" (confirmed pattern)"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2218,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto-target label (nomem:/err:) right after an earlier return; reached via prior goto, not fallthrough (confirmed MSC07-C goto-label FP)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2236,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2259,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2259,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "message/wpa_s/global param pinned by fixed WPADBusMethodHandler typedef (cast at dbus_new.c registration site); dispatch-contract FP family"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2260,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "message/wpa_s/global param pinned by fixed WPADBusMethodHandler typedef (cast at dbus_new.c registration site); dispatch-contract FP family"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2280,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2326,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2326,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "ERR32-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2349,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is a D-Bus method handler, not a POSIX signal handler; ERR32-C misapplies \"signal handler\" restriction to ordinary code using errno"
+  },
+  {
+   "rule": "ERR32-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2351,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is a D-Bus method handler, not a POSIX signal handler; ERR32-C misapplies \"signal handler\" restriction to ordinary code using errno"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2385,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2386,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "message/wpa_s/global param pinned by fixed WPADBusMethodHandler typedef (cast at dbus_new.c registration site); dispatch-contract FP family"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2402,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2402,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "ERR32-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2425,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is a D-Bus method handler, not a POSIX signal handler; ERR32-C misapplies \"signal handler\" restriction to ordinary code using errno"
+  },
+  {
+   "rule": "ERR32-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2427,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is a D-Bus method handler, not a POSIX signal handler; ERR32-C misapplies \"signal handler\" restriction to ordinary code using errno"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2455,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2455,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "preprocessor-branch-blind: #ifdef/#else both branches return a value, sqc missed the #else return (same root cause as dbus_common.c:341)"
+  },
+  {
+   "rule": "ERR32-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2483,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is a D-Bus method handler, not a POSIX signal handler; ERR32-C misapplies \"signal handler\" restriction to ordinary code using errno"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2484,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strtoul return is checked via errno==0/!=0 immediately after the call (CERT-recommended pattern), rule missed the errno check"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2484,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strtoul return is checked via errno==0/!=0 immediately after the call (CERT-recommended pattern), rule missed the errno check"
+  },
+  {
+   "rule": "ERR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2484,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "errno = 0 is set on the line immediately before the strtoul() call; rule claim is factually wrong"
+  },
+  {
+   "rule": "ERR32-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2485,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is a D-Bus method handler, not a POSIX signal handler; ERR32-C misapplies \"signal handler\" restriction to ordinary code using errno"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2522,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2522,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "preprocessor-branch-blind: #ifdef/#else both branches return a value, sqc missed the #else return (same root cause as dbus_common.c:341)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2583,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2627,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto-target label (nomem:/err:) right after an earlier return; reached via prior goto, not fallthrough (confirmed MSC07-C goto-label FP)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2645,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2645,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2646,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "message/wpa_s/global param pinned by fixed WPADBusMethodHandler typedef (cast at dbus_new.c registration site); dispatch-contract FP family"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2648,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "harmless dead NULL/default init unconditionally reassigned before any read on every path; confirmed low-severity but genuine MSC13-C TP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2692,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2708,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reply/error_reply is a local pointer *variable* to a heap-allocated, refcounted DBusMessage (dbus_message_new_error/_method_return or helper out-param), not automatic storage (confirmed DCL30-C heap-vs-stack FP class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2723,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2749,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2749,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2770,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "deliberate guard-clause fallthrough (no state change needed for other states); confirmed MSC01-C no-final-else pedantry class"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2773,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "arg != NULL is checked via && short-circuit in the same condition immediately before os_strlen(arg); rule missed the guard"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2795,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2795,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "message/wpa_s/global param pinned by fixed WPADBusMethodHandler typedef (cast at dbus_new.c registration site); dispatch-contract FP family"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2796,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "message/wpa_s/global param pinned by fixed WPADBusMethodHandler typedef (cast at dbus_new.c registration site); dispatch-contract FP family"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2811,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2811,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "message/wpa_s/global param pinned by fixed WPADBusMethodHandler typedef (cast at dbus_new.c registration site); dispatch-contract FP family"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2812,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "message/wpa_s/global param pinned by fixed WPADBusMethodHandler typedef (cast at dbus_new.c registration site); dispatch-contract FP family"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2863,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reply/error_reply is a local pointer *variable* to a heap-allocated, refcounted DBusMessage (dbus_message_new_error/_method_return or helper out-param), not automatic storage (confirmed DCL30-C heap-vs-stack FP class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2889,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2897,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reply/error_reply is a local pointer *variable* to a heap-allocated, refcounted DBusMessage (dbus_message_new_error/_method_return or helper out-param), not automatic storage (confirmed DCL30-C heap-vs-stack FP class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2924,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2925,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "message/wpa_s/global param pinned by fixed WPADBusMethodHandler typedef (cast at dbus_new.c registration site); dispatch-contract FP family"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2932,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reply/error_reply is a local pointer *variable* to a heap-allocated, refcounted DBusMessage (dbus_message_new_error/_method_return or helper out-param), not automatic storage (confirmed DCL30-C heap-vs-stack FP class)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2941,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reply/error_reply is a local pointer *variable* to a heap-allocated, refcounted DBusMessage (dbus_message_new_error/_method_return or helper out-param), not automatic storage (confirmed DCL30-C heap-vs-stack FP class)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2961,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reply/error_reply is a local pointer *variable* to a heap-allocated, refcounted DBusMessage (dbus_message_new_error/_method_return or helper out-param), not automatic storage (confirmed DCL30-C heap-vs-stack FP class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2988,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 2990,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "message/wpa_s/global param pinned by fixed WPADBusMethodHandler typedef (cast at dbus_new.c registration site); dispatch-contract FP family"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3108,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3110,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "message/wpa_s/global param pinned by fixed WPADBusMethodHandler typedef (cast at dbus_new.c registration site); dispatch-contract FP family"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3117,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reply/error_reply is a local pointer *variable* to a heap-allocated, refcounted DBusMessage (dbus_message_new_error/_method_return or helper out-param), not automatic storage (confirmed DCL30-C heap-vs-stack FP class)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3143,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "message/wpa_s/global param pinned by fixed WPADBusMethodHandler typedef (cast at dbus_new.c registration site); dispatch-contract FP family"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3170,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3178,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus system-header API (dbus_message_* / dbus/dbus.h) misfires wholesale as \"no prior declaration\" (confirmed pattern)"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3189,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus system-header API (dbus_message_* / dbus/dbus.h) misfires wholesale as \"no prior declaration\" (confirmed pattern)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3208,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "callee (wpa_dbus_mark_property_changed / dbus_set_error_const) takes a const char * and never modifies it"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3211,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "callee (wpa_dbus_mark_property_changed / dbus_set_error_const) takes a const char * and never modifies it"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3229,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3229,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "getter/setter is declared in dbus_new_handlers.h (DECLARE_ACCESSOR) and referenced from dbus_new.c's property table; external linkage required, cannot be static"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3238,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "local array is always sized via ARRAY_SIZE() at its use site; confirmed ARR02-C FP class (size-mismatch risk never materializes)"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3250,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "local array is always sized via ARRAY_SIZE() at its use site; confirmed ARR02-C FP class (size-mismatch risk never materializes)"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3252,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "local array is always sized via ARRAY_SIZE() at its use site; confirmed ARR02-C FP class (size-mismatch risk never materializes)"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3293,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "local array is always sized via ARRAY_SIZE() at its use site; confirmed ARR02-C FP class (size-mismatch risk never materializes)"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3368,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "local array is always sized via ARRAY_SIZE() at its use site; confirmed ARR02-C FP class (size-mismatch risk never materializes)"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3462,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "local array is always sized via ARRAY_SIZE() at its use site; confirmed ARR02-C FP class (size-mismatch risk never materializes)"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3490,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "local array is always sized via ARRAY_SIZE() at its use site; confirmed ARR02-C FP class (size-mismatch risk never materializes)"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3562,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libdbus system-header API (dbus_message_* / dbus/dbus.h) misfires wholesale as \"no prior declaration\" (confirmed pattern)"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3567,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto-target label (nomem:/err:) right after an earlier return; reached via prior goto, not fallthrough (confirmed MSC07-C goto-label FP)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3568,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "callee (wpa_dbus_mark_property_changed / dbus_set_error_const) takes a const char * and never modifies it"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3582,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3582,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3582,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "getter/setter is declared in dbus_new_handlers.h (DECLARE_ACCESSOR) and referenced from dbus_new.c's property table; external linkage required, cannot be static"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3584,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data param pinned by fixed WPADBusPropertyAccessor getter/setter typedef; dispatch-contract FP family"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3589,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "harmless dead NULL/default init unconditionally reassigned before any read on every path; confirmed low-severity but genuine MSC13-C TP class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3597,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "callee (wpa_dbus_mark_property_changed / dbus_set_error_const) takes a const char * and never modifies it"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3600,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "while(*tmp) scans a NUL-terminated os_strdup() string; provably bounded, same shape as confirmed nt_password_hash.c ARR30-C FP"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3601,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char assignment (*tmp = tolower(*tmp)), no widening conversion occurs; confirmed STR34-C misfire class"
+  },
+  {
+   "rule": "STR37-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3601,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "tolower(*tmp) is missing the unsigned-char cast; runtime values are always ASCII state-name text so practical risk is ~0, but the cast is genuinely absent"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3623,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3623,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3623,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "getter/setter is declared in dbus_new_handlers.h (DECLARE_ACCESSOR) and referenced from dbus_new.c's property table; external linkage required, cannot be static"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3625,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data param pinned by fixed WPADBusPropertyAccessor getter/setter typedef; dispatch-contract FP family"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3644,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3644,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3644,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "getter/setter is declared in dbus_new_handlers.h (DECLARE_ACCESSOR) and referenced from dbus_new.c's property table; external linkage required, cannot be static"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3646,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data param pinned by fixed WPADBusPropertyAccessor getter/setter typedef; dispatch-contract FP family"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3665,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "getter/setter is declared in dbus_new_handlers.h (DECLARE_ACCESSOR) and referenced from dbus_new.c's property table; external linkage required, cannot be static"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3677,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "callee (wpa_dbus_mark_property_changed / dbus_set_error_const) takes a const char * and never modifies it"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3695,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3695,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3695,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "getter/setter is declared in dbus_new_handlers.h (DECLARE_ACCESSOR) and referenced from dbus_new.c's property table; external linkage required, cannot be static"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3697,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data param pinned by fixed WPADBusPropertyAccessor getter/setter typedef; dispatch-contract FP family"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3717,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "getter/setter is declared in dbus_new_handlers.h (DECLARE_ACCESSOR) and referenced from dbus_new.c's property table; external linkage required, cannot be static"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3743,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3743,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3743,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "getter/setter is declared in dbus_new_handlers.h (DECLARE_ACCESSOR) and referenced from dbus_new.c's property table; external linkage required, cannot be static"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3745,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data param pinned by fixed WPADBusPropertyAccessor getter/setter typedef; dispatch-contract FP family"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3764,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3764,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3764,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "getter/setter is declared in dbus_new_handlers.h (DECLARE_ACCESSOR) and referenced from dbus_new.c's property table; external linkage required, cannot be static"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3766,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data param pinned by fixed WPADBusPropertyAccessor getter/setter typedef; dispatch-contract FP family"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3785,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3785,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3785,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "getter/setter is declared in dbus_new_handlers.h (DECLARE_ACCESSOR) and referenced from dbus_new.c's property table; external linkage required, cannot be static"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3787,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data param pinned by fixed WPADBusPropertyAccessor getter/setter typedef; dispatch-contract FP family"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3806,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3806,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3806,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "getter/setter is declared in dbus_new_handlers.h (DECLARE_ACCESSOR) and referenced from dbus_new.c's property table; external linkage required, cannot be static"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3808,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data param pinned by fixed WPADBusPropertyAccessor getter/setter typedef; dispatch-contract FP family"
+  },
+  {
+   "rule": "FLP03-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3812,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "operates on os_reltime integer sec/usec fields (usec / 1000); plain integer division, no floating point involved (confirmed FLP03-C int-division misfire)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3828,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3828,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3828,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "getter/setter is declared in dbus_new_handlers.h (DECLARE_ACCESSOR) and referenced from dbus_new.c's property table; external linkage required, cannot be static"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3850,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3850,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3850,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "getter/setter is declared in dbus_new_handlers.h (DECLARE_ACCESSOR) and referenced from dbus_new.c's property table; external linkage required, cannot be static"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3852,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data param pinned by fixed WPADBusPropertyAccessor getter/setter typedef; dispatch-contract FP family"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3872,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3872,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3872,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "getter/setter is declared in dbus_new_handlers.h (DECLARE_ACCESSOR) and referenced from dbus_new.c's property table; external linkage required, cannot be static"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3874,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data param pinned by fixed WPADBusPropertyAccessor getter/setter typedef; dispatch-contract FP family"
+  },
+  {
+   "rule": "FLP03-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3878,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "operates on os_reltime integer sec/usec fields (usec / 1000); plain integer division, no floating point involved (confirmed FLP03-C int-division misfire)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3895,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3895,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3895,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "getter/setter is declared in dbus_new_handlers.h (DECLARE_ACCESSOR) and referenced from dbus_new.c's property table; external linkage required, cannot be static"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3897,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data param pinned by fixed WPADBusPropertyAccessor getter/setter typedef; dispatch-contract FP family"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3920,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3920,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dispatch-bound handler: wpas_dbus_handler_*/getter/setter registered via fixed WPADBusMethodHandler/WPADBusPropertyAccessor typedef, always called by libdbus dispatch with a valid message/iter/error; internal-only-API FP class extended to dbus method dispatch"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3920,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "getter/setter is declared in dbus_new_handlers.h (DECLARE_ACCESSOR) and referenced from dbus_new.c's property table; external linkage required, cannot be static"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3922,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data param pinned by fixed WPADBusPropertyAccessor getter/setter typedef; dispatch-contract FP family"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3941,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "getter/setter is declared in dbus_new_handlers.h (DECLARE_ACCESSOR) and referenced from dbus_new.c's property table; external linkage required, cannot be static"
+  }
+ ],
+ "fns": [
+  {
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 3192,
+   "rule": "MEM34-C",
+   "desc": "wpas_dbus_handler_set_pkcs11_engine_and_module_path: pkcs11_engine_path is set to `value`, a raw pointer obtained from dbus_message_iter_get_basic() aliasing the incoming DBusMessage's own internal string buffer (never allocated). On the module_path-missing error path, `os_free(pkcs11_engine_path)` frees this non-heap pointer -- undefined behavior / potential heap corruption or crash, triggerable by any D-Bus caller sending a valid engine_path string followed by a missing/wrong-type module_path arg.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 5,
+  "fp": 145,
+  "fn": 1
+ }
+}

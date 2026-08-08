@@ -1,0 +1,1079 @@
+{
+ "src/l2_packet/l2_packet_freebsd.c": [
+  {
+   "column": 2,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 42,
+   "message": "String buffer placed before pointer in struct 'l2_packet_data': 'char ifname[100];' before 'void (*rx_callback)(void *ctx, const u8 *src_addr,' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'char ifname' after the pointer field 'void (*rx_callback)(void *ctx, const u8 *src_addr,\n\t\t\t    const u8 *buf, size_t len);', or use a char* pointer instead of a char array"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 52,
+   "message": "Function 'l2_packet_get_own_addr' does not validate pointer parameter 'l2' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'l2' at the start of the function, e.g., 'if (!l2) { return error_code; }'"
+  },
+  {
+   "column": 50,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 52,
+   "message": "Pointer parameter 'l2' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *l2'"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 59,
+   "message": "Function 'l2_packet_send' does not validate integer parameter 'len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 42,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 59,
+   "message": "Pointer parameter 'l2' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *l2'"
+  },
+  {
+   "column": 56,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 71,
+   "message": "Reading from 'eth' which points to uninitialized memory (allocated without initialization)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Use calloc() instead of malloc(), or memset() after allocation"
+  },
+  {
+   "column": 46,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 79,
+   "message": "Pointer parameter 'eloop_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *eloop_ctx'"
+  },
+  {
+   "column": 57,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 91,
+   "message": "Dereference of uninitialized pointer 'ethhdr'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ethhdr' before dereferencing"
+  },
+  {
+   "column": 11,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 94,
+   "message": "Do not cast away const qualification: '(struct l2_ethhdr *) packet'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 3,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 123,
+   "message": "Type mismatch in fprintf(): format specifier '%s' expects Pointer but argument 1 ('pcap_err') is Integer",
+   "rule_id": "FIO47-C",
+   "severity": "High",
+   "suggestion": "Ensure format specifiers match argument types"
+  },
+  {
+   "column": 10,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 129,
+   "message": "Function 'fprintf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 2,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 133,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 11,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 160,
+   "message": "Function 'fprintf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 20,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 160,
+   "message": "Argument to 'fprintf' contains preprocessor directive: '\"%s: cannot enable immediate mode on \"\n\t\t\t\t\"interface %s: %s\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 27,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 162,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 27,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 162,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 43,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 175,
+   "message": "Array parameter uses size variable 'ETH_ALEN' that is declared after the array parameter",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Declare size parameter 'ETH_ALEN' before the array parameter, or use K&R style with semicolon"
+  },
+  {
+   "column": 2,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 180,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 6,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 205,
+   "message": "Array declaration 'mib[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 3,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 210,
+   "message": "Function returns without releasing all resources. Leaked: retval, buf. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 3,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 213,
+   "message": "Function returns without releasing all resources. Leaked: retval, buf. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 9,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 216,
+   "message": "Do not cast away const qualification: '(struct if_msghdr *)p'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 32,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 217,
+   "message": "Variable 'ifm' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 11,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 229,
+   "message": "Use-after-free: pointer arithmetic on freed pointer 'buf'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not use freed pointers in arithmetic."
+  },
+  {
+   "column": 3,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 231,
+   "message": "Function returns without releasing all resources. Leaked: retval, buf. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 234,
+   "message": "Function returns without releasing all resources. Leaked: retval, buf. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 238,
+   "message": "Function 'l2_packet_init' does not validate pointer parameter 'rx_callback' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'rx_callback' at the start of the function, e.g., 'if (!rx_callback) { return error_code; }'"
+  },
+  {
+   "column": 10,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 255,
+   "message": "Function 'fprintf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 19,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 255,
+   "message": "Argument to 'fprintf' contains preprocessor directive: '\"Failed to get link-level address for \"\n\t\t\t\"interface '%s'.\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 2,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 266,
+   "message": "Function returns pointer to local variable 'l2' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 270,
+   "message": "Function 'l2_packet_init_bridge' does not validate pointer parameter 'br_ifname' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'br_ifname' at the start of the function, e.g., 'if (!br_ifname) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 270,
+   "message": "Function 'l2_packet_init_bridge' does not validate pointer parameter 'own_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'own_addr' at the start of the function, e.g., 'if (!own_addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 270,
+   "message": "Function 'l2_packet_init_bridge' does not validate pointer parameter 'rx_callback' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'rx_callback' at the start of the function, e.g., 'if (!rx_callback) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 295,
+   "message": "Function 'l2_packet_get_ip_addr' does not validate pointer parameter 'l2' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'l2' at the start of the function, e.g., 'if (!l2) { return error_code; }'"
+  },
+  {
+   "column": 49,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 295,
+   "message": "Pointer parameter 'l2' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *l2'"
+  },
+  {
+   "column": 59,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 295,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 301,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 21,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 316,
+   "message": "'inet_ntoa()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'inet_ntop' instead for thread safety"
+  },
+  {
+   "column": 56,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 331,
+   "message": "Pointer parameter 'l2' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *l2'"
+  },
+  {
+   "column": 55,
+   "file": "src/l2_packet/l2_packet_freebsd.c",
+   "line": 336,
+   "message": "Pointer parameter 'l2' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *l2'"
+  }
+ ],
+ "src/l2_packet/l2_packet_ndis.c": [
+  {
+   "column": 9,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 34,
+   "message": "Reserved identifier '_NDISUIO_CTL_CODE' should not be used as a macro name",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Use a non-reserved macro name"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 36,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (_NDISUIO_CTL_CODE(0x202, METHOD_BUFFERED, \\\n\t\t\t  FILE_READ_ACCESS | FILE_WRITE_ACCESS))"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 65,
+   "message": "Shared variable 'l2_ndisuio_global' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 2,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 68,
+   "message": "String buffer placed before pointer in struct 'l2_packet_data': 'char ifname[100];' before 'void (*rx_callback)(void *ctx, const u8 *src_addr,' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'char ifname' after the pointer field 'void (*rx_callback)(void *ctx, const u8 *src_addr,\n\t\t\t    const u8 *buf, size_t len);', or use a char* pointer instead of a char array"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 84,
+   "message": "Function 'l2_packet_get_own_addr' does not validate pointer parameter 'l2' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'l2' at the start of the function, e.g., 'if (!l2) { return error_code; }'"
+  },
+  {
+   "column": 50,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 84,
+   "message": "Pointer parameter 'l2' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *l2'"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 91,
+   "message": "Function 'l2_packet_send' does not validate integer parameter 'len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 42,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 91,
+   "message": "Pointer parameter 'l2' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *l2'"
+  },
+  {
+   "column": 5,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 102,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 24,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 116,
+   "message": "Dereference of uninitialized pointer 'eth'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'eth' before dereferencing"
+  },
+  {
+   "column": 9,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 166,
+   "message": "sizeof applied to pointer/array parameter 'l2' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(l2->rx_buf)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 15,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 189,
+   "message": "Potential null pointer dereference in member access of variable 'l2_ndisuio_global'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'l2_ndisuio_global' is not NULL before member access"
+  },
+  {
+   "column": 15,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 204,
+   "message": "Potential null pointer dereference in member access of variable 'l2_ndisuio_global'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'l2_ndisuio_global' is not NULL before member access"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 250,
+   "message": "Function 'l2_ndisuio_start_read' participates in indirect recursion: l2_ndisuio_start_read -> l2_packet_callback -> l2_ndisuio_start_read",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to eliminate the recursion cycle"
+  },
+  {
+   "column": 35,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 252,
+   "message": "sizeof applied to pointer/array parameter 'l2' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(l2->rx_overlapped)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 9,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 255,
+   "message": "sizeof applied to pointer/array parameter 'l2' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(l2->rx_buf)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 279,
+   "message": "Function 'l2_packet_callback' participates in indirect recursion: l2_packet_callback -> l2_ndisuio_start_read -> l2_packet_callback",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to eliminate the recursion cycle"
+  },
+  {
+   "column": 55,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 305,
+   "message": "Pointer parameter 'user_data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *user_data'"
+  },
+  {
+   "column": 11,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 326,
+   "message": "Potential null pointer dereference in member access of variable 'l2_ndisuio_global'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'l2_ndisuio_global' is not NULL before member access"
+  },
+  {
+   "column": 7,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 336,
+   "message": "Function 'DeviceIoControl' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 349,
+   "message": "Function 'l2_packet_init' does not validate pointer parameter 'ifname' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ifname' at the start of the function, e.g., 'if (!ifname) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 349,
+   "message": "Function 'l2_packet_init' does not validate pointer parameter 'rx_callback' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'rx_callback' at the start of the function, e.g., 'if (!rx_callback) { return error_code; }'"
+  },
+  {
+   "column": 3,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 393,
+   "message": "Function returns pointer to local variable 'l2' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 17,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 396,
+   "message": "Function 'CreateEvent' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 36,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 406,
+   "message": "Function 'CreateEvent' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 36,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 413,
+   "message": "Function 'CreateEvent' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 33,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 434,
+   "message": "Function 'CreateThread' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 3,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 441,
+   "message": "Resource 'l2_ndisuio_global->stop_request' is closed again after already being closed at line 418. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 2,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 450,
+   "message": "Function returns pointer to local variable 'l2' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 454,
+   "message": "Function 'l2_packet_init_bridge' does not validate pointer parameter 'br_ifname' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'br_ifname' at the start of the function, e.g., 'if (!br_ifname) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 454,
+   "message": "Function 'l2_packet_init_bridge' does not validate pointer parameter 'own_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'own_addr' at the start of the function, e.g., 'if (!own_addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 454,
+   "message": "Function 'l2_packet_init_bridge' does not validate pointer parameter 'rx_callback' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'rx_callback' at the start of the function, e.g., 'if (!rx_callback) { return error_code; }'"
+  },
+  {
+   "column": 5,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 468,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 508,
+   "message": "Value assigned to 'l2_ndisuio_global' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 39,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 515,
+   "message": "sizeof applied to pointer/array parameter 'l2' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(l2->rx_avail)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 49,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 521,
+   "message": "Pointer parameter 'l2' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *l2'"
+  },
+  {
+   "column": 59,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 521,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 59,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 521,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 56,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 527,
+   "message": "Pointer parameter 'l2' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *l2'"
+  },
+  {
+   "column": 55,
+   "file": "src/l2_packet/l2_packet_ndis.c",
+   "line": 532,
+   "message": "Pointer parameter 'l2' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *l2'"
+  }
+ ],
+ "src/ap/wpa_auth_kay.c": [
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 12,
+   "message": "Header file 'ieee802_1x_key.h' has the same first 8 characters (case-insensitive) as 'ieee802_1x_kay.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_1x_key.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 12,
+   "message": "Header file 'ieee802_1x_key.h' has the same first 8 characters (case-insensitive) as 'ieee802_1x.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_1x_key.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 13,
+   "message": "Header file 'ieee802_1x_kay.h' has the same first 8 characters (case-insensitive) as 'ieee802_1x.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_1x_kay.h' -> unique name)"
+  },
+  {
+   "column": 34,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 25,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 36,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 35,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 44,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 45,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 44,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 55,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 37,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 65,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 41,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 75,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 47,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 86,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 45,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 96,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 44,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 106,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 43,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 116,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 43,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 126,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 40,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 149,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 40,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 162,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 40,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 172,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 40,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 182,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 40,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 192,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 41,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 202,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 30,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 213,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 41,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 225,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 41,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 235,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 41,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 245,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 41,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 255,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 42,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 265,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 22,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 276,
+   "message": "Pointer parameter 'sta' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sta'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 279,
+   "message": "Value assigned to 'res' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 29,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 297,
+   "message": "Dereference of uninitialized pointer 'kay_ctx'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'kay_ctx' before dereferencing"
+  },
+  {
+   "column": 56,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 357,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 24,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 358,
+   "message": "Pointer parameter 'sta' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sta'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 385,
+   "message": "Function 'ieee802_1x_notify_create_actor_hapd' does not validate pointer parameter 'sta' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sta' at the start of the function, e.g., 'if (!sta) { return error_code; }'"
+  },
+  {
+   "column": 25,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 402,
+   "message": "Dereference of uninitialized pointer 'msk'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'msk' before dereferencing"
+  },
+  {
+   "column": 25,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 403,
+   "message": "Dereference of uninitialized pointer 'ckn'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ckn' before dereferencing"
+  },
+  {
+   "column": 25,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 404,
+   "message": "Dereference of uninitialized pointer 'cak'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'cak' before dereferencing"
+  },
+  {
+   "column": 29,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 431,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Derived CAK\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 454,
+   "message": "Function 'ieee802_1x_create_preshared_mka_hapd' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 25,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 464,
+   "message": "Dereference of uninitialized pointer 'ckn'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ckn' before dereferencing"
+  },
+  {
+   "column": 25,
+   "file": "src/ap/wpa_auth_kay.c",
+   "line": 468,
+   "message": "Dereference of uninitialized pointer 'cak'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'cak' before dereferencing"
+  }
+ ]
+}

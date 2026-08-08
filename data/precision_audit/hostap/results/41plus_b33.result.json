@@ -1,0 +1,1221 @@
+{
+ "labels": [
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1362,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mutually-exclusive goto-err vs success-path free (dh5_derive_shared)"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1377,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL check stylistic FP"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1395,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "all paths return (both #if/#else branches); preprocessor-blind misfire"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1402,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "char *a=NULL always overwritten by switch before any read; genuine trivial dead store"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1426,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EVP_MAC_fetch(NULL,\"HMAC\",NULL) - NULL,NULL literal misfire, no aliasing"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1448,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mutually exclusive if/goto branches (os_free vs bin_clear_free), user-confirmed"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1485,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx->ctx ownership transferred to caller, freed later in crypto_hash_finish"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1487,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mutually exclusive branch (HMAC_CTX_new failure), only free on this path"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1493,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mutually exclusive branch (HMAC_Init_ex failure), disjoint from 1487"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1504,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL check stylistic FP"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1516,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "all paths return in both #if/#else branches; preprocessor-blind"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1528,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ctx) correctly sizes pointee, not decayed-pointer sizeof; rule conflates the two"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1535,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ctx) idiom, same as 1528"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1541,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ctx) idiom, same as 1528"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1560,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL check stylistic FP"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1565,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mutually exclusive early-return branch vs normal-path frees at 1571/1573"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1565,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ctx) idiom"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1570,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "HMAC_Final(ctx->ctx,...) on normal path, mutually exclusive from early-return free at 1564"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1571,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "HMAC_CTX_free on normal path, mutually exclusive from early-return free at 1564"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1573,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mutually exclusive from early-return branch at 1565"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1573,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ctx) idiom"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1593,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "key+key_len pointer+size idiom, confirmed categorical FP"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1612,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "guard-clause chain; unmatched case leaves property_query=NULL default, handled downstream"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1653,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label reached via goto at 1641/1645; not unreachable"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1654,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: path mutually exclusive from normal-path free+return at 1650/1652"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1654,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: path mutually exclusive from normal-path free+return"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1751,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "two openssl_hmac_vector defs live in mutually-exclusive #if/#else branches, never both compiled"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1874,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid+ssid_len / buf+buflen pointer+size idiom"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1884,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf+len pointer+size idiom (crypto_get_random)"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1892,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "all paths return via fail: label in both #if/#else branches"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1906,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EVP_MAC_fetch(NULL,\"CMAC\",NULL) NULL,NULL literal misfire"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1912,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "missing-cipher case handled by subsequent !cipher guard -> goto fail"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1918,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "!(ctx=EVP_MAC_CTX_new(emac))||... - || has a sequence point, well-defined C"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1919,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "assignment already wrapped in !(...) - confirmed parenthesized-assignment idiom"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1923,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "cipher genuinely NULL when key_len matches none of 16/24/32, passed to %s (not %p) in wpa_printf"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1978,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only omac1 helper, key always a valid internal key buffer"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1985,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only helper, same as 1978"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1991,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only helper, same as 1978"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2005,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only bignum-init helper, buf from internal callers only"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2024,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bn returned as opaque handle to caller; freed later via crypto_bignum_deinit, not a leak"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2076,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is u8* (byte pointer); no scaling issue, confirmed categorical FP"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2086,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "BN_rand_range returns exactly 1(success)/0(failure) per OpenSSL contract"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2086,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "r is non-const 'struct crypto_bignum *r' param; nothing const to cast away"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2090,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only bignum op, a/b/c always valid opaque handles"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2090,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only bignum op"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2090,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only bignum op"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2094,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "c is non-const output param 'struct crypto_bignum *c'; not a real cast-away"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2109,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "c is non-const output param, same as 2094"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2155,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "a IS const-qualified; BN_set_flags(BN_FLG_CONSTTIME) genuinely mutates flags through the cast-away pointer"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2157,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "c is non-const output param 'struct crypto_bignum *c'"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2171,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "c is non-const output param"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2191,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "a IS const-qualified; BN_set_flags mutates through cast-away pointer, same as 2155"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2193,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "c is non-const output param"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2259,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "c is non-const output param (crypto_bignum_sqrmod)"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2270,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "BN_rshift returns exactly 1/0 per OpenSSL contract"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2270,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "r is non-const output param 'struct crypto_bignum *r'"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2274,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only bignum compare, a always valid handle"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2281,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only bignum helper"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2287,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only bignum helper"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2303,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "exp=NULL immediately overwritten unconditionally by BN_new() before any read"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2303,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "tmp=NULL immediately overwritten unconditionally by BN_new() before any read"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2319,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "BN_rshift1(exp,exp) in-place shift is documented/intended OpenSSL aliasing usage, no restrict qualifier"
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2366,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "case has explicit return; next case sits behind #ifdef NID_brainpoolP224r1, ifdef-blind fallthrough misfire"
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2403,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same ifdef-blind fallthrough misfire, name-mapping switch"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2437,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_zalloc(sizeof(*e)) - sizeof never evaluates operand, confirmed idiom"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2443,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "e->bnctx freed via crypto_ec_deinit(e) on the failure path at 2453"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2445,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "e->prime freed via crypto_ec_deinit(e) on failure path"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2446,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "e->order freed via crypto_ec_deinit(e) on failure path"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2447,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "e->a freed via crypto_ec_deinit(e) on failure path"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2448,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "e->b freed via crypto_ec_deinit(e) on failure path"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2457,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "e is os_zalloc'd heap memory, not automatic storage"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2457,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ownership transferred to caller, freed later via crypto_ec_deinit"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2457,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ownership transferred to caller"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2457,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ownership transferred to caller"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2457,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ownership transferred to caller"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2457,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ownership transferred to caller"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2463,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL check stylistic FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2475,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "e genuinely never modified in crypto_ec_point_init, plain internal helper not a vtable contract"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2479,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL check stylistic FP"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2485,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal crypto_ec API invariant: e always from successful crypto_ec_init, no per-file NULL-check convention"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2485,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "e genuinely never modified in crypto_ec_prime_len"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2487,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "e always valid per internal API invariant, same as API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2491,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal crypto_ec API invariant"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2491,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "e never modified in crypto_ec_prime_len_bits"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2497,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal crypto_ec API invariant"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2497,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "e never modified in crypto_ec_order_len"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2503,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal crypto_ec API invariant"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2503,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "e never modified in crypto_ec_get_prime"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2509,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "e never modified in crypto_ec_get_order"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2515,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal crypto_ec API invariant"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2515,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "e never modified in crypto_ec_get_a"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2521,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal crypto_ec API invariant"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2521,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "e never modified in crypto_ec_get_b"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2527,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "e never modified in crypto_ec_get_generator"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2543,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "e never modified in crypto_ec_point_x"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2546,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EC_POINT_get_affine_coordinates returns exactly 1/0 per OpenSSL contract"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2553,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal crypto_ec API invariant"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2553,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "e never modified in crypto_ec_point_to_bin"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2558,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "e always valid per internal API invariant"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2567,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "point cast away const but only read through (EC_POINT_get_affine_coordinates), no write"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2588,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "e never modified in crypto_ec_point_from_bin"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2593,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "e always valid per internal API invariant"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2620,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal crypto_ec API invariant"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2620,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "e never modified in crypto_ec_point_add"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2626,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "e always valid per internal API invariant"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2626,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "c is non-const output param 'struct crypto_ec_point *c'"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2631,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal crypto_ec API invariant (b)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2631,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "e never modified in crypto_ec_point_mul"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2643,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal crypto_ec API invariant"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2643,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "e never modified in crypto_ec_point_invert"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2647,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "e always valid per internal API invariant"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2652,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "e never modified in crypto_ec_point_compute_y_sqr"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2665,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "BN_mod_add_quick(tmp,e->a,tmp,e->prime) in-place accumulation, documented OpenSSL aliasing support"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2666,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "BN_mod_mul(tmp,tmp,x,e->prime,...) in-place, same OpenSSL aliasing support"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2667,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "BN_mod_add_quick(tmp,tmp,e->b,e->prime) in-place, same"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2675,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal crypto_ec API invariant"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2675,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "e never modified in crypto_ec_point_is_at_infinity"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2678,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "e always valid per internal API invariant"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2682,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal crypto_ec API invariant"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2682,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "e never modified in crypto_ec_point_is_on_curve"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2685,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EC_POINT_is_on_curve returns exactly 1/0 per OpenSSL contract"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2685,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "e always valid per internal API invariant"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2690,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "e already const-qualified param, internal API invariant applies regardless"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2690,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal crypto_ec API invariant"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2690,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal crypto_ec API invariant"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2699,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal crypto_ec API invariant, e already const"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2709,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "e always valid per internal API invariant"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2733,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "both #if/#else branches always reach a return via done:/fail: labels"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2739,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_zalloc(sizeof(*ecdh)) idiom"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2790,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto fail funnels to done: which unconditionally frees params (EVP_PKEY_free)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2801,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same fail->done cascade frees params"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2807,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same fail->done cascade frees params"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2824,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "both #if/#else branches always return via fail:/direct return"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2829,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_zalloc(sizeof(*ecdh)) idiom"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2856,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ecdh->pkey freed via crypto_ecdh_deinit(ecdh) on the goto-fail path"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2871,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal crypto_ecdh API invariant, ecdh always from crypto_ecdh_init"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2871,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "both #if/#else branches always return (fail:/done: labels)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2871,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ecdh never modified in crypto_ecdh_get_pubkey"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2925,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto fail funnels to done: which frees x via BN_clear_free"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2925,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto fail -> fail: label frees buf (wpabuf_free) before falling into done:"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2934,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "y is non-const local 'BIGNUM *y'; not a real cast-away-const"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2954,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "len is protocol-bounded EC public-key encoding length, unrealistic overflow risk (pasn_common.c precedent)"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2954,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "both #if/#else branches always return"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2954,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ecdh never modified in crypto_ecdh_set_peerkey"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2985,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "res assigned/used across || operands - sequence point exists, well-defined"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2989,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "assignment already wrapped in !(...) parenthesized idiom"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 2990,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "short-circuit ||: wpabuf_mhead(res) only evaluated when !(res=alloc()) was false, i.e. res non-NULL"
+  },
+  {
+   "rule": "MEM03-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3006,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "secret is the function's own return value (derived shared secret transferred to caller), not a local sensitive copy to clear"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3025,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto fail funnels to done: which frees pub (EC_POINT_free) unconditionally"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 3027,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "guard-clause if/else-if; success case correctly falls through to continue"
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4260,
+   "rule": "MEM03-C",
+   "desc": "crypto_ec_key_debug_print: 'txt' heap buffer holds EVP_PKEY_print_private's rendered text (includes the EC private key value) and is os_free()'d without memset/forced_memzero first; every other sensitive buffer in this file (dhss, eae_prk, secret, key_schedule_context, shared_secret) is properly cleared before free/return, this one is the outlier.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [
+  "src/crypto/crypto_openssl.c"
+ ],
+ "summary": {
+  "tp": 26,
+  "fp": 124,
+  "fn": 1
+ }
+}

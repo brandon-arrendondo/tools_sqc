@@ -1,0 +1,661 @@
+{
+ "wpa_supplicant/ctrl_iface_udp.c": [
+  {
+   "column": 20,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 59,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 31,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 61,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 58,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 65,
+   "message": "Pointer parameter 'dst' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *dst'"
+  },
+  {
+   "column": 25,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 90,
+   "message": "Dereference of uninitialized pointer 'dst'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'dst' before dereferencing"
+  },
+  {
+   "column": 30,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 93,
+   "message": "sizeof applied to pointer/array parameter 'from' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*from)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 97,
+   "message": "Local variable 'dst' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 99,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 50,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 100,
+   "message": "sizeof applied to pointer/array parameter 'from' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*from)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 103,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 104,
+   "message": "'inet_ntoa()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'inet_ntop' instead for thread safety"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 127,
+   "message": "Implicit boolean test on 'os_memcmp(&from->sin6_addr, &dst->addr.sin6_addr,\n\t\t\t       sizeof(from->sin6_addr))'. May be unclear what constitutes success or failure.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Use explicit test: os_memcmp(&from->sin6_addr, &dst->addr.sin6_addr,\n\t\t\t       sizeof(from->sin6_addr)) == 0 or os_memcmp(&from->sin6_addr, &dst->addr.sin6_addr,\n\t\t\t       sizeof(from->sin6_addr)) != 0 depending on success convention"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 129,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 136,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 17,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 137,
+   "message": "'inet_ntoa()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'inet_ntop' instead for thread safety"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 174,
+   "message": "Implicit boolean test on 'os_memcmp(&from->sin6_addr, &dst->addr.sin6_addr,\n\t\t\t       sizeof(from->sin6_addr))'. May be unclear what constitutes success or failure.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Use explicit test: os_memcmp(&from->sin6_addr, &dst->addr.sin6_addr,\n\t\t\t       sizeof(from->sin6_addr)) == 0 or os_memcmp(&from->sin6_addr, &dst->addr.sin6_addr,\n\t\t\t       sizeof(from->sin6_addr)) != 0 depending on success convention"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 176,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 183,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 23,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 184,
+   "message": "'inet_ntoa()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'inet_ntop' instead for thread safety"
+  },
+  {
+   "column": 23,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 187,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 23,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 187,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 61,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 198,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 213,
+   "message": "Function returns pointer to local variable 'reply' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 245,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 245,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 23,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 252,
+   "message": "Variable 'from' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'from' before use, e.g., at its declaration"
+  },
+  {
+   "column": 20,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 268,
+   "message": "'inet_ntoa()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'inet_ntop' instead for thread safety"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 280,
+   "message": "Array/pointer 'buf' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'buf' after calling free(). Set pointer to NULL after freeing: free(buf); buf = NULL;"
+  },
+  {
+   "column": 11,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 335,
+   "message": "Signed integer addition 'pos + 6' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 352,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 51,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 364,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 22,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 366,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 409,
+   "message": "Dereference of uninitialized pointer 'priv'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'priv' before dereferencing"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 417,
+   "message": "Function returns pointer to local variable 'priv' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 422,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 422,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 48,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 432,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 48,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 432,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 458,
+   "message": "Privileged operation 'bind' without subsequent privilege dropping",
+   "rule_id": "POS02-C",
+   "severity": "Medium",
+   "suggestion": "Call setuid/setgid to drop privileges after setup"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 459,
+   "message": "Signed integer decrement 'port--' may overflow at INT_MIN",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking before increment/decrement"
+  },
+  {
+   "column": 46,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 462,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 46,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 462,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 483,
+   "message": "Function returns pointer to local variable 'priv' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 485,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 61,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 493,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 66,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 520,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 20,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 521,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 31,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 523,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 558,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 563,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 564,
+   "message": "'inet_ntoa()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'inet_ntop' instead for thread safety"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 572,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 572,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 60,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 589,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 64,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 600,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 615,
+   "message": "Function returns pointer to local variable 'reply' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 646,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 646,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 23,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 653,
+   "message": "Variable 'from' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'from' before use, e.g., at its declaration"
+  },
+  {
+   "column": 20,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 669,
+   "message": "'inet_ntoa()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'inet_ntop' instead for thread safety"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 681,
+   "message": "Array/pointer 'buf' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'buf' after calling free(). Set pointer to NULL after freeing: free(buf); buf = NULL;"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 738,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 755,
+   "message": "Dereference of uninitialized pointer 'priv'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'priv' before dereferencing"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 762,
+   "message": "Function returns pointer to local variable 'priv' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 770,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 770,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 48,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 780,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 48,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 780,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 793,
+   "message": "Privileged operation 'bind' without subsequent privilege dropping",
+   "rule_id": "POS02-C",
+   "severity": "Medium",
+   "suggestion": "Call setuid/setgid to drop privileges after setup"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 794,
+   "message": "Signed integer increment 'port++' may overflow at INT_MAX",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking before increment/decrement"
+  },
+  {
+   "column": 46,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 798,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 46,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 798,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 811,
+   "message": "Function returns pointer to local variable 'priv' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/ctrl_iface_udp.c",
+   "line": 813,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  }
+ ]
+}

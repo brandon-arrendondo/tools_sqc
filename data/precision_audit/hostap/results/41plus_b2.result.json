@@ -1,0 +1,1213 @@
+{
+ "labels": [
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 815,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent range/error check - genuine ERR07-C gap"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 815,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() lacks conversion-error detection, no validation follows - genuine gap"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 835,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "atoi() result is range/validity-checked immediately after (e.g. bounds or ==0 check) - error path effectively caught"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 835,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same: subsequent range check catches atoi's error-indicating 0 return, no real gap"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 852,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent range/error check - genuine ERR07-C gap"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 852,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() lacks conversion-error detection, no validation follows - genuine gap"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 869,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "atoi() result immediately coerced to boolean (!!/ternary/!) so its error return (0) is indistinguishable from and harmless as a legitimate 0/false value"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 869,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "boolean-coercion makes the missing error-detection inert - no real defect"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 871,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "atoi() result immediately coerced to boolean (!!/ternary/!) so its error return (0) is indistinguishable from and harmless as a legitimate 0/false value"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 871,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "boolean-coercion makes the missing error-detection inert - no real defect"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 874,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "atoi() result immediately coerced to boolean (!!/ternary/!) so its error return (0) is indistinguishable from and harmless as a legitimate 0/false value"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 874,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "boolean-coercion makes the missing error-detection inert - no real defect"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 879,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent range/error check - genuine ERR07-C gap"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 879,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() lacks conversion-error detection, no validation follows - genuine gap"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 901,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent range/error check - genuine ERR07-C gap"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 901,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() lacks conversion-error detection, no validation follows - genuine gap"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 903,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent range/error check - genuine ERR07-C gap"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 903,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() lacks conversion-error detection, no validation follows - genuine gap"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 905,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent range/error check - genuine ERR07-C gap"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 905,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() lacks conversion-error detection, no validation follows - genuine gap"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 908,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "strtoul() return value truly never checked for errors anywhere in this branch"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 908,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same underlying gap - no error check on strtoul() return"
+  },
+  {
+   "rule": "ERR30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 908,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "errno not reset before strtoul() call - genuine gap for this testing-option field"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 912,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "atoi() result immediately coerced to boolean (!!/ternary/!) so its error return (0) is indistinguishable from and harmless as a legitimate 0/false value"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 912,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "boolean-coercion makes the missing error-detection inert - no real defect"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 926,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "value[-1] restores the delimiter byte (space/'=') that was previously NUL'd in-place by *value++ = '\\0' earlier in the same buffer - valid memory within the cmd string, not an actual negative/out-of-bounds access"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 931,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "atoi() result is range/validity-checked immediately after (e.g. bounds or ==0 check) - error path effectively caught"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 931,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same: subsequent range check catches atoi's error-indicating 0 return, no real gap"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 939,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "atoi() result is range/validity-checked immediately after (e.g. bounds or ==0 check) - error path effectively caught"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 939,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same: subsequent range check catches atoi's error-indicating 0 return, no real gap"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 966,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent range/error check - genuine ERR07-C gap"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 966,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() lacks conversion-error detection, no validation follows - genuine gap"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 974,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "atoi() result immediately coerced to boolean (!!/ternary/!) so its error return (0) is indistinguishable from and harmless as a legitimate 0/false value"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 974,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "boolean-coercion makes the missing error-detection inert - no real defect"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 975,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi() result passed directly as raw int to wpa_drv_roaming with no local validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 975,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "same - no error/range check on the converted value before use"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 987,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "atoi() result immediately coerced to boolean (!!/ternary/!) so its error return (0) is indistinguishable from and harmless as a legitimate 0/false value"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 987,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "boolean-coercion makes the missing error-detection inert - no real defect"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 991,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "atoi() result immediately coerced to boolean (!!/ternary/!) so its error return (0) is indistinguishable from and harmless as a legitimate 0/false value"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 991,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "boolean-coercion makes the missing error-detection inert - no real defect"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 993,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "atoi() result immediately coerced to boolean (!!/ternary/!) so its error return (0) is indistinguishable from and harmless as a legitimate 0/false value"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 993,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "boolean-coercion makes the missing error-detection inert - no real defect"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 996,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "value[-1] restores the delimiter byte (space/'=') that was previously NUL'd in-place by *value++ = '\\0' earlier in the same buffer - valid memory within the cmd string, not an actual negative/out-of-bounds access"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1002,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if/else-if chain has no final else because the implicit fall-through case is already the correct default behavior (e.g. ret retains its valid value, or the variable already holds its validly-parsed default) - stylistic pedantry, not a missing-case defect"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1010,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal helper (wpa_supplicant_ctrl_iface_get), param genuinely never modified/forwarded to a non-const-requiring call - real (low-severity) const opportunity, not the eloop/EAP-vtable dispatch-contract FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1011,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CONFIRMED categorical FP: idiomatic 'T *ptr, size_t len' (buf/buflen or reply/max_len pair) or plain NUL-terminated string parameter - not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1011,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CONFIRMED categorical FP: idiomatic 'T *ptr, size_t len' (buf/buflen or reply/max_len pair) or plain NUL-terminated string parameter - not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1065,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal helper (wpa_supplicant_ctrl_iface_preauth), param genuinely never modified/forwarded to a non-const-requiring call - real (low-severity) const opportunity, not the eloop/EAP-vtable dispatch-contract FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1181,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal helper (ctrl_iface_get_capability_tdls), param genuinely never modified/forwarded to a non-const-requiring call - real (low-severity) const opportunity, not the eloop/EAP-vtable dispatch-contract FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1181,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CONFIRMED categorical FP: idiomatic 'T *ptr, size_t len' (buf/buflen or reply/max_len pair) or plain NUL-terminated string parameter - not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1197,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal helper (wpa_supplicant_ctrl_iface_tdls_chan_switch), param genuinely never modified/forwarded to a non-const-requiring call - real (low-severity) const opportunity, not the eloop/EAP-vtable dispatch-contract FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1215,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char (or char-to-'\\0'-literal) assignment, no widening conversion occurs - extends the confirmed STR34-C no-widening FP class"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1217,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "endptr check (pos==end) only catches non-numeric input, not ERANGE overflow of oper_class (u8) - errno path genuinely unchecked"
+  },
+  {
+   "rule": "ERR01-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1217,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "errno never checked after strtol(), so an overflowing op-class string silently truncates"
+  },
+  {
+   "rule": "ERR30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1217,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "errno not reset to 0 before the strtol() call - genuine gap for the overflow-detection path"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1225,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "atoi() result is range/validity-checked immediately after (e.g. bounds or ==0 check) - error path effectively caught"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1225,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same: subsequent range check catches atoi's error-indicating 0 return, no real gap"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1231,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "macro parameter 'str' is only ever used as a stringified token (#str) or a struct field-designator (freq_params.str), never evaluated as a runtime expression - extends the confirmed X-macro/field-designator PRE-rule FP class (dl_list.h, wnm_ap.c W2S)"
+  },
+  {
+   "rule": "PRE01-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1231,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "macro parameter 'str' is only ever used as a stringified token (#str) or a struct field-designator (freq_params.str), never evaluated as a runtime expression - extends the confirmed X-macro/field-designator PRE-rule FP class (dl_list.h, wnm_ap.c W2S)"
+  },
+  {
+   "rule": "PRE05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1231,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "macro parameter 'str' is only ever used as a stringified token (#str) or a struct field-designator (freq_params.str), never evaluated as a runtime expression - extends the confirmed X-macro/field-designator PRE-rule FP class (dl_list.h, wnm_ap.c W2S)"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1231,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "macro parameter 'str' is only ever used as a stringified token (#str) or a struct field-designator (freq_params.str), never evaluated as a runtime expression - extends the confirmed X-macro/field-designator PRE-rule FP class (dl_list.h, wnm_ap.c W2S)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1270,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal helper (wpa_supplicant_ctrl_iface_tdls_cancel_chan_switch), param genuinely never modified/forwarded to a non-const-requiring call - real (low-severity) const opportunity, not the eloop/EAP-vtable dispatch-contract FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1295,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal helper (wpa_supplicant_ctrl_iface_tdls_link_status), param genuinely never modified/forwarded to a non-const-requiring call - real (low-severity) const opportunity, not the eloop/EAP-vtable dispatch-contract FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1295,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CONFIRMED categorical FP: idiomatic 'T *ptr, size_t len' (buf/buflen or reply/max_len pair) or plain NUL-terminated string parameter - not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1296,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CONFIRMED categorical FP: idiomatic 'T *ptr, size_t len' (buf/buflen or reply/max_len pair) or plain NUL-terminated string parameter - not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1334,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf() return value IS checked (== 1) as the success condition - error detection is present, contradicting the rule's premise"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1334,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf()'s documented contract defines return value == number of successfully converted items; testing '== 1' for one format specifier is the textually correct success check, not a boolean equality-with-1 antipattern"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1334,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "scanf-family conversions require a pointer argument by design (&params.field for %i) - the rule flags the correct pointer-out-param as a type mismatch, misunderstanding scanf calling convention"
+  },
+  {
+   "rule": "INT05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1334,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "errno/ERANGE behavior for sscanf() overflow is implementation-defined/unreliable across platforms, not a clear actionable gap here"
+  },
+  {
+   "rule": "MSC24-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1334,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf_s is an optional Annex K function unavailable on glibc/Linux - not a portable replacement, recommending it here is impractical"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1335,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf() return value IS checked (== 1) as the success condition - error detection is present, contradicting the rule's premise"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1335,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf()'s documented contract defines return value == number of successfully converted items; testing '== 1' for one format specifier is the textually correct success check, not a boolean equality-with-1 antipattern"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1335,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "scanf-family conversions require a pointer argument by design (&params.field for %i) - the rule flags the correct pointer-out-param as a type mismatch, misunderstanding scanf calling convention"
+  },
+  {
+   "rule": "INT05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1335,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "errno/ERANGE behavior for sscanf() overflow is implementation-defined/unreliable across platforms, not a clear actionable gap here"
+  },
+  {
+   "rule": "MSC24-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1335,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf_s is an optional Annex K function unavailable on glibc/Linux - not a portable replacement, recommending it here is impractical"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1336,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf() return value IS checked (== 1) as the success condition - error detection is present, contradicting the rule's premise"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1336,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf()'s documented contract defines return value == number of successfully converted items; testing '== 1' for one format specifier is the textually correct success check, not a boolean equality-with-1 antipattern"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1336,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "scanf-family conversions require a pointer argument by design (&params.field for %i) - the rule flags the correct pointer-out-param as a type mismatch, misunderstanding scanf calling convention"
+  },
+  {
+   "rule": "INT05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1336,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "errno/ERANGE behavior for sscanf() overflow is implementation-defined/unreliable across platforms, not a clear actionable gap here"
+  },
+  {
+   "rule": "MSC24-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1336,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf_s is an optional Annex K function unavailable on glibc/Linux - not a portable replacement, recommending it here is impractical"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1338,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf() return value IS checked (== 1) as the success condition - error detection is present, contradicting the rule's premise"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1338,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf()'s documented contract defines return value == number of successfully converted items; testing '== 1' for one format specifier is the textually correct success check, not a boolean equality-with-1 antipattern"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1338,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "scanf-family conversions require a pointer argument by design (&params.field for %i) - the rule flags the correct pointer-out-param as a type mismatch, misunderstanding scanf calling convention"
+  },
+  {
+   "rule": "INT05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1338,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "errno/ERANGE behavior for sscanf() overflow is implementation-defined/unreliable across platforms, not a clear actionable gap here"
+  },
+  {
+   "rule": "MSC24-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1338,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf_s is an optional Annex K function unavailable on glibc/Linux - not a portable replacement, recommending it here is impractical"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1340,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf() return value IS checked (== 1) as the success condition - error detection is present, contradicting the rule's premise"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1340,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf()'s documented contract defines return value == number of successfully converted items; testing '== 1' for one format specifier is the textually correct success check, not a boolean equality-with-1 antipattern"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1340,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "scanf-family conversions require a pointer argument by design (&params.field for %i) - the rule flags the correct pointer-out-param as a type mismatch, misunderstanding scanf calling convention"
+  },
+  {
+   "rule": "INT05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1340,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "errno/ERANGE behavior for sscanf() overflow is implementation-defined/unreliable across platforms, not a clear actionable gap here"
+  },
+  {
+   "rule": "MSC24-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1340,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf_s is an optional Annex K function unavailable on glibc/Linux - not a portable replacement, recommending it here is impractical"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1342,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf() return value IS checked (== 1) as the success condition - error detection is present, contradicting the rule's premise"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1342,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf()'s documented contract defines return value == number of successfully converted items; testing '== 1' for one format specifier is the textually correct success check, not a boolean equality-with-1 antipattern"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1342,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "scanf-family conversions require a pointer argument by design (&params.field for %i) - the rule flags the correct pointer-out-param as a type mismatch, misunderstanding scanf calling convention"
+  },
+  {
+   "rule": "INT05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1342,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "errno/ERANGE behavior for sscanf() overflow is implementation-defined/unreliable across platforms, not a clear actionable gap here"
+  },
+  {
+   "rule": "MSC24-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1342,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf_s is an optional Annex K function unavailable on glibc/Linux - not a portable replacement, recommending it here is impractical"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1367,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal helper (wmm_ac_ctrl_delts), param genuinely never modified/forwarded to a non-const-requiring call - real (low-severity) const opportunity, not the eloop/EAP-vtable dispatch-contract FP class"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1369,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent range/error check - genuine ERR07-C gap"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1369,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() lacks conversion-error detection, no validation follows - genuine gap"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1409,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'bssid' is a plain (non-const) local u8 array - there is no const-qualified pointer here at all, so 'pointer to const assigned without cast' is a false premise"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1409,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'_bssid'/'_p2p_dev_addr' are ordinary block-scope local variables inside a function, not file-scope identifiers - extends the confirmed DCL37-C block-scope-misapplied pattern"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1414,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'_bssid'/'_p2p_dev_addr' are ordinary block-scope local variables inside a function, not file-scope identifiers - extends the confirmed DCL37-C block-scope-misapplied pattern"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1434,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent range/error check - genuine ERR07-C gap"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1434,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() lacks conversion-error detection, no validation follows - genuine gap"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1435,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if/else-if chain has no final else because the implicit fall-through case is already the correct default behavior (e.g. ret retains its valid value, or the variable already holds its validly-parsed default) - stylistic pedantry, not a missing-case defect"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1445,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent range/error check - genuine ERR07-C gap"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1445,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() lacks conversion-error detection, no validation follows - genuine gap"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1459,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CONFIRMED categorical FP: idiomatic 'T *ptr, size_t len' (buf/buflen or reply/max_len pair) or plain NUL-terminated string parameter - not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1459,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CONFIRMED categorical FP: idiomatic 'T *ptr, size_t len' (buf/buflen or reply/max_len pair) or plain NUL-terminated string parameter - not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1462,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'bssid' is a plain (non-const) local u8 array - there is no const-qualified pointer here at all, so 'pointer to const assigned without cast' is a false premise"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1462,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'_bssid'/'_p2p_dev_addr' are ordinary block-scope local variables inside a function, not file-scope identifiers - extends the confirmed DCL37-C block-scope-misapplied pattern"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1468,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char (or char-to-'\\0'-literal) assignment, no widening conversion occurs - extends the confirmed STR34-C no-widening FP class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1476,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if/else-if chain has no final else because the implicit fall-through case is already the correct default behavior (e.g. ret retains its valid value, or the variable already holds its validly-parsed default) - stylistic pedantry, not a missing-case defect"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1490,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char (or char-to-'\\0'-literal) assignment, no widening conversion occurs - extends the confirmed STR34-C no-widening FP class"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1491,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent range/error check - genuine ERR07-C gap"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1491,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() lacks conversion-error detection, no validation follows - genuine gap"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1517,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'ret' is always set via wps_generate_pin() before the only path (goto done) that reaches this line - rule doesn't track goto-target initialization from the preceding branch"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1525,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal helper (wpa_supplicant_ctrl_iface_wps_pin), param genuinely never modified/forwarded to a non-const-requiring call - real (low-severity) const opportunity, not the eloop/EAP-vtable dispatch-contract FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1525,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CONFIRMED categorical FP: idiomatic 'T *ptr, size_t len' (buf/buflen or reply/max_len pair) or plain NUL-terminated string parameter - not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1525,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CONFIRMED categorical FP: idiomatic 'T *ptr, size_t len' (buf/buflen or reply/max_len pair) or plain NUL-terminated string parameter - not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1532,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'WPS_CHECK_PIN' is just the debug-log label/tag argument, not secret data; the actual PIN value is in 'cmd' and is correctly routed through the dedicated *_key hexdump logging function"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1537,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char (or char-to-'\\0'-literal) assignment, no widening conversion occurs - extends the confirmed STR34-C no-widening FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1537,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char (or char-to-'\\0'-literal) assignment, no widening conversion occurs - extends the confirmed STR34-C no-widening FP class"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1551,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pin_val is validated immediately via wps_pin_valid() checksum check right after conversion"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1551,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same - functional validation follows the conversion"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1561,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'pin' is unconditionally NUL-terminated at line 1547 before this read; the format string only reads up to the NUL, never touching the trailing uninitialized bytes"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1574,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'bssid' is a plain (non-const) local u8 array - there is no const-qualified pointer here at all, so 'pointer to const assigned without cast' is a false premise"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1574,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'_bssid'/'_p2p_dev_addr' are ordinary block-scope local variables inside a function, not file-scope identifiers - extends the confirmed DCL37-C block-scope-misapplied pattern"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1578,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if/else-if chain has no final else because the implicit fall-through case is already the correct default behavior (e.g. ret retains its valid value, or the variable already holds its validly-parsed default) - stylistic pedantry, not a missing-case defect"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1587,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CONFIRMED categorical FP: idiomatic 'T *ptr, size_t len' (buf/buflen or reply/max_len pair) or plain NUL-terminated string parameter - not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1587,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CONFIRMED categorical FP: idiomatic 'T *ptr, size_t len' (buf/buflen or reply/max_len pair) or plain NUL-terminated string parameter - not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1596,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char (or char-to-'\\0'-literal) assignment, no widening conversion occurs - extends the confirmed STR34-C no-widening FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1608,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CONFIRMED pattern: wpabuf_head()/wpabuf_len() are pure accessor functions with no side effects - not unsequenced side effects"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1620,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CONFIRMED categorical FP: idiomatic 'T *ptr, size_t len' (buf/buflen or reply/max_len pair) or plain NUL-terminated string parameter - not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1620,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CONFIRMED categorical FP: idiomatic 'T *ptr, size_t len' (buf/buflen or reply/max_len pair) or plain NUL-terminated string parameter - not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1637,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CONFIRMED pattern: wpabuf_head()/wpabuf_len() are pure accessor functions with no side effects - not unsequenced side effects"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1659,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char (or char-to-'\\0'-literal) assignment, no widening conversion occurs - extends the confirmed STR34-C no-widening FP class"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1661,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent range/error check - genuine ERR07-C gap"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1661,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() lacks conversion-error detection, no validation follows - genuine gap"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1665,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'len' used for a parity check (len & 0x01) then unrelated arithmetic (len /= 2) - extends the confirmed INT14-C stylistic-pedantry-mismatch pattern (wpabuf.c:330)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1685,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CONFIRMED categorical FP: idiomatic 'T *ptr, size_t len' (buf/buflen or reply/max_len pair) or plain NUL-terminated string parameter - not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1695,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CONFIRMED pattern: wpabuf_head()/wpabuf_len() are pure accessor functions with no side effects - not unsequenced side effects"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1708,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CONFIRMED categorical FP: idiomatic 'T *ptr, size_t len' (buf/buflen or reply/max_len pair) or plain NUL-terminated string parameter - not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1720,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CONFIRMED pattern: wpabuf_head()/wpabuf_len() are pure accessor functions with no side effects - not unsequenced side effects"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1733,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CONFIRMED categorical FP: idiomatic 'T *ptr, size_t len' (buf/buflen or reply/max_len pair) or plain NUL-terminated string parameter - not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1733,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CONFIRMED categorical FP: idiomatic 'T *ptr, size_t len' (buf/buflen or reply/max_len pair) or plain NUL-terminated string parameter - not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1742,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char (or char-to-'\\0'-literal) assignment, no widening conversion occurs - extends the confirmed STR34-C no-widening FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1770,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CONFIRMED categorical FP: idiomatic 'T *ptr, size_t len' (buf/buflen or reply/max_len pair) or plain NUL-terminated string parameter - not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1771,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CONFIRMED categorical FP: idiomatic 'T *ptr, size_t len' (buf/buflen or reply/max_len pair) or plain NUL-terminated string parameter - not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1780,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CONFIRMED pattern: wpabuf_head()/wpabuf_len() are pure accessor functions with no side effects - not unsequenced side effects"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 1793,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CONFIRMED categorical FP: idiomatic 'T *ptr, size_t len' (buf/buflen or reply/max_len pair) or plain NUL-terminated string parameter - not a real conformant-array-syntax gap"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "wpa_supplicant/ctrl_iface.c (lines ~750-1793: checked for missing frees on os_strdup/wpabuf_alloc allocations and unbounded strcpy/strcat/sprintf - none found in this range; all os_strdup assignments are preceded by os_free of the same field, and the one wpabuf_alloc at line 1669 is freed on both the error and success paths)"
+ ],
+ "summary": {
+  "tp": 40,
+  "fp": 110,
+  "fn": 0
+ }
+}

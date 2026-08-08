@@ -1,0 +1,1037 @@
+{
+ "src/p2p/p2p_dev_disc.c": [
+  {
+   "column": 63,
+   "file": "src/p2p/p2p_dev_disc.c",
+   "line": 17,
+   "message": "Pointer parameter 'p2p' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *p2p'"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_dev_disc.c",
+   "line": 39,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_dev_disc.c",
+   "line": 43,
+   "message": "Function 'p2p_dev_disc_req_cb' does not validate pointer parameter 'p2p' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'p2p' at the start of the function, e.g., 'if (!p2p) { return error_code; }'"
+  },
+  {
+   "column": 67,
+   "file": "src/p2p/p2p_dev_disc.c",
+   "line": 67,
+   "message": "Pointer parameter 'dev' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *dev'"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_dev_disc.c",
+   "line": 83,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 6,
+   "file": "src/p2p/p2p_dev_disc.c",
+   "line": 95,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_dev_disc.c",
+   "line": 125,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_dev_disc.c",
+   "line": 129,
+   "message": "Function 'p2p_dev_disc_resp_cb' does not validate pointer parameter 'p2p' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'p2p' at the start of the function, e.g., 'if (!p2p) { return error_code; }'"
+  },
+  {
+   "column": 6,
+   "file": "src/p2p/p2p_dev_disc.c",
+   "line": 151,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_dev_disc.c",
+   "line": 161,
+   "message": "Function 'p2p_process_dev_disc_req' does not validate pointer parameter 'sa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sa' at the start of the function, e.g., 'if (!sa) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_dev_disc.c",
+   "line": 189,
+   "message": "Loop uses uninitialized variable 'g' as bound for array access. This has indeterminate value and can cause out-of-bounds access.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize 'g' to a valid value before using it in the loop"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_dev_disc.c",
+   "line": 309,
+   "message": "Function 'p2p_process_go_disc_req' does not validate pointer parameter 'p2p' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'p2p' at the start of the function, e.g., 'if (!p2p) { return error_code; }'"
+  }
+ ],
+ "src/pae/ieee802_1x_kay_i.h": [
+  {
+   "column": 1,
+   "file": "src/pae/ieee802_1x_kay_i.h",
+   "line": 153,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee802_1x_mka_peer_id {\n\tu8 mi[MI_LEN];\n\tbe32 mn;\n}' and 'struct ieee802_1x_mka_hdr {\n\t/* octet 1 */\n\tu8 type;\n\t/* octet 2 */\n\tu8 reserve;\n\t/* octet 3 */\n#if __BYTE_ORDER == __LITTLE_ENDIAN\n\tu8 length:4;\n\tu8 reserve1:4;\n#elif __BYTE_ORDER == __BIG_ENDIAN\n\tu8 reserve1:4;\n\tu8 length:4;\n#else\n#error \"Please fix <bits/endian.h>\"\n#endif\n\t/* octet 4 */\n\tu8 length1;\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/pae/ieee802_1x_kay_i.h",
+   "line": 190,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee802_1x_mka_peer_id {\n\tu8 mi[MI_LEN];\n\tbe32 mn;\n}' and 'struct ieee802_1x_mka_basic_body {\n\t/* octet 1 */\n\tu8 version;\n\t/* octet 2 */\n\tu8 priority;\n\t/* octet 3 */\n#if __BYTE_ORDER == __LITTLE_ENDIAN\n\tu8 length:4;\n\tu8 macsec_capability:2;\n\tu8 macsec_desired:1;\n\tu8 key_server:1;\n#elif __BYTE_ORDER == __BIG_ENDIAN\n\tu8 key_server:1;\n\tu8 macsec_desired:1;\n\tu8 macsec_capability:2;\n\tu8 length:4;\n#endif\n\t/* octet 4 */\n\tu8 length1;\n\n\tstruct ieee802_1x_mka_sci actor_sci;\n\tu8 actor_mi[MI_LEN];\n\tbe32 actor_mn;\n\tu8 algo_agility[4];\n\n\t/* followed by CAK Name */\n\tu8 ckn[0];\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 5,
+   "file": "src/pae/ieee802_1x_kay_i.h",
+   "line": 216,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 1,
+   "file": "src/pae/ieee802_1x_kay_i.h",
+   "line": 227,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee802_1x_mka_peer_id {\n\tu8 mi[MI_LEN];\n\tbe32 mn;\n}' and 'struct ieee802_1x_mka_peer_body {\n\t/* octet 1 */\n\tu8 type;\n\t/* octet 2 */\n\tu8 reserve;\n\t/* octet 3 */\n#if __BYTE_ORDER == __LITTLE_ENDIAN\n\tu8 length:4;\n\tu8 reserve1:4;\n#elif __BYTE_ORDER == __BIG_ENDIAN\n\tu8 reserve1:4;\n\tu8 length:4;\n#endif\n\t/* octet 4 */\n\tu8 length1;\n\n\t/* followed by Peers */\n\tu8 peer[0];\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 5,
+   "file": "src/pae/ieee802_1x_kay_i.h",
+   "line": 244,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 1,
+   "file": "src/pae/ieee802_1x_kay_i.h",
+   "line": 269,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee802_1x_mka_peer_id {\n\tu8 mi[MI_LEN];\n\tbe32 mn;\n}' and 'struct ieee802_1x_mka_sak_use_body {\n\t/* octet 1 */\n\tu8 type;\n\t/* octet 2 */\n#if __BYTE_ORDER == __LITTLE_ENDIAN\n\tu8 orx:1;\n\tu8 otx:1;\n\tu8 oan:2;\n\tu8 lrx:1;\n\tu8 ltx:1;\n\tu8 lan:2;\n#elif __BYTE_ORDER == __BIG_ENDIAN\n\tu8 lan:2;\n\tu8 ltx:1;\n\tu8 lrx:1;\n\tu8 oan:2;\n\tu8 otx:1;\n\tu8 orx:1;\n#endif\n\n\t/* octet 3 */\n#if __BYTE_ORDER == __LITTLE_ENDIAN\n\tu8 length:4;\n\tu8 delay_protect:1;\n\tu8 reserve:1;\n\tu8 prx:1;\n\tu8 ptx:1;\n#elif __BYTE_ORDER == __BIG_ENDIAN\n\tu8 ptx:1;\n\tu8 prx:1;\n\tu8 reserve:1;\n\tu8 delay_protect:1;\n\tu8 length:4;\n#endif\n\n\t/* octet 4 */\n\tu8 length1;\n\n\t/* octet 5 - 16 */\n\tu8 lsrv_mi[MI_LEN];\n\t/* octet 17 - 20 */\n\tbe32 lkn;\n\t/* octet 21 - 24 */\n\tbe32 llpn;\n\n\t/* octet 25 - 36 */\n\tu8 osrv_mi[MI_LEN];\n\t/* octet 37 - 40 */\n\tbe32 okn;\n\t/* octet 41 - 44 */\n\tbe32 olpn;\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/pae/ieee802_1x_kay_i.h",
+   "line": 337,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee802_1x_mka_peer_id {\n\tu8 mi[MI_LEN];\n\tbe32 mn;\n}' and 'struct ieee802_1x_mka_dist_sak_body {\n\t/* octet 1 */\n\tu8 type;\n\t/* octet 2 */\n#if __BYTE_ORDER == __LITTLE_ENDIAN\n\tu8 reserve:4;\n\tu8 confid_offset:2;\n\tu8 dan:2;\n#elif __BYTE_ORDER == __BIG_ENDIAN\n\tu8 dan:2;\n\tu8 confid_offset:2;\n\tu8 reserve:4;\n#endif\n\t/* octet 3 */\n#if __BYTE_ORDER == __LITTLE_ENDIAN\n\tu8 length:4;\n\tu8 reserve1:4;\n#elif __BYTE_ORDER == __BIG_ENDIAN\n\tu8 reserve1:4;\n\tu8 length:4;\n#endif\n\t/* octet 4 */\n\tu8 length1;\n\t/* octet 5 - 8 */\n\tbe32 kn;\n\n\t/* for GCM-AES-128: octet 9-32: SAK\n\t * for other cipher suite: octet 9-16: cipher suite id, octet 17-: SAK\n\t */\n\tu8 sak[0];\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 5,
+   "file": "src/pae/ieee802_1x_kay_i.h",
+   "line": 366,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 1,
+   "file": "src/pae/ieee802_1x_kay_i.h",
+   "line": 382,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee802_1x_mka_peer_id {\n\tu8 mi[MI_LEN];\n\tbe32 mn;\n}' and 'struct ieee802_1x_mka_dist_cak_body {\n\t/* octet 1 */\n\tu8 type;\n\t/* octet 2 */\n\tu8 reserve;\n\t/* octet 3 */\n#if __BYTE_ORDER == __LITTLE_ENDIAN\n\tu8 length:4;\n\tu8 reserve1:4;\n#elif __BYTE_ORDER == __BIG_ENDIAN\n\tu8 reserve1:4;\n\tu8 length:4;\n#endif\n\t/* octet 4 */\n\tu8 length1;\n\n\t/* octet 5 - 28 */\n\tu8 cak[24];\n\n\t/* followed by CAK Name, 29- */\n\tu8 ckn[0];\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 5,
+   "file": "src/pae/ieee802_1x_kay_i.h",
+   "line": 402,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 1,
+   "file": "src/pae/ieee802_1x_kay_i.h",
+   "line": 405,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee802_1x_mka_peer_id {\n\tu8 mi[MI_LEN];\n\tbe32 mn;\n}' and 'struct ieee802_1x_mka_icv_body {\n\t/* octet 1 */\n\tu8 type;\n\t/* octet 2 */\n\tu8 reserve;\n\t/* octet 3 */\n#if __BYTE_ORDER == __LITTLE_ENDIAN\n\tu8 length:4;\n\tu8 reserve1:4;\n#elif __BYTE_ORDER == __BIG_ENDIAN\n\tu8 reserve1:4;\n\tu8 length:4;\n#endif\n\t/* octet 4 */\n\tu8 length1;\n\n\t/* octet 5 - */\n\tu8 icv[0];\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 5,
+   "file": "src/pae/ieee802_1x_kay_i.h",
+   "line": 422,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  }
+ ],
+ "src/wps/wps_upnp_event.c": [
+  {
+   "column": 1,
+   "file": "src/wps/wps_upnp_event.c",
+   "line": 19,
+   "message": "Header file 'wps_upnp.h' has the same first 8 characters (case-insensitive) as 'wps_upnp_i.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'wps_upnp.h' -> unique name)"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_upnp_event.c",
+   "line": 95,
+   "message": "Function returns pointer to local variable 'e' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_upnp_event.c",
+   "line": 100,
+   "message": "Function 'wps_upnp_event_delete_all' does not validate pointer parameter 's' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 's' at the start of the function, e.g., 'if (!s) { return error_code; }'"
+  },
+  {
+   "column": 6,
+   "file": "src/wps/wps_upnp_event.c",
+   "line": 105,
+   "message": "Potential null pointer dereference in member access of variable 's'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 's' is not NULL before member access"
+  },
+  {
+   "column": 62,
+   "file": "src/wps/wps_upnp_event.c",
+   "line": 145,
+   "message": "Pointer parameter 'e' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *e'"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_upnp_event.c",
+   "line": 170,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_upnp_event.c",
+   "line": 221,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  },
+  {
+   "column": 19,
+   "file": "src/wps/wps_upnp_event.c",
+   "line": 289,
+   "message": "Potential null pointer dereference in member access of variable 'e'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'e' is not NULL before member access"
+  },
+  {
+   "column": 47,
+   "file": "src/wps/wps_upnp_event.c",
+   "line": 314,
+   "message": "Pointer parameter 'eloop_data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *eloop_data'"
+  },
+  {
+   "column": 23,
+   "file": "src/wps/wps_upnp_event.c",
+   "line": 405,
+   "message": "Dereference of uninitialized pointer 'e'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'e' before dereferencing"
+  },
+  {
+   "column": 12,
+   "file": "src/wps/wps_upnp_event.c",
+   "line": 410,
+   "message": "Memory allocated with 'wpabuf_dup' for variable 'e->data' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(e->data)' before the variable goes out of scope"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_upnp_event.c",
+   "line": 422,
+   "message": "Memory leak: 'e->data' allocated with 'wpabuf_dup' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'e->data' before this return statement"
+  }
+ ],
+ "wpa_supplicant/dbus/dbus_new_introspect.c": [
+  {
+   "column": 4,
+   "file": "wpa_supplicant/dbus/dbus_new_introspect.c",
+   "line": 34,
+   "message": "Function returns pointer to local variable 'iface' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 15,
+   "file": "wpa_supplicant/dbus/dbus_new_introspect.c",
+   "line": 41,
+   "message": "Memory allocated with 'wpabuf_alloc' for variable 'iface->xml' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(iface->xml)' before the variable goes out of scope"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/dbus/dbus_new_introspect.c",
+   "line": 46,
+   "message": "Memory leak: 'iface->xml' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'iface->xml' before this return statement"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new_introspect.c",
+   "line": 50,
+   "message": "Function returns pointer to local variable 'iface' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new_introspect.c",
+   "line": 50,
+   "message": "Memory leak: 'iface->xml' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'iface->xml' before this return statement"
+  },
+  {
+   "column": 39,
+   "file": "wpa_supplicant/dbus/dbus_new_introspect.c",
+   "line": 151,
+   "message": "Pointer parameter 'obj_dsc' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *obj_dsc'"
+  },
+  {
+   "column": 14,
+   "file": "wpa_supplicant/dbus/dbus_new_introspect.c",
+   "line": 189,
+   "message": "Potential null pointer dereference in array access of variable 'children'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'children' is not NULL before array access"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new_introspect.c",
+   "line": 191,
+   "message": "Function 'dbus_free_string_array' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new_introspect.c",
+   "line": 253,
+   "message": "Function 'wpa_dbus_introspect' does not validate pointer parameter 'message' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'message' at the start of the function, e.g., 'if (!message) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new_introspect.c",
+   "line": 253,
+   "message": "Function 'wpa_dbus_introspect' does not validate pointer parameter 'obj_dsc' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'obj_dsc' at the start of the function, e.g., 'if (!obj_dsc) { return error_code; }'"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/dbus/dbus_new_introspect.c",
+   "line": 276,
+   "message": "Function 'dbus_message_new_method_return' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new_introspect.c",
+   "line": 285,
+   "message": "Function returns pointer to local variable 'reply' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  }
+ ],
+ "src/ap/dhcp_snoop.c": [
+  {
+   "column": 9,
+   "file": "src/ap/dhcp_snoop.c",
+   "line": 28,
+   "message": "Returning pointer to local array 'buf' which will be destroyed when function returns, creating a dangling pointer.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Consider allocating the array dynamically (malloc/calloc), declaring it as static, or passing a buffer as a parameter."
+  },
+  {
+   "column": 30,
+   "file": "src/ap/dhcp_snoop.c",
+   "line": 32,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 14,
+   "file": "src/ap/dhcp_snoop.c",
+   "line": 44,
+   "message": "Scaled integer arithmetic with pointer: 'len - ETH_HLEN - (sizeof(*b) - sizeof(b->exten))'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 39,
+   "file": "src/ap/dhcp_snoop.c",
+   "line": 44,
+   "message": "Dereference of uninitialized pointer 'b'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'b' before dereferencing"
+  },
+  {
+   "column": 34,
+   "file": "src/ap/dhcp_snoop.c",
+   "line": 48,
+   "message": "Potentially unsafe array access with variable index 'ETH_HLEN': Buffer 'buf' with size 17 (allocated at line 23)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 19,
+   "file": "src/ap/dhcp_snoop.c",
+   "line": 60,
+   "message": "Increment/decrement operation 'pos++' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/dhcp_snoop.c",
+   "line": 67,
+   "message": "Compound assignment 'pos += *pos + 1' on non-array pointer 'pos'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/dhcp_snoop.c",
+   "line": 71,
+   "message": "Dereferencing pointer in switch statement may create double-fetch vulnerability",
+   "rule_id": "CON43-C",
+   "severity": "High",
+   "suggestion": "Store dereferenced value in a local variable or use atomic operations"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/dhcp_snoop.c",
+   "line": 97,
+   "message": "Do not cast away const qualification: '(u8 *) buf'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/dhcp_snoop.c",
+   "line": 111,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/dhcp_snoop.c",
+   "line": 148,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/dhcp_snoop.c",
+   "line": 148,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/dhcp_snoop.c",
+   "line": 156,
+   "message": "Function 'dhcp_snoop_deinit' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  }
+ ],
+ "src/eap_peer/eap_vendor_test.c": [
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_vendor_test.c",
+   "line": 34,
+   "message": "Sensitive buffer 'password' not cleared before function exit",
+   "rule_id": "MEM03-C",
+   "severity": "Medium",
+   "suggestion": "Call SecureZeroMemory(password, size) or memset(password, 0, size) before the buffer goes out of scope"
+  },
+  {
+   "column": 26,
+   "file": "src/eap_peer/eap_vendor_test.c",
+   "line": 37,
+   "message": "Dereference of uninitialized pointer 'data'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'data' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_vendor_test.c",
+   "line": 47,
+   "message": "Function returns pointer to local variable 'data' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 50,
+   "file": "src/eap_peer/eap_vendor_test.c",
+   "line": 51,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 52,
+   "file": "src/eap_peer/eap_vendor_test.c",
+   "line": 58,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_vendor_test.c",
+   "line": 137,
+   "message": "Function returns pointer to local variable 'resp' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 58,
+   "file": "src/eap_peer/eap_vendor_test.c",
+   "line": 141,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 68,
+   "file": "src/eap_peer/eap_vendor_test.c",
+   "line": 141,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 50,
+   "file": "src/eap_peer/eap_vendor_test.c",
+   "line": 148,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 60,
+   "file": "src/eap_peer/eap_vendor_test.c",
+   "line": 148,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 60,
+   "file": "src/eap_peer/eap_vendor_test.c",
+   "line": 148,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_vendor_test.c",
+   "line": 165,
+   "message": "Function returns pointer to local variable 'key' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_peer/eap_vendor_test.c",
+   "line": 173,
+   "message": "Memory allocated with 'eap_peer_method_alloc' for variable 'eap' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(eap)' before the variable goes out of scope"
+  }
+ ],
+ "src/eap_server/eap_server_gtc.c": [
+  {
+   "column": 42,
+   "file": "src/eap_server/eap_server_gtc.c",
+   "line": 21,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 26,
+   "file": "src/eap_server/eap_server_gtc.c",
+   "line": 25,
+   "message": "Dereference of uninitialized pointer 'data'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'data' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_gtc.c",
+   "line": 39,
+   "message": "Function returns pointer to local variable 'data' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 41,
+   "file": "src/eap_server/eap_server_gtc.c",
+   "line": 43,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 55,
+   "file": "src/eap_server/eap_server_gtc.c",
+   "line": 50,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_gtc.c",
+   "line": 73,
+   "message": "Function returns pointer to local variable 'req' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 41,
+   "file": "src/eap_server/eap_server_gtc.c",
+   "line": 77,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 51,
+   "file": "src/eap_server/eap_server_gtc.c",
+   "line": 77,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 42,
+   "file": "src/eap_server/eap_server_gtc.c",
+   "line": 187,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 52,
+   "file": "src/eap_server/eap_server_gtc.c",
+   "line": 187,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 45,
+   "file": "src/eap_server/eap_server_gtc.c",
+   "line": 194,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 55,
+   "file": "src/eap_server/eap_server_gtc.c",
+   "line": 194,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_server/eap_server_gtc.c",
+   "line": 205,
+   "message": "Memory allocated with 'eap_server_method_alloc' for variable 'eap' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(eap)' before the variable goes out of scope"
+  }
+ ],
+ "src/rsn_supp/preauth.h": [
+  {
+   "column": 52,
+   "file": "src/rsn_supp/preauth.h",
+   "line": 26,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 55,
+   "file": "src/rsn_supp/preauth.h",
+   "line": 32,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 64,
+   "file": "src/rsn_supp/preauth.h",
+   "line": 36,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 50,
+   "file": "src/rsn_supp/preauth.h",
+   "line": 40,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 31,
+   "file": "src/rsn_supp/preauth.h",
+   "line": 41,
+   "message": "Pointer parameter 'eap_conf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *eap_conf'"
+  },
+  {
+   "column": 53,
+   "file": "src/rsn_supp/preauth.h",
+   "line": 46,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 58,
+   "file": "src/rsn_supp/preauth.h",
+   "line": 50,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 58,
+   "file": "src/rsn_supp/preauth.h",
+   "line": 55,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 54,
+   "file": "src/rsn_supp/preauth.h",
+   "line": 60,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 56,
+   "file": "src/rsn_supp/preauth.h",
+   "line": 66,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 66,
+   "file": "src/rsn_supp/preauth.h",
+   "line": 66,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 66,
+   "file": "src/rsn_supp/preauth.h",
+   "line": 66,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 57,
+   "file": "src/rsn_supp/preauth.h",
+   "line": 72,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  }
+ ],
+ "src/rsn_supp/wpa_ie.c": [
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa_ie.c",
+   "line": 28,
+   "message": "Function 'wpa_parse_wpa_ie' does not validate pointer parameter 'data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'data' at the start of the function, e.g., 'if (!data) { return error_code; }'"
+  },
+  {
+   "column": 34,
+   "file": "src/rsn_supp/wpa_ie.c",
+   "line": 45,
+   "message": "Pointer parameter 'wpa_ie' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_ie'"
+  },
+  {
+   "column": 26,
+   "file": "src/rsn_supp/wpa_ie.c",
+   "line": 53,
+   "message": "Dereference of uninitialized pointer 'hdr'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'hdr' before dereferencing"
+  },
+  {
+   "column": 13,
+   "file": "src/rsn_supp/wpa_ie.c",
+   "line": 104,
+   "message": "Signed integer subtraction '(pos - wpa_ie) - 2' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b < 0 && a > INT_MAX + b) || (b > 0 && a < INT_MIN + b)) { /* handle error */ }"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa_ie.c",
+   "line": 112,
+   "message": "Function 'rsn_supp_capab' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 34,
+   "file": "src/rsn_supp/wpa_ie.c",
+   "line": 112,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 34,
+   "file": "src/rsn_supp/wpa_ie.c",
+   "line": 133,
+   "message": "Pointer parameter 'rsn_ie' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *rsn_ie'"
+  },
+  {
+   "column": 26,
+   "file": "src/rsn_supp/wpa_ie.c",
+   "line": 142,
+   "message": "Dereference of uninitialized pointer 'hdr'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'hdr' before dereferencing"
+  },
+  {
+   "column": 13,
+   "file": "src/rsn_supp/wpa_ie.c",
+   "line": 270,
+   "message": "Signed integer subtraction '(pos - rsn_ie) - 2' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b < 0 && a > INT_MAX + b) || (b > 0 && a < INT_MIN + b)) { /* handle error */ }"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa_ie.c",
+   "line": 301,
+   "message": "Function 'wpa_gen_rsnxe' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 33,
+   "file": "src/rsn_supp/wpa_ie.c",
+   "line": 301,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 41,
+   "file": "src/rsn_supp/wpa_ie.c",
+   "line": 301,
+   "message": "Pointer parameter 'rsnxe' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *rsnxe'"
+  },
+  {
+   "column": 2,
+   "file": "src/rsn_supp/wpa_ie.c",
+   "line": 351,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'pos' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  }
+ ]
+}

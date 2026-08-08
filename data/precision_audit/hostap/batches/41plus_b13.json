@@ -1,0 +1,1354 @@
+{
+ "src/drivers/driver_nl80211.c#part2of8": [
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1949,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1949,
+   "message": "Variable 'tb' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb' before use, e.g., at its declaration"
+  },
+  {
+   "column": 23,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1957,
+   "message": "Variable 'sinfo' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'sinfo' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1982,
+   "message": "Function 'nl80211_get_link_noise' does not validate pointer parameter 'bss' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'bss' at the start of the function, e.g., 'if (!bss) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1982,
+   "message": "Function 'nl80211_get_link_noise' does not validate pointer parameter 'sig_change' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sig_change' at the start of the function, e.g., 'if (!sig_change) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 1998,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2002,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 48,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2085,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2092,
+   "message": "Memory allocated with 'nlmsg_alloc' for variable 'msg' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(msg)' before the variable goes out of scope"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2114,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2117,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2117,
+   "message": "Variable 'tb_msg' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb_msg' before use, e.g., at its declaration"
+  },
+  {
+   "column": 48,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2128,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2135,
+   "message": "Memory allocated with 'nlmsg_alloc' for variable 'msg' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(msg)' before the variable goes out of scope"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2271,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2273,
+   "message": "Double-free: 'cache' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2273,
+   "message": "Double free detected: 'cache' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate nl_cache_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 14,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2285,
+   "message": "Array declaration 'groups[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 52,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2309,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 18,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2347,
+   "message": "Pointer parameter 'eloop_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *eloop_ctx'"
+  },
+  {
+   "column": 18,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2348,
+   "message": "Pointer parameter 'handle' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *handle'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2397,
+   "message": "Accessing union 'event' member 'eapol_tx_status' after writing to 'list' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 31,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2398,
+   "message": "Variable 'data' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'data' before use, e.g., at its declaration"
+  },
+  {
+   "column": 26,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2469,
+   "message": "Dereference of uninitialized pointer 'rcfg'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'rcfg' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2522,
+   "message": "Shared variable 'next_unique_drv_id' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 9,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2532,
+   "message": "readlink() called with size 'sizeof(buf)' without reserving space for null terminator - may cause buffer overflow",
+   "rule_id": "POS30-C",
+   "severity": "High",
+   "suggestion": "Subtract 1 from buffer size (e.g., sizeof(buf) - 1 or bufsize - 1) and check return value != -1 before using"
+  },
+  {
+   "column": 5,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2546,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 25,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2548,
+   "message": "Dereference of uninitialized pointer 'drv'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'drv' before dereferencing"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2603,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2603,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2629,
+   "message": "Function returns pointer to local variable 'bss' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2631,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2670,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2670,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2670,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2670,
+   "message": "Assignment in if statement condition: 'msg = nl80211_cmd_msg(bss, 0, NL80211_CMD_REGISTER_FRAME)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 18,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2683,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 18,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2683,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 9,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2787,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 15,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2835,
+   "message": "string/character literal contains a non-ASCII byte (>= 0x80) -- not portable across locales/national ASCII variants",
+   "rule_id": "MSC09-C",
+   "severity": "Low",
+   "suggestion": "Restrict string and character literals to the portable ASCII subset (letters, digits, space, and basic punctuation)"
+  },
+  {
+   "column": 15,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2840,
+   "message": "string/character literal contains a non-ASCII byte (>= 0x80) -- not portable across locales/national ASCII variants",
+   "rule_id": "MSC09-C",
+   "severity": "Low",
+   "suggestion": "Restrict string and character literals to the portable ASCII subset (letters, digits, space, and basic punctuation)"
+  },
+  {
+   "column": 15,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2856,
+   "message": "string/character literal contains a non-ASCII byte (>= 0x80) -- not portable across locales/national ASCII variants",
+   "rule_id": "MSC09-C",
+   "severity": "Low",
+   "suggestion": "Restrict string and character literals to the portable ASCII subset (letters, digits, space, and basic punctuation)"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2885,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 48,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 2947,
+   "message": "string/character literal contains a non-ASCII byte (>= 0x80) -- not portable across locales/national ASCII variants",
+   "rule_id": "MSC09-C",
+   "severity": "Low",
+   "suggestion": "Restrict string and character literals to the portable ASCII subset (letters, digits, space, and basic punctuation)"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3002,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3002,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 19,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3062,
+   "message": "Array declaration 'stypes[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3101,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3130,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 49,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3148,
+   "message": "Pointer parameter 'eloop_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *eloop_ctx'"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3164,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3164,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 15,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3164,
+   "message": "Signed integer negation '-ret' may overflow (-INT_MIN)",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add check: if (value == INT_MIN) { /* handle error */ }"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3184,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3184,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 15,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3184,
+   "message": "Signed integer negation '-ret' may overflow (-INT_MIN)",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add check: if (value == INT_MIN) { /* handle error */ }"
+  },
+  {
+   "column": 65,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3252,
+   "message": "Pointer parameter 'arg' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *arg'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3255,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3262,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3262,
+   "message": "Variable 'tb' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb' before use, e.g., at its declaration"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3269,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3286,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3286,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3286,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3286,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3286,
+   "message": "Assignment in if statement condition: 'msg = nl80211_drv_msg(drv, 0, NL80211_CMD_VENDOR)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3290,
+   "message": "Assignment in if statement condition: 'params = nla_nest_start(msg, NL80211_ATTR_VENDOR_DATA)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3297,
+   "message": "Function 'send_and_recv_resp' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 11,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3300,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 11,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3300,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 20,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3300,
+   "message": "Signed integer negation '-ret' may overflow (-INT_MIN)",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add check: if (value == INT_MIN) { /* handle error */ }"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3350,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3350,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 21,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3350,
+   "message": "Signed integer negation '-ret' may overflow (-INT_MIN)",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add check: if (value == INT_MIN) { /* handle error */ }"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3353,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 17,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3370,
+   "message": "Function 'if_nametoindex' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 33,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3476,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 33,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3476,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 34,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3555,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 34,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3555,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 21,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3567,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 21,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3567,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 69,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3736,
+   "message": "Pointer parameter 'suites' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *suites'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3739,
+   "message": "Variable 'num_suites' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const num_suites = ..."
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3741,
+   "message": "Function-like macro '__AKM' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3741,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (if (num_suites < max_suites && \\\n\t    (key_mgmt_suites & (WPA_KEY_MGMT_ ## a))) \\\n\t\tsuites[num_suites++] = (RSN_AUTH_KEY_MGMT_ ## b))"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3741,
+   "message": "Macro '__AKM' uses token concatenation operator (##) which prevents parameter expansion - consider using two-level macro indirection for proper expansion",
+   "rule_id": "PRE05-C",
+   "severity": "Low",
+   "suggestion": "Use two-level indirection: define a wrapper macro that calls another macro with ##, allowing parameters to expand first"
+  },
+  {
+   "column": 9,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3741,
+   "message": "Reserved identifier '__AKM' should not be used as a macro name",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Use a non-reserved macro name"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3748,
+   "message": "Function '__AKM' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3750,
+   "message": "Function '__AKM' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3751,
+   "message": "Function '__AKM' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3752,
+   "message": "Function '__AKM' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3753,
+   "message": "Function '__AKM' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3754,
+   "message": "Function '__AKM' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3755,
+   "message": "Function '__AKM' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3758,
+   "message": "Function '__AKM' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3759,
+   "message": "Function '__AKM' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3760,
+   "message": "Function '__AKM' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3761,
+   "message": "Function '__AKM' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3762,
+   "message": "Function '__AKM' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3763,
+   "message": "Function '__AKM' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3806,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3806,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3806,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3806,
+   "message": "Assignment in if statement condition: 'msg = nl80211_bss_msg(bss, 0, NL80211_CMD_VENDOR)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3819,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3819,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 21,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3819,
+   "message": "Signed integer negation '-ret' may overflow (-INT_MIN)",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add check: if (value == INT_MIN) { /* handle error */ }"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3830,
+   "message": "Value assigned to 'msg' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3840,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 23,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3850,
+   "message": "Passing null pointer 'msg' to 'nl80211_nlmsg_clear' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'msg' is not NULL before passing to 'nl80211_nlmsg_clear'"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3858,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3858,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 21,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3858,
+   "message": "Signed integer negation '-ret' may overflow (-INT_MIN)",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add check: if (value == INT_MIN) { /* handle error */ }"
+  },
+  {
+   "column": 44,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3866,
+   "message": "Pointer parameter 'params' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *params'"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 3891,
+   "message": "Function 'if_nametoindex' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4042,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4042,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 21,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4042,
+   "message": "Signed integer negation '-ret' may overflow (-INT_MIN)",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add check: if (value == INT_MIN) { /* handle error */ }"
+  },
+  {
+   "column": 9,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4076,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4110,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4110,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 21,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4110,
+   "message": "Signed integer negation '-ret' may overflow (-INT_MIN)",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add check: if (value == INT_MIN) { /* handle error */ }"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4113,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4118,
+   "message": "Double free detected: 'key_msg' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate nlmsg_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 9,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4141,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 69,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4159,
+   "message": "Pointer parameter 'params' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *params'"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4212,
+   "message": "Function 'wpa_driver_nl80211_mlme' does not validate pointer parameter 'drv' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'drv' at the start of the function, e.g., 'if (!drv) { return error_code; }'"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4220,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4220,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4220,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4220,
+   "message": "Assignment in if statement condition: 'msg = nl80211_bss_msg(bss, 0, cmd)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 22,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4234,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 22,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4234,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 54,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4356,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4402,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 5,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4402,
+   "message": "Variable length array with potentially unsafe size 'ARRAY_SIZE(drv->extra_bss_membership_selectors) + 1'. Ensure size is validated to be positive and within reasonable bounds.",
+   "rule_id": "ARR32-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking: if (size == 0 || size > MAX_ARRAY) { /* handle error */ }"
+  },
+  {
+   "column": 16,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4546,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 16,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4546,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 25,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4546,
+   "message": "Signed integer negation '-ret' may overflow (-INT_MIN)",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add check: if (value == INT_MIN) { /* handle error */ }"
+  },
+  {
+   "column": 10,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4592,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 14,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4601,
+   "message": "Accessing union 'event' member 'timeout_event' after writing to 'list' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4612,
+   "message": "Double free detected: 'msg' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate nlmsg_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4617,
+   "message": "Function 'wpa_driver_nl80211_authenticate_retry' does not validate pointer parameter 'drv' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'drv' at the start of the function, e.g., 'if (!drv) { return error_code; }'"
+  },
+  {
+   "column": 53,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4664,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 50,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4676,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 73,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4676,
+   "message": "Pointer parameter 'link' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *link'"
+  },
+  {
+   "column": 11,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4685,
+   "message": "Variable 'link_id' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'link_id' before use, e.g., at its declaration"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4696,
+   "message": "Potential null pointer dereference in member access of variable 'link'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'link' is not NULL before member access"
+  },
+  {
+   "column": 50,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 4700,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  }
+ ]
+}

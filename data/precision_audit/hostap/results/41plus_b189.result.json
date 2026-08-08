@@ -1,0 +1,829 @@
+{
+ "labels": [
+  {
+   "rule": "PRE08-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 18,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "eap_fast_pac.h/.c is the standard header/impl self-pair (same basename); real 8.3 name/ext are compared separately so this never actually collides, unlike genuine cross-file precedent"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 74,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ptr+size_t idiom (ticket,len companion) - confirmed categorical FP"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 123,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi(pos+18) on admin phase1 config string, no range/error check - literal rule violation, low severity"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 123,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "same atoi() call, ERR34-C sibling of ERR07-C"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 130,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi(pos+22) on admin phase1 config string, no range/error check"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 130,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "same atoi() call, ERR34-C sibling"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 154,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*data) in os_zalloc(sizeof(*data)) is compile-time, not an actual dereference of uninitialized data"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 226,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_fast_init returns 'data' from os_zalloc - heap storage, not local automatic storage"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 244,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "prev=NULL at eap_fast_deinit:244 is always overwritten by prev=pac before any read inside the loop, or the loop never runs - genuine dead store"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 269,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "eap_fast_derive_key_auth's sm param only read (sm->ssl_ctx/conn), plain internal helper not bound to any callback typedef"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 300,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "eap_fast_derive_key_provisioning's sm param only read, plain internal helper"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 306,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*data->key_block_p) computes the pointee struct size, correct idiom, not sizeof of a decayed pointer parameter"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 306,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*data->key_block_p) is compile-time, not a runtime dereference of the just-freed pointer"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 307,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data->key_block_p was reassigned to a fresh allocation at line 304-306 immediately after the os_free at 303 - reassign-then-check misfire, same class as the file's own key_block_p reassignment pattern"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 317,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reassign-then-check: key_block_p was freshly reassigned at 304-306 before this read"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 318,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(data->key_block_p->session_key_seed) is a fixed-array-member sizeof, correct idiom"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 318,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reassign-then-check misfire, same as :307/:317"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 320,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reassign-then-check misfire"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 323,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reassign-then-check misfire"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 324,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(data->key_block_p->server_challenge) fixed-array-member sizeof idiom"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 324,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reassign-then-check misfire"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 326,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reassign-then-check misfire"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 327,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(data->key_block_p->client_challenge) fixed-array-member sizeof idiom"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 327,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reassign-then-check misfire"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 499,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "if/else-if guard chain on iret.methodState/decision - missing branch means 'still continuing', deliberate no-op, pedantic"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 512,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "else-if is a deliberate 3-way dispatch (pending-save / fail / fall-through-success); no unhandled case"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 523,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*nak) in wpabuf_alloc(sizeof(*nak)) before nak is assigned - compile-time, not a real dereference"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 531,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf comes from wpabuf_alloc - heap storage, not local automatic storage"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 539,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*result) not-a-dereference, same pattern as :523"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 551,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is heap-allocated via wpabuf_alloc, not local storage"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 561,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*res) not-a-dereference"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 561,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ack) not-a-dereference, same statement as the :561 col28 finding"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 574,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is heap-allocated via wpabuf_alloc"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 581,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "eap_payload_tlv is only read (cast to hdr, never written) in eap_fast_process_eap_payload_tlv"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 586,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*hdr) in the length guard is compile-time, hdr not yet assigned"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 617,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "eap_fast_validate_crypto_binding's _bind param only read (version/subtype/nonce/compound_mac), never written"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 623,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(_bind->nonce) fixed-array-member sizeof idiom, not a decayed pointer"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 625,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(_bind->compound_mac) fixed-array-member sizeof idiom"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 648,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*rbind) whole-struct sizeof idiom for the length field"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 653,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(_bind->nonce) fixed-array-member sizeof idiom"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 654,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(rbind->nonce) fixed-array-member sizeof idiom"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 655,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*rbind) whole-struct sizeof idiom, hmac_sha1 length arg"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 662,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(rbind->nonce) fixed-array-member sizeof idiom"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 664,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(rbind->compound_mac) fixed-array-member sizeof idiom"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 669,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "eap_fast_get_phase2_key's data param only read (phase2_method/phase2_priv), never written"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 728,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "imck[60] is populated as an output buffer by sha1_t_prf() a few lines earlier; write-only-output-param class, not a real uninitialized read"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 739,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pos's pointee IS mutated - act/pac/type are cast pointers aliased to pos and written through (act->tlv_type=..., etc.); const would break the function - alias-mutation-miss class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 752,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*type) in pac->length=host_to_be16(sizeof(*type)) is compile-time, type not yet assigned"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 822,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data->session_id os_free'd at :819 then unconditionally reassigned at :820 before this read at :822 - reassign-then-check misfire"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 824,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same reassign-then-check misfire, reading the freshly-derived session_id"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 833,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "resp is only freed on the mutually-exclusive error branches (:814,:828) which both return immediately; this line is only reached on the non-freed continuation path"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 837,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "resp is wpabuf_alloc'd heap memory, not local automatic storage"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 837,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same mutually-exclusive-branch misfire as :833 - resp was never freed on this return path"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 842,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos,len companion (ptr+size_t idiom) in eap_fast_parse_pac_tlv's signature"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 844,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "type is genuinely declared 'int type' (signed) and used in 'type & 0x7fff' - literal rule violation even though runtime values stay non-negative"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 874,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "eap_fast_process_pac_tlv's pac param only read via local pos=pac, never written"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 884,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*hdr) in the while-loop guard is compile-time, not a dereference"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 921,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "type is genuinely declared 'int type' (signed) and used in 'type & 0x7fff', same class as :844"
+  },
+  {
+   "rule": "FLP03-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 940,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "(lifetime - (u32) now.sec) / 86400 is plain unsigned integer division, no floating point involved - misclassified"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1008,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*hdr) in eap_fast_process_pac_info's while guard is compile-time, not a dereference"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1055,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "eap_get_config(sm) result treated as internal-invariant-never-null in this call chain - established categorical FP across the eap peer method family"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1104,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*tlv) in os_memset(tlv,0,sizeof(*tlv)) is the correct whole-struct idiom, not a decayed pointer"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1108,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "the bitwise op (pos[0] & 0x80) is on the dereferenced byte value, not on pos itself; pos itself is only ever used in pointer arithmetic (pos+=2) - misattribution"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1152,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ad-hoc NULL check stylistic pedantry - established categorical low-value FP class"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1174,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof+sizeof+sizeof is a plain integer size sum passed to wpabuf_alloc, no pointer arithmetic anywhere in the expression - ARR39-C misapplied"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1183,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tmp is wpabuf_alloc'd heap memory, not local automatic storage"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1204,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tlv is populated by eap_fast_parse_decrypted(decrypted,&tlv,&resp) via its address, before this read - output-param-struct class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1243,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "if/else-if on tlv.pac && result==/!=SUCCESS - missing case (no pac) deliberately does nothing, guard-clause pedantry"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1265,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "if/else-if on result==SUCCESS/failed - missing case (neither) deliberately leaves resp untouched"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1292,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "resp=wpabuf_alloc(1) is passed into eap_fast_encrypt_response() at :1295-1296, which unconditionally wpabuf_clear_free()s it - ownership transferred to callee, not leaked"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1365,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*hdr) in eap_fast_get_a_id's length guard is compile-time, not a dereference"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1379,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "a_id is either the buf parameter itself or a pointer into buf's caller-owned memory (hdr+1) - never local automatic storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1408,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "eap_fast_use_pac_opaque's sm param only read (sm->ssl_ctx), plain internal helper"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1409,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "data param only read (data->ssl.conn), plain internal helper"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1410,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "pac param only read (pac_opaque_len/pac_opaque), plain internal helper"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1417,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ehdr) is compile-time, ehdr not yet assigned"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1431,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free(NULL) is safe (wraps free()) - established categorical FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1440,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "eap_fast_clear_pac_opaque_ext's sm param only read, plain internal helper"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1441,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "data param only read (data->ssl.conn), plain internal helper"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1453,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "eap_fast_set_provisioning_ciphers's sm param only read, plain internal helper"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1454,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "data param only read (provisioning_allowed/ssl.conn), plain internal helper"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1585,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "eap_get_config(sm) result treated as internal-invariant-never-null, same established class as :1055"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1592,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "resp holds a heap-derived value (data->pending_resp / callee result), not local automatic storage"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1620,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "resp is set by eap_peer_tls_process_helper via &resp - heap-derived, not local storage"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1676,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "resp is heap-derived throughout eap_fast_process, not local automatic storage"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1728,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "void *priv is an opaque handle, not an array-decayed pointer - API05-C misapplied to opaque void*"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1728,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf,buflen companion (ptr+size_t idiom) in eap_fast_get_status's signature"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1747,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_fast_isKeyAvailable is registered as eap->isKeyAvailable in the struct eap_method vtable - fixed dispatch-contract signature, not a real const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1747,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same vtable dispatch-contract FP, priv param of eap_fast_isKeyAvailable"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1754,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_fast_getKey is registered as eap->getKey vtable callback - dispatch-contract FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1754,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "void *priv opaque handle, API05-C misapplied"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1754,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_fast_getKey's priv param, same vtable dispatch-contract FP"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1768,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "key is os_memdup()'d heap memory, not local automatic storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1772,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_fast_get_session_id is registered as eap->getSessionId vtable callback - dispatch-contract FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1772,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "void *priv opaque handle, API05-C misapplied"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1772,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv param of the vtable-bound eap_fast_get_session_id"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1786,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "id is os_memdup()'d heap memory, not local automatic storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1790,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_fast_get_emsk is registered as eap->get_emsk vtable callback - dispatch-contract FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1790,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "void *priv opaque handle, API05-C misapplied"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1790,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv param of the vtable-bound eap_fast_get_emsk"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1804,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "key is os_memdup()'d heap memory in eap_fast_get_emsk, not local automatic storage"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/eap_peer/eap_fast.c",
+   "line": 1812,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_peer_method_register()'s doc explicitly states the caller must not free the method regardless of return value; it frees on failure internally and stores it on success - ownership transferred, not leaked"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "src/eap_peer/eap_fast.c"
+ ],
+ "summary": {
+  "tp": 20,
+  "fp": 82,
+  "fn": 0
+ }
+}

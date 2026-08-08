@@ -1,0 +1,24 @@
+{
+ "labels": [
+  {"rule": "MSC13-C", "file": "src/ap/beacon.c", "line": 2989, "verdict": "FP", "confidence": "high", "reason": "ie_found read at 'if (!ie_found)' later in same outer-loop iteration; misses read across loop boundary."},
+  {"rule": "MSC13-C", "file": "src/ap/beacon.c", "line": 2996, "verdict": "FP", "confidence": "high", "reason": "is_identical_vendor_ies read at 'if (!is_identical_vendor_ies)' after inner loop, same outer iteration."},
+  {"rule": "MSC13-C", "file": "src/ap/beacon.c", "line": 3013, "verdict": "FP", "confidence": "high", "reason": "Same as :2996 - read shortly after via 'if (!is_identical_vendor_ies)'."},
+  {"rule": "MSC13-C", "file": "src/ap/beacon.c", "line": 3021, "verdict": "FP", "confidence": "high", "reason": "sta_profile_len read via later += (compound read) and returned at :3152."},
+  {"rule": "MSC13-C", "file": "src/ap/beacon.c", "line": 3026, "verdict": "FP", "confidence": "high", "reason": "sta_profile pointer read/used in subsequent os_memcpy and increment calls later in function."},
+  {"rule": "ARR30-C", "file": "src/ap/beacon.c", "line": 3054, "verdict": "FP", "confidence": "med", "reason": "idx is u8 (range 0-255) into a 256-element array; type range exactly matches bound, OOB impossible. New batch-local pattern."},
+  {"rule": "ARR30-C", "file": "src/ap/beacon.c", "line": 3057, "verdict": "FP", "confidence": "med", "reason": "Same reasoning as :3054 - u8 idx into 256-element array, type-bounded safe."},
+  {"rule": "INT14-C", "file": "src/ap/beacon.c", "line": 3077, "verdict": "FP", "confidence": "high", "reason": "Misattributes array-element bitwise use (parsed_eid_bmap[..] & BIT(..)) to link_eid, which only appears in /8, %8 idiomatic bitmap indexing."},
+  {"rule": "MSC13-C", "file": "src/ap/beacon.c", "line": 3149, "verdict": "TP", "confidence": "med", "reason": "Final sta_profile increment before 'return sta_profile_len;' - pointer genuinely never read again."},
+  {"rule": "DCL30-C", "file": "src/ap/beacon.c", "line": 3180, "verdict": "FP", "confidence": "high", "reason": "sta_profile is a local variable but points to heap memory from os_zalloc() in caller, not automatic storage."},
+  {"rule": "EXP33-C", "file": "src/ap/beacon.c", "line": 3212, "verdict": "FP", "confidence": "high", "reason": "own_params populated via hostapd_get_probe_resp_tmpl(hapd,&own_params,false) output-param call, checked before read."},
+  {"rule": "ARR36-C", "file": "src/ap/beacon.c", "line": 3217, "verdict": "FP", "confidence": "high", "reason": "own_data_len and fixed are both plain size_t scalars (offsetof result), not pointers - no pointer comparison exists."},
+  {"rule": "MSC13-C", "file": "src/ap/beacon.c", "line": 3229, "verdict": "TP", "confidence": "med", "reason": "sta_profile=NULL unconditionally overwritten by hostapd_gen_sta_profile() call 20 lines later with no intervening read - genuine dead store."},
+  {"rule": "EXP33-C", "file": "src/ap/beacon.c", "line": 3240, "verdict": "FP", "confidence": "high", "reason": "link_params populated via hostapd_get_probe_resp_tmpl(link_bss,&link_params,true) output-param call, checked before read."},
+  {"rule": "ARR36-C", "file": "src/ap/beacon.c", "line": 3245, "verdict": "FP", "confidence": "high", "reason": "link_data_len and fixed are both plain size_t scalars, not pointers - same as :3217."},
+  {"rule": "DCL13-C", "file": "src/ap/beacon.c", "line": 3350, "verdict": "TP", "confidence": "low", "reason": "iface is an exported API entry point, not an eloop/EAP-table/driver-ops dispatch callback; genuinely read-only, low-value const opportunity."},
+  {"rule": "DCL13-C", "file": "src/ap/beacon.c", "line": 3366, "verdict": "TP", "confidence": "low", "reason": "Same as :3350 for ieee802_11_update_beacons; ordinary exported API, not a fixed-signature callback."}
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {"tp": 4, "fp": 13, "fn": 0}
+}

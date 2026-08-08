@@ -1,0 +1,839 @@
+{
+ "labels": [
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/os_none.c",
+   "line": 23,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "Stub function body never touches 't'; genuinely unmodified param, harmless const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/os_none.c",
+   "line": 29,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "Stub body never touches 't'; genuinely unmodified param"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/os_none.c",
+   "line": 36,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "Stub os_mktime never touches 't'; genuinely unmodified param"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/os_none.c",
+   "line": 41,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "Stub os_gmtime never touches 'tm'; genuinely unmodified param"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/os_none.c",
+   "line": 58,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Classic ptr+size_t-len idiom (os_get_random); confirmed categorical API05-C FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/os_none.c",
+   "line": 58,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "Stub never writes through 'buf'; genuinely unmodified param"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/os_none.c",
+   "line": 99,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "name is a NUL-terminated path string with no numeric bound needed; extends API05-C ptr/size FP class to non-array string param"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/os_none.c",
+   "line": 99,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "Stub os_readfile never sets *len; genuinely unmodified output param"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/os_none.c",
+   "line": 105,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "Stub os_fdatasync never touches 'stream'; genuinely unmodified param"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/os_none.c",
+   "line": 117,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Classic ptr+size_t-n idiom (os_memdup); confirmed categorical API05-C FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/os_none.c",
+   "line": 130,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Classic ptr+size_t-size idiom (os_realloc); confirmed categorical API05-C FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/os_none.c",
+   "line": 130,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "Stub os_realloc never touches 'ptr'; genuinely unmodified param"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/os_none.c",
+   "line": 136,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "Stub os_free body is empty; genuinely unmodified param"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/os_none.c",
+   "line": 141,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Classic dest/src+size_t-n idiom (os_memcpy); confirmed categorical API05-C FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/os_none.c",
+   "line": 141,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "Stub os_memcpy never writes through 'dest'; genuinely unmodified param"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/os_none.c",
+   "line": 141,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Classic dest/src+size_t-n idiom (os_memcpy); confirmed categorical API05-C FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/os_none.c",
+   "line": 147,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Classic dest/src+size_t-n idiom (os_memmove); confirmed categorical API05-C FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/os_none.c",
+   "line": 147,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "Stub os_memmove never writes through 'dest'; genuinely unmodified param"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/os_none.c",
+   "line": 147,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Classic dest/src+size_t-n idiom (os_memmove); confirmed categorical API05-C FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/os_none.c",
+   "line": 153,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Classic ptr+size_t-n idiom (os_memset); confirmed categorical API05-C FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/os_none.c",
+   "line": 153,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "Stub os_memset never writes through 's'; genuinely unmodified param"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/os_none.c",
+   "line": 159,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Two arrays sharing one size_t-n companion (os_memcmp); confirmed categorical API05-C FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/os_none.c",
+   "line": 159,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Two arrays sharing one size_t-n companion (os_memcmp); confirmed categorical API05-C FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/os_none.c",
+   "line": 187,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Two arrays sharing one size_t-n companion (os_strncasecmp); confirmed categorical API05-C FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/os_none.c",
+   "line": 187,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Two arrays sharing one size_t-n companion (os_strncasecmp); confirmed categorical API05-C FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/os_none.c",
+   "line": 215,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Two arrays sharing one size_t-n companion (os_strncmp); confirmed categorical API05-C FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/os_none.c",
+   "line": 215,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Two arrays sharing one size_t-n companion (os_strncmp); confirmed categorical API05-C FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/os_none.c",
+   "line": 221,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dest/src+size_t-size idiom (os_strlcpy); confirmed categorical API05-C FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/os_none.c",
+   "line": 221,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "Stub os_strlcpy never writes through 'dest'; genuinely unmodified param"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/os_none.c",
+   "line": 221,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dest/src+size_t-size idiom (os_strlcpy); confirmed categorical API05-C FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/os_none.c",
+   "line": 227,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Two arrays sharing one size_t-len companion (os_memcmp_const); confirmed categorical API05-C FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/os_none.c",
+   "line": 227,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Two arrays sharing one size_t-len companion (os_memcmp_const); confirmed categorical API05-C FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/os_none.c",
+   "line": 238,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "str+size_t-size idiom (os_snprintf); confirmed categorical API05-C FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/os_none.c",
+   "line": 238,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "Stub os_snprintf never writes through 'str'; genuinely unmodified param"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/os_none.c",
+   "line": 238,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "str+size_t-size idiom (os_snprintf); confirmed categorical API05-C FP"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 58,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Both args are eap_sake_state_txt(), a pure switch-to-string-literal function with no side effects; extends confirmed accessor-arg EXP30-C FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 81,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*data) inside os_zalloc(sizeof(*data)) never evaluates its operand; confirmed sizeof(*ptr) FP idiom"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 101,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'data' is a heap pointer from os_zalloc, not automatic-storage-duration memory; confirmed DCL30-C local-variable-vs-storage confusion"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 105,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_sake_deinit is registered as eap->deinit (EAP method vtable field); signature is pinned by the dispatch contract, confirmed DCL13-C EAP-method-table FP"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 131,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*sake) before 'sake' assignment never evaluates its operand; confirmed sizeof(*ptr) FP idiom"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 136,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'msg' is heap-allocated via eap_msg_alloc, not automatic storage; confirmed DCL30-C confusion"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 140,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "eap_sake_process_identity is a static internal helper (never assigned to any eap_method field) and its 'sm' param is truly unused in the body; genuine low-severity TP per the b6 clarification that non-vtable-bound internal functions are not automatically FP"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 160,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_sake_parse_attributes unconditionally os_memset(attr,0,sizeof(*attr)) as its first statement before any parsing; confirmed WPS/attr-parse output-param EXP33-C FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 179,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'resp' comes from eap_sake_build_msg, which returns a heap-allocated wpabuf; confirmed DCL30-C confusion"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 183,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "eap_sake_process_challenge is a static internal helper, not vtable-bound, and 'sm' is genuinely unused in its body"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 209,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same unconditional-memset-first parse output param as line160; confirmed FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 269,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head(resp)/wpabuf_len(resp) are pure accessors with no side effects; confirmed EXP30-C accessor-arg FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 281,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'resp' is heap-allocated via eap_sake_build_msg; confirmed DCL30-C confusion"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 285,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "eap_sake_process_challenge helper, 'sm' unused in body, not vtable-bound"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 308,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same unconditional-memset-first parse output param; confirmed FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 314,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head(reqData)/wpabuf_len(reqData) are pure accessors; confirmed EXP30-C accessor-arg FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 351,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head(resp)/wpabuf_len(resp) are pure accessors; confirmed EXP30-C accessor-arg FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 366,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'resp' is heap-allocated via eap_sake_build_msg; confirmed DCL30-C confusion"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 436,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'resp' propagated from process_* helpers, ultimately heap-allocated or NULL, never automatic storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 440,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_sake_isKeyAvailable is registered as eap->isKeyAvailable (EAP method vtable field); fixed dispatch signature, confirmed DCL13-C EAP-method-table FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 440,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_sake_isKeyAvailable is registered as eap->isKeyAvailable (EAP method vtable field); fixed dispatch signature, confirmed DCL13-C EAP-method-table FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 447,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_sake_getKey is registered as eap->getKey (EAP method vtable field); fixed dispatch signature, confirmed DCL13-C FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 447,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "len is an output size_t* companion, not an array-syntax candidate; consistent with categorical API05-C FP class on paired size params"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 447,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_sake_getKey is registered as eap->getKey (EAP method vtable field); fixed dispatch signature, confirmed DCL13-C FP"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 460,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'key' is heap-allocated via os_memdup(data->msk,...); not automatic storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 464,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_sake_get_session_id is registered as eap->getSessionId (EAP method vtable field); fixed dispatch signature, confirmed DCL13-C FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 464,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "len is an output size_t* companion; categorical API05-C FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 464,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_sake_get_session_id is registered as eap->getSessionId (EAP method vtable field); fixed dispatch signature, confirmed DCL13-C FP"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 482,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'id' is heap-allocated via os_malloc(*len); not automatic storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 486,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_sake_get_emsk is registered as eap->get_emsk (EAP method vtable field); fixed dispatch signature, confirmed DCL13-C FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 486,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "len is an output size_t* companion; categorical API05-C FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 486,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_sake_get_emsk is registered as eap->get_emsk (EAP method vtable field); fixed dispatch signature, confirmed DCL13-C FP"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 499,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'key' is heap-allocated via os_memdup; not automatic storage"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/eap_peer/eap_sake.c",
+   "line": 507,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_peer_method_register(eap) takes ownership and frees-or-keeps 'eap' on every path; confirmed register()-style ownership-transfer MEM31-C FP class"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 25,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain if(wfd==NULL) guard; confirmed MEM10-C ad-hoc-NULL-check FP"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 50,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2p_pending_sd_req is an internal-only p2p-module API always called with a valid p2p handle; confirmed API00-C internal-API FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 51,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "p2p_pending_sd_req only reads 'dev' (dev_capab, sd_pending_bcast_queries, sd_reqs) and never forwards it to a non-const call; genuine low-severity const opportunity per b6 clarification (not vtable-bound)"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 57,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Rule conflates bitwise use of dev->info.dev_capab with arithmetic use of the distinct dev->sd_pending_bcast_queries field, both via base identifier 'dev'; confirmed INT14-C member-conflation FP"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 88,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'found:' is a goto target reached from earlier goto found; statement is not unreachable, confirmed MSC07-C goto-label FP"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 95,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'q' walks a heap-allocated linked list (p2p->sd_queries, nodes from os_zalloc); not automatic storage, confirmed DCL30-C confusion"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 117,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "p2p_unlink_sd_query only compares 'query' (q==query, query->for_all_peers), never modifies it and never forwards it non-const; genuine low-severity const opportunity"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 149,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain if(q==NULL) guard in p2p_free_sd_query; confirmed MEM10-C ad-hoc-NULL-check FP"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 156,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2p_free_sd_queries is an internal-only p2p-module API always called with a valid p2p handle; confirmed API00-C internal-API FP"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 189,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'buf' is heap-allocated via gas_anqp_build_initial_req; not automatic storage"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 203,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head(req)/wpabuf_len(req) are pure accessors; confirmed EXP30-C accessor-arg FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 237,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'buf' is heap-allocated via gas_anqp_build_initial_resp; not automatic storage"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 267,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'buf' is heap-allocated via gas_anqp_build_comeback_resp; not automatic storage"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 313,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head(req)/wpabuf_len(req) are pure accessors; confirmed EXP30-C accessor-arg FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 326,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2p_rx_gas_initial_req is an internal p2p RX-dispatch API always called by p2p.c with valid sa/data pointers; confirmed API00-C internal-API FP"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 326,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2p_rx_gas_initial_req is an internal p2p RX-dispatch API always called by p2p.c with valid sa/data pointers; confirmed API00-C internal-API FP"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 422,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2p_sd_response is an internal-only p2p-module API always called with a valid p2p handle; confirmed API00-C internal-API FP"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 450,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2p->sd_resp is freed at line447 only if non-NULL, then unconditionally reassigned to a fresh wpabuf_dup() at line449 before this NULL-check reads it; free-state isn't cleared on reassignment, matching the confirmed reassign-then-check/free MEM30/31-C FP family"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 471,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head(resp)/wpabuf_len(resp) are pure accessors; confirmed EXP30-C accessor-arg FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 480,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2p_rx_gas_initial_resp is an internal RX-dispatch API always called with a valid data pointer; confirmed API00-C internal-API FP"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 628,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2p_rx_gas_comeback_req is an internal RX-dispatch API always called with a valid data pointer; confirmed API00-C internal-API FP"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 692,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head(resp)/wpabuf_len(resp) are pure accessors; confirmed EXP30-C accessor-arg FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 701,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2p_rx_gas_comeback_resp is an internal RX-dispatch API always called with a valid data pointer; confirmed API00-C internal-API FP"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 736,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Bitwise ops apply to *pos (dereferenced byte: frag_id/more_frags), while 'pos' itself is only ever used in ordinary pointer arithmetic (pos++, pos+=2); rule conflates the two under one identifier, extends confirmed INT14-C conflation FP"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 868,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head(p2p->sd_rx_resp)/wpabuf_len(p2p->sd_rx_resp) are pure accessors; confirmed EXP30-C accessor-arg FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 879,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2p_sd_request is an internal-only p2p-module API always called with a valid p2p handle; confirmed API00-C internal-API FP"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 884,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*q) inside os_zalloc(sizeof(*q)) never evaluates its operand; confirmed sizeof(*ptr) FP idiom"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 893,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "q->tlvs's lifetime is tied to the query object q, later freed via p2p_free_sd_query/p2p_free_sd_queries (wpabuf_free(q->tlvs)); struct-field ownership managed by a dedicated destructor elsewhere, not a leak"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 903,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain if(dst==NULL) guard; confirmed MEM10-C ad-hoc-NULL-check FP"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 917,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'q' is heap-allocated via os_zalloc; not automatic storage"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 917,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Same struct-field-ownership-elsewhere reasoning as line893: q->tlvs is freed later by p2p_free_sd_query, not leaked at this return"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 922,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2p_sd_request_wfd is an internal-only p2p-module API always called with a valid p2p handle; confirmed API00-C internal-API FP"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 929,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'q' is the heap pointer returned by p2p_sd_request (os_zalloc'd); not automatic storage"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p_sd.c",
+   "line": 934,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p2p_sd_service_update is an internal-only p2p-module API always called with a valid p2p handle; confirmed API00-C internal-API FP"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "src/utils/os_none.c",
+  "src/eap_peer/eap_sake.c",
+  "src/p2p/p2p_sd.c"
+ ],
+ "summary": {
+  "tp": 19,
+  "fp": 84,
+  "fn": 0
+ }
+}

@@ -1,0 +1,965 @@
+{
+ "labels": [
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpamsg.h",
+   "line": 15,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "C++ class decl misparsed as a non-void function"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/wpamsg.h",
+   "line": 20,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Ctor member-init; timestamp read via getTimestamp() later"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ap_list.h",
+   "line": 44,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "NEED_AP_MLME-undef stub: iface genuinely unused, real const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ap_list.h",
+   "line": 49,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same stub-branch pattern, iface unused"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ap_list.h",
+   "line": 53,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same stub-branch pattern, iface unused"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/tkip_countermeasures.c",
+   "line": 24,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_timeout_handler typedef fixes (void*,void*) signature"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/tkip_countermeasures.c",
+   "line": 49,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta null-checked by the while((sta=...)) condition itself"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/tkip_countermeasures.c",
+   "line": 69,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "hapd always a valid internal struct field addr from 2 fixed call sites"
+  },
+  {
+   "rule": "API01-C",
+   "file": "src/common/proximity_ranging.h",
+   "line": 346,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "country[3] only ever written via bounded os_memcpy(...,3)"
+  },
+  {
+   "rule": "API01-C",
+   "file": "src/common/proximity_ranging.h",
+   "line": 408,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "global_password bounded via os_strlcpy(...,sizeof())"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/proximity_ranging.h",
+   "line": 493,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "idiomatic ptr+len parameter pair, not an unsafe pattern"
+  },
+  {
+   "rule": "API01-C",
+   "file": "src/drivers/driver_wext.h",
+   "line": 19,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ifname bounded via os_strlcpy(..., sizeof(drv->ifname))"
+  },
+  {
+   "rule": "API01-C",
+   "file": "src/drivers/driver_wext.h",
+   "line": 20,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "phyname bounded via read(..., sizeof(phyname)-1)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/drivers/driver_wext.h",
+   "line": 54,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ssid,ssid_len idiomatic pair"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "src/drivers/drivers.c",
+   "line": 14,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_drivers has extern decl in driver.h, used across many .c files"
+  },
+  {
+   "rule": "DCL19-C",
+   "file": "src/drivers/drivers.c",
+   "line": 14,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same: genuinely needs external linkage, not minimizable"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/drivers/drivers.c",
+   "line": 14,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "size legitimately varies per #ifdef CONFIG_DRIVER_* combination"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/eap_common/eap_gpsk_common.h",
+   "line": 49,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sk_len is already the valid size_t* companion for sk"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/eap_common/eap_gpsk_common.h",
+   "line": 49,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pk_len is already the valid size_t* companion for pk"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/eap_common/eap_gpsk_common.h",
+   "line": 56,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sid_len is already the valid size_t* companion for sid"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/eap_common/eap_psk_common.h",
+   "line": 40,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro on distinct struct tags misparsed as redeclared object"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/eap_common/eap_psk_common.h",
+   "line": 49,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same macro misparse"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/eap_common/eap_psk_common.h",
+   "line": 57,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same macro misparse"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "src/eap_common/eap_ttls.h",
+   "line": 31,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "pos/start each referenced 2-3x in macro body; real (if currently harmless) multi-eval"
+  },
+  {
+   "rule": "PRE01-C",
+   "file": "src/eap_common/eap_ttls.h",
+   "line": 31,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pos IS parenthesized at every read use; only the += assignment target lacks parens, which is expected"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "src/eap_common/eap_ttls.h",
+   "line": 31,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "same genuine multi-evaluation as PRE00-C"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_server/eap_tls_common.h",
+   "line": 83,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "context,context_len idiomatic pair"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/eap_server/eap_tls_common.h",
+   "line": 85,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*len is already the valid size_t* out-param"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/eap_server/eap_tls_common.h",
+   "line": 95,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misfires on proc_version function-pointer param, not an array"
+  },
+  {
+   "rule": "API01-C",
+   "file": "src/pae/ieee802_1x_kay.h",
+   "line": 210,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if_name bounded via os_strlcpy(kay->if_name, ifname, IFNAMSIZ)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/pae/ieee802_1x_kay.h",
+   "line": 281,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "buf,buflen idiomatic pair"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/pae/ieee802_1x_kay.h",
+   "line": 283,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "buf,buflen idiomatic pair"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/pasn/pasn_common.h",
+   "line": 211,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misfires on eppke_set_key function-pointer param, not an array"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/pasn/pasn_common.h",
+   "line": 244,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pmk_len already the valid size_t* companion for pmk"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/pasn/pasn_common.h",
+   "line": 267,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pmk_len already the valid size_t* companion for pmk"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/rsn_supp/pmksa_cache.h",
+   "line": 81,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "buf,len idiomatic pair"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/rsn_supp/pmksa_cache.h",
+   "line": 86,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pmk,pmk_len idiomatic pair"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/rsn_supp/pmksa_cache.h",
+   "line": 100,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pmk,pmk_len idiomatic pair"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/tls/pkcs1.h",
+   "line": 15,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "outlen already the valid size_t* out-param"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/tls/pkcs1.h",
+   "line": 18,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "outlen already the valid size_t* out-param"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/tls/pkcs1.h",
+   "line": 21,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain_len already the valid size_t* out-param"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/tls/tlsv1_server.h",
+   "line": 21,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "context,context_len idiomatic pair"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/tls/tlsv1_server.h",
+   "line": 24,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*out_len already the valid size_t* out-param"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/tls/tlsv1_server.h",
+   "line": 32,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "buf,buflen idiomatic pair"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/ip_addr.c",
+   "line": 14,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "buf,buflen idiomatic pair"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/utils/ip_addr.c",
+   "line": 21,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "inet_ntoa() genuinely returns pointer to internal static/shared storage"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/utils/ip_addr.c",
+   "line": 67,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(a->u.v6) is a struct-member sizeof, not sizeof on a decayed array param"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/utils/radiotap_iter.h",
+   "line": 2,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "__RADIOTAP_ITER_H literally starts with 2 underscores, a real reserved-namespace violation"
+  },
+  {
+   "rule": "DCL12-C",
+   "file": "src/utils/radiotap_iter.h",
+   "line": 27,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "iterator's public fields are the intended API surface per doc comment, not leaked internals"
+  },
+  {
+   "rule": "DCL12-C",
+   "file": "src/utils/radiotap_iter.h",
+   "line": 64,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same: this_arg/this_arg_index etc. are documented public fields, opaque type would break the design"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/gas_query.h",
+   "line": 47,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "CONFIG_GAS-undef stub: wpa_s genuinely unused"
+  },
+  {
+   "rule": "INT36-C",
+   "file": "wpa_supplicant/gas_query.h",
+   "line": 49,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "deliberate non-null sentinel idiom (void*)1, never dereferenced by callers"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/gas_query.h",
+   "line": 52,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "CONFIG_GAS-undef stub: gas genuinely unused"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mesh_mpm.h",
+   "line": 33,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "CONFIG_MESH-undef stub: wpa_s genuinely unused"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mesh_mpm.h",
+   "line": 39,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "CONFIG_MESH-undef stub: wpa_s genuinely unused"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/mesh_mpm.h",
+   "line": 40,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "CONFIG_MESH-undef stub: rx_mgmt genuinely unused"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/signalbar.h",
+   "line": 15,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "C++ class decl misparsed as function"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/signalbar.h",
+   "line": 20,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctor declaration misparsed as function-pointer storage"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/wpa_gui-qt4/signalbar.h",
+   "line": 21,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dtor declaration misparsed as a null function-pointer call"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "wpa_supplicant/wpas_module_tests.c",
+   "line": 29,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NULL,NULL deliberate API-robustness test call, unrelated pointer types, no restrict"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "wpa_supplicant/wpas_module_tests.c",
+   "line": 35,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same NULL,NULL test-harness pattern"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "wpa_supplicant/wpas_module_tests.c",
+   "line": 40,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same NULL,NULL test-harness pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/ctrl_iface.h",
+   "line": 20,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "CONFIG_NO_CTRL_IFACE stub: hapd genuinely unused"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/ctrl_iface.h",
+   "line": 25,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same stub pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/ctrl_iface.h",
+   "line": 30,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same stub pattern, interface unused"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/ctrl_iface.h",
+   "line": 36,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same stub pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/airtime_policy.h",
+   "line": 31,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "CONFIG_AIRTIME_POLICY-undef stub: hapd unused"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/airtime_policy.h",
+   "line": 32,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same stub, sta unused"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/airtime_policy.h",
+   "line": 37,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same stub, iface unused"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/airtime_policy.h",
+   "line": 42,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same stub, iface unused"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/bss_load.c",
+   "line": 19,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain read-only helper (not a callback), hapd never modified"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/bss_load.c",
+   "line": 42,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_timeout_handler typedef fixes signature (eloop_data,user_data)"
+  },
+  {
+   "rule": "INT33-C",
+   "file": "src/ap/bss_load.c",
+   "line": 70,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bss_load_update_period already validated nonzero by get_bss_load_update_timeout() earlier in this function"
+  },
+  {
+   "rule": "INT33-C",
+   "file": "src/ap/bss_load.c",
+   "line": 71,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same cross-call guard as line 70"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/comeback_token.c",
+   "line": 33,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "comeback_pending_idx always a fixed internal array addr from 2 call sites"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/comeback_token.c",
+   "line": 48,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR/WPA_GET_BE16 are pure reads, no side effects to unsequence"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/comeback_token.c",
+   "line": 70,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same as line 33, internal-only callers"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/comeback_token.c",
+   "line": 136,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is a local pointer VARIABLE to heap memory from wpabuf_alloc(), not automatic-storage object"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ndisc_snoop.h",
+   "line": 20,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "stub branch: hapd unused"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ndisc_snoop.h",
+   "line": 25,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "stub branch: hapd unused"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ndisc_snoop.h",
+   "line": 29,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "stub branch: hapd unused"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ndisc_snoop.h",
+   "line": 30,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "stub branch: sta unused"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/ap/pmksa_cache_auth.h",
+   "line": 80,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "index is a scalar in/out cursor, not an array needing a size"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/pmksa_cache_auth.h",
+   "line": 80,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "buf,len idiomatic pair"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/pmksa_cache_auth.h",
+   "line": 81,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "index is a scalar int*, not an array-syntax candidate"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/pmksa_cache_auth.h",
+   "line": 84,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "addr plain pointer param, normal idiom"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/ap/wpa_auth_i.h",
+   "line": 325,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "__wpa_send_eapol literally starts with underscore (reserved namespace)"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/ap/wpa_auth_i.h",
+   "line": 325,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "duplicate flag of the same reserved-identifier issue"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/ap/wpa_auth_i.h",
+   "line": 330,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cb is a function-pointer callback param, not an array"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/ap/wpa_auth_i.h",
+   "line": 333,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same: cb is a callback function pointer, not an array"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/common/hw_features_common.h",
+   "line": 15,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "freq is a scalar int* out-param, not an array"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/common/hw_features_common.h",
+   "line": 17,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "chan is a scalar int* out-param, not an array"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/common/hw_features_common.h",
+   "line": 20,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "chan is a scalar int* out-param, not an array"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/common/hw_features_common.h",
+   "line": 31,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sec_chan is a scalar int* out-param, not an array"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/crypto/aes_siv.h",
+   "line": 12,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len[] already the valid parallel-size array paired with addr[]/num_elem"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/crypto/aes_siv.h",
+   "line": 14,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "addr[] is a function parameter (decays to pointer), no bound to specify"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/crypto/aes_siv.h",
+   "line": 16,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same vector API pattern, len[] already paired"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/crypto/aes_siv.h",
+   "line": 18,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same: addr[] function parameter"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/crypto/aes_wrap.h",
+   "line": 25,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len[] already the valid parallel-size array paired with addr[]/num_elem"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/crypto/aes_wrap.h",
+   "line": 26,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "addr[] is a function parameter, no bound to specify"
+  },
+  {
+   "rule": "API02-C",
+   "file": "src/crypto/aes_wrap.h",
+   "line": 28,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same vector API pattern"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/crypto/aes_wrap.h",
+   "line": 29,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same: addr[] function parameter"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/sha256-kdf.c",
+   "line": 32,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "outlen overflow not reachable; loop maintains pos<=outlen invariant"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/sha256-kdf.c",
+   "line": 33,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "out,outlen idiomatic pair"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/crypto/sha256-kdf.c",
+   "line": 61,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "clen=outlen-pos safe: pos<=outlen loop invariant prevents underflow"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/crypto/sha256-kdf.c",
+   "line": 65,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos+=clen safe: clen=min(outlen-pos,MAC_LEN) keeps pos<=outlen, no overflow"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/sha384-kdf.c",
+   "line": 32,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "outlen overflow not reachable; loop maintains pos<=outlen invariant"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/sha384-kdf.c",
+   "line": 33,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "out,outlen idiomatic pair"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/crypto/sha384-kdf.c",
+   "line": 61,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "clen=outlen-pos safe: pos<=outlen loop invariant prevents underflow"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/crypto/sha384-kdf.c",
+   "line": 65,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos+=clen safe: clen=min(outlen-pos,MAC_LEN) keeps pos<=outlen, no overflow"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/sha512-kdf.c",
+   "line": 32,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "outlen overflow not reachable; loop maintains pos<=outlen invariant"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/sha512-kdf.c",
+   "line": 33,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "out,outlen idiomatic pair"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/crypto/sha512-kdf.c",
+   "line": 61,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "clen=outlen-pos safe: pos<=outlen loop invariant prevents underflow"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/crypto/sha512-kdf.c",
+   "line": 65,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos+=clen safe: clen=min(outlen-pos,MAC_LEN) keeps pos<=outlen, no overflow"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/drivers/linux_wext.h",
+   "line": 18,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "_LINUX_TYPES_H reserved macro name (intentional kernel-header-guard shadow)"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/drivers/linux_wext.h",
+   "line": 19,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "_LINUX_SOCKET_H reserved macro name, same intentional shadow"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/drivers/linux_wext.h",
+   "line": 20,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "_LINUX_IF_H reserved macro name, same intentional shadow"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/drivers/linux_wext.h",
+   "line": 30,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "__user reserved macro name, same intentional shadow"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "src/ap/tkip_countermeasures.c",
+  "src/ap/comeback_token.c",
+  "src/drivers/drivers.c",
+  "src/utils/ip_addr.c",
+  "src/ap/bss_load.c",
+  "wpa_supplicant/wpas_module_tests.c",
+  "src/crypto/sha256-kdf.c",
+  "src/crypto/sha384-kdf.c",
+  "src/crypto/sha512-kdf.c"
+ ],
+ "summary": {
+  "tp": 31,
+  "fp": 87,
+  "fn": 0
+ }
+}

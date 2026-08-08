@@ -1,0 +1,1354 @@
+{
+ "src/common/dpp_tcp.c#part1of2": [
+  {
+   "column": 26,
+   "file": "src/common/dpp_tcp.c",
+   "line": 147,
+   "message": "Dereference of uninitialized pointer 'ctrl'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ctrl' before dereferencing"
+  },
+  {
+   "column": 43,
+   "file": "src/common/dpp_tcp.c",
+   "line": 152,
+   "message": "sizeof applied to pointer/array parameter 'config' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*config->ipaddr)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 4,
+   "file": "src/common/dpp_tcp.c",
+   "line": 176,
+   "message": "Function returns pointer to local variable 'ctrl' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 59,
+   "file": "src/common/dpp_tcp.c",
+   "line": 184,
+   "message": "Pointer parameter 'cb_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *cb_ctx'"
+  },
+  {
+   "column": 4,
+   "file": "src/common/dpp_tcp.c",
+   "line": 194,
+   "message": "Function returns pointer to local variable 'ctrl' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 4,
+   "file": "src/common/dpp_tcp.c",
+   "line": 214,
+   "message": "Function returns pointer to local variable 'ctrl' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 3,
+   "file": "src/common/dpp_tcp.c",
+   "line": 232,
+   "message": "Bit-field 'on_tcp_tx_complete_gas_done' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 3,
+   "file": "src/common/dpp_tcp.c",
+   "line": 239,
+   "message": "Bit-field 'on_tcp_tx_complete_gas_done' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 257,
+   "message": "Function 'dpp_tcp_send' participates in indirect recursion: dpp_tcp_send -> dpp_controller_auth_success -> dpp_controller_start_gas_client -> dpp_tcp_send_msg -> dpp_tcp_send",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to eliminate the recursion cycle"
+  },
+  {
+   "column": 3,
+   "file": "src/common/dpp_tcp.c",
+   "line": 263,
+   "message": "Bit-field 'write_eloop' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp_tcp.c",
+   "line": 271,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp_tcp.c",
+   "line": 271,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 4,
+   "file": "src/common/dpp_tcp.c",
+   "line": 285,
+   "message": "Bit-field 'write_eloop' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_tcp.c",
+   "line": 294,
+   "message": "Bit-field 'write_eloop' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 3,
+   "file": "src/common/dpp_tcp.c",
+   "line": 298,
+   "message": "Bit-field 'read_eloop' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 9,
+   "file": "src/common/dpp_tcp.c",
+   "line": 308,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 3,
+   "file": "src/common/dpp_tcp.c",
+   "line": 309,
+   "message": "Bit-field 'on_tcp_tx_complete_auth_ok' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 317,
+   "message": "Function 'dpp_tcp_send_msg' participates in indirect recursion: dpp_tcp_send_msg -> dpp_tcp_send -> dpp_controller_auth_success -> dpp_controller_start_gas_client -> dpp_tcp_send_msg",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to eliminate the recursion cycle"
+  },
+  {
+   "column": 6,
+   "file": "src/common/dpp_tcp.c",
+   "line": 329,
+   "message": "Testing 'dpp_tcp_send(conn)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: dpp_tcp_send(conn) != 0"
+  },
+  {
+   "column": 4,
+   "file": "src/common/dpp_tcp.c",
+   "line": 335,
+   "message": "Bit-field 'write_eloop' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 343,
+   "message": "Function 'dpp_controller_start_gas_client' participates in indirect recursion: dpp_controller_start_gas_client -> dpp_tcp_send_msg -> dpp_tcp_send -> dpp_controller_auth_success -> dpp_controller_start_gas_client",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to eliminate the recursion cycle"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 365,
+   "message": "Function 'dpp_controller_auth_success' participates in indirect recursion: dpp_controller_auth_success -> dpp_controller_start_gas_client -> dpp_tcp_send_msg -> dpp_tcp_send -> dpp_controller_auth_success",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to eliminate the recursion cycle"
+  },
+  {
+   "column": 63,
+   "file": "src/common/dpp_tcp.c",
+   "line": 392,
+   "message": "Pointer parameter 'sock_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sock_ctx'"
+  },
+  {
+   "column": 51,
+   "file": "src/common/dpp_tcp.c",
+   "line": 401,
+   "message": "Pointer parameter 'addr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *addr'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_tcp.c",
+   "line": 411,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 9,
+   "file": "src/common/dpp_tcp.c",
+   "line": 412,
+   "message": "Do not cast away const qualification: '(struct sockaddr_in *) addr'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 10,
+   "file": "src/common/dpp_tcp.c",
+   "line": 421,
+   "message": "Do not cast away const qualification: '(struct sockaddr_in6 *) addr'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 58,
+   "file": "src/common/dpp_tcp.c",
+   "line": 438,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 26,
+   "file": "src/common/dpp_tcp.c",
+   "line": 467,
+   "message": "Dereference of uninitialized pointer 'conn'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'conn' before dereferencing"
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp_tcp.c",
+   "line": 486,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp_tcp.c",
+   "line": 486,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 8,
+   "file": "src/common/dpp_tcp.c",
+   "line": 493,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 8,
+   "file": "src/common/dpp_tcp.c",
+   "line": 493,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_tcp.c",
+   "line": 506,
+   "message": "Bit-field 'write_eloop' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_tcp.c",
+   "line": 512,
+   "message": "Function returns pointer to local variable 'conn' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 513,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_tcp.c",
+   "line": 531,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp_tcp.c",
+   "line": 545,
+   "message": "Use-after-free: accessing freed pointer 'conn->msg_out'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 3,
+   "file": "src/common/dpp_tcp.c",
+   "line": 553,
+   "message": "Bit-field 'on_tcp_tx_complete_remove' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 4,
+   "file": "src/common/dpp_tcp.c",
+   "line": 567,
+   "message": "Function returns pointer to local variable 'conn' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 4,
+   "file": "src/common/dpp_tcp.c",
+   "line": 576,
+   "message": "Function returns pointer to local variable 'conn' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 584,
+   "message": "Function 'dpp_relay_rx_action' does not validate pointer parameter 'src' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'src' at the start of the function, e.g., 'if (!src) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 584,
+   "message": "Function 'dpp_relay_rx_action' does not validate pointer parameter 'hdr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hdr' at the start of the function, e.g., 'if (!hdr) { return error_code; }'"
+  },
+  {
+   "column": 9,
+   "file": "src/common/dpp_tcp.c",
+   "line": 587,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 4,
+   "file": "src/common/dpp_tcp.c",
+   "line": 665,
+   "message": "Function returns pointer to local variable 'conn' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 672,
+   "message": "Function 'dpp_relay_rx_gas_req' does not validate pointer parameter 'dpp' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dpp' at the start of the function, e.g., 'if (!dpp) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 672,
+   "message": "Function 'dpp_relay_rx_gas_req' does not validate pointer parameter 'src' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'src' at the start of the function, e.g., 'if (!src) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 672,
+   "message": "Function 'dpp_relay_rx_gas_req' does not validate pointer parameter 'data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'data' at the start of the function, e.g., 'if (!data) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 672,
+   "message": "Function 'dpp_relay_rx_gas_req' does not validate integer parameter 'data_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'data_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 676,
+   "message": "Value assigned to 'conn' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 711,
+   "message": "Function 'dpp_relay_controller_available' does not validate pointer parameter 'dpp' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dpp' at the start of the function, e.g., 'if (!dpp) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_tcp.c",
+   "line": 827,
+   "message": "Bit-field 'on_tcp_tx_complete_auth_ok' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 16,
+   "file": "src/common/dpp_tcp.c",
+   "line": 858,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 71,
+   "file": "src/common/dpp_tcp.c",
+   "line": 916,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_tcp.c",
+   "line": 922,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1378,
+   "message": "Bit-field 'on_tcp_tx_complete_gas_done' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 3,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1437,
+   "message": "Bit-field 'gas_comeback_in_progress' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 21,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1443,
+   "message": "Pointer variable '(unknown)' is assigned a string literal without const qualification. String literals are immutable and should be declared as 'const char *' or 'const wchar_t *'.",
+   "rule_id": "STR05-C",
+   "severity": "Low",
+   "suggestion": "Add 'const' qualifier to the pointee type (e.g., change 'char *' to 'const char *')."
+  },
+  {
+   "column": 8,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1446,
+   "message": "Pointer variable '(unknown)' is assigned a string literal without const qualification. String literals are immutable and should be declared as 'const char *' or 'const wchar_t *'.",
+   "rule_id": "STR05-C",
+   "severity": "Low",
+   "suggestion": "Add 'const' qualifier to the pointee type (e.g., change 'char *' to 'const char *')."
+  },
+  {
+   "column": 5,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1466,
+   "message": "Pointer dereference '*b_pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1483,
+   "message": "Bit-field 'gas_comeback_in_progress' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 53,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1533,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1545,
+   "message": "Use-after-free: accessing freed pointer 'auth->csr'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 57,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1555,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 6,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1607,
+   "message": "Potential null pointer dereference in member access of variable 'auth'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'auth' is not NULL before member access"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1616,
+   "message": "Bit-field 'on_tcp_tx_complete_remove' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 62,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1626,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 8,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1717,
+   "message": "Memory allocated with 'wpabuf_alloc' for variable 'buf' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(buf)' before the variable goes out of scope"
+  },
+  {
+   "column": 61,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1739,
+   "message": "Pointer parameter 'sock_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sock_ctx'"
+  },
+  {
+   "column": 8,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1755,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 8,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1755,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 3,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1768,
+   "message": "Unsigned integer compound addition 'conn->msg_len_octets += res' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 15,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1786,
+   "message": "Memory allocated with 'wpabuf_alloc' for variable 'conn->msg' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(conn->msg)' before the variable goes out of scope"
+  },
+  {
+   "column": 8,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1799,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 49,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1801,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 49,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1801,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 3,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1803,
+   "message": "Memory leak: 'conn->msg' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'conn->msg' before this return statement"
+  },
+  {
+   "column": 3,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1808,
+   "message": "Memory leak: 'conn->msg' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'conn->msg' before this return statement"
+  },
+  {
+   "column": 3,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1817,
+   "message": "Memory leak: 'conn->msg' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'conn->msg' before this return statement"
+  },
+  {
+   "column": 3,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1824,
+   "message": "Memory leak: 'conn->msg' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'conn->msg' before this return statement"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1828,
+   "message": "Dereferencing pointer in switch statement may create double-fetch vulnerability",
+   "rule_id": "CON43-C",
+   "severity": "High",
+   "suggestion": "Store dereferenced value in a local variable or use atomic operations"
+  },
+  {
+   "column": 65,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1859,
+   "message": "Pointer parameter 'sock_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sock_ctx'"
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1873,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1873,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1876,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 6,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1877,
+   "message": "'inet_ntoa()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'inet_ntop' instead for thread safety"
+  },
+  {
+   "column": 16,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1877,
+   "message": "Variable 'addr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'addr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 26,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1879,
+   "message": "Dereference of uninitialized pointer 'conn'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'conn' before dereferencing"
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1894,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1894,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 0,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1901,
+   "message": "Function 'dpp_controller_tcp_cb' accesses bit-field 'dpp_connection.read_eloop' without mutex protection in a multi-threaded context",
+   "rule_id": "CON32-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field accesses with mutex locks or use separate byte-sized members instead of bit-fields"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1901,
+   "message": "Bit-field 'read_eloop' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1908,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1914,
+   "message": "Function 'dpp_tcp_pkex_init' does not validate pointer parameter 'pkex_done' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pkex_done' at the start of the function, e.g., 'if (!pkex_done) { return error_code; }'"
+  },
+  {
+   "column": 26,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1934,
+   "message": "Dereference of uninitialized pointer 'conn'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'conn' before dereferencing"
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1951,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1951,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 8,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1958,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 8,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1958,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 0,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1971,
+   "message": "Function 'dpp_tcp_pkex_init' accesses bit-field 'dpp_connection.write_eloop' without mutex protection in a multi-threaded context",
+   "rule_id": "CON32-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field accesses with mutex locks or use separate byte-sized members instead of bit-fields"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1971,
+   "message": "Bit-field 'write_eloop' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1986,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 36,
+   "file": "src/common/dpp_tcp.c",
+   "line": 1993,
+   "message": "Pointer parameter 'auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *auth'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2009,
+   "message": "Function 'dpp_tcp_init' does not validate pointer parameter 'name' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'name' at the start of the function, e.g., 'if (!name) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2009,
+   "message": "Function 'dpp_tcp_init' does not validate pointer parameter 'process_conf_obj' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'process_conf_obj' at the start of the function, e.g., 'if (!process_conf_obj) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2009,
+   "message": "Function 'dpp_tcp_init' does not validate pointer parameter 'tcp_msg_sent' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'tcp_msg_sent' at the start of the function, e.g., 'if (!tcp_msg_sent) { return error_code; }'"
+  },
+  {
+   "column": 26,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2033,
+   "message": "Dereference of uninitialized pointer 'conn'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'conn' before dereferencing"
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2059,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2059,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 8,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2066,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 8,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2066,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 0,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2079,
+   "message": "Function 'dpp_tcp_init' accesses bit-field 'dpp_connection.write_eloop' without mutex protection in a multi-threaded context",
+   "rule_id": "CON32-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field accesses with mutex locks or use separate byte-sized members instead of bit-fields"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2079,
+   "message": "Bit-field 'write_eloop' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2088,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2094,
+   "message": "Function 'dpp_tcp_auth' does not validate pointer parameter 'name' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'name' at the start of the function, e.g., 'if (!name) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2094,
+   "message": "Function 'dpp_tcp_auth' does not validate pointer parameter 'mud_url' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'mud_url' at the start of the function, e.g., 'if (!mud_url) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2094,
+   "message": "Function 'dpp_tcp_auth' does not validate pointer parameter 'extra_conf_req_name' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'extra_conf_req_name' at the start of the function, e.g., 'if (!extra_conf_req_name) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2094,
+   "message": "Function 'dpp_tcp_auth' does not validate pointer parameter 'extra_conf_req_value' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'extra_conf_req_value' at the start of the function, e.g., 'if (!extra_conf_req_value) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2094,
+   "message": "Function 'dpp_tcp_auth' does not validate pointer parameter 'process_conf_obj' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'process_conf_obj' at the start of the function, e.g., 'if (!process_conf_obj) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2094,
+   "message": "Function 'dpp_tcp_auth' does not validate pointer parameter 'tcp_msg_sent' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'tcp_msg_sent' at the start of the function, e.g., 'if (!tcp_msg_sent) { return error_code; }'"
+  },
+  {
+   "column": 36,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2094,
+   "message": "Pointer parameter 'dpp' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *dpp'"
+  },
+  {
+   "column": 26,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2141,
+   "message": "Dereference of uninitialized pointer 'ctrl'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ctrl' before dereferencing"
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2165,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2165,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2171,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2171,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 6,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2181,
+   "message": "Privileged operation 'bind' without subsequent privilege dropping",
+   "rule_id": "POS02-C",
+   "severity": "Medium",
+   "suggestion": "Call setuid/setgid to drop privileges after setup"
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2184,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2184,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 6,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2187,
+   "message": "Privileged operation 'listen' without subsequent privilege dropping",
+   "rule_id": "POS02-C",
+   "severity": "Medium",
+   "suggestion": "Call setuid/setgid to drop privileges after setup"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2196,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 63,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2234,
+   "message": "Pointer parameter 'cb_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *cb_ctx'"
+  },
+  {
+   "column": 61,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2241,
+   "message": "Pointer parameter 'auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *auth'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2264,
+   "message": "Function 'dpp_controller_get_auth' does not validate pointer parameter 'dpp' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dpp' at the start of the function, e.g., 'if (!dpp) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2282,
+   "message": "Function 'dpp_controller_new_qr_code' does not validate pointer parameter 'dpp' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dpp' at the start of the function, e.g., 'if (!dpp) { return error_code; }'"
+  },
+  {
+   "column": 51,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2282,
+   "message": "Pointer parameter 'dpp' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *dpp'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2304,
+   "message": "Function 'dpp_controller_pkex_add' does not validate pointer parameter 'dpp' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dpp' at the start of the function, e.g., 'if (!dpp) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2304,
+   "message": "Function 'dpp_controller_pkex_add' does not validate pointer parameter 'code' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'code' at the start of the function, e.g., 'if (!code) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2304,
+   "message": "Function 'dpp_controller_pkex_add' does not validate pointer parameter 'identifier' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'identifier' at the start of the function, e.g., 'if (!identifier) { return error_code; }'"
+  },
+  {
+   "column": 48,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2304,
+   "message": "Pointer parameter 'dpp' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *dpp'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2321,
+   "message": "Function 'dpp_controller_is_own_pkex_req' does not validate pointer parameter 'dpp' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dpp' at the start of the function, e.g., 'if (!dpp) { return error_code; }'"
+  },
+  {
+   "column": 60,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2420,
+   "message": "Pointer parameter 'sock_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sock_ctx'"
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2435,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2435,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2438,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 6,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2439,
+   "message": "'inet_ntoa()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'inet_ntop' instead for thread safety"
+  },
+  {
+   "column": 16,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2439,
+   "message": "Variable 'addr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'addr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2493,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2493,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 0,
+   "file": "src/common/dpp_tcp.c",
+   "line": 2500,
+   "message": "Function 'dpp_relay_tcp_cb' accesses bit-field 'dpp_connection.read_eloop' without mutex protection in a multi-threaded context",
+   "rule_id": "CON32-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field accesses with mutex locks or use separate byte-sized members instead of bit-fields"
+  }
+ ]
+}

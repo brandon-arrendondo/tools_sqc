@@ -1,0 +1,1211 @@
+{
+ "labels": [
+  {
+   "rule": "DCL30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11483,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bss is a local pointer variable (declared struct i802_bss *bss = priv;), not global/static; rule confuses local-scope reassignment with global/static aliasing."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11487,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "for_each_link() macro expands to `for ((i)=0; ...)`; sqc doesn't see the macro-internal init clause (macro-blind, cf. ARR00-C for-loop-init FP class)."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11510,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "confirmed API05-C FP: pointer immediately paired with its own size param (data/data_len, ies/ies_len, buf/buflen) or a fixed ETH_ALEN MAC-address pointer needing no size arg."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11546,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*data) sizes the pointee struct (correct alloc/memset idiom), not the decayed pointer itself; extends confirmed ARR01-C sizeof-dereference misattribution class."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11551,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "confirmed API05-C FP: pointer immediately paired with its own size param (data/data_len, ies/ies_len, buf/buflen) or a fixed ETH_ALEN MAC-address pointer needing no size arg."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11572,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "confirmed API05-C FP: pointer immediately paired with its own size param (data/data_len, ies/ies_len, buf/buflen) or a fixed ETH_ALEN MAC-address pointer needing no size arg."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11582,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11582,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11582,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "assignment is already wrapped in its own parens (`!(msg = ...)`), the CERT/style-guide-recommended intentional-assignment idiom \u2014 confirmed EXP45-C already-parenthesized FP class."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11592,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no pthread_create/mutex anywhere in driver_nl80211.c (grep confirms 0 hits); confirmed CON33/34-C strerror thread-safety FP class for hostap driver code."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11592,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no pthread_create/mutex anywhere in driver_nl80211.c (grep confirms 0 hits); confirmed CON33/34-C strerror thread-safety FP class for hostap driver code."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11592,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ret here is always a small netlink/errno-range value returned by send_and_recv_cmd, never INT_MIN; extends the confirmed 'rule doesn't see realistic bounds' INT32-C FP family."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11599,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "confirmed API05-C FP: pointer immediately paired with its own size param (data/data_len, ies/ies_len, buf/buflen) or a fixed ETH_ALEN MAC-address pointer needing no size arg."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11609,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11609,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11609,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11609,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "assignment is already wrapped in its own parens (`!(msg = ...)`), the CERT/style-guide-recommended intentional-assignment idiom \u2014 confirmed EXP45-C already-parenthesized FP class."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11621,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no pthread_create/mutex anywhere in driver_nl80211.c (grep confirms 0 hits); confirmed CON33/34-C strerror thread-safety FP class for hostap driver code."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11621,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no pthread_create/mutex anywhere in driver_nl80211.c (grep confirms 0 hits); confirmed CON33/34-C strerror thread-safety FP class for hostap driver code."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11621,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ret here is always a small netlink/errno-range value returned by send_and_recv_cmd, never INT_MIN; extends the confirmed 'rule doesn't see realistic bounds' INT32-C FP family."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11628,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is assigned directly into a `const struct wpa_driver_ops` vtable field with a fixed `void *priv`/matching signature \u2014 DCL13-C dispatch-contract FP class (extends the EAP/eloop vtable precedent to wpa_driver_ops)."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11665,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "confirmed API05-C FP: pointer immediately paired with its own size param (data/data_len, ies/ies_len, buf/buflen) or a fixed ETH_ALEN MAC-address pointer needing no size arg."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11665,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is assigned directly into a `const struct wpa_driver_ops` vtable field with a fixed `void *priv`/matching signature \u2014 DCL13-C dispatch-contract FP class (extends the EAP/eloop vtable precedent to wpa_driver_ops)."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11665,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "confirmed API05-C FP: pointer immediately paired with its own size param (data/data_len, ies/ies_len, buf/buflen) or a fixed ETH_ALEN MAC-address pointer needing no size arg."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11665,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is assigned directly into a `const struct wpa_driver_ops` vtable field with a fixed `void *priv`/matching signature \u2014 DCL13-C dispatch-contract FP class (extends the EAP/eloop vtable precedent to wpa_driver_ops)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11708,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sibling args are side-effect-free accessor calls/macros (MAC2STR, genlmsg_attrdata/attrlen, nla_data/nla_len, strerror) \u2014 extends the confirmed EXP30-C pure-accessor-args FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11773,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sibling args are side-effect-free accessor calls/macros (MAC2STR, genlmsg_attrdata/attrlen, nla_data/nla_len, strerror) \u2014 extends the confirmed EXP30-C pure-accessor-args FP class."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11777,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "for_each_link() macro expands to `for ((i)=0; ...)`; sqc doesn't see the macro-internal init clause (macro-blind, cf. ARR00-C for-loop-init FP class)."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11915,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ret's initial -ENOBUFS value IS read: `fail:`/`error:` goto targets do `return ret;` on the early-failure paths; goto-target-blind dead-assignment misfire."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11916,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "initial value is unconditionally overwritten before any read on every reachable path (or the path skips its use entirely) \u2014 genuine harmless dead store."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11995,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11995,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11995,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11995,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11995,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "assignment is already wrapped in its own parens (`!(msg = ...)`), the CERT/style-guide-recommended intentional-assignment idiom \u2014 confirmed EXP45-C already-parenthesized FP class."
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11998,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "assignment is already wrapped in its own parens (`!(msg = ...)`), the CERT/style-guide-recommended intentional-assignment idiom \u2014 confirmed EXP45-C already-parenthesized FP class."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12039,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no pthread_create/mutex anywhere in driver_nl80211.c (grep confirms 0 hits); confirmed CON33/34-C strerror thread-safety FP class for hostap driver code."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12039,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no pthread_create/mutex anywhere in driver_nl80211.c (grep confirms 0 hits); confirmed CON33/34-C strerror thread-safety FP class for hostap driver code."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12039,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ret here is always a small netlink/errno-range value returned by send_and_recv_cmd, never INT_MIN; extends the confirmed 'rule doesn't see realistic bounds' INT32-C FP family."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12043,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "the 'unreachable' code is a `fail:`/`error:` goto-target label reached by earlier `goto fail;`/`goto error;` in the same function \u2014 confirmed goto-target-blind MSC07-C FP class."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12142,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no pthread_create/mutex anywhere in driver_nl80211.c (grep confirms 0 hits); confirmed CON33/34-C strerror thread-safety FP class for hostap driver code."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12142,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no pthread_create/mutex anywhere in driver_nl80211.c (grep confirms 0 hits); confirmed CON33/34-C strerror thread-safety FP class for hostap driver code."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12142,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ret here is always a small netlink/errno-range value returned by send_and_recv_cmd, never INT_MIN; extends the confirmed 'rule doesn't see realistic bounds' INT32-C FP family."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12146,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "the 'unreachable' code is a `fail:`/`error:` goto-target label reached by earlier `goto fail;`/`goto error;` in the same function \u2014 confirmed goto-target-blind MSC07-C FP class."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12182,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no pthread_create/mutex anywhere in driver_nl80211.c (grep confirms 0 hits); confirmed CON33/34-C strerror thread-safety FP class for hostap driver code."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12182,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no pthread_create/mutex anywhere in driver_nl80211.c (grep confirms 0 hits); confirmed CON33/34-C strerror thread-safety FP class for hostap driver code."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12182,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ret here is always a small netlink/errno-range value returned by send_and_recv_cmd, never INT_MIN; extends the confirmed 'rule doesn't see realistic bounds' INT32-C FP family."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12199,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12199,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12199,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "assignment is already wrapped in its own parens (`!(msg = ...)`), the CERT/style-guide-recommended intentional-assignment idiom \u2014 confirmed EXP45-C already-parenthesized FP class."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12209,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no pthread_create/mutex anywhere in driver_nl80211.c (grep confirms 0 hits); confirmed CON33/34-C strerror thread-safety FP class for hostap driver code."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12209,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no pthread_create/mutex anywhere in driver_nl80211.c (grep confirms 0 hits); confirmed CON33/34-C strerror thread-safety FP class for hostap driver code."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12209,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ret here is always a small netlink/errno-range value returned by send_and_recv_cmd, never INT_MIN; extends the confirmed 'rule doesn't see realistic bounds' INT32-C FP family."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12228,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sibling args are side-effect-free accessor calls/macros (MAC2STR, genlmsg_attrdata/attrlen, nla_data/nla_len, strerror) \u2014 extends the confirmed EXP30-C pure-accessor-args FP class."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12238,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "struct nlattr *tb[NL80211_ATTR_MAX + 1] is a fixed-size array sized by a compile-time enum constant, not a VLA \u2014 confirmed MEM05-C fixed-array-misidentified-as-VLA FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12247,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sibling args are side-effect-free accessor calls/macros (MAC2STR, genlmsg_attrdata/attrlen, nla_data/nla_len, strerror) \u2014 extends the confirmed EXP30-C pure-accessor-args FP class."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12247,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tb[] is the write-only output array filled by nla_parse(); passing it as an arg is not a read \u2014 write-only output-param EXP33-C FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12260,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sibling args are side-effect-free accessor calls/macros (MAC2STR, genlmsg_attrdata/attrlen, nla_data/nla_len, strerror) \u2014 extends the confirmed EXP30-C pure-accessor-args FP class."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12287,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "confirmed API05-C FP: pointer immediately paired with its own size param (data/data_len, ies/ies_len, buf/buflen) or a fixed ETH_ALEN MAC-address pointer needing no size arg."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12304,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cast strips const only to satisfy nlmsg_append()/nla_put()'s void* parameter for a copy-in write of the message; callee never writes through the caller's pointer \u2014 confirmed EXP05-C no-write-follows FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12327,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12327,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12327,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12327,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "assignment is already wrapped in its own parens (`!(msg = ...)`), the CERT/style-guide-recommended intentional-assignment idiom \u2014 confirmed EXP45-C already-parenthesized FP class."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12339,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg is passed to send_and_recv_cmd()/send_and_recv_resp() -> send_and_recv_glb(), whose `out:` label unconditionally calls nlmsg_free(msg) on every path \u2014 ownership-transfer-to-consumer MEM31-C FP class, extended to hostap's nl80211 send wrappers."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12341,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "the 'unreachable' code is a `fail:`/`error:` goto-target label reached by earlier `goto fail;`/`goto error;` in the same function \u2014 confirmed goto-target-blind MSC07-C FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12358,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12358,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "assignment is already wrapped in its own parens (`!(msg = ...)`), the CERT/style-guide-recommended intentional-assignment idiom \u2014 confirmed EXP45-C already-parenthesized FP class."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12374,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "struct nlattr *tb[NL80211_ATTR_MAX + 1] is a fixed-size array sized by a compile-time enum constant, not a VLA \u2014 confirmed MEM05-C fixed-array-misidentified-as-VLA FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12378,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sibling args are side-effect-free accessor calls/macros (MAC2STR, genlmsg_attrdata/attrlen, nla_data/nla_len, strerror) \u2014 extends the confirmed EXP30-C pure-accessor-args FP class."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12378,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tb[] is the write-only output array filled by nla_parse(); passing it as an arg is not a read \u2014 write-only output-param EXP33-C FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12423,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12423,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12423,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12423,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12423,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12423,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12423,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12423,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12423,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "assignment is already wrapped in its own parens (`!(msg = ...)`), the CERT/style-guide-recommended intentional-assignment idiom \u2014 confirmed EXP45-C already-parenthesized FP class."
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12424,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "assignment is already wrapped in its own parens (`!(msg = ...)`), the CERT/style-guide-recommended intentional-assignment idiom \u2014 confirmed EXP45-C already-parenthesized FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12470,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12470,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12470,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12470,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12470,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12470,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "assignment is already wrapped in its own parens (`!(msg = ...)`), the CERT/style-guide-recommended intentional-assignment idiom \u2014 confirmed EXP45-C already-parenthesized FP class."
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12474,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "assignment is already wrapped in its own parens (`!(msg = ...)`), the CERT/style-guide-recommended intentional-assignment idiom \u2014 confirmed EXP45-C already-parenthesized FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12501,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12501,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12501,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12501,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12501,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "assignment is already wrapped in its own parens (`!(msg = ...)`), the CERT/style-guide-recommended intentional-assignment idiom \u2014 confirmed EXP45-C already-parenthesized FP class."
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12505,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "assignment is already wrapped in its own parens (`!(msg = ...)`), the CERT/style-guide-recommended intentional-assignment idiom \u2014 confirmed EXP45-C already-parenthesized FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12536,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12536,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12536,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12536,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12536,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12536,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12536,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "assignment is already wrapped in its own parens (`!(msg = ...)`), the CERT/style-guide-recommended intentional-assignment idiom \u2014 confirmed EXP45-C already-parenthesized FP class."
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12540,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "assignment is already wrapped in its own parens (`!(msg = ...)`), the CERT/style-guide-recommended intentional-assignment idiom \u2014 confirmed EXP45-C already-parenthesized FP class."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12572,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "the 'unreachable' code is a `fail:`/`error:` goto-target label reached by earlier `goto fail;`/`goto error;` in the same function \u2014 confirmed goto-target-blind MSC07-C FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12590,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12590,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12590,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12590,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12590,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12590,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "assignment is already wrapped in its own parens (`!(msg = ...)`), the CERT/style-guide-recommended intentional-assignment idiom \u2014 confirmed EXP45-C already-parenthesized FP class."
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12594,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "assignment is already wrapped in its own parens (`!(msg = ...)`), the CERT/style-guide-recommended intentional-assignment idiom \u2014 confirmed EXP45-C already-parenthesized FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12614,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is assigned directly into a `const struct wpa_driver_ops` vtable field with a fixed `void *priv`/matching signature \u2014 DCL13-C dispatch-contract FP class (extends the EAP/eloop vtable precedent to wpa_driver_ops)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12685,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal helper (not a wpa_driver_ops vtable field); param is only read, never forwarded to a non-const call \u2014 genuine (low-severity) DCL13-C per the 'plain internal helper' clarification."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12790,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no pthread_create/mutex anywhere in driver_nl80211.c (grep confirms 0 hits); confirmed CON33/34-C strerror thread-safety FP class for hostap driver code."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12790,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no pthread_create/mutex anywhere in driver_nl80211.c (grep confirms 0 hits); confirmed CON33/34-C strerror thread-safety FP class for hostap driver code."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12847,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no pthread_create/mutex anywhere in driver_nl80211.c (grep confirms 0 hits); confirmed CON33/34-C strerror thread-safety FP class for hostap driver code."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12847,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no pthread_create/mutex anywhere in driver_nl80211.c (grep confirms 0 hits); confirmed CON33/34-C strerror thread-safety FP class for hostap driver code."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12864,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "confirmed API05-C FP: pointer immediately paired with its own size param (data/data_len, ies/ies_len, buf/buflen) or a fixed ETH_ALEN MAC-address pointer needing no size arg."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12882,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sibling args are side-effect-free accessor calls/macros (MAC2STR, genlmsg_attrdata/attrlen, nla_data/nla_len, strerror) \u2014 extends the confirmed EXP30-C pure-accessor-args FP class."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12884,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no pthread_create/mutex anywhere in driver_nl80211.c (grep confirms 0 hits); confirmed CON33/34-C strerror thread-safety FP class for hostap driver code."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12884,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no pthread_create/mutex anywhere in driver_nl80211.c (grep confirms 0 hits); confirmed CON33/34-C strerror thread-safety FP class for hostap driver code."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12884,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ret here is always a small netlink/errno-range value returned by send_and_recv_cmd, never INT_MIN; extends the confirmed 'rule doesn't see realistic bounds' INT32-C FP family."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12896,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is assigned directly into a `const struct wpa_driver_ops` vtable field with a fixed `void *priv`/matching signature \u2014 DCL13-C dispatch-contract FP class (extends the EAP/eloop vtable precedent to wpa_driver_ops)."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12941,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cast strips const only to satisfy nlmsg_append()/nla_put()'s void* parameter for a copy-in write of the message; callee never writes through the caller's pointer \u2014 confirmed EXP05-C no-write-follows FP class."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12942,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cast strips const only to satisfy nlmsg_append()/nla_put()'s void* parameter for a copy-in write of the message; callee never writes through the caller's pointer \u2014 confirmed EXP05-C no-write-follows FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12961,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is assigned directly into a `const struct wpa_driver_ops` vtable field with a fixed `void *priv`/matching signature \u2014 DCL13-C dispatch-contract FP class (extends the EAP/eloop vtable precedent to wpa_driver_ops)."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13005,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cast strips const only to satisfy nlmsg_append()/nla_put()'s void* parameter for a copy-in write of the message; callee never writes through the caller's pointer \u2014 confirmed EXP05-C no-write-follows FP class."
+  },
+  {
+   "rule": "POS01-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13033,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "open(path, O_WRONLY) on an attacker-influenceable-ish /sys or /proc path with no O_NOFOLLOW flag and no prior lstat() check \u2014 literal rule violation, no earlier guard found."
+  },
+  {
+   "rule": "FIO24-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13044,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "the two close(fd) calls are on mutually-exclusive paths (write-failure branch closes+returns; success falls through to the other) \u2014 confirmed branch-blind FIO24-C double-close FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13065,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is assigned directly into a `const struct wpa_driver_ops` vtable field with a fixed `void *priv`/matching signature \u2014 DCL13-C dispatch-contract FP class (extends the EAP/eloop vtable precedent to wpa_driver_ops)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13097,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is assigned directly into a `const struct wpa_driver_ops` vtable field with a fixed `void *priv`/matching signature \u2014 DCL13-C dispatch-contract FP class (extends the EAP/eloop vtable precedent to wpa_driver_ops)."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13103,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "initial value is unconditionally overwritten before any read on every reachable path (or the path skips its use entirely) \u2014 genuine harmless dead store."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13185,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "&ch_list[num_channels] is passed as an output param to ieee80211_freq_to_chan(int,u8*) which only writes it; write-only output-param EXP33-C FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13219,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal helper (not a wpa_driver_ops vtable field); param is only read, never forwarded to a non-const call \u2014 genuine (low-severity) DCL13-C per the 'plain internal helper' clarification."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg/params/data assigned via `!(x = alloc(...))` as the first operand of an `||` chain; short-circuit `||` is a sequence point, so later operands reading x are safely sequenced. New confirmed FP class (recurs 60+ times this file)."
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "assignment is already wrapped in its own parens (`!(msg = ...)`), the CERT/style-guide-recommended intentional-assignment idiom \u2014 confirmed EXP45-C already-parenthesized FP class."
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13235,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "assignment is already wrapped in its own parens (`!(msg = ...)`), the CERT/style-guide-recommended intentional-assignment idiom \u2014 confirmed EXP45-C already-parenthesized FP class."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13270,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no pthread_create/mutex anywhere in driver_nl80211.c (grep confirms 0 hits); confirmed CON33/34-C strerror thread-safety FP class for hostap driver code."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13270,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no pthread_create/mutex anywhere in driver_nl80211.c (grep confirms 0 hits); confirmed CON33/34-C strerror thread-safety FP class for hostap driver code."
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 5,
+  "fp": 145,
+  "fn": 0
+ }
+}

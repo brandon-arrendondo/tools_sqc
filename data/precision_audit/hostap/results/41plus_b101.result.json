@@ -1,0 +1,1211 @@
+{
+ "labels": [
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 42,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "plain internal helper (set_auth_param), drv only read, not vtable-bound"
+  },
+  {
+   "rule": "DCL39-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 53,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "iwr zeroed via os_memset before ioctl; confirmed struct-zeroed-before-ioctl FP"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 57,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no pthread in hostap driver code; strerror() thread-safety FP"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 57,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no pthread in hostap driver code; strerror() thread-safety FP"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 72,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "get_bssid wired to wpa_driver_ops; core always supplies valid buffer"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 72,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv pinned by wpa_driver_ops.get_bssid callback field type"
+  },
+  {
+   "rule": "DCL39-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 81,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "iwr zeroed via os_memset before ioctl"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 82,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 82,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 97,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "set_bssid not wired to any dispatch table; drv only read"
+  },
+  {
+   "rule": "DCL39-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 111,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "iwr zeroed via os_memset before ioctl"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 112,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 112,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 126,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "get_ssid wired to wpa_driver_ops; core always supplies valid buffer"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 126,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv pinned by wpa_driver_ops.get_ssid callback field type"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 130,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ret=0 unconditionally overwritten in both if/else branches before return"
+  },
+  {
+   "rule": "DCL39-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 137,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "iwr zeroed via os_memset before ioctl"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 139,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 139,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 165,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic const u8 *ssid + size_t ssid_len pair, confirmed API05 FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 165,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "set_ssid not wired to any dispatch table; drv only read"
+  },
+  {
+   "rule": "DCL39-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 196,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "iwr zeroed via os_memset before ioctl"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 198,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 198,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 212,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "freq always a small supplicant-internal MHz value; no realistic overflow"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 212,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "set_freq not wired to any dispatch table; drv only read"
+  },
+  {
+   "rule": "DCL39-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 223,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "iwr zeroed via os_memset before ioctl"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 225,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 225,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 249,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "deliberate event-string dispatch; unmatched strings are legitimately ignored"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 252,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "req_ies initial NULL unconditionally overwritten by os_malloc before any read"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 257,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "bytes is plain int used with '&'; literal INT13-C match, low severity"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 257,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "parity-check-then-unrelated-arithmetic stylistic pedantry, not a real defect"
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 265,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mutually exclusive if/else-if branches; michael_mic_failure and assoc_info never both written"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 277,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "bytes is plain int used with '&'; literal INT13-C match, low severity"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 299,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic const char *ev + size_t len pair"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 299,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic const char *ev + size_t len pair"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 304,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*mic) is not a dereference; mic uninitialized but unused at runtime here"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 322,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal static helper, drv only read, not vtable-bound"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 322,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic const char *ev + size_t len pair"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 328,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*cand) is not a dereference"
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 339,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cross-function local union variable conflation; write is in an unrelated function's own union"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 415,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "data param only read through pos/custom, never written; plain internal helper"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 441,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpos and &iwe_buf are offsets within the same struct object, not different arrays"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 441,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpos is a pointer subtraction result, not a char value being widened"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 541,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic char *buf + size_t len pair"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 566,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if_nametoindex declared via included linux_wext.h -> <net/if.h>"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 586,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal static helper (own_ifname), drv only read"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 587,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "buf only read/traversed via RTA_NEXT, never written"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 618,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if_nametoindex declared via included linux_wext.h -> <net/if.h>"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 629,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic u8 *buf + size_t len pair (netlink callback signature)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 629,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ifi pinned by struct netlink_config.newlink_cb callback field type"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 663,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if_nametoindex declared via included linux_wext.h -> <net/if.h>"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 700,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "unmatched rta_type silently skipped by design; deliberate guard-clause dispatch"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 710,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic u8 *buf + size_t len pair (netlink callback signature)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 710,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ifi pinned by struct netlink_config.dellink_cb callback field type"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 711,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf pinned by struct netlink_config.dellink_cb callback field type"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 732,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx pinned by struct rfkill_config.blocked_cb callback field type"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 742,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx pinned by struct rfkill_config.unblocked_cb callback field type"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 762,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "snprintf truncation of a diagnostic sysfs path is harmless, handled by later open() failure"
+  },
+  {
+   "rule": "STR03-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 762,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "snprintf truncation of a diagnostic sysfs path is harmless, handled by later open() failure"
+  },
+  {
+   "rule": "FIO05-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 764,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "reads a kernel-exposed sysfs virtual file, not an attacker-controllable filesystem path"
+  },
+  {
+   "rule": "POS01-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 764,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "reads a kernel-exposed sysfs virtual file, not a realistic symlink-attack target"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 767,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 767,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 771,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "drv->phyname is a genuine fixed char[32] struct field, not a decayed pointer"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 775,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 775,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 782,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*pos = '\\0' is a plain char-to-char assignment, no widening conversion"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 795,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "init wired to wpa_driver_ops.init; ifname always supplied by wpa_supplicant config"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 803,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*drv) is not a dereference"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 819,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 819,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 823,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*cfg) is not a dereference"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 835,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*rcfg) is not a dereference"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 855,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "drv is a local pointer variable to heap memory (os_zalloc), not automatic storage"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 857,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "err3/err2/err1 labels are reached via goto from earlier failure branches, not dead code"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 868,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_ctx pinned by eloop_timeout_handler callback typedef"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 917,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if_nametoindex declared via included linux_wext.h -> <net/if.h>"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 979,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_ctx pinned by eloop_timeout_handler callback typedef"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 992,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "scan wired to wpa_driver_ops.scan2; core always supplies a valid params struct"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 992,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "params pinned by wpa_driver_ops.scan2 callback field type"
+  },
+  {
+   "rule": "DCL39-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1021,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "iwr zeroed via os_memset before ioctl"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1023,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1023,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1048,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal static helper (giwscan), drv only read"
+  },
+  {
+   "rule": "DCL39-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1065,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "iwr zeroed via os_memset before ioctl"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1070,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "res_buf=NULL unconditionally overwritten by os_malloc at top of the next loop iteration"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1079,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1079,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1086,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mutually-exclusive loop paths conflated; this res_buf is the fresh, unfreed buffer from the successful break"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1091,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "res_buf is a local pointer to heap memory (os_malloc), not automatic storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1109,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal static helper (get_scan_mode), iwe only read"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1114,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "deliberate guard-clause dispatch, unmatched iwe->u.mode values legitimately ignored"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1119,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal static helper (get_scan_ssid), iwe only read"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1121,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "end only compared, never written"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1124,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "custom/end are a paired begin/end bounds pair into the same scan-results buffer"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1135,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal static helper (get_scan_freq), iwe only read"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1156,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "deliberate guard-clause; unmapped freq falls through to later handling by design"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1176,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal static helper (get_scan_qual), drv only read (max_level)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1202,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal static helper (get_scan_encode), iwe only read"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1210,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal static helper (get_scan_rate), iwe only read"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1211,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "pos only read to derive custom, never written"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1212,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "end only compared, never written"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1220,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "custom/end are a paired begin/end bounds pair into the same scan-results buffer"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1239,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal static helper (get_scan_iwevgenie), iwe only read"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1240,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "custom only copied into local vars, never written"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1241,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "end only compared, never written"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1251,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "genie is derived from custom, the same buffer end bounds"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1259,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "gpos==genie==custom (same pointer value), not different arrays"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1261,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "gpos==genie==custom (same pointer value), not different arrays"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1265,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal static helper (get_scan_custom), iwe only read"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1267,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "end only compared, never written"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1273,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "custom/end are a paired begin/end bounds pair into the same scan-results buffer"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1281,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "bytes is plain int used with '&'; literal INT13-C match, low severity"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1281,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "parity-check-then-unrelated-arithmetic stylistic pedantry, not a real defect"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1296,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "bytes is plain int used with '&'; literal INT13-C match, low severity"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1301,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tmp is NULL here (os_realloc failed); nothing was allocated to leak"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1304,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tmp already stored into res->ie on the line before this return; ownership transferred, not leaked"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1306,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "deliberate guard-clause dispatch; unmatched custom-event strings legitimately ignored"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1314,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tsf branch never allocates/assigns tmp at all; nothing to leak on this path"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1319,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tsf branch never allocates/assigns tmp at all; nothing to leak on this path"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1326,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal static helper (wext_19_iw_point), drv only read"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1352,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "deliberate guard-clause dispatch; unmatched element IDs legitimately ignored"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1363,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*r) is not a dereference"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1391,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_realloc_array is a realloc-style single-pointer API, no restrict aliasing involved"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1424,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*res) is not a dereference"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1445,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpos and &iwe_buf are offsets within the same struct object, not different arrays"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1445,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpos is a pointer subtraction result, not a char value being widened"
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1460,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "the in-scope 'data' here is struct wext_scan_data (not a union at all); conflated with an unrelated function's union wpa_event_data"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1492,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "res_buf=NULL genuinely never read again in this function after the final os_free"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1495,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data.ie is freed-and-reset per BSS entry in the loop; each free targets a distinct accumulated allocation, not a double free"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1500,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "res is a local pointer to heap memory (os_zalloc), not automatic storage"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1526,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "byte-pointer (char*) offset+sizeof arithmetic, element size 1, not double scaling"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1526,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "range used bitwise (enc_capa flags) vs. pointer arithmetic elsewhere; stylistic pedantry mismatch"
+  },
+  {
+   "rule": "DCL39-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1529,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "iwr zeroed via os_memset before ioctl"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1531,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1531,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1582,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "plain internal static helper (set_psk), drv only read"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1600,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ext) is not a dereference"
+  },
+  {
+   "rule": "DCL39-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1610,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "iwr zeroed via os_memset before ioctl"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1613,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1613,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1620,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "broad categorical API05-C misfire on a plain void *priv parameter"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1620,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "set_key_ext is a plain internal helper (only called from set_key), not itself vtable-bound; drv only read"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1638,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ext) is not a dereference"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1693,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ext is freed only on the switch's unrelated default-case early-return path; this path never frees ext first"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1693,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ext is freed only on the switch's unrelated default-case early-return path; this path never frees ext first"
+  },
+  {
+   "rule": "DCL39-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1696,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "iwr zeroed via os_memset before ioctl"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_wext.c",
+   "line": 1706,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 34,
+  "fp": 116,
+  "fn": 0
+ }
+}

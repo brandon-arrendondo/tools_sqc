@@ -1,0 +1,1244 @@
+{
+ "hostapd/config_file.h": [
+  {
+   "column": 1,
+   "file": "hostapd/config_file.h",
+   "line": 15,
+   "message": "Function has pointer parameter without size argument: 'int hostapd_set_iface(struct hostapd_config *conf,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'char *value' to specify the maximum number of elements in the array"
+  }
+ ],
+ "src/ap/dpp_hostapd.h": [
+  {
+   "column": 15,
+   "file": "src/ap/dpp_hostapd.h",
+   "line": 35,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ],
+ "src/ap/fils_hlp.h": [
+  {
+   "column": 56,
+   "file": "src/ap/fils_hlp.h",
+   "line": 21,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  }
+ ],
+ "src/ap/ieee802_11_auth.h": [
+  {
+   "column": 40,
+   "file": "src/ap/ieee802_11_auth.h",
+   "line": 38,
+   "message": "Pointer parameter 'src' should likely be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Consider declaring parameter as 'const <type> *src'"
+  }
+ ],
+ "src/ap/neighbor_db.h": [
+  {
+   "column": 59,
+   "file": "src/ap/neighbor_db.h",
+   "line": 16,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ],
+ "src/ap/taxonomy.h": [
+  {
+   "column": 33,
+   "file": "src/ap/taxonomy.h",
+   "line": 22,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ],
+ "src/ap/wnm_ap.h": [
+  {
+   "column": 15,
+   "file": "src/ap/wnm_ap.h",
+   "line": 24,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ],
+ "src/common/gas_server.h": [
+  {
+   "column": 56,
+   "file": "src/common/gas_server.h",
+   "line": 46,
+   "message": "Pointer parameter 'gas' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *gas'"
+  }
+ ],
+ "src/common/ptksa_cache.h": [
+  {
+   "column": 54,
+   "file": "src/common/ptksa_cache.h",
+   "line": 39,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ],
+ "src/common/qca-vendor-attr.h": [
+  {
+   "column": 30,
+   "file": "src/common/qca-vendor-attr.h",
+   "line": 25,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  }
+ ],
+ "src/crypto/md5.c": [
+  {
+   "column": 12,
+   "file": "src/crypto/md5.c",
+   "line": 31,
+   "message": "File-scope identifier '_addr' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  }
+ ],
+ "src/crypto/ms_funcs.h": [
+  {
+   "column": 1,
+   "file": "src/crypto/ms_funcs.h",
+   "line": 26,
+   "message": "Identifier 'generate_authenticator_response_pwhash' agrees with 'generate_authenticator_response' in its first 31 significant characters; they may collide as the same external identifier on a conforming implementation",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Shorten one of the identifiers so they differ within the first 31 characters"
+  }
+ ],
+ "src/drivers/driver_wired_common.h": [
+  {
+   "column": 2,
+   "file": "src/drivers/driver_wired_common.h",
+   "line": 14,
+   "message": "String buffer placed before pointer in struct 'driver_wired_common_data': 'char ifname[IFNAMSIZ + 1];' before 'void *ctx;' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'char ifname' after the pointer field 'void *ctx;', or use a char* pointer instead of a char array"
+  }
+ ],
+ "src/drivers/rfkill.h": [
+  {
+   "column": 2,
+   "file": "src/drivers/rfkill.h",
+   "line": 16,
+   "message": "String buffer placed before pointer in struct 'rfkill_config': 'char ifname[IFNAMSIZ];' before 'void (*blocked_cb)(void *ctx);' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'char ifname' after the pointer field 'void (*blocked_cb)(void *ctx);', or use a char* pointer instead of a char array"
+  }
+ ],
+ "src/eap_common/chap.c": [
+  {
+   "column": 1,
+   "file": "src/eap_common/chap.c",
+   "line": 15,
+   "message": "Function 'chap_md5' does not validate pointer parameter 'challenge' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'challenge' at the start of the function, e.g., 'if (!challenge) { return error_code; }'"
+  }
+ ],
+ "src/eap_common/eap_common.h": [
+  {
+   "column": 1,
+   "file": "src/eap_common/eap_common.h",
+   "line": 23,
+   "message": "Function has pointer parameter without size argument: 'const u8 * eap_hdr_validate(int vendor, enum eap_type eap_type,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *plen' to specify the maximum number of elements in the array"
+  }
+ ],
+ "src/eap_common/eap_fast_common.h": [
+  {
+   "column": 31,
+   "file": "src/eap_common/eap_fast_common.h",
+   "line": 100,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ],
+ "src/eap_common/eap_pax_common.h": [
+  {
+   "column": 14,
+   "file": "src/eap_common/eap_pax_common.h",
+   "line": 81,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ],
+ "src/eap_common/eap_peap_common.h": [
+  {
+   "column": 15,
+   "file": "src/eap_common/eap_peap_common.h",
+   "line": 13,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ],
+ "src/eap_common/eap_pwd_common.h": [
+  {
+   "column": 5,
+   "file": "src/eap_common/eap_pwd_common.h",
+   "line": 52,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  }
+ ],
+ "src/eap_common/eap_wsc_common.c": [
+  {
+   "column": 2,
+   "file": "src/eap_common/eap_wsc_common.c",
+   "line": 32,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  }
+ ],
+ "src/eap_peer/mschapv2.h": [
+  {
+   "column": 1,
+   "file": "src/eap_peer/mschapv2.h",
+   "line": 17,
+   "message": "Function has pointer parameter without size argument: 'const u8 * mschapv2_remove_domain(const u8 *username, size_t *len);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *len' to specify the maximum number of elements in the array"
+  }
+ ],
+ "src/eap_server/eap_methods.h": [
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_methods.h",
+   "line": 21,
+   "message": "Function has pointer parameter without size argument: 'enum eap_type eap_server_get_type(const char *name, int *vendor);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'int *vendor' to specify the maximum number of elements in the array"
+  }
+ ],
+ "src/eapol_auth/eapol_auth_sm.h": [
+  {
+   "column": 64,
+   "file": "src/eapol_auth/eapol_auth_sm.h",
+   "line": 76,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ],
+ "src/fst/fst_ctrl_aux.h": [
+  {
+   "column": 59,
+   "file": "src/fst/fst_ctrl_aux.h",
+   "line": 86,
+   "message": "Array declaration 'names[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  }
+ ],
+ "src/fst/fst_group.h": [
+  {
+   "column": 62,
+   "file": "src/fst/fst_group.h",
+   "line": 42,
+   "message": "Pointer parameter 'g' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *g'"
+  }
+ ],
+ "src/l2_packet/l2_packet.h": [
+  {
+   "column": 59,
+   "file": "src/l2_packet/l2_packet.h",
+   "line": 131,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ],
+ "src/radius/radius_client.h": [
+  {
+   "column": 67,
+   "file": "src/radius/radius_client.h",
+   "line": 287,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ],
+ "src/radius/radius_server.h": [
+  {
+   "column": 65,
+   "file": "src/radius/radius_server.h",
+   "line": 134,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ],
+ "src/tls/bignum.h": [
+  {
+   "column": 1,
+   "file": "src/tls/bignum.h",
+   "line": 17,
+   "message": "Function has pointer parameter without size argument: 'int bignum_get_unsigned_bin(const struct bignum *n, u8 *buf, size_t *len);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *len' to specify the maximum number of elements in the array"
+  }
+ ],
+ "src/tls/pkcs8.h": [
+  {
+   "column": 60,
+   "file": "src/tls/pkcs8.h",
+   "line": 14,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ],
+ "src/tls/rsa.h": [
+  {
+   "column": 1,
+   "file": "src/tls/rsa.h",
+   "line": 22,
+   "message": "Function has pointer parameter without size argument: 'int crypto_rsa_exptmod(const u8 *in, size_t inlen, u8 *out, size_t *outlen,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *outlen' to specify the maximum number of elements in the array"
+  }
+ ],
+ "src/tls/tlsv1_common.h": [
+  {
+   "column": 70,
+   "file": "src/tls/tlsv1_common.h",
+   "line": 256,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ],
+ "src/tls/x509v3.h": [
+  {
+   "column": 52,
+   "file": "src/tls/x509v3.h",
+   "line": 142,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ],
+ "src/utils/build_config.h": [
+  {
+   "column": 9,
+   "file": "src/utils/build_config.h",
+   "line": 41,
+   "message": "Reserved identifier '_CRT_SECURE_NO_DEPRECATE' should not be used as a macro name",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Use a non-reserved macro name"
+  }
+ ],
+ "src/utils/ip_addr.h": [
+  {
+   "column": 70,
+   "file": "src/utils/ip_addr.h",
+   "line": 23,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ],
+ "src/utils/radiotap.h": [
+  {
+   "column": 9,
+   "file": "src/utils/radiotap.h",
+   "line": 17,
+   "message": "Reserved identifier '__RADIOTAP_H' should not be used as a macro name",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Use a non-reserved macro name"
+  }
+ ],
+ "src/utils/uuid.h": [
+  {
+   "column": 38,
+   "file": "src/utils/uuid.h",
+   "line": 15,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ],
+ "src/wps/wps_er.h": [
+  {
+   "column": 2,
+   "file": "src/wps/wps_er.h",
+   "line": 78,
+   "message": "String buffer placed before pointer in struct 'wps_er': 'char ifname[17];' before 'char *ip_addr_text;' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'char ifname' after the pointer field 'char *ip_addr_text;', or use a char* pointer instead of a char array"
+  }
+ ],
+ "wpa_supplicant/bssid_ignore.c": [
+  {
+   "column": 4,
+   "file": "wpa_supplicant/bssid_ignore.c",
+   "line": 41,
+   "message": "Function returns pointer to local variable 'e' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  }
+ ],
+ "wpa_supplicant/main_winmain.c": [
+  {
+   "column": 1,
+   "file": "wpa_supplicant/main_winmain.c",
+   "line": 26,
+   "message": "Value assigned to 'exitcode' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  }
+ ],
+ "wpa_supplicant/wmm_ac.h": [
+  {
+   "column": 59,
+   "file": "wpa_supplicant/wmm_ac.h",
+   "line": 171,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ],
+ "src/ap/acs.h": [
+  {
+   "column": 70,
+   "file": "src/ap/acs.h",
+   "line": 23,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 53,
+   "file": "src/ap/acs.h",
+   "line": 29,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  }
+ ],
+ "src/ap/dhcp_snoop.h": [
+  {
+   "column": 55,
+   "file": "src/ap/dhcp_snoop.h",
+   "line": 19,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 58,
+   "file": "src/ap/dhcp_snoop.h",
+   "line": 24,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  }
+ ],
+ "src/ap/vlan.c": [
+  {
+   "column": 42,
+   "file": "src/ap/vlan.c",
+   "line": 17,
+   "message": "Pointer parameter 'a' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *a'"
+  },
+  {
+   "column": 70,
+   "file": "src/ap/vlan.c",
+   "line": 17,
+   "message": "Pointer parameter 'b' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *b'"
+  }
+ ],
+ "src/ap/vlan.h": [
+  {
+   "column": 38,
+   "file": "src/ap/vlan.h",
+   "line": 24,
+   "message": "Pointer parameter 'a' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *a'"
+  },
+  {
+   "column": 66,
+   "file": "src/ap/vlan.h",
+   "line": 24,
+   "message": "Pointer parameter 'b' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *b'"
+  }
+ ],
+ "src/common/dhcp.h": [
+  {
+   "column": 9,
+   "file": "src/common/dhcp.h",
+   "line": 16,
+   "message": "Reserved identifier '__FAVOR_BSD' should not be used as a macro name",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Use a non-reserved macro name"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dhcp.h",
+   "line": 41,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct dhcp_data {\n\tu8 op;\n\tu8 htype;\n\tu8 hlen;\n\tu8 hops;\n\tbe32 xid;\n\tbe16 secs;\n\tbe16 flags;\n\tbe32 client_ip;\n\tbe32 your_ip;\n\tbe32 server_ip;\n\tbe32 relay_ip;\n\tu8 hw_addr[16];\n\tu8 serv_name[64];\n\tu8 boot_file[128];\n}' and 'struct bootp_pkt {\n\tstruct ip iph;\n\tstruct udphdr udph;\n\tu8 op;\n\tu8 htype;\n\tu8 hlen;\n\tu8 hops;\n\tbe32 xid;\n\tbe16 secs;\n\tbe16 flags;\n\tbe32 client_ip;\n\tbe32 your_ip;\n\tbe32 server_ip;\n\tbe32 relay_ip;\n\tu8 hw_addr[16];\n\tu8 serv_name[64];\n\tu8 boot_file[128];\n\tu8 exten[312];\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  }
+ ],
+ "src/common/eapol_common.h": [
+  {
+   "column": 1,
+   "file": "src/common/eapol_common.h",
+   "line": 25,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee802_1x_hdr {\n\tu8 version;\n\tu8 type;\n\tbe16 length;\n\t/* followed by length octets of data */\n}' and 'struct ieee8023_hdr {\n\tu8 dest[ETH_ALEN];\n\tu8 src[ETH_ALEN];\n\tbe16 ethertype;\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/common/eapol_common.h",
+   "line": 64,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee802_1x_hdr {\n\tu8 version;\n\tu8 type;\n\tbe16 length;\n\t/* followed by length octets of data */\n}' and 'struct ieee802_1x_eapol_key {\n\tu8 type;\n\t/* Note: key_length is unaligned */\n\tu8 key_length[2];\n\t/* does not repeat within the life of the keying material used to\n\t * encrypt the Key field; 64-bit NTP timestamp MAY be used here */\n\tu8 replay_counter[IEEE8021X_REPLAY_COUNTER_LEN];\n\tu8 key_iv[IEEE8021X_KEY_IV_LEN]; /* cryptographically random number */\n\tu8 key_index; /* key flag in the most significant bit:\n\t\t       * 0 = broadcast (default key),\n\t\t       * 1 = unicast (key mapping key); key index is in the\n\t\t       * 7 least significant bits */\n\t/* HMAC-MD5 message integrity check computed with MS-MPPE-Send-Key as\n\t * the key */\n\tu8 key_signature[IEEE8021X_KEY_SIGN_LEN];\n\n\t/* followed by key: if packet body length = 44 + key length, then the\n\t * key field (of key_length bytes) contains the key in encrypted form;\n\t * if packet body length = 44, key field is absent and key_length\n\t * represents the number of least significant octets from\n\t * MS-MPPE-Send-Key attribute to be used as the keying material;\n\t * RC4 key used in encryption = Key-IV + MS-MPPE-Recv-Key */\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  }
+ ],
+ "src/crypto/aes-ctr.c": [
+  {
+   "column": 1,
+   "file": "src/crypto/aes-ctr.c",
+   "line": 25,
+   "message": "Function 'aes_ctr_encrypt' does not validate pointer parameter 'key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/aes-ctr.c",
+   "line": 67,
+   "message": "Function 'aes_128_ctr_encrypt' does not validate pointer parameter 'key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+  }
+ ],
+ "src/crypto/crypto_internal-modexp.c": [
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_internal-modexp.c",
+   "line": 16,
+   "message": "Function 'crypto_dh_init' does not validate integer parameter 'prime_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'prime_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_internal-modexp.c",
+   "line": 42,
+   "message": "Function 'crypto_dh_derive_secret' does not validate pointer parameter 'privkey' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'privkey' at the start of the function, e.g., 'if (!privkey) { return error_code; }'"
+  }
+ ],
+ "src/crypto/crypto_none.c": [
+  {
+   "column": 73,
+   "file": "src/crypto/crypto_none.c",
+   "line": 15,
+   "message": "Pointer parameter 'mac' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *mac'"
+  },
+  {
+   "column": 52,
+   "file": "src/crypto/crypto_none.c",
+   "line": 21,
+   "message": "Pointer parameter 'cypher' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *cypher'"
+  }
+ ],
+ "src/crypto/md5.h": [
+  {
+   "column": 1,
+   "file": "src/crypto/md5.h",
+   "line": 14,
+   "message": "Function has pointer parameter without size argument: 'int hmac_md5_vector(const u8 *key, size_t key_len, size_t num_elem,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'const size_t *len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 17,
+   "file": "src/crypto/md5.h",
+   "line": 15,
+   "message": "Array declaration 'addr[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  }
+ ],
+ "src/crypto/milenage.h": [
+  {
+   "column": 1,
+   "file": "src/crypto/milenage.h",
+   "line": 12,
+   "message": "Function has pointer parameter without size argument: 'void milenage_generate(const u8 *opc, const u8 *amf, const u8 *k,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *res_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/milenage.h",
+   "line": 19,
+   "message": "Function has pointer parameter without size argument: 'int milenage_check(const u8 *opc, const u8 *k, const u8 *sqn, const u8 *_rand,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *res_len' to specify the maximum number of elements in the array"
+  }
+ ],
+ "src/crypto/random.h": [
+  {
+   "column": 39,
+   "file": "src/crypto/random.h",
+   "line": 22,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 27,
+   "file": "src/crypto/random.h",
+   "line": 23,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ],
+ "src/crypto/sha1.c": [
+  {
+   "column": 12,
+   "file": "src/crypto/sha1.c",
+   "line": 31,
+   "message": "File-scope identifier '_addr' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 9,
+   "file": "src/crypto/sha1.c",
+   "line": 32,
+   "message": "File-scope identifier '_len' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  }
+ ],
+ "src/crypto/sha384-internal.c": [
+  {
+   "column": 1,
+   "file": "src/crypto/sha384-internal.c",
+   "line": 45,
+   "message": "Macro 'CONST64' uses token concatenation operator (##) which prevents parameter expansion - consider using two-level macro indirection for proper expansion",
+   "rule_id": "PRE05-C",
+   "severity": "Low",
+   "suggestion": "Use two-level indirection: define a wrapper macro that calls another macro with ##, allowing parameters to expand first"
+  },
+  {
+   "column": 20,
+   "file": "src/crypto/sha384-internal.c",
+   "line": 82,
+   "message": "sizeof applied to pointer/array parameter 'md' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(md->buf)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  }
+ ],
+ "src/drivers/driver_ndis.h": [
+  {
+   "column": 51,
+   "file": "src/drivers/driver_ndis.h",
+   "line": 14,
+   "message": "Pointer parameter 'read_pipe' should likely be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Consider declaring parameter as 'const <type> *read_pipe'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_ndis.h",
+   "line": 28,
+   "message": "String buffer placed before pointer in struct 'wpa_driver_ndis_data': 'char ifname[100];' before 'struct ndis_pmkid_entry *pmkid;' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'char ifname' after the pointer field 'struct ndis_pmkid_entry *pmkid;', or use a char* pointer instead of a char array"
+  }
+ ],
+ "src/drivers/linux_ioctl.h": [
+  {
+   "column": 1,
+   "file": "src/drivers/linux_ioctl.h",
+   "line": 20,
+   "message": "Function has pointer parameter without size argument: 'int linux_br_get(char *brname, const char *ifname);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'char *brname' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/linux_ioctl.h",
+   "line": 21,
+   "message": "Function has pointer parameter without size argument: 'int linux_master_get(char *master_ifname, const char *ifname);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'char *master_ifname' to specify the maximum number of elements in the array"
+  }
+ ],
+ "src/eap_common/eap_eke_common.h": [
+  {
+   "column": 1,
+   "file": "src/eap_common/eap_eke_common.h",
+   "line": 105,
+   "message": "Function has pointer parameter without size argument: 'int eap_eke_prot(struct eap_eke_session *sess,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *prot_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_common/eap_eke_common.h",
+   "line": 108,
+   "message": "Function has pointer parameter without size argument: 'int eap_eke_decrypt_prot(struct eap_eke_session *sess,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *data_len' to specify the maximum number of elements in the array"
+  }
+ ],
+ "src/eap_server/eap.h": [
+  {
+   "column": 1,
+   "file": "src/eap_server/eap.h",
+   "line": 292,
+   "message": "Function has pointer parameter without size argument: 'const u8 * eap_get_identity(struct eap_sm *sm, size_t *len);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 66,
+   "file": "src/eap_server/eap.h",
+   "line": 298,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ],
+ "src/eap_server/eap_i.h": [
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_i.h",
+   "line": 162,
+   "message": "String buffer placed before pointer in struct 'eap_sm': 'char imsi[20];' before 'struct eap_user *user;' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'char imsi' after the pointer field 'struct eap_user *user;', or use a char* pointer instead of a char array"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_i.h",
+   "line": 163,
+   "message": "String buffer placed before pointer in struct 'eap_sm': 'char sim_aka_permanent[20];' before 'struct eap_user *user;' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'char sim_aka_permanent' after the pointer field 'struct eap_user *user;', or use a char* pointer instead of a char array"
+  }
+ ],
+ "src/eap_server/tncs.h": [
+  {
+   "column": 1,
+   "file": "src/eap_server/tncs.h",
+   "line": 40,
+   "message": "Function has pointer parameter without size argument: 'struct wpabuf * tncs_process_soh(const u8 *soh_tlv, size_t soh_tlv_len,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'int *failure' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 10,
+   "file": "src/eap_server/tncs.h",
+   "line": 41,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ],
+ "src/fst/fst_session.h": [
+  {
+   "column": 45,
+   "file": "src/fst/fst_session.h",
+   "line": 75,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 60,
+   "file": "src/fst/fst_session.h",
+   "line": 75,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ],
+ "src/tls/pkcs5.h": [
+  {
+   "column": 1,
+   "file": "src/tls/pkcs5.h",
+   "line": 12,
+   "message": "Function has pointer parameter without size argument: 'u8 * pkcs5_decrypt(const u8 *enc_alg, size_t enc_alg_len,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *data_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 17,
+   "file": "src/tls/pkcs5.h",
+   "line": 14,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ],
+ "src/tls/pkcs8.c": [
+  {
+   "column": 60,
+   "file": "src/tls/pkcs8.c",
+   "line": 111,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 5,
+   "file": "src/tls/pkcs8.c",
+   "line": 119,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  }
+ ],
+ "src/tls/tlsv1_record.h": [
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_record.h",
+   "line": 64,
+   "message": "Function has pointer parameter without size argument: 'int tlsv1_record_send(struct tlsv1_record_layer *rl, u8 content_type, u8 *buf,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *out_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_record.h",
+   "line": 67,
+   "message": "Function has pointer parameter without size argument: 'int tlsv1_record_receive(struct tlsv1_record_layer *rl,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *out_len' to specify the maximum number of elements in the array"
+  }
+ ],
+ "src/utils/config.h": [
+  {
+   "column": 1,
+   "file": "src/utils/config.h",
+   "line": 26,
+   "message": "Function has pointer parameter without size argument: 'char * wpa_config_get_line(char *s, int size, FILE *stream, int *line,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'int *line' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/config.h",
+   "line": 26,
+   "message": "Function has pointer parameter without size argument: 'char * wpa_config_get_line(char *s, int size, FILE *stream, int *line,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'char **_pos' to specify the maximum number of elements in the array"
+  }
+ ],
+ "src/utils/edit.h": [
+  {
+   "column": 1,
+   "file": "src/utils/edit.h",
+   "line": 12,
+   "message": "Function has pointer parameter without size argument: 'int edit_init(void (*cmd_cb)(void *ctx, char *cmd),' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'char ** (*completion_cb)(void *ctx, const char *cmd, int pos)' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/edit.h",
+   "line": 16,
+   "message": "Function has pointer parameter without size argument: 'void edit_deinit(const char *history_file,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'int (*filter_cb)(void *ctx, const char *cmd)' to specify the maximum number of elements in the array"
+  }
+ ],
+ "src/wps/wps_attr_parse.c": [
+  {
+   "column": 21,
+   "file": "src/wps/wps_attr_parse.c",
+   "line": 606,
+   "message": "sizeof applied to pointer/array parameter 'attr' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*attr)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 39,
+   "file": "src/wps/wps_attr_parse.c",
+   "line": 658,
+   "message": "Variable 'start' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'start' before use, e.g., at its declaration"
+  }
+ ],
+ "src/wps/wps_i.h": [
+  {
+   "column": 18,
+   "file": "src/wps/wps_i.h",
+   "line": 136,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_i.h",
+   "line": 214,
+   "message": "Function has pointer parameter without size argument: 'const u8 * wps_authorized_macs(struct wps_registrar *reg, size_t *count);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *count' to specify the maximum number of elements in the array"
+  }
+ ],
+ "src/wps/wps_module_tests.c": [
+  {
+   "column": 41,
+   "file": "src/wps/wps_module_tests.c",
+   "line": 21,
+   "message": "Array declaration 'wps_attr_parse_test_cases[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 9,
+   "file": "src/wps/wps_module_tests.c",
+   "line": 293,
+   "message": "Variable 'attr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'attr' before use, e.g., at its declaration"
+  }
+ ],
+ "src/wps/wps_upnp.h": [
+  {
+   "column": 1,
+   "file": "src/wps/wps_upnp.h",
+   "line": 39,
+   "message": "Function has pointer parameter without size argument: 'struct upnp_wps_device_sm *' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'char *net_if' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 18,
+   "file": "src/wps/wps_upnp.h",
+   "line": 45,
+   "message": "Array parameter uses size variable 'ETH_ALEN' that is declared after the array parameter",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Declare size parameter 'ETH_ALEN' before the array parameter, or use K&R style with semicolon"
+  }
+ ],
+ "wpa_supplicant/binder/binder.h": [
+  {
+   "column": 72,
+   "file": "wpa_supplicant/binder/binder.h",
+   "line": 32,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 74,
+   "file": "wpa_supplicant/binder/binder.h",
+   "line": 36,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  }
+ ],
+ "wpa_supplicant/binder/binder_constants.h": [
+  {
+   "column": 1,
+   "file": "wpa_supplicant/binder/binder_constants.h",
+   "line": 13,
+   "message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add a return statement on all execution paths of this function"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/binder/binder_constants.h",
+   "line": 14,
+   "message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add a return statement on all execution paths of this function"
+  }
+ ],
+ "wpa_supplicant/dbus/dbus_new_handlers.h": [
+  {
+   "column": 21,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.h",
+   "line": 41,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.h",
+   "line": 306,
+   "message": "Identifier 'wpas_dbus_handler_nan_subscribe_stop_listen' agrees with 'wpas_dbus_handler_nan_subscribe' in its first 31 significant characters; they may collide as the same external identifier on a conforming implementation",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Shorten one of the identifiers so they differ within the first 31 characters"
+  }
+ ],
+ "wpa_supplicant/dbus/dbus_new_handlers_p2p.h": [
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.h",
+   "line": 77,
+   "message": "Identifier 'wpas_dbus_handler_p2p_service_sd_res' agrees with 'wpas_dbus_handler_p2p_service_sd_req' in its first 31 significant characters; they may collide as the same external identifier on a conforming implementation",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Shorten one of the identifiers so they differ within the first 31 characters"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new_handlers_p2p.h",
+   "line": 80,
+   "message": "Identifier 'wpas_dbus_handler_p2p_service_sd_cancel_req' agrees with 'wpas_dbus_handler_p2p_service_sd_req' in its first 31 significant characters; they may collide as the same external identifier on a conforming implementation",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Shorten one of the identifiers so they differ within the first 31 characters"
+  }
+ ],
+ "wpa_supplicant/interworking.h": [
+  {
+   "column": 9,
+   "file": "wpa_supplicant/interworking.h",
+   "line": 15,
+   "message": "Array declaration 'info_ids[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/interworking.h",
+   "line": 26,
+   "message": "Function has pointer parameter without size argument: 'int interworking_select(struct wpa_supplicant *wpa_s, int auto_select,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'int *freqs' to specify the maximum number of elements in the array"
+  }
+ ],
+ "wpa_supplicant/libwpa_test.c": [
+  {
+   "column": 1,
+   "file": "wpa_supplicant/libwpa_test.c",
+   "line": 13,
+   "message": "Program arguments (argv) used without validating argc or checking for null pointers",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Validate argc and argv[0] before use: const char *prog = (argc && argv[0]) ? argv[0] : \"\""
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/libwpa_test.c",
+   "line": 19,
+   "message": "main() returns without calling fclose(stdout) - data may be unflushed",
+   "rule_id": "FIO23-C",
+   "severity": "Medium",
+   "suggestion": "Call fclose(stdout) before return to ensure data is flushed"
+  }
+ ],
+ "wpa_supplicant/main_none.c": [
+  {
+   "column": 1,
+   "file": "wpa_supplicant/main_none.c",
+   "line": 14,
+   "message": "Program arguments (argv) used without validating argc or checking for null pointers",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Validate argc and argv[0] before use: const char *prog = (argc && argv[0]) ? argv[0] : \"\""
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/main_none.c",
+   "line": 26,
+   "message": "main() returns without calling fclose(stdout) - data may be unflushed",
+   "rule_id": "FIO23-C",
+   "severity": "Medium",
+   "suggestion": "Call fclose(stdout) before return to ensure data is flushed"
+  }
+ ],
+ "wpa_supplicant/notify.h": [
+  {
+   "column": 61,
+   "file": "wpa_supplicant/notify.h",
+   "line": 66,
+   "message": "Array declaration 'bssid[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 63,
+   "file": "wpa_supplicant/notify.h",
+   "line": 68,
+   "message": "Array declaration 'bssid[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  }
+ ],
+ "wpa_supplicant/wpa_gui-qt4/scanresultsitem.h": [
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_gui-qt4/scanresultsitem.h",
+   "line": 14,
+   "message": "Function 'ScanResultsItem' calls itself directly (direct recursion)",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to use iteration instead of recursion"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_gui-qt4/scanresultsitem.h",
+   "line": 14,
+   "message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add a return statement on all execution paths of this function"
+  }
+ ]
+}

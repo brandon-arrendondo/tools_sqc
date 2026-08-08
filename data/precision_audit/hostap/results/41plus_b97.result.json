@@ -1,0 +1,1211 @@
+{
+ "labels": [
+  {
+   "rule": "PRE08-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 17,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "qca-vendor.h/qca-vendor-attr.h 8-char collision; reconfirmed PRE08-C FP class (categorical_patterns.md)"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 26,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed macro-sized struct nlattr*[MAX+1] libnl attribute-table idiom, not a VLA (established MEM05-C FP class)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 29,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_parse/genlmsg_attrdata/attrlen, nla_data/nla_len, or msg=alloc()||... chain: pure accessors or well-defined short-circuit sequencing, not unsequenced (established EXP30-C FP class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 29,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libnl nla_parse()/nla_parse_nested() zero-fills its output nlattr* array before use; sizeof(*uninitialized_ptr) is a non-evaluating context (established EXP33-C FP classes)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 44,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "send_and_recv_resp()->send_and_recv_glb() unconditionally frees msg at its out: label (established nlmsg_alloc ownership-transfer MEM31-C FP class)"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 112,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL-check stylistic rule, idiomatic C (established MEM10-C FP class)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 116,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "guard-clause/intentional-no-op or exhaustive-enum switch; established MSC01-C no-default/no-final-else pedantry FP class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 131,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 134,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 152,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "static nla_policy table initialized once, never mutated at runtime; no threading in this file (established CON03-C FP class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 165,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libnl nla_parse()/nla_parse_nested() zero-fills its output nlattr* array before use; sizeof(*uninitialized_ptr) is a non-evaluating context (established EXP33-C FP classes)"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 167,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "index is a compile-time nl80211 enum constant provably < the array's MAX+1 size (nla_parse_nested output table), not a real OOB"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 168,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "index is a compile-time nl80211 enum constant provably < the array's MAX+1 size (nla_parse_nested output table), not a real OOB"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 169,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "index is a compile-time nl80211 enum constant provably < the array's MAX+1 size (nla_parse_nested output table), not a real OOB"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 172,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "index is a compile-time nl80211 enum constant provably < the array's MAX+1 size (nla_parse_nested output table), not a real OOB"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 175,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "index is a compile-time nl80211 enum constant provably < the array's MAX+1 size (nla_parse_nested output table), not a real OOB"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 177,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libnl nla_parse()/nla_parse_nested() zero-fills its output nlattr* array before use; sizeof(*uninitialized_ptr) is a non-evaluating context (established EXP33-C FP classes)"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 179,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "index is a compile-time nl80211 enum constant provably < the array's MAX+1 size (nla_parse_nested output table), not a real OOB"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 183,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "index is a compile-time nl80211 enum constant provably < the array's MAX+1 size (nla_parse_nested output table), not a real OOB"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 198,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "index is a compile-time nl80211 enum constant provably < the array's MAX+1 size (nla_parse_nested output table), not a real OOB"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 200,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 215,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL-check stylistic rule, idiomatic C (established MEM10-C FP class)"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL-check stylistic rule, idiomatic C (established MEM10-C FP class)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 235,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "guard-clause/intentional-no-op or exhaustive-enum switch; established MSC01-C no-default/no-final-else pedantry FP class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 237,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 240,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 246,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 249,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 252,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 255,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 274,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "guard-clause/intentional-no-op or exhaustive-enum switch; established MSC01-C no-default/no-final-else pedantry FP class"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 350,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed macro-sized struct nlattr*[MAX+1] libnl attribute-table idiom, not a VLA (established MEM05-C FP class)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 358,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_parse/genlmsg_attrdata/attrlen, nla_data/nla_len, or msg=alloc()||... chain: pure accessors or well-defined short-circuit sequencing, not unsequenced (established EXP30-C FP class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 358,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libnl nla_parse()/nla_parse_nested() zero-fills its output nlattr* array before use; sizeof(*uninitialized_ptr) is a non-evaluating context (established EXP33-C FP classes)"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 365,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 431,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 444,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL-check stylistic rule, idiomatic C (established MEM10-C FP class)"
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 450,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "c=ciphers[i] genuinely never modified in loop body; could be const"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 453,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "operand ('c'/'flags') is declared u32 (unsigned), not int; sqc type-detection misfire (established INT13-C wrong-type-detection FP class)"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 453,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "operand ('c'/'flags') is declared u32 (unsigned), not int; sqc type-detection misfire (established INT13-C wrong-type-detection FP class)"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 454,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "operand ('c'/'flags') is declared u32 (unsigned), not int; sqc type-detection misfire (established INT13-C wrong-type-detection FP class)"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 454,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "operand ('c'/'flags') is declared u32 (unsigned), not int; sqc type-detection misfire (established INT13-C wrong-type-detection FP class)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 455,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "guard-clause/intentional-no-op or exhaustive-enum switch; established MSC01-C no-default/no-final-else pedantry FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 505,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wiphy_info_tdls is a plain static helper (not vtable/callback), tdls param truly read-only"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 506,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "same plain helper wiphy_info_tdls, ext_setup param truly read-only"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 508,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL-check stylistic rule, idiomatic C (established MEM10-C FP class)"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 526,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "classic byte/bit-index idiom (x/8, BIT(x%8)); established INT14-C stylistic-pedantry FP class, not a real CERT INT14-C violation"
+  },
+  {
+   "rule": "INT10-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 530,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "operand is an enum/feature-index value provably non-negative; established INT10-C wrong-signedness-detection FP class"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 541,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL-check stylistic rule, idiomatic C (established MEM10-C FP class)"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 747,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL-check stylistic rule, idiomatic C (established MEM10-C FP class)"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 752,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "operand ('c'/'flags') is declared u32 (unsigned), not int; sqc type-detection misfire (established INT13-C wrong-type-detection FP class)"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 753,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 755,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "operand ('c'/'flags') is declared u32 (unsigned), not int; sqc type-detection misfire (established INT13-C wrong-type-detection FP class)"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 758,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "operand ('c'/'flags') is declared u32 (unsigned), not int; sqc type-detection misfire (established INT13-C wrong-type-detection FP class)"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 761,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "operand ('c'/'flags') is declared u32 (unsigned), not int; sqc type-detection misfire (established INT13-C wrong-type-detection FP class)"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 764,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "operand ('c'/'flags') is declared u32 (unsigned), not int; sqc type-detection misfire (established INT13-C wrong-type-detection FP class)"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 769,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "operand ('c'/'flags') is declared u32 (unsigned), not int; sqc type-detection misfire (established INT13-C wrong-type-detection FP class)"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 774,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "operand ('c'/'flags') is declared u32 (unsigned), not int; sqc type-detection misfire (established INT13-C wrong-type-detection FP class)"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 775,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 777,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "operand ('c'/'flags') is declared u32 (unsigned), not int; sqc type-detection misfire (established INT13-C wrong-type-detection FP class)"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 778,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 780,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "operand ('c'/'flags') is declared u32 (unsigned), not int; sqc type-detection misfire (established INT13-C wrong-type-detection FP class)"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 781,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 783,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "operand ('c'/'flags') is declared u32 (unsigned), not int; sqc type-detection misfire (established INT13-C wrong-type-detection FP class)"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 784,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 786,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "operand ('c'/'flags') is declared u32 (unsigned), not int; sqc type-detection misfire (established INT13-C wrong-type-detection FP class)"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 787,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 789,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "operand ('c'/'flags') is declared u32 (unsigned), not int; sqc type-detection misfire (established INT13-C wrong-type-detection FP class)"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 792,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "operand ('c'/'flags') is declared u32 (unsigned), not int; sqc type-detection misfire (established INT13-C wrong-type-detection FP class)"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 795,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "operand ('c'/'flags') is declared u32 (unsigned), not int; sqc type-detection misfire (established INT13-C wrong-type-detection FP class)"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 798,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "operand ('c'/'flags') is declared u32 (unsigned), not int; sqc type-detection misfire (established INT13-C wrong-type-detection FP class)"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 801,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "operand ('c'/'flags') is declared u32 (unsigned), not int; sqc type-detection misfire (established INT13-C wrong-type-detection FP class)"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 804,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "operand ('c'/'flags') is declared u32 (unsigned), not int; sqc type-detection misfire (established INT13-C wrong-type-detection FP class)"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 807,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "operand ('c'/'flags') is declared u32 (unsigned), not int; sqc type-detection misfire (established INT13-C wrong-type-detection FP class)"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 808,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 817,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL-check stylistic rule, idiomatic C (established MEM10-C FP class)"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 831,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed macro-sized struct nlattr*[MAX+1] libnl attribute-table idiom, not a VLA (established MEM05-C FP class)"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 833,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ad-hoc NULL-check stylistic rule, idiomatic C (established MEM10-C FP class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 836,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libnl nla_parse()/nla_parse_nested() zero-fills its output nlattr* array before use; sizeof(*uninitialized_ptr) is a non-evaluating context (established EXP33-C FP classes)"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 861,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed macro-sized struct nlattr*[MAX+1] libnl attribute-table idiom, not a VLA (established MEM05-C FP class)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 870,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_parse/genlmsg_attrdata/attrlen, nla_data/nla_len, or msg=alloc()||... chain: pure accessors or well-defined short-circuit sequencing, not unsequenced (established EXP30-C FP class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 870,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libnl nla_parse()/nla_parse_nested() zero-fills its output nlattr* array before use; sizeof(*uninitialized_ptr) is a non-evaluating context (established EXP33-C FP classes)"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 923,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "err: label is reached via an earlier goto err; inside the loop; established MSC07-C goto-label-blindness FP class"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 938,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed macro-sized struct nlattr*[MAX+1] libnl attribute-table idiom, not a VLA (established MEM05-C FP class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 940,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libnl nla_parse()/nla_parse_nested() zero-fills its output nlattr* array before use; sizeof(*uninitialized_ptr) is a non-evaluating context (established EXP33-C FP classes)"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 962,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed macro-sized struct nlattr*[MAX+1] libnl attribute-table idiom, not a VLA (established MEM05-C FP class)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 968,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_parse/genlmsg_attrdata/attrlen, nla_data/nla_len, or msg=alloc()||... chain: pure accessors or well-defined short-circuit sequencing, not unsequenced (established EXP30-C FP class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 968,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libnl nla_parse()/nla_parse_nested() zero-fills its output nlattr* array before use; sizeof(*uninitialized_ptr) is a non-evaluating context (established EXP33-C FP classes)"
+  },
+  {
+   "rule": "CON32-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1045,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no pthread usage in this file; established CON32-C/POS49-C driver-layer FP class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1045,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1058,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_parse/genlmsg_attrdata/attrlen, nla_data/nla_len, or msg=alloc()||... chain: pure accessors or well-defined short-circuit sequencing, not unsequenced (established EXP30-C FP class)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1070,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_parse/genlmsg_attrdata/attrlen, nla_data/nla_len, or msg=alloc()||... chain: pure accessors or well-defined short-circuit sequencing, not unsequenced (established EXP30-C FP class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1092,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libnl nla_parse()/nla_parse_nested() zero-fills its output nlattr* array before use; sizeof(*uninitialized_ptr) is a non-evaluating context (established EXP33-C FP classes)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1153,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "guard-clause/intentional-no-op or exhaustive-enum switch; established MSC01-C no-default/no-final-else pedantry FP class"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1225,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "static nla_policy table initialized once, never mutated at runtime; no threading in this file (established CON03-C FP class)"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1225,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed macro-sized struct nlattr*[MAX+1] libnl attribute-table idiom, not a VLA (established MEM05-C FP class)"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed macro-sized struct nlattr*[MAX+1] libnl attribute-table idiom, not a VLA (established MEM05-C FP class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1233,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libnl nla_parse()/nla_parse_nested() zero-fills its output nlattr* array before use; sizeof(*uninitialized_ptr) is a non-evaluating context (established EXP33-C FP classes)"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1239,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "drv->extended_capa/extended_capa_mask are persistent struct fields owned by drv, freed at driver deinit (driver_nl80211.c:3632-3633), not a local leak"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1258,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "drv->extended_capa/extended_capa_mask are persistent struct fields owned by drv, freed at driver deinit (driver_nl80211.c:3632-3633), not a local leak"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1269,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr) correctly yields the pointee's struct size; not the decayed-pointer-size mistake ARR01-C targets (established FP class)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1291,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "guard-clause/intentional-no-op or exhaustive-enum switch; established MSC01-C no-default/no-final-else pedantry FP class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1294,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1318,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1318,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1320,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1321,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1322,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1323,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1351,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed macro-sized struct nlattr*[MAX+1] libnl attribute-table idiom, not a VLA (established MEM05-C FP class)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1355,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_parse/genlmsg_attrdata/attrlen, nla_data/nla_len, or msg=alloc()||... chain: pure accessors or well-defined short-circuit sequencing, not unsequenced (established EXP30-C FP class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1355,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libnl nla_parse()/nla_parse_nested() zero-fills its output nlattr* array before use; sizeof(*uninitialized_ptr) is a non-evaluating context (established EXP33-C FP classes)"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1360,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed macro-sized struct nlattr*[MAX+1] libnl attribute-table idiom, not a VLA (established MEM05-C FP class)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1362,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_parse/genlmsg_attrdata/attrlen, nla_data/nla_len, or msg=alloc()||... chain: pure accessors or well-defined short-circuit sequencing, not unsequenced (established EXP30-C FP class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1362,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libnl nla_parse()/nla_parse_nested() zero-fills its output nlattr* array before use; sizeof(*uninitialized_ptr) is a non-evaluating context (established EXP33-C FP classes)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1387,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_parse/genlmsg_attrdata/attrlen, nla_data/nla_len, or msg=alloc()||... chain: pure accessors or well-defined short-circuit sequencing, not unsequenced (established EXP30-C FP class)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1387,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_parse/genlmsg_attrdata/attrlen, nla_data/nla_len, or msg=alloc()||... chain: pure accessors or well-defined short-circuit sequencing, not unsequenced (established EXP30-C FP class)"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1387,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "already-parenthesized if (!(msg = alloc())) idiom; established EXP45-C mitigated-assignment-in-if FP class"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1410,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed macro-sized struct nlattr*[MAX+1] libnl attribute-table idiom, not a VLA (established MEM05-C FP class)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1415,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_parse/genlmsg_attrdata/attrlen, nla_data/nla_len, or msg=alloc()||... chain: pure accessors or well-defined short-circuit sequencing, not unsequenced (established EXP30-C FP class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1415,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libnl nla_parse()/nla_parse_nested() zero-fills its output nlattr* array before use; sizeof(*uninitialized_ptr) is a non-evaluating context (established EXP33-C FP classes)"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1420,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fixed macro-sized struct nlattr*[MAX+1] libnl attribute-table idiom, not a VLA (established MEM05-C FP class)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1422,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_parse/genlmsg_attrdata/attrlen, nla_data/nla_len, or msg=alloc()||... chain: pure accessors or well-defined short-circuit sequencing, not unsequenced (established EXP30-C FP class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1422,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "libnl nla_parse()/nla_parse_nested() zero-fills its output nlattr* array before use; sizeof(*uninitialized_ptr) is a non-evaluating context (established EXP33-C FP classes)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1454,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "check_feature is a plain static helper, info param only read"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1456,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "classic byte/bit-index idiom (x/8, BIT(x%8)); established INT14-C stylistic-pedantry FP class, not a real CERT INT14-C violation"
+  },
+  {
+   "rule": "INT10-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1459,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "operand is an enum/feature-index value provably non-negative; established INT10-C wrong-signedness-detection FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1472,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_parse/genlmsg_attrdata/attrlen, nla_data/nla_len, or msg=alloc()||... chain: pure accessors or well-defined short-circuit sequencing, not unsequenced (established EXP30-C FP class)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1472,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_parse/genlmsg_attrdata/attrlen, nla_data/nla_len, or msg=alloc()||... chain: pure accessors or well-defined short-circuit sequencing, not unsequenced (established EXP30-C FP class)"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1472,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "already-parenthesized if (!(msg = alloc())) idiom; established EXP45-C mitigated-assignment-in-if FP class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1587,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "guard-clause/intentional-no-op or exhaustive-enum switch; established MSC01-C no-default/no-final-else pedantry FP class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1607,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "guard-clause/intentional-no-op or exhaustive-enum switch; established MSC01-C no-default/no-final-else pedantry FP class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1647,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1647,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1648,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1648,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1649,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1649,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1650,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1650,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1653,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1653,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1654,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1654,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "driver_nl80211_capa.c has zero pthread usage; established POS49-C no-threading-in-driver-layer FP class"
+  },
+  {
+   "rule": "MSC21-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1767,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "cw2ecw's cw>>=1 monotonically approaches 1 and cannot skip over it; != termination is safe despite non-+-1-looking step"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1774,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "phy_info_freq's mode param unused/never modified in this function"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1776,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "phy_info_freq's tb_freq read-only throughout, plain static helper"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1780,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr) correctly yields the pointee's struct size; not the decayed-pointer-size mistake ARR01-C targets (established FP class)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1822,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "guard-clause/intentional-no-op or exhaustive-enum switch; established MSC01-C no-default/no-final-else pedantry FP class"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "src/drivers/driver_nl80211_capa.c",
+   "line": 1842,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "static nla_policy table initialized once, never mutated at runtime; no threading in this file (established CON03-C FP class)"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 6,
+  "fp": 144,
+  "fn": 0
+ }
+}

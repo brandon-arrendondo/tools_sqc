@@ -1,0 +1,190 @@
+{
+ "src/wps/http_client.h": [
+  {
+   "column": 1,
+   "file": "src/wps/http_client.h",
+   "line": 21,
+   "message": "Function has pointer parameter without size argument: 'char * http_client_url_parse(const char *url, struct sockaddr_in *dst,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'char **path' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 16,
+   "file": "src/wps/http_client.h",
+   "line": 28,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 49,
+   "file": "src/wps/http_client.h",
+   "line": 29,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 15,
+   "file": "src/wps/http_client.h",
+   "line": 34,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/http_client.h",
+   "line": 38,
+   "message": "Function has pointer parameter without size argument: 'char * http_link_update(char *url, const char *base);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'char *url' to specify the maximum number of elements in the array"
+  }
+ ],
+ "src/wps/ndef.c": [
+  {
+   "column": 18,
+   "file": "src/wps/ndef.c",
+   "line": 38,
+   "message": "Variable 'data' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 25,
+   "file": "src/wps/ndef.c",
+   "line": 101,
+   "message": "Function 'filter' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/ndef.c",
+   "line": 157,
+   "message": "Function returns pointer to local variable 'record' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 43,
+   "file": "src/wps/ndef.c",
+   "line": 161,
+   "message": "Pointer parameter 'record' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *record'"
+  },
+  {
+   "column": 42,
+   "file": "src/wps/ndef.c",
+   "line": 187,
+   "message": "Pointer parameter 'record' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *record'"
+  }
+ ],
+ "src/wps/wps_upnp_i.h": [
+  {
+   "column": 16,
+   "file": "src/wps/wps_upnp_i.h",
+   "line": 156,
+   "message": "Array parameter uses size variable 'UUID_LEN' that is declared after the array parameter",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Declare size parameter 'UUID_LEN' before the array parameter, or use K&R style with semicolon"
+  },
+  {
+   "column": 15,
+   "file": "src/wps/wps_upnp_i.h",
+   "line": 159,
+   "message": "Array parameter uses size variable 'UUID_LEN' that is declared after the array parameter",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Declare size parameter 'UUID_LEN' before the array parameter, or use K&R style with semicolon"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_upnp_i.h",
+   "line": 161,
+   "message": "Function has pointer parameter without size argument: 'int get_netif_info(const char *net_if, unsigned *ip_addr, char **ip_addr_text,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'unsigned *ip_addr' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_upnp_i.h",
+   "line": 161,
+   "message": "Function has pointer parameter without size argument: 'int get_netif_info(const char *net_if, unsigned *ip_addr, char **ip_addr_text,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'char **ip_addr_text' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 34,
+   "file": "src/wps/wps_upnp_i.h",
+   "line": 162,
+   "message": "Array parameter uses size variable 'ETH_ALEN' that is declared after the array parameter",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Declare size parameter 'ETH_ALEN' before the array parameter, or use K&R style with semicolon"
+  }
+ ],
+ "wpa_supplicant/twt.c": [
+  {
+   "column": 14,
+   "file": "wpa_supplicant/twt.c",
+   "line": 70,
+   "message": "Shift operation on signed integer 'setup_cmd' may be used for arithmetic optimization (use explicit arithmetic instead)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use explicit arithmetic operations like * or / instead of shift operations on signed integers"
+  },
+  {
+   "column": 14,
+   "file": "wpa_supplicant/twt.c",
+   "line": 78,
+   "message": "Do not assume constant values in expressions: '(exponent & 0x1f) << 10'",
+   "rule_id": "EXP07-C",
+   "severity": "Low",
+   "suggestion": "Use the constant identifier directly instead of assuming its numeric value"
+  },
+  {
+   "column": 14,
+   "file": "wpa_supplicant/twt.c",
+   "line": 78,
+   "message": "Shift operation on signed integer 'exponent' may be used for arithmetic optimization (use explicit arithmetic instead)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use explicit arithmetic operations like * or / instead of shift operations on signed integers"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/twt.c",
+   "line": 87,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/twt.c",
+   "line": 131,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  }
+ ]
+}

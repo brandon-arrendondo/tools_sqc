@@ -1,0 +1,837 @@
+{
+  "labels": [
+    {
+      "rule": "PRE08-C",
+      "file": "src/wps/wps_er.c",
+      "line": 20,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "wps_upnp.h/wps_upnp_i.h share first 8 chars; real if trivial 8.3-convention TP (established pattern)"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/wps/wps_er.c",
+      "line": 34,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "wps_er_sta_event's wps param only read; plain helper not a callback/vtable slot"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/wps/wps_er.c",
+      "line": 38,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "ev=&data.enrollee takes address of union member (write target), not a read; memset+writes follow, no uninit read"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/wps/wps_er.c",
+      "line": 68,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wps_er_sta_get returns dl_list node (heap), only the local pointer variable is automatic storage"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/wps/wps_er.c",
+      "line": 100,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "wps_er_ap_get's addr param only ever read/compared; plain internal helper"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/wps/wps_er.c",
+      "line": 110,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wps_er_ap_get returns dl_list node (heap); heap-vs-local-storage confusion"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/wps/wps_er.c",
+      "line": 121,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wps_er_ap_get_id same heap dl_list node pattern"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/wps/wps_er.c",
+      "line": 127,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "wps_er_ap_event's wps param only read; plain helper not a callback"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/wps/wps_er.c",
+      "line": 131,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "evap=&data.ap address-of union member before memset; not a read"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/wps/wps_er.c",
+      "line": 184,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "single inet_ntoa call; hostap core is single-threaded (eloop), no thread-safety issue"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/wps/wps_er.c",
+      "line": 193,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wps_er_http_unsubscribe_cb's 'c' matches fixed http_client event-callback signature (dispatch contract), can't be const-qualified per contract"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/wps/wps_er.c",
+      "line": 221,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "wps_er_ap_unsubscribe's 'er' param is entirely unused in the body (ap->er used instead); trivially const-able"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/wps/wps_er.c",
+      "line": 251,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "inet_ntoa/ntohs are the only calls; single inet_ntoa call plus pure ntohs, no conflicting unsequenced side effect"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/wps/wps_er.c",
+      "line": 256,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "single inet_ntoa call, no threads in hostap core"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/wps/wps_er.c",
+      "line": 257,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "url freed once at :247 (req-alloc-fail branch, goto fail) or once at :257 (success branch) - mutually exclusive paths, not a double free"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/wps/wps_er.c",
+      "line": 258,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpabuf_head/wpabuf_len pure accessor pair, established FP class"
+    },
+    {
+      "rule": "MSC07-C",
+      "file": "src/wps/wps_er.c",
+      "line": 269,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "fail: is a goto target (reached from :231,236,242,248,265), not unreachable dead code after the :267 return"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/wps/wps_er.c",
+      "line": 284,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wps_er_ap_get_settings returns dl_list node (heap); heap-vs-local-storage confusion"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/wps/wps_er.c",
+      "line": 289,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "wps_er_ap_cache_settings only called internally from wps_er_ssdp.c with er always valid (module's own context)"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/wps/wps_er.c",
+      "line": 313,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "wps_er_ap_use_cached_settings's er param unused in body (ap->er used instead); trivially const-able"
+    },
+    {
+      "rule": "ARR01-C",
+      "file": "src/wps/wps_er.c",
+      "line": 325,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*ap->ap_settings) is sizeof-of-dereferenced-struct, correct idiom, not sizeof on decayed 'ap'"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/wps/wps_er.c",
+      "line": 337,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "single inet_ntoa call, no threads"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/wps/wps_er.c",
+      "line": 366,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "wps_er_get_sid's ap param is mutated via uuid_str2bin(pos, ap->sid) writing through the aliased ap->sid field"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/wps/wps_er.c",
+      "line": 373,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "single inet_ntoa call, no threads"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/wps/wps_er.c",
+      "line": 380,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "single inet_ntoa call, no threads"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/wps/wps_er.c",
+      "line": 388,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "single inet_ntoa call, no threads"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/wps/wps_er.c",
+      "line": 395,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "single inet_ntoa call, no threads"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/wps/wps_er.c",
+      "line": 448,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "req ownership transferred into http_client_addr() (freed internally or explicitly on immediate NULL, established ownership-transfer FP class)"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/wps/wps_er.c",
+      "line": 453,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "single inet_ntoa call plus pure ntohs args, established accessor-args FP class"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/wps/wps_er.c",
+      "line": 460,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "single inet_ntoa call, no threads"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/wps/wps_er.c",
+      "line": 464,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpabuf_head/wpabuf_len pure accessor pair"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/wps/wps_er.c",
+      "line": 482,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "attr is filled by wps_parse_msg(m1,&attr) at :478 (T* out-param callee), sqc doesn't track the write-through"
+    },
+    {
+      "rule": "STR00-C",
+      "file": "src/wps/wps_er.c",
+      "line": 513,
+      "verdict": "TP",
+      "confidence": "high",
+      "reason": "tagname[6] is a plain (possibly-signed) char passed to isgraph() with no cast, on bytes parsed from HTTP-fetched device-description XML (network-controlled)"
+    },
+    {
+      "rule": "STR37-C",
+      "file": "src/wps/wps_er.c",
+      "line": 513,
+      "verdict": "TP",
+      "confidence": "high",
+      "reason": "same isgraph(tagname[6]) call, real UB risk on signed-char/negative-value input from network XML"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/wps/wps_er.c",
+      "line": 539,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpabuf_head/wpabuf_len pure accessor pair"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/wps/wps_er.c",
+      "line": 637,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "wps_er_ap_add only called internally from wps_er_ssdp.c with er always valid"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/wps/wps_er.c",
+      "line": 668,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "single inet_ntoa call, no threads"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/wps/wps_er.c",
+      "line": 676,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "wps_er_ap_remove only called internally from wps_er_ssdp.c with er always valid"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/wps/wps_er.c",
+      "line": 676,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "wps_er_ap_remove's addr param only ever read/compared; plain internal helper"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/wps/wps_er.c",
+      "line": 747,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wps_er_sta_timeout matches the fixed eloop_timeout_handler void(*)(void*,void*) dispatch contract"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/wps/wps_er.c",
+      "line": 758,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "wps_er_add_sta_data's attr param is only ever read (dup_binstr copies data out); plain internal helper"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/wps/wps_er.c",
+      "line": 832,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wps_er_add_sta_data returns either a dl_list node or a freshly os_zalloc'd struct added to the list - heap storage either way"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/wps/wps_er.c",
+      "line": 853,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wps_parse_msg(msg,&attr) fills attr via pointer (write-only out-param), sqc misreads it as reading attr first"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/wps/wps_er.c",
+      "line": 864,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wps_er_http_put_wlan_response_cb's 'c' matches the fixed http_client event-callback dispatch contract"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/wps/wps_er.c",
+      "line": 905,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpabuf_head/wpabuf_len pure accessor pair passed to base64_encode"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/wps/wps_er.c",
+      "line": 920,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "single inet_ntoa call plus pure ntohs, established accessor-args FP class"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/wps/wps_er.c",
+      "line": 925,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "single inet_ntoa call, no threads"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/wps/wps_er.c",
+      "line": 927,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*len_ptr = wpabuf_put(buf,0) is a pointer assignment (char** target), not a char value needing an unsigned-char cast - category error"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/wps/wps_er.c",
+      "line": 934,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*body_ptr = wpabuf_put(buf,0) same pointer-assignment category error as :927"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/wps/wps_er.c",
+      "line": 946,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wps_er_soap_hdr returns buf from wpabuf_alloc() (heap); heap-vs-local-storage confusion"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/wps/wps_er.c",
+      "line": 951,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "body_ptr is a T** out-param written through (*body_ptr = wpabuf_put(...)) at :934; const would break the write, T**-out-param-mutation-missed class"
+    },
+    {
+      "rule": "INT36-C",
+      "file": "src/wps/wps_er.c",
+      "line": 957,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "(int)((char*)wpabuf_put(buf,0) - body_ptr) is a pointer-difference (bounded small size) cast to int, not a raw pointer-to-integer address conversion"
+    },
+    {
+      "rule": "ARR01-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1054,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*sta->cred) is sizeof-of-dereferenced-struct, correct idiom"
+    },
+    {
+      "rule": "ARR01-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1057,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*sta->cred) same correct idiom as :1054"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1089,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "attr filled by wps_parse_msg(msg,&attr) at :1079 before this read; out-param-callee-fills class"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1091,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "deliberate if/else-if guard clause (m1 vs continuing-wps cases); no action needed for the remaining case"
+    },
+    {
+      "rule": "CON43-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1094,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "single dereference of *attr.msg_type in the switch condition, single-threaded eloop core, no double-fetch race"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1094,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "op_code is pre-set to WSC_MSG before the switch; missing default is a deliberate default-value guard shape"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1119,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpabuf_head/wpabuf_len pure accessor pair"
+    },
+    {
+      "rule": "ERR07-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1194,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "atoi() result is immediately validated by the next-line event_id!=er->event_id comparison, which rejects garbage/non-numeric input as a side effect"
+    },
+    {
+      "rule": "ERR34-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1194,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "same atoi(uri+7) call, same downstream event_id mismatch check catches invalid input"
+    },
+    {
+      "rule": "ERR07-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1207,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "atoi(pos) result is used only as a lookup key in wps_er_ap_get_id(), which safely returns NULL/not-found for garbage ids"
+    },
+    {
+      "rule": "ERR34-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1207,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "same atoi(pos) call, same downstream NULL-safe AP-id lookup"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1223,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "http_request_get_uri/inet_ntoa/ntohs sibling args; single inet_ntoa call, no conflicting side effect"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1226,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "single inet_ntoa call, no threads"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1257,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*er) inside os_zalloc(sizeof(*er)) is a type-only use, not a dereference; sizeof(*ptr)-not-a-deref class"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1282,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "end (const char *) is a pointer, not any flavor of char; wrong-type-claim class"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1282,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "pos (const char *) is a pointer, not any flavor of char; wrong-type-claim class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1294,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "inet_aton is a standard <arpa/inet.h> function; external-system-header-not-resolved DCL31-C FP class"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1329,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wps_er_init returns er from os_zalloc() (heap); heap-vs-local-storage confusion"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1333,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "wps_er_refresh's only call site (wpa_supplicant/wps_supplicant.c:2007) guards with if (wpa_s->wps_er) before calling"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1348,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wps_er_deinit_finish matches the fixed eloop_timeout_handler dispatch contract"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1360,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "single inet_ntoa call, no threads"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1372,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "deinit_done_cb is a local function-pointer VARIABLE invoked via deinit_done_cb(...), not an undeclared function"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1376,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "cb is a legitimately-nullable callback pointer, only ever invoked later behind an explicit if(deinit_done_cb) guard"
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1378,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ad-hoc NULL-check stylistic pedantry, established FP class"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1392,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wps_er_http_set_sel_reg_cb's 'c' matches the fixed http_client event-callback dispatch contract"
+    },
+    {
+      "rule": "EXP39-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1403,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no write to data.enrollee occurs anywhere in this function (cross-function union-name conflation - the rule attributes an enrollee write from a different function)"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1582,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "sta=NULL is read at :1590's if(sta==NULL) check after the loop; control-flow blindness across the dl_list_for_each loop body"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1586,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "uuid=ap->uuid is read later at :1599 (er->set_sel_reg_uuid_filter=uuid) after the loop breaks; read-after-break blindness"
+    },
+    {
+      "rule": "ARR01-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1616,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*cred) is sizeof-of-dereferenced-pointer-param, correct idiom"
+    },
+    {
+      "rule": "ARR01-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1618,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*cred) same correct idiom as :1616"
+    },
+    {
+      "rule": "EXP39-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1623,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no write to data.enrollee occurs in wps_er_ap_settings_cb; cross-function union-name conflation"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1630,
+      "verdict": "TP",
+      "confidence": "high",
+      "reason": "wps_er_get_sta_uuid(wpa_s->wps_er,...) is called from wpas_wps_er_add_pin (wps_supplicant.c:2041) with no prior NULL check on wpa_s->wps_er; reachable via the WPS_ER_PIN ctrl_iface command before WPS_ER_START, causing dl_list_for_each(ap,&er->ap,...) to dereference a NULL er"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1663,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpabuf_head/wpabuf_len pure accessor pair (os_memcpy(msg, wpabuf_head(reply), wpabuf_len(reply)))"
+    },
+    {
+      "rule": "MSC07-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1737,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "fail: is a goto target (from :1718,1725,1733), not unreachable after the :1735 return"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1752,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "attr filled by the same wps_parse_msg(msg,&attr) call via short-circuit &&, out-param-callee-fills class"
+    },
+    {
+      "rule": "CON43-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1753,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "single dereference of *attr.msg_type, single-threaded eloop core"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1753,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "op_code pre-set to WSC_MSG before the switch; deliberate default-value guard shape"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1849,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpabuf_head/wpabuf_len pure accessor pair"
+    },
+    {
+      "rule": "EXP43-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1893,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "msg and arg_name are both NULL literals of unrelated purposes, not aliased pointers; len_ptr/body_ptr are distinct locals - NULL,NULL misfire class"
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1919,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ad-hoc NULL-check stylistic pedantry"
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1928,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ad-hoc NULL-check stylistic pedantry"
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1952,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ad-hoc NULL-check stylistic pedantry"
+    },
+    {
+      "rule": "ARR01-C",
+      "file": "src/wps/wps_er.c",
+      "line": 1963,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*cred) correct idiom"
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/wps/wps_er.c",
+      "line": 2004,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ad-hoc NULL-check stylistic pedantry"
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/wps/wps_er.c",
+      "line": 2013,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ad-hoc NULL-check stylistic pedantry"
+    },
+    {
+      "rule": "ARR01-C",
+      "file": "src/wps/wps_er.c",
+      "line": 2022,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*cred) correct idiom"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/wps/wps_er.c",
+      "line": 2059,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wps_er_config_token_from_cred returns ret from wpabuf_alloc() (heap); heap-vs-local-storage confusion"
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/wps/wps_er.c",
+      "line": 2068,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ad-hoc NULL-check stylistic pedantry"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/wps/wps_er.c",
+      "line": 2084,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "wps param: sole caller (wpas_wps_er_nfc_handover_sel) checks wps==NULL before calling"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/wps/wps_er.c",
+      "line": 2084,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "addr param is only ever forwarded to wps_build_nfc_handover_sel, never dereferenced in this function; NULL is a legitimate value here"
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/wps/wps_er.c",
+      "line": 2090,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ad-hoc NULL-check stylistic pedantry"
+    }
+  ],
+  "fns": [],
+  "files_clean_for_fn": [
+    "src/wps/wps_er.c"
+  ],
+  "summary": {
+    "tp": 11,
+    "fp": 92,
+    "fn": 0
+  }
+}

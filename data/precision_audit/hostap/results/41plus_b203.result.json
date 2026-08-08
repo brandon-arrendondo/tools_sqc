@@ -1,0 +1,741 @@
+{
+ "labels": [
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1011,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "DCL38-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1016,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "change_seq[1] is a genuine fixed 1-byte 802.11 field; the truly variable trailing data is documented separately, not represented by this array at all"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1016,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Misapplied to non-char u8 byte field (variable[0]/change_seq[1]), not string data; established STR31-C non-char-array FP class"
+  },
+  {
+   "rule": "PRE01-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1028,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "IEEE80211_FC(type,stype) uses type/stype as bare rvalue operands inside << with no individual parens; real precedence hazard on the macro definition"
+  },
+  {
+   "rule": "PRE01-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1028,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "IEEE80211_FC(type,stype) uses type/stype as bare rvalue operands inside << with no individual parens; real precedence hazard on the macro definition"
+  },
+  {
+   "rule": "PRE02-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1028,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Macro body is a single host_to_le16(...) call, already an atomic primary expression; no precedence hazard"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1030,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1038,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Std 802.11 tagged wire-frame union-of-FAM-variants idiom (ieee80211_mgmt), each FAM struct is last member of its enclosing struct/union chain; universal networking convention, not actionable"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1045,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Std 802.11 tagged wire-frame union-of-FAM-variants idiom (ieee80211_mgmt), each FAM struct is last member of its enclosing struct/union chain; universal networking convention, not actionable"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1049,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Std 802.11 tagged wire-frame union-of-FAM-variants idiom (ieee80211_mgmt), each FAM struct is last member of its enclosing struct/union chain; universal networking convention, not actionable"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1055,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Std 802.11 tagged wire-frame union-of-FAM-variants idiom (ieee80211_mgmt), each FAM struct is last member of its enclosing struct/union chain; universal networking convention, not actionable"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1062,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Std 802.11 tagged wire-frame union-of-FAM-variants idiom (ieee80211_mgmt), each FAM struct is last member of its enclosing struct/union chain; universal networking convention, not actionable"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1069,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Std 802.11 tagged wire-frame union-of-FAM-variants idiom (ieee80211_mgmt), each FAM struct is last member of its enclosing struct/union chain; universal networking convention, not actionable"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1073,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Std 802.11 tagged wire-frame union-of-FAM-variants idiom (ieee80211_mgmt), each FAM struct is last member of its enclosing struct/union chain; universal networking convention, not actionable"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1082,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Std 802.11 tagged wire-frame union-of-FAM-variants idiom (ieee80211_mgmt), each FAM struct is last member of its enclosing struct/union chain; universal networking convention, not actionable"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1093,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Std 802.11 tagged wire-frame union-of-FAM-variants idiom (ieee80211_mgmt), each FAM struct is last member of its enclosing struct/union chain; universal networking convention, not actionable"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1107,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Std 802.11 tagged wire-frame union-of-FAM-variants idiom (ieee80211_mgmt), each FAM struct is last member of its enclosing struct/union chain; universal networking convention, not actionable"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1113,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Std 802.11 tagged wire-frame union-of-FAM-variants idiom (ieee80211_mgmt), each FAM struct is last member of its enclosing struct/union chain; universal networking convention, not actionable"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1120,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Std 802.11 tagged wire-frame union-of-FAM-variants idiom (ieee80211_mgmt), each FAM struct is last member of its enclosing struct/union chain; universal networking convention, not actionable"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1125,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Std 802.11 tagged wire-frame union-of-FAM-variants idiom (ieee80211_mgmt), each FAM struct is last member of its enclosing struct/union chain; universal networking convention, not actionable"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1130,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Std 802.11 tagged wire-frame union-of-FAM-variants idiom (ieee80211_mgmt), each FAM struct is last member of its enclosing struct/union chain; universal networking convention, not actionable"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1135,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Std 802.11 tagged wire-frame union-of-FAM-variants idiom (ieee80211_mgmt), each FAM struct is last member of its enclosing struct/union chain; universal networking convention, not actionable"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1141,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Std 802.11 tagged wire-frame union-of-FAM-variants idiom (ieee80211_mgmt), each FAM struct is last member of its enclosing struct/union chain; universal networking convention, not actionable"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1145,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Std 802.11 tagged wire-frame union-of-FAM-variants idiom (ieee80211_mgmt), each FAM struct is last member of its enclosing struct/union chain; universal networking convention, not actionable"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1151,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Std 802.11 tagged wire-frame union-of-FAM-variants idiom (ieee80211_mgmt), each FAM struct is last member of its enclosing struct/union chain; universal networking convention, not actionable"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1163,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Std 802.11 tagged wire-frame union-of-FAM-variants idiom (ieee80211_mgmt), each FAM struct is last member of its enclosing struct/union chain; universal networking convention, not actionable"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1173,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Std 802.11 tagged wire-frame union-of-FAM-variants idiom (ieee80211_mgmt), each FAM struct is last member of its enclosing struct/union chain; universal networking convention, not actionable"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1186,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Std 802.11 tagged wire-frame union-of-FAM-variants idiom (ieee80211_mgmt), each FAM struct is last member of its enclosing struct/union chain; universal networking convention, not actionable"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1191,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Std 802.11 tagged wire-frame union-of-FAM-variants idiom (ieee80211_mgmt), each FAM struct is last member of its enclosing struct/union chain; universal networking convention, not actionable"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1195,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Std 802.11 tagged wire-frame union-of-FAM-variants idiom (ieee80211_mgmt), each FAM struct is last member of its enclosing struct/union chain; universal networking convention, not actionable"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1199,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Std 802.11 tagged wire-frame union-of-FAM-variants idiom (ieee80211_mgmt), each FAM struct is last member of its enclosing struct/union chain; universal networking convention, not actionable"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1204,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Std 802.11 tagged wire-frame union-of-FAM-variants idiom (ieee80211_mgmt), each FAM struct is last member of its enclosing struct/union chain; universal networking convention, not actionable"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1211,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Std 802.11 tagged wire-frame union-of-FAM-variants idiom (ieee80211_mgmt), each FAM struct is last member of its enclosing struct/union chain; universal networking convention, not actionable"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1233,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1246,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1256,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1267,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1277,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1284,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "PRE02-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1345,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "TX_BF_CAP_CALIBRATION_MASK has a genuine unbalanced parenthesis (missing final ')'), a real (if currently unused/dead) defect on this exact line"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1560,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1588,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1598,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1612,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1866,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2106,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2112,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2116,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Misapplied to non-char u8 byte field (variable[0]/change_seq[1]), not string data; established STR31-C non-char-array FP class"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2120,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2154,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2194,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2224,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2228,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Misapplied to non-char u8 byte field (variable[0]/change_seq[1]), not string data; established STR31-C non-char-array FP class"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2232,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2239,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Misapplied to non-char u8 byte field (variable[0]/change_seq[1]), not string data; established STR31-C non-char-array FP class"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2243,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2249,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Misapplied to non-char u8 byte field (variable[0]/change_seq[1]), not string data; established STR31-C non-char-array FP class"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2260,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2267,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Misapplied to non-char u8 byte field (variable[0]/change_seq[1]), not string data; established STR31-C non-char-array FP class"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2305,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2311,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Misapplied to non-char u8 byte field (variable[0]/change_seq[1]), not string data; established STR31-C non-char-array FP class"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2321,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2333,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Misapplied to non-char u8 byte field (variable[0]/change_seq[1]), not string data; established STR31-C non-char-array FP class"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2353,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2370,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Misapplied to non-char u8 byte field (variable[0]/change_seq[1]), not string data; established STR31-C non-char-array FP class"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2465,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2481,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2491,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2506,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2542,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2647,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2739,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2747,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2819,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2882,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2882,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fired on a plain struct TYPE definition (no variable declared) mistaken for a global-storage object instance; rule-engine bug"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2940,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2940,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fired on a plain struct TYPE definition (no variable declared) mistaken for a global-storage object instance; rule-engine bug"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2956,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2956,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fired on a plain struct TYPE definition (no variable declared) mistaken for a global-storage object instance; rule-engine bug"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2989,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2989,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fired on a plain struct TYPE definition (no variable declared) mistaken for a global-storage object instance; rule-engine bug"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 3017,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 3017,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fired on a plain struct TYPE definition (no variable declared) mistaken for a global-storage object instance; rule-engine bug"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 3032,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 3032,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fired on a plain struct TYPE definition (no variable declared) mistaken for a global-storage object instance; rule-engine bug"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 3043,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 3059,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 3263,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 3270,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Misapplied to non-char u8 byte field (variable[0]/change_seq[1]), not string data; established STR31-C non-char-array FP class"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 3274,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STRUCT_PACKED macro-suffix trailing-annotation misparsed as redeclared object across distinct struct types (confirmed engine bug, categorical_patterns.md L504)"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "src/common/ieee802_11_defs.h"
+ ],
+ "summary": {
+  "tp": 3,
+  "fp": 88,
+  "fn": 0
+ }
+}

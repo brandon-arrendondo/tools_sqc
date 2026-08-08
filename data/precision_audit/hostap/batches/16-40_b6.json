@@ -1,0 +1,1034 @@
+{
+ "wpa_supplicant/gas_query.c": [
+  {
+   "column": 26,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 93,
+   "message": "Floating-point division without error checking (consider using feclearexcept/fetestexcept)",
+   "rule_id": "FLP03-C",
+   "severity": "Low",
+   "suggestion": "Use feclearexcept(FE_ALL_EXCEPT) before and fetestexcept(FE_ALL_EXCEPT) after floating-point operations"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 102,
+   "message": "Function 'gas_query_init' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 25,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 106,
+   "message": "Dereference of uninitialized pointer 'gas'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'gas' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 113,
+   "message": "Function returns pointer to local variable 'gas' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 150,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 169,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 192,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 224,
+   "message": "Function returns pointer to local variable 'q' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 55,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 246,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 42,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 301,
+   "message": "Pointer parameter 'gas' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *gas'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 310,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 316,
+   "message": "Potential null pointer dereference of variable 'categ'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'categ' is not NULL before dereferencing"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 331,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 337,
+   "message": "Bit-field 'sent' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 338,
+   "message": "Bit-field 'offchannel_tx_started' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 0,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 377,
+   "message": "Function 'gas_query_rx_comeback_timeout' accesses bit-field 'gas_query_pending.retry' without mutex protection in a multi-threaded context",
+   "rule_id": "CON32-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field accesses with mutex locks or use separate byte-sized members instead of bit-fields"
+  },
+  {
+   "column": 0,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 378,
+   "message": "Function 'gas_query_rx_comeback_timeout' accesses bit-field 'gas_query_pending.retry' without mutex protection in a multi-threaded context",
+   "rule_id": "CON32-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field accesses with mutex locks or use separate byte-sized members instead of bit-fields"
+  },
+  {
+   "column": 0,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 385,
+   "message": "Function 'gas_query_rx_comeback_timeout' accesses bit-field 'gas_query_pending.retry' without mutex protection in a multi-threaded context",
+   "rule_id": "CON32-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field accesses with mutex locks or use separate byte-sized members instead of bit-fields"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 385,
+   "message": "Bit-field 'retry' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 0,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 388,
+   "message": "Function 'gas_query_rx_comeback_timeout' accesses bit-field 'gas_query_pending.wait_comeback' without mutex protection in a multi-threaded context",
+   "rule_id": "CON32-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field accesses with mutex locks or use separate byte-sized members instead of bit-fields"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 388,
+   "message": "Bit-field 'wait_comeback' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 417,
+   "message": "Bit-field 'offchannel_tx_started' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 447,
+   "message": "Bit-field 'wait_comeback' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 476,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 536,
+   "message": "Function 'gas_query_rx' does not validate pointer parameter 'sa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sa' at the start of the function, e.g., 'if (!sa) { return error_code; }'"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 571,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 585,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 603,
+   "message": "Variable 'pos' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 608,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 720,
+   "message": "Bit-field 'radio_work_removal_scheduled' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 735,
+   "message": "Bit-field 'radio_work_removal_scheduled' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 33,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 803,
+   "message": "Pointer parameter 'query' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *query'"
+  },
+  {
+   "column": 27,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 897,
+   "message": "Dereference of uninitialized pointer 'query'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'query' before dereferencing"
+  },
+  {
+   "column": 0,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 902,
+   "message": "Function 'gas_query_req' accesses bit-field 'gas_query_pending.maintain_addr' without mutex protection in a multi-threaded context",
+   "rule_id": "CON32-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field accesses with mutex locks or use separate byte-sized members instead of bit-fields"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 902,
+   "message": "Bit-field 'maintain_addr' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 0,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 909,
+   "message": "Function 'gas_query_req' accesses bit-field 'gas_query_pending.wildcard_bssid' without mutex protection in a multi-threaded context",
+   "rule_id": "CON32-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field accesses with mutex locks or use separate byte-sized members instead of bit-fields"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 909,
+   "message": "Bit-field 'wildcard_bssid' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/gas_query.c",
+   "line": 933,
+   "message": "Function 'gas_query_stop' does not validate pointer parameter 'gas' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'gas' at the start of the function, e.g., 'if (!gas) { return error_code; }'"
+  }
+ ],
+ "wpa_supplicant/main.c": [
+  {
+   "column": 8,
+   "file": "wpa_supplicant/main.c",
+   "line": 25,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/main.c",
+   "line": 25,
+   "message": "User input used as format string in 'printf()' call: \"%s\\n\\n%s\\n\"\n\t       \"usage:\\n\"\n\t       \"  wpa_supplicant [-BddhKLqq\"\n#ifdef CONFIG_DEBUG_SYSLOG\n\t       \"s\"\n#endif",
+   "rule_id": "FIO30-C",
+   "severity": "Medium",
+   "suggestion": "Use a literal format string: printf(\"%s\", user_input) instead of printf(user_input)"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/main.c",
+   "line": 25,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"%s\\n\\n%s\\n\"\n\t       \"usage:\\n\"\n\t       \"  wpa_supplicant [-BddhKLqq\"\n#ifdef CONFIG_DEBUG_SYSLOG\n\t       \"s\"\n#endif'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/main.c",
+   "line": 31,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"t\"\n#ifdef CONFIG_CTRL_IFACE_DBUS_NEW\n\t       \"u\"\n#endif'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/main.c",
+   "line": 35,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"vWy] [-P<pid file>] \"\n\t       \"[-g<global ctrl>] \\\\\\n\"\n\t       \"        [-G<group>] \\\\\\n\"\n\t       \"        [-i<ifname>] -c<config file> [-C<ctrl>] [-D<driver>] \"\n\t       \"[-p<driver_param>] \\\\\\n\"\n\t       \"        [-b<br_ifname>] [-e<entropy file>]\"\n#ifdef CONFIG_DEBUG_FILE\n\t       \" [-f<debug file>]\"\n#endif'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/main.c",
+   "line": 44,
+   "message": "Argument to 'printf' contains preprocessor directive: '\" \\\\\\n\"\n#ifdef CONFIG_PROCESS_COORDINATION\n\t       \"        [-z<process coordination directory>] \\\\\\n\"\n#endif'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/main.c",
+   "line": 48,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"        [-o<override driver>] [-O<override ctrl>] \\\\\\n\"\n\t       \"        [-N -i<ifname> -c<conf> [-C<ctrl>] \"\n\t       \"[-D<driver>] \\\\\\n\"\n#ifdef CONFIG_P2P\n\t       \"        [-m<P2P Device config file>] \\\\\\n\"\n#endif'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/main.c",
+   "line": 54,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"        [-p<driver_param>] [-b<br_ifname>] [-I<config file>] \"\n\t       \"...]\\n\"\n\t       \"\\n\"\n\t       \"drivers:\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/main.c",
+   "line": 61,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/main.c",
+   "line": 67,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/main.c",
+   "line": 67,
+   "message": "User input used as format string in 'printf()' call: \"options:\\n\"\n\t       \"  -b = optional bridge interface name\\n\"\n\t       \"  -B = run daemon in the background\\n\"\n\t       \"  -c = Configuration file\\n\"\n\t       \"  -C = ctrl_interface parameter (only used if -c is not)\\n\"\n\t       \"  -d = increase debugging verbosity (-dd even more)\\n\"\n\t       \"  -D = driver name (can be multiple drivers: nl80211,wext)\\n\"\n\t       \"  -e = entropy file\\n\"\n#ifdef CONFIG_DEBUG_FILE\n\t       \"  -f = log output to debug file instead of stdout\\n\"\n#endif",
+   "rule_id": "FIO30-C",
+   "severity": "Medium",
+   "suggestion": "Use a literal format string: printf(\"%s\", user_input) instead of printf(user_input)"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/main.c",
+   "line": 67,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"options:\\n\"\n\t       \"  -b = optional bridge interface name\\n\"\n\t       \"  -B = run daemon in the background\\n\"\n\t       \"  -c = Configuration file\\n\"\n\t       \"  -C = ctrl_interface parameter (only used if -c is not)\\n\"\n\t       \"  -d = increase debugging verbosity (-dd even more)\\n\"\n\t       \"  -D = driver name (can be multiple drivers: nl80211,wext)\\n\"\n\t       \"  -e = entropy file\\n\"\n#ifdef CONFIG_DEBUG_FILE\n\t       \"  -f = log output to debug file instead of stdout\\n\"\n#endif'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/main.c",
+   "line": 78,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"  -g = global ctrl_interface\\n\"\n\t       \"  -G = global ctrl_interface group\\n\"\n\t       \"  -h = show this help text\\n\"\n\t       \"  -i = interface name\\n\"\n\t       \"  -I = additional configuration file\\n\"\n\t       \"  -K = include keys (passwords, etc.) in debug output\\n\"\n\t       \"  -L = show license (BSD)\\n\"\n#ifdef CONFIG_P2P\n\t       \"  -m = Configuration file for the P2P Device interface\\n\"\n#endif /* CONFIG_P2P */\n#ifdef CONFIG_MATCH_IFACE\n\t       \"  -M = start describing new matching interface\\n\"\n#endif'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/main.c",
+   "line": 91,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"  -N = start describing new interface\\n\"\n\t       \"  -o = override driver parameter for new interfaces\\n\"\n\t       \"  -O = override ctrl_interface parameter for new interfaces\\n\"\n\t       \"  -p = driver parameters\\n\"\n\t       \"  -P = PID file\\n\"\n\t       \"  -q = decrease debugging verbosity (-qq even less)\\n\"\n#ifdef CONFIG_DEBUG_SYSLOG\n\t       \"  -s = log output to syslog instead of stdout\\n\"\n#endif'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/main.c",
+   "line": 100,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"  -t = include timestamp in debug messages\\n\"\n#ifdef CONFIG_DEBUG_LINUX_TRACING\n\t       \"  -T = record to Linux tracing in addition to logging\\n\"\n\t       \"       (records all messages regardless of debug verbosity)\\n\"\n#endif /* CONFIG_DEBUG_LINUX_TRACING */\n#ifdef CONFIG_CTRL_IFACE_DBUS_NEW\n\t       \"  -u = enable DBus control interface\\n\"\n#endif'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/main.c",
+   "line": 108,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"  -v = show version\\n\"\n\t       \"  -W = wait for a control interface monitor before starting\\n\"\n\t       \"  -y = show configuration parsing details in debug log\\n\"\n#ifdef CONFIG_PROCESS_COORDINATION\n\t       \"  -z = process coordination directory\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/main.c",
+   "line": 113,
+   "message": "Argument to 'printf' contains preprocessor directive: '#endif'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/main.c",
+   "line": 116,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/main.c",
+   "line": 116,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"example:\\n\"\n\t       \"  wpa_supplicant -D%s -iwlan0 -c/etc/wpa_supplicant.conf\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/main.c",
+   "line": 119,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/main.c",
+   "line": 119,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"\\nIf run without specifying a network interface or control interface, the a\\n\"\n\t       \"configuration file is parsed without starting any operation.\\n\"\n\t\t\"This can be used to check whether a configuration file has valid contents.\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/main.c",
+   "line": 129,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/main.c",
+   "line": 143,
+   "message": "Shared variable 'fd' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/main.c",
+   "line": 152,
+   "message": "open() called without O_NOFOLLOW flag and without lstat() validation. This may be vulnerable to symlink attacks.",
+   "rule_id": "POS01-C",
+   "severity": "High",
+   "suggestion": "Use O_NOFOLLOW flag in open() call, or validate with lstat() before opening"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/main.c",
+   "line": 162,
+   "message": "Resource 'fd[i]' is closed again after already being closed at line 154. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/main.c",
+   "line": 193,
+   "message": "Function 'main' does not validate pointer parameter 'argv' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'argv' at the start of the function, e.g., 'if (!argv) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/main.c",
+   "line": 193,
+   "message": "Program arguments (argv) used without validating argc or checking for null pointers",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Validate argc and argv[0] before use: const char *prog = (argc && argv[0]) ? argv[0] : \"\""
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/main.c",
+   "line": 235,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/main.c",
+   "line": 237,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 11,
+   "file": "wpa_supplicant/main.c",
+   "line": 237,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Debugging disabled with \"\n\t\t\t       \"CONFIG_NO_STDOUT_DEBUG=y build time \"\n\t\t\t       \"option.\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/main.c",
+   "line": 245,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/main.c",
+   "line": 272,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/main.c",
+   "line": 294,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/main.c",
+   "line": 307,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/main.c",
+   "line": 319,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/main.c",
+   "line": 346,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/main.c",
+   "line": 361,
+   "message": "Value assigned to 'exitcode' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/main.c",
+   "line": 370,
+   "message": "Preprocessor directive '#ifdef' used inside invocation of 'printf'. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  }
+ ],
+ "wpa_supplicant/pr_supplicant.c": [
+  {
+   "column": 1,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 70,
+   "message": "Value assigned to 'bw' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 70,
+   "message": "Value assigned to 'op_class_bw' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 103,
+   "message": "Value assigned to 'bw' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 103,
+   "message": "Value assigned to 'op_class_bw' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 51,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 133,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 151,
+   "message": "Loop uses uninitialized variable 'ch' as bound for array access. This has indeterminate value and can cause out-of-bounds access.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize 'ch' to a valid value before using it in the loop"
+  },
+  {
+   "column": 50,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 192,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 211,
+   "message": "Loop uses uninitialized variable 'ch' as bound for array access. This has indeterminate value and can cause out-of-bounds access.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize 'ch' to a valid value before using it in the loop"
+  },
+  {
+   "column": 40,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 250,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 22,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 291,
+   "message": "Pointer parameter 'ptk' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ptk'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 316,
+   "message": "Function 'wpas_pr_usd_elems' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 57,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 316,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 322,
+   "message": "Function 'wpas_pr_process_usd_elems' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 322,
+   "message": "Function 'wpas_pr_process_usd_elems' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 322,
+   "message": "Function 'wpas_pr_process_usd_elems' does not validate pointer parameter 'peer_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'peer_addr' at the start of the function, e.g., 'if (!peer_addr) { return error_code; }'"
+  },
+  {
+   "column": 54,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 322,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 334,
+   "message": "Function 'wpas_pr_init' does not validate pointer parameter 'capa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'capa' at the start of the function, e.g., 'if (!capa) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 436,
+   "message": "Function 'wpas_pr_flush' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 42,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 436,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 444,
+   "message": "Function 'wpas_pr_deinit' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 458,
+   "message": "Function 'wpas_pr_update_dev_addr' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 52,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 458,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 464,
+   "message": "Function 'wpas_pr_clear_dev_iks' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 50,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 464,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 475,
+   "message": "Function 'wpas_pr_set_dev_ik' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 475,
+   "message": "Function 'wpas_pr_set_dev_ik' does not validate pointer parameter 'password' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'password' at the start of the function, e.g., 'if (!password) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 475,
+   "message": "Function 'wpas_pr_set_dev_ik' does not validate pointer parameter 'pmk' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pmk' at the start of the function, e.g., 'if (!pmk) { return error_code; }'"
+  },
+  {
+   "column": 47,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 475,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 15,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 476,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 56,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 522,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 567,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 574,
+   "message": "Function 'wpas_pr_initiate_pasn_auth' does not validate pointer parameter 'peer_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'peer_addr' at the start of the function, e.g., 'if (!peer_addr) { return error_code; }'"
+  },
+  {
+   "column": 27,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 584,
+   "message": "Dereference of uninitialized pointer 'awork'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'awork' before dereferencing"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 607,
+   "message": "Function 'wpas_pr_pasn_auth_tx_status' does not validate pointer parameter 'data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'data' at the start of the function, e.g., 'if (!data) { return error_code; }'"
+  },
+  {
+   "column": 55,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 607,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 619,
+   "message": "Function 'wpas_pr_pasn_auth_rx' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 619,
+   "message": "Function 'wpas_pr_pasn_auth_rx' does not validate pointer parameter 'mgmt' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'mgmt' at the start of the function, e.g., 'if (!mgmt) { return error_code; }'"
+  },
+  {
+   "column": 48,
+   "file": "wpa_supplicant/pr_supplicant.c",
+   "line": 619,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  }
+ ]
+}

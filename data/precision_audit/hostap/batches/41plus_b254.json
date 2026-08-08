@@ -1,0 +1,553 @@
+{
+ "src/eapol_auth/eapol_auth_sm.c": [
+  {
+   "column": 1,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 18,
+   "message": "Header file 'eapol_auth_sm.h' has the same first 8 characters (case-insensitive) as 'eapol_auth_sm_i.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'eapol_auth_sm.h' -> unique name)"
+  },
+  {
+   "column": 58,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 49,
+   "message": "Pointer parameter 'eapol' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *eapol'"
+  },
+  {
+   "column": 2,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 77,
+   "message": "Return value of 'vsnprintf' ignored: 'vsnprintf(format, maxlen, fmt, ap)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  },
+  {
+   "column": 7,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 113,
+   "message": "Hard-coded sensitive information detected passed to `eapol_auth_logger`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"TxReq called, but there is no EAP request \"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 7,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 114,
+   "message": "Hard-coded sensitive information detected passed to `eapol_auth_logger`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"from authentication server\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 2,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 129,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 8,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 227,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 7,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 307,
+   "message": "Pointer variable '(unknown)' is assigned a string literal without const qualification. String literals are immutable and should be declared as 'const char *' or 'const wchar_t *'.",
+   "rule_id": "STR05-C",
+   "severity": "Low",
+   "suggestion": "Add 'const' qualifier to the pointee type (e.g., change 'char *' to 'const char *')."
+  },
+  {
+   "column": 7,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 319,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 390,
+   "message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add a return statement on all execution paths of this function"
+  },
+  {
+   "column": 3,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 404,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  },
+  {
+   "column": 9,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 423,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 9,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 431,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 9,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 440,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 9,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 447,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 556,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 2,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 563,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  },
+  {
+   "column": 8,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 572,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 10,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 586,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 8,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 605,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 8,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 613,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 641,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 2,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 649,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  },
+  {
+   "column": 1,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 682,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 2,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 689,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  },
+  {
+   "column": 8,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 698,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 723,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 2,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 730,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  },
+  {
+   "column": 1,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 762,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 2,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 769,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  },
+  {
+   "column": 1,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 786,
+   "message": "Function 'eapol_auth_alloc' does not validate pointer parameter 'addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'addr' at the start of the function, e.g., 'if (!addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 786,
+   "message": "Function 'eapol_auth_alloc' does not validate pointer parameter 'assoc_wps_ie' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'assoc_wps_ie' at the start of the function, e.g., 'if (!assoc_wps_ie) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 786,
+   "message": "Function 'eapol_auth_alloc' does not validate pointer parameter 'assoc_p2p_ie' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'assoc_p2p_ie' at the start of the function, e.g., 'if (!assoc_p2p_ie) { return error_code; }'"
+  },
+  {
+   "column": 5,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 795,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 24,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 798,
+   "message": "Dereference of uninitialized pointer 'sm'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'sm' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 874,
+   "message": "Function returns pointer to local variable 'sm' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 5,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 880,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 64,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 894,
+   "message": "Pointer parameter 'eapol' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *eapol'"
+  },
+  {
+   "column": 4,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 969,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 52,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 982,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 39,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 1025,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 39,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 1025,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 55,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 1036,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 55,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 1036,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 52,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 1044,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 50,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 1051,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 62,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 1058,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 38,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 1066,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 68,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 1085,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 1,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 1097,
+   "message": "Function 'eapol_auth_reauthenticate' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 1106,
+   "message": "Function 'eapol_auth_set_conf' does not validate pointer parameter 'value' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'value' at the start of the function, e.g., 'if (!value) { return error_code; }'"
+  },
+  {
+   "column": 21,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 1138,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 21,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 1138,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 23,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 1143,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 23,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 1143,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 22,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 1148,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 22,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 1148,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 1,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 1212,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 27,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 1232,
+   "message": "Dereference of uninitialized pointer 'eapol'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'eapol' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 1261,
+   "message": "Function returns pointer to local variable 'eapol' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 5,
+   "file": "src/eapol_auth/eapol_auth_sm.c",
+   "line": 1267,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  }
+ ]
+}

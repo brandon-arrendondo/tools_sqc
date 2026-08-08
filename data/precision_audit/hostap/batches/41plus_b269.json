@@ -1,0 +1,978 @@
+{
+ "src/eap_server/eap_server_ttls.c": [
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 70,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 50,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 79,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 29,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 80,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 33,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 107,
+   "message": "Pointer parameter 'avphdr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *avphdr'"
+  },
+  {
+   "column": 33,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 125,
+   "message": "Variable 'len' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 33,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 125,
+   "message": "Variable 'hdrlen' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 136,
+   "message": "Variable 'pos' should be declared volatile - modified around function calls that may have external side effects",
+   "rule_id": "DCL22-C",
+   "severity": "Low",
+   "suggestion": "Declare as 'volatile' to prevent compiler optimizations that assume variable state is unchanged across function calls"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 144,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 146,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 151,
+   "message": "Function returns pointer to local variable 'avp' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 22,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 186,
+   "message": "sizeof applied to pointer/array parameter 'parse' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*parse)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 15,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 195,
+   "message": "Variable 'avp_length' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 4,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 260,
+   "message": "Sensitive buffer 'password' not cleared before function exit",
+   "rule_id": "MEM03-C",
+   "severity": "Medium",
+   "suggestion": "Call SecureZeroMemory(password, size) or memset(password, 0, size) before the buffer goes out of scope"
+  },
+  {
+   "column": 12,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 267,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_ascii_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"User-Password (PAP)\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 324,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 51,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 334,
+   "message": "Hard-coded sensitive information detected passed to `eap_server_tls_derive_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"ttls challenge\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 26,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 343,
+   "message": "Dereference of uninitialized pointer 'data'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'data' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 355,
+   "message": "Function returns pointer to local variable 'data' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 59,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 372,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 390,
+   "message": "Function returns pointer to local variable 'req' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 415,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_buf_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Phase 2 data\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 420,
+   "message": "Function returns pointer to local variable 'encr_req' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 433,
+   "message": "Function returns without releasing all resources. Leaked: pos, req. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 443,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 4,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 445,
+   "message": "sizeof applied to pointer/array parameter 'data' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(data->mschapv2_auth_response)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 8,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 457,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_buf_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"data\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 462,
+   "message": "Function returns pointer to local variable 'encr_req' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 462,
+   "message": "Function returns without releasing all resources. Leaked: pos, req. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 498,
+   "message": "Double-free: 'data->ssl.tls_out' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 42,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 513,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 52,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 513,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 12,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 627,
+   "message": "Pointer parameter 'response' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *response'"
+  },
+  {
+   "column": 4,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 742,
+   "message": "Unsigned integer compound subtraction 'username_len -= i + 1' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check before compound assignment"
+  },
+  {
+   "column": 4,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 743,
+   "message": "Unsigned integer compound addition 'username += i + 1' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 859,
+   "message": "Value assigned to 'next_vendor' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 860,
+   "message": "Value assigned to 'next_type' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 874,
+   "message": "Casting from char * (alignment 1) to struct eap_hdr * (alignment 4) may cause alignment issues",
+   "rule_id": "EXP36-C",
+   "severity": "Low",
+   "suggestion": "Use memcpy or ensure proper alignment before casting"
+  },
+  {
+   "column": 23,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 987,
+   "message": "Dereference of uninitialized pointer 'hdr'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'hdr' before dereferencing"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 993,
+   "message": "Do not cast away const qualification: '(struct eap_hdr *) eap'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 1031,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 9,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 1112,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 51,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 1145,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 43,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 1269,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 53,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 1269,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 53,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 1276,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 11,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 1281,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 1307,
+   "message": "Function returns pointer to local variable 'eapKeyData' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 46,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 1311,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 56,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 1311,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 61,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 1318,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 55,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 1330,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 11,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 1335,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 1370,
+   "message": "Function returns pointer to local variable 'emsk' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_server/eap_server_ttls.c",
+   "line": 1378,
+   "message": "Memory allocated with 'eap_server_method_alloc' for variable 'eap' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(eap)' before the variable goes out of scope"
+  }
+ ],
+ "src/utils/trace.c": [
+  {
+   "column": 9,
+   "file": "src/utils/trace.c",
+   "line": 10,
+   "message": "Reserved identifier '_GNU_SOURCE' should not be used as a macro name",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Use a non-reserved macro name"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/trace.c",
+   "line": 22,
+   "message": "Shared variable 'active_references' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/trace.c",
+   "line": 31,
+   "message": "Shared variable 'prg_fname' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/trace.c",
+   "line": 32,
+   "message": "Shared variable 'cached_abfd' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/trace.c",
+   "line": 33,
+   "message": "Shared variable 'syms' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 41,
+   "file": "src/utils/trace.c",
+   "line": 38,
+   "message": "Pointer parameter 'info' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *info'"
+  },
+  {
+   "column": 66,
+   "file": "src/utils/trace.c",
+   "line": 38,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 66,
+   "file": "src/utils/trace.c",
+   "line": 38,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 41,
+   "file": "src/utils/trace.c",
+   "line": 64,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 41,
+   "file": "src/utils/trace.c",
+   "line": 64,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/trace.c",
+   "line": 68,
+   "message": "Mixed string management approaches detected. Static char array at line 363 and dynamic allocation at line 68. Consider adopting a consistent approach.",
+   "rule_id": "STR01-C",
+   "severity": "Low",
+   "suggestion": "Adopt either static string arrays OR dynamic allocation consistently throughout the codebase. Document the chosen approach in coding standards."
+  },
+  {
+   "column": 2,
+   "file": "src/utils/trace.c",
+   "line": 68,
+   "message": "Return value of 'strdup' assigned to 'prg_fname' but not checked for errors: 'strdup(fname)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  },
+  {
+   "column": 14,
+   "file": "src/utils/trace.c",
+   "line": 68,
+   "message": "Memory allocated with 'strdup' for variable 'prg_fname' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(prg_fname)' before the variable goes out of scope"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/trace.c",
+   "line": 89,
+   "message": "Implicit boolean test on 'bfd_check_format_matches(abfd, bfd_object, &matching)'. May be unclear what constitutes success or failure.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Use explicit test: bfd_check_format_matches(abfd, bfd_object, &matching) == 0 or bfd_check_format_matches(abfd, bfd_object, &matching) != 0 depending on success convention"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/trace.c",
+   "line": 91,
+   "message": "Value assigned to 'matching' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/trace.c",
+   "line": 96,
+   "message": "Function returns pointer to local variable 'abfd' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/trace.c",
+   "line": 123,
+   "message": "Memory allocation result not cast; assign to 'syms' without explicit cast",
+   "rule_id": "MEM02-C",
+   "severity": "Low",
+   "suggestion": "Cast the result: (asymbol *)malloc(...)"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/trace.c",
+   "line": 123,
+   "message": "Sensitive data allocated with malloc may be written to disk. Use mlock() (POSIX) or VirtualLock() (Windows) to lock memory pages, or use setrlimit(RLIMIT_CORE, 0) to disable core dumps.",
+   "rule_id": "MEM06-C",
+   "severity": "Medium",
+   "suggestion": "Consider using mlock()/munlock() to prevent memory from being swapped to disk, or use setrlimit() to disable core dumps."
+  },
+  {
+   "column": 9,
+   "file": "src/utils/trace.c",
+   "line": 123,
+   "message": "Memory allocated with 'malloc' for variable 'syms' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(syms)' before the variable goes out of scope"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/trace.c",
+   "line": 136,
+   "message": "Value assigned to 'syms' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/trace.c",
+   "line": 137,
+   "message": "Value assigned to 'syms' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 37,
+   "file": "src/utils/trace.c",
+   "line": 191,
+   "message": "Pointer parameter 'pc' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pc'"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/trace.c",
+   "line": 202,
+   "message": "Static variable 'start_offset' used without explicit initialization",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'start_offset' before use, e.g., at its declaration"
+  },
+  {
+   "column": 37,
+   "file": "src/utils/trace.c",
+   "line": 220,
+   "message": "Potential null pointer dereference in array access of variable 'prg_fname'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'prg_fname' is not NULL before array access"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/trace.c",
+   "line": 228,
+   "message": "Value assigned to 'aname' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 50,
+   "file": "src/utils/trace.c",
+   "line": 237,
+   "message": "Pointer parameter 'pc' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pc'"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/trace.c",
+   "line": 245,
+   "message": "Static variable 'start_offset' used without explicit initialization",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'start_offset' before use, e.g., at its declaration"
+  },
+  {
+   "column": 7,
+   "file": "src/utils/trace.c",
+   "line": 280,
+   "message": "Static variable 'start_offset_looked_up' used without explicit initialization",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'start_offset_looked_up' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/trace.c",
+   "line": 282,
+   "message": "Value assigned to 'start_offset_looked_up' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/trace.c",
+   "line": 287,
+   "message": "Function 'wpa_trace_dump_funcname' does not validate pointer parameter 'pc' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pc' at the start of the function, e.g., 'if (!pc) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/trace.c",
+   "line": 295,
+   "message": "Function 'wpa_trace_calling_func' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  },
+  {
+   "column": 25,
+   "file": "src/utils/trace.c",
+   "line": 312,
+   "message": "Variable 'btrace_res' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'btrace_res' before use, e.g., at its declaration"
+  },
+  {
+   "column": 7,
+   "file": "src/utils/trace.c",
+   "line": 319,
+   "message": "Static variable 'start_offset' used without explicit initialization",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'start_offset' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/trace.c",
+   "line": 351,
+   "message": "Function 'wpa_trace_dump_func' does not validate pointer parameter 'title' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'title' at the start of the function, e.g., 'if (!title) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/trace.c",
+   "line": 351,
+   "message": "Function 'wpa_trace_dump_func' does not validate pointer parameter 'btrace' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'btrace' at the start of the function, e.g., 'if (!btrace) { return error_code; }'"
+  },
+  {
+   "column": 17,
+   "file": "src/utils/trace.c",
+   "line": 380,
+   "message": "Passing null pointer 'func' to 'os_strcmp' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'func' is not NULL before passing to 'os_strcmp'"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/trace.c",
+   "line": 383,
+   "message": "Value assigned to 'sym' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/trace.c",
+   "line": 401,
+   "message": "Function 'wpa_trace_add_ref_func' does not validate pointer parameter 'ref' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ref' at the start of the function, e.g., 'if (!ref) { return error_code; }'"
+  },
+  {
+   "column": 5,
+   "file": "src/utils/trace.c",
+   "line": 403,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/trace.c",
+   "line": 419,
+   "message": "Function 'wpa_trace_check_ref' calls 'abort', which dictates error handling. Application-independent code should report errors to the caller (via return values, error parameters, or error indicators) rather than terminating the program.",
+   "rule_id": "ERR05-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'abort' with error reporting via return value (e.g., 'return ERROR_CODE;'), error parameter (e.g., '*err = ERROR_CODE;'), or global error indicator"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/trace.c",
+   "line": 427,
+   "message": "Value assigned to 'syms' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/trace.c",
+   "line": 428,
+   "message": "Value assigned to 'syms' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/trace.c",
+   "line": 436,
+   "message": "Shared variable 'old_btrace_ctxs' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/trace.c",
+   "line": 448,
+   "message": "Return value of 'malloc' assigned to 'entry' but not checked for errors: 'malloc(sizeof(*entry) + os_strlen(ctx) + 1)' - Returns NULL on allocation failure",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (ptr == NULL) before using the allocated memory"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/trace.c",
+   "line": 448,
+   "message": "Memory allocation result not cast; assign to 'entry' without explicit cast",
+   "rule_id": "MEM02-C",
+   "severity": "Low",
+   "suggestion": "Cast the result: (struct btrace_ctx_entry *)malloc(...)"
+  },
+  {
+   "column": 11,
+   "file": "src/utils/trace.c",
+   "line": 448,
+   "message": "Return value from malloc() should be checked for errors",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Check if malloc() returned an error value (NULL, -1, etc.)"
+  },
+  {
+   "column": 11,
+   "file": "src/utils/trace.c",
+   "line": 448,
+   "message": "malloc() argument 1 contains arithmetic that may overflow: 'sizeof(*entry) + os_strlen(ctx) + 1'",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Validate arithmetic operations before passing to allocation functions"
+  },
+  {
+   "column": 11,
+   "file": "src/utils/trace.c",
+   "line": 448,
+   "message": "Sensitive data allocated with malloc may be written to disk. Use mlock() (POSIX) or VirtualLock() (Windows) to lock memory pages, or use setrlimit(RLIMIT_CORE, 0) to disable core dumps.",
+   "rule_id": "MEM06-C",
+   "severity": "Medium",
+   "suggestion": "Consider using mlock()/munlock() to prevent memory from being swapped to disk, or use setrlimit() to disable core dumps."
+  },
+  {
+   "column": 11,
+   "file": "src/utils/trace.c",
+   "line": 448,
+   "message": "Memory allocated with 'malloc' for variable 'entry' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(entry)' before the variable goes out of scope"
+  },
+  {
+   "column": 25,
+   "file": "src/utils/trace.c",
+   "line": 448,
+   "message": "Dereference of uninitialized pointer 'entry'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'entry' before dereferencing"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/trace.c",
+   "line": 449,
+   "message": "'strcpy' is deprecated/obsolescent -- prefer strcpy_s()",
+   "rule_id": "MSC24-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'strcpy' with strcpy_s()"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/trace.c",
+   "line": 449,
+   "message": "Potential buffer overflow with strcpy(). Cannot verify destination buffer is large enough.",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Use strncpy() with explicit size limit or verify buffer size"
+  },
+  {
+   "column": 10,
+   "file": "src/utils/trace.c",
+   "line": 449,
+   "message": "Potential null pointer dereference in member access of variable 'entry'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'entry' is not NULL before member access"
+  },
+  {
+   "column": 22,
+   "file": "src/utils/trace.c",
+   "line": 449,
+   "message": "Do not cast away const qualification: 'ctx'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  }
+ ]
+}

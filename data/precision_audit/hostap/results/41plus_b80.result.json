@@ -1,0 +1,1211 @@
+{
+ "labels": [
+  {
+   "rule": "PRE08-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 16,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "qca-vendor.h/qca-vendor-attr.h genuinely share first 8 chars; PRE08-C literal-true low-value TP, not a misfire (categorical_patterns.md dbus_common.h precedent)."
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 19,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ieee802_11_defs.h/ieee802_11_common.h genuinely share first 8 chars; same literal-true low-value TP disposition as :16."
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 32,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "C2S(x): x only used as case-label/#-stringized, never runtime-evaluated; category error, matches confirmed token-paste/stringize-only-param FP class."
+  },
+  {
+   "rule": "PRE01-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 32,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "x is always a bare enum identifier (never a compound expr); parenthesizing is meaningless, same category-error class as PRE00-C here."
+  },
+  {
+   "rule": "PRE05-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 32,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Call sites always pass bare enum tokens, never macros needing pre-expansion before #x; matches confirmed PRE05-C FP sub-class."
+  },
+  {
+   "rule": "PRE11-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 32,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Macro body literally ends with `;` per rule text; low real-world hazard since always invoked bare in switch-case, not an unbraced if, but technically correct per established SM_ENTRY-family disposition."
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 32,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same token-paste/stringize-only-param category error as PRE00-C; x is never runtime-evaluated multiple times."
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 34,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Mislocated: line 34 is inside the C2S macro expansion in a switch body, not a function definition or call site at all \u2014 factual error."
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 34,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Function has explicit `return \"NL80211_CMD_UNKNOWN\";` after the switch (line 198), so it always returns; also mislocated at line 34."
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 202,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mlme_event_auth is defined here (line 202) and called at :1873, ~1670 lines later; matches confirmed same-file-distance DCL31-C blind-spot FP class."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 202,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "drv->capa.flags (bitwise &) misattributed to base pointer drv; drv itself never used arithmetically \u2014 struct-pointer/member conflation FP class."
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 237,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len - 24 - sizeof(...) is pure size_t/int arithmetic, no pointer operand; matches confirmed \"sizeof term but no pointer\" ARR39-C FP class."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 247,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wmm_info[NL80211_STA_WME_MAX+1] is a fixed compile-time-constant-sized array, not a VLA; confirmed MEM05-C fixed-size misfire class."
+  },
+  {
+   "rule": "CON03-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 248,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wme_policy is a static write-once nla_policy table, initialized once and only read by nla_parse_nested; confirmed CON03-C static-table FP class."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 248,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed compile-time-constant-sized array (NL80211_STA_WME_MAX+1), not a VLA; same class as :247."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 253,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wmm_info is an output array filled by nla_parse_nested(); confirmed EXP33-C output-param-not-a-read FP class."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 299,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "event is a fresh, freshly-memset local union in this function; \"after writing to auth\" cites an unrelated function's distinct local \u2014 confirmed cross-function union conflation bug."
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 304,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len - 24 - sizeof(mgmt->u.assoc_resp) is pure integer bounds arithmetic, no pointer operand; same class as :237."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 317,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same fresh-local-union cross-function conflation bug as :299; event is memset at :316 in this function."
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 322,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pure integer length arithmetic with sizeof term, no pointer operand; same confirmed class as :237."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 354,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tb[NL80211_ATTR_MAX+1] fixed compile-time size, not a VLA."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 355,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tb_sta_info[...+1] fixed compile-time size, not a VLA."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 360,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "genlmsg_attrdata/genlmsg_attrlen are pure read accessors with no side effects; confirmed EXP30-C pure-accessor-args FP class."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 360,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tb is nla_parse's output array, filled in this same call; confirmed output-param FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 368,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_data/nla_len are pure accessors, no side effects; same class as :360."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 368,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tb_sta_info is nla_parse's output array; same output-param class as :360."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 404,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage in this file; confirmed CON33-C strerror() no-pthread FP class."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 404,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same no-pthread strerror() FP class as CON33-C above."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 404,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ret is send_and_recv_resp's small bounded errno-range return value, never realistically INT_MIN; confirmed strerror(-ret) negation FP class."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 438,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tb[QCA_WLAN_VENDOR_ATTR_LINK_RECONFIG_MAX+1] fixed compile-time size, not a VLA."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 446,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tb is nla_parse's output array; confirmed output-param FP class."
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 447,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Cast from char* netlink attr data to struct nlattr* \u2014 alignment not proven in-function; graded genuine low-severity TP per established EXP36-C disposition."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 492,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "i is the for_each_link() loop macro's induction variable, initialized inside the macro expansion sqc doesn't see; confirmed for_each_link-macro EXP33-C FP class."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 512,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tb[QCA_WLAN_VENDOR_ATTR_MLO_LINK_MAX+1] fixed compile-time size, not a VLA."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 515,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_data/nla_len pure accessors, no side effects; confirmed pure-accessor-args FP class."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 515,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tb is nla_parse's output array; confirmed output-param FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 534,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_data/nla_len pure accessors; same class as :515."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 551,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tb[NL80211_ATTR_MAX+1] fixed compile-time size, not a VLA."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 554,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_data/nla_len pure accessors; same class as :515."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 554,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tb output array filled by this same nla_parse call; confirmed output-param FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 579,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR macro-expanded logging args are side-effect-free array reads; confirmed macro-expanded-logging-args FP class."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 633,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Every path reaching the use of sta_profile passes through its assignment at :640; the only path skipping it (:637 goto) also skips the use \u2014 goto-blind CFG FP."
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 651,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_profile is a plain const u8* pointing into a larger buffer; subscripting it is idiomatic pointer indexing, not a \"non-array pointer\" violation \u2014 confirmed ARR37-C misfire class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 676,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_data/nla_len pure accessors passed to ieee802_11_parse_elems; same pure-accessor-args class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 678,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same pure-accessor-args class as :676."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 685,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "req_elems is ieee802_11_parse_elems's output param, unconditionally memset by the callee; confirmed output-param-uninitialized FP class."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 696,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "resp_elems is the same output-param shape as :685."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 705,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mle is reassigned to a new wpabuf at :696 between the :694 and :705 frees \u2014 not a double free of the same allocation; confirmed free-then-reassign FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 770,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_printf format args here are plain reads (req_info.non_assoc_links etc.), no side effects; pure-accessor-args class."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 814,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tb[QCA_WLAN_VENDOR_ATTR_TID_TO_LINK_MAP_MAX+1] fixed compile-time size, not a VLA."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 822,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tb is nla_parse's output array; confirmed output-param FP class."
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 823,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Cast from char* netlink data to struct nlattr*, alignment unproven in-function; same low-severity TP disposition as :447."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 856,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "event is a fresh local union in this function, memset at :820; \"after writing to auth\" cites an unrelated function's local \u2014 confirmed cross-function conflation."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 866,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tb[NL80211_ATTR_MAX+1] fixed compile-time size, not a VLA."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 869,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tid is nla_parse_nested's output array; confirmed output-param FP class."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 896,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "i is for_each_link()'s macro-internal induction variable; same class as :492."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 937,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tb[NL80211_ATTR_MAX+1] fixed compile-time size, not a VLA."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 940,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_data/nla_len pure accessors; pure-accessor-args class."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 940,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tb output array filled by this same nla_parse call; output-param FP class."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 961,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(drv->sta_mlo_info.links[i]) sizes a fully-dereferenced struct element, not the decayed drv parameter itself; confirmed sizeof(ptr->member) misattribution class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 973,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "timed_out is only read (!= NULL check) in this plain internal static helper, never forwarded to a mutator; genuine if low-value TP."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1008,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate dispatch: unmatched cmd values are silently ignored (no logging action needed); confirmed no-final-else guard-clause FP class."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1074,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(drv->sta_mlo_info) sizes a real struct field via drv, not the decayed drv pointer itself; same misattribution class as :961."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1108,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "!ssid short-circuits the && before ssid[1] is ever accessed; sqc misses short-circuit evaluation order \u2014 factually not a null deref."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1183,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "addr is never used/modified in this static helper; could be const. Genuine if low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1184,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "by_ap is only compared to NULL, never modified, in this static helper; genuine if low-value TP."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1253,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "freq/freq1 are bounded 802.11 channel-frequency values (MHz-range), never realistically near INT_MIN; extends the \"rule doesn't see realistic domain bounds\" INT32-C FP family to abs()."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1289,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "switch(convert2width(width)) enumerates every CHAN_WIDTH_* value with its own case; exhaustive-enum-switch, no default needed \u2014 confirmed guard-clause pedantry class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1304,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Args are wpa_printf format reads with no side effects; pure-accessor-args class."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1315,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data is a fresh local union in mlme_event_ch_switch, memset at :1314; cross-function \"auth\" conflation, same confirmed bug."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1343,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nl80211_get_link() always returns bss->flink or &bss->links[link_id] \u2014 never NULL by its own implementation; callee-never-returns-NULL FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1387,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "drv is only read via drv->ctx in this static helper, never modified; genuine if low-value TP."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1407,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "event is a fresh local union in mlme_timeout_event, memset at :1406; same cross-function \"auth\" conflation bug."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1439,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "event is a fresh local union in mlme_event_mgmt, memset at :1437; same cross-function conflation bug."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1442,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR/format args are side-effect-free reads; macro-expanded-logging-args FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1472,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Format args are plain reads; pure-accessor-args class."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1505,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause dispatch (AP-interface / STA-interface stype checks); unmatched case intentionally falls through. Confirmed no-final-else FP class."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1513,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "event is a fresh local union in mlme_event_mgmt_tx_status, memset at :1512; same cross-function conflation bug."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1564,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Format args are plain reads (MACSTR/bssid etc.); pure-accessor-args class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1581,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Format args are plain reads; pure-accessor-args class."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1613,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "event is a fresh local union in mlme_event_deauth_disassoc, memset at :1606; same cross-function conflation bug."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1623,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same fresh-local-union conflation bug, different branch of the same function as :1613."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1653,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "drv is only read via drv->ctx in this static helper, never modified; genuine if low-value TP."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1677,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "event is a fresh local union in mlme_event_unprot_disconnect, memset at :1671; same cross-function conflation bug."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1681,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same fresh-local-union conflation bug, else-branch of the same function as :1677."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1690,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "drv is only read via drv->ctx in mlme_event_unprot_beacon, never modified; genuine if low-value TP."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1702,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "event is a fresh local union in mlme_event_unprot_beacon, memset at :1701; same cross-function conflation bug."
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1729,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len < 24+1+sizeof(...) is pure size_t bounds arithmetic, no pointer operand; same \"sizeof term, no pointer\" FP class as :237."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1736,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "event is a fresh local union in mlme_event_link_addition, memset at :1725; same cross-function conflation bug."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1738,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "resp_ie derives from mgmt, which is (struct ieee80211_mgmt*)frame \u2014 the same underlying buffer as frame/end, not a different array; confirmed same-buffer-reinterpret-cast ARR36-C FP class."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1761,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "end and resp_ie both derive from the single frame buffer via the mgmt overlay cast; same-buffer reinterpret-cast FP class."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1761,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same same-buffer-reinterpret-cast FP class as :1738."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1771,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "bss is only read (bss->valid_links, bss->links[i].freq) in this static helper; genuine if low-value TP."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1777,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "i is for_each_link()'s macro-internal induction variable; same for_each_link-macro FP class as :492."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1786,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "timed_out is only tested for NULL in mlme_event, never modified; genuine if low-value TP."
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1804,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic \"use a validation function\" suggestion, not a real defect; confirmed MEM10-C ad-hoc-NULL-check stylistic FP class."
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1807,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nl80211_command_to_string is defined at :30 and called here ~1777 lines later; confirmed same-file-distance DCL31-C blind-spot FP class."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1815,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "link_id defaults to -1 and the if/else-if is an intentional priority fallback (explicit link id, else frequency match); confirmed no-final-else guard-clause FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1824,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Format args (nl80211_command_to_string, MAC2STR, bss->ifname) are side-effect-free reads/pure calls; pure-accessor-args class."
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1826,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same same-file-distance FP class as :1807."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1830,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same pure-accessor-args logging-format class as :1824."
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1832,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same same-file-distance FP class as :1807."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1833,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data is a plain byte-buffer pointer accessed with bitwise ops on bytes (data[4]&0x01) elsewhere and arithmetically indexed (data+4) here; not the same variable doing both, category-error conflation."
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1843,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Cast from char* netlink data to const struct ieee80211_mgmt*, alignment unproven in-function; same low-severity TP disposition as :447."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1854,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate PASN vs. general-frame dispatch; the fallthrough (neither branch) intentionally proceeds to the common frame-filter code below. Confirmed no-final-else FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1868,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_data/nla_len pure accessors in wpa_hexdump; pure-accessor-args class."
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1873,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mlme_event_auth is defined at :202 and called here ~1670 lines later; same same-file-distance FP class as :1807."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1873,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_data/nla_len pure accessors passed to mlme_event_auth; pure-accessor-args class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1876,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_data/nla_len pure accessors; same class as :1873."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1880,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_data/nla_len pure accessors; same class as :1873."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1884,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_data/nla_len pure accessors; same class as :1873."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1888,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_data/nla_len pure accessors; same class as :1873."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1892,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_data/nla_len pure accessors; same class as :1873."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1896,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_data/nla_len pure accessors; same class as :1873."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1900,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_data/nla_len pure accessors; same class as :1873."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1904,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_data/nla_len pure accessors; same class as :1873."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1912,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "bss is only read via bss->ctx in mlme_event_michael_mic_failure, never modified; genuine if low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1913,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "tb is only read (tb[NL80211_ATTR_*] lookups) in this plain internal helper, never modified; genuine if low-value TP."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1920,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_data/nla_len pure accessors in wpa_hexdump; pure-accessor-args class."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1923,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data is a fresh local union in mlme_event_michael_mic_failure, memset at :1918; same cross-function conflation bug."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1926,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_data/nla_len pure accessors; same class as :1920."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1949,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "tb is only read (tb[NL80211_ATTR_MAC]) in mlme_event_join_ibss, never modified; genuine if low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 1980,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "tb is only read across several nla_get_u32/u64 lookups in mlme_event_remain_on_channel, never modified; genuine if low-value TP."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2019,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data is a fresh local union in mlme_event_remain_on_channel, memset at :2018; same cross-function conflation bug."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2027,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "drv is only read via drv->ctx in mlme_event_ft_event, never modified; genuine if low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2028,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "tb is only read (tb[NL80211_ATTR_IE]/IE_RIC/MAC) in mlme_event_ft_event, never modified; genuine if low-value TP."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2035,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data is a fresh local union in mlme_event_ft_event, memset at :2032; same cross-function conflation bug."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2055,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "drv is only read (drv->nlmode check) in mlme_event_dh_event, never modified; genuine if low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2056,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "bss is only read via bss->ctx/bss->valid_links in mlme_event_dh_event, never modified; genuine if low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2057,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "tb is only read across several attribute lookups in mlme_event_dh_event, never modified; genuine if low-value TP."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2095,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data is a fresh local union in mlme_event_dh_event, memset at :2068; same cross-function conflation bug."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2109,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "tb is only read (tb[NL80211_ATTR_SCAN_*]) in send_scan_event, never modified; genuine if low-value TP."
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2117,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "freqs[] has nothing to do with getenv(); zero environment-variable use in this function \u2014 confirmed ENV01-C wholesale zero-getenv misfire class."
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2150,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg[] is unrelated to getenv(); same zero-getenv misfire class as :2117."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2150,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAX_REPORT_FREQS*5+1 is a compile-time constant expression; msg[] is a fixed-size array, not a VLA."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2155,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*pos = '\\0' is a plain char-to-char assignment (string terminator), not a widening conversion; confirmed STR34-C plain-assignment FP class."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2190,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate: if mld_link exists but has no ctx, the code intentionally leaves ctx at its bss->ctx default; confirmed no-final-else guard-clause FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2205,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "tb is only read (tb[NL80211_ATTR_CQM] etc.) in nl80211_cqm_event, never modified; genuine if low-value TP."
+  },
+  {
+   "rule": "CON03-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2208,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cqm_policy is a static write-once nla_policy table, only read by nla_parse_nested; same confirmed CON03-C static-table FP class as :248."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2208,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cqm[NL80211_ATTR_CQM_MAX+1] fixed compile-time size, not a VLA."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2218,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "freqs[MAX_REPORT_FREQS] fixed compile-time size, not a VLA."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2224,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cqm is nla_parse_nested's output array; confirmed output-param FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2256,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Format args (MACSTR/nla_get_u32 reads) are side-effect-free; pure-accessor-args class."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2275,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ed.low_ack (:2235) and ed.signal_change (:2275) writes are on mutually-exclusive control paths separated by an early return at :2243 \u2014 never both execute; new intra-function mutually-exclusive-branch sub-shape of the EXP39-C conflation bug."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2314,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "drv is only read (drv->nlmode/valid_links checks) in nl80211_new_peer_candidate, never modified; genuine if low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2315,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "tb is only read (tb[NL80211_ATTR_MAC]/IE) in nl80211_new_peer_candidate, never modified; genuine if low-value TP."
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2329,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data is a fresh local union in nl80211_new_peer_candidate, memset at :2328; same cross-function conflation bug."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2336,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "drv param declaration only visible in this batch; consistent with the file-wide pattern of read-only drv params in these dispatch helpers."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2337,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "bss param declaration only visible in this batch; consistent with the file-wide read-only-bss pattern."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2338,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "tb param declaration only visible in this batch; consistent with the file-wide read-only-tb pattern."
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 30,
+  "fp": 120,
+  "fn": 0
+ }
+}

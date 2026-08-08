@@ -1,0 +1,598 @@
+{
+ "wpa_supplicant/dpp_supplicant.c#part2of2": [
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4352,
+   "message": "Function returns pointer to local variable 'resp' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4438,
+   "message": "Function 'wpas_dpp_configurator_sign' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4438,
+   "message": "Function 'wpas_dpp_configurator_sign' does not validate pointer parameter 'cmd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cmd' at the start of the function, e.g., 'if (!cmd) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4442,
+   "message": "Value assigned to 'curve' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4488,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 39,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4506,
+   "message": "Potential null pointer dereference in member access of variable 'ssid'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'ssid' is not NULL before member access"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4527,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4552,
+   "message": "Potential null pointer dereference in member access of variable 'ssid'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'ssid' is not NULL before member access"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4552,
+   "message": "Variable 'ssid' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4695,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4709,
+   "message": "Function 'wpas_dpp_pkex_add' does not validate pointer parameter 'cmd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cmd' at the start of the function, e.g., 'if (!cmd) { return error_code; }'"
+  },
+  {
+   "column": 14,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4727,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 14,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4727,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 44,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4746,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 44,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4746,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4789,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4789,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4826,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4826,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4869,
+   "message": "Variable 'adv_proto_id' should be declared volatile - modified around function calls that may have external side effects",
+   "rule_id": "DCL22-C",
+   "severity": "Low",
+   "suggestion": "Declare as 'volatile' to prevent compiler optimizations that assume variable state is unchanged across function calls"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4972,
+   "message": "Function 'wpas_dpp_conf_set' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4982,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4982,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4986,
+   "message": "Signed to unsigned conversion of 'peer' without bounds check",
+   "rule_id": "INT31-C",
+   "severity": "High",
+   "suggestion": "Check that the value is non-negative before conversion"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4999,
+   "message": "Signed to unsigned conversion of 'peer' without bounds check",
+   "rule_id": "INT31-C",
+   "severity": "High",
+   "suggestion": "Check that the value is non-negative before conversion"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5001,
+   "message": "Signed to unsigned conversion of 'peer' without bounds check",
+   "rule_id": "INT31-C",
+   "severity": "High",
+   "suggestion": "Check that the value is non-negative before conversion"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5012,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5012,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5027,
+   "message": "Function 'wpas_dpp_controller_start' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 22,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5043,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 22,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5043,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 58,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5069,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5130,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 36,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5142,
+   "message": "Pointer parameter 'bi' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bi'"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5161,
+   "message": "Loop uses uninitialized variable 'c' as bound for array access. This has indeterminate value and can cause out-of-bounds access.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize 'c' to a valid value before using it in the loop"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5192,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5218,
+   "message": "Function returns pointer to local variable 'freqs' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 34,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5223,
+   "message": "Pointer parameter 'scan_res' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *scan_res'"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5235,
+   "message": "Use-after-free: accessing freed pointer 'wpa_s->dpp_chirp_freqs'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 55,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5241,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5321,
+   "message": "Function 'wpas_dpp_chirp' does not validate pointer parameter 'cmd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cmd' at the start of the function, e.g., 'if (!cmd) { return error_code; }'"
+  },
+  {
+   "column": 40,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5331,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 40,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5331,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5340,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5340,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 17,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5347,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 17,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5347,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5394,
+   "message": "Function 'wpas_dpp_reconfig' does not validate pointer parameter 'cmd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cmd' at the start of the function, e.g., 'if (!cmd) { return error_code; }'"
+  },
+  {
+   "column": 45,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5400,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 45,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5400,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 40,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5401,
+   "message": "Potential null pointer dereference in member access of variable 'ssid'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'ssid' is not NULL before member access"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5410,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5410,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5426,
+   "message": "Use-after-free: accessing freed pointer 'wpa_s->dpp_reconfig_id'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5452,
+   "message": "Function 'wpas_dpp_ca_set' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5452,
+   "message": "Function 'wpas_dpp_ca_set' does not validate pointer parameter 'cmd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cmd' at the start of the function, e.g., 'if (!cmd) { return error_code; }'"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5464,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5464,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 34,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5499,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 34,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5499,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5568,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5603,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 52,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5613,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 63,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5699,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 31,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5731,
+   "message": "Pointer parameter 'scan_res' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *scan_res'"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 5740,
+   "message": "Use-after-free: accessing freed pointer 'wpa_s->dpp_pb_freqs'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  }
+ ]
+}

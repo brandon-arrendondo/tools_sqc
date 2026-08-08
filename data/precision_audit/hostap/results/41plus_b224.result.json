@@ -1,0 +1,635 @@
+{
+  "labels": [
+    {
+      "rule": "EXP34-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 42,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "categ from wpabuf_mhead_u8(msg) can't be null; msg guaranteed valid at all call sites (internal-invariant-non-null)"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 50,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "Initial dia=NULL is never read: not-found path returns literal NULL, not dia; genuine dead store"
+    },
+    {
+      "rule": "EXP43-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 73,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ap_sta_session_timeout(hapd,sta,timeout) has only 2 distinct-type pointer args, no restrict overlap possible (EXP43 category error)"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 95,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "++i evaluated once, result read twice after; single sequenced modification, no UB"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 96,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "dia points into sta->gas_dialog, an os_calloc'd heap array, not automatic storage"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 107,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API, sole caller (gas_serv.c:1471) always passes valid hapd"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 107,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API, addr always a valid MAC pointer from caller context"
+    },
+    {
+      "rule": "ARR01-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 136,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*dia) correctly sizes pointed-to struct; correct idiom, not decayed-array misuse"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 161,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "plain static helper, hapd only read (hapd->conf fields), never modified"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 195,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "elem returned from dl_list_for_each over hapd->conf->anqp_elem, a persistent list, not local storage"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 400,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "plain static helper, realm only read, never modified"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 437,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "plain static helper, hapd only read (hapd->conf->nai_realm_*), never modified"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 478,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "rpos unconditionally assigned at :483 before any use"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 478,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "rend initialized by its own for-loop's init clause (rend=rpos) before any use"
+    },
+    {
+      "rule": "EXP05-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 496,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "read-only cast-away-const: os_strncmp only reads through the cast pointer, target param already const char*"
+    },
+    {
+      "rule": "ARR00-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 500,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "line writes matches[num_matching].realm_data_idx/realm_idx (a store), mischaracterized as an uninitialized read"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 522,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "only indices [0,num_matching) of matches are read, and each was written earlier in the same loop before num_matching incremented"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 562,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "intentional no-op guard clause in anqp_add_nai_realm (else = neither realm/home-realm query, nothing to add); pedantry"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 631,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "plain static helper, hapd only read, never modified"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 655,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "plain static helper, hapd only read, never modified"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 670,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "plain static helper, hapd only read, never modified"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 686,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "plain static helper, hapd only read, never modified"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 705,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "plain static helper, hapd only read, never modified"
+    },
+    {
+      "rule": "ARR00-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 795,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "num_extra_req is a function parameter; parameters always hold a caller-supplied defined value, never 'uninitialized'"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 827,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf = wpabuf_alloc(len), heap memory; local pointer variable, not automatic storage"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 860,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "set_anqp_req's name param is declared const char*, only passed to wpa_printf; never modified"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 864,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same set_anqp_req const-char* name param, read-only"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 868,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same set_anqp_req const-char* name param, read-only"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 873,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same set_anqp_req const-char* name param, read-only"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 877,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same set_anqp_req const-char* name param, read-only"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 881,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same set_anqp_req const-char* name param, read-only"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 886,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same set_anqp_req const-char* name param, read-only"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 890,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same set_anqp_req const-char* name param, read-only"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 895,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same set_anqp_req const-char* name param, read-only"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 900,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same set_anqp_req const-char* name param, read-only"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 905,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same set_anqp_req const-char* name param, read-only"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 910,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same set_anqp_req const-char* name param, read-only"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 914,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same set_anqp_req const-char* name param, read-only"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 919,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same set_anqp_req const-char* name param, read-only"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 924,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same set_anqp_req const-char* name param, read-only"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 939,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "intentional fallthrough (no else needed) to add-extra-request logic below when neither special-case matches; pedantry"
+    },
+    {
+      "rule": "ARR36-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 963,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "end/pos are a function-parameter pair delineating one caller-supplied buffer range, not different arrays (interprocedural ARR36 FP)"
+    },
+    {
+      "rule": "ARR36-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 965,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "same end/pos buffer-range pair"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 974,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "plain static helper, hapd only read (hapd->conf), never modified"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 979,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "set_anqp_req const-char* name param, read-only"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 983,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "set_anqp_req const-char* name param, read-only"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 988,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "set_anqp_req const-char* name param, read-only"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 992,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "set_anqp_req const-char* name param, read-only"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 998,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "set_anqp_req const-char* name param, read-only"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 1009,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "plain static helper, hapd only read (hapd->conf->nai_realm_data), never modified"
+    },
+    {
+      "rule": "ARR36-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 1015,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "end/pos buffer-range parameter pair, same underlying caller buffer"
+    },
+    {
+      "rule": "ARR36-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 1032,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "end/pos buffer-range parameter pair, same underlying caller buffer"
+    },
+    {
+      "rule": "ARR36-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 1040,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "pos<end buffer-range comparison, same underlying caller buffer"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 1059,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "hapd parameter entirely unused in function body; trivially unmodified"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 1078,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "plain static helper, hapd only read (hapd->conf), never modified"
+    },
+    {
+      "rule": "STR30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 1083,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "set_anqp_req const-char* name param, read-only"
+    },
+    {
+      "rule": "ARR36-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 1101,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "end/pos buffer-range parameter pair"
+    },
+    {
+      "rule": "ARR36-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 1108,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "pos<end buffer-range comparison"
+    },
+    {
+      "rule": "ARR36-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 1129,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "end/pos buffer-range parameter pair"
+    },
+    {
+      "rule": "CON43-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 1143,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no concurrency in hostapd (single-threaded eloop model); no TOCTOU double-fetch risk on switch(*pos)"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 1169,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "qi param only ever read (qi->request, qi->home_realm_query, qi->p2p_sd) in this function, never written"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 1203,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "di points into sta->gas_dialog persistent array (via gas_dialog_create), not a per-call heap allocation; freed later via gas_serv_dialog_clear/gas_serv_free_dialogs"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 1231,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpabuf_head(tx_buf)/wpabuf_len(tx_buf) are pure read-only accessors, safe as sibling args"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 1235,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpabuf_head(tx_buf)/wpabuf_len(tx_buf) pure accessor pair"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 1243,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API, 2 callers (gas_serv.c:1409, dpp_hostapd.c:3441), both always pass valid hapd"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 1243,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API, sa always a valid MAC pointer from caller context"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 1261,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "di points into sta->gas_dialog persistent array, same ownership reasoning as :1203"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 1303,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpabuf_head(buf)/wpabuf_len(buf) pure accessor pair"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 1379,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpabuf_head(buf)/wpabuf_len(buf) pure accessor pair"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 1383,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpabuf_head(buf)/wpabuf_len(buf) pure accessor pair"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 1550,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpabuf_head(tx_buf)/wpabuf_len(tx_buf) pure accessor pair"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 1550,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sa is never freed anywhere in this function; buf (a different variable) is freed at :1519, likely conflated"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 1554,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpabuf_head(tx_buf)/wpabuf_len(tx_buf) pure accessor pair"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 1554,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sa is never freed anywhere in this function; factually wrong UAF claim"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 1561,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "buf+len is the idiomatic ptr+size_t pair; nothing non-conformant here"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 1590,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "intentional no-op for unhandled PA subtype (default silently ignored by design); pedantry"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 1603,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API, sole caller hostapd.c:1711 always passes valid hapd"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/gas_serv.c",
+      "line": 1611,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "hapd parameter entirely unused; function body is empty"
+    }
+  ],
+  "fns": [],
+  "files_clean_for_fn": [],
+  "summary": {
+    "tp": 15,
+    "fp": 63,
+    "fn": 0
+  }
+}

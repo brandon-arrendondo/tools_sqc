@@ -1,0 +1,1354 @@
+{
+ "src/ap/wps_hostapd.c#part1of2": [
+  {
+   "column": 1,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1,
+   "message": "Array 'wps->dev.vendor_ext' elements allocated in loop but not freed in a matching loop - elements may leak",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free all elements of 'wps->dev.vendor_ext' in a loop with the same bounds"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 15,
+   "message": "Header file 'ieee802_11_defs.h' has the same first 8 characters (case-insensitive) as 'ieee802_11_common.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_defs.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 17,
+   "message": "Header file 'eapol_auth_sm.h' has the same first 8 characters (case-insensitive) as 'eapol_auth_sm_i.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'eapol_auth_sm.h' -> unique name)"
+  },
+  {
+   "column": 42,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 39,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 46,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 54,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 59,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 54,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 5,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 59,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 40,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 96,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 40,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 96,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 109,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 29,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 114,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Per-device PSK\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 23,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 123,
+   "message": "Dereference of uninitialized pointer 'p'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'p' before dereferencing"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 141,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 144,
+   "message": "Return value from fopen() should be checked for errors",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Check if fopen() returned an error value (NULL, -1, etc.)"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 144,
+   "message": "fopen() called without 'N' flag in mode string \"a\". On Windows, file handles are inheritable by default unless the 'N' flag is specified.",
+   "rule_id": "WIN03-C",
+   "severity": "High",
+   "suggestion": "Add 'N' flag to the mode string (e.g., \"rwN\") to disable handle inheritance on Windows."
+  },
+  {
+   "column": 3,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 152,
+   "message": "Format string expects 1 arguments but 2 provided - possible type mismatch",
+   "rule_id": "DCL11-C",
+   "severity": "High",
+   "suggestion": "Ensure format specifiers match the number and types of arguments"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 152,
+   "message": "Argument count mismatch in fprintf(): format string expects 1 arguments but 2 provided",
+   "rule_id": "FIO47-C",
+   "severity": "High",
+   "suggestion": "Ensure the number of arguments matches format specifiers"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 153,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 153,
+   "message": "Return value of 'fclose' ignored: 'fclose(f)' - Returns non-zero on error",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (fclose(file) != 0) for close errors"
+  },
+  {
+   "column": 44,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 174,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 184,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 197,
+   "message": "fopen() called without 'N' flag in mode string \"a\". On Windows, file handles are inheritable by default unless the 'N' flag is specified.",
+   "rule_id": "WIN03-C",
+   "severity": "High",
+   "suggestion": "Add 'N' flag to the mode string (e.g., \"rwN\") to disable handle inheritance on Windows."
+  },
+  {
+   "column": 3,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 201,
+   "message": "Format string expects 8 arguments but 9 provided - possible type mismatch",
+   "rule_id": "DCL11-C",
+   "severity": "High",
+   "suggestion": "Ensure format specifiers match the number and types of arguments"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 201,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 201,
+   "message": "Argument count mismatch in fprintf(): format string expects 8 arguments but 9 provided",
+   "rule_id": "FIO47-C",
+   "severity": "High",
+   "suggestion": "Ensure the number of arguments matches format specifiers"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 201,
+   "message": "Format specifier '%ld' makes assumptions about type sizes - violates data model assumptions",
+   "rule_id": "INT00-C",
+   "severity": "Medium",
+   "suggestion": "Use correct format specifier or verify data model assumptions with static assertions"
+  },
+  {
+   "column": 10,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 201,
+   "message": "Function 'fprintf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 14,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 201,
+   "message": "Argument to 'fprintf' contains preprocessor directive: '\"%ld\\t%s\\t\" MACSTR \"\\t%s\\t%s\\t%s\\t%s\\t%s\"\n\t\t\t\"\\t%s\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 208,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 208,
+   "message": "Return value of 'fclose' ignored: 'fclose(f)' - Returns non-zero on error",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (fclose(file) != 0) for close errors"
+  },
+  {
+   "column": 51,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 220,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 63,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 220,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 45,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 230,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 47,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 252,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 5,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 264,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 266,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 47,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 275,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 283,
+   "message": "Floating-point variable 'wpa_psk' used as loop counter. Floating-point arithmetic may cause unexpected iteration counts.",
+   "rule_id": "FLP30-C",
+   "severity": "Low",
+   "suggestion": "Use an integer counter and derive floating-point values inside the loop"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 299,
+   "message": "Local variable 'dev_psk' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 301,
+   "message": "Local variable 'any_psk' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 54,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 313,
+   "message": "Pointer parameter 'user_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *user_ctx'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 326,
+   "message": "Function 'hostapd_wps_eap_completed' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 52,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 326,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 334,
+   "message": "Testing 'eloop_deplete_timeout(0, 0, wps_reload_config, hapd->iface, NULL)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: eloop_deplete_timeout(0, 0, wps_reload_config, hapd->iface, NULL) != 0"
+  },
+  {
+   "column": 51,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 340,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 60,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 354,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 369,
+   "message": "Variable 'cred' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 10,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 425,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 492,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 537,
+   "message": "Function returns without releasing all resources. Leaked: hapd->wps->network_key, tmp_fname. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 10,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 540,
+   "message": "File opened for reading using variable filename 'hapd->iface->config_fname' without verifying file attributes (fstat + st_uid/st_gid check)",
+   "rule_id": "FIO05-C",
+   "severity": "Medium",
+   "suggestion": "Use fstat() to check file ownership (st_uid, st_gid) before reading untrusted files"
+  },
+  {
+   "column": 10,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 540,
+   "message": "fopen() called without 'N' flag in mode string \"r\". On Windows, file handles are inheritable by default unless the 'N' flag is specified.",
+   "rule_id": "WIN03-C",
+   "severity": "High",
+   "suggestion": "Add 'N' flag to the mode string (e.g., \"rwN\") to disable handle inheritance on Windows."
+  },
+  {
+   "column": 3,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 545,
+   "message": "Function returns without releasing all resources. Leaked: hapd->wps->network_key, tmp_fname, oconf. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 10,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 548,
+   "message": "fopen() with mode \"w\" does not guarantee exclusive file creation. Use \"wx\" or \"w+x\" mode for exclusive creation.",
+   "rule_id": "FIO03-C",
+   "severity": "Medium",
+   "suggestion": "Use fopen() with \"wx\" or \"w+x\" mode for C11, or use open() with O_CREAT|O_EXCL for POSIX"
+  },
+  {
+   "column": 10,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 548,
+   "message": "fopen() cannot explicitly specify file permissions; use open() for security-sensitive files",
+   "rule_id": "FIO06-C",
+   "severity": "Medium",
+   "suggestion": "Use open(filename, O_CREAT | O_WRONLY, mode) to explicitly specify file permissions"
+  },
+  {
+   "column": 10,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 548,
+   "message": "fopen() called without 'N' flag in mode string \"w\". On Windows, file handles are inheritable by default unless the 'N' flag is specified.",
+   "rule_id": "WIN03-C",
+   "severity": "High",
+   "suggestion": "Add 'N' flag to the mode string (e.g., \"rwN\") to disable handle inheritance on Windows."
+  },
+  {
+   "column": 3,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 553,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 554,
+   "message": "Function returns without releasing all resources. Leaked: hapd->wps->network_key, tmp_fname, nconf. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 11,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 616,
+   "message": "Function 'fprintf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 668,
+   "message": "fgets() without truncation check. Input may be silently truncated.",
+   "rule_id": "FIO20-C",
+   "severity": "Medium",
+   "suggestion": "Check for newline character to detect truncation: if (strchr(buf, '\\n') == NULL) { /* handle truncation */ }"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 668,
+   "message": "Input function 'fgets' called after output function 'fprintf' without intervening fseek/fflush/fsetpos/rewind",
+   "rule_id": "FIO39-C",
+   "severity": "Low",
+   "suggestion": "Add fseek(), fflush(), fsetpos(), or rewind() between output and input operations"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 687,
+   "message": "Output function 'fprintf' called after input function 'fgets' without intervening fseek/fflush/fsetpos/rewind",
+   "rule_id": "FIO39-C",
+   "severity": "Low",
+   "suggestion": "Add fseek(), fflush(), fsetpos(), or rewind() between input and output operations"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 687,
+   "message": "Type mismatch in fprintf(): format specifier '%s' expects Pointer but argument 1 ('buf') is Integer",
+   "rule_id": "FIO47-C",
+   "severity": "High",
+   "suggestion": "Ensure format specifiers match argument types"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 689,
+   "message": "Type mismatch in fprintf(): format specifier '%s' expects Pointer but argument 1 ('buf') is Integer",
+   "rule_id": "FIO47-C",
+   "severity": "High",
+   "suggestion": "Ensure format specifiers match argument types"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 692,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 692,
+   "message": "Return value of 'fclose' ignored: 'fclose(nconf)' - Returns non-zero on error",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (fclose(file) != 0) for close errors"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 693,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 693,
+   "message": "Return value of 'fclose' ignored: 'fclose(oconf)' - Returns non-zero on error",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (fclose(file) != 0) for close errors"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 693,
+   "message": "Resource 'oconf' is closed again after already being closed at line 553. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 6,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 695,
+   "message": "rename() called without handling destination file existence. Behavior is implementation-defined (POSIX removes dest, Windows fails).",
+   "rule_id": "FIO10-C",
+   "severity": "Medium",
+   "suggestion": "Either: (1) Call remove(dest) before rename(), OR (2) Check if dest exists with file_exists()/access()/stat() and handle accordingly"
+  },
+  {
+   "column": 33,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 697,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 33,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 697,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 699,
+   "message": "Function returns without releasing all resources. Leaked: hapd->wps->network_key, tmp_fname. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 712,
+   "message": "Function returns without releasing all resources. Leaked: hapd->wps->network_key, tmp_fname. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 54,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 719,
+   "message": "Do not cast away const qualification: '(void *) cred'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 64,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 723,
+   "message": "Pointer parameter 'user_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *user_ctx'"
+  },
+  {
+   "column": 62,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 739,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 772,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 775,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 63,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 804,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 36,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 856,
+   "message": "Pointer parameter 'success' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *success'"
+  },
+  {
+   "column": 40,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 944,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 14,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 957,
+   "message": "Potential null pointer dereference in member access of variable 'hapd'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'hapd' is not NULL before member access"
+  },
+  {
+   "column": 45,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 973,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 5,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 978,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 53,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 993,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1002,
+   "message": "Function returns pointer to local variable 'uuid' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 52,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1006,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 49,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1014,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 59,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1026,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1035,
+   "message": "Potential null pointer dereference in member access of variable 'hapd'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'hapd' is not NULL before member access"
+  },
+  {
+   "column": 64,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1051,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1056,
+   "message": "Potential null pointer dereference in member access of variable 'hapd'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'hapd' is not NULL before member access"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1062,
+   "message": "Use-after-free: accessing freed pointer 'wps->dev.application_ext'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 27,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1078,
+   "message": "sizeof applied to pointer/array parameter 'wps' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(wps->psk)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1083,
+   "message": "Function 'hostapd_init_wps' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 25,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1095,
+   "message": "Dereference of uninitialized pointer 'wps'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'wps' before dereferencing"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1240,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 10,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1284,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1334,
+   "message": "Function 'hostapd_register_probereq_cb' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1344,
+   "message": "Function returns without releasing all resources. Leaked: wps->network_key, wps->network_key, multi_ap_netw_key. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1346,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1347,
+   "message": "Double free detected: 'multi_ap_netw_key' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate bin_clear_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1349,
+   "message": "Function returns without releasing all resources. Leaked: wps->network_key, wps->network_key, multi_ap_netw_key. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 60,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1389,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 36,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1392,
+   "message": "Potential null pointer dereference in member access of variable 'hapd'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'hapd' is not NULL before member access"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1397,
+   "message": "Potential null pointer dereference in member access of variable 'conf'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'conf' is not NULL before member access"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1409,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1451,
+   "message": "Function 'hostapd_update_wps' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1490,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1493,
+   "message": "Function returns without releasing all resources. Leaked: wps->network_key, wps->network_key. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 44,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1527,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1543,
+   "message": "Function 'hostapd_wps_add_pin' does not validate pointer parameter 'addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'addr' at the start of the function, e.g., 'if (!addr) { return error_code; }'"
+  },
+  {
+   "column": 50,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1574,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1588,
+   "message": "Function 'hostapd_wps_button_pushed' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1588,
+   "message": "Function 'hostapd_wps_button_pushed' does not validate pointer parameter 'p2p_dev_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'p2p_dev_addr' at the start of the function, e.g., 'if (!p2p_dev_addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1622,
+   "message": "Function 'hostapd_wps_cancel' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 42,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1635,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 42,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1635,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1653,
+   "message": "Variable 'elems' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'elems' before use, e.g., at its declaration"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1706,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 23,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1751,
+   "message": "Dereference of uninitialized pointer 'p'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'p' before dereferencing"
+  },
+  {
+   "column": 11,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1755,
+   "message": "Memory allocated with 'wpabuf_dup' for variable 'p->msg' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(p->msg)' before the variable goes out of scope"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1760,
+   "message": "Memory leak: 'p->msg' allocated with 'wpabuf_dup' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'p->msg' before this return statement"
+  },
+  {
+   "column": 25,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1771,
+   "message": "Dereference of uninitialized pointer 'ctx'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ctx' before dereferencing"
+  },
+  {
+   "column": 25,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1791,
+   "message": "Potential null pointer dereference in member access of variable 'hapd'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'hapd' is not NULL before member access"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1797,
+   "message": "Function 'hostapd_wps_get_mib_sta' does not validate pointer parameter 'addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'addr' at the start of the function, e.g., 'if (!addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1797,
+   "message": "Function 'hostapd_wps_get_mib_sta' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  },
+  {
+   "column": 49,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1797,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 13,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1798,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 63,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1806,
+   "message": "Pointer parameter 'user_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *user_ctx'"
+  },
+  {
+   "column": 63,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1833,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1845,
+   "message": "Function 'hostapd_wps_ap_pin_disable' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 59,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1858,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1875,
+   "message": "Function 'hostapd_wps_ap_pin_random' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 14,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1882,
+   "message": "Variable 'data' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'data' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1889,
+   "message": "Function 'hostapd_wps_ap_pin_get' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 57,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1889,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1895,
+   "message": "Function 'hostapd_wps_ap_pin_set' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 20,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1901,
+   "message": "Variable 'data' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'data' before use, e.g., at its declaration"
+  },
+  {
+   "column": 46,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1909,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 58,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1909,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1917,
+   "message": "Function 'hostapd_wps_update_ie' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 47,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1923,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1932,
+   "message": "Variable 'len' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1940,
+   "message": "Variable 'if' is initialized but never read.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Use the variable or remove it"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1943,
+   "message": "Variable 'if' is initialized but never read.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Use the variable or remove it"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1946,
+   "message": "Variable 'return' is declared but never used.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Use the variable or remove it"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1952,
+   "message": "Variable 'if' is initialized but never read.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Use the variable or remove it"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1955,
+   "message": "Variable 'if' is initialized but never read.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Use the variable or remove it"
+  }
+ ]
+}

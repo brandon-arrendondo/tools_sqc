@@ -1,0 +1,1354 @@
+{
+ "src/drivers/driver_nl80211.c#part6of8": [
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11483,
+   "message": "Local variable 'priv' assigned to global/static variable 'bss' - creates dangling pointer",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage for local variable or copy data instead of assigning pointer"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11487,
+   "message": "Variable 'i' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'i' before use, e.g., at its declaration"
+  },
+  {
+   "column": 42,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11510,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 21,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11546,
+   "message": "sizeof applied to pointer/array parameter 'data' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*data)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 44,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11551,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 50,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11572,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11582,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11582,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11582,
+   "message": "Assignment in if statement condition: 'msg = nl80211_bss_msg(bss, 0, NL80211_CMD_UPDATE_FT_IES)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 27,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11592,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 27,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11592,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 36,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11592,
+   "message": "Signed integer negation '-ret' may overflow (-INT_MIN)",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add check: if (value == INT_MIN) { /* handle error */ }"
+  },
+  {
+   "column": 38,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11599,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11609,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11609,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11609,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11609,
+   "message": "Assignment in if statement condition: 'msg = nl80211_bss_msg(bss, 0, NL80211_CMD_UPDATE_OWE_INFO)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11621,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11621,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 21,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11621,
+   "message": "Signed integer negation '-ret' may overflow (-INT_MIN)",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add check: if (value == INT_MIN) { /* handle error */ }"
+  },
+  {
+   "column": 55,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11628,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 43,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11665,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 43,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11665,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 55,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11665,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 55,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11665,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11708,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 10,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11773,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11777,
+   "message": "Variable 'i' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'i' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11915,
+   "message": "Value assigned to 'ret' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11916,
+   "message": "Value assigned to 'csa_off_len' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11995,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11995,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11995,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11995,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11995,
+   "message": "Assignment in if statement condition: 'msg = nl80211_bss_msg(bss, 0, NL80211_CMD_CHANNEL_SWITCH)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 11998,
+   "message": "Assignment in if statement condition: 'ret = nl80211_put_freq_params(msg, &settings->freq_params, bss)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12039,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12039,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 21,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12039,
+   "message": "Signed integer negation '-ret' may overflow (-INT_MIN)",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add check: if (value == INT_MIN) { /* handle error */ }"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12043,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12142,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12142,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 21,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12142,
+   "message": "Signed integer negation '-ret' may overflow (-INT_MIN)",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add check: if (value == INT_MIN) { /* handle error */ }"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12146,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12182,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12182,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 21,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12182,
+   "message": "Signed integer negation '-ret' may overflow (-INT_MIN)",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add check: if (value == INT_MIN) { /* handle error */ }"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12199,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12199,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12199,
+   "message": "Assignment in if statement condition: 'msg = nl80211_cmd_msg(bss, 0, NL80211_CMD_DEL_TX_TS)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12209,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12209,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 21,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12209,
+   "message": "Signed integer negation '-ret' may overflow (-INT_MIN)",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add check: if (value == INT_MIN) { /* handle error */ }"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12228,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12238,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12247,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12247,
+   "message": "Variable 'tb' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb' before use, e.g., at its declaration"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12260,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 36,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12287,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 25,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12304,
+   "message": "Do not cast away const qualification: '(void *) data'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12327,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12327,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12327,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12327,
+   "message": "Assignment in if statement condition: 'msg = nl80211_cmd_msg(bss, 0, NL80211_CMD_VENDOR)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12339,
+   "message": "Memory leak: 'msg' allocated with 'nlmsg_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'msg' before this return statement"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12341,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12358,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12358,
+   "message": "Assignment in if statement condition: 'msg = nl80211_cmd_msg(bss, 0, NL80211_CMD_SET_QOS_MAP)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12374,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12378,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12378,
+   "message": "Variable 'tb' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb' before use, e.g., at its declaration"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12423,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12423,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12423,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12423,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12423,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12423,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12423,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12423,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12423,
+   "message": "Assignment in if statement condition: 'msg = nl80211_cmd_msg(bss, 0, NL80211_CMD_SET_WOWLAN)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12424,
+   "message": "Assignment in if statement condition: 'wowlan_triggers = nla_nest_start(msg,'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12470,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12470,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12470,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12470,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12470,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12470,
+   "message": "Assignment in if statement condition: 'msg = nl80211_bss_msg(bss, 0, NL80211_CMD_VENDOR)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12474,
+   "message": "Assignment in if statement condition: 'params = nla_nest_start(msg, NL80211_ATTR_VENDOR_DATA)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12501,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12501,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12501,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12501,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12501,
+   "message": "Assignment in if statement condition: 'msg = nl80211_bss_msg(bss, 0, NL80211_CMD_VENDOR)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12505,
+   "message": "Assignment in if statement condition: 'params = nla_nest_start(msg, NL80211_ATTR_VENDOR_DATA)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12536,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12536,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12536,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12536,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12536,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12536,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12536,
+   "message": "Assignment in if statement condition: 'msg = nl80211_bss_msg(bss, 0, NL80211_CMD_VENDOR)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12540,
+   "message": "Assignment in if statement condition: 'params = nla_nest_start(msg, NL80211_ATTR_VENDOR_DATA)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12572,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12590,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12590,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12590,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12590,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12590,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12590,
+   "message": "Assignment in if statement condition: 'msg = nl80211_bss_msg(bss, 0, NL80211_CMD_VENDOR)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12594,
+   "message": "Assignment in if statement condition: 'params = nla_nest_start(msg, NL80211_ATTR_VENDOR_DATA)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 38,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12614,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 42,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12685,
+   "message": "Pointer parameter 'params' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *params'"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12790,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12790,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12847,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12847,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 41,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12864,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12882,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 27,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12884,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 27,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12884,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 36,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12884,
+   "message": "Signed integer negation '-ret' may overflow (-INT_MIN)",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add check: if (value == INT_MIN) { /* handle error */ }"
+  },
+  {
+   "column": 44,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12896,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 38,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12941,
+   "message": "Do not cast away const qualification: '(void *) ipaddr'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 41,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12942,
+   "message": "Do not cast away const qualification: '(void *) addr'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 47,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 12961,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 38,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13005,
+   "message": "Do not cast away const qualification: '(void *) ipaddr'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13033,
+   "message": "open() called without O_NOFOLLOW flag and without lstat() validation. This may be vulnerable to symlink attacks.",
+   "rule_id": "POS01-C",
+   "severity": "High",
+   "suggestion": "Use O_NOFOLLOW flag in open() call, or validate with lstat() before opening"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13044,
+   "message": "Resource 'fd' is closed again after already being closed at line 13041. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 45,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13065,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 45,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13097,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13103,
+   "message": "Value assigned to 'ip_version' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 43,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13185,
+   "message": "Reading from 'ch_list' which may contain uninitialized data",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize the contents of 'ch_list' before reading"
+  },
+  {
+   "column": 32,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13219,
+   "message": "Pointer parameter 'params' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *params'"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13231,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13231,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13231,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13231,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13231,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13231,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13231,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13231,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13231,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13231,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13231,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13231,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13231,
+   "message": "Variable(s) 'msg' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13231,
+   "message": "Assignment in if statement condition: 'msg = nl80211_bss_msg(bss, 0, NL80211_CMD_VENDOR)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13235,
+   "message": "Assignment in if statement condition: 'data = nla_nest_start(msg, NL80211_ATTR_VENDOR_DATA)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13270,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13270,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  }
+ ]
+}

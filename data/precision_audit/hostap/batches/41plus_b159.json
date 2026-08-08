@@ -1,0 +1,1291 @@
+{
+ "src/eap_server/eap_sim_db.c": [
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 26,
+   "message": "Header file 'eap_sim_common.h' has the same first 8 characters (case-insensitive) as 'eap_sim_db.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'eap_sim_common.h' -> unique name)"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 38,
+   "message": "String buffer placed before pointer in struct 'eap_sim_db_pending': 'char imsi[20];' before 'void *cb_session_ctx;' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'char imsi' after the pointer field 'void *cb_session_ctx;', or use a char* pointer instead of a char array"
+  },
+  {
+   "column": 57,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 106,
+   "message": "Passing null pointer 'err' to 'wpa_printf' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'err' is not NULL before passing to 'wpa_printf'"
+  },
+  {
+   "column": 57,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 132,
+   "message": "Passing null pointer 'err' to 'wpa_printf' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'err' is not NULL before passing to 'wpa_printf'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 164,
+   "message": "Function returns pointer to local variable 'db' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 171,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'pos' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 175,
+   "message": "Unsigned integer increment 'pos++' may wrap at maximum value",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking before increment/decrement"
+  },
+  {
+   "column": 52,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 181,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 57,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 198,
+   "message": "Passing null pointer 'err' to 'wpa_printf' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'err' is not NULL before passing to 'wpa_printf'"
+  },
+  {
+   "column": 34,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 207,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 55,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 207,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 69,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 207,
+   "message": "Pointer parameter 'col' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *col'"
+  },
+  {
+   "column": 39,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 230,
+   "message": "sizeof applied to pointer/array parameter 'data' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(data->db_tmp_identity)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 49,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 243,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 256,
+   "message": "Unsigned integer addition 'pos + sizeof(cmd)' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 257,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 257,
+   "message": "Unsigned integer compound addition 'pos += os_snprintf(pos, end - pos, \"INSERT OR REPLACE INTO reauth \"\n\t\t\t   \"(permanent, reauth_id, counter%s%s%s%s) \"\n\t\t\t   \"VALUES ('%s', '%s', %u\",\n\t\t\t   mk ? \", mk\" : \"\",\n\t\t\t   k_encr ? \", k_encr\" : \"\",\n\t\t\t   k_aut ? \", k_aut\" : \"\",\n\t\t\t   k_re ? \", k_re\" : \"\",\n\t\t\t   permanent, reauth_id, counter)' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 26,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 257,
+   "message": "Unsigned integer subtraction 'end - pos' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 268,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 268,
+   "message": "Unsigned integer compound addition 'pos += os_snprintf(pos, end - pos, \", '\")' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 27,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 268,
+   "message": "Unsigned integer subtraction 'end - pos' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 269,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 269,
+   "message": "Unsigned integer compound addition 'pos += wpa_snprintf_hex(pos, end - pos, mk, EAP_SIM_MK_LEN)' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 32,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 269,
+   "message": "Unsigned integer subtraction 'end - pos' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 270,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 270,
+   "message": "Unsigned integer compound addition 'pos += os_snprintf(pos, end - pos, \"'\")' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 27,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 270,
+   "message": "Unsigned integer subtraction 'end - pos' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 274,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 274,
+   "message": "Unsigned integer compound addition 'pos += os_snprintf(pos, end - pos, \", '\")' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 27,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 274,
+   "message": "Unsigned integer subtraction 'end - pos' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 275,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 275,
+   "message": "Unsigned integer compound addition 'pos += wpa_snprintf_hex(pos, end - pos, k_encr,\n\t\t\t\t\tEAP_SIM_K_ENCR_LEN)' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 32,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 275,
+   "message": "Unsigned integer subtraction 'end - pos' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 277,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 277,
+   "message": "Unsigned integer compound addition 'pos += os_snprintf(pos, end - pos, \"'\")' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 27,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 277,
+   "message": "Unsigned integer subtraction 'end - pos' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 281,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 281,
+   "message": "Unsigned integer compound addition 'pos += os_snprintf(pos, end - pos, \", '\")' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 27,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 281,
+   "message": "Unsigned integer subtraction 'end - pos' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 282,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 282,
+   "message": "Unsigned integer compound addition 'pos += wpa_snprintf_hex(pos, end - pos, k_aut,\n\t\t\t\t\tEAP_AKA_PRIME_K_AUT_LEN)' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 32,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 282,
+   "message": "Unsigned integer subtraction 'end - pos' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 284,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 284,
+   "message": "Unsigned integer compound addition 'pos += os_snprintf(pos, end - pos, \"'\")' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 27,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 284,
+   "message": "Unsigned integer subtraction 'end - pos' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 288,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 288,
+   "message": "Unsigned integer compound addition 'pos += os_snprintf(pos, end - pos, \", '\")' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 27,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 288,
+   "message": "Unsigned integer subtraction 'end - pos' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 289,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 289,
+   "message": "Unsigned integer compound addition 'pos += wpa_snprintf_hex(pos, end - pos, k_re,\n\t\t\t\t\tEAP_AKA_PRIME_K_RE_LEN)' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 32,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 289,
+   "message": "Unsigned integer subtraction 'end - pos' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 291,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 291,
+   "message": "Unsigned integer compound addition 'pos += os_snprintf(pos, end - pos, \"'\")' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 27,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 291,
+   "message": "Unsigned integer subtraction 'end - pos' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 19,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 294,
+   "message": "Unsigned integer subtraction 'end - pos' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 57,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 298,
+   "message": "Passing null pointer 'err' to 'wpa_printf' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'err' is not NULL before passing to 'wpa_printf'"
+  },
+  {
+   "column": 52,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 307,
+   "message": "Pointer parameter 'argv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *argv'"
+  },
+  {
+   "column": 66,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 307,
+   "message": "Pointer parameter 'col' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *col'"
+  },
+  {
+   "column": 22,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 319,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 22,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 319,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 10,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 328,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 37,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 345,
+   "message": "sizeof applied to pointer/array parameter 'data' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(data->db_tmp_reauth)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 6,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 347,
+   "message": "sizeof applied to pointer/array parameter 'data' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(data->db_tmp_pseudonym_str)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 53,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 360,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 31,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 361,
+   "message": "Pointer parameter 'reauth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *reauth'"
+  },
+  {
+   "column": 28,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 417,
+   "message": "Pointer-to-pointer assignment may allow const circumvention: **pp = &data->pending: '**pp = &data->pending'",
+   "rule_id": "EXP40-C",
+   "severity": "Low",
+   "suggestion": "Either remove const qualifier if the object should be modifiable, or use explicit casts to show intentional const removal"
+  },
+  {
+   "column": 33,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 457,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 4,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 490,
+   "message": "Pointer dereference '*end' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 495,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 504,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 529,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 33,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 536,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 567,
+   "message": "Pointer dereference '*end' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 575,
+   "message": "Pointer dereference '*end' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 583,
+   "message": "Pointer dereference '*end' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 591,
+   "message": "Pointer dereference '*end' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 598,
+   "message": "Pointer dereference '*end' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 620,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 64,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 626,
+   "message": "Pointer parameter 'sock_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sock_ctx'"
+  },
+  {
+   "column": 19,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 632,
+   "message": "Variable 'buf' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'buf' before use, e.g., at its declaration"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 635,
+   "message": "Potentially unsafe array access with variable index 'res': Buffer 'buf' with size 1000 (allocated at line 629)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 10,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 637,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_ascii_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"external source\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 653,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 658,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 671,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 676,
+   "message": "Function 'eap_sim_db_open_socket' performs compound operation on shared static variable 'counter' without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 679,
+   "message": "Shared variable 'counter' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 50,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 686,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 50,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 686,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 6,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 701,
+   "message": "Privileged operation 'bind' without subsequent privilege dropping",
+   "rule_id": "POS02-C",
+   "severity": "Medium",
+   "suggestion": "Call setuid/setgid to drop privileges after setup"
+  },
+  {
+   "column": 48,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 702,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 48,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 702,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 703,
+   "message": "Resource 'data->sock' is closed again after already being closed at line 697. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 7,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 713,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 713,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 717,
+   "message": "Resource 'data->sock' is closed again after already being closed at line 697. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 754,
+   "message": "Function 'eap_sim_db_init' does not validate pointer parameter 'config' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'config' at the start of the function, e.g., 'if (!config) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 754,
+   "message": "Function 'eap_sim_db_init' does not validate pointer parameter 'get_complete_cb' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'get_complete_cb' at the start of the function, e.g., 'if (!get_complete_cb) { return error_code; }'"
+  },
+  {
+   "column": 26,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 762,
+   "message": "Dereference of uninitialized pointer 'data'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'data' before dereferencing"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 775,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 777,
+   "message": "Unsigned integer compound addition 'pos += 4' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 792,
+   "message": "Function returns pointer to local variable 'data' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 794,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 69,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 864,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 6,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 867,
+   "message": "File-scope identifier '_errno' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 7,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 872,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 872,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 885,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 885,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 58,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 937,
+   "message": "Variable 'entry' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'entry' before use, e.g., at its declaration"
+  },
+  {
+   "column": 7,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 939,
+   "message": "Passing null pointer 'username' to 'wpa_printf' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'username' is not NULL before passing to 'wpa_printf'"
+  },
+  {
+   "column": 9,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 942,
+   "message": "Pointer arithmetic 'username + 1' goes 1 elements past the end of array 'username[0]'. This exceeds array bounds.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Ensure pointer arithmetic stays within array bounds (0 to 0)"
+  },
+  {
+   "column": 58,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1013,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1026,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1026,
+   "message": "Unsigned integer increment 'pos++' may wrap at maximum value",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking before increment/decrement"
+  },
+  {
+   "column": 24,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1027,
+   "message": "Unsigned integer subtraction 'end - pos' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1029,
+   "message": "Function returns pointer to local variable 'id' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1044,
+   "message": "Function 'eap_sim_db_get_next_pseudonym' does not validate pointer parameter 'data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'data' at the start of the function, e.g., 'if (!data) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1077,
+   "message": "Function 'eap_sim_db_get_next_reauth_id' does not validate pointer parameter 'data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'data' at the start of the function, e.g., 'if (!data) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1110,
+   "message": "Function 'eap_sim_db_add_pseudonym' does not validate pointer parameter 'pseudonym' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pseudonym' at the start of the function, e.g., 'if (!pseudonym) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1193,
+   "message": "Function returns pointer to local variable 'r' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1213,
+   "message": "Function 'eap_sim_db_add_reauth' does not validate pointer parameter 'permanent' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'permanent' at the start of the function, e.g., 'if (!permanent) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1213,
+   "message": "Function 'eap_sim_db_add_reauth' does not validate pointer parameter 'reauth_id' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'reauth_id' at the start of the function, e.g., 'if (!reauth_id) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1213,
+   "message": "Function 'eap_sim_db_add_reauth' does not validate pointer parameter 'mk' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'mk' at the start of the function, e.g., 'if (!mk) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1254,
+   "message": "Function 'eap_sim_db_add_reauth_prime' does not validate pointer parameter 'permanent' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'permanent' at the start of the function, e.g., 'if (!permanent) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1254,
+   "message": "Function 'eap_sim_db_add_reauth_prime' does not validate pointer parameter 'reauth_id' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'reauth_id' at the start of the function, e.g., 'if (!reauth_id) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1254,
+   "message": "Function 'eap_sim_db_add_reauth_prime' does not validate pointer parameter 'k_encr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'k_encr' at the start of the function, e.g., 'if (!k_encr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1254,
+   "message": "Function 'eap_sim_db_add_reauth_prime' does not validate pointer parameter 'k_aut' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'k_aut' at the start of the function, e.g., 'if (!k_aut) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1254,
+   "message": "Function 'eap_sim_db_add_reauth_prime' does not validate pointer parameter 'k_re' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'k_re' at the start of the function, e.g., 'if (!k_re) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1333,
+   "message": "Function returns pointer to local variable 'r' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 70,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1393,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 39,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1395,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 58,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1406,
+   "message": "Variable 'entry' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'entry' before use, e.g., at its declaration"
+  },
+  {
+   "column": 7,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1408,
+   "message": "Passing null pointer 'username' to 'wpa_printf' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'username' is not NULL before passing to 'wpa_printf'"
+  },
+  {
+   "column": 9,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1411,
+   "message": "Pointer arithmetic 'username + 1' goes 1 elements past the end of array 'username[0]'. This exceeds array bounds.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Ensure pointer arithmetic stays within array bounds (0 to 0)"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1489,
+   "message": "Function 'eap_sim_db_resynchronize' does not validate pointer parameter 'data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'data' at the start of the function, e.g., 'if (!data) { return error_code; }'"
+  },
+  {
+   "column": 7,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1501,
+   "message": "Passing null pointer 'username' to 'wpa_printf' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'username' is not NULL before passing to 'wpa_printf'"
+  },
+  {
+   "column": 9,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1504,
+   "message": "Pointer arithmetic 'username + 1' goes 1 elements past the end of array 'username[0]'. This exceeds array bounds.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Ensure pointer arithmetic stays within array bounds (0 to 0)"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1524,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1530,
+   "message": "Using sprintf return value without error checking; use sprintf_m or check for negative return",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Check return value for errors before using it"
+  },
+  {
+   "column": 5,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1554,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 7,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1558,
+   "message": "Plain 'char' variable 'pos' used as array index (may be negative)",
+   "rule_id": "STR00-C",
+   "severity": "Medium",
+   "suggestion": "Declare 'pos' as 'unsigned char' or 'int' for array indexing"
+  },
+  {
+   "column": 31,
+   "file": "src/eap_server/eap_sim_db.c",
+   "line": 1558,
+   "message": "Plain 'char' variable 'pos' used as array index (may be negative)",
+   "rule_id": "STR00-C",
+   "severity": "Medium",
+   "suggestion": "Declare 'pos' as 'unsigned char' or 'int' for array indexing"
+  }
+ ]
+}

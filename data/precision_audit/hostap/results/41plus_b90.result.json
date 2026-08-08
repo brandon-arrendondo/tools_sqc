@@ -1,0 +1,971 @@
+{
+ "labels": [
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2035,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch: ordinary bignum bit-manipulation idiom mixing bitwise/arithmetic ops on the same var/constant, not the signed-bitwise-operand defect INT14-C targets."
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2035,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "winsize bounded to [2,8] by explicit lookup-table branch in same function, or shift amount is a platform header constant (DIGIT_BIT/CHAR_BIT); rule doesn't see the same-function algorithmic bound."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2042,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No restrict qualifier anywhere in libtommath.c (grep confirms 0 uses); confirmed no-restrict EXP43-C FP class extended to internal bignum helpers (mp_sqr/mp_mul/redux/etc)."
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2045,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'redux' is a local function-pointer variable (int (*redux)(...)), not an undeclared function; known DCL31-C misfire on function-pointer-variable calls."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2051,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No restrict qualifier anywhere in libtommath.c (grep confirms 0 uses); confirmed no-restrict EXP43-C FP class extended to internal bignum helpers (mp_sqr/mp_mul/redux/etc)."
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2054,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'redux' is a local function-pointer variable (int (*redux)(...)), not an undeclared function; known DCL31-C misfire on function-pointer-variable calls."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2069,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No restrict qualifier anywhere in libtommath.c (grep confirms 0 uses); confirmed no-restrict EXP43-C FP class extended to internal bignum helpers (mp_sqr/mp_mul/redux/etc)."
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2072,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'redux' is a local function-pointer variable (int (*redux)(...)), not an undeclared function; known DCL31-C misfire on function-pointer-variable calls."
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2077,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "winsize bounded to [2,8] by explicit lookup-table branch in same function, or shift amount is a platform header constant (DIGIT_BIT/CHAR_BIT); rule doesn't see the same-function algorithmic bound."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2079,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No restrict qualifier anywhere in libtommath.c (grep confirms 0 uses); confirmed no-restrict EXP43-C FP class extended to internal bignum helpers (mp_sqr/mp_mul/redux/etc)."
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2082,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'redux' is a local function-pointer variable (int (*redux)(...)), not an undeclared function; known DCL31-C misfire on function-pointer-variable calls."
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2095,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "winsize bounded to [2,8] by explicit lookup-table branch in same function, or shift amount is a platform header constant (DIGIT_BIT/CHAR_BIT); rule doesn't see the same-function algorithmic bound."
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2095,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "winsize bounded to [2,8] by explicit lookup-table branch in same function, or shift amount is a platform header constant (DIGIT_BIT/CHAR_BIT); rule doesn't see the same-function algorithmic bound."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2096,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "M[] cleanup loop (mp_clear) matches exactly the init range set up earlier in the same function (mp_init(&M[1]) + loop over 1<<(winsize-1)..2^winsize-1); not an uninitialized read."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2124,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch: ordinary bignum bit-manipulation idiom mixing bitwise/arithmetic ops on the same var/constant, not the signed-bitwise-operand defect INT14-C targets."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2124,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch: ordinary bignum bit-manipulation idiom mixing bitwise/arithmetic ops on the same var/constant, not the signed-bitwise-operand defect INT14-C targets."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2124,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch: ordinary bignum bit-manipulation idiom mixing bitwise/arithmetic ops on the same var/constant, not the signed-bitwise-operand defect INT14-C targets."
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2124,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "winsize bounded to [2,8] by explicit lookup-table branch in same function, or shift amount is a platform header constant (DIGIT_BIT/CHAR_BIT); rule doesn't see the same-function algorithmic bound."
+  },
+  {
+   "rule": "INT35-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2124,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sizeof(mp_word)*CHAR_BIT used only as a conservative fast-path cutoff heuristic; literal rule match but low severity/harmless on all real mp_word typedefs (no padding bits)."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2156,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No restrict qualifier anywhere in libtommath.c (grep confirms 0 uses); confirmed no-restrict EXP43-C FP class extended to internal bignum helpers (mp_sqr/mp_mul/redux/etc)."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2161,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No restrict qualifier anywhere in libtommath.c (grep confirms 0 uses); confirmed no-restrict EXP43-C FP class extended to internal bignum helpers (mp_sqr/mp_mul/redux/etc)."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2166,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No restrict qualifier anywhere in libtommath.c (grep confirms 0 uses); confirmed no-restrict EXP43-C FP class extended to internal bignum helpers (mp_sqr/mp_mul/redux/etc)."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2171,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No restrict qualifier anywhere in libtommath.c (grep confirms 0 uses); confirmed no-restrict EXP43-C FP class extended to internal bignum helpers (mp_sqr/mp_mul/redux/etc)."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2218,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch: ordinary bignum bit-manipulation idiom mixing bitwise/arithmetic ops on the same var/constant, not the signed-bitwise-operand defect INT14-C targets."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2218,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch: ordinary bignum bit-manipulation idiom mixing bitwise/arithmetic ops on the same var/constant, not the signed-bitwise-operand defect INT14-C targets."
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2226,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "winsize bounded to [2,8] by explicit lookup-table branch in same function, or shift amount is a platform header constant (DIGIT_BIT/CHAR_BIT); rule doesn't see the same-function algorithmic bound."
+  },
+  {
+   "rule": "INT10-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2226,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Operand is genuinely a plain signed int per its declaration (not a wrong-type detection); literal rule match, graded TP low severity/idiomatic per the established INT13-C-genuinely-correct precedent."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2242,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No restrict qualifier anywhere in libtommath.c (grep confirms 0 uses); confirmed no-restrict EXP43-C FP class extended to internal bignum helpers (mp_sqr/mp_mul/redux/etc)."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2264,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch: ordinary bignum bit-manipulation idiom mixing bitwise/arithmetic ops on the same var/constant, not the signed-bitwise-operand defect INT14-C targets."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2265,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No restrict qualifier anywhere in libtommath.c (grep confirms 0 uses); confirmed no-restrict EXP43-C FP class extended to internal bignum helpers (mp_sqr/mp_mul/redux/etc)."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2270,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No restrict qualifier anywhere in libtommath.c (grep confirms 0 uses); confirmed no-restrict EXP43-C FP class extended to internal bignum helpers (mp_sqr/mp_mul/redux/etc)."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2274,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No restrict qualifier anywhere in libtommath.c (grep confirms 0 uses); confirmed no-restrict EXP43-C FP class extended to internal bignum helpers (mp_sqr/mp_mul/redux/etc)."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2290,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No restrict qualifier anywhere in libtommath.c (grep confirms 0 uses); confirmed no-restrict EXP43-C FP class extended to internal bignum helpers (mp_sqr/mp_mul/redux/etc)."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2295,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No restrict qualifier anywhere in libtommath.c (grep confirms 0 uses); confirmed no-restrict EXP43-C FP class extended to internal bignum helpers (mp_sqr/mp_mul/redux/etc)."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2300,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No restrict qualifier anywhere in libtommath.c (grep confirms 0 uses); confirmed no-restrict EXP43-C FP class extended to internal bignum helpers (mp_sqr/mp_mul/redux/etc)."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2310,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No restrict qualifier anywhere in libtommath.c (grep confirms 0 uses); confirmed no-restrict EXP43-C FP class extended to internal bignum helpers (mp_sqr/mp_mul/redux/etc)."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2317,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No restrict qualifier anywhere in libtommath.c (grep confirms 0 uses); confirmed no-restrict EXP43-C FP class extended to internal bignum helpers (mp_sqr/mp_mul/redux/etc)."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2345,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch: ordinary bignum bit-manipulation idiom mixing bitwise/arithmetic ops on the same var/constant, not the signed-bitwise-operand defect INT14-C targets."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2345,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch: ordinary bignum bit-manipulation idiom mixing bitwise/arithmetic ops on the same var/constant, not the signed-bitwise-operand defect INT14-C targets."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2345,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch: ordinary bignum bit-manipulation idiom mixing bitwise/arithmetic ops on the same var/constant, not the signed-bitwise-operand defect INT14-C targets."
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2345,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "winsize bounded to [2,8] by explicit lookup-table branch in same function, or shift amount is a platform header constant (DIGIT_BIT/CHAR_BIT); rule doesn't see the same-function algorithmic bound."
+  },
+  {
+   "rule": "INT35-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2345,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sizeof(mp_word)*CHAR_BIT used only as a conservative fast-path cutoff heuristic; literal rule match but low severity/harmless on all real mp_word typedefs (no padding bits)."
+  },
+  {
+   "rule": "FIO50-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2385,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain integer arithmetic (u = (mp_digit)(r >> DIGIT_BIT)) with no FILE*/stream I/O anywhere nearby; matches the confirmed FIO50-C-fires-on-plain-arithmetic rule bug."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2418,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Genuine unmodified pointer param on a plain internal static bignum helper (not vtable/callback-bound); established plain-internal-helper DCL13-C real-if-low-severity TP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2418,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Genuine unmodified pointer param on a plain internal static bignum helper (not vtable/callback-bound); established plain-internal-helper DCL13-C real-if-low-severity TP class."
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2422,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'_W' is declared block-scope (register mp_word _W; inside the function), not file-scope; established DCL37-C block-scope-misclassified-as-file-scope FP class."
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2422,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "'_W' is underscore+uppercase, reserved in ALL scopes per C 7.1.3 regardless of block/file scope; matches the _INT/_STR precedent graded TP."
+  },
+  {
+   "rule": "INT10-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2497,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Operand is genuinely a plain signed int per its declaration (not a wrong-type detection); literal rule match, graded TP low severity/idiomatic per the established INT13-C-genuinely-correct precedent."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2520,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Genuine unmodified pointer param on a plain internal static bignum helper (not vtable/callback-bound); established plain-internal-helper DCL13-C real-if-low-severity TP class."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2542,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch: ordinary bignum bit-manipulation idiom mixing bitwise/arithmetic ops on the same var/constant, not the signed-bitwise-operand defect INT14-C targets."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2569,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Carry-propagation loop bounded by the pre-allocated digit buffer (mp_init_size(&t,2*pa+1)); terminates when carry reaches 0, an algorithmic invariant the tool can't see. Extends the 'unbounded loop the tool doesn't see a bound for' ARR30-C FP family."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2597,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch: ordinary bignum bit-manipulation idiom mixing bitwise/arithmetic ops on the same var/constant, not the signed-bitwise-operand defect INT14-C targets."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2597,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch: ordinary bignum bit-manipulation idiom mixing bitwise/arithmetic ops on the same var/constant, not the signed-bitwise-operand defect INT14-C targets."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2597,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch: ordinary bignum bit-manipulation idiom mixing bitwise/arithmetic ops on the same var/constant, not the signed-bitwise-operand defect INT14-C targets."
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2597,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "winsize bounded to [2,8] by explicit lookup-table branch in same function, or shift amount is a platform header constant (DIGIT_BIT/CHAR_BIT); rule doesn't see the same-function algorithmic bound."
+  },
+  {
+   "rule": "INT35-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2597,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sizeof(mp_word)*CHAR_BIT used only as a conservative fast-path cutoff heuristic; literal rule match but low severity/harmless on all real mp_word typedefs (no padding bits)."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2617,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'digs' is an internal library parameter always passed from same-file callers with values bounded by algorithm-derived sizes (e.g. um+1), not attacker-controlled at this call boundary; low-severity internal-contract FP."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2617,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'digs' is an internal library parameter always passed from same-file callers with values bounded by algorithm-derived sizes (e.g. um+1), not attacker-controlled at this call boundary; low-severity internal-contract FP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2646,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Genuine unmodified pointer param on a plain internal static bignum helper (not vtable/callback-bound); established plain-internal-helper DCL13-C real-if-low-severity TP class."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2660,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch: ordinary bignum bit-manipulation idiom mixing bitwise/arithmetic ops on the same var/constant, not the signed-bitwise-operand defect INT14-C targets."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2665,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch: ordinary bignum bit-manipulation idiom mixing bitwise/arithmetic ops on the same var/constant, not the signed-bitwise-operand defect INT14-C targets."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2677,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch: ordinary bignum bit-manipulation idiom mixing bitwise/arithmetic ops on the same var/constant, not the signed-bitwise-operand defect INT14-C targets."
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2712,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'_W' is declared block-scope (register mp_word _W; inside the function), not file-scope; established DCL37-C block-scope-misclassified-as-file-scope FP class."
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2712,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "'_W' is underscore+uppercase, reserved in ALL scopes per C 7.1.3 regardless of block/file scope; matches the _INT/_STR precedent graded TP."
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2723,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain scalar pointer-dereference assignment (*_W++ = *tmpx++;) copying an mp_digit into an mp_word; no struct/flexible-array-member involved at all. Matches confirmed MEM33-C misapplied-to-plain-deref class."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2743,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch: ordinary bignum bit-manipulation idiom mixing bitwise/arithmetic ops on the same var/constant, not the signed-bitwise-operand defect INT14-C targets."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2743,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch: ordinary bignum bit-manipulation idiom mixing bitwise/arithmetic ops on the same var/constant, not the signed-bitwise-operand defect INT14-C targets."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2743,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch: ordinary bignum bit-manipulation idiom mixing bitwise/arithmetic ops on the same var/constant, not the signed-bitwise-operand defect INT14-C targets."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2743,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "W[] is fully zero/copy-filled via pointer-alias loops (*_W++ = ...) immediately above; tool doesn't track pointer-alias array writes as initialization."
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2762,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'_W' is declared block-scope (register mp_word _W; inside the function), not file-scope; established DCL37-C block-scope-misclassified-as-file-scope FP class."
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2762,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "'_W' is underscore+uppercase, reserved in ALL scopes per C 7.1.3 regardless of block/file scope; matches the _INT/_STR precedent graded TP."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2768,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "W[] fully initialized via pointer-alias copy+zero-fill loops just above (register mp_word *_W = W; *_W++ = ...); tool misses alias-based array initialization."
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2786,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'_W' is declared block-scope (register mp_word _W; inside the function), not file-scope; established DCL37-C block-scope-misclassified-as-file-scope FP class."
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2786,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "'_W' is underscore+uppercase, reserved in ALL scopes per C 7.1.3 regardless of block/file scope; matches the _INT/_STR precedent graded TP."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2831,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No restrict qualifier anywhere in libtommath.c (grep confirms 0 uses); confirmed no-restrict EXP43-C FP class extended to internal bignum helpers (mp_sqr/mp_mul/redux/etc)."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2870,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch: ordinary bignum bit-manipulation idiom mixing bitwise/arithmetic ops on the same var/constant, not the signed-bitwise-operand defect INT14-C targets."
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2870,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "winsize bounded to [2,8] by explicit lookup-table branch in same function, or shift amount is a platform header constant (DIGIT_BIT/CHAR_BIT); rule doesn't see the same-function algorithmic bound."
+  },
+  {
+   "rule": "INT10-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2914,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Operand is genuinely a plain signed int per its declaration (not a wrong-type detection); literal rule match, graded TP low severity/idiomatic per the established INT13-C-genuinely-correct precedent."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2928,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No restrict qualifier anywhere in libtommath.c (grep confirms 0 uses); confirmed no-restrict EXP43-C FP class extended to internal bignum helpers (mp_sqr/mp_mul/redux/etc)."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2932,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No restrict qualifier anywhere in libtommath.c (grep confirms 0 uses); confirmed no-restrict EXP43-C FP class extended to internal bignum helpers (mp_sqr/mp_mul/redux/etc)."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2990,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "M[1] is initialized on the immediately preceding line via mp_init(&M[1]); flagging the init call itself as 'reading uninitialized data' is a category error."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2995,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch: ordinary bignum bit-manipulation idiom mixing bitwise/arithmetic ops on the same var/constant, not the signed-bitwise-operand defect INT14-C targets."
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2995,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "winsize bounded to [2,8] by explicit lookup-table branch in same function, or shift amount is a platform header constant (DIGIT_BIT/CHAR_BIT); rule doesn't see the same-function algorithmic bound."
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2995,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "winsize bounded to [2,8] by explicit lookup-table branch in same function, or shift amount is a platform header constant (DIGIT_BIT/CHAR_BIT); rule doesn't see the same-function algorithmic bound."
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 2997,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "winsize bounded to [2,8] by explicit lookup-table branch in same function, or shift amount is a platform header constant (DIGIT_BIT/CHAR_BIT); rule doesn't see the same-function algorithmic bound."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3000,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "M[] cleanup loop (mp_clear) matches exactly the init range set up earlier in the same function (mp_init(&M[1]) + loop over 1<<(winsize-1)..2^winsize-1); not an uninitialized read."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3020,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch: ordinary bignum bit-manipulation idiom mixing bitwise/arithmetic ops on the same var/constant, not the signed-bitwise-operand defect INT14-C targets."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3020,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch: ordinary bignum bit-manipulation idiom mixing bitwise/arithmetic ops on the same var/constant, not the signed-bitwise-operand defect INT14-C targets."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3020,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch: ordinary bignum bit-manipulation idiom mixing bitwise/arithmetic ops on the same var/constant, not the signed-bitwise-operand defect INT14-C targets."
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3020,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "winsize bounded to [2,8] by explicit lookup-table branch in same function, or shift amount is a platform header constant (DIGIT_BIT/CHAR_BIT); rule doesn't see the same-function algorithmic bound."
+  },
+  {
+   "rule": "INT35-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3020,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sizeof(mp_word)*CHAR_BIT used only as a conservative fast-path cutoff heuristic; literal rule match but low severity/harmless on all real mp_word typedefs (no padding bits)."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3021,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'redux' (function pointer) is read via call-syntax redux(...) at multiple points later in this same function; tool doesn't recognize a call-site invocation as a read of the variable. Function-pointer-variable blindness, same root cause as the DCL31-C redux misfire."
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3090,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "winsize bounded to [2,8] by explicit lookup-table branch in same function, or shift amount is a platform header constant (DIGIT_BIT/CHAR_BIT); rule doesn't see the same-function algorithmic bound."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3095,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No restrict qualifier anywhere in libtommath.c (grep confirms 0 uses); confirmed no-restrict EXP43-C FP class extended to internal bignum helpers (mp_sqr/mp_mul/redux/etc)."
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3095,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "winsize bounded to [2,8] by explicit lookup-table branch in same function, or shift amount is a platform header constant (DIGIT_BIT/CHAR_BIT); rule doesn't see the same-function algorithmic bound."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3095,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "M[x] read is preceded in the same function by mp_copy/mp_mod/mp_mul writes that populate exactly this index before use; data-flow miss, not a genuine uninitialized read."
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3095,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "winsize bounded to [2,8] by explicit lookup-table branch in same function, or shift amount is a platform header constant (DIGIT_BIT/CHAR_BIT); rule doesn't see the same-function algorithmic bound."
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3098,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "winsize bounded to [2,8] by explicit lookup-table branch in same function, or shift amount is a platform header constant (DIGIT_BIT/CHAR_BIT); rule doesn't see the same-function algorithmic bound."
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3104,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "winsize bounded to [2,8] by explicit lookup-table branch in same function, or shift amount is a platform header constant (DIGIT_BIT/CHAR_BIT); rule doesn't see the same-function algorithmic bound."
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3104,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "winsize bounded to [2,8] by explicit lookup-table branch in same function, or shift amount is a platform header constant (DIGIT_BIT/CHAR_BIT); rule doesn't see the same-function algorithmic bound."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3105,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "M[x] read is preceded in the same function by mp_copy/mp_mod/mp_mul writes that populate exactly this index before use; data-flow miss, not a genuine uninitialized read."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3105,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "M[x] read is preceded in the same function by mp_copy/mp_mod/mp_mul writes that populate exactly this index before use; data-flow miss, not a genuine uninitialized read."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3148,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No restrict qualifier anywhere in libtommath.c (grep confirms 0 uses); confirmed no-restrict EXP43-C FP class extended to internal bignum helpers (mp_sqr/mp_mul/redux/etc)."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3158,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch: ordinary bignum bit-manipulation idiom mixing bitwise/arithmetic ops on the same var/constant, not the signed-bitwise-operand defect INT14-C targets."
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3158,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "winsize bounded to [2,8] by explicit lookup-table branch in same function, or shift amount is a platform header constant (DIGIT_BIT/CHAR_BIT); rule doesn't see the same-function algorithmic bound."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3165,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No restrict qualifier anywhere in libtommath.c (grep confirms 0 uses); confirmed no-restrict EXP43-C FP class extended to internal bignum helpers (mp_sqr/mp_mul/redux/etc)."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3174,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No restrict qualifier anywhere in libtommath.c (grep confirms 0 uses); confirmed no-restrict EXP43-C FP class extended to internal bignum helpers (mp_sqr/mp_mul/redux/etc)."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3192,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No restrict qualifier anywhere in libtommath.c (grep confirms 0 uses); confirmed no-restrict EXP43-C FP class extended to internal bignum helpers (mp_sqr/mp_mul/redux/etc)."
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3201,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "winsize bounded to [2,8] by explicit lookup-table branch in same function, or shift amount is a platform header constant (DIGIT_BIT/CHAR_BIT); rule doesn't see the same-function algorithmic bound."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3203,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No restrict qualifier anywhere in libtommath.c (grep confirms 0 uses); confirmed no-restrict EXP43-C FP class extended to internal bignum helpers (mp_sqr/mp_mul/redux/etc)."
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "winsize bounded to [2,8] by explicit lookup-table branch in same function, or shift amount is a platform header constant (DIGIT_BIT/CHAR_BIT); rule doesn't see the same-function algorithmic bound."
+  },
+  {
+   "rule": "INT34-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "winsize bounded to [2,8] by explicit lookup-table branch in same function, or shift amount is a platform header constant (DIGIT_BIT/CHAR_BIT); rule doesn't see the same-function algorithmic bound."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3232,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "M[] cleanup loop (mp_clear) matches exactly the init range set up earlier in the same function (mp_init(&M[1]) + loop over 1<<(winsize-1)..2^winsize-1); not an uninitialized read."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3250,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Genuine unmodified pointer param on a plain internal static bignum helper (not vtable/callback-bound); established plain-internal-helper DCL13-C real-if-low-severity TP class."
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3268,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'_W' is declared block-scope (register mp_word _W; inside the function), not file-scope; established DCL37-C block-scope-misclassified-as-file-scope FP class."
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3268,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "'_W' is underscore+uppercase, reserved in ALL scopes per C 7.1.3 regardless of block/file scope; matches the _INT/_STR precedent graded TP."
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3302,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "'ix' is genuinely declared int (not unsigned) and used with & and >>; literal rule match \u2014 same 'genuinely correct per rule text' TP class as the wpa_supplicant_set_suites INT13-C precedent, not the wrong-type FP class."
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3303,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "'ix' is genuinely declared int (not unsigned) and used with & and >>; literal rule match \u2014 same 'genuinely correct per rule text' TP class as the wpa_supplicant_set_suites INT13-C precedent, not the wrong-type FP class."
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3303,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "'ix' is genuinely declared int (not unsigned) and used with & and >>; literal rule match \u2014 same 'genuinely correct per rule text' TP class as the wpa_supplicant_set_suites INT13-C precedent, not the wrong-type FP class."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/tls/libtommath.c",
+   "line": 3379,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Category error: '*tmpc++ = u;' stores the VALUE of a local scalar into a caller/heap-owned buffer (c->dp), not an address of a local escaping the function; no pointer-to-local is returned or stored anywhere."
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 16,
+  "fp": 104,
+  "fn": 0
+ }
+}

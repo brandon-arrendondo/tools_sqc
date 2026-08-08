@@ -1,0 +1,1219 @@
+{
+ "labels": [
+  {
+   "rule": "INT14-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1718,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch with real CERT INT14-C intent; CONFIRMED FP class (parity/loop-counter idiom, not accidental bitwise/arithmetic mixing)"
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1732,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cross-function local union variable conflation; this function's own union is freshly memset and only one member ever written; CONFIRMED FP class"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1765,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch with real CERT INT14-C intent; CONFIRMED FP class (parity/loop-counter idiom, not accidental bitwise/arithmetic mixing)"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1811,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch with real CERT INT14-C intent; CONFIRMED FP class (parity/loop-counter idiom, not accidental bitwise/arithmetic mixing)"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1817,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strtol/strtoul endptr output param is standard-guaranteed non-NULL, or os_free(NULL) is standard-safe; CONFIRMED FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1831,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t-length parameter pair; CONFIRMED categorical FP (API05-C false positive on ptr+len idiom)"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1838,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch with real CERT INT14-C intent; CONFIRMED FP class (parity/loop-counter idiom, not accidental bitwise/arithmetic mixing)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1850,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t-length parameter pair; CONFIRMED categorical FP (API05-C false positive on ptr+len idiom)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1850,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "l2_packet rx_callback matches the fixed l2_packet_data.rx_callback typedef signature; dispatch-contract DCL13-C FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1860,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr)/output-param write / same-branch-guard initialization misidentified as uninitialized use; CONFIRMED FP family"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1869,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain integer/byte-pointer arithmetic misidentified as scaled double-scaling pointer arithmetic; CONFIRMED FP class"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1878,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain integer/byte-pointer arithmetic misidentified as scaled double-scaling pointer arithmetic; CONFIRMED FP class"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1878,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "ntohs(ip.ip_len) never validated >= sizeof(ip) before the subtraction (only an upper bound is checked); genuine underflow feeding the following for-loop bound, matches the confirmed wpas_data_test_rx INT30-C TP precedent (sibling data_test_tx IS guarded, this RX path is not)"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1884,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer is array-backed via &buf[N] indexing; rule doesn't trace that provenance; CONFIRMED FP class (exact precedent shape)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1890,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pure accessor/macro args (MAC2STR or wpabuf_head_u8/wpabuf_len reads) misflagged as unsequenced side effects; CONFIRMED FP class"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1898,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "enabled only ever consumed via if(!enabled) boolean test; malformed input collapsing to atoi()==0 is behaviorally identical to explicit off; boolean-coerced atoi FP class"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1898,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "enabled only ever consumed via if(!enabled) boolean test; malformed input collapsing to atoi()==0 is behaviorally identical to explicit off; boolean-coerced atoi FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1898,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'cmd' is a char* pointer parameter, not a scalar char being converted; STR34-C pointer-mistaken-for-scalar-char type-confusion FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1938,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hapd IS modified: hapd->l2_test is written (set to NULL and to l2_packet_init() result) directly through this pointer"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1938,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "cmd genuinely read-only in this function; real (low-severity) const opportunity"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1945,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed macro/constant-sized array misidentified as VLA; CONFIRMED FP class (fixed-size buffer, not runtime-sized)"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1969,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "val fully range-validated (val < 0 || val > 0xff) immediately after the call; downstream check exists, matches confirmed strtoul range-checked FP sub-class"
+  },
+  {
+   "rule": "ERR01-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1969,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "val fully range-validated to [0,0xff]; errno/ERANGE check is redundant given the tight bound"
+  },
+  {
+   "rule": "ERR30-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1969,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "errno never reset before the call; range check doesn't fully substitute for ERANGE detection per the established strtoul-partial-validation precedent"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1976,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "i immediately range-validated (i < sizeof(*ip) || i > HWSIM_IP_LEN) and 0 falls OUTSIDE the valid range, so malformed input is rejected; range-checked-atoi FP class"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1976,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "i immediately range-validated (i < sizeof(*ip) || i > HWSIM_IP_LEN) and 0 falls OUTSIDE the valid range, so malformed input is rejected; range-checked-atoi FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1977,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr)/output-param write / same-branch-guard initialization misidentified as uninitialized use; CONFIRMED FP family"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1982,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr)/output-param write / same-branch-guard initialization misidentified as uninitialized use; CONFIRMED FP family"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1983,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr)/output-param write / same-branch-guard initialization misidentified as uninitialized use; CONFIRMED FP family"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1984,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr)/output-param write / same-branch-guard initialization misidentified as uninitialized use; CONFIRMED FP family"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1986,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer is array-backed via &buf[N] indexing; rule doesn't trace that provenance; CONFIRMED FP class (exact precedent shape)"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1998,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain integer/byte-pointer arithmetic misidentified as scaled double-scaling pointer arithmetic; CONFIRMED FP class"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 1998,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain integer/byte-pointer arithmetic misidentified as scaled double-scaling pointer arithmetic; CONFIRMED FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2005,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pure accessor/macro args (MAC2STR or wpabuf_head_u8/wpabuf_len reads) misflagged as unsequenced side effects; CONFIRMED FP class"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2027,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Ad-hoc NULL check flagged for lacking a dedicated validation function; CONFIRMED stylistic-pedantry FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2029,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = '\\0' command-tokenizing idiom); CONFIRMED massive-scale STR34-C FP class"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2033,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch with real CERT INT14-C intent; CONFIRMED FP class (parity/loop-counter idiom, not accidental bitwise/arithmetic mixing)"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2067,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed-size buffer flagged for env-var use with no getenv/putenv anywhere nearby; CONFIRMED FP class"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2185,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed-size buffer flagged for env-var use with no getenv/putenv anywhere nearby; CONFIRMED FP class"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2190,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "alg forwarded unchecked to hostapd_drv_set_key with no range validation at all; genuine missing error detection"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2190,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "alg forwarded unchecked to hostapd_drv_set_key with no range validation at all; genuine missing error detection"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2201,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "idx forwarded unchecked as a key index with no range validation; genuine missing error detection"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2201,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "idx forwarded unchecked as a key index with no range validation; genuine missing error detection"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2206,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "set_tx forwarded unchecked to hostapd_drv_set_key with no range validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2206,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "set_tx forwarded unchecked to hostapd_drv_set_key with no range validation"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2227,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "key_flag forwarded unchecked as an enum value with no range validation; genuine missing error detection"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2227,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "key_flag forwarded unchecked as an enum value with no range validation; genuine missing error detection"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2238,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "restore_tk matches the fixed void(*cb)(void *ctx1, void *ctx2) callback typedef used by wpa_auth_resend_m1/m3; dispatch-contract DCL13-C FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2259,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'cmd' is a char* pointer parameter passed to os_strstr, not a scalar char; STR34-C pointer-mistaken-for-scalar-char FP class"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2280,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Rule pattern-matches a security-sounding substring in a plain control-flag string literal, not real secret material; matches ctrl_iface event-tag MSC41-C FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2289,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'cmd' is a char* pointer parameter passed to os_strstr, not a scalar char; STR34-C pointer-mistaken-for-scalar-char FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2319,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'cmd' is a char* pointer parameter passed to os_strstr, not a scalar char; STR34-C pointer-mistaken-for-scalar-char FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2362,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "hapd only read (wpa_auth field access); genuine low-severity const candidate, not a vtable/callback slot"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2363,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t-length parameter pair; CONFIRMED categorical FP (API05-C false positive on ptr+len idiom)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2375,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t-length parameter pair; CONFIRMED categorical FP (API05-C false positive on ptr+len idiom)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2376,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t-length parameter pair; CONFIRMED categorical FP (API05-C false positive on ptr+len idiom)"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2412,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "type only checked for a trailing space (*pos != ' '), never range/overflow-validated; matches the ctrl_iface.c partial-validation strtol TP precedent"
+  },
+  {
+   "rule": "ERR01-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2412,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "no errno/ERANGE check at all beyond the trailing-character check; weaker-validation strtol TP precedent"
+  },
+  {
+   "rule": "ERR30-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2412,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "errno never reset before the call and never checked; weaker-validation strtol TP precedent"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2413,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strtol/strtoul endptr output param is standard-guaranteed non-NULL, or os_free(NULL) is standard-safe; CONFIRMED FP class"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2433,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Preprocessor-branch-blind: every #ifdef/#else arm already returns a value; CONFIRMED FP class"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2555,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Preprocessor-branch-blind: every #ifdef/#else arm already returns a value; CONFIRMED FP class"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2567,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "color fully range-validated (pos==end || color<0 || color>63) immediately after the call; downstream check exists, matches confirmed strtoul range-checked FP sub-class"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2567,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "color fully range-validated to [0,63]; return value effectively checked via the range test"
+  },
+  {
+   "rule": "ERR01-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2567,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "color fully range-validated to [0,63]; errno/ERANGE check is redundant given the tight bound"
+  },
+  {
+   "rule": "ERR30-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2567,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "errno never reset before the call; range check doesn't fully substitute for ERANGE detection per the established precedent"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2647,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "hapd entirely unused in hostapd_maxnss's body; genuine unused-param const candidate"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2647,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sta only read (ht_capabilities/vht_capabilities/supported_mcs_set fields); genuine const candidate"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2681,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch with real CERT INT14-C intent; CONFIRMED FP class (parity/loop-counter idiom, not accidental bitwise/arithmetic mixing)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2681,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr)/output-param write / same-branch-guard initialization misidentified as uninitialized use; CONFIRMED FP family"
+  },
+  {
+   "rule": "INT34-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2681,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Shift amount is bounded by an enclosing loop guard (0-14 or 0-63) within the operand's bit width; CONFIRMED loop-bound-guard FP class"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2749,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "cw: 0 is itself a valid, in-range case (case 0 in the following switch), so malformed non-numeric input silently parses as an accepted '0'; 0-is-in-range TP nuance"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2749,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "cw: 0 is itself a valid, in-range case (case 0 in the following switch), so malformed non-numeric input silently parses as an accepted '0'; 0-is-in-range TP nuance"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2778,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic-pedantry mismatch with real CERT INT14-C intent; CONFIRMED FP class (parity/loop-counter idiom, not accidental bitwise/arithmetic mixing)"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2797,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Preprocessor-branch-blind: every #ifdef/#else arm already returns a value; CONFIRMED FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2847,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "hapd only read (hapd->radius_srv); genuine low-severity const candidate"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2860,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t-length parameter pair; CONFIRMED categorical FP (API05-C false positive on ptr+len idiom)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2861,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t-length parameter pair; CONFIRMED categorical FP (API05-C false positive on ptr+len idiom)"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2875,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "vendor_id only checked for a following blank char (isblank(*pos)), never range/overflow-validated; matches the established ctrl_iface.c strtoul partial-validation TP precedent"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2875,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "same partial-validation gap as ERR33-C; no ERANGE guard"
+  },
+  {
+   "rule": "ERR01-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2875,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "no errno/ERANGE check at all beyond the next-char-is-blank check; weaker-validation strtoul TP precedent"
+  },
+  {
+   "rule": "ERR30-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2875,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "errno never reset before the call and never checked; weaker-validation strtoul TP precedent"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2876,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strtol/strtoul endptr output param is standard-guaranteed non-NULL, or os_free(NULL) is standard-safe; CONFIRMED FP class"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2879,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "subcmd only checked indirectly via the following character parse, never range/overflow-validated; matches the established strtoul partial-validation TP precedent"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2879,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "same partial-validation gap as ERR33-C; no ERANGE guard"
+  },
+  {
+   "rule": "ERR01-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2879,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "no errno/ERANGE check at all; weaker-validation strtoul TP precedent"
+  },
+  {
+   "rule": "ERR30-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2879,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "errno never reset before the call and never checked; weaker-validation strtoul TP precedent"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2886,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/temp pair both derived from the same caller buffer via os_strchr; CONFIRMED pos/end-bounds-pair ARR36-C FP class"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2905,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nested_attr_flag = atoi(...) ? USED : NOT_USED ternary-boolean-coerced; CONFIRMED atoi-boolean-coerced FP class"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2905,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nested_attr_flag = atoi(...) ? USED : NOT_USED ternary-boolean-coerced; CONFIRMED atoi-boolean-coerced FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2918,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pure accessor/macro args (MAC2STR or wpabuf_head_u8/wpabuf_len reads) misflagged as unsequenced side effects; CONFIRMED FP class"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2950,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Neither side of the assignment is const-qualified; EXP40-C's premise (const-to-non-const) doesn't apply; CONFIRMED FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2959,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = '\\0' command-tokenizing idiom); CONFIRMED massive-scale STR34-C FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2969,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "hapd entirely unused in hostapd_ctrl_iface_log_level's body; genuine unused-param const candidate"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2969,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t-length parameter pair; CONFIRMED categorical FP (API05-C false positive on ptr+len idiom)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2970,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t-length parameter pair; CONFIRMED categorical FP (API05-C false positive on ptr+len idiom)"
+  },
+  {
+   "rule": "INT07-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2984,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Rule misattributes 'char' type to a variable actually declared int; CONFIRMED new-pattern rule bug (see categorical_patterns.md new entry)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2994,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = '\\0' command-tokenizing idiom); CONFIRMED massive-scale STR34-C FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3001,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'cmd' is a char* pointer parameter passed whole to str_to_debug_level, not a scalar char; STR34-C pointer-mistaken-for-scalar-char FP class"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3008,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_debug_timestamp assigned raw atoi(stamp) result with no range check at all; genuine missing error detection"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3008,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_debug_timestamp assigned raw atoi(stamp) result with no range check at all; genuine missing error detection"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3017,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "hapd only read (hapd->iface); genuine const candidate"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3018,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t-length parameter pair; CONFIRMED categorical FP (API05-C false positive on ptr+len idiom)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3018,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is written through, just via the pos = buf snprintf-builder alias, not its own name; CONFIRMED aliased-mutation DCL13-C FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3053,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t-length parameter pair; CONFIRMED categorical FP (API05-C false positive on ptr+len idiom)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3053,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is written through via the pos = buf snprintf-builder alias; CONFIRMED aliased-mutation DCL13-C FP class"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3101,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed-size buffer flagged for env-var use with no getenv/putenv anywhere nearby; CONFIRMED FP class"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3101,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed macro/constant-sized array misidentified as VLA; CONFIRMED FP class (fixed-size buffer, not runtime-sized)"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3115,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "random_interval: 0 is itself a valid in-range value (0 <= x <= 0xffff), so malformed input silently parses as accepted '0'; 0-is-in-range TP nuance"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3115,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "random_interval: 0 is itself a valid in-range value (0 <= x <= 0xffff), so malformed input silently parses as accepted '0'; 0-is-in-range TP nuance"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3123,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "min_ap immediately range-validated (min_ap <= 0 rejected), and 0 falls OUTSIDE the valid range, so malformed input is rejected; range-checked-atoi FP class"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3123,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "min_ap immediately range-validated (min_ap <= 0 rejected), and 0 falls OUTSIDE the valid range, so malformed input is rejected; range-checked-atoi FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3135,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr)/output-param write / same-branch-guard initialization misidentified as uninitialized use; CONFIRMED FP family"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3156,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t-length parameter pair; CONFIRMED categorical FP (API05-C false positive on ptr+len idiom)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3156,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t-length parameter pair; CONFIRMED categorical FP (API05-C false positive on ptr+len idiom)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3172,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'pos' + 9 is ordinary pointer arithmetic passed as a call argument to hex2byte, not a char-widening conversion; STR34-C pointer-arithmetic-argument FP sub-class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3196,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t-length parameter pair; CONFIRMED categorical FP (API05-C false positive on ptr+len idiom)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3196,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t-length parameter pair; CONFIRMED categorical FP (API05-C false positive on ptr+len idiom)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3216,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t-length parameter pair; CONFIRMED categorical FP (API05-C false positive on ptr+len idiom)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3270,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = '\\0' command-tokenizing idiom); CONFIRMED massive-scale STR34-C FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3286,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = '\\0' command-tokenizing idiom); CONFIRMED massive-scale STR34-C FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3302,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char assignment (*ptr++ = '\\0' command-tokenizing idiom); CONFIRMED massive-scale STR34-C FP class"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3319,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "bss_parameters: 0 is itself a valid in-range value (0 <= x <= 0xff), so malformed input silently parses as accepted '0'; 0-is-in-range TP nuance"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3319,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "bss_parameters: 0 is itself a valid in-range value (0 <= x <= 0xff), so malformed input silently parses as accepted '0'; 0-is-in-range TP nuance"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3367,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "iface only read (iface->drv_flags); genuine const candidate"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3367,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t-length parameter pair; CONFIRMED categorical FP (API05-C false positive on ptr+len idiom)"
+  },
+  {
+   "rule": "INT07-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3378,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Rule misattributes 'char' type to a variable actually declared int; CONFIRMED new-pattern rule bug (see categorical_patterns.md new entry)"
+  },
+  {
+   "rule": "INT34-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3382,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Shift amount is bounded by an enclosing loop guard (0-14 or 0-63) within the operand's bit width; CONFIRMED loop-bound-guard FP class"
+  },
+  {
+   "rule": "INT34-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3384,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Shift amount is bounded by an enclosing loop guard (0-14 or 0-63) within the operand's bit width; CONFIRMED loop-bound-guard FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3395,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "iface only read (iface->drv_flags2); genuine const candidate"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3395,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t-length parameter pair; CONFIRMED categorical FP (API05-C false positive on ptr+len idiom)"
+  },
+  {
+   "rule": "INT07-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3406,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Rule misattributes 'char' type to a variable actually declared int; CONFIRMED new-pattern rule bug (see categorical_patterns.md new entry)"
+  },
+  {
+   "rule": "INT34-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3410,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Shift amount is bounded by an enclosing loop guard (0-14 or 0-63) within the operand's bit width; CONFIRMED loop-bound-guard FP class"
+  },
+  {
+   "rule": "INT34-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3412,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Shift amount is bounded by an enclosing loop guard (0-14 or 0-63) within the operand's bit width; CONFIRMED loop-bound-guard FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3423,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "hapd entirely unused in hostapd_ctrl_iface_get_capability's body; genuine unused-param const candidate"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3424,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t-length parameter pair; CONFIRMED categorical FP (API05-C false positive on ptr+len idiom)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3424,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t-length parameter pair; CONFIRMED categorical FP (API05-C false positive on ptr+len idiom)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3454,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t-length parameter pair; CONFIRMED categorical FP (API05-C false positive on ptr+len idiom)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3455,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t-length parameter pair; CONFIRMED categorical FP (API05-C false positive on ptr+len idiom)"
+  },
+  {
+   "rule": "INT07-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3463,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Rule misattributes 'char' type to a variable actually declared int; CONFIRMED new-pattern rule bug (see categorical_patterns.md new entry)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3472,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "iface only read (iface->bss[], iface->interfaces); genuine const candidate"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3498,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "iface only read (iface->num_bss, iface->bss[i] passed by value); genuine const candidate"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3549,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t-length parameter pair; CONFIRMED categorical FP (API05-C false positive on ptr+len idiom)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3549,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "cmd only read via atoi(cmd); genuine low-severity const candidate"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3550,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t-length parameter pair; CONFIRMED categorical FP (API05-C false positive on ptr+len idiom)"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3553,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "count: if (!count) count = 1 coalesces atoi()'s error-return 0 to the same default used for legitimate absent/zero input; no behavioral difference from a real error"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3553,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "count: if (!count) count = 1 coalesces atoi()'s error-return 0 to the same default used for legitimate absent/zero input; no behavioral difference from a real error"
+  },
+  {
+   "rule": "INT07-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3562,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Rule misattributes 'char' type to a variable actually declared int; CONFIRMED new-pattern rule bug (see categorical_patterns.md new entry)"
+  },
+  {
+   "rule": "INT07-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3564,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Rule misattributes 'char' type to a variable actually declared int; CONFIRMED new-pattern rule bug (see categorical_patterns.md new entry)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/ctrl_iface.c",
+   "line": 3575,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size_t-length parameter pair; CONFIRMED categorical FP (API05-C false positive on ptr+len idiom)"
+  }
+ ],
+ "fns": [
+  {
+   "file": "hostapd/ctrl_iface.c",
+   "line": 2219,
+   "rule": "ARR38-C",
+   "desc": "hostapd_ctrl_set_key (CONFIG_TESTING_OPTIONS): key_len = (os_strchr(pos,' ')-pos)/2 is derived directly from the attacker/test-harness-controlled SET_KEY ctrl_iface command string with NO upper-bound check against sizeof(key) before 'if (hexstr2bin(pos, key, key_len) < 0) return -1;' at line 2220 writes key_len bytes into the fixed-size stack buffer 'u8 key[WPA_TK_MAX_LEN]' (32 bytes, ctrl_iface.c:2185). A hex key string longer than 64 hex chars overflows the 32-byte stack buffer. hexstr2bin() (src/utils/common.c:171) performs no internal bounds checking, writing exactly len bytes. sqc's ARR39-C/ARR38-C findings in this same file flagged unrelated sizeof-double-scaling issues but missed this real unbounded-length-into-fixed-buffer write.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 43,
+  "fp": 107,
+  "fn": 1
+ }
+}

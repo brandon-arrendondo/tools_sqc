@@ -1,0 +1,1069 @@
+{
+  "labels": [
+    {
+      "rule": "MEM10-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 166,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "MEM10-C ad-hoc-NULL-check pedantry; direct NULL check is idiomatic"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 259,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "MSC01-C no-final-else guard-clause pedantry"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 307,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "free() call's own argument flagged as post-free access, not a real UAF"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 311,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "EXP33-C misfires on a call to static function wpa_supplicant_extra_ies, not a variable"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 346,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eloop timeout callback fixed dispatch-contract signature"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 358,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eloop timeout callback fixed dispatch-contract signature"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 402,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "plain static helper only reads conf, real if low-value const opportunity"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 430,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ssids is os_calloc heap memory, not automatic storage"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 449,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "MSC01-C no-final-else guard-clause pedantry"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 473,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "bss=NULL is read via dl_list_for_each loop-boundary/empty-list path"
+    },
+    {
+      "rule": "MEM12-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 509,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "flow-insensitive leak claim; params->freqs proven NULL on this path (checked at line 461)"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 558,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "MSC01-C no-final-else guard-clause pedantry"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 576,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "plain static helper, wpa_s read-only"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 591,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "wpa_s parameter completely unused in function body"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 660,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpabuf_head/wpabuf_len pure accessor pair, no real unsequenced side effects"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 713,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "for_each_link macro initializes link_id=0; macro-expansion blindness"
+    },
+    {
+      "rule": "INT13-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 713,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "link_id is declared u8, not int; wrong-type claim"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 720,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "extra_ie is wpabuf_alloc heap memory, not automatic storage"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 730,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "wps=0 unconditionally overwritten at line 771 before any read"
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 859,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API, wpa_s never NULL in practice"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 859,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "plain exported helper, wpa_s read-only"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 880,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "mode is a struct pointer; bitwise/arithmetic ops apply to mode->channels[i]/->num_channels members, not mode itself"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 924,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "wpa_s parameter completely unused in function body"
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 951,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API, wpa_s never NULL"
+    },
+    {
+      "rule": "EXP40-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 1276,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "neither *start nor ssid is const-qualified; phantom cast-away-const"
+    },
+    {
+      "rule": "INT30-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 1290,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "params.num_ssids is size_t bounded by small WPAS_MAX_SCAN_SSIDS; wrap unreachable"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 1414,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "MSC01-C no-final-else guard-clause pedantry"
+    },
+    {
+      "rule": "INT30-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 1424,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "num is unsigned int bounded by small num_multichan_concurrent; wrap unreachable"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 1476,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "MAC2STR pure accessor macro args, no real unsequenced side effects"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 1486,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "MSC01-C no-final-else guard-clause pedantry"
+    },
+    {
+      "rule": "INT30-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 1520,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "num bounded small driver value; wrap unreachable"
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 1581,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API, wpa_s never NULL"
+    },
+    {
+      "rule": "MSC04-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 1692,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "phantom call-graph edge: autoscan_init(wpa_s,0) always short-circuits (if(!req_scan) return 0) before reaching request_scan"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 1727,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "MSC01-C no-final-else guard-clause pedantry"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 1819,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "MSC01-C no-final-else guard-clause pedantry"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 1860,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "EXP33-C misfires on call to static function wpa_supplicant_extra_ies, not a variable"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 1877,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpa_s pointer; bitwise/arithmetic ops apply to ssid->key_mgmt/other members, not wpa_s itself"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2061,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "i is a loop index; bitwise op applies to ie[i+2], not i itself"
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2096,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API, res never NULL in practice"
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2180,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API, res never NULL"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2212,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf is wpabuf_alloc heap memory, not automatic storage"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2301,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "MSC01-C no-final-else guard-clause pedantry"
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2338,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API, ies never NULL in practice"
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2351,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API, ies never NULL"
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2351,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API, snr is bounded dBm-range int"
+    },
+    {
+      "rule": "DCL37-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2372,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "_wa is a block-scope local variable, not file-scope"
+    },
+    {
+      "rule": "EXP05-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2372,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "cast-away-const read-only overlay; qsort comparator (void*) idiom, only ever read after cast"
+    },
+    {
+      "rule": "DCL37-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2373,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "_wb is a block-scope local variable, not file-scope"
+    },
+    {
+      "rule": "EXP05-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2373,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "cast-away-const read-only overlay; qsort comparator idiom"
+    },
+    {
+      "rule": "ARR37-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2409,
+      "verdict": "FP",
+      "confidence": "medium",
+      "reason": "(wa + 1) is well-defined one-past-single-object pointer arithmetic used for trailing IE data; pervasive idiom in this file"
+    },
+    {
+      "rule": "ARR37-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2414,
+      "verdict": "FP",
+      "confidence": "medium",
+      "reason": "(wb + 1) same trailing-data idiom"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2458,
+      "verdict": "FP",
+      "confidence": "medium",
+      "reason": "snr_a/snr_b are small bounded dBm ints; abs(INT_MIN) unreachable"
+    },
+    {
+      "rule": "ARR00-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2458,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "snr_a/snr_b are plain int locals, not pointers; category error citing unrelated array names"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2465,
+      "verdict": "FP",
+      "confidence": "medium",
+      "reason": "bounded dBm ints; INT_MIN unreachable"
+    },
+    {
+      "rule": "ARR00-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2465,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "plain int locals, not pointers; category error"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2466,
+      "verdict": "FP",
+      "confidence": "medium",
+      "reason": "wa->qual/wb->qual are bounded small ints; INT_MIN unreachable"
+    },
+    {
+      "rule": "DCL37-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2487,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "_wa is block-scope local, not file-scope"
+    },
+    {
+      "rule": "EXP05-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2487,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "cast-away-const read-only overlay; qsort comparator idiom"
+    },
+    {
+      "rule": "DCL37-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2488,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "_wb is block-scope local, not file-scope"
+    },
+    {
+      "rule": "EXP05-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2488,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "cast-away-const read-only overlay; qsort comparator idiom"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2530,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "plain static helper, scan_res read-only"
+    },
+    {
+      "rule": "DCL00-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2541,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "r is never reassigned/modified in the loop body, could be const-qualified"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2552,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "r is a struct pointer; bitwise op applies to r->flags member, not r itself"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2555,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "MAC2STR pure accessor macro, no real unsequenced side effects"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2565,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "MAC2STR pure accessor macro"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2594,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "plain exported helper, wpa_s read-only"
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2637,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API, res never NULL"
+    },
+    {
+      "rule": "INT13-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2639,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "res is struct wpa_scan_res*, not int; bitwise op applies to res->flags member"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2639,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "res is a pointer; bitwise op applies to res->flags, not res itself"
+    },
+    {
+      "rule": "INT13-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2646,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "res is struct wpa_scan_res*, not int; bitwise op applies to res->flags"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2665,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ARR02-C initializer-sized const array idiom"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2679,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ARR02-C initializer-sized const array idiom"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2694,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ARR02-C initializer-sized const array idiom"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2710,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ARR02-C initializer-sized const array idiom"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2728,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ARR02-C initializer-sized const array idiom"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2747,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ARR02-C initializer-sized const array idiom"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2766,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ARR02-C initializer-sized const array idiom"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2786,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ARR02-C initializer-sized const array idiom"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2808,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ARR02-C initializer-sized const array idiom"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2830,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ARR02-C initializer-sized const array idiom"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2852,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ARR02-C initializer-sized const array idiom"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2874,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ARR02-C initializer-sized const array idiom"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2896,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ARR02-C initializer-sized const array idiom"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2918,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ARR02-C initializer-sized const array idiom"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2940,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ARR02-C initializer-sized const array idiom"
+    },
+    {
+      "rule": "INT33-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 2962,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "no code-level guard against snr1==snr0; only an unenforced table-data monotonicity invariant"
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 3117,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API, wpa_s never NULL"
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 3117,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API, ies never NULL"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 3169,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "MSC01-C no-final-else guard-clause pedantry"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 3215,
+      "verdict": "FP",
+      "confidence": "medium",
+      "reason": "seg0/seg1 are bounded u8 values; abs(INT_MIN) unreachable"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 3218,
+      "verdict": "FP",
+      "confidence": "medium",
+      "reason": "bounded u8 values; INT_MIN unreachable"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 3219,
+      "verdict": "FP",
+      "confidence": "medium",
+      "reason": "bounded u8 values; INT_MIN unreachable"
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 3396,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API, wpa_s never NULL"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 3422,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "plain static helper, scan_res read-only"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 3438,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "wpa_s parameter completely unused in function body"
+    },
+    {
+      "rule": "ARR01-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 3450,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*ap_info) is the struct size, not sizeof of the decayed pointer; correct idiom"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 3453,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ap_info is a pointer; bitwise/arithmetic ops apply to ->tbtt_info_hdr/->tbtt_info_len members"
+    },
+    {
+      "rule": "ARR01-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 3463,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*ap_info) correct idiom"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 3472,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "mld_params+1 is real pointer arithmetic but the bitwise AND applies to *(mld_params+1), the dereferenced byte"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 3512,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "partner_est_throughput=0 is unconditionally overwritten every loop iteration before any read"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 3576,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*ap_info) does not dereference ap_info at runtime; type-only evaluation, ap_info not yet assigned is irrelevant"
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 3656,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "info is documented nullable ('%NULL if not available') and only passed through, never dereferenced here"
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 3656,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "bssid is documented nullable ('%NULL for all') and only passed through, never dereferenced here"
+    },
+    {
+      "rule": "WIN04-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 3663,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "impractical Windows pointer-encryption mitigation on an ordinary local qsort comparator variable"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 3715,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "scan_res comes from wpa_drv_get_scan_results (driver/heap allocation), not automatic storage"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 3724,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same heap-vs-local confusion"
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 3741,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "bssid is documented nullable ('%NULL for all'), only passed through"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 3758,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "scan_only_handler is assigned to wpa_s->scan_res_handler, a fixed dispatch-contract callback signature"
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 3782,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API, wpa_s never NULL"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 3795,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*params) does not dereference params; evaluated on os_zalloc's uninitialized-pointer type only"
+    },
+    {
+      "rule": "ARR01-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 3847,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*src->sched_scan_plans) correct idiom, not sizeof of decayed src pointer"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 3875,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "params is os_zalloc heap memory, not automatic storage"
+    },
+    {
+      "rule": "MSC07-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 3877,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "MSC07-C goto-label-blindness; failed: is reached via earlier goto statements"
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 3887,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "MEM10-C ad-hoc-NULL-check pedantry, idiomatic free(NULL)-style guard"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 3891,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "free call's own target expression flagged as post-free access, not a real UAF"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 3892,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same category error"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 3901,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same category error"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 3903,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same category error"
+    },
+    {
+      "rule": "ARR36-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 3973,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "num_match_ssid/num_ssid are plain size_t locals, not pointers; message even cites unrelated identifiers from a different line"
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 4148,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API, mask is always a caller-supplied fixed buffer"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 4148,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "plain exported helper, wpa_s read-only"
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 4174,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API, wpa_s never NULL"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 4214,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "os_realloc_array's own input argument flagged as 'dereferencing freed pointer'; standard incremental-realloc-in-loop idiom"
+    },
+    {
+      "rule": "ERR33-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 4222,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ret IS checked immediately at line 4224 (ret <= 0 || ret > 2 ...)"
+    },
+    {
+      "rule": "ERR00-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 4222,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same, ret is checked"
+    },
+    {
+      "rule": "ERR34-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 4222,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "sscanf %u does not detect numeric overflow the way strtoul would, despite the match-count check"
+    },
+    {
+      "rule": "FIO47-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 4222,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "format-string literal itself misidentified as 'argument 1'; self-referential parser bug"
+    },
+    {
+      "rule": "INT05-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 4222,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sscanf %u does not reliably set errno on overflow; ERANGE check request is inapplicable"
+    },
+    {
+      "rule": "MSC24-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 4222,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sscanf_s is a non-portable Annex K extension, impractical for this codebase"
+    },
+    {
+      "rule": "EXP05-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 4222,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "token is already const char*, passed to sscanf's const char* parameter; no const being cast away"
+    },
+    {
+      "rule": "MSC07-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 4298,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "MSC07-C goto-label-blindness; fail: reached via earlier goto statements"
+    },
+    {
+      "rule": "API00-C",
+      "file": "wpa_supplicant/scan.c",
+      "line": 4324,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API, wpa_s never NULL"
+    }
+  ],
+  "fns": [],
+  "files_clean_for_fn": [
+    "wpa_supplicant/scan.c"
+  ],
+  "summary": {
+    "tp": 15,
+    "fp": 117,
+    "fn": 0
+  }
+}

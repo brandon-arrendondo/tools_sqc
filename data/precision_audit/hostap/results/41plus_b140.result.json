@@ -1,0 +1,131 @@
+{
+ "labels": [
+  {
+   "rule": "CON34-C",
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3806,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() thread-safety FP: hostapd/wpa_supplicant core is single-threaded eloop, no pthread usage anywhere."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3864,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cmd=buf+9 from ctrl_iface dispatch (ctrl_iface.c:4491), always non-NULL; internal-only-API FP class."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3874,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "atoi(pos) feeds dpp_bootstrap_get_id() lookup, checked via if(!bi) next line; downstream-lookup-safely-fails FP class."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3874,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same as ERR07-C:3874, downstream-lookup-safely-fails FP class."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3883,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "iter=atoi(...); if(iter<=0) return -1; immediately after — matches confirmed assign-then-check atoi() FP idiom (identical shape at wpas_dpp_chirp)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3883,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same guarded assign-then-check atoi() FP idiom as ERR07-C:3883."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3890,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "listen_freq=atoi(...); if(listen_freq<=0) return -1; — same confirmed guarded atoi() FP idiom."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3890,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same guarded assign-then-check atoi() FP idiom as ERR07-C:3890."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3935,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "iface param of handle_dpp_remove_bi, a hostapd_for_each_interface callback with fixed signature; dispatch-contract FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3935,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx param of the same fixed-signature hostapd_for_each_interface callback; dispatch-contract FP class."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3951,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bi param of hostapd_dpp_remove_bi, registered as dpp.h:825 remove_bi callback, always invoked with a valid bootstrap-info pointer; internal-only-API FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3963,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "timeout_ctx of hostapd_dpp_push_button_expire, standard eloop_register_timeout callback signature; eloop dispatch-contract FP class."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 3972,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hapd param of ctrl_iface entry point hostapd_dpp_push_button, always supplied non-NULL by dispatch; internal-only-API FP class."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 4050,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hapd param of hostapd_dpp_configurator_connectivity, called only from ieee802_11_shared.c with an already-valid hapd; internal-only-API FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/dpp_hostapd.c",
+   "line": 4050,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "hapd is only read (hapd->conf->..., hapd->iface->...), never forwarded to a non-const callee and not a callback signature — plain-internal-helper genuine-if-low-value TP class."
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 1,
+  "fp": 14,
+  "fn": 0
+ }
+}

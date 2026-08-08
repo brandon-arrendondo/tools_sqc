@@ -1,0 +1,1093 @@
+{
+ "labels": [
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/sta_info.c",
+   "line": 13,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ieee802_11_defs.h/ieee802_1x.h/ieee802_11.h/ieee802_11_auth.h genuinely share first 8 chars 'ieee802_'; real but low-value 8.3-legacy-filesystem TP per established convention"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/sta_info.c",
+   "line": 13,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ieee802_11_defs.h/ieee802_1x.h/ieee802_11.h/ieee802_11_auth.h genuinely share first 8 chars 'ieee802_'; real but low-value 8.3-legacy-filesystem TP per established convention"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/sta_info.c",
+   "line": 13,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ieee802_11_defs.h/ieee802_1x.h/ieee802_11.h/ieee802_11_auth.h genuinely share first 8 chars 'ieee802_'; real but low-value 8.3-legacy-filesystem TP per established convention"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/sta_info.c",
+   "line": 24,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ieee802_11_defs.h/ieee802_1x.h/ieee802_11.h/ieee802_11_auth.h genuinely share first 8 chars 'ieee802_'; real but low-value 8.3-legacy-filesystem TP per established convention"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/sta_info.c",
+   "line": 24,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ieee802_11_defs.h/ieee802_1x.h/ieee802_11.h/ieee802_11_auth.h genuinely share first 8 chars 'ieee802_'; real but low-value 8.3-legacy-filesystem TP per established convention"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/sta_info.c",
+   "line": 25,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ieee802_11_defs.h/ieee802_1x.h/ieee802_11.h/ieee802_11_auth.h genuinely share first 8 chars 'ieee802_'; real but low-value 8.3-legacy-filesystem TP per established convention"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/ap/sta_info.c",
+   "line": 61,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'cb' is a declared function-pointer parameter (ap_for_each_sta), calling through it is not an undeclared-function call"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 69,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/sta_info.c",
+   "line": 69,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper only reads this pointer param; real but low-severity/low-value const opportunity, not dispatch-contract-constrained"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/sta_info.c",
+   "line": 73,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hapd/sta/psta are internal invariants guaranteed non-null by caller convention throughout sta_info.c, never externally nullable"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 76,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "returned pointer variable aliases heap/list-owned storage (os_zalloc'd sta_info or hapd->sta_list/hash entries), not local automatic storage"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 81,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/sta_info.c",
+   "line": 81,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper only reads this pointer param; real but low-severity/low-value const opportunity, not dispatch-contract-constrained"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 90,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "returned pointer variable aliases heap/list-owned storage (os_zalloc'd sta_info or hapd->sta_list/hash entries), not local automatic storage"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 99,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/sta_info.c",
+   "line": 99,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper only reads this pointer param; real but low-severity/low-value const opportunity, not dispatch-contract-constrained"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/sta_info.c",
+   "line": 104,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "local pointer declared with no initializer but unconditionally assigned (via a call/for-loop init) before its first read on every path; not actually used uninitialized"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 114,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "returned pointer variable aliases heap/list-owned storage (os_zalloc'd sta_info or hapd->sta_list/hash entries), not local automatic storage"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/sta_info.c",
+   "line": 126,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hapd/sta/psta are internal invariants guaranteed non-null by caller convention throughout sta_info.c, never externally nullable"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/sta_info.c",
+   "line": 127,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hapd/sta/psta are internal invariants guaranteed non-null by caller convention throughout sta_info.c, never externally nullable"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 142,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/sta_info.c",
+   "line": 149,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper only reads this pointer param; real but low-severity/low-value const opportunity, not dispatch-contract-constrained"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/sta_info.c",
+   "line": 153,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hapd/sta/psta are internal invariants guaranteed non-null by caller convention throughout sta_info.c, never externally nullable"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/sta_info.c",
+   "line": 153,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hapd/sta/psta are internal invariants guaranteed non-null by caller convention throughout sta_info.c, never externally nullable"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 171,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 171,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 179,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/sta_info.c",
+   "line": 179,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper only reads this pointer param; real but low-severity/low-value const opportunity, not dispatch-contract-constrained"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/sta_info.c",
+   "line": 181,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hapd/sta/psta are internal invariants guaranteed non-null by caller convention throughout sta_info.c, never externally nullable"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/ap/sta_info.c",
+   "line": 209,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "'__ap_free_sta' begins with a reserved double-underscore prefix (C standard reserves these for the implementation); genuine, if low-severity, violation"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/sta_info.c",
+   "line": 213,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hapd/sta/psta are internal invariants guaranteed non-null by caller convention throughout sta_info.c, never externally nullable"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/sta_info.c",
+   "line": 237,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hapd/sta/psta are internal invariants guaranteed non-null by caller convention throughout sta_info.c, never externally nullable"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 244,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 244,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/sta_info.c",
+   "line": 252,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper only reads this pointer param; real but low-severity/low-value const opportunity, not dispatch-contract-constrained"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 272,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 272,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/sta_info.c",
+   "line": 285,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hapd/sta/psta are internal invariants guaranteed non-null by caller convention throughout sta_info.c, never externally nullable"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/sta_info.c",
+   "line": 285,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "flags the container struct pointer ('sta'/'hapd') itself; the bitwise/arithmetic ops are actually on its ->flags/->aid member fields, not the pointer variable"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/sta_info.c",
+   "line": 287,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hapd/sta/psta are internal invariants guaranteed non-null by caller convention throughout sta_info.c, never externally nullable"
+  },
+  {
+   "rule": "INT10-C",
+   "file": "src/ap/sta_info.c",
+   "line": 307,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sta->aid is u16 (unsigned) and guarded by 'sta->aid > 0' before the -1/%; result is always non-negative despite integer-promotion to int"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/ap/sta_info.c",
+   "line": 538,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "__ap_free_sta() (line 298) only calls driver-remove ops, never os_free()s sta itself; 'free'-named-helper misattribution, so the real os_free(sta) at 538 is wrongly seen as a double-free"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 563,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/sta_info.c",
+   "line": 611,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "flags the container struct pointer ('sta'/'hapd') itself; the bitwise/arithmetic ops are actually on its ->flags/->aid member fields, not the pointer variable"
+  },
+  {
+   "rule": "INT10-C",
+   "file": "src/ap/sta_info.c",
+   "line": 622,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "os_random() returns unsigned long; % against it cannot produce a negative result despite signed-operand heuristic"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/sta_info.c",
+   "line": 701,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "guard-clause / exhaustive-enum-switch style: the omitted else/default case is intentionally a no-op or already exhaustively covered, not an unhandled case"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/sta_info.c",
+   "line": 729,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "guard-clause / exhaustive-enum-switch style: the omitted else/default case is intentionally a no-op or already exhaustively covered, not an unhandled case"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 749,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ieee802_1x_free_station() only frees sta->pending_eapol_rx/eapol_sm substructures, never sta itself; 'free'-named-helper misattribution taints later sta uses/passes as UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 749,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ieee802_1x_free_station() only frees sta->pending_eapol_rx/eapol_sm substructures, never sta itself; 'free'-named-helper misattribution taints later sta uses/passes as UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 752,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ieee802_1x_free_station() only frees sta->pending_eapol_rx/eapol_sm substructures, never sta itself; 'free'-named-helper misattribution taints later sta uses/passes as UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 758,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ieee802_1x_free_station() only frees sta->pending_eapol_rx/eapol_sm substructures, never sta itself; 'free'-named-helper misattribution taints later sta uses/passes as UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 758,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ieee802_1x_free_station() only frees sta->pending_eapol_rx/eapol_sm substructures, never sta itself; 'free'-named-helper misattribution taints later sta uses/passes as UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 759,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ieee802_1x_free_station() only frees sta->pending_eapol_rx/eapol_sm substructures, never sta itself; 'free'-named-helper misattribution taints later sta uses/passes as UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 761,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ieee802_1x_free_station() only frees sta->pending_eapol_rx/eapol_sm substructures, never sta itself; 'free'-named-helper misattribution taints later sta uses/passes as UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 765,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ieee802_1x_free_station() only frees sta->pending_eapol_rx/eapol_sm substructures, never sta itself; 'free'-named-helper misattribution taints later sta uses/passes as UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 765,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ieee802_1x_free_station() only frees sta->pending_eapol_rx/eapol_sm substructures, never sta itself; 'free'-named-helper misattribution taints later sta uses/passes as UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 768,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ieee802_1x_free_station() only frees sta->pending_eapol_rx/eapol_sm substructures, never sta itself; 'free'-named-helper misattribution taints later sta uses/passes as UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 771,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ieee802_1x_free_station() only frees sta->pending_eapol_rx/eapol_sm substructures, never sta itself; 'free'-named-helper misattribution taints later sta uses/passes as UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 774,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ieee802_1x_free_station() only frees sta->pending_eapol_rx/eapol_sm substructures, never sta itself; 'free'-named-helper misattribution taints later sta uses/passes as UAF"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/ap/sta_info.c",
+   "line": 813,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_replenish_timeout()'s real contract is {-1,0,1}; '== 1' is the only correct test to detect the replenished case, not a >1 vs !=0 bug"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 822,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 834,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 857,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 857,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 885,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 893,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "returned pointer variable aliases heap/list-owned storage (os_zalloc'd sta_info or hapd->sta_list/hash entries), not local automatic storage"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/sta_info.c",
+   "line": 919,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "flags the container struct pointer ('sta'/'hapd') itself; the bitwise/arithmetic ops are actually on its ->flags/->aid member fields, not the pointer variable"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 953,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "returned pointer variable aliases heap/list-owned storage (os_zalloc'd sta_info or hapd->sta_list/hash entries), not local automatic storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/sta_info.c",
+   "line": 979,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper only reads this pointer param; real but low-severity/low-value const opportunity, not dispatch-contract-constrained"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/sta_info.c",
+   "line": 980,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper only reads this pointer param; real but low-severity/low-value const opportunity, not dispatch-contract-constrained"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/sta_info.c",
+   "line": 987,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "local pointer declared with no initializer but unconditionally assigned (via a call/for-loop init) before its first read on every path; not actually used uninitialized"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1039,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ieee802_1x_free_station() only frees sta->pending_eapol_rx/eapol_sm substructures, never sta itself; 'free'-named-helper misattribution taints later sta uses/passes as UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1040,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ieee802_1x_free_station() only frees sta->pending_eapol_rx/eapol_sm substructures, never sta itself; 'free'-named-helper misattribution taints later sta uses/passes as UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1041,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ieee802_1x_free_station() only frees sta->pending_eapol_rx/eapol_sm substructures, never sta itself; 'free'-named-helper misattribution taints later sta uses/passes as UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1041,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ieee802_1x_free_station() only frees sta->pending_eapol_rx/eapol_sm substructures, never sta itself; 'free'-named-helper misattribution taints later sta uses/passes as UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1042,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ieee802_1x_free_station() only frees sta->pending_eapol_rx/eapol_sm substructures, never sta itself; 'free'-named-helper misattribution taints later sta uses/passes as UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1045,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ieee802_1x_free_station() only frees sta->pending_eapol_rx/eapol_sm substructures, never sta itself; 'free'-named-helper misattribution taints later sta uses/passes as UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1045,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ieee802_1x_free_station() only frees sta->pending_eapol_rx/eapol_sm substructures, never sta itself; 'free'-named-helper misattribution taints later sta uses/passes as UAF"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1149,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "preproc/nested-control-flow blindness: every path in both the #ifdef and #else branch (or after the if/else-if chain) actually returns a value"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1176,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "local pointer declared with no initializer but unconditionally assigned (via a call/for-loop init) before its first read on every path; not actually used uninitialized"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1262,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ap_sta_wps_cancel is registered as the ap_for_each_sta callback (wps_hostapd.c:1614); ctx is dispatch-contract fixed signature, not a stylistic const opportunity"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1324,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "guard-clause / exhaustive-enum-switch style: the omitted else/default case is intentionally a no-op or already exhaustively covered, not an unhandled case"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1334,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ap_sta_get_free_vlan_id() name contains 'free' (meaning an available VLAN id, not deallocation) and never frees hapd/vlan_bss; substring-match misattribution taints all later uses as UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1334,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ap_sta_get_free_vlan_id() name contains 'free' (meaning an available VLAN id, not deallocation) and never frees hapd/vlan_bss; substring-match misattribution taints all later uses as UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1339,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ap_sta_get_free_vlan_id() name contains 'free' (meaning an available VLAN id, not deallocation) and never frees hapd/vlan_bss; substring-match misattribution taints all later uses as UAF"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1347,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "guard-clause / exhaustive-enum-switch style: the omitted else/default case is intentionally a no-op or already exhaustively covered, not an unhandled case"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1377,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ap_sta_get_free_vlan_id() name contains 'free' (meaning an available VLAN id, not deallocation) and never frees hapd/vlan_bss; substring-match misattribution taints all later uses as UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1379,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ap_sta_get_free_vlan_id() name contains 'free' (meaning an available VLAN id, not deallocation) and never frees hapd/vlan_bss; substring-match misattribution taints all later uses as UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1391,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ap_sta_get_free_vlan_id() name contains 'free' (meaning an available VLAN id, not deallocation) and never frees hapd/vlan_bss; substring-match misattribution taints all later uses as UAF"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1395,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "guard-clause / exhaustive-enum-switch style: the omitted else/default case is intentionally a no-op or already exhaustively covered, not an unhandled case"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1397,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ap_sta_get_free_vlan_id() name contains 'free' (meaning an available VLAN id, not deallocation) and never frees hapd/vlan_bss; substring-match misattribution taints all later uses as UAF"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1409,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ap_sta_get_free_vlan_id() name contains 'free' (meaning an available VLAN id, not deallocation) and never frees hapd/vlan_bss; substring-match misattribution taints all later uses as UAF"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1415,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1429,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "local pointer declared with no initializer but unconditionally assigned (via a call/for-loop init) before its first read on every path; not actually used uninitialized"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1448,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "preproc/nested-control-flow blindness: every path in both the #ifdef and #else branch (or after the if/else-if chain) actually returns a value"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1504,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "guard-clause / exhaustive-enum-switch style: the omitted else/default case is intentionally a no-op or already exhaustively covered, not an unhandled case"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1545,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1558,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "local pointer declared with no initializer but unconditionally assigned (via a call/for-loop init) before its first read on every path; not actually used uninitialized"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1576,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1599,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "FLP03-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1605,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "passed.sec/usec are os_time_t (integer); the division at line 1605 is plain integer arithmetic, not floating point"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1640,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_realloc_array() takes a single pointer parameter (ptr, nmemb, size); there is no second pointer argument for it to overlap with"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1676,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1676,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1682,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1691,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1691,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper only reads this pointer param; real but low-severity/low-value const opportunity, not dispatch-contract-constrained"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1692,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper only reads this pointer param; real but low-severity/low-value const opportunity, not dispatch-contract-constrained"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1699,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hapd/sta/psta are internal invariants guaranteed non-null by caller convention throughout sta_info.c, never externally nullable"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1715,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper only reads this pointer param; real but low-severity/low-value const opportunity, not dispatch-contract-constrained"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1716,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper only reads this pointer param; real but low-severity/low-value const opportunity, not dispatch-contract-constrained"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1722,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1733,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hapd/sta/psta are internal invariants guaranteed non-null by caller convention throughout sta_info.c, never externally nullable"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1751,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1763,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hapd/sta/psta are internal invariants guaranteed non-null by caller convention throughout sta_info.c, never externally nullable"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1771,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR() expands to pure byte-indexing reads with no side effects; matches the established pure-accessor EXP30-C misfire class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1809,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'prefix' is declared 'const char *' (a pointer), not a plain/signed char; wrong-type-claim, sign-extension concern doesn't apply to pointers"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1813,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plen = os_strlen(\" dpp_pkhash=\") is a compile-time-constant 12, far under dpp_pkhash_buf's 100-byte size; the offset write is provably in-bounds"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1876,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "guard-clause / exhaustive-enum-switch style: the omitted else/default case is intentionally a no-op or already exhaustively covered, not an unhandled case"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1887,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ordinary 'if (sta == NULL) return;' guard clause; not an actionable defect, just idiomatic C null-checking"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1905,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1917,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1929,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1929,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1936,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hapd/sta/psta are internal invariants guaranteed non-null by caller convention throughout sta_info.c, never externally nullable"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1936,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hapd/sta/psta are internal invariants guaranteed non-null by caller convention throughout sta_info.c, never externally nullable"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1954,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1954,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1961,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/sta_info.c",
+   "line": 1961,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf paired with its own buflen size_t argument is the idiomatic ptr+size C API shape; established API05-C categorical FP"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 2019,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 2019,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 2019,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/sta_info.c",
+   "line": 2038,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info.c is internal STA-table management; hapd/sta/addr/buf/timeout params are always non-null/bounded by caller convention, never externally-nullable/unvalidated wire input"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/sta_info.c",
+   "line": 2048,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper only reads this pointer param; real but low-severity/low-value const opportunity, not dispatch-contract-constrained"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "src/ap/sta_info.c"
+ ],
+ "summary": {
+  "tp": 20,
+  "fp": 115,
+  "fn": 0
+ }
+}

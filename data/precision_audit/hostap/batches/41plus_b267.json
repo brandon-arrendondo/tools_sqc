@@ -1,0 +1,996 @@
+{
+ "src/p2p/p2p_parse.c": [
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 12,
+   "message": "Header file 'ieee802_11_defs.h' has the same first 8 characters (case-insensitive) as 'ieee802_11_common.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_defs.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 18,
+   "message": "Function 'p2p_copy_filter_devname' does not validate pointer parameter 'dst' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dst' at the start of the function, e.g., 'if (!dst) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 18,
+   "message": "Function 'p2p_copy_filter_devname' does not validate integer parameter 'dst_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'dst_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 35,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 18,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 20,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 19,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 13,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 24,
+   "message": "Unsigned integer subtraction 'dst_len - 1' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 25,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 73,
+   "message": "Variable 'data' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 6,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 196,
+   "message": "sizeof applied to pointer/array parameter 'msg' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(msg->device_name)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 3,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 197,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 3,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 286,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 19,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 350,
+   "message": "Array subscript with scaled integer: 'data[sizeof(u32)]'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Use unscaled index or element count instead of sizeof()"
+  },
+  {
+   "column": 4,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 371,
+   "message": "Potentially unsafe array access with variable index 'namelen': Buffer 'str' with size 256 (allocated at line 364)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 23,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 387,
+   "message": "Array subscript with scaled integer: 'data[sizeof(u32)]'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Use unscaled index or element count instead of sizeof()"
+  },
+  {
+   "column": 3,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 388,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 402,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 3,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 414,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 6,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 537,
+   "message": "Variable 'attr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'attr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 43,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 537,
+   "message": "sizeof applied to pointer/array parameter 'msg' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(msg->device_name)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 6,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 605,
+   "message": "Variable 'elems' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'elems' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 666,
+   "message": "Function 'p2p_parse' does not validate pointer parameter 'data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'data' at the start of the function, e.g., 'if (!data) { return error_code; }'"
+  },
+  {
+   "column": 20,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 668,
+   "message": "sizeof applied to pointer/array parameter 'msg' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*msg)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 681,
+   "message": "Function 'p2p_parse_ies_separate' does not validate pointer parameter 'wsc' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wsc' at the start of the function, e.g., 'if (!wsc) { return error_code; }'"
+  },
+  {
+   "column": 20,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 684,
+   "message": "sizeof applied to pointer/array parameter 'msg' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*msg)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 727,
+   "message": "Function 'p2p_group_info_parse' does not validate integer parameter 'gi_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'gi_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 21,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 732,
+   "message": "sizeof applied to pointer/array parameter 'info' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*info)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 5,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 733,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 66,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 795,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 16,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 796,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 16,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 796,
+   "message": "Pointer parameter 'end' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *end'"
+  },
+  {
+   "column": 7,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 798,
+   "message": "Pointer to const assigned to non-const pointer without cast: *pos = buf: '*pos = buf'",
+   "rule_id": "EXP40-C",
+   "severity": "Low",
+   "suggestion": "Either remove const qualifier if the object should be modifiable, or use explicit casts to show intentional const removal"
+  },
+  {
+   "column": 18,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 806,
+   "message": "Variable 'info' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'info' before use, e.g., at its declaration"
+  },
+  {
+   "column": 3,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 808,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 3,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 808,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 8,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 809,
+   "message": "Variable 'devtype' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'devtype' before use, e.g., at its declaration"
+  },
+  {
+   "column": 9,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 814,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 26,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 814,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 25,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 818,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 26,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 822,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 25,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 829,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 27,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 834,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 26,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 838,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 26,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 852,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 25,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 853,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 872,
+   "message": "Function 'p2p_attr_text' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  },
+  {
+   "column": 7,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 875,
+   "message": "Pointer to const assigned to non-const pointer without cast: *pos = buf: '*pos = buf'",
+   "rule_id": "EXP40-C",
+   "severity": "Low",
+   "suggestion": "Either remove const qualifier if the object should be modifiable, or use explicit casts to show intentional const removal"
+  },
+  {
+   "column": 26,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 883,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 25,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 887,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 26,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 894,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 25,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 899,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 25,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 904,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 24,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 906,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 26,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 911,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 25,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 914,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 25,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 919,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 24,
+   "file": "src/p2p/p2p_parse.c",
+   "line": 921,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  }
+ ],
+ "src/pasn/pasn_responder.c": [
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 16,
+   "message": "Header file 'ieee802_11_common.h' has the same first 8 characters (case-insensitive) as 'ieee802_11_defs.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_common.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 16,
+   "message": "Header file 'ieee802_11_common.h' has the same first 8 characters (case-insensitive) as 'ieee802_1x.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_common.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 17,
+   "message": "Header file 'ieee802_11_defs.h' has the same first 8 characters (case-insensitive) as 'ieee802_1x.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_defs.h' -> unique name)"
+  },
+  {
+   "column": 9,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 32,
+   "message": "Function 'pmksa_cache_auth_init' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 54,
+   "message": "Function 'pasn_responder_pmksa_cache_get' does not validate pointer parameter 'pmksa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pmksa' at the start of the function, e.g., 'if (!pmksa) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 71,
+   "message": "Function 'pasn_responder_pmksa_cache_remove' does not validate pointer parameter 'pmksa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pmksa' at the start of the function, e.g., 'if (!pmksa) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 84,
+   "message": "Function 'pasn_responder_pmksa_cache_flush' does not validate pointer parameter 'pmksa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pmksa' at the start of the function, e.g., 'if (!pmksa) { return error_code; }'"
+  },
+  {
+   "column": 6,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 108,
+   "message": "Array declaration 'groups[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 244,
+   "message": "Value assigned to 'buf' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 58,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 285,
+   "message": "Pointer parameter 'pasn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pasn'"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 288,
+   "message": "Value assigned to 'buf' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 341,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 32,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 371,
+   "message": "Pointer parameter 'pasn_data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pasn_data'"
+  },
+  {
+   "column": 18,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 372,
+   "message": "Pointer parameter 'wrapped_data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wrapped_data'"
+  },
+  {
+   "column": 18,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 375,
+   "message": "Array declaration 'pasn_default_pmk[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 2,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 376,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 381,
+   "message": "Value assigned to 'pmk_len' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 8,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 429,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 8,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 499,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 508,
+   "message": "Function 'handle_auth_pasn_resp' does not validate pointer parameter 'own_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'own_addr' at the start of the function, e.g., 'if (!own_addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 508,
+   "message": "Function 'handle_auth_pasn_resp' does not validate pointer parameter 'peer_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'peer_addr' at the start of the function, e.g., 'if (!peer_addr) { return error_code; }'"
+  },
+  {
+   "column": 35,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 510,
+   "message": "Pointer parameter 'pmksa' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pmksa'"
+  },
+  {
+   "column": 2,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 514,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 9,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 546,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 13,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 644,
+   "message": "Potential null pointer dereference in array access of variable 'rsn_ie'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'rsn_ie' is not NULL before array access"
+  },
+  {
+   "column": 8,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 688,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 696,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 697,
+   "message": "Double free detected: 'wrapped_data_buf' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 698,
+   "message": "Double free detected: 'pubkey' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 699,
+   "message": "Double-free: 'rsn_buf' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 699,
+   "message": "Double free detected: 'rsn_buf' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 705,
+   "message": "Function 'handle_auth_pasn_1' does not validate pointer parameter 'pasn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pasn' at the start of the function, e.g., 'if (!pasn) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 705,
+   "message": "Function 'handle_auth_pasn_1' does not validate pointer parameter 'own_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'own_addr' at the start of the function, e.g., 'if (!own_addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 705,
+   "message": "Function 'handle_auth_pasn_1' does not validate pointer parameter 'peer_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'peer_addr' at the start of the function, e.g., 'if (!peer_addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 705,
+   "message": "Function 'handle_auth_pasn_1' does not validate pointer parameter 'mgmt' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'mgmt' at the start of the function, e.g., 'if (!mgmt) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 705,
+   "message": "Function 'handle_auth_pasn_1' does not validate integer parameter 'len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 19,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 718,
+   "message": "Array declaration 'default_groups[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 8,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 734,
+   "message": "Pointer arithmetic on struct pointer with byte offset. Cast to char* before adding offset.",
+   "rule_id": "EXP08-C",
+   "severity": "Medium",
+   "suggestion": null
+  },
+  {
+   "column": 7,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 743,
+   "message": "Variable 'elems' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'elems' before use, e.g., at its declaration"
+  },
+  {
+   "column": 9,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 866,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 1079,
+   "message": "Function 'handle_auth_pasn_3' does not validate pointer parameter 'pasn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pasn' at the start of the function, e.g., 'if (!pasn) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 1079,
+   "message": "Function 'handle_auth_pasn_3' does not validate pointer parameter 'own_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'own_addr' at the start of the function, e.g., 'if (!own_addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 1079,
+   "message": "Function 'handle_auth_pasn_3' does not validate pointer parameter 'peer_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'peer_addr' at the start of the function, e.g., 'if (!peer_addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 1079,
+   "message": "Function 'handle_auth_pasn_3' does not validate pointer parameter 'mgmt' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'mgmt' at the start of the function, e.g., 'if (!mgmt) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 1085,
+   "message": "Value assigned to 'wrapped_data' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 1086,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 8,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 1094,
+   "message": "Pointer arithmetic on struct pointer with byte offset. Cast to char* before adding offset.",
+   "rule_id": "EXP08-C",
+   "severity": "Medium",
+   "suggestion": null
+  },
+  {
+   "column": 7,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 1104,
+   "message": "Variable 'elems' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'elems' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 1138,
+   "message": "Value assigned to 'copy_len' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 13,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 1138,
+   "message": "Pointer arithmetic on struct pointer with byte offset. Cast to char* before adding offset.",
+   "rule_id": "EXP08-C",
+   "severity": "Medium",
+   "suggestion": null
+  },
+  {
+   "column": 13,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 1140,
+   "message": "Pointer arithmetic on struct pointer with byte offset. Cast to char* before adding offset.",
+   "rule_id": "EXP08-C",
+   "severity": "Medium",
+   "suggestion": null
+  },
+  {
+   "column": 6,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 1148,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 3,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 1197,
+   "message": "Double free detected: 'wrapped_data' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 1,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 1209,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "src/pasn/pasn_responder.c",
+   "line": 1210,
+   "message": "Double free detected: 'copy' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  }
+ ]
+}

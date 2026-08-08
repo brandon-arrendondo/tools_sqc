@@ -1,0 +1,63 @@
+{
+ "labels": [
+  {
+   "rule": "MEM03-C",
+   "file": "src/crypto/crypto_module_tests.c",
+   "line": 2496,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "password_hash_hash is a hardcoded RFC2759 published test vector constant, not real runtime secret material; category error like stub_password:297 pattern."
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/crypto/crypto_module_tests.c",
+   "line": 2496,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Array sized exactly by its own brace initializer count; confirmed initializer-sized-array FP class."
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/crypto/crypto_module_tests.c",
+   "line": 2500,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Array sized exactly by its own brace initializer count; confirmed initializer-sized-array FP class."
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/crypto/crypto_module_tests.c",
+   "line": 2505,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Array sized exactly by its own brace initializer count; confirmed initializer-sized-array FP class."
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/crypto/crypto_module_tests.c",
+   "line": 2509,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Array sized exactly by its own brace initializer count; confirmed initializer-sized-array FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_module_tests.c",
+   "line": 2522,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_strlen(username)/os_strlen(password) are pure accessor calls as sibling args; confirmed pure-accessor-args EXP30-C FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/crypto_module_tests.c",
+   "line": 2537,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_strlen(password)/os_strlen(username) pure accessor sibling args; same confirmed EXP30-C pure-accessor FP class."
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": ["src/crypto/crypto_module_tests.c"],
+ "summary": {"tp": 0, "fp": 7, "fn": 0}
+}

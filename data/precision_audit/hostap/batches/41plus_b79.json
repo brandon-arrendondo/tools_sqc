@@ -1,0 +1,220 @@
+{
+ "src/common/dpp.c#part3of3": [
+  {
+   "column": 12,
+   "file": "src/common/dpp.c",
+   "line": 4983,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 4992,
+   "message": "Function 'dpp_configurator_get_key_id' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  },
+  {
+   "column": 10,
+   "file": "src/common/dpp.c",
+   "line": 4993,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 26,
+   "file": "src/common/dpp.c",
+   "line": 5034,
+   "message": "Dereference of uninitialized pointer 'conf'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'conf' before dereferencing"
+  },
+  {
+   "column": 4,
+   "file": "src/common/dpp.c",
+   "line": 5065,
+   "message": "Function returns pointer to local variable 'conf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 25,
+   "file": "src/common/dpp.c",
+   "line": 5077,
+   "message": "Dereference of uninitialized pointer 'dpp'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'dpp' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 5093,
+   "message": "Function returns pointer to local variable 'dpp' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 5112,
+   "message": "Function 'dpp_global_deinit' does not validate pointer parameter 'dpp' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dpp' at the start of the function, e.g., 'if (!dpp) { return error_code; }'"
+  },
+  {
+   "column": 56,
+   "file": "src/common/dpp.c",
+   "line": 5119,
+   "message": "Pointer parameter 'auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *auth'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 5122,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 75,
+   "file": "src/common/dpp.c",
+   "line": 5139,
+   "message": "Pointer parameter 'bi' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bi'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 5153,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 5157,
+   "message": "Function 'dpp_notify_chirp_received' does not validate pointer parameter 'msg_ctx' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'msg_ctx' at the start of the function, e.g., 'if (!msg_ctx) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 5157,
+   "message": "Function 'dpp_notify_chirp_received' does not validate pointer parameter 'src' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'src' at the start of the function, e.g., 'if (!src) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 5160,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 5173,
+   "message": "Function 'dpp_build_pb_announcement' does not validate pointer parameter 'bi' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'bi' at the start of the function, e.g., 'if (!bi) { return error_code; }'"
+  },
+  {
+   "column": 69,
+   "file": "src/common/dpp.c",
+   "line": 5173,
+   "message": "Pointer parameter 'bi' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bi'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 5204,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 5208,
+   "message": "Function 'dpp_build_pb_announcement_resp' does not validate pointer parameter 'bi' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'bi' at the start of the function, e.g., 'if (!bi) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 5208,
+   "message": "Function 'dpp_build_pb_announcement_resp' does not validate pointer parameter 'c_nonce' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'c_nonce' at the start of the function, e.g., 'if (!c_nonce) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/dpp.c",
+   "line": 5208,
+   "message": "Function 'dpp_build_pb_announcement_resp' does not validate integer parameter 'c_nonce_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'c_nonce_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 74,
+   "file": "src/common/dpp.c",
+   "line": 5208,
+   "message": "Pointer parameter 'bi' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bi'"
+  },
+  {
+   "column": 9,
+   "file": "src/common/dpp.c",
+   "line": 5234,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 2,
+   "file": "src/common/dpp.c",
+   "line": 5260,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  }
+ ]
+}

@@ -1,0 +1,757 @@
+{
+ "labels": [
+  {
+   "rule": "API00-C",
+   "file": "src/utils/json.c",
+   "line": 19,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only-API FP class: data/maxlen always caller-guaranteed non-null/sane"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/json.c",
+   "line": 19,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only-API FP class: data/maxlen always caller-guaranteed non-null/sane"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/json.c",
+   "line": 19,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size_t idiom, confirmed categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/json.c",
+   "line": 19,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size_t idiom, confirmed categorical FP"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/json.c",
+   "line": 30,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char literal assignment, no widening"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/json.c",
+   "line": 31,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char literal assignment, no widening"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/json.c",
+   "line": 34,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char literal assignment, no widening"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/json.c",
+   "line": 35,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char literal assignment, no widening"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/json.c",
+   "line": 38,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char literal assignment, no widening"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/json.c",
+   "line": 39,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char literal assignment, no widening"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/json.c",
+   "line": 42,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char literal assignment, no widening"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/json.c",
+   "line": 43,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char literal assignment, no widening"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/json.c",
+   "line": 46,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char literal assignment, no widening"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/json.c",
+   "line": 47,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char literal assignment, no widening"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/json.c",
+   "line": 51,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*txt++ = data[i]; char-to-char, no widening"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/utils/json.c",
+   "line": 53,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "os_snprintf return used unchecked to advance txt; on truncation txt can land past end, causing OOB *txt='\\0' write at line 60"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/utils/json.c",
+   "line": 60,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-invariant-non-null: txt always caller-owned valid buffer (malloc-checked by every caller)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/json.c",
+   "line": 60,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*txt='\\0'; char-to-char literal assignment"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/json.c",
+   "line": 66,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "const char *pos = *json_pos; is a pointer-to-pointer assignment, not a char widened to a larger type"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/utils/json.c",
+   "line": 71,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos legitimately walks the caller-owned input buffer (data/end), not a non-array pointer"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/utils/json.c",
+   "line": 73,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "end/pos derive from the same caller buffer; established pos/end-paired-buffer ARR36-C FP class"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/utils/json.c",
+   "line": 81,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end-paired-buffer FP class, same underlying array"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/utils/json.c",
+   "line": 81,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos++ walks the real input buffer"
+  },
+  {
+   "rule": "CON43-C",
+   "file": "src/utils/json.c",
+   "line": 98,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "single-threaded parser, zero pthread usage in file; established no-pthread CON43-C FP class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/json.c",
+   "line": 100,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*spos='\\0'; char-to-char literal, no widening"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/utils/json.c",
+   "line": 102,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*json_pos=pos copies a pointer VALUE (pointing into the caller's input buffer) through an out-param; not address-of-local-automatic-storage"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/json.c",
+   "line": 102,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*json_pos=pos is a pointer-to-pointer value assignment, not char widening"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/utils/json.c",
+   "line": 103,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "str is a local pointer VARIABLE but points to heap memory from os_malloc; not automatic storage"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/utils/json.c",
+   "line": 103,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "str is the intentional return value (ownership transferred to caller), not leaked; tmp is a nested block-scope var already out of scope here"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/utils/json.c",
+   "line": 105,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos++ walks the real input buffer"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/utils/json.c",
+   "line": 106,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos>=end pos/end-paired-buffer FP class"
+  },
+  {
+   "rule": "CON43-C",
+   "file": "src/utils/json.c",
+   "line": 111,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "single-threaded parser, no-pthread CON43-C FP class"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/utils/json.c",
+   "line": 115,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "rule-engine misfire: *spos++=*pos is a plain char dereference/assignment, no struct or flexible-array-member assignment anywhere in sight"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/json.c",
+   "line": 115,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char assignment, no widening"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/json.c",
+   "line": 115,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char assignment, no widening"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/json.c",
+   "line": 115,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char assignment, no widening"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/json.c",
+   "line": 118,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char assignment, no widening"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/json.c",
+   "line": 121,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char assignment, no widening"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/json.c",
+   "line": 124,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char assignment, no widening"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/json.c",
+   "line": 127,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misattribution: cites 'tmp', an unrelated nested block-scope var from a different branch; end-pos is same-buffer pos/end pair, not different arrays"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/utils/json.c",
+   "line": 127,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end-paired-buffer FP class"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/utils/json.c",
+   "line": 128,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hexstr2bin(pos+1,...) is ordinary arithmetic walking the real input buffer"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/json.c",
+   "line": 135,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char assignment, no widening"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/json.c",
+   "line": 137,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char assignment, no widening"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/json.c",
+   "line": 138,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char assignment, no widening"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/utils/json.c",
+   "line": 140,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos+=4 walks the real input buffer"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/utils/json.c",
+   "line": 149,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same rule-engine misfire as line 115: plain char deref/assignment, no flexible-array struct"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/json.c",
+   "line": 149,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char assignment, no widening"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/json.c",
+   "line": 149,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char assignment, no widening"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/json.c",
+   "line": 149,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain char-to-char assignment, no widening"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/utils/json.c",
+   "line": 156,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "str already os_free()'d at line 155 on this fail path; not a leak, flow-insensitive false claim"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/json.c",
+   "line": 163,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "const char *pos = *json_pos; pointer-to-pointer assignment, not char widening"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/utils/json.c",
+   "line": 167,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end-paired-buffer FP class"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/utils/json.c",
+   "line": 167,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos++ walks the real input buffer"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/utils/json.c",
+   "line": 169,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos-- walks the real input buffer"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/utils/json.c",
+   "line": 174,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos-- walks the real input buffer"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/utils/json.c",
+   "line": 184,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi(str) on a digit string bounded only by remaining buffer size, no overflow/range check on the parsed number"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/utils/json.c",
+   "line": 184,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi(str) lacks error detection; no downstream range validation of ret_val"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/utils/json.c",
+   "line": 186,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*json_pos=pos copies a pointer value into an out-param; not address-of-local-automatic-storage"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/json.c",
+   "line": 186,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer-to-pointer value assignment, not char widening"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/utils/json.c",
+   "line": 191,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "json_check_tree_state recurses over child+sibling with no compiler-provable depth bound (only runtime-capped at JSON_MAX_TOKENS); low severity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/json.c",
+   "line": 191,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal static helper; token param genuinely never modified, not a callback/vtable signature"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/json.c",
+   "line": 220,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only-API FP class; all real callers pass fixed non-null wpabuf/attribute-derived pointers"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/json.c",
+   "line": 220,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only-API FP class; all real callers pass fixed non-null wpabuf/attribute-derived pointers"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/json.c",
+   "line": 220,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data/data_len ptr+size_t idiom, confirmed categorical FP"
+  },
+  {
+   "rule": "CON43-C",
+   "file": "src/utils/json.c",
+   "line": 233,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "single-threaded parser, no-pthread CON43-C FP class"
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "src/utils/json.c",
+   "line": 234,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "stacked/grouped case labels ('[' / '{') sharing one body, no code between them; standard C idiom, not fallthrough"
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "src/utils/json.c",
+   "line": 269,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "stacked/grouped case labels (']' / '}') sharing one body; same idiom"
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "src/utils/json.c",
+   "line": 361,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "stacked case labels ('t'/'f'/'n') sharing validation code below; same idiom"
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "src/utils/json.c",
+   "line": 362,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "stacked case labels ('f'/'n') sharing validation code below; same idiom"
+  },
+  {
+   "rule": "CON43-C",
+   "file": "src/utils/json.c",
+   "line": 394,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "single-threaded parser, no-pthread CON43-C FP class"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/utils/json.c",
+   "line": 475,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label reached via goto from earlier in the function; established goto-target-label-after-return blindness FP class"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/utils/json.c",
+   "line": 482,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "json_free recurses over child+sibling with no depth bound in the function itself; low severity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/json.c",
+   "line": 494,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "json_get_member's json param is genuinely read-only; plain helper, not a callback/vtable signature"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/utils/json.c",
+   "line": 528,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ret comes from wpabuf_alloc_ext_data (heap); local pointer VARIABLE, not automatic storage"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/utils/json.c",
+   "line": 550,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ret comes from wpabuf_alloc_ext_data (heap); local pointer VARIABLE, not automatic storage"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/utils/json.c",
+   "line": 576,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "json_print_token recurses over child+sibling with no depth bound in the function itself; low severity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/utils/json.c",
+   "line": 576,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal static helper; token param genuinely never modified"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/json.c",
+   "line": 577,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf/buflen ptr+size_t idiom, confirmed categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/json.c",
+   "line": 597,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf/buflen ptr+size_t idiom, confirmed categorical FP"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/json.c",
+   "line": 610,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/json.c",
+   "line": 616,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only-API FP class; all callers pass locally-bounded config strings (device name/ssid/passphrase), not unbounded wire data"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/json.c",
+   "line": 616,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only-API FP class; all callers pass locally-bounded config strings (device name/ssid/passphrase), not unbounded wire data"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/json.c",
+   "line": 616,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "val/len ptr+size_t idiom, confirmed categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/json.c",
+   "line": 617,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ptr+size_t idiom, confirmed categorical FP"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/json.c",
+   "line": 632,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only-API FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/json.c",
+   "line": 632,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ptr+size_t idiom, confirmed categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/json.c",
+   "line": 632,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ptr+size_t idiom, confirmed categorical FP"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/json.c",
+   "line": 646,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/json.c",
+   "line": 646,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/utils/json.c",
+   "line": 646,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only-API FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/json.c",
+   "line": 646,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ptr+size_t idiom, confirmed categorical FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/utils/json.c",
+   "line": 646,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ptr+size_t idiom, confirmed categorical FP"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "src/utils/json.c"
+ ],
+ "summary": {
+  "tp": 9,
+  "fp": 84,
+  "fn": 0
+ }
+}

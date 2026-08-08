@@ -1,0 +1,594 @@
+{
+  "labels": [
+    {
+      "rule": "MSC06-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 774,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "memset writes fixed test values used later (hex-encoded at 798-806), not cleared-before-scope-exit"
+    },
+    {
+      "rule": "MSC06-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 775,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "memset writes fixed test values used later, not cleared-before-scope-exit"
+    },
+    {
+      "rule": "MSC06-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 776,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "memset writes fixed test values used later, not cleared-before-scope-exit"
+    },
+    {
+      "rule": "MSC06-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 777,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "memset writes fixed test values used later, not cleared-before-scope-exit"
+    },
+    {
+      "rule": "EXP05-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 777,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "No cast at all on 'ck' at this line; phantom EXP05-C"
+    },
+    {
+      "rule": "MSC06-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 778,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "memset writes fixed test value used later at line 806, not cleared-before-scope-exit"
+    },
+    {
+      "rule": "STR03-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 787,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "snprintf return IS checked 2 lines later (ret<0||ret>=end-pos)"
+    },
+    {
+      "rule": "STR03-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 792,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "snprintf return IS checked 2 lines later"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 795,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "pos+=ret then immediate return 0; value genuinely never read again"
+    },
+    {
+      "rule": "ERR02-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 798,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpa_snprintf_hex() name-substring misfire, not sprintf; internally bounded"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 799,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "plain char-literal ' ' assignment, no widening conversion"
+    },
+    {
+      "rule": "ERR02-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 800,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpa_snprintf_hex() name-substring misfire, not sprintf"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 801,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "plain char-literal ' ' assignment, no widening conversion"
+    },
+    {
+      "rule": "ERR02-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 802,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpa_snprintf_hex() name-substring misfire, not sprintf"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 803,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "plain char-literal ' ' assignment, no widening conversion"
+    },
+    {
+      "rule": "ERR02-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 804,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpa_snprintf_hex() name-substring misfire, not sprintf"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 805,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "plain char-literal ' ' assignment, no widening conversion"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 806,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "final pos+= in function never read again before return 0"
+    },
+    {
+      "rule": "ERR02-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 806,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpa_snprintf_hex() name-substring misfire, not sprintf"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 806,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "res_len set in every branch gated by same 'failed' flag that gates its only read; correlated-conditional-assignment blind spot"
+    },
+    {
+      "rule": "API05-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 812,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "resp,resp_len idiomatic T*,size_t pair"
+    },
+    {
+      "rule": "API05-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 812,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "resp,resp_len idiomatic T*,size_t pair"
+    },
+    {
+      "rule": "DCL37-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 815,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "_auts is a block-scope local, not file-scope; DCL37-C scope misclassification"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 825,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "plain char-literal '\\0' assignment, no widening conversion"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 830,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "plain char-literal '\\0' assignment, no widening conversion"
+    },
+    {
+      "rule": "INT00-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 833,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sqc type-conflation: aka_auts's char*imsi param resolved by name to db_get_milenage's unrelated 'unsigned long long imsi' local"
+    },
+    {
+      "rule": "PRE32-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 833,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no preprocessor directive anywhere in the call; phantom PRE32-C on plain concatenated string literal"
+    },
+    {
+      "rule": "DCL11-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 834,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same cross-function name-conflation as INT00-C at same line; imsi is char*"
+    },
+    {
+      "rule": "INT00-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 844,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same cross-function imsi-name type conflation as line 833"
+    },
+    {
+      "rule": "DCL11-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 844,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same cross-function imsi-name type conflation as line 833/834"
+    },
+    {
+      "rule": "PRE32-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 853,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no preprocessor directive present; phantom PRE32-C"
+    },
+    {
+      "rule": "PRE32-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 853,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "quotes the plain string literal itself as 'the directive'; no # anywhere"
+    },
+    {
+      "rule": "API05-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 867,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "cmd,resp+resp_len idiomatic T*,size_t pairs"
+    },
+    {
+      "rule": "API05-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 867,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "cmd,resp+resp_len idiomatic T*,size_t pairs"
+    },
+    {
+      "rule": "ARR30-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 912,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "res already clamped to sizeof(buf)-1 two lines earlier (lines 910-911) before this access"
+    },
+    {
+      "rule": "FIO47-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 914,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf is char buf[1000], a Pointer after array decay, not Integer"
+    },
+    {
+      "rule": "FIO47-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 926,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "resp is char resp[1000], a Pointer after array decay, not Integer"
+    },
+    {
+      "rule": "CON07-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 936,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "file has zero pthread/thread usage anywhere; no-pthread CON07-C wholesale misfire"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 942,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "sqn_changes read again at cleanup()'s own guard (line941) on the atexit-triggered 2nd invocation"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 947,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "gsm_db read again at cleanup() line946 on the atexit-triggered 2nd invocation"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 955,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "milenage_db read again at cleanup() line954 on the atexit-triggered 2nd invocation"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 964,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "serv_sock read again at cleanup() line962 on the atexit-triggered 2nd invocation"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 966,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "static const char* is guaranteed zero-initialized by the C standard; not an uninitialized-use"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 968,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "socket_path read again at cleanup() line966 on the atexit-triggered 2nd invocation"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 974,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "sqlite_db read again at cleanup() line972 on the atexit-triggered 2nd invocation"
+    },
+    {
+      "rule": "SIG30-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 982,
+      "verdict": "TP",
+      "confidence": "high",
+      "reason": "handle_term is a real signal()-registered handler calling printf(), not async-signal-safe"
+    },
+    {
+      "rule": "SIG30-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 983,
+      "verdict": "TP",
+      "confidence": "high",
+      "reason": "handle_term calls cleanup() (close/unlink/sqlite3_close), not async-signal-safe from a signal handler"
+    },
+    {
+      "rule": "ERR05-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 984,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "handle_term's entire purpose is process termination; not application-independent library code deferring to a caller"
+    },
+    {
+      "rule": "SIG30-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 984,
+      "verdict": "TP",
+      "confidence": "high",
+      "reason": "exit() is not async-signal-safe; called directly from the signal() handler"
+    },
+    {
+      "rule": "PRE32-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 990,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no preprocessor directive in the usage() string; phantom PRE32-C"
+    },
+    {
+      "rule": "PRE32-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 990,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "quotes the plain string literal itself as 'the directive'; no # present"
+    },
+    {
+      "rule": "API00-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 1020,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "main()'s argv is guaranteed valid by the C runtime contract"
+    },
+    {
+      "rule": "CON07-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 1020,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "file has zero pthread/thread usage anywhere; no-pthread CON07-C wholesale misfire"
+    },
+    {
+      "rule": "STR31-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 1020,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "main()'s argc/argv guaranteed valid by the C runtime; no defensive check needed"
+    },
+    {
+      "rule": "MSC17-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 1037,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "case 'D' has a real break;/return -1; inside #ifdef CONFIG_SQLITE/#else; #ifdef-intervening fallthrough misfire"
+    },
+    {
+      "rule": "ERR07-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 1052,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "0 is itself a legal ind_len value (range check only rejects <0||>32), so a garbage optarg silently passes as 0 - ambiguity not resolved"
+    },
+    {
+      "rule": "ERR34-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 1052,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "same 0-is-a-valid-value ambiguity as the ERR07-C finding on this line"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 1059,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "optarg points into OS-provided argv[] strings (process-lifetime), not a local stack array of main()"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 1062,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "optarg points into OS-provided argv[] strings (process-lifetime), not a local stack array of main()"
+    },
+    {
+      "rule": "MEM12-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 1092,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "if sqlite_db was opened (CONFIG_SQLITE + -D flag) this return -1 skips closing it; atexit(cleanup) not yet registered here; serv_sock itself isn't a live resource (open failed)"
+    },
+    {
+      "rule": "ERR33-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 1096,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "atexit() can fail and return value is genuinely ignored"
+    },
+    {
+      "rule": "ERR33-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 1097,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "signal() can fail (SIG_ERR) and return value is genuinely ignored"
+    },
+    {
+      "rule": "SIG00-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 1097,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "signal() used instead of sigaction(); no signal masking, real race-condition exposure per rule text"
+    },
+    {
+      "rule": "SIG01-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 1097,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "signal() has implementation-defined handler-persistence behavior vs. portable sigaction()"
+    },
+    {
+      "rule": "ERR33-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 1098,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "signal() return value genuinely ignored"
+    },
+    {
+      "rule": "SIG00-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 1098,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "signal() used instead of sigaction(); no signal masking"
+    },
+    {
+      "rule": "SIG01-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 1098,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "signal() implementation-defined persistence behavior"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 1105,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "socket_path is read again at cleanup() line966, called right after at line1113"
+    },
+    {
+      "rule": "FIO47-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 1111,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf is char buf[1000], a Pointer after array decay, not Integer"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 1119,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "sqlite_db already NULL by this point (closed by preceding cleanup() call); write is dead but claim of 'never read' is the wrong framing - value is stable/checked again via any later atexit cleanup() call"
+    },
+    {
+      "rule": "MEM12-C",
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 1125,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "by this final return, cleanup() has already run (line1102 or 1113) and closed/nulled both sqlite_db and serv_sock on every path reaching here"
+    }
+  ],
+  "fns": [
+    {
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 799,
+      "rule": "ARR30-C",
+      "desc": "aka_req_auth's *pos++=' ' separator writes (799,801,803,805) have no pos<end bounds check, unlike the sibling GSM-triplet fallback loop in sim_req_auth; low real-world risk (buffer far larger than content) but a real gap",
+      "upstream_present": "unknown"
+    },
+    {
+      "file": "hostapd/hlr_auc_gw.c",
+      "line": 623,
+      "rule": "ARR30-C",
+      "desc": "sim_req_auth's Milenage-branch *rpos++=' '/':' writes (623,625,627) and gsm_auth_req's equivalents (690,692) have no rpos<rend/bounds check before write; low real-world risk given fixed small content vs 1000-byte buffers",
+      "upstream_present": "unknown"
+    }
+  ],
+  "files_clean_for_fn": [],
+  "summary": {
+    "tp": 15,
+    "fp": 56,
+    "fn": 2
+  }
+}

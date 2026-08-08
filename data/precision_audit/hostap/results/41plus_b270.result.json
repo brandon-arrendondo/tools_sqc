@@ -1,0 +1,912 @@
+{
+ "labels": [
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 19,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wps_build_wps_state only reads wps->wps->ap/wps_state; genuinely const-able, plain-internal-helper class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 35,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps_build_e_hash writes wps->snonce via random_get_bytes(wps->snonce,...); param IS mutated through pointer."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 83,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wps_build_e_snonce1 only reads wps->snonce; const-able plain helper."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 93,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wps_build_e_snonce2 only reads wps->snonce; const-able plain helper."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 166,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg is heap via wpabuf_alloc(1000), not automatic storage; standard heap-vs-automatic-storage confusion."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 204,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same heap-vs-automatic confusion, msg=wpabuf_alloc(1000) in wps_build_m3."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 239,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same heap-vs-automatic confusion, msg=wpabuf_alloc(1000) in wps_build_m5."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 243,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wps_build_cred_ssid only reads wps->wps->ssid*; const-able plain helper."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 253,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wps_build_cred_auth_type only reads wps->wps->ap_auth_type; const-able plain helper."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 266,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause chain; falling through leaves auth_type at its current (already-valid) value by design."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 277,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wps_build_cred_encr_type only reads wps->wps->ap_encr_type; const-able plain helper."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 289,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same deliberate no-final-else guard pattern preserving encr_type default."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 301,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wps_build_cred_network_key only reads wps fields (writes are to locals psk/hex); const-able plain helper."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 303,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Bitwise op is on member wps->wps->ap_auth_type, not on the wps pointer itself; container-vs-member conflation."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 339,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wps_build_cred_mac_addr only reads wps->wps->dev.mac_addr; const-able plain helper."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 419,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg=wpabuf_alloc(1000+...) in wps_build_m7; heap-vs-automatic confusion."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 448,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg=wpabuf_alloc(1000) in wps_build_wsc_done; heap-vs-automatic confusion."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 452,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps_enrollee_get_msg's sole caller (wps.c:227) always passes the live wps_data instance; internal-only-API FP."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 509,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg returned is one of several wpabuf_alloc()-backed builders' results, or NULL; heap-vs-automatic confusion."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 513,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps_process_registrar_nonce writes wps->nonce_r via os_memcpy; param IS mutated through pointer."
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 515,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Ad-hoc NULL-check stylistic pedantry; established FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 528,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wps_process_enrollee_nonce only reads wps->nonce_e via os_memcmp; const-able plain helper."
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 530,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Ad-hoc NULL-check stylistic pedantry."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 544,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps_process_uuid_r writes wps->uuid_r via os_memcpy; param IS mutated through pointer."
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 546,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Ad-hoc NULL-check stylistic pedantry."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 596,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps_process_r_hash1 writes wps->peer_hash1 via os_memcpy; param IS mutated through pointer."
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 598,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Ad-hoc NULL-check stylistic pedantry."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 610,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps_process_r_hash2 writes wps->peer_hash2 via os_memcpy; param IS mutated through pointer."
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 612,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Ad-hoc NULL-check stylistic pedantry."
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 630,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Ad-hoc NULL-check stylistic pedantry."
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 670,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Ad-hoc NULL-check stylistic pedantry."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 712,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(wps->cred) sizes the dereferenced struct member itself, not a decayed pointer; correct idiom."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 714,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps_parse_msg(&msg,&attr) is attr's output-populating call (os_memset+fill inside); not a read of uninitialized attr."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 719,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR expands to pure array-index reads with no side effects; established MAC2STR/EXP30-C FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 766,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "cred_len[] is only read (cred_len[i]) in wps_process_creds; genuinely const-able array parameter."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 817,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cred was already fully populated by wps_process_ap_settings(attr,&cred) (memset+field-fill output param) two lines earlier, guarded by its <0 check."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 818,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR pure-accessor macro-arg FP, same class as line 719."
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 906,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Ad-hoc NULL-check stylistic pedantry."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 1021,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eattr.key_wrap_auth only reached after wps_parse_msg(decrypted,&eattr) succeeded (short-circuit ||), so eattr is populated."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 1065,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "&data.m2d takes an address of a union member immediately followed by os_memset(&data,0,...); not a read of an uninitialized value."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 1097,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wps_process_m4's attr param is only read; const-able plain helper param."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 1137,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same wps_parse_msg-short-circuit output-param class as line 1021, in wps_process_m4."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 1152,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wps_process_m6's attr param is only read; const-able plain helper param."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 1190,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same wps_parse_msg-short-circuit output-param class, in wps_process_m6."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 1209,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wps_process_m8's attr param is only read; const-able plain helper param."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 1261,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same wps_parse_msg-short-circuit output-param class, in wps_process_m8."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 1281,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ret=WPS_CONTINUE initializer is unconditionally overwritten by every reachable switch case before the single `return ret;`; genuine trivial dead store."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 1288,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "attr is read only after an explicit `if (wps_parse_msg(msg,&attr)<0) return WPS_FAILURE;` guard already ran; clearly initialized by that point."
+  },
+  {
+   "rule": "CON43-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 1300,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "switch(*attr.msg_type) dereferences a freshly-parsed stack-local struct field in this single-threaded (zero-pthread) codebase; established CON43-C no-concurrency FP class, exact attr.msg_type precedent already documented."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 1372,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same explicit-prior-guard-already-populated-attr FP as line 1288, in wps_process_wsc_ack."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 1419,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same explicit-prior-guard-already-populated-attr FP as line 1288, in wps_process_wsc_nack."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 1486,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps_enrollee_process_msg's sole caller (wps.c:209) always passes the live wps_data instance; internal-only-API FP."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 1498,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "attr.msg_type only read after `wps_parse_msg(msg,&attr)==0 &&` short-circuit guarantees a successful populate."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/wps/wps_enrollee.c",
+   "line": 1501,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Nested if/else-if inside an outer guard whose fallthrough (op_code unchanged) is handled by the subsequent switch's default case; deliberate."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 80,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handle_data(void*,unsigned char*,size_t) is the established ptr+size_t idiom, not a real conformant-array-syntax defect."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 80,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Second API05-C hit on same line/idiom; ptr+size_t FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 80,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "handle_data's buf is only read/cast, never written; const-able, and handle_data isn't itself bound to the eloop callback typedef (handle_read is)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 120,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handle_read matches eloop_register_read_sock's fixed eloop_sock_handler signature; dispatch-contract FP, sock_ctx is contractually present though unused."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 127,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP; codebase is single-threaded eloop, zero pthread usage."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 127,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same strerror() no-pthread FP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 135,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "handle_dhcp matches the same fixed eloop_sock_handler dispatch contract as handle_read; sock_ctx unused but contractual."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 145,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 145,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP."
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 168,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wired_init_sockets: every #ifdef __linux__ branch has explicit returns (0 or -1) and the #else branch also returns -1; ifdef-branch-blind FP, no real fallthrough."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 179,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 179,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP."
+  },
+  {
+   "rule": "DCL39-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 191,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ifr is os_memset(&ifr,0,sizeof(ifr)) two lines earlier; no uninitialized padding to leak, and it's a local ioctl() to the kernel, not a network trust boundary."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 193,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 193,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP."
+  },
+  {
+   "rule": "POS02-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 203,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Codebase-wide no-privilege-separation FP; bind() here has no accompanying setuid/setgid drop anywhere in this daemon's design."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 205,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 205,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP."
+  },
+  {
+   "rule": "DCL39-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 219,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ifr is os_memset-zeroed at line 217 immediately before this ioctl(); same zeroed-before-ioctl FP as line 191."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 221,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 221,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 235,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 235,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP."
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 236,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "drv->common.sock (opened line 176) is genuinely leaked on this failure return; caller only os_free(drv), never closes the fd. dhcp_sock itself is not open here (message overstates but real leak exists)."
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 242,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "Both drv->common.sock and the just-opened drv->dhcp_sock are genuinely open and leaked on this eloop_register_read_sock failure return."
+  },
+  {
+   "rule": "INT18-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 250,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "setsockopt() returns plain signed int; comparing to -1 is the ordinary error-check idiom, not an unsigned/negative-literal mismatch."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 253,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 253,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP."
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 254,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "Both drv->common.sock and drv->dhcp_sock are open at this point and genuinely leaked on this return; caller never closes them."
+  },
+  {
+   "rule": "INT18-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 256,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "setsockopt() returns signed int; == -1 is the ordinary idiom, same as line 250."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 259,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 259,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP."
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 260,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "Both sockets open and genuinely leaked on this return, same as line 254."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 269,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 269,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP."
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 270,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "Both sockets open and genuinely leaked on this return."
+  },
+  {
+   "rule": "INT18-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 273,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bind() returns signed int; == -1 is the ordinary idiom."
+  },
+  {
+   "rule": "POS02-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 273,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same codebase-wide no-privilege-separation FP as line 203."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 275,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 275,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP."
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 276,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "Both sockets open and genuinely leaked on this return."
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 279,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "This is the success return (return 0); the sockets are the intended output of init, later closed by wired_driver_hapd_deinit \u2014 not a leak. Flow-insensitive checker repeats the same Leaked list on every return including success."
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 281,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "This is the #else /* __linux__ */ non-Linux fallback branch, which never reaches the socket-opening code at all; flagging it as leaking common.sock/dhcp_sock is factually wrong."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 286,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wired_send_eapol matches the fixed hapd_send_eapol driver-ops vtable signature (registered at line 401); ptr+size_t/vtable-contract FP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 286,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv is a fixed wpa_driver_ops.hapd_send_eapol callback parameter (void*); dispatch-contract FP, matches established vtable-signature class."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 296,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*hdr) is a compile-time type-size computation, not a dereference of hdr's (still-uninitialized) value; established sizeof(*ptr)-not-a-deref FP."
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 319,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP."
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 319,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() no-pthread FP."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 348,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "drv is heap via os_zalloc(sizeof(struct wpa_driver_wired_data)); heap-vs-automatic-storage confusion."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 374,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*drv) is a compile-time type-size computation on the not-yet-assigned drv, not a runtime dereference; established FP class."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 383,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "drv is heap via os_zalloc(sizeof(*drv)); heap-vs-automatic-storage confusion, same as line 348."
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 396,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_driver_wired_ops is declared extern in driver.h:7412 and referenced from drivers.c:32; genuine required external linkage, not a missing-static defect."
+  },
+  {
+   "rule": "DCL19-C",
+   "file": "src/drivers/driver_wired.c",
+   "line": 396,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same genuine-extern-linkage FP as the DCL15-C finding on this line."
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/drivers/driver_wired.c",
+   "line": 186,
+   "rule": "MEM12-C",
+   "desc": "eloop_register_read_sock() failure for drv->common.sock (opened line 176) returns -1 without closing the socket; caller (wired_driver_hapd_init) only os_free(drv), leaking the fd. Same root cause as the MEM12-C TPs sqc did catch later in this function (:236,254,260,270,276), but sqc missed this earlier occurrence.",
+   "upstream_present": "unknown"
+  },
+  {
+   "file": "src/drivers/driver_wired.c",
+   "line": 194,
+   "rule": "MEM12-C",
+   "desc": "ioctl(SIOCGIFINDEX) failure returns -1 while drv->common.sock is still open; same leak-on-early-return pattern sqc missed.",
+   "upstream_present": "unknown"
+  },
+  {
+   "file": "src/drivers/driver_wired.c",
+   "line": 206,
+   "rule": "MEM12-C",
+   "desc": "bind() failure on drv->common.sock returns -1 without closing the already-open raw packet socket; same missed leak pattern.",
+   "upstream_present": "unknown"
+  },
+  {
+   "file": "src/drivers/driver_wired.c",
+   "line": 214,
+   "rule": "MEM12-C",
+   "desc": "wired_multicast_membership() failure returns -1 without closing drv->common.sock; same missed leak pattern.",
+   "upstream_present": "unknown"
+  },
+  {
+   "file": "src/drivers/driver_wired.c",
+   "line": 222,
+   "rule": "MEM12-C",
+   "desc": "ioctl(SIOCGIFHWADDR) failure returns -1 without closing drv->common.sock; same missed leak pattern.",
+   "upstream_present": "unknown"
+  },
+  {
+   "file": "src/drivers/driver_wired.c",
+   "line": 228,
+   "rule": "MEM12-C",
+   "desc": "Invalid HW-addr family check returns -1 without closing drv->common.sock; same missed leak pattern. Together with :186,194,206,214, this is a systemic issue: wired_init_sockets() has no unwind/cleanup path, so any failure after the raw socket is opened (line 176) leaks the fd for the process lifetime once the caller frees drv.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [
+  "src/wps/wps_enrollee.c"
+ ],
+ "summary": {
+  "tp": 21,
+  "fp": 86,
+  "fn": 6
+ }
+}

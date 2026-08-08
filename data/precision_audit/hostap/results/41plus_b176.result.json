@@ -1,0 +1,933 @@
+{
+  "labels": [
+    {
+      "rule": "API01-C",
+      "file": "src/wps/httpread.c",
+      "line": 62,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "hdr[] writes are bounds-checked (:427) before every append; API01-C buffer-before-pointer FP class (categorical_patterns.md:342)"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/wps/httpread.c",
+      "line": 98,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "s1/s2 are pointer-incremented (*s1++) inside word_eq, genuinely modified; const suggestion is factually wrong"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/wps/httpread.c",
+      "line": 98,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "s1/s2 are pointer-incremented (*s1++) inside word_eq, genuinely modified; const suggestion is factually wrong"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "src/wps/httpread.c",
+      "line": 102,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "end1/end2 read on the very next line's if-condition and again after loop break; MSC13-C dead-store claim is wrong"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "src/wps/httpread.c",
+      "line": 103,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "end1/end2 read on the very next line's if-condition and again after loop break; MSC13-C dead-store claim is wrong"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/wps/httpread.c",
+      "line": 105,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "char*->int widening (c1=*s1++, c2=*s2++) without (unsigned char) cast; word_eq compares untrusted HTTP header text"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/wps/httpread.c",
+      "line": 105,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "char*->int widening (c1=*s1++, c2=*s2++) without (unsigned char) cast; word_eq compares untrusted HTTP header text"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/wps/httpread.c",
+      "line": 106,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "char*->int widening (c1=*s1++, c2=*s2++) without (unsigned char) cast; word_eq compares untrusted HTTP header text"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/wps/httpread.c",
+      "line": 106,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "char*->int widening (c1=*s1++, c2=*s2++) without (unsigned char) cast; word_eq compares untrusted HTTP header text"
+    },
+    {
+      "rule": "STR37-C",
+      "file": "src/wps/httpread.c",
+      "line": 107,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "isalpha/isupper/tolower/isgraph given plain (possibly signed) char without cast, on network-derived header bytes; genuine-if-low-severity per precedent (categorical_patterns.md:6218)"
+    },
+    {
+      "rule": "STR37-C",
+      "file": "src/wps/httpread.c",
+      "line": 107,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "isalpha/isupper/tolower/isgraph given plain (possibly signed) char without cast, on network-derived header bytes; genuine-if-low-severity per precedent (categorical_patterns.md:6218)"
+    },
+    {
+      "rule": "STR37-C",
+      "file": "src/wps/httpread.c",
+      "line": 108,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "isalpha/isupper/tolower/isgraph given plain (possibly signed) char without cast, on network-derived header bytes; genuine-if-low-severity per precedent (categorical_patterns.md:6218)"
+    },
+    {
+      "rule": "STR37-C",
+      "file": "src/wps/httpread.c",
+      "line": 109,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "isalpha/isupper/tolower/isgraph given plain (possibly signed) char without cast, on network-derived header bytes; genuine-if-low-severity per precedent (categorical_patterns.md:6218)"
+    },
+    {
+      "rule": "STR37-C",
+      "file": "src/wps/httpread.c",
+      "line": 109,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "isalpha/isupper/tolower/isgraph given plain (possibly signed) char without cast, on network-derived header bytes; genuine-if-low-severity per precedent (categorical_patterns.md:6218)"
+    },
+    {
+      "rule": "STR37-C",
+      "file": "src/wps/httpread.c",
+      "line": 110,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "isalpha/isupper/tolower/isgraph given plain (possibly signed) char without cast, on network-derived header bytes; genuine-if-low-severity per precedent (categorical_patterns.md:6218)"
+    },
+    {
+      "rule": "STR37-C",
+      "file": "src/wps/httpread.c",
+      "line": 111,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "isalpha/isupper/tolower/isgraph given plain (possibly signed) char without cast, on network-derived header bytes; genuine-if-low-severity per precedent (categorical_patterns.md:6218)"
+    },
+    {
+      "rule": "STR37-C",
+      "file": "src/wps/httpread.c",
+      "line": 112,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "isalpha/isupper/tolower/isgraph given plain (possibly signed) char without cast, on network-derived header bytes; genuine-if-low-severity per precedent (categorical_patterns.md:6218)"
+    },
+    {
+      "rule": "ARR01-C",
+      "file": "src/wps/httpread.c",
+      "line": 137,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "actual code is sizeof(*h), the correct dereferenced-struct idiom, not sizeof(h) on the decayed pointer"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/wps/httpread.c",
+      "line": 145,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eloop_timeout_handler is a fixed-signature eloop callback; dispatch-contract DCL13-C FP class"
+    },
+    {
+      "rule": "DCL00-C",
+      "file": "src/wps/httpread.c",
+      "line": 147,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "h is a read-only local in the timeout handler; genuine (if low-value) const-candidate, DCL00-C pattern"
+    },
+    {
+      "rule": "STR00-C",
+      "file": "src/wps/httpread.c",
+      "line": 162,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "ctype fn (isgraph/isdigit/isxdigit) given plain char without (unsigned char) cast on live HTTP header/wire bytes; genuine per established ctype-cast precedent"
+    },
+    {
+      "rule": "STR37-C",
+      "file": "src/wps/httpread.c",
+      "line": 162,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "ctype fn (isgraph/isdigit/isxdigit) given plain char without (unsigned char) cast on live HTTP header/wire bytes; genuine per established ctype-cast precedent"
+    },
+    {
+      "rule": "STR00-C",
+      "file": "src/wps/httpread.c",
+      "line": 166,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "ctype fn (isgraph/isdigit/isxdigit) given plain char without (unsigned char) cast on live HTTP header/wire bytes; genuine per established ctype-cast precedent"
+    },
+    {
+      "rule": "STR37-C",
+      "file": "src/wps/httpread.c",
+      "line": 166,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "ctype fn (isgraph/isdigit/isxdigit) given plain char without (unsigned char) cast on live HTTP header/wire bytes; genuine per established ctype-cast precedent"
+    },
+    {
+      "rule": "ERR07-C",
+      "file": "src/wps/httpread.c",
+      "line": 168,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "atol() has UB on overflow and no error signal for an attacker-supplied Content-Length/reply-code field; strtol w/ range check recommended"
+    },
+    {
+      "rule": "ERR34-C",
+      "file": "src/wps/httpread.c",
+      "line": 168,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "atol() has UB on overflow and no error signal for an attacker-supplied Content-Length/reply-code field; strtol w/ range check recommended"
+    },
+    {
+      "rule": "STR00-C",
+      "file": "src/wps/httpread.c",
+      "line": 180,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "ctype fn (isgraph/isdigit/isxdigit) given plain char without (unsigned char) cast on live HTTP header/wire bytes; genuine per established ctype-cast precedent"
+    },
+    {
+      "rule": "STR37-C",
+      "file": "src/wps/httpread.c",
+      "line": 180,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "ctype fn (isgraph/isdigit/isxdigit) given plain char without (unsigned char) cast on live HTTP header/wire bytes; genuine per established ctype-cast precedent"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "src/wps/httpread.c",
+      "line": 199,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "httpread_hdr_analyze returns on every path (return 0; bad: return -1); goto-blind reach-end-without-return misfire"
+    },
+    {
+      "rule": "STR00-C",
+      "file": "src/wps/httpread.c",
+      "line": 206,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "ctype fn (isgraph/isdigit/isxdigit) given plain char without (unsigned char) cast on live HTTP header/wire bytes; genuine per established ctype-cast precedent"
+    },
+    {
+      "rule": "STR37-C",
+      "file": "src/wps/httpread.c",
+      "line": 206,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "ctype fn (isgraph/isdigit/isxdigit) given plain char without (unsigned char) cast on live HTTP header/wire bytes; genuine per established ctype-cast precedent"
+    },
+    {
+      "rule": "STR00-C",
+      "file": "src/wps/httpread.c",
+      "line": 213,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "ctype fn (isgraph/isdigit/isxdigit) given plain char without (unsigned char) cast on live HTTP header/wire bytes; genuine per established ctype-cast precedent"
+    },
+    {
+      "rule": "STR37-C",
+      "file": "src/wps/httpread.c",
+      "line": 213,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "ctype fn (isgraph/isdigit/isxdigit) given plain char without (unsigned char) cast on live HTTP header/wire bytes; genuine per established ctype-cast precedent"
+    },
+    {
+      "rule": "STR00-C",
+      "file": "src/wps/httpread.c",
+      "line": 215,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "ctype fn (isgraph/isdigit/isxdigit) given plain char without (unsigned char) cast on live HTTP header/wire bytes; genuine per established ctype-cast precedent"
+    },
+    {
+      "rule": "STR37-C",
+      "file": "src/wps/httpread.c",
+      "line": 215,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "ctype fn (isgraph/isdigit/isxdigit) given plain char without (unsigned char) cast on live HTTP header/wire bytes; genuine per established ctype-cast precedent"
+    },
+    {
+      "rule": "STR00-C",
+      "file": "src/wps/httpread.c",
+      "line": 219,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "ctype fn (isgraph/isdigit/isxdigit) given plain char without (unsigned char) cast on live HTTP header/wire bytes; genuine per established ctype-cast precedent"
+    },
+    {
+      "rule": "STR37-C",
+      "file": "src/wps/httpread.c",
+      "line": 219,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "ctype fn (isgraph/isdigit/isxdigit) given plain char without (unsigned char) cast on live HTTP header/wire bytes; genuine per established ctype-cast precedent"
+    },
+    {
+      "rule": "ERR07-C",
+      "file": "src/wps/httpread.c",
+      "line": 221,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "atol() has UB on overflow and no error signal for an attacker-supplied Content-Length/reply-code field; strtol w/ range check recommended"
+    },
+    {
+      "rule": "ERR34-C",
+      "file": "src/wps/httpread.c",
+      "line": 221,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "atol() has UB on overflow and no error signal for an attacker-supplied Content-Length/reply-code field; strtol w/ range check recommended"
+    },
+    {
+      "rule": "STR00-C",
+      "file": "src/wps/httpread.c",
+      "line": 253,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "ctype fn (isgraph/isdigit/isxdigit) given plain char without (unsigned char) cast on live HTTP header/wire bytes; genuine per established ctype-cast precedent"
+    },
+    {
+      "rule": "STR37-C",
+      "file": "src/wps/httpread.c",
+      "line": 253,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "ctype fn (isgraph/isdigit/isxdigit) given plain char without (unsigned char) cast on live HTTP header/wire bytes; genuine per established ctype-cast precedent"
+    },
+    {
+      "rule": "STR00-C",
+      "file": "src/wps/httpread.c",
+      "line": 263,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "ctype fn (isgraph/isdigit/isxdigit) given plain char without (unsigned char) cast on live HTTP header/wire bytes; genuine per established ctype-cast precedent"
+    },
+    {
+      "rule": "STR37-C",
+      "file": "src/wps/httpread.c",
+      "line": 263,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "ctype fn (isgraph/isdigit/isxdigit) given plain char without (unsigned char) cast on live HTTP header/wire bytes; genuine per established ctype-cast precedent"
+    },
+    {
+      "rule": "DCL00-C",
+      "file": "src/wps/httpread.c",
+      "line": 270,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "c is read-only after init in this block; genuine (if low-value) const-candidate"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/wps/httpread.c",
+      "line": 270,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "int c = *rawuri is a genuine char->int widening without cast, on (nominally graphical) URI bytes"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/wps/httpread.c",
+      "line": 270,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "int c = *rawuri is a genuine char->int widening without cast, on (nominally graphical) URI bytes"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/wps/httpread.c",
+      "line": 270,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "rawuri is declared char *rawuri (a pointer), not a char scalar; category-error mismatch (cf. categorical_patterns.md b173 pointer-mistaken-for-char class)"
+    },
+    {
+      "rule": "STR00-C",
+      "file": "src/wps/httpread.c",
+      "line": 272,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "isxdigit(rawuri[1]/[2]) given plain char without cast, on URI wire bytes"
+    },
+    {
+      "rule": "STR37-C",
+      "file": "src/wps/httpread.c",
+      "line": 272,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "isxdigit(rawuri[1]/[2]) given plain char without cast, on URI wire bytes"
+    },
+    {
+      "rule": "STR00-C",
+      "file": "src/wps/httpread.c",
+      "line": 272,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "isxdigit(rawuri[1]/[2]) given plain char without cast, on URI wire bytes"
+    },
+    {
+      "rule": "STR37-C",
+      "file": "src/wps/httpread.c",
+      "line": 272,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "isxdigit(rawuri[1]/[2]) given plain char without cast, on URI wire bytes"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/wps/httpread.c",
+      "line": 273,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "storing hex2byte()'s int (0-255) result into *uri (char) is narrowing, not the sign-extension-on-read hazard STR34-C targets; direction-mismatch (categorical_patterns.md:6659,6698)"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/wps/httpread.c",
+      "line": 276,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "storing already-widened int c back into *uri (char) is narrowing, same direction-mismatch as :273"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/wps/httpread.c",
+      "line": 280,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*uri = 0 assigns the literal 0; no possible sign extension"
+    },
+    {
+      "rule": "STR00-C",
+      "file": "src/wps/httpread.c",
+      "line": 287,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "isdigit(hbp[2]) given plain char without cast, on wire-derived header text"
+    },
+    {
+      "rule": "STR37-C",
+      "file": "src/wps/httpread.c",
+      "line": 287,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "isdigit(hbp[2]) given plain char without cast, on wire-derived header text"
+    },
+    {
+      "rule": "ARR30-C",
+      "file": "src/wps/httpread.c",
+      "line": 292,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "bounded scan of a NUL-terminated header line (h->hdr is always NUL-terminated, :441), not an unbounded pointer walk; established ARR30-C NUL-scan FP class"
+    },
+    {
+      "rule": "STR00-C",
+      "file": "src/wps/httpread.c",
+      "line": 304,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "isgraph given plain char without cast on wire-derived trailer/header text"
+    },
+    {
+      "rule": "STR37-C",
+      "file": "src/wps/httpread.c",
+      "line": 304,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "isgraph given plain char without cast on wire-derived trailer/header text"
+    },
+    {
+      "rule": "ARR30-C",
+      "file": "src/wps/httpread.c",
+      "line": 309,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "bounded scan of a NUL-terminated header line (h->hdr is always NUL-terminated, :441), not an unbounded pointer walk; established ARR30-C NUL-scan FP class"
+    },
+    {
+      "rule": "MSC07-C",
+      "file": "src/wps/httpread.c",
+      "line": 355,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "bad: label is reached via the many 'goto bad;' statements throughout the function; goto-blindness misfire"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/wps/httpread.c",
+      "line": 367,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eloop_register_sock's fixed httpread_read_handler(int,void*,void*) signature; dispatch-contract DCL13-C FP"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/wps/httpread.c",
+      "line": 380,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "readbuf is the output buffer supplied to read(2); its bytes are a write-target, not read before being filled"
+    },
+    {
+      "rule": "CON33-C",
+      "file": "src/wps/httpread.c",
+      "line": 382,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no pthread usage anywhere in this codebase (CON33/CON34 no-thread FP); also not a signal handler, so ERR32-C's premise is doubly wrong"
+    },
+    {
+      "rule": "CON34-C",
+      "file": "src/wps/httpread.c",
+      "line": 382,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no pthread usage anywhere in this codebase (CON33/CON34 no-thread FP); also not a signal handler, so ERR32-C's premise is doubly wrong"
+    },
+    {
+      "rule": "ERR32-C",
+      "file": "src/wps/httpread.c",
+      "line": 382,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no pthread usage anywhere in this codebase (CON33/CON34 no-thread FP); also not a signal handler, so ERR32-C's premise is doubly wrong"
+    },
+    {
+      "rule": "ERR32-C",
+      "file": "src/wps/httpread.c",
+      "line": 382,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no pthread usage anywhere in this codebase (CON33/CON34 no-thread FP); also not a signal handler, so ERR32-C's premise is doubly wrong"
+    },
+    {
+      "rule": "MEM33-C",
+      "file": "src/wps/httpread.c",
+      "line": 432,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*hbp++ = *rbp++ is a single-char pointer-deref copy, no struct/flexible-array member anywhere; established MEM33-C plain-char-copy misfire class"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/wps/httpread.c",
+      "line": 432,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "both hbp and rbp are plain char*; char-to-char assignment, no widening occurs at all"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/wps/httpread.c",
+      "line": 432,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "both hbp and rbp are plain char*; char-to-char assignment, no widening occurs at all"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/wps/httpread.c",
+      "line": 432,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "both hbp and rbp are plain char*; char-to-char assignment, no widening occurs at all"
+    },
+    {
+      "rule": "ARR00-C",
+      "file": "src/wps/httpread.c",
+      "line": 436,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "hbp[-1..-4] are pointer-cursor offsets guarded by 'h->hdr_nbytes >= 4' just above, not literal negative array indices; established negative-pointer-offset FP class"
+    },
+    {
+      "rule": "ARR00-C",
+      "file": "src/wps/httpread.c",
+      "line": 437,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "hbp[-1..-4] are pointer-cursor offsets guarded by 'h->hdr_nbytes >= 4' just above, not literal negative array indices; established negative-pointer-offset FP class"
+    },
+    {
+      "rule": "ARR00-C",
+      "file": "src/wps/httpread.c",
+      "line": 438,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "hbp[-1..-4] are pointer-cursor offsets guarded by 'h->hdr_nbytes >= 4' just above, not literal negative array indices; established negative-pointer-offset FP class"
+    },
+    {
+      "rule": "ARR00-C",
+      "file": "src/wps/httpread.c",
+      "line": 439,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "hbp[-1..-4] are pointer-cursor offsets guarded by 'h->hdr_nbytes >= 4' just above, not literal negative array indices; established negative-pointer-offset FP class"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/wps/httpread.c",
+      "line": 441,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*hbp = 0 assigns the literal 0; no possible sign extension"
+    },
+    {
+      "rule": "INT18-C",
+      "file": "src/wps/httpread.c",
+      "line": 497,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "body_alloc_nbytes/content_length and the added constants are all plain int; no smaller-type-then-widened arithmetic exists on this line at all"
+    },
+    {
+      "rule": "INT18-C",
+      "file": "src/wps/httpread.c",
+      "line": 505,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "body_alloc_nbytes/content_length and the added constants are all plain int; no smaller-type-then-widened arithmetic exists on this line at all"
+    },
+    {
+      "rule": "ARR00-C",
+      "file": "src/wps/httpread.c",
+      "line": 535,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "bbp[-2]/[-1] guarded by 'bbp-cbp >= 2' on the same line; bounded pointer-cursor offset, not a literal negative index"
+    },
+    {
+      "rule": "ARR00-C",
+      "file": "src/wps/httpread.c",
+      "line": 536,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "bbp[-2]/[-1] guarded by 'bbp-cbp >= 2' on the same line; bounded pointer-cursor offset, not a literal negative index"
+    },
+    {
+      "rule": "STR00-C",
+      "file": "src/wps/httpread.c",
+      "line": 541,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "isxdigit(*cbp) given plain char without cast on attacker-controlled chunk-size hex text"
+    },
+    {
+      "rule": "STR37-C",
+      "file": "src/wps/httpread.c",
+      "line": 541,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "isxdigit(*cbp) given plain char without cast on attacker-controlled chunk-size hex text"
+    },
+    {
+      "rule": "ERR33-C",
+      "file": "src/wps/httpread.c",
+      "line": 546,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "immediately followed by 'chunk_size<0 || >max_bytes' range check that catches out-of-range/overflowed strtoul results as a side effect; established strtol-family precedent (categorical_patterns.md b173)"
+    },
+    {
+      "rule": "ERR00-C",
+      "file": "src/wps/httpread.c",
+      "line": 546,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "immediately followed by 'chunk_size<0 || >max_bytes' range check that catches out-of-range/overflowed strtoul results as a side effect; established strtol-family precedent (categorical_patterns.md b173)"
+    },
+    {
+      "rule": "ERR30-C",
+      "file": "src/wps/httpread.c",
+      "line": 546,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "errno is genuinely never reset to 0 before strtoul(); kept TP per established errno-never-reset precedent even though the downstream range check mitigates blast radius"
+    },
+    {
+      "rule": "ARR00-C",
+      "file": "src/wps/httpread.c",
+      "line": 581,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "bbp[-1]/[-2] guarded by the preceding chunk-length-reached check; bounded pointer-cursor offset"
+    },
+    {
+      "rule": "ARR00-C",
+      "file": "src/wps/httpread.c",
+      "line": 582,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "bbp[-1]/[-2] guarded by the preceding chunk-length-reached check; bounded pointer-cursor offset"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/wps/httpread.c",
+      "line": 594,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "deliberate fallthrough to the nread<=0/copy logic below when no branch matches; no-final-else pedantry"
+    },
+    {
+      "rule": "MEM33-C",
+      "file": "src/wps/httpread.c",
+      "line": 612,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*bbp++ = *rbp++ is a single-char copy, no struct/FAM involved; same MEM33-C misfire class as :432"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/wps/httpread.c",
+      "line": 612,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "both bbp and rbp are plain char*; char-to-char assignment, no widening"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/wps/httpread.c",
+      "line": 612,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "both bbp and rbp are plain char*; char-to-char assignment, no widening"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/wps/httpread.c",
+      "line": 612,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "both bbp and rbp are plain char*; char-to-char assignment, no widening"
+    },
+    {
+      "rule": "INT32-C",
+      "file": "src/wps/httpread.c",
+      "line": 633,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ncopy is bounds-checked to [0,nread] a few lines earlier ('if (ncopy<0) goto bad;' and 'if (ncopy>nread) ncopy=nread;'); overflow of nread-=ncopy is provably impossible"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/wps/httpread.c",
+      "line": 647,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "c = *rbp++ is a genuine char->int widening without cast, reading attacker-controlled chunked-trailer bytes"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/wps/httpread.c",
+      "line": 647,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "c = *rbp++ is a genuine char->int widening without cast, reading attacker-controlled chunked-trailer bytes"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/wps/httpread.c",
+      "line": 649,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "switch covers all 4 trailer_state enum values exhaustively; exhaustive-enum MSC01-C pedantry"
+    },
+    {
+      "rule": "MSC07-C",
+      "file": "src/wps/httpread.c",
+      "line": 684,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "get_more: is reachable via 'goto get_more;' immediately above and elsewhere; goto-blindness misfire"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/wps/httpread.c",
+      "line": 729,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API: cb is always a hardcoded internal callback supplied by wps/eap callers, never externally nullable"
+    },
+    {
+      "rule": "MSC07-C",
+      "file": "src/wps/httpread.c",
+      "line": 762,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "fail: label is reached via 'goto fail;' at :742/:753/:758; goto-blindness misfire"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/wps/httpread.c",
+      "line": 771,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only accessor API; h is always the caller's own just-created/validated handle"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/wps/httpread.c",
+      "line": 771,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "plain read-only accessor helper, not bound to any callback/vtable typedef; genuine (if low-value) const opportunity"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/wps/httpread.c",
+      "line": 780,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only accessor API; h is always the caller's own just-created/validated handle"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/wps/httpread.c",
+      "line": 780,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "plain read-only accessor helper, not bound to any callback/vtable typedef; genuine (if low-value) const opportunity"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/wps/httpread.c",
+      "line": 787,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only accessor API; h is always the caller's own just-created/validated handle"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/wps/httpread.c",
+      "line": 787,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "plain read-only accessor helper, not bound to any callback/vtable typedef; genuine (if low-value) const opportunity"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/wps/httpread.c",
+      "line": 794,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only accessor API; h is always the caller's own just-created/validated handle"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/wps/httpread.c",
+      "line": 794,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "plain read-only accessor helper, not bound to any callback/vtable typedef; genuine (if low-value) const opportunity"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/wps/httpread.c",
+      "line": 804,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only accessor API; h is always the caller's own just-created/validated handle"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/wps/httpread.c",
+      "line": 804,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "plain read-only accessor helper, not bound to any callback/vtable typedef; genuine (if low-value) const opportunity"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/wps/httpread.c",
+      "line": 814,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only accessor API; h is always the caller's own just-created/validated handle"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/wps/httpread.c",
+      "line": 814,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "plain read-only accessor helper, not bound to any callback/vtable typedef; genuine (if low-value) const opportunity"
+    },
+    {
+      "rule": "MSC37-C",
+      "file": "src/wps/httpread.c",
+      "line": 828,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "the for(;;) loop's only exits are its two 'return' statements; infinite-loop-return-only-exit MSC37-C misfire"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/wps/httpread.c",
+      "line": 828,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "h is never modified in httpread_hdr_line_get; genuine (if low-value) const opportunity"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/wps/httpread.c",
+      "line": 830,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "tag is const char *tag, a pointer parameter; os_strlen(tag) doesn't convert or widen a char scalar at all - category error"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/wps/httpread.c",
+      "line": 841,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "hdr is a local pointer VARIABLE aliasing h->hdr, a member of the heap-allocated (os_zalloc'd) struct; the pointed-to storage outlives the function, only the pointer variable itself is automatic"
+    }
+  ],
+  "fns": [],
+  "files_clean_for_fn": [
+    "src/wps/httpread.c"
+  ],
+  "summary": {
+    "tp": 58,
+    "fp": 57,
+    "fn": 0
+  }
+}

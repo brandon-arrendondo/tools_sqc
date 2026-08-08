@@ -1,0 +1,1219 @@
+{
+ "labels": [
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/sae.c",
+   "line": 40,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*tmp) is a compile-time size computation, not a dereference; tmp is never read before os_zalloc() assigns it"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/common/sae.c",
+   "line": 128,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic ad-hoc-NULL-check pedantry (established MEM10-C class)"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/common/sae.c",
+   "line": 134,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*sae) is the correct idiom for sizing the pointee struct, not a decayed-array misuse"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/common/sae.c",
+   "line": 141,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR/MACSTR are pure array-element-read macros, no side effects (established EXP30-C pure-accessor class)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/sae.c",
+   "line": 153,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "static helper only reads sae->tmp fields; genuine but low-value DCL13-C const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/sae.c",
+   "line": 202,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "static helper only reads sae->tmp fields; genuine but low-value DCL13-C const opportunity"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/sae.c",
+   "line": 205,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed local buffer, zero getenv() anywhere in function (established ENV01-C wholesale-misfire class)"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/common/sae.c",
+   "line": 207,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "u8 exp[1] is a binary byte buffer, not string/character data (established STR31-C non-char misapplication class)"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/common/sae.c",
+   "line": 258,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_* has no restrict-qualified params anywhere in crypto.h; in-place accumulator idiom is the library's normal, safe usage (established EXP43-C no-restrict class)"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/common/sae.c",
+   "line": 294,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ETH_ALEN is a compile-time constant; addrs[2*ETH_ALEN] is a fixed-size array, not a VLA"
+  },
+  {
+   "rule": "MEM03-C",
+   "file": "src/common/sae.c",
+   "line": 297,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "stub_password holds random decoy bytes (not the real password, used only for constant-time obscuring); tmp_password (which holds real password) is bin_clear_free'd at :449"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/sae.c",
+   "line": 299,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed local buffers (prime/qr_bin/qnr_bin/x_bin etc.), zero getenv() in function (established ENV01-C wholesale-misfire class)"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/sae.c",
+   "line": 302,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed local buffers (prime/qr_bin/qnr_bin/x_bin etc.), zero getenv() in function (established ENV01-C wholesale-misfire class)"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/sae.c",
+   "line": 303,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed local buffers (prime/qr_bin/qnr_bin/x_bin etc.), zero getenv() in function (established ENV01-C wholesale-misfire class)"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/sae.c",
+   "line": 304,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed local buffers (prime/qr_bin/qnr_bin/x_bin etc.), zero getenv() in function (established ENV01-C wholesale-misfire class)"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/sae.c",
+   "line": 305,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed local buffers (prime/qr_bin/qnr_bin/x_bin etc.), zero getenv() in function (established ENV01-C wholesale-misfire class)"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/sae.c",
+   "line": 306,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed local buffers (prime/qr_bin/qnr_bin/x_bin etc.), zero getenv() in function (established ENV01-C wholesale-misfire class)"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/common/sae.c",
+   "line": 306,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "x_y[2*SAE_MAX_ECC_PRIME_LEN] is fixed-size (macro constant), not a VLA"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/common/sae.c",
+   "line": 382,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "SHA256_MAC_LEN is a #define macro constant, not a variable at all (established INT14-C macro-misattributed-as-variable class)"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/common/sae.c",
+   "line": 425,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "x_y used in pointer arithmetic (x_y+N) and later byte-indexed+masked; idiomatic C, not a real bitwise/arithmetic conflict (established INT14-C stylistic-pedantry class)"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/common/sae.c",
+   "line": 431,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Bitwise &0x01 applies to x_y[prime_len-1] (the byte), not to prime_len itself; prime_len is only used arithmetically (established INT14-C element-misattribution class)"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/common/sae.c",
+   "line": 454,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Both freed at fail: (os_free(stub_password):448, bin_clear_free(tmp_password):449) immediately before this return"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/common/sae.c",
+   "line": 463,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "addrs[2*ETH_ALEN] fixed-size, not a VLA"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/common/sae.c",
+   "line": 529,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "const_time_select_u8(u8,u8,u8) takes/returns plain by-value scalars, no pointers at all -- category error, not even the usual non-restrict aliasing shape"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/sae.c",
+   "line": 566,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer+size_t parameter pair is the standard, safe C idiom (established API05-C ptr+size class)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/common/sae.c",
+   "line": 568,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "os_strlen(info) on a const char* does not perform the signed-to-larger-int conversion the rule is checking for; misapplied"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/sae.c",
+   "line": 621,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer+size_t idiom (established API05-C class)"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/sae.c",
+   "line": 645,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed local buffers (bin/bin1/bin2/x_y, SAE_MAX_ECC_PRIME_LEN-sized), zero getenv() in function"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/sae.c",
+   "line": 646,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed local buffers (bin/bin1/bin2/x_y, SAE_MAX_ECC_PRIME_LEN-sized), zero getenv() in function"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/sae.c",
+   "line": 647,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed local buffers (bin/bin1/bin2/x_y, SAE_MAX_ECC_PRIME_LEN-sized), zero getenv() in function"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/sae.c",
+   "line": 648,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed local buffers (bin/bin1/bin2/x_y, SAE_MAX_ECC_PRIME_LEN-sized), zero getenv() in function"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/common/sae.c",
+   "line": 648,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "x_y[2*SAE_MAX_ECC_PRIME_LEN] fixed-size, not a VLA"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/common/sae.c",
+   "line": 662,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "z_int is only ever assigned one of 7 hardcoded small literals (-10,-12,-4,-5,31,-2,7) in sswu_curve_param()'s switch -- never INT_MIN, no realistic overflow"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/common/sae.c",
+   "line": 690,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_* in-place accumulator idiom, no restrict qualifier anywhere in crypto.h (established EXP43-C class)"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/common/sae.c",
+   "line": 707,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_* in-place accumulator idiom, no restrict qualifier anywhere in crypto.h (established EXP43-C class)"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/common/sae.c",
+   "line": 715,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_* in-place accumulator idiom, no restrict qualifier anywhere in crypto.h (established EXP43-C class)"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/common/sae.c",
+   "line": 734,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_* in-place accumulator idiom, no restrict qualifier anywhere in crypto.h (established EXP43-C class)"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/common/sae.c",
+   "line": 748,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_* in-place accumulator idiom, no restrict qualifier anywhere in crypto.h (established EXP43-C class)"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/common/sae.c",
+   "line": 756,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_* in-place accumulator idiom, no restrict qualifier anywhere in crypto.h (established EXP43-C class)"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/common/sae.c",
+   "line": 790,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Bitwise &0x01 applies to bin1[prime_len-1]/bin2[prime_len-1] (the bytes), not to prime_len itself (established INT14-C element-misattribution class)"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/sae.c",
+   "line": 881,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed local buffers sized by macro constants, zero getenv() in function; not a VLA"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/common/sae.c",
+   "line": 881,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed local buffers sized by macro constants, zero getenv() in function; not a VLA"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/common/sae.c",
+   "line": 902,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "prk=pwd_seed and okm=pwd_value are two entirely distinct local arrays -- no aliasing at all, factually wrong claim (not even the usual same-pointer shape)"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/common/sae.c",
+   "line": 911,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "In-place accumulator idiom, no restrict qualifier"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/common/sae.c",
+   "line": 924,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "prk=pwd_seed and okm=pwd_value are two distinct local arrays -- no actual aliasing"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/common/sae.c",
+   "line": 934,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "In-place accumulator idiom, no restrict qualifier"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/sae.c",
+   "line": 985,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed local buffers sized by macro constants, zero getenv(); not a VLA"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/common/sae.c",
+   "line": 985,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed local buffers sized by macro constants, zero getenv(); not a VLA"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/common/sae.c",
+   "line": 1006,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "prk=pwd_seed and okm=pwd_value are two distinct local arrays -- no actual aliasing"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/common/sae.c",
+   "line": 1019,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "In-place accumulator idiom, no restrict qualifier"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/common/sae.c",
+   "line": 1020,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "In-place accumulator idiom, no restrict qualifier"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/common/sae.c",
+   "line": 1031,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "In-place accumulator idiom, no restrict qualifier"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/common/sae.c",
+   "line": 1033,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_deinit() wraps OpenSSL BN_free()/BN_clear_free(), which are NULL-safe by contract (established os_free(NULL)-is-safe EXP34-C class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/sae.c",
+   "line": 1064,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*pt) is a compile-time size computation, not a dereference"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/sae.c",
+   "line": 1089,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pt is heap memory from os_zalloc() at :1064, not automatic/local storage (established DCL30-C heap-vs-stack-confusion class)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/common/sae.c",
+   "line": 1106,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pt is heap memory from os_zalloc() at :1064, not automatic/local storage (established DCL30-C heap-vs-stack-confusion class)"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/sae.c",
+   "line": 1107,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label is reached via goto from earlier failure branches (:1071,1086); classic goto-label-blindness FP (established MSC07-C class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/sae.c",
+   "line": 1113,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sae_derive_pt is called only with locally-generated/config-sourced pointers already valid at every call site (established API00-C internal-only-API class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/sae.c",
+   "line": 1113,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sae_derive_pt is called only with locally-generated/config-sourced pointers already valid at every call site (established API00-C internal-only-API class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/sae.c",
+   "line": 1113,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sae_derive_pt is called only with locally-generated/config-sourced pointers already valid at every call site (established API00-C internal-only-API class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/sae.c",
+   "line": 1113,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sae_derive_pt is called only with locally-generated/config-sourced pointers already valid at every call site (established API00-C internal-only-API class)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/sae.c",
+   "line": 1113,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer+size_t idiom (ssid/ssid_len, password/password_len, identifier/identifier_len)"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/common/sae.c",
+   "line": 1119,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "default_groups[] is sized exactly by its own braced initializer (established ARR02-C class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/sae.c",
+   "line": 1157,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "addr1/addr2 are fixed ETH_ALEN MAC-address pointers from internal SAE state machine callers, never NULL in practice (established API00-C internal class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/sae.c",
+   "line": 1157,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "addr1/addr2 are fixed ETH_ALEN MAC-address pointers from internal SAE state machine callers, never NULL in practice (established API00-C internal class)"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/sae.c",
+   "line": 1161,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed local buffers, zero getenv(); not a VLA"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/common/sae.c",
+   "line": 1161,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed local buffers, zero getenv(); not a VLA"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/sae.c",
+   "line": 1174,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bin/bin+prime_len are OUTPUT arguments to crypto_ec_point_to_bin() -- write, not a read of uninitialized data (established EXP33-C write-vs-read class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/sae.c",
+   "line": 1179,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "addr[] is filled by sae_max_min_addr(addr, len, addr1, addr2), an output-param setter, before any read (established EXP33-C output-param-not-tracked class)"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/common/sae.c",
+   "line": 1186,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "salt and hash are two distinct local arrays (u8 salt[64], hash[64]) -- no actual aliasing between input and output"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/common/sae.c",
+   "line": 1197,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "In-place accumulator idiom, no restrict qualifier"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/common/sae.c",
+   "line": 1198,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "In-place accumulator idiom, no restrict qualifier"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/common/sae.c",
+   "line": 1207,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_ec_point_deinit() wraps EC_POINT_free(), NULL-safe by contract"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/sae.c",
+   "line": 1222,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "addr1/addr2 are fixed ETH_ALEN MAC-address pointers from internal callers, never NULL in practice"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/sae.c",
+   "line": 1222,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "addr1/addr2 are fixed ETH_ALEN MAC-address pointers from internal callers, never NULL in practice"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/common/sae.c",
+   "line": 1232,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Both order and prime ARE read later in the same function (crypto_bignum_sub(order,...) and crypto_bignum_exptmod(...,prime,...)) -- factually refuted dead-store claim"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/common/sae.c",
+   "line": 1232,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Both order and prime ARE read later in the same function (crypto_bignum_sub(order,...) and crypto_bignum_exptmod(...,prime,...)) -- factually refuted dead-store claim"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/common/sae.c",
+   "line": 1241,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "addr[] filled by sae_max_min_addr() output-param setter before any read"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/common/sae.c",
+   "line": 1248,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "salt and hash are distinct local arrays -- no actual aliasing"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/common/sae.c",
+   "line": 1258,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "In-place accumulator idiom, no restrict qualifier"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/common/sae.c",
+   "line": 1259,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "In-place accumulator idiom, no restrict qualifier"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/common/sae.c",
+   "line": 1266,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_deinit() is NULL-safe (wraps BN_free)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/sae.c",
+   "line": 1282,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sae_deinit_pt() is an ownership-taking destroy/free function (os_free(prev) on every list node); constifying the traversal pointer is semantically at odds with its destroy contract"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/common/sae.c",
+   "line": 1333,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "In-place accumulator idiom on sae->tmp->own_commit_element_ffc, no restrict qualifier"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/sae.c",
+   "line": 1384,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pk is only ever stored (#ifdef CONFIG_SAE_PK sae->tmp->ap_pk=pk), never dereferenced in this function; internal-only API"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/sae.c",
+   "line": 1444,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "static helper only reads sae->tmp fields, genuine but low-value DCL13-C const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/sae.c",
+   "line": 1480,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "static helper only reads sae->tmp fields, genuine but low-value DCL13-C const opportunity"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/common/sae.c",
+   "line": 1498,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "In-place accumulator idiom, no restrict qualifier"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/common/sae.c",
+   "line": 1500,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "In-place accumulator idiom, no restrict qualifier"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/sae.c",
+   "line": 1518,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer+size_t idiom (out/out_len)"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/sae.c",
+   "line": 1541,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed local buffers sized by macro constants (SAE_MAX_HASH_LEN/SAE_PMK_LEN_MAX), zero getenv(); not a VLA"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/sae.c",
+   "line": 1544,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed local buffers sized by macro constants (SAE_MAX_HASH_LEN/SAE_PMK_LEN_MAX), zero getenv(); not a VLA"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/sae.c",
+   "line": 1545,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed local buffers sized by macro constants (SAE_MAX_HASH_LEN/SAE_PMK_LEN_MAX), zero getenv(); not a VLA"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/common/sae.c",
+   "line": 1545,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed local buffers sized by macro constants (SAE_MAX_HASH_LEN/SAE_PMK_LEN_MAX), zero getenv(); not a VLA"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/common/sae.c",
+   "line": 1550,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "const u8 *addr[1]; size_t len[1]; are a pointer-array and size_t-array, not character/string data (established STR31-C non-char misapplication class, exact addr[1]/len[1] shape)"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/common/sae.c",
+   "line": 1551,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "const u8 *addr[1]; size_t len[1]; are a pointer-array and size_t-array, not character/string data (established STR31-C non-char misapplication class, exact addr[1]/len[1] shape)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/common/sae.c",
+   "line": 1575,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "wpa_akm_to_suite()/wpa_key_mgmt_txt() are pure table-lookup accessors with no side effects, sibling-arg misfire similar to established MAC2STR/wpabuf_head pure-accessor class"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/common/sae.c",
+   "line": 1587,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "own/peer are small locally-generated rejected-groups wpabufs (a handful of 2-byte group entries); size_t addition overflow is not realistically reachable"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/common/sae.c",
+   "line": 1589,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "own/peer are small locally-generated rejected-groups wpabufs (a handful of 2-byte group entries); size_t addition overflow is not realistically reachable"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/common/sae.c",
+   "line": 1621,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "In-place accumulator idiom, no restrict qualifier"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/common/sae.c",
+   "line": 1638,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hash_len is only ever 32/48/64 (returned by sae_*_prime_len_2_hash_len) and pmk_len is SAE_PMK_LEN or hash_len -- small compile-time-bounded values, no realistic wraparound"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/common/sae.c",
+   "line": 1638,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hash_len is only ever 32/48/64 (returned by sae_*_prime_len_2_hash_len) and pmk_len is SAE_PMK_LEN or hash_len -- small compile-time-bounded values, no realistic wraparound"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/common/sae.c",
+   "line": 1643,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hash_len is only ever 32/48/64 (returned by sae_*_prime_len_2_hash_len) and pmk_len is SAE_PMK_LEN or hash_len -- small compile-time-bounded values, no realistic wraparound"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/common/sae.c",
+   "line": 1649,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hash_len is only ever 32/48/64 (returned by sae_*_prime_len_2_hash_len) and pmk_len is SAE_PMK_LEN or hash_len -- small compile-time-bounded values, no realistic wraparound"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/sae.c",
+   "line": 1683,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "k[SAE_MAX_PRIME_LEN] fixed buffer, zero getenv()"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/sae.c",
+   "line": 1698,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is an internally-allocated wpabuf from the SAE state machine's own caller, always non-NULL; identifier_len is locally-controlled, not raw wire input (established API00-C internal class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/sae.c",
+   "line": 1698,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is an internally-allocated wpabuf from the SAE state machine's own caller, always non-NULL; identifier_len is locally-controlled, not raw wire input (established API00-C internal class)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/common/sae.c",
+   "line": 1710,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() are pure accessors (established EXP30-C pure-accessor class, exact match)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/sae.c",
+   "line": 1784,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "allowed_groups is only read (array indexing), never modified; genuine but low-value DCL13-C const opportunity"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/sae.c",
+   "line": 1828,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos and end are both derived from the same underlying wire buffer passed down through the parser (established ARR36-C pos/end-paired-buffer FP class)"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/sae.c",
+   "line": 1831,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos and end are both derived from the same underlying wire buffer passed down through the parser (established ARR36-C pos/end-paired-buffer FP class)"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/sae.c",
+   "line": 1838,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos and end are both derived from the same underlying wire buffer passed down through the parser (established ARR36-C pos/end-paired-buffer FP class)"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/sae.c",
+   "line": 1841,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos and end are both derived from the same underlying wire buffer passed down through the parser (established ARR36-C pos/end-paired-buffer FP class)"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/sae.c",
+   "line": 1848,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos and end are both derived from the same underlying wire buffer passed down through the parser (established ARR36-C pos/end-paired-buffer FP class)"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/sae.c",
+   "line": 1851,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos and end are both derived from the same underlying wire buffer passed down through the parser (established ARR36-C pos/end-paired-buffer FP class)"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/sae.c",
+   "line": 1858,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos and end are both derived from the same underlying wire buffer passed down through the parser (established ARR36-C pos/end-paired-buffer FP class)"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/sae.c",
+   "line": 1861,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos and end are both derived from the same underlying wire buffer passed down through the parser (established ARR36-C pos/end-paired-buffer FP class)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/sae.c",
+   "line": 1866,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "static helper only reads sae->tmp->ec/prime_len, genuine but low-value DCL13-C const opportunity"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/sae.c",
+   "line": 1881,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end derived from the same wire buffer (established ARR36-C class)"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/common/sae.c",
+   "line": 1895,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*token = *pos is a plain pointer assignment (const u8* = const u8*), not a flexible-array-member struct assignment at all -- category error"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/common/sae.c",
+   "line": 1902,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sae parameter is entirely unused in this function body -- trivially const-able"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/common/sae.c",
+   "line": 1908,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "REAL BUG: sae_parse_commit() calls sae_parse_token_container(sae,pos,end,token,token_len) unconditionally whenever h2e is set (:2253-2254), but pasn_responder.c:163, pasn_initiator.c:180, and wpa_supplicant/sme.c:1904 all call sae_parse_commit() with h2e hardcoded/derived true and token=token_len=NULL. sae_parse_token_container() (unlike its sibling sae_parse_commit_token, which does guard with if(token)/if(token_len)) writes *token=pos+3 and *token_len=pos[1]-1 with NO NULL check, so a remote peer sending an SAE Commit frame containing an Anti-Clogging Token Container element to PASN triggers a NULL pointer dereference/crash."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/common/sae.c",
+   "line": 1909,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "REAL BUG: sae_parse_commit() calls sae_parse_token_container(sae,pos,end,token,token_len) unconditionally whenever h2e is set (:2253-2254), but pasn_responder.c:163, pasn_initiator.c:180, and wpa_supplicant/sme.c:1904 all call sae_parse_commit() with h2e hardcoded/derived true and token=token_len=NULL. sae_parse_token_container() (unlike its sibling sae_parse_commit_token, which does guard with if(token)/if(token_len)) writes *token=pos+3 and *token_len=pos[1]-1 with NO NULL check, so a remote peer sending an SAE Commit frame containing an Anti-Clogging Token Container element to PASN triggers a NULL pointer dereference/crash."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/sae.c",
+   "line": 1920,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "end - *pos, both from the same wire buffer"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/common/sae.c",
+   "line": 1967,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed local buffer, zero getenv()"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/sae.c",
+   "line": 1969,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "end - *pos, same wire buffer"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/common/sae.c",
+   "line": 2017,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "const u8 one_bin[1] = {0x01} is a single-byte binary constant, not string/character data"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/sae.c",
+   "line": 2019,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "end - *pos, same wire buffer"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/common/sae.c",
+   "line": 2040,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_deinit() is NULL-safe (wraps BN_free); also res/one are non-NULL at this call site (guarded by !res||!one check just above)"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/common/sae.c",
+   "line": 2041,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "crypto_bignum_deinit() is NULL-safe (wraps BN_free); also res/one are non-NULL at this call site (guarded by !res||!one check just above)"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/common/sae.c",
+   "line": 2092,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "epos walks the real wire buffer bounded by end (established ARR37-C 'legitimately walks a real array' class)"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/common/sae.c",
+   "line": 2093,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "epos walks the real wire buffer bounded by end (established ARR37-C 'legitimately walks a real array' class)"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/sae.c",
+   "line": 2094,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "epos and end derive from the same wire buffer (established ARR36-C class)"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/common/sae.c",
+   "line": 2096,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "epos walks the real wire buffer bounded by end (established ARR37-C 'legitimately walks a real array' class)"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/common/sae.c",
+   "line": 2149,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "epos walks the real wire buffer bounded by end"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/common/sae.c",
+   "line": 2150,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "epos walks the real wire buffer bounded by end"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/sae.c",
+   "line": 2151,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "epos and end derive from the same wire buffer"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/common/sae.c",
+   "line": 2153,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "epos walks the real wire buffer bounded by end"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/common/sae.c",
+   "line": 2155,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len-- (arithmetic) then len&1 (bitwise parity check) on the same u8 is a standard idiom, not a real defect (established INT14-C stylistic-pedantry class)"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/common/sae.c",
+   "line": 2184,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "epos walks the real wire buffer bounded by end"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/common/sae.c",
+   "line": 2185,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "epos walks the real wire buffer bounded by end"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/common/sae.c",
+   "line": 2186,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "epos and end derive from the same wire buffer"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/common/sae.c",
+   "line": 2188,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "epos walks the real wire buffer bounded by end"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/sae.c",
+   "line": 2201,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "data/token/token_len/len come from the caller's already-bounded frame buffer; generic no-NULL-check pedantry distinct from the specific real token/token_len NULL-deref bug captured separately by findings #121/#122"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/sae.c",
+   "line": 2201,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "data/token/token_len/len come from the caller's already-bounded frame buffer; generic no-NULL-check pedantry distinct from the specific real token/token_len NULL-deref bug captured separately by findings #121/#122"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/sae.c",
+   "line": 2201,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "data/token/token_len/len come from the caller's already-bounded frame buffer; generic no-NULL-check pedantry distinct from the specific real token/token_len NULL-deref bug captured separately by findings #121/#122"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/common/sae.c",
+   "line": 2201,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "data/token/token_len/len come from the caller's already-bounded frame buffer; generic no-NULL-check pedantry distinct from the specific real token/token_len NULL-deref bug captured separately by findings #121/#122"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/sae.c",
+   "line": 2202,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer+size_t / pointer+array idiom (token/token_len, allowed_groups)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/common/sae.c",
+   "line": 2203,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer+size_t / pointer+array idiom (token/token_len, allowed_groups)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/common/sae.c",
+   "line": 2274,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Missing final else is intentional -- leaves sae->akmp at its existing value when neither AKM suite matches (established MSC01-C no-final-else class)"
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/common/sae.c",
+   "line": 2254,
+   "rule": "EXP34-C",
+   "desc": "Already surfaced by sqc itself as findings at lines 1908/1909 (graded TP above): sae_parse_commit() calls sae_parse_token_container(sae,pos,end,token,token_len) unconditionally when h2e is set, but pasn_responder.c/pasn_initiator.c/sme.c call sae_parse_commit() with h2e forced true and token=token_len=NULL; sae_parse_token_container has no NULL guard (unlike its sibling sae_parse_commit_token) and writes through both -- remote NULL-deref DoS via a crafted SAE commit frame with a Token Container element.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 9,
+  "fp": 141,
+  "fn": 1
+ }
+}

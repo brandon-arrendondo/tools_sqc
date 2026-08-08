@@ -1,0 +1,893 @@
+{
+  "labels": [
+    {
+      "rule": "API00-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 50,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Internal-only API; every call site checks non-NULL pac before/around calling free"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 69,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "NULL pac_root is a valid empty-list sentinel; loop handles it, always caller-guaranteed"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 69,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "pac_root walked into local pac only, never reassigned; genuine low-value const candidate"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 78,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "pac is a pointer walking heap/list nodes from pac_root, not automatic-storage local; DCL30-C heap-vs-local confusion"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 138,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "pac_root: NULL means empty list (valid), always &data->pac from caller; internal-only API"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 138,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "pac_current always &data->current_pac from sole caller; internal-only API"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 152,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*pac) is a type-size expression, not a dereference; sizeof(*ptr)-not-a-deref FP class"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 173,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "pac is os_zalloc'd heap memory; storing it via *pac_root is correct, not a dangling-local bug"
+    },
+    {
+      "rule": "FIO40-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 194,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "Function returns -1 immediately on fgets failure; stale rc->buf is never subsequently read by caller"
+    },
+    {
+      "rule": "FIO20-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 194,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "fgets() truncation genuinely unchecked; low-impact since pac_file is a local, not remote-attacker, file"
+    },
+    {
+      "rule": "ARR30-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 214,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Loop walks a NUL-terminated buffer (rc->buf[buf_len-1]='\\0' set just above); bounded string traversal, not unbounded"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 216,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Plain char-to-char assignment ('\\0'), no int/char widening concern"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 224,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Plain char-to-char assignment ('\\0'), no widening"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 225,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "pos points into rc->buf (heap-allocated in eap_fast_init_pac_data), not a local automatic var"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 225,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*value is a char* (value is char**) being assigned a pointer, not a char; category error"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 231,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "char **value is a single out-param pointer with no separate size; T**-out-param API05-C FP class"
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 236,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "Ad-hoc NULL check stylistic pedantry; literal rule-text match"
+    },
+    {
+      "rule": "INT13-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 239,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "hlen is genuinely a signed int used with bitwise &; literal rule-text match"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 239,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "Stylistic pedantry sibling of INT13-C on the same variable, not a real defect"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 249,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf = os_malloc(*len); returning it is standard heap-ownership transfer, not a dangling local"
+    },
+    {
+      "rule": "ARR01-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 256,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*rc) correctly sizes the pointee struct; not sizeof(rc) applied to a decayed pointer"
+    },
+    {
+      "rule": "FIO42-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 276,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "rc->f is closed later via eap_fast_deinit_pac_data() in every caller path; cross-function close not tracked"
+    },
+    {
+      "rule": "FIO05-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 276,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "pac_file is an admin/user-configured local path, not attacker-controlled; admin-config-path FP class"
+    },
+    {
+      "rule": "FIO51-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 276,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "Same cross-function fclose via eap_fast_deinit_pac_data as FIO42-C"
+    },
+    {
+      "rule": "WIN03-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 276,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "Literally missing 'N' flag; eap_fast_pac.c has no Windows-build exclusion evidence found"
+    },
+    {
+      "rule": "MEM12-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 282,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "rc->buf was already freed on the immediately preceding line; rc->f is NULL (fopen failed); nothing leaked"
+    },
+    {
+      "rule": "MEM12-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 286,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "rc->buf/rc->f are stored into the caller-owned rc struct (out-param), ownership transferred, not leaked"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 290,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "rc pointer itself never reassigned in eap_fast_deinit_pac_data; genuine low-value const candidate"
+    },
+    {
+      "rule": "ERR00-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 294,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "fclose on a read-mode (\"rb\") stream; established read-stream-ignored-fclose FP distinction"
+    },
+    {
+      "rule": "ERR33-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 294,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "Same read-stream reasoning as ERR00-C"
+    },
+    {
+      "rule": "MEM33-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 322,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*pac_root = *pac; is a plain pointer assignment; struct eap_fast_pac has no flexible array member at all"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 330,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "pos only read via atoi(pos); genuine low-value const candidate"
+    },
+    {
+      "rule": "ERR07-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 334,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "atoi ambiguity is caught downstream: valid PAC-Type values are 1-3, so any atoi(garbage)==0 is rejected by the enum-range check"
+    },
+    {
+      "rule": "ERR34-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 334,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "Same downstream-range-check-catches-conversion-ambiguity reasoning as ERR07-C"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 344,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "pac->pac_key is written via os_memcpy(pac->pac_key,...); const pac would discard qualifiers passed to memcpy's non-const void* dest \u2014 const-would-break-compilation FP sub-shape"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 351,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "os_free(NULL) is a safe no-op; established os_free(NULL)-is-safe EXP34-C FP class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 367,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "pac->pac_opaque is freed then immediately reassigned on the very next line before this read; MEM30 reassign-clears-freed-state FP class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 377,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same free-then-reassign-next-line pattern for pac->a_id"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 387,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same free-then-reassign-next-line pattern for pac->i_id"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 398,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same free-then-reassign-next-line pattern for pac->a_id_info"
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 420,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "Ad-hoc NULL check stylistic pedantry"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 452,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Deliberate design: unrecognized field names are silently ignored (forward-compat), not an unhandled case"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 477,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "data+len is the standard ptr+size_t idiom"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 477,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "buf is a char** out-param with no separate size arg; T**-out-param FP class"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 478,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "pos is a char** out-param with no separate size arg; T**-out-param FP class"
+    },
+    {
+      "rule": "ARR36-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 486,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*pos and *buf are the same underlying allocated buffer (pos walks within buf), not different arrays"
+    },
+    {
+      "rule": "ARR36-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 493,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same pos/buf-same-buffer reasoning"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 494,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "This is os_realloc's own call site (self-referential free-call-argument misfire), not a post-free access"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 497,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*buf = NULL; assigns a pointer (buf is char**), not a char; category error"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 500,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*pos = nbuf + (*pos - *buf); assigns a pointer value, not a char; category error"
+    },
+    {
+      "rule": "ARR36-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 500,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "pos/buf same underlying buffer"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 500,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Offset computed from pre-update *buf value before line 501 reassigns it; standard realloc-fixup idiom, not UAF"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 501,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*buf = nbuf; stores the new, valid post-realloc pointer; not a write to freed memory"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 501,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*buf = nbuf; assigns a pointer, not a char; category error"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 504,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*buf was already reassigned to the valid new buffer (or untouched) before this line; realloc-in-conditional-block reassignment not tracked"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 504,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Duplicate finding, same reassignment-not-tracked reasoning"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 504,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Duplicate finding, same reassignment-not-tracked reasoning"
+    },
+    {
+      "rule": "ARR36-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 506,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf/pos same underlying buffer"
+    },
+    {
+      "rule": "ARR36-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 507,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf/pos same underlying buffer"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 509,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*pos += ret; is pointer arithmetic on a char* (pos is char**), not a char dereference; category error"
+    },
+    {
+      "rule": "ERR02-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 510,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpa_snprintf_hex() never returns a negative/error value; established ERR02-C FP for this helper"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 510,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*pos += ...; pointer arithmetic, not a char access; category error"
+    },
+    {
+      "rule": "ARR36-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 510,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf/pos same underlying buffer"
+    },
+    {
+      "rule": "ARR36-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 511,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf/pos same underlying buffer"
+    },
+    {
+      "rule": "ARR36-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 512,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf/pos same underlying buffer"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 514,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*pos += ret; pointer arithmetic, not a char access; category error"
+    },
+    {
+      "rule": "ARR36-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 517,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf/pos same underlying buffer"
+    },
+    {
+      "rule": "ARR36-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 518,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf/pos same underlying buffer"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 520,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*pos += ret; pointer arithmetic, not a char access; category error"
+    },
+    {
+      "rule": "ARR36-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 522,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf/pos same underlying buffer"
+    },
+    {
+      "rule": "ARR36-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 523,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf/pos same underlying buffer"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 525,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*pos += ret; pointer arithmetic inside for-loop, not a char access; category error"
+    },
+    {
+      "rule": "ARR36-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 527,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf/pos same underlying buffer"
+    },
+    {
+      "rule": "ARR36-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 528,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf/pos same underlying buffer"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 530,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*pos += ret; pointer arithmetic, not a char access; category error"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 535,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "buf+len is the standard ptr+size_t idiom"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 536,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "buf+len ptr+size_t idiom (parameter continuation)"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 540,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*blob) is a type-size expression, not a dereference"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 545,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "buf=NULL is a genuine dead store: buf's pointer value was already stored into blob->data; buf itself is never read again on this path"
+    },
+    {
+      "rule": "FIO03-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 554,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "fopen(\"wb\") intentionally overwrites the named PAC file; matches established data-file-rewrite genuine-TP precedent"
+    },
+    {
+      "rule": "FIO05-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 554,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "pac_file is an admin/user-configured local path, not attacker-controlled"
+    },
+    {
+      "rule": "FIO06-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 554,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "No explicit permission control on a file that stores PAC-Key secret material; matches established precedent"
+    },
+    {
+      "rule": "WIN03-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 554,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "Literally missing 'N' flag; no Windows-build exclusion evidence for this file"
+    },
+    {
+      "rule": "FIO18-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 560,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "len is a precisely tracked byte count (pos-buf), safer than strlen-derived sizing which the rule mistakenly demands"
+    },
+    {
+      "rule": "ERR00-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 563,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "Write-stream fclose() return ignored; established write-stream-ignored-fclose genuine-TP distinction"
+    },
+    {
+      "rule": "ERR00-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 567,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "Write-stream fclose() return ignored on the success path"
+    },
+    {
+      "rule": "ERR33-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 567,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "Same write-stream ignored-fclose reasoning as ERR00-C"
+    },
+    {
+      "rule": "FIO24-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 567,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "fclose at 563 and 567 are on mutually exclusive branches (fwrite-failure vs success); not a real double close"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 574,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "pac's fields are only read (passed as const source data), never written; genuine low-value const candidate"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 574,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "buf is a char** out-param with no separate size; T**-out-param FP class"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 575,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "pos is a char** out-param with no separate size; T**-out-param FP class"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 584,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*pos += ret; pointer arithmetic, not a char access; category error"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 605,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*pos += ret; pointer arithmetic, not a char access; category error"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 618,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "NULL pac_root is a valid empty-list value handled by the traversal loop; internal-only API"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 618,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "pac_root/pac chain only ever read (traversal + read-only field access); genuine low-value const candidate"
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 626,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "Ad-hoc NULL check stylistic pedantry"
+    },
+    {
+      "rule": "MEM12-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 632,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf is NULL here (os_malloc failed on the previous line); nothing to leak"
+    },
+    {
+      "rule": "MEM12-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 637,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf was already freed on the immediately preceding line before this return"
+    },
+    {
+      "rule": "MEM12-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 645,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf was already freed on the immediately preceding line before this return"
+    },
+    {
+      "rule": "MEM12-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 653,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf was already freed on the immediately preceding line before this return"
+    },
+    {
+      "rule": "MEM12-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 659,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf's ownership was transferred into eap_fast_write_pac() at the prior call, which frees/consumes it; not leaked here"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 669,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "NULL pac_root is a valid empty-list value; internal-only API"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 669,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "prev can alias pac_root itself when max_len==1, and prev->next=NULL then writes through it; also pac=pac_root requires a non-const local; const-would-break-compilation FP sub-shape"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 748,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "pac_root is always &data->pac from the sole caller; internal-only API"
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 758,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "Ad-hoc NULL check stylistic pedantry"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 841,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "pac is an os_zalloc'd heap node; linking it via prev->next/*pac_root is correct ownership transfer, not a dangling local"
+    },
+    {
+      "rule": "MSC07-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 853,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "parse_fail: is reached via multiple `goto parse_fail;` statements earlier in the function; not actually unreachable"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 857,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Single conditional free reached from one specific error path; not a second free of already-freed memory (mutually-exclusive-branch misfire)"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 871,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "pac_root always &data->pac from sole caller; internal-only API"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_fast_pac.c",
+      "line": 871,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "pac_root/pac chain only ever read; genuine low-value const candidate"
+    }
+  ],
+  "fns": [],
+  "files_clean_for_fn": [
+    "src/eap_peer/eap_fast_pac.c"
+  ],
+  "summary": {
+    "tp": 20,
+    "fp": 90,
+    "fn": 0
+  }
+}

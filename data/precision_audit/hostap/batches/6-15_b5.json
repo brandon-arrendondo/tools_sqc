@@ -1,0 +1,1108 @@
+{
+ "src/eap_peer/eap.h": [
+  {
+   "column": 47,
+   "file": "src/eap_peer/eap.h",
+   "line": 335,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 55,
+   "file": "src/eap_peer/eap.h",
+   "line": 343,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap.h",
+   "line": 347,
+   "message": "Function has pointer parameter without size argument: 'u32 eap_get_phase2_type(const char *name, int *vendor);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'int *vendor' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap.h",
+   "line": 348,
+   "message": "Function has pointer parameter without size argument: 'struct eap_method_type * eap_get_phase2_types(struct eap_peer_config *config,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *count' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap.h",
+   "line": 357,
+   "message": "Function has pointer parameter without size argument: 'const u8 * eap_get_eapSessionId(struct eap_sm *sm, size_t *len);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap.h",
+   "line": 358,
+   "message": "Function has pointer parameter without size argument: 'const u8 * eap_get_eapKeyData(struct eap_sm *sm, size_t *len);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap.h",
+   "line": 373,
+   "message": "Function has pointer parameter without size argument: 'int eap_peer_get_erp_info(struct eap_sm *sm, struct eap_peer_config *config,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *username_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap.h",
+   "line": 373,
+   "message": "Function has pointer parameter without size argument: 'int eap_peer_get_erp_info(struct eap_sm *sm, struct eap_peer_config *config,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *realm_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap.h",
+   "line": 373,
+   "message": "Function has pointer parameter without size argument: 'int eap_peer_get_erp_info(struct eap_sm *sm, struct eap_peer_config *config,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *rrk_len' to specify the maximum number of elements in the array"
+  }
+ ],
+ "src/eap_peer/eap_gtc.c": [
+  {
+   "column": 42,
+   "file": "src/eap_peer/eap_gtc.c",
+   "line": 20,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 26,
+   "file": "src/eap_peer/eap_gtc.c",
+   "line": 23,
+   "message": "Dereference of uninitialized pointer 'data'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'data' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_gtc.c",
+   "line": 33,
+   "message": "Function returns pointer to local variable 'data' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 42,
+   "file": "src/eap_peer/eap_gtc.c",
+   "line": 37,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 64,
+   "file": "src/eap_peer/eap_gtc.c",
+   "line": 44,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 10,
+   "file": "src/eap_peer/eap_gtc.c",
+   "line": 72,
+   "message": "Memory allocated with 'eap_msg_alloc' for variable 'resp@72:10' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(resp@72:10)' before the variable goes out of scope"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_peer/eap_gtc.c",
+   "line": 74,
+   "message": "Function returns pointer to local variable 'resp' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_gtc.c",
+   "line": 123,
+   "message": "Function returns pointer to local variable 'resp' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_peer/eap_gtc.c",
+   "line": 131,
+   "message": "Memory allocated with 'eap_peer_method_alloc' for variable 'eap' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(eap)' before the variable goes out of scope"
+  }
+ ],
+ "src/fst/fst_iface.c": [
+  {
+   "column": 1,
+   "file": "src/fst/fst_iface.c",
+   "line": 15,
+   "message": "Function 'fst_iface_create' does not validate pointer parameter 'own_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'own_addr' at the start of the function, e.g., 'if (!own_addr) { return error_code; }'"
+  },
+  {
+   "column": 23,
+   "file": "src/fst/fst_iface.c",
+   "line": 22,
+   "message": "Dereference of uninitialized pointer 'i'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'i' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/fst/fst_iface.c",
+   "line": 40,
+   "message": "Function returns pointer to local variable 'i' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_iface.c",
+   "line": 44,
+   "message": "Function 'fst_iface_delete' does not validate pointer parameter 'i' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'i' at the start of the function, e.g., 'if (!i) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_iface.c",
+   "line": 52,
+   "message": "Function 'fst_iface_is_connected' does not validate pointer parameter 'iface' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'iface' at the start of the function, e.g., 'if (!iface) { return error_code; }'"
+  },
+  {
+   "column": 9,
+   "file": "src/fst/fst_iface.c",
+   "line": 58,
+   "message": "loop termination uses '!=' with a step other than +-1 -- the counter can skip over the target value and never terminate",
+   "rule_id": "MSC21-C",
+   "severity": "Low",
+   "suggestion": "Use a relational operator (<, <=, >, >=) to terminate the loop instead of an equality operator, unless the step is exactly 1"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_iface.c",
+   "line": 66,
+   "message": "Function 'fst_iface_attach_mbie' does not validate pointer parameter 'i' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'i' at the start of the function, e.g., 'if (!i) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_iface.c",
+   "line": 66,
+   "message": "Function 'fst_iface_attach_mbie' does not validate pointer parameter 'mbie' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'mbie' at the start of the function, e.g., 'if (!mbie) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_iface.c",
+   "line": 73,
+   "message": "Function 'fst_iface_get_band_id' does not validate pointer parameter 'i' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'i' at the start of the function, e.g., 'if (!i) { return error_code; }'"
+  }
+ ],
+ "src/radius/radius.h": [
+  {
+   "column": 1,
+   "file": "src/radius/radius.h",
+   "line": 43,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct radius_hdr {\n\tu8 code;\n\tu8 identifier;\n\tbe16 length; /* including this header */\n\tu8 authenticator[16];\n\t/* followed by length-20 octets of attributes */\n}' and 'struct radius_attr_hdr {\n\tu8 type;\n\tu8 length; /* including this header */\n\t/* followed by length-2 octets of attribute value */\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius.h",
+   "line": 49,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct radius_hdr {\n\tu8 code;\n\tu8 identifier;\n\tbe16 length; /* including this header */\n\tu8 authenticator[16];\n\t/* followed by length-20 octets of attributes */\n}' and 'struct radius_attr_hdr_ext {\n\tu8 type;\n\tu8 length; /* including this header */\n\tu8 ext_type;\n\t/* followed by length-3 octets of attribute value */\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius.h",
+   "line": 197,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct radius_hdr {\n\tu8 code;\n\tu8 identifier;\n\tbe16 length; /* including this header */\n\tu8 authenticator[16];\n\t/* followed by length-20 octets of attributes */\n}' and 'struct radius_attr_vendor {\n\tu8 vendor_type;\n\tu8 vendor_length;\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 68,
+   "file": "src/radius/radius.h",
+   "line": 298,
+   "message": "Pointer parameter 'src' should likely be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Consider declaring parameter as 'const <type> *src'"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius.h",
+   "line": 325,
+   "message": "Function has pointer parameter without size argument: 'int radius_msg_get_vlanid(struct radius_msg *msg, int *untagged, int numtagged,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'int *tagged' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius.h",
+   "line": 327,
+   "message": "Function has pointer parameter without size argument: 'char * radius_msg_get_tunnel_password(struct radius_msg *msg, int *keylen,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'int *keylen' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 67,
+   "file": "src/radius/radius.h",
+   "line": 327,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 17,
+   "file": "src/radius/radius.h",
+   "line": 347,
+   "message": "Variable 'val' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'val' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "src/radius/radius.h",
+   "line": 350,
+   "message": "Function has pointer parameter without size argument: 'int radius_msg_get_attr_ptr(struct radius_msg *msg, u8 type, u8 **buf,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *len' to specify the maximum number of elements in the array"
+  }
+ ],
+ "src/utils/const_time.h": [
+  {
+   "column": 9,
+   "file": "src/utils/const_time.h",
+   "line": 34,
+   "message": "Variable 'val' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 10,
+   "file": "src/utils/const_time.h",
+   "line": 34,
+   "message": "Shift operation 'val >> (sizeof(val) * 8 - 1)' by '(sizeof(val) * 8 - 1)' without validating shift amount is non-negative and within type width",
+   "rule_id": "INT34-C",
+   "severity": "Medium",
+   "suggestion": "Check that '(sizeof(val) * 8 - 1)' is >= 0 and < the bit width of the operand before shifting"
+  },
+  {
+   "column": 29,
+   "file": "src/utils/const_time.h",
+   "line": 43,
+   "message": "Variable 'val' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 57,
+   "file": "src/utils/const_time.h",
+   "line": 77,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 72,
+   "file": "src/utils/const_time.h",
+   "line": 77,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 52,
+   "file": "src/utils/const_time.h",
+   "line": 168,
+   "message": "Potential null pointer dereference in array access of variable 'false_val'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'false_val' is not NULL before array access"
+  },
+  {
+   "column": 48,
+   "file": "src/utils/const_time.h",
+   "line": 172,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 63,
+   "file": "src/utils/const_time.h",
+   "line": 172,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 16,
+   "file": "src/utils/const_time.h",
+   "line": 183,
+   "message": "Potential null pointer dereference in array access of variable 'aa'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'aa' is not NULL before array access"
+  }
+ ],
+ "src/utils/trace.h": [
+  {
+   "column": 1,
+   "file": "src/utils/trace.h",
+   "line": 21,
+   "message": "Multistatement macro 'WPA_TRACE_INFO' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+   "rule_id": "PRE10-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/trace.h",
+   "line": 21,
+   "message": "Macro 'WPA_TRACE_INFO' definition ends with a semicolon. This can cause unexpected behavior when the macro is used.",
+   "rule_id": "PRE11-C",
+   "severity": "Medium",
+   "suggestion": "Remove the trailing semicolon from the macro definition. The semicolon should be added by the macro user, not in the definition."
+  },
+  {
+   "column": 1,
+   "file": "src/utils/trace.h",
+   "line": 31,
+   "message": "Macro 'WPA_TRACE_REF' uses token concatenation operator (##) which prevents parameter expansion - consider using two-level macro indirection for proper expansion",
+   "rule_id": "PRE05-C",
+   "severity": "Low",
+   "suggestion": "Use two-level indirection: define a wrapper macro that calls another macro with ##, allowing parameters to expand first"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/trace.h",
+   "line": 33,
+   "message": "Function-like macro 'wpa_trace_dump' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/utils/trace.h",
+   "line": 33,
+   "message": "Macro evaluates parameter 'ptr' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/trace.h",
+   "line": 38,
+   "message": "Function-like macro 'wpa_trace_record' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/utils/trace.h",
+   "line": 38,
+   "message": "Macro evaluates parameter 'ptr' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/trace.h",
+   "line": 44,
+   "message": "Macro 'wpa_trace_add_ref' uses token concatenation operator (##) which prevents parameter expansion - consider using two-level macro indirection for proper expansion",
+   "rule_id": "PRE05-C",
+   "severity": "Low",
+   "suggestion": "Use two-level indirection: define a wrapper macro that calls another macro with ##, allowing parameters to expand first"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/trace.h",
+   "line": 47,
+   "message": "Macro 'wpa_trace_remove_ref' uses token concatenation operator (##) which prevents parameter expansion - consider using two-level macro indirection for proper expansion",
+   "rule_id": "PRE05-C",
+   "severity": "Low",
+   "suggestion": "Use two-level indirection: define a wrapper macro that calls another macro with ##, allowing parameters to expand first"
+  }
+ ],
+ "wpa_supplicant/autoscan.c": [
+  {
+   "column": 36,
+   "file": "wpa_supplicant/autoscan.c",
+   "line": 20,
+   "message": "Array declaration 'autoscan_modules[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/autoscan.c",
+   "line": 31,
+   "message": "Function 'request_scan' participates in indirect recursion: request_scan -> wpa_supplicant_req_sched_scan -> wpa_supplicant_set_state -> wpa_supplicant_start_autoscan -> autoscan_init -> request_scan",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to eliminate the recursion cycle"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/autoscan.c",
+   "line": 40,
+   "message": "Function 'autoscan_init' participates in indirect recursion: autoscan_init -> request_scan -> wpa_supplicant_req_sched_scan -> wpa_supplicant_set_state -> wpa_supplicant_start_autoscan -> autoscan_init",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to eliminate the recursion cycle"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/autoscan.c",
+   "line": 69,
+   "message": "Pointer subtraction between pointers from different arrays: '\"\"@1518' and 'wpa_s->conf->autoscan'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 25,
+   "file": "wpa_supplicant/autoscan.c",
+   "line": 86,
+   "message": "sizeof applied to pointer/array parameter 'wpa_s' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*wpa_s->sched_scan_plans)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/autoscan.c",
+   "line": 98,
+   "message": "Array/pointer 'scan_plans' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'scan_plans' after calling free(). Set pointer to NULL after freeing: free(scan_plans); scan_plans = NULL;"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/autoscan.c",
+   "line": 99,
+   "message": "Array/pointer 'scan_plans' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'scan_plans' after calling free(). Set pointer to NULL after freeing: free(scan_plans); scan_plans = NULL;"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/autoscan.c",
+   "line": 125,
+   "message": "Function 'autoscan_deinit' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/autoscan.c",
+   "line": 143,
+   "message": "Function 'autoscan_notify_scan' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  }
+ ],
+ "wpa_supplicant/autoscan_exponential.c": [
+  {
+   "column": 5,
+   "file": "wpa_supplicant/autoscan_exponential.c",
+   "line": 29,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 15,
+   "file": "wpa_supplicant/autoscan_exponential.c",
+   "line": 32,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 15,
+   "file": "wpa_supplicant/autoscan_exponential.c",
+   "line": 32,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 16,
+   "file": "wpa_supplicant/autoscan_exponential.c",
+   "line": 39,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 16,
+   "file": "wpa_supplicant/autoscan_exponential.c",
+   "line": 39,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/autoscan_exponential.c",
+   "line": 64,
+   "message": "Function returns pointer to local variable 'data' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 34,
+   "file": "wpa_supplicant/autoscan_exponential.c",
+   "line": 77,
+   "message": "Pointer parameter 'scan_res' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *scan_res'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/autoscan_exponential.c",
+   "line": 99,
+   "message": "Variable 'autoscan_exponential_ops' should be declared static if it doesn't need external linkage",
+   "rule_id": "DCL15-C",
+   "severity": "Low",
+   "suggestion": "Add 'static' storage-class specifier"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/autoscan_exponential.c",
+   "line": 99,
+   "message": "File-scope variable should have minimal scope. Consider making it static within a function or limiting its scope.",
+   "rule_id": "DCL19-C",
+   "severity": "Low",
+   "suggestion": "Move variable to the smallest scope where it's used, or make it static inside a function"
+  }
+ ],
+ "wpa_supplicant/autoscan_periodic.c": [
+  {
+   "column": 5,
+   "file": "wpa_supplicant/autoscan_periodic.c",
+   "line": 26,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/autoscan_periodic.c",
+   "line": 29,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/autoscan_periodic.c",
+   "line": 29,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 60,
+   "file": "wpa_supplicant/autoscan_periodic.c",
+   "line": 40,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/autoscan_periodic.c",
+   "line": 57,
+   "message": "Function returns pointer to local variable 'data' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 47,
+   "file": "wpa_supplicant/autoscan_periodic.c",
+   "line": 69,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 31,
+   "file": "wpa_supplicant/autoscan_periodic.c",
+   "line": 70,
+   "message": "Pointer parameter 'scan_res' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *scan_res'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/autoscan_periodic.c",
+   "line": 80,
+   "message": "Variable 'autoscan_periodic_ops' should be declared static if it doesn't need external linkage",
+   "rule_id": "DCL15-C",
+   "severity": "Low",
+   "suggestion": "Add 'static' storage-class specifier"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/autoscan_periodic.c",
+   "line": 80,
+   "message": "File-scope variable should have minimal scope. Consider making it static within a function or limiting its scope.",
+   "rule_id": "DCL19-C",
+   "severity": "Low",
+   "suggestion": "Move variable to the smallest scope where it's used, or make it static inside a function"
+  }
+ ],
+ "wpa_supplicant/wnm_sta.h": [
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wnm_sta.h",
+   "line": 35,
+   "message": "String buffer placed before pointer in struct 'neighbor_report': 'char country[2];' before 'struct measurement_pilot *meas_pilot;' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'char country' after the pointer field 'struct measurement_pilot *meas_pilot;', or use a char* pointer instead of a char array"
+  },
+  {
+   "column": 68,
+   "file": "wpa_supplicant/wnm_sta.h",
+   "line": 86,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wnm_sta.h",
+   "line": 93,
+   "message": "Incompatible declarations of function 'wnm_scan_process': parameter types differ",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same function have identical signatures"
+  },
+  {
+   "column": 58,
+   "file": "wpa_supplicant/wnm_sta.h",
+   "line": 93,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 73,
+   "file": "wpa_supplicant/wnm_sta.h",
+   "line": 99,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 43,
+   "file": "wpa_supplicant/wnm_sta.h",
+   "line": 104,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 66,
+   "file": "wpa_supplicant/wnm_sta.h",
+   "line": 104,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 56,
+   "file": "wpa_supplicant/wnm_sta.h",
+   "line": 109,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 68,
+   "file": "wpa_supplicant/wnm_sta.h",
+   "line": 113,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  }
+ ],
+ "src/crypto/crypto_internal-cipher.c": [
+  {
+   "column": 25,
+   "file": "src/crypto/crypto_internal-cipher.c",
+   "line": 49,
+   "message": "Dereference of uninitialized pointer 'ctx'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ctx' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_internal-cipher.c",
+   "line": 99,
+   "message": "Function returns pointer to local variable 'ctx' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_internal-cipher.c",
+   "line": 99,
+   "message": "Use-after-free: returning freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not return freed memory from functions."
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_internal-cipher.c",
+   "line": 103,
+   "message": "Function 'crypto_cipher_encrypt' does not validate pointer parameter 'plain' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'plain' at the start of the function, e.g., 'if (!plain) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_internal-cipher.c",
+   "line": 103,
+   "message": "Function 'crypto_cipher_encrypt' does not validate pointer parameter 'crypt' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'crypt' at the start of the function, e.g., 'if (!crypt) { return error_code; }'"
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/crypto_internal-cipher.c",
+   "line": 122,
+   "message": "Potentially unsafe array access with variable index 'j': Buffer 'cbc' with size 8 (allocated at line 37)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 4,
+   "file": "src/crypto/crypto_internal-cipher.c",
+   "line": 137,
+   "message": "Function 'des3_encrypt' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 4,
+   "file": "src/crypto/crypto_internal-cipher.c",
+   "line": 151,
+   "message": "Function 'des_block_encrypt' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_internal-cipher.c",
+   "line": 166,
+   "message": "Function 'crypto_cipher_decrypt' does not validate pointer parameter 'crypt' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'crypt' at the start of the function, e.g., 'if (!crypt) { return error_code; }'"
+  },
+  {
+   "column": 17,
+   "file": "src/crypto/crypto_internal-cipher.c",
+   "line": 188,
+   "message": "Potentially unsafe array access with variable index 'j': Buffer 'cbc' with size 8 (allocated at line 37)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  }
+ ],
+ "src/crypto/rc4.c": [
+  {
+   "column": 1,
+   "file": "src/crypto/rc4.c",
+   "line": 14,
+   "message": "Function-like macro 'S_SWAP' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/rc4.c",
+   "line": 14,
+   "message": "Macro parameter 'a' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'a' in parentheses: (a) instead of a"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/rc4.c",
+   "line": 14,
+   "message": "Macro parameter 'b' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'b' in parentheses: (b) instead of b"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/rc4.c",
+   "line": 14,
+   "message": "Macro evaluates parameter 'a' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 10,
+   "file": "src/crypto/rc4.c",
+   "line": 17,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/rc4.c",
+   "line": 29,
+   "message": "Variable 'S' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/rc4.c",
+   "line": 29,
+   "message": "Variable 'i' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/rc4.c",
+   "line": 29,
+   "message": "Variable 'kpos' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/rc4.c",
+   "line": 29,
+   "message": "Variable 'j' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/rc4.c",
+   "line": 29,
+   "message": "Variable 'key' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  }
+ ],
+ "src/eap_common/eap_ikev2_common.c": [
+  {
+   "column": 1,
+   "file": "src/eap_common/eap_ikev2_common.c",
+   "line": 18,
+   "message": "Function 'eap_ikev2_derive_keymat' does not validate integer parameter 'i_nonce_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'i_nonce_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_common/eap_ikev2_common.c",
+   "line": 18,
+   "message": "Function 'eap_ikev2_derive_keymat' does not validate integer parameter 'r_nonce_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'r_nonce_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 56,
+   "file": "src/eap_common/eap_ikev2_common.c",
+   "line": 18,
+   "message": "Pointer parameter 'keys' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *keys'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_common/eap_ikev2_common.c",
+   "line": 64,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_common/eap_ikev2_common.c",
+   "line": 68,
+   "message": "Function 'eap_ikev2_validate_icv' does not validate integer parameter 'integ_alg' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'integ_alg' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 61,
+   "file": "src/eap_common/eap_ikev2_common.c",
+   "line": 68,
+   "message": "Pointer parameter 'keys' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *keys'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_common/eap_ikev2_common.c",
+   "line": 74,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 6,
+   "file": "src/eap_common/eap_ikev2_common.c",
+   "line": 85,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 27,
+   "file": "src/eap_common/eap_ikev2_common.c",
+   "line": 103,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'integ->hash_len'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_common/eap_ikev2_common.c",
+   "line": 108,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'integ->hash_len'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  }
+ ]
+}

@@ -1,0 +1,780 @@
+{
+ "src/crypto/crypto_gnutls.c": [
+  {
+   "column": 13,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 58,
+   "message": "Variable 'i' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 10,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 59,
+   "message": "Output operation on file stream 'tmp' follows input without intervening positioning call (fseek, fsetpos, or rewind)",
+   "rule_id": "FIO50-C",
+   "severity": "Low",
+   "suggestion": "Insert a positioning function (fseek, fsetpos, rewind) between input and output operations, unless input encountered EOF"
+  },
+  {
+   "column": 10,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 59,
+   "message": "Output operation on file stream 'tmp' follows input without intervening positioning call (fseek, fsetpos, or rewind)",
+   "rule_id": "FIO50-C",
+   "severity": "Low",
+   "suggestion": "Insert a positioning function (fseek, fsetpos, rewind) between input and output operations, unless input encountered EOF"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 64,
+   "message": "Function 'gcry_err_code' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 77,
+   "message": "Function 'sha1_vector' does not validate pointer parameter 'addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'addr' at the start of the function, e.g., 'if (!addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 77,
+   "message": "Function 'sha1_vector' does not validate pointer parameter 'len' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'len' at the start of the function, e.g., 'if (!len) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 77,
+   "message": "Function 'sha1_vector' does not validate pointer parameter 'mac' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'mac' at the start of the function, e.g., 'if (!mac) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 286,
+   "message": "Function 'crypto_dh_init' does not validate integer parameter 'prime_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'prime_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 312,
+   "message": "Function 'crypto_dh_derive_secret' does not validate pointer parameter 'privkey' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'privkey' at the start of the function, e.g., 'if (!privkey) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 312,
+   "message": "Function 'crypto_dh_derive_secret' does not validate integer parameter 'prime_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'prime_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 361,
+   "message": "Function 'crypto_mod_exp' does not validate integer parameter 'modulus_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'modulus_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 25,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 411,
+   "message": "Dereference of uninitialized pointer 'ctx'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ctx' before dereferencing"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 444,
+   "message": "Function returns without releasing all resources. Leaked: res, res, res, res. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 448,
+   "message": "Double-free: 'ctx' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 448,
+   "message": "Double free detected: 'ctx' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 449,
+   "message": "Function returns without releasing all resources. Leaked: res, res, res, res. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 452,
+   "message": "Use-after-free: passing freed pointer 'ctx' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 25,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 452,
+   "message": "Use-after-free: accessing member of freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 453,
+   "message": "Use-after-free: passing freed pointer 'ctx' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 25,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 453,
+   "message": "Use-after-free: accessing member of freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 454,
+   "message": "Use-after-free: passing freed pointer 'ctx' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 21,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 454,
+   "message": "Use-after-free: accessing member of freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 455,
+   "message": "Use-after-free: passing freed pointer 'ctx' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 21,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 455,
+   "message": "Use-after-free: accessing member of freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 456,
+   "message": "Double-free: 'ctx' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 456,
+   "message": "Double free detected: 'ctx' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 457,
+   "message": "Function returns without releasing all resources. Leaked: res, res, res, res. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 461,
+   "message": "Use-after-free: passing freed pointer 'ctx' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 24,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 461,
+   "message": "Use-after-free: accessing member of freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 462,
+   "message": "Use-after-free: passing freed pointer 'ctx' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 24,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 462,
+   "message": "Use-after-free: accessing member of freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 463,
+   "message": "Use-after-free: passing freed pointer 'ctx' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 21,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 463,
+   "message": "Use-after-free: accessing member of freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 464,
+   "message": "Use-after-free: passing freed pointer 'ctx' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 21,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 464,
+   "message": "Use-after-free: accessing member of freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 465,
+   "message": "Double-free: 'ctx' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 465,
+   "message": "Double free detected: 'ctx' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 466,
+   "message": "Function returns without releasing all resources. Leaked: res, res, res, res. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 469,
+   "message": "Function returns pointer to local variable 'ctx' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 469,
+   "message": "Function returns without releasing all resources. Leaked: res, res, res, res. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 469,
+   "message": "Use-after-free: returning freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not return freed memory from functions."
+  },
+  {
+   "column": 48,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 473,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 48,
+   "file": "src/crypto/crypto_gnutls.c",
+   "line": 483,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  }
+ ],
+ "src/crypto/des-internal.c": [
+  {
+   "column": 1,
+   "file": "src/crypto/des-internal.c",
+   "line": 38,
+   "message": "Function-like macro 'ROLc' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/des-internal.c",
+   "line": 38,
+   "message": "Macro evaluates parameter 'x' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/des-internal.c",
+   "line": 42,
+   "message": "Function-like macro 'RORc' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/des-internal.c",
+   "line": 42,
+   "message": "Macro evaluates parameter 'x' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/des-internal.c",
+   "line": 51,
+   "message": "Integer constant '0200' begins with 0, making it octal (base-8). This evaluates to 128 in decimal. If you intended decimal 200, remove the leading 0. If you intended octal, consider using explicit base notation for clarity",
+   "rule_id": "DCL18-C",
+   "severity": "Low",
+   "suggestion": "Remove leading 0: use '200' for decimal, or keep '0200' if octal was intended"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/des-internal.c",
+   "line": 51,
+   "message": "Integer constant '0100' begins with 0, making it octal (base-8). This evaluates to 64 in decimal. If you intended decimal 100, remove the leading 0. If you intended octal, consider using explicit base notation for clarity",
+   "rule_id": "DCL18-C",
+   "severity": "Low",
+   "suggestion": "Remove leading 0: use '100' for decimal, or keep '0100' if octal was intended"
+  },
+  {
+   "column": 14,
+   "file": "src/crypto/des-internal.c",
+   "line": 51,
+   "message": "Integer constant '040' begins with 0, making it octal (base-8). This evaluates to 32 in decimal. If you intended decimal 40, remove the leading 0. If you intended octal, consider using explicit base notation for clarity",
+   "rule_id": "DCL18-C",
+   "severity": "Low",
+   "suggestion": "Remove leading 0: use '40' for decimal, or keep '040' if octal was intended"
+  },
+  {
+   "column": 19,
+   "file": "src/crypto/des-internal.c",
+   "line": 51,
+   "message": "Integer constant '020' begins with 0, making it octal (base-8). This evaluates to 16 in decimal. If you intended decimal 20, remove the leading 0. If you intended octal, consider using explicit base notation for clarity",
+   "rule_id": "DCL18-C",
+   "severity": "Low",
+   "suggestion": "Remove leading 0: use '20' for decimal, or keep '020' if octal was intended"
+  },
+  {
+   "column": 24,
+   "file": "src/crypto/des-internal.c",
+   "line": 51,
+   "message": "Integer constant '010' begins with 0, making it octal (base-8). This evaluates to 8 in decimal. If you intended decimal 10, remove the leading 0. If you intended octal, consider using explicit base notation for clarity",
+   "rule_id": "DCL18-C",
+   "severity": "Low",
+   "suggestion": "Remove leading 0: use '10' for decimal, or keep '010' if octal was intended"
+  },
+  {
+   "column": 29,
+   "file": "src/crypto/des-internal.c",
+   "line": 51,
+   "message": "Integer constant '04' begins with 0, making it octal (base-8). This evaluates to 4 in decimal. If you intended decimal 4, remove the leading 0. If you intended octal, consider using explicit base notation for clarity",
+   "rule_id": "DCL18-C",
+   "severity": "Low",
+   "suggestion": "Remove leading 0: use '4' for decimal, or keep '04' if octal was intended"
+  },
+  {
+   "column": 33,
+   "file": "src/crypto/des-internal.c",
+   "line": 51,
+   "message": "Integer constant '02' begins with 0, making it octal (base-8). This evaluates to 2 in decimal. If you intended decimal 2, remove the leading 0. If you intended octal, consider using explicit base notation for clarity",
+   "rule_id": "DCL18-C",
+   "severity": "Low",
+   "suggestion": "Remove leading 0: use '2' for decimal, or keep '02' if octal was intended"
+  },
+  {
+   "column": 37,
+   "file": "src/crypto/des-internal.c",
+   "line": 51,
+   "message": "Integer constant '01' begins with 0, making it octal (base-8). This evaluates to 1 in decimal. If you intended decimal 1, remove the leading 0. If you intended octal, consider using explicit base notation for clarity",
+   "rule_id": "DCL18-C",
+   "severity": "Low",
+   "suggestion": "Remove leading 0: use '1' for decimal, or keep '01' if octal was intended"
+  },
+  {
+   "column": 14,
+   "file": "src/crypto/des-internal.c",
+   "line": 260,
+   "message": "Do not assume constant values in expressions: '(*raw0 & 0x00000fc0L) << 10'",
+   "rule_id": "EXP07-C",
+   "severity": "Low",
+   "suggestion": "Use the constant identifier directly instead of assuming its numeric value"
+  },
+  {
+   "column": 14,
+   "file": "src/crypto/des-internal.c",
+   "line": 261,
+   "message": "Do not assume constant values in expressions: '(*raw1 & 0x00fc0000L) >> 10'",
+   "rule_id": "EXP07-C",
+   "severity": "Low",
+   "suggestion": "Use the constant identifier directly instead of assuming its numeric value"
+  },
+  {
+   "column": 14,
+   "file": "src/crypto/des-internal.c",
+   "line": 263,
+   "message": "Do not assume constant values in expressions: '(*raw0 & 0x0003f000L) << 12'",
+   "rule_id": "EXP07-C",
+   "severity": "Low",
+   "suggestion": "Use the constant identifier directly instead of assuming its numeric value"
+  },
+  {
+   "column": 20,
+   "file": "src/crypto/des-internal.c",
+   "line": 269,
+   "message": "Variable 'dough' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'dough' before use, e.g., at its declaration"
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/des-internal.c",
+   "line": 280,
+   "message": "Variable 'l' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/des-internal.c",
+   "line": 282,
+   "message": "Variable 'm' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 21,
+   "file": "src/crypto/des-internal.c",
+   "line": 282,
+   "message": "Potentially unsafe array access with variable index 'm': Buffer 'bytebit' with size 8 (allocated at line 49)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 36,
+   "file": "src/crypto/des-internal.c",
+   "line": 282,
+   "message": "Potentially unsafe array access with variable index 'm': Buffer 'bytebit' with size 8 (allocated at line 49)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/des-internal.c",
+   "line": 287,
+   "message": "Bitwise operator '<<' used on signed operand 'i' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'i' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/des-internal.c",
+   "line": 287,
+   "message": "Variable 'i' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/des-internal.c",
+   "line": 289,
+   "message": "Bitwise operator '<<' used on signed operand 'i' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'i' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/des-internal.c",
+   "line": 318,
+   "message": "Function 'desfunc' performs compound operation on shared static variables (SP1, SP2, SP3, SP4, SP5, SP6, SP7, SP8) without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/des-internal.c",
+   "line": 349,
+   "message": "Loop uses uninitialized variable 'cur_round' as bound for array access. This has indeterminate value and can cause out-of-bounds access.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize 'cur_round' to a valid value before using it in the loop"
+  },
+  {
+   "column": 11,
+   "file": "src/crypto/des-internal.c",
+   "line": 352,
+   "message": "Input operation on file stream 'work' follows output without intervening positioning call (fflush, fseek, fsetpos, or rewind)",
+   "rule_id": "FIO50-C",
+   "severity": "Low",
+   "suggestion": "Insert fflush() or a positioning function (fseek, fsetpos, rewind) between output and input operations"
+  },
+  {
+   "column": 11,
+   "file": "src/crypto/des-internal.c",
+   "line": 352,
+   "message": "Input operation on file stream 'work' follows output without intervening positioning call (fflush, fseek, fsetpos, or rewind)",
+   "rule_id": "FIO50-C",
+   "severity": "Low",
+   "suggestion": "Insert fflush() or a positioning function (fseek, fsetpos, rewind) between output and input operations"
+  },
+  {
+   "column": 12,
+   "file": "src/crypto/des-internal.c",
+   "line": 380,
+   "message": "Output operation on file stream 'work' follows input without intervening positioning call (fseek, fsetpos, or rewind)",
+   "rule_id": "FIO50-C",
+   "severity": "Low",
+   "suggestion": "Insert a positioning function (fseek, fsetpos, rewind) between input and output operations, unless input encountered EOF"
+  },
+  {
+   "column": 12,
+   "file": "src/crypto/des-internal.c",
+   "line": 380,
+   "message": "Output operation on file stream 'work' follows input without intervening positioning call (fseek, fsetpos, or rewind)",
+   "rule_id": "FIO50-C",
+   "severity": "Low",
+   "suggestion": "Insert a positioning function (fseek, fsetpos, rewind) between input and output operations, unless input encountered EOF"
+  },
+  {
+   "column": 13,
+   "file": "src/crypto/des-internal.c",
+   "line": 409,
+   "message": "Variable 'i' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 21,
+   "file": "src/crypto/des-internal.c",
+   "line": 409,
+   "message": "Bitwise operator '>>' used on signed operand 'i' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'i' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 10,
+   "file": "src/crypto/des-internal.c",
+   "line": 410,
+   "message": "Output operation on file stream 'tmp' follows input without intervening positioning call (fseek, fsetpos, or rewind)",
+   "rule_id": "FIO50-C",
+   "severity": "Low",
+   "suggestion": "Insert a positioning function (fseek, fsetpos, rewind) between input and output operations, unless input encountered EOF"
+  },
+  {
+   "column": 10,
+   "file": "src/crypto/des-internal.c",
+   "line": 410,
+   "message": "Output operation on file stream 'tmp' follows input without intervening positioning call (fseek, fsetpos, or rewind)",
+   "rule_id": "FIO50-C",
+   "severity": "Low",
+   "suggestion": "Insert a positioning function (fseek, fsetpos, rewind) between input and output operations, unless input encountered EOF"
+  },
+  {
+   "column": 17,
+   "file": "src/crypto/des-internal.c",
+   "line": 410,
+   "message": "Bitwise operator '<<' used on signed operand 'i' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'i' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/des-internal.c",
+   "line": 428,
+   "message": "Function 'des_key_setup' does not validate pointer parameter 'ek' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ek' at the start of the function, e.g., 'if (!ek) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/des-internal.c",
+   "line": 428,
+   "message": "Function 'des_key_setup' does not validate pointer parameter 'dk' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dk' at the start of the function, e.g., 'if (!dk) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/des-internal.c",
+   "line": 435,
+   "message": "Function 'des_block_encrypt' does not validate pointer parameter 'plain' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'plain' at the start of the function, e.g., 'if (!plain) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/des-internal.c",
+   "line": 435,
+   "message": "Function 'des_block_encrypt' does not validate pointer parameter 'ek' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ek' at the start of the function, e.g., 'if (!ek) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/des-internal.c",
+   "line": 435,
+   "message": "Function 'des_block_encrypt' does not validate pointer parameter 'crypt' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'crypt' at the start of the function, e.g., 'if (!crypt) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/des-internal.c",
+   "line": 446,
+   "message": "Function 'des_block_decrypt' does not validate pointer parameter 'dk' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dk' at the start of the function, e.g., 'if (!dk) { return error_code; }'"
+  },
+  {
+   "column": 54,
+   "file": "src/crypto/des-internal.c",
+   "line": 457,
+   "message": "Pointer parameter 'dkey' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *dkey'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/des-internal.c",
+   "line": 469,
+   "message": "Function 'des3_encrypt' does not validate pointer parameter 'plain' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'plain' at the start of the function, e.g., 'if (!plain) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/des-internal.c",
+   "line": 469,
+   "message": "Function 'des3_encrypt' does not validate pointer parameter 'crypt' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'crypt' at the start of the function, e.g., 'if (!crypt) { return error_code; }'"
+  }
+ ]
+}

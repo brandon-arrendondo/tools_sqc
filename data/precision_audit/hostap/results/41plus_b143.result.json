@@ -1,0 +1,1211 @@
+{
+ "labels": [
+  {
+   "rule": "PRE08-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 15,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "fst_ctrl_defs.h/fst_ctrl_iface.h genuinely share first 8 chars; real but low-value per PRE08-C convention"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 21,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "foreach_fst_group(g)/foreach_fst_group_iface(g,f) unexpanded macro-loop header misparsed as a K&R-style nested function def, cascading false MSC13/MSC37/EXP33"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 23,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "foreach_fst_group(g)/foreach_fst_group_iface(g,f) unexpanded macro-loop header misparsed as a K&R-style nested function def, cascading false MSC13/MSC37/EXP33"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 23,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "foreach_fst_group(g)/foreach_fst_group_iface(g,f) unexpanded macro-loop header misparsed as a K&R-style nested function def, cascading false MSC13/MSC37/EXP33"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 27,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C: g is a dl_list foreach loop var pointing into persistent fst_group list, not automatic storage (confirmed fst_group.c class)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 36,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom (buffer,size) - confirmed categorical FP"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 85,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "foreach_fst_group(g)/foreach_fst_group_iface(g,f) unexpanded macro-loop header misparsed as a K&R-style nested function def, cascading false MSC13/MSC37/EXP33"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 97,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "foreach_fst_group(g)/foreach_fst_group_iface(g,f) unexpanded macro-loop header misparsed as a K&R-style nested function def, cascading false MSC13/MSC37/EXP33"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 97,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "foreach_fst_group(g)/foreach_fst_group_iface(g,f) unexpanded macro-loop header misparsed as a K&R-style nested function def, cascading false MSC13/MSC37/EXP33"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 108,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C: switch(event_type) covers all 5 enum fst_event_type values exhaustively, no default needed"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 125,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor-args: fst_iface_get_wpa_obj_ctx is a read-only getter, no side effects to unsequence"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 143,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor-args (fst_iface_get_wpa_obj_ctx)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 157,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor-args (fst_iface_get_wpa_obj_ctx)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 171,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom (session_id local, buf/buflen pair) - confirmed FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 171,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom (session_id local, buf/buflen pair) - confirmed FP"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 178,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "strtoul(session_id, NULL, 0) has zero downstream validation of the numeric result (no *endp/range/errno check) - matches ctrl_iface.c:8899 unchecked-strtoul TP precedent"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 178,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "strtoul(session_id, NULL, 0) has zero downstream validation of the numeric result (no *endp/range/errno check) - matches ctrl_iface.c:8899 unchecked-strtoul TP precedent"
+  },
+  {
+   "rule": "ERR01-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 178,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "strtoul(session_id, NULL, 0) has zero downstream validation of the numeric result (no *endp/range/errno check) - matches ctrl_iface.c:8899 unchecked-strtoul TP precedent"
+  },
+  {
+   "rule": "ERR30-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 178,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "strtoul(session_id, NULL, 0) has zero downstream validation of the numeric result (no *endp/range/errno check) - matches ctrl_iface.c:8899 unchecked-strtoul TP precedent"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 191,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor-args (MACSTR macro args are pure reads)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 210,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 210,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 217,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "strtoul(session_id,&p,0) only checked via *p==' ' (trailing-char check), no ERANGE/range guard - weak-validation TP per established precedent"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 217,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "strtoul(session_id,&p,0) only checked via *p==' ' (trailing-char check), no ERANGE/range guard - weak-validation TP per established precedent"
+  },
+  {
+   "rule": "ERR01-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 217,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "strtoul(session_id,&p,0) only checked via *p==' ' (trailing-char check), no ERANGE/range guard - weak-validation TP per established precedent"
+  },
+  {
+   "rule": "ERR30-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 217,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "strtoul(session_id,&p,0) only checked via *p==' ' (trailing-char check), no ERANGE/range guard - weak-validation TP per established precedent"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 225,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP34-C: p is strtoul's endptr output param, standard-guaranteed non-NULL"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 225,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP45-C: !(q = os_strchr(p+1,'=')) is the standard parenthesized-assignment idiom signaling deliberate assignment"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 249,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 249,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 261,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C: fst_session_create() adds s to persistent global_sessions_list (dl_list_add_tail), freed later via fst_session_delete - ownership transfer, not a leak"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 269,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C: fst_session_create() adds s to persistent global_sessions_list (dl_list_add_tail), freed later via fst_session_delete - ownership transfer, not a leak"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 273,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 273,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 279,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "strtoul(session_id,NULL,0) zero validation - matches unchecked-strtoul TP precedent"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 279,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "strtoul(session_id,NULL,0) zero validation - matches unchecked-strtoul TP precedent"
+  },
+  {
+   "rule": "ERR01-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 279,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "strtoul(session_id,NULL,0) zero validation - matches unchecked-strtoul TP precedent"
+  },
+  {
+   "rule": "ERR30-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 279,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "strtoul(session_id,NULL,0) zero validation - matches unchecked-strtoul TP precedent"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 297,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 297,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 302,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "strtoul(session_id,NULL,0) zero validation"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 302,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "strtoul(session_id,NULL,0) zero validation"
+  },
+  {
+   "rule": "ERR01-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 302,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "strtoul(session_id,NULL,0) zero validation"
+  },
+  {
+   "rule": "ERR30-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 302,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "strtoul(session_id,NULL,0) zero validation"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 320,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 320,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 327,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "strtoul(session_id,&p,0) only trailing-char checked, no range/errno guard"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 327,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "strtoul(session_id,&p,0) only trailing-char checked, no range/errno guard"
+  },
+  {
+   "rule": "ERR01-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 327,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "strtoul(session_id,&p,0) only trailing-char checked, no range/errno guard"
+  },
+  {
+   "rule": "ERR30-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 327,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "strtoul(session_id,&p,0) only trailing-char checked, no range/errno guard"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 335,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP34-C: p from strtoul's endptr, guaranteed non-NULL"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 363,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 363,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 368,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "strtoul(session_id,NULL,0) zero validation"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 368,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "strtoul(session_id,NULL,0) zero validation"
+  },
+  {
+   "rule": "ERR01-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 368,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "strtoul(session_id,NULL,0) zero validation"
+  },
+  {
+   "rule": "ERR30-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 368,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "strtoul(session_id,NULL,0) zero validation"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 387,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 387,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 392,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "strtoul(session_id,NULL,0) zero validation"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 392,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "strtoul(session_id,NULL,0) zero validation"
+  },
+  {
+   "rule": "ERR01-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 392,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "strtoul(session_id,NULL,0) zero validation"
+  },
+  {
+   "rule": "ERR30-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 392,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "strtoul(session_id,NULL,0) zero validation"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 412,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 412,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 469,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C: list_session_enum_cb matches fixed fst_session_enum_clb callback typedef - dispatch-contract FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 483,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 483,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 501,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ERR02-C: os_snprintf() misidentified as sprintf() - confirmed rule-name-substring bug; os_snprintf is a bounded wrapper"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 508,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 508,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 534,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC13-C: found=1 (line 534) IS read at 'if (!found)' right after the dl_list_for_each-style loop - loop/post-loop-read blindness"
+  },
+  {
+   "rule": "MSC21-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 543,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC21-C: loop terminates on addr!=NULL (pointer/cursor sentinel via fst_iface_get_peer_next), not an arithmetic counter with a skippable step - rule precondition doesn't apply"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 557,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "foreach_fst_group(g)/foreach_fst_group_iface(g,f) unexpanded macro-loop header misparsed as a K&R-style nested function def, cascading false MSC13/MSC37/EXP33 (get_peer_mbies also uses foreach_fst_group(g) at line 575; get_peer_mbies actually returns on every path)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 557,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 557,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 560,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ENV01-C: zero getenv() calls anywhere in this file - wholesale misfire"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 562,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "foreach_fst_group(g)/foreach_fst_group_iface(g,f) unexpanded macro-loop header misparsed as a K&R-style nested function def, cascading false MSC13/MSC37/EXP33"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 570,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "isspace(p[0]) passes plain (signed) char with no (unsigned char) cast - genuine low-severity STR00/STR37-C per established precedent that the missing cast is real even on locally-trusted ASCII input"
+  },
+  {
+   "rule": "STR37-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 570,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "isspace(p[0]) passes plain (signed) char with no (unsigned char) cast - genuine low-severity STR00/STR37-C per established precedent that the missing cast is real even on locally-trusted ASCII input"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 575,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "foreach_fst_group(g)/foreach_fst_group_iface(g,f) unexpanded macro-loop header misparsed as a K&R-style nested function def, cascading false MSC13/MSC37/EXP33"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 575,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "foreach_fst_group(g)/foreach_fst_group_iface(g,f) unexpanded macro-loop header misparsed as a K&R-style nested function def, cascading false MSC13/MSC37/EXP33"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 587,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor-args (wpabuf_head/wpabuf_len)"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 590,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC07-C: 'problem:' label is reached via goto from earlier in the function, not unreachable - goto-label-blindness"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 596,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 596,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 613,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor-args (MAC2STR, fst_iface_get_name)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 629,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 629,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 629,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C: buf is the output buffer written via os_snprintf(buf+ret,...) inside the loop - output-buffer-write FP, can't be const"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 631,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "foreach_fst_group(g)/foreach_fst_group_iface(g,f) unexpanded macro-loop header misparsed as a K&R-style nested function def, cascading false MSC13/MSC37/EXP33"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 634,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "foreach_fst_group(g)/foreach_fst_group_iface(g,f) unexpanded macro-loop header misparsed as a K&R-style nested function def, cascading false MSC13/MSC37/EXP33"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 634,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "foreach_fst_group(g)/foreach_fst_group_iface(g,f) unexpanded macro-loop header misparsed as a K&R-style nested function def, cascading false MSC13/MSC37/EXP33"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 650,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ARR02-C: band_names[] is a local array sized purely by its own designated initializer (consumed via ARRAY_SIZE) - genuine if trivial per established convention"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 661,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C/DCL13-C: buf is print_band's output buffer, written via os_snprintf - ptr+size idiom / output-buffer FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 661,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C/DCL13-C: buf is print_band's output buffer, written via os_snprintf - ptr+size idiom / output-buffer FP"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 670,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ERR02-C: os_snprintf() misidentified as sprintf() - confirmed rule bug"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 672,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ERR02-C: os_snprintf() misidentified as sprintf() - confirmed rule bug"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 676,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ERR02-C: os_snprintf() misidentified as sprintf() - confirmed rule bug"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 678,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ERR02-C: os_snprintf() misidentified as sprintf() - confirmed rule bug"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 678,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor-args (wpabuf_head/wpabuf_len)"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 681,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ERR02-C: os_snprintf() misidentified as sprintf() - confirmed rule bug"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 683,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ERR02-C: os_snprintf() misidentified as sprintf() - confirmed rule bug"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 685,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ERR02-C: os_snprintf() misidentified as sprintf() - confirmed rule bug"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 687,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ERR02-C: os_snprintf() misidentified as sprintf() - confirmed rule bug"
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 700,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP39-C: iface_state/session_state/peer_state are read via &extra->X in mutually-exclusive switch cases on a const, read-only param; nothing ever writes to extra - cross-branch union conflation, no real write exists at all"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 740,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL15-C/DCL19-C: fst_ctrl_cli is declared extern in fst_ctrl_iface.h and used across files - genuine external linkage required"
+  },
+  {
+   "rule": "DCL19-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 740,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL15-C/DCL19-C: fst_ctrl_cli is declared extern in fst_ctrl_iface.h and used across files - genuine external linkage required"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 743,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C: buflen is always a fixed compile-time-sized local buffer from internal ctrl_iface call sites, never externally controlled"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 743,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C/DCL13-C: buf forwarded as output buffer to print_band, which writes through it via os_snprintf"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 743,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C/DCL13-C: buf forwarded as output buffer to print_band, which writes through it via os_snprintf"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 745,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "foreach_fst_group(g)/foreach_fst_group_iface(g,f) unexpanded macro-loop header misparsed as a K&R-style nested function def, cascading false MSC13/MSC37/EXP33 (g/f/num all consumed inside the nested foreach_fst_group/foreach_fst_group_iface loop at lines 750-751)"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 746,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "foreach_fst_group(g)/foreach_fst_group_iface(g,f) unexpanded macro-loop header misparsed as a K&R-style nested function def, cascading false MSC13/MSC37/EXP33 (g/f/num all consumed inside the nested foreach_fst_group/foreach_fst_group_iface loop at lines 750-751)"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 747,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "foreach_fst_group(g)/foreach_fst_group_iface(g,f) unexpanded macro-loop header misparsed as a K&R-style nested function def, cascading false MSC13/MSC37/EXP33 (g/f/num all consumed inside the nested foreach_fst_group/foreach_fst_group_iface loop at lines 750-751)"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 750,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "foreach_fst_group(g)/foreach_fst_group_iface(g,f) unexpanded macro-loop header misparsed as a K&R-style nested function def, cascading false MSC13/MSC37/EXP33"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 750,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "foreach_fst_group(g)/foreach_fst_group_iface(g,f) unexpanded macro-loop header misparsed as a K&R-style nested function def, cascading false MSC13/MSC37/EXP33"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 752,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "foreach_fst_group(g)/foreach_fst_group_iface(g,f) unexpanded macro-loop header misparsed as a K&R-style nested function def, cascading false MSC13/MSC37/EXP33"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 764,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom (reply,reply_size)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 764,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom (reply,reply_size)"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 770,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ARR02-C: commands[] is a local array sized purely by its own initializer - genuine if trivial"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 770,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "WIN04-C: Windows EncodePointer concern is platform-inapplicable; this is a UNIX ctrl_iface dispatch table, no Windows build target for this code"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 799,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "isspace(p[0]) missing (unsigned char) cast - genuine low severity"
+  },
+  {
+   "rule": "STR37-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 799,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "isspace(p[0]) missing (unsigned char) cast - genuine low severity"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 804,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR30-C: while(*temp) is a standard NUL-terminated string scan, bounded by the terminator - not unbounded"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 805,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "isspace(*temp) missing (unsigned char) cast"
+  },
+  {
+   "rule": "STR37-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 805,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "isspace(*temp) missing (unsigned char) cast"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 821,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C: params always derived from a non-NULL cmd/request string at every internal call site"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 827,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR34-C: *endp is char** dereferenced to assign a char* pointer value ((char*)params), not a char scalar - rule misidentifies a pointer assignment as an unwidened char assignment"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 827,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP05-C: cast-away-const is a read-only overlay required by strtol()'s char** endptr signature; only ever read/advanced afterward, never written through"
+  },
+  {
+   "rule": "ERR01-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 830,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "strtol(curp,endp,0) has no errno reset/check at all; the *endp whitespace check doesn't substitute for ERANGE detection"
+  },
+  {
+   "rule": "ERR30-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 830,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "same strtol call, no errno=0 reset before the call"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 831,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "isspace(**endp) missing (unsigned char) cast"
+  },
+  {
+   "rule": "STR37-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 831,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "isspace(**endp) missing (unsigned char) cast"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 839,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C: params/buflen are internal, always valid at every call site (never externally-nullable/unbounded)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 839,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C: params/buflen are internal, always valid at every call site (never externally-nullable/unbounded)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 839,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom (buf,buflen)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 839,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom (buf,buflen)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 839,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C: buf is written through via the cur_dest=buf alias (*cur_dest = **endp) - output-buffer-write-via-alias FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 840,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size idiom (continuation of same signature)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 845,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR34-C: same pointer-assignment-misidentified-as-char issue as finding 127 ((char*)params assigned to *endp)"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 845,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP05-C: read-only cast-away-const overlay, required by strtol-style char** endptr contract"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 846,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "isspace(**endp) missing (unsigned char) cast"
+  },
+  {
+   "rule": "STR37-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 846,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "isspace(**endp) missing (unsigned char) cast"
+  },
+  {
+   "rule": "STR00-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 854,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "isspace(**endp) missing (unsigned char) cast"
+  },
+  {
+   "rule": "STR37-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 854,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "isspace(**endp) missing (unsigned char) cast"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 855,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM33-C: line 855 is a plain '*cur_dest = **endp;' char copy, not a flexible-array-member struct assignment at all - rule wholly misapplied"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 855,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR34-C: *cur_dest = **endp is a plain char-to-char copy with no widening to a larger type - confirmed no-widening FP class; the other two findings on this line re-flag the same read with no actual conversion occurring"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 855,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR34-C: *cur_dest = **endp is a plain char-to-char copy with no widening to a larger type - confirmed no-widening FP class; the other two findings on this line re-flag the same read with no actual conversion occurring"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 855,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR34-C: *cur_dest = **endp is a plain char-to-char copy with no widening to a larger type - confirmed no-widening FP class; the other two findings on this line re-flag the same read with no actual conversion occurring"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/fst/fst_ctrl_iface.c",
+   "line": 860,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "STR34-C: *cur_dest = 0 is a literal-constant char assignment, no widening - confirmed FP class"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 45,
+  "fp": 105,
+  "fn": 0
+ }
+}

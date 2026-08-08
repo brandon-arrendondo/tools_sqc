@@ -1,0 +1,1211 @@
+{
+ "labels": [
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9428,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Bounded NUL-terminated scan_id string scan (breaks on ' '/'\\0', os_strchr-bounded) - matches confirmed 'ARR30-C on provably-bounded NUL-terminated string scan' pattern"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9433,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi(pos) result stored with no error/range check beyond the separate count bound"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9433,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same unchecked atoi() conversion, no error detection"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9453,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed-size int scan_id[MAX_SCAN_ID] array, no getenv/putenv anywhere in function - matches confirmed ENV01-C wholesale misfire pattern"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9488,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'pos' is a generically-named local reused across many independent os_strstr assignments in this large function; no single value is actually used with both bitwise and arithmetic ops"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9497,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "!!atoi(pos+8) boolean-coerced but underlying atoi() overflow/error still undetected; literal ERR07-C violation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9497,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "same, lacks error detection"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9501,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "manual_scan_use_id = atoi(pos+7) with no validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9501,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9532,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "!!atoi(pos+15) boolean-coerced, still no error detection per rule text"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9532,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "same"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9535,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Outer 'ssid ' parse loop terminates via NUL/space-bounded os_strchr traversal - matches confirmed bounded-NUL-scan ARR30-C FP pattern (variable misattributed as 'end' but same root cause)"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9541,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Inner `while (*end) {... break; end++;}` scan is explicitly NUL/space-terminated - bounded, matches confirmed pattern"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9556,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`(end - pos) & 0x01` parity check immediately followed by `end - pos > ...` comparison on the same subexpression - matches confirmed 'parity-check idiom' INT14-C stylistic-pedantry FP pattern"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9604,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "os_memcpy(..., scan_id, scan_id_count * sizeof(int)) copies exactly the scan_id_count elements scan_id_list_parse populated (scan_id_count starts at 0 and is only incremented as elements are written) - never reads past initialized data"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9665,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_msg args are MAC2STR(dst/src/bssid), pure side-effect-free macro reads - matches confirmed EXP30-C macro-logging-arg FP pattern"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9702,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "freq = atoi(param) unchecked"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9702,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9708,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "no_cck = atoi(param) unchecked"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9708,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9714,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wait_time = atoi(param) unchecked"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9714,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9723,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`len = os_strlen(param); if (len & 1) return -1; len /= 2;` - hex-string-length parity-check-then-arithmetic idiom, matches confirmed INT14-C stylistic FP pattern"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9771,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "freq = atoi(param) unchecked"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9771,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9777,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "datarate = atoi(param) unchecked"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9777,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9783,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ssi_signal = atoi(param) unchecked"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9783,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9792,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same hex-length parity-check-then-divide idiom as 9723 - confirmed FP pattern"
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9806,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "event.rx_mgmt is the only member this function ever writes to this fresh memset union; 'channel_list_changed' write comes from an unrelated function/branch - matches confirmed EXP39-C cross-function/cross-branch union conflation FP pattern"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9846,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "res = os_zalloc(sizeof(*res) + ...) - sizeof(*res) is compile-time, not a dereference of the not-yet-assigned pointer - matches confirmed sizeof(*ptr) FP idiom"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9852,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "res->flags = strtol(...) return value never checked (no errno/endptr validation) in this DRIVER_EVENT test-string parser"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9852,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "same unchecked strtol"
+  },
+  {
+   "rule": "ERR01-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9852,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "errno not checked after strtol"
+  },
+  {
+   "rule": "ERR30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9852,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "errno not reset before strtol call"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9860,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "res->freq = atoi(pos+6) unchecked"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9860,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9864,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "res->beacon_int = atoi(pos+12) unchecked"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9864,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9868,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "res->caps = strtol(...) unchecked"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9868,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "same"
+  },
+  {
+   "rule": "ERR01-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9868,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "errno not checked"
+  },
+  {
+   "rule": "ERR30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9868,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "errno not reset"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9872,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "res->qual = atoi(pos+6) unchecked"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9872,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9876,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "res->noise = atoi(pos+7) unchecked"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9876,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9880,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "res->level = atoi(pos+7) unchecked"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9880,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9884,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "res->tsf = strtoll(...) unchecked"
+  },
+  {
+   "rule": "ERR01-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9884,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "errno not checked"
+  },
+  {
+   "rule": "ERR30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9884,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "errno not reset"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9888,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "res->age = atoi(pos+5) unchecked"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9888,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9892,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "res->est_throughput = atoi(pos+16) unchecked"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9892,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9896,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "res->snr = atoi(pos+5) unchecked"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9896,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9900,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "res->parent_tsf = strtoll(...) unchecked"
+  },
+  {
+   "rule": "ERR01-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9900,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "errno not checked"
+  },
+  {
+   "rule": "ERR30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9900,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "errno not reset"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9961,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "str_token(param, ' ', &ctx) tokenizer loop terminates on NULL return - bounded by the NUL-terminated 'param' string, same root cause as confirmed bounded-scan ARR30-C FP pattern"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9965,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`*pos++ = '\\0';` both sides char, no widening conversion - matches confirmed STR34-C char-to-char-assignment FP pattern"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9968,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ai->reassoc = atoi(pos) unchecked"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9968,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9998,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ai->freq = atoi(pos) unchecked"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 9998,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10000,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wmm_params.info_bitmap = atoi(pos) unchecked"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10000,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10002,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wmm_params.uapsd_queues = atoi(pos) unchecked"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10002,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10008,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ai->authorized = atoi(pos) unchecked"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10008,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10031,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ai->subnet_status = atoi(pos) unchecked"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10031,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10033,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ai->fils_erp_next_seq_num = atoi(pos) unchecked"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10033,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10053,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "req_ies: classic reassign-then-free idiom - wpabuf_free(req_ies) at 'fail:' only ever targets req_ies's current (possibly still-NULL) value since every loop-body free already preceded a fresh reassignment; matches confirmed 'MEM31-C misfired on reassign-then-free local-variable-reuse idiom' pattern (tls_openssl_ocsp.c precedent)"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10054,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "resp_ies: same reassign-then-free idiom as req_ies"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10055,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "resp_frame: same reassign-then-free idiom"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10056,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "beacon_ies: same reassign-then-free idiom"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10057,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "key_replay_ctr: same reassign-then-free idiom"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10058,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ptk_kck: same reassign-then-free idiom"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10059,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ptk_kek: same reassign-then-free idiom"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10060,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fils_pmk: same reassign-then-free idiom"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10078,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`*param++ = '\\0';` char-to-char, no widening - matches confirmed STR34-C FP pattern"
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10093,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "event.freq_range is the only member this AVOID_FREQUENCIES branch touches on this fresh memset union; 'channel_list_changed' is written only in a mutually-exclusive sibling branch of the same if/else-if chain that can never execute together - union-conflation/mutually-exclusive-branch FP"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10093,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free(event.freq_range.range) is the actual (first) free of this branch's allocation; sqc appears to be crediting a free from a different, mutually-exclusive branch of the same if/else-if chain as having already run - same root cause as the confirmed mutually-exclusive-branch free-tracking FP family"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10129,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`len = os_strlen(pos); if (len & 1) return -1; len /= 2;` - confirmed hex-length parity-check idiom"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10168,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same hex-length parity-check idiom"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10174,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free(buf) where buf may be NULL (malloc failed) is standard-guaranteed safe - matches confirmed 'EXP34-C flags os_free(NULL) as unchecked deref' FP pattern"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10188,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ipv4_hdr_checksum(const void *buf, size_t len) is the idiomatic ptr+len pair - matches confirmed API05-C FP pattern"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10195,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sum uses >>, &, += as the standard IP-header-checksum fold algorithm - deliberate, well-known idiom, matches confirmed INT14-C stylistic-pedantry-mismatch pattern"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10207,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_data_test_rx(..., const u8 *buf, size_t len) is the idiomatic ptr+len pair - matches confirmed API05-C FP pattern"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10217,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`len < sizeof(*eth) + sizeof(ip)` - sizeof(*eth) on not-yet-assigned 'eth' is compile-time only, not a dereference - matches confirmed sizeof(*ptr) FP idiom"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10226,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`&buf[sizeof(*eth)+sizeof(ip)]` on `const u8 *buf` (1-byte pointee) is ordinary byte-pointer offset arithmetic, scale factor 1 - matches confirmed 'ARR39-C misfire on 1-byte-pointee sizeof offset' FP pattern"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10234,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Loop bound `ntohs(ip.ip_len) - sizeof(ip)` is a size_t/integer subtraction used as a for-loop bound, not scaled pointer arithmetic - message mischaracterizes the real defect (captured separately by the INT30-C finding on this same line)"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10234,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "ip.ip_len is never validated >= sizeof(ip) before `ntohs(ip.ip_len) - sizeof(ip)`; if a received test frame's IP header claims a length below 20 bytes this size_t subtraction wraps to a huge value, driving the following `for (i=0; i<wrapped;i++) { ...; pos++; }` far out of the 'buf' bounds - genuine integer-underflow-to-OOB-read bug, unlike the other 'earlier-guard' FP family entries which do have a validating check"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10240,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'pos' is assigned from `&buf[sizeof(*eth)+sizeof(ip)]`, i.e. legitimately derived from indexing into the array-like 'buf' parameter - rule doesn't recognize buffer-index-derived pointers as array pointers"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10245,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_msg args are MAC2STR(eth->ether_dhost/ether_shost), pure side-effect-free macro reads - matches confirmed EXP30-C macro-logging-arg FP pattern"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10253,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "enabled = atoi(cmd) unchecked, no subsequent validation of the parsed value itself (only truthiness branches on it)"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10253,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10253,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'cmd' is a `char *` pointer parameter to atoi(), not a scalar char being widened - rule appears to misapply the char-widening check to a pointer argument"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10287,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'cmd' is only read via a local `pos = cmd;` alias in this function, never mutated or forwarded to a non-const call - genuine (low-severity) const opportunity, consistent with the 'plain internal helper, not automatically FP' DCL13-C clarification"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10294,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`u8 buf[2 + HWSIM_PACKETLEN]` is a fixed-size array sized by a compile-time #define, not a VLA - matches confirmed ENV01-C/MEM05-C fixed-macro-size-array FP pattern"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10318,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "val = strtol(pos,&pos2,0) is immediately range-checked (`val<0||val>0xff` -> return -1), which also catches any LONG_MAX/LONG_MIN overflow result - matches confirmed 'ERR* immediately range-checked' FP pattern extended to strtol"
+  },
+  {
+   "rule": "ERR01-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10318,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same immediate range check neutralizes the need for a separate errno check"
+  },
+  {
+   "rule": "ERR30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10318,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same - the following range check already rejects any overflow-driven strtol result"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10325,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "i = atoi(pos+5) is immediately range-checked (`i<sizeof(*ip)||i>HWSIM_IP_LEN` -> return -1) - matches confirmed 'ERR07-C/ERR34-C atoi() immediately range-checked' FP pattern"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10325,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same immediate range check"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10326,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`i < sizeof(*ip)` - sizeof(*ip) on not-yet-assigned 'ip' is compile-time only - matches confirmed sizeof(*ptr) FP idiom"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10331,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "`eth = (struct ether_header *) &buf[2];` only computes an address into the stack buffer, it does not read/dereference any of buf's (admittedly unwritten) bytes"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10332,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'dst' was already populated by the earlier `hwaddr_aton2(pos, dst)` output-param call - rule doesn't track initialization through that output-param function, extends the confirmed output-param-uninitialized FP family"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10333,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'src' was already populated by the earlier `hwaddr_aton2(pos, src)` output-param call - same as 'dst' above"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10335,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'eth' is assigned from `&buf[2]`, i.e. derived from indexing into the array 'buf' - legitimately array-backed, same reasoning as the 'pos' ARR37-C FP at line 10240"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10347,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "`send_len - sizeof(*ip)` as a for-loop bound: send_len is validated (either the HWSIM_IP_LEN default, comfortably > sizeof(ip), or explicitly checked `i < sizeof(*ip)` -> reject) so no underflow is possible here, unlike the line-10234 case; message also mischaracterizes plain integer arithmetic as pointer-arithmetic scaling"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10347,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "duplicate finding on the same expression - 'send_len' is a size_t loop counter, not a pointer, so there is no pointer-arithmetic scale factor to double; extends the confirmed 'ARR39-C non-pointer loop bound' FP pattern"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10354,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_dbg args are MAC2STR(dst)/MAC2STR(src), pure side-effect-free macro reads - matches confirmed EXP30-C macro-logging-arg FP pattern"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10372,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`len = os_strlen(cmd); if (len & 1 || ...) return -1; len /= 2;` - confirmed hex-length parity-check idiom"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10420,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "count = atoi(cmd) is immediately range-checked (`count <= 0` -> return -1) - matches confirmed 'atoi immediately range-checked' FP pattern"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10420,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same immediate range check"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10435,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`len = os_strlen(val); if (len & 1) return -1; len /= 2;` - confirmed hex-length parity-check idiom"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10442,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf's ownership is transferred out via `*ret = buf;` (output parameter) right before return - not a leak, rule doesn't track escape through an output-param pointer"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10452,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'buf' is a local pointer *variable* whose value is heap memory from wpabuf_alloc()/is NULL - assigning that pointer value through *ret is a plain pointer-value copy, not an address-of-local-storage escape - matches confirmed DCL30-C local-variable-vs-local-storage FP pattern"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10453,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Duplicate of the 10442 finding - buf is handed off via *ret, not leaked"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10457,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_s is only read (wpa_s->wpa forwarded by value, wpa_s itself never mutated or reassigned) - genuine low-severity const opportunity, per the 'plain internal helper, not automatically FP' DCL13-C clarification"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10469,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same - wpa_s only read to obtain wpa_s->wpa"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10481,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same - wpa_s only read to obtain wpa_s->wpa"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10493,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same - wpa_s only read to obtain wpa_s->wpa"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10502,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`*pos++ = '\\0';` char-to-char, no widening - matches confirmed STR34-C FP pattern"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10518,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`u8 zero[WPA_TK_MAX_LEN]` fixed-size key buffer, no getenv/putenv anywhere in the file - matches confirmed ENV01-C wholesale misfire pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10543,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_s only read to obtain wpa_s->wpa, forwarded to wpa_sm_key_request - genuine low-severity const opportunity"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10548,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "error = atoi(pos) with no validation before use"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10548,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10552,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "pairwise = atoi(pos) with no validation before use"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10552,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10558,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Both #ifdef CONFIG_SME branch (`return ret;`) and #else branch (`return -1;`) explicitly return a value - rule loses track of the terminator across the intervening #else/#endif, matches confirmed 'preprocessor-branch-blind fallthrough/return' family extended to MSC37-C"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10616,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "dtok = atoi(...) unchecked, no validation seen"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10616,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10620,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "exponent = atoi(...) unchecked"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10620,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10624,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "mantissa = atoi(...) unchecked"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10624,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10628,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "min_twt = atoi(...) unchecked"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10628,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10632,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "setup_cmd = atoi(...) unchecked"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10632,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "same"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10636,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf's return value IS checked in the same expression (`sscanf(...) != 1) return -1;`) - rule fails to see the inline check"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 10636,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Format specifier '%llu' correctly matches the `unsigned long long *twt` argument; the finding's own message garbles this as '%u'/Integer/Pointer mismatch - format-string parser bug, not a real mismatch"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 87,
+  "fp": 63,
+  "fn": 0
+ }
+}

@@ -1,0 +1,571 @@
+{
+ "src/wps/wps_upnp_web.c": [
+  {
+   "column": 1,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 19,
+   "message": "Header file 'wps_upnp.h' has the same first 8 characters (case-insensitive) as 'wps_upnp_i.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'wps_upnp.h' -> unique name)"
+  },
+  {
+   "column": 68,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 182,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 33,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 183,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 186,
+   "message": "Variable 's' should be declared volatile - modified around function calls that may have external side effects",
+   "rule_id": "DCL22-C",
+   "severity": "Low",
+   "suggestion": "Declare as 'volatile' to prevent compiler optimizations that assume variable state is unchanged across function calls"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 313,
+   "message": "Value assigned to 'extra_len' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 9,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 351,
+   "message": "Memory allocated with 'wpabuf_alloc' for variable 'buf@351:9' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(buf@351:9)' before the variable goes out of scope"
+  },
+  {
+   "column": 3,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 365,
+   "message": "Potential memory leak: 'buf' allocated with 'wpabuf_alloc' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'buf' is freed before this goto or at the target label"
+  },
+  {
+   "column": 26,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 439,
+   "message": "Dereference of uninitialized pointer 'peer'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'peer' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 483,
+   "message": "Pointer dereference '*replyname' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 493,
+   "message": "Value assigned to 'name' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 524,
+   "message": "Value assigned to 'peer' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 7,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 528,
+   "message": "Variable 'attr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'attr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 539,
+   "message": "Value assigned to 'peer' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 568,
+   "message": "Pointer dereference '*replyname' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 12,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 605,
+   "message": "Use of 'atol' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atol' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 12,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 605,
+   "message": "Use of 'atol()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atol() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 41,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 620,
+   "message": "Variable 'attr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'attr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 622,
+   "message": "Double free detected: 'val' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 4,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 638,
+   "message": "Double free detected: 'val' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 642,
+   "message": "Double-free: 'val' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 642,
+   "message": "Double free detected: 'val' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 7,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 645,
+   "message": "Use-after-free: passing freed pointer 'msg' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 7,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 656,
+   "message": "Use-after-free: passing freed pointer 'msg' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 3,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 665,
+   "message": "Double-free: 'msg' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 668,
+   "message": "Double-free: 'msg' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 669,
+   "message": "Pointer dereference '*replyname' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 68,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 675,
+   "message": "Pointer parameter 'cli' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *cli'"
+  },
+  {
+   "column": 4,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 693,
+   "message": "Function returns pointer to local variable 's' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 729,
+   "message": "Pointer dereference '*replyname' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 763,
+   "message": "Value assigned to 'put_length_here' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 764,
+   "message": "Value assigned to 'body_start' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 15,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 768,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 51,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 851,
+   "message": "'body_start' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 9,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 884,
+   "message": "Plain 'char' passed to 'isgraph()' without cast to 'unsigned char'",
+   "rule_id": "STR00-C",
+   "severity": "Medium",
+   "suggestion": "Cast to '(unsigned char)' before passing to 'isgraph()': isgraph((unsigned char)*b)"
+  },
+  {
+   "column": 17,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 884,
+   "message": "Argument to 'isgraph()' is not cast to unsigned char. This can cause undefined behavior if the argument has a negative value.",
+   "rule_id": "STR37-C",
+   "severity": "Medium",
+   "suggestion": "Cast the argument to unsigned char: 'isgraph((unsigned char)...)'"
+  },
+  {
+   "column": 9,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 891,
+   "message": "Plain 'char' passed to 'isgraph()' without cast to 'unsigned char'",
+   "rule_id": "STR00-C",
+   "severity": "Medium",
+   "suggestion": "Cast to '(unsigned char)' before passing to 'isgraph()': isgraph((unsigned char)*b)"
+  },
+  {
+   "column": 17,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 891,
+   "message": "Argument to 'isgraph()' is not cast to unsigned char. This can cause undefined behavior if the argument has a negative value.",
+   "rule_id": "STR37-C",
+   "severity": "Medium",
+   "suggestion": "Cast the argument to unsigned char: 'isgraph((unsigned char)...)'"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 896,
+   "message": "Function returns pointer to local variable 'action' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 999,
+   "message": "Value assigned to 's' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 1000,
+   "message": "Value assigned to 'ret' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 6,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 1009,
+   "message": "Do not cast away const qualification: '(u8 *) hdr'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 3,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 1018,
+   "message": "Potential memory leak: 'buf' allocated with 'wpabuf_alloc' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'buf' is freed before this goto or at the target label"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 1023,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'h' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 1043,
+   "message": "Potential memory leak: 'buf' allocated with 'wpabuf_alloc' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'buf' is freed before this goto or at the target label"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 1074,
+   "message": "Potential memory leak: 'buf' allocated with 'wpabuf_alloc' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'buf' is freed before this goto or at the target label"
+  },
+  {
+   "column": 19,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 1076,
+   "message": "Array/pointer 'callback_urls' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'callback_urls' after calling free(). Set pointer to NULL after freeing: free(callback_urls); callback_urls = NULL;"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 1077,
+   "message": "Array/pointer 'callback_urls' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'callback_urls' after calling free(). Set pointer to NULL after freeing: free(callback_urls); callback_urls = NULL;"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 1091,
+   "message": "Potential memory leak: 'buf' allocated with 'wpabuf_alloc' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'buf' is freed before this goto or at the target label"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 1098,
+   "message": "Potential memory leak: 'buf' allocated with 'wpabuf_alloc' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'buf' is freed before this goto or at the target label"
+  },
+  {
+   "column": 4,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 1113,
+   "message": "Potential memory leak: 'buf' allocated with 'wpabuf_alloc' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'buf' is freed before this goto or at the target label"
+  },
+  {
+   "column": 4,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 1122,
+   "message": "Potential memory leak: 'buf' allocated with 'wpabuf_alloc' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'buf' is freed before this goto or at the target label"
+  },
+  {
+   "column": 4,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 1128,
+   "message": "Potential memory leak: 'buf' allocated with 'wpabuf_alloc' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'buf' is freed before this goto or at the target label"
+  },
+  {
+   "column": 4,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 1133,
+   "message": "Potential memory leak: 'buf' allocated with 'wpabuf_alloc' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'buf' is freed before this goto or at the target label"
+  },
+  {
+   "column": 3,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 1137,
+   "message": "Potential memory leak: 'buf' allocated with 'wpabuf_alloc' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'buf' is freed before this goto or at the target label"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 1157,
+   "message": "Double free detected: 'callback_urls' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 1161,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 1186,
+   "message": "Double-free: 'callback_urls' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 1186,
+   "message": "Double free detected: 'callback_urls' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 1217,
+   "message": "Value assigned to 's' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 1218,
+   "message": "Value assigned to 'ret' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 1232,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'h' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 1364,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 13,
+   "file": "src/wps/wps_upnp_web.c",
+   "line": 1365,
+   "message": "'inet_ntoa()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'inet_ntop' instead for thread safety"
+  }
+ ]
+}

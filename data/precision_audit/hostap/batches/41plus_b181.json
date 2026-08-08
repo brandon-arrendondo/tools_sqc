@@ -1,0 +1,967 @@
+{
+ "src/utils/wpa_debug.c": [
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 24,
+   "message": "Shared variable 'wpa_debug_tracing_file' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 30,
+   "message": "Shared variable 'wpa_debug_level' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 30,
+   "message": "Variable 'wpa_debug_level' should be declared static if it doesn't need external linkage",
+   "rule_id": "DCL15-C",
+   "severity": "Low",
+   "suggestion": "Add 'static' storage-class specifier"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 30,
+   "message": "File-scope variable should have minimal scope. Consider making it static within a function or limiting its scope.",
+   "rule_id": "DCL19-C",
+   "severity": "Low",
+   "suggestion": "Move variable to the smallest scope where it's used, or make it static inside a function"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 31,
+   "message": "Shared variable 'wpa_debug_show_keys' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 31,
+   "message": "Variable 'wpa_debug_show_keys' should be declared static if it doesn't need external linkage",
+   "rule_id": "DCL15-C",
+   "severity": "Low",
+   "suggestion": "Add 'static' storage-class specifier"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 31,
+   "message": "File-scope variable should have minimal scope. Consider making it static within a function or limiting its scope.",
+   "rule_id": "DCL19-C",
+   "severity": "Low",
+   "suggestion": "Move variable to the smallest scope where it's used, or make it static inside a function"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 32,
+   "message": "Shared variable 'wpa_debug_timestamp' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 32,
+   "message": "Variable 'wpa_debug_timestamp' should be declared static if it doesn't need external linkage",
+   "rule_id": "DCL15-C",
+   "severity": "Low",
+   "suggestion": "Add 'static' storage-class specifier"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 32,
+   "message": "File-scope variable should have minimal scope. Consider making it static within a function or limiting its scope.",
+   "rule_id": "DCL19-C",
+   "severity": "Low",
+   "suggestion": "Move variable to the smallest scope where it's used, or make it static inside a function"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 33,
+   "message": "Shared variable 'wpa_debug_syslog' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 33,
+   "message": "Variable 'wpa_debug_syslog' should be declared static if it doesn't need external linkage",
+   "rule_id": "DCL15-C",
+   "severity": "Low",
+   "suggestion": "Add 'static' storage-class specifier"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 33,
+   "message": "File-scope variable should have minimal scope. Consider making it static within a function or limiting its scope.",
+   "rule_id": "DCL19-C",
+   "severity": "Low",
+   "suggestion": "Move variable to the smallest scope where it's used, or make it static inside a function"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 35,
+   "message": "Shared variable 'out_file' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 69,
+   "message": "Function 'wpa_debug_print_timestamp' performs compound operation on shared static variables (out_file, wpa_debug_syslog, wpa_debug_timestamp) without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/wpa_debug.c",
+   "line": 80,
+   "message": "Format specifier '%ld' makes assumptions about type sizes - violates data model assumptions",
+   "rule_id": "INT00-C",
+   "severity": "Medium",
+   "suggestion": "Use correct format specifier or verify data model assumptions with static assertions"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/wpa_debug.c",
+   "line": 84,
+   "message": "Format specifier '%ld' makes assumptions about type sizes - violates data model assumptions",
+   "rule_id": "INT00-C",
+   "severity": "Medium",
+   "suggestion": "Use correct format specifier or verify data model assumptions with static assertions"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 94,
+   "message": "Function 'wpa_debug_open_syslog' performs compound operation on shared static variable 'wpa_debug_syslog' without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 11,
+   "file": "src/utils/wpa_debug.c",
+   "line": 136,
+   "message": "open() called without O_NOFOLLOW flag and without lstat() validation. This may be vulnerable to symlink attacks.",
+   "rule_id": "POS01-C",
+   "severity": "High",
+   "suggestion": "Use O_NOFOLLOW flag in open() call, or validate with lstat() before opening"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/wpa_debug.c",
+   "line": 148,
+   "message": "Potentially unsafe array access with variable index 'buflen': Buffer 'buf' with size 4096 (allocated at line 132)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 13,
+   "file": "src/utils/wpa_debug.c",
+   "line": 185,
+   "message": "open() called without O_NOFOLLOW flag and without lstat() validation. This may be vulnerable to symlink attacks.",
+   "rule_id": "POS01-C",
+   "severity": "High",
+   "suggestion": "Use O_NOFOLLOW flag in open() call, or validate with lstat() before opening"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/wpa_debug.c",
+   "line": 188,
+   "message": "Function returns without releasing all resources. Leaked: trace_fd. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/wpa_debug.c",
+   "line": 194,
+   "message": "Function returns without releasing all resources. Leaked: wpa_debug_tracing_file. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/wpa_debug.c",
+   "line": 197,
+   "message": "Function returns without releasing all resources. Leaked: wpa_debug_tracing_file. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/wpa_debug.c",
+   "line": 205,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/wpa_debug.c",
+   "line": 205,
+   "message": "Return value of 'fclose' ignored: 'fclose(wpa_debug_tracing_file)' - Returns non-zero on error",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (fclose(file) != 0) for close errors"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 206,
+   "message": "Value assigned to 'wpa_debug_tracing_file' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 223,
+   "message": "Function 'wpa_printf' performs compound operation on shared static variables (out_file, wpa_debug_level, wpa_debug_syslog, wpa_debug_tracing_file) without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/wpa_debug.c",
+   "line": 265,
+   "message": "Return value of 'fflush' ignored: 'fflush(wpa_debug_tracing_file)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 272,
+   "message": "Function '_wpa_hexdump' performs compound operation on shared static variables (out_file, wpa_debug_level, wpa_debug_syslog, wpa_debug_tracing_file) without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 48,
+   "file": "src/utils/wpa_debug.c",
+   "line": 272,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/wpa_debug.c",
+   "line": 279,
+   "message": "Argument count mismatch in fprintf(): format string expects 2 arguments but 3 provided",
+   "rule_id": "FIO47-C",
+   "severity": "High",
+   "suggestion": "Ensure the number of arguments matches format specifiers"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/wpa_debug.c",
+   "line": 282,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/wpa_debug.c",
+   "line": 291,
+   "message": "Return value of 'fflush' ignored: 'fflush(wpa_debug_tracing_file)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/wpa_debug.c",
+   "line": 302,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 18,
+   "file": "src/utils/wpa_debug.c",
+   "line": 318,
+   "message": "Reading from 'strbuf' which may contain uninitialized data",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize the contents of 'strbuf' before reading"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/wpa_debug.c",
+   "line": 340,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "src/utils/wpa_debug.c",
+   "line": 349,
+   "message": "Function returns without releasing all resources. Leaked: strbuf, strbuf. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/wpa_debug.c",
+   "line": 363,
+   "message": "Double free detected: 'strbuf' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate bin_clear_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 4,
+   "file": "src/utils/wpa_debug.c",
+   "line": 365,
+   "message": "Function returns without releasing all resources. Leaked: strbuf, strbuf. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/wpa_debug.c",
+   "line": 371,
+   "message": "Format specifier '%lu' makes assumptions about type sizes - violates data model assumptions",
+   "rule_id": "INT00-C",
+   "severity": "Medium",
+   "suggestion": "Use correct format specifier or verify data model assumptions with static assertions"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/wpa_debug.c",
+   "line": 373,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/wpa_debug.c",
+   "line": 385,
+   "message": "Format specifier '%lu' makes assumptions about type sizes - violates data model assumptions",
+   "rule_id": "INT00-C",
+   "severity": "Medium",
+   "suggestion": "Use correct format specifier or verify data model assumptions with static assertions"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/wpa_debug.c",
+   "line": 386,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 399,
+   "message": "Function 'wpa_hexdump' does not validate pointer parameter 'title' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'title' at the start of the function, e.g., 'if (!title) { return error_code; }'"
+  },
+  {
+   "column": 40,
+   "file": "src/utils/wpa_debug.c",
+   "line": 399,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 59,
+   "file": "src/utils/wpa_debug.c",
+   "line": 399,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 405,
+   "message": "Function 'wpa_hexdump_key' does not validate pointer parameter 'title' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'title' at the start of the function, e.g., 'if (!title) { return error_code; }'"
+  },
+  {
+   "column": 44,
+   "file": "src/utils/wpa_debug.c",
+   "line": 405,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 63,
+   "file": "src/utils/wpa_debug.c",
+   "line": 405,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 411,
+   "message": "Function '_wpa_hexdump_ascii' performs compound operation on shared static variables (out_file, wpa_debug_level, wpa_debug_syslog, wpa_debug_tracing_file) without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 54,
+   "file": "src/utils/wpa_debug.c",
+   "line": 411,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 73,
+   "file": "src/utils/wpa_debug.c",
+   "line": 411,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/wpa_debug.c",
+   "line": 420,
+   "message": "Argument count mismatch in fprintf(): format string expects 2 arguments but 3 provided",
+   "rule_id": "FIO47-C",
+   "severity": "High",
+   "suggestion": "Ensure the number of arguments matches format specifiers"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/wpa_debug.c",
+   "line": 423,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/wpa_debug.c",
+   "line": 433,
+   "message": "Return value of 'fflush' ignored: 'fflush(wpa_debug_tracing_file)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  },
+  {
+   "column": 4,
+   "file": "src/utils/wpa_debug.c",
+   "line": 450,
+   "message": "Format specifier '%lu' makes assumptions about type sizes - violates data model assumptions",
+   "rule_id": "INT00-C",
+   "severity": "Medium",
+   "suggestion": "Use correct format specifier or verify data model assumptions with static assertions"
+  },
+  {
+   "column": 11,
+   "file": "src/utils/wpa_debug.c",
+   "line": 450,
+   "message": "Function 'fprintf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/wpa_debug.c",
+   "line": 455,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 4,
+   "file": "src/utils/wpa_debug.c",
+   "line": 456,
+   "message": "Format specifier '%lu' makes assumptions about type sizes - violates data model assumptions",
+   "rule_id": "INT00-C",
+   "severity": "Medium",
+   "suggestion": "Use correct format specifier or verify data model assumptions with static assertions"
+  },
+  {
+   "column": 11,
+   "file": "src/utils/wpa_debug.c",
+   "line": 456,
+   "message": "Function 'fprintf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/wpa_debug.c",
+   "line": 461,
+   "message": "Format specifier '%lu' makes assumptions about type sizes - violates data model assumptions",
+   "rule_id": "INT00-C",
+   "severity": "Medium",
+   "suggestion": "Use correct format specifier or verify data model assumptions with static assertions"
+  },
+  {
+   "column": 10,
+   "file": "src/utils/wpa_debug.c",
+   "line": 461,
+   "message": "Function 'fprintf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/wpa_debug.c",
+   "line": 472,
+   "message": "Plain 'char' passed to 'isprint()' without cast to 'unsigned char'",
+   "rule_id": "STR00-C",
+   "severity": "Medium",
+   "suggestion": "Cast to '(unsigned char)' before passing to 'isprint()': isprint((unsigned char)pos[i])"
+  },
+  {
+   "column": 17,
+   "file": "src/utils/wpa_debug.c",
+   "line": 472,
+   "message": "Argument to 'isprint()' is not cast to unsigned char. This can cause undefined behavior if the argument has a negative value.",
+   "rule_id": "STR37-C",
+   "severity": "Medium",
+   "suggestion": "Cast the argument to unsigned char: 'isprint((unsigned char)...)'"
+  },
+  {
+   "column": 4,
+   "file": "src/utils/wpa_debug.c",
+   "line": 488,
+   "message": "Format specifier '%lu' makes assumptions about type sizes - violates data model assumptions",
+   "rule_id": "INT00-C",
+   "severity": "Medium",
+   "suggestion": "Use correct format specifier or verify data model assumptions with static assertions"
+  },
+  {
+   "column": 10,
+   "file": "src/utils/wpa_debug.c",
+   "line": 488,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/wpa_debug.c",
+   "line": 492,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 4,
+   "file": "src/utils/wpa_debug.c",
+   "line": 493,
+   "message": "Format specifier '%lu' makes assumptions about type sizes - violates data model assumptions",
+   "rule_id": "INT00-C",
+   "severity": "Medium",
+   "suggestion": "Use correct format specifier or verify data model assumptions with static assertions"
+  },
+  {
+   "column": 10,
+   "file": "src/utils/wpa_debug.c",
+   "line": 493,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/wpa_debug.c",
+   "line": 497,
+   "message": "Format specifier '%lu' makes assumptions about type sizes - violates data model assumptions",
+   "rule_id": "INT00-C",
+   "severity": "Medium",
+   "suggestion": "Use correct format specifier or verify data model assumptions with static assertions"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/wpa_debug.c",
+   "line": 497,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/wpa_debug.c",
+   "line": 508,
+   "message": "Plain 'char' passed to 'isprint()' without cast to 'unsigned char'",
+   "rule_id": "STR00-C",
+   "severity": "Medium",
+   "suggestion": "Cast to '(unsigned char)' before passing to 'isprint()': isprint((unsigned char)pos[i])"
+  },
+  {
+   "column": 17,
+   "file": "src/utils/wpa_debug.c",
+   "line": 508,
+   "message": "Argument to 'isprint()' is not cast to unsigned char. This can cause undefined behavior if the argument has a negative value.",
+   "rule_id": "STR37-C",
+   "severity": "Medium",
+   "suggestion": "Cast the argument to unsigned char: 'isprint((unsigned char)...)'"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 524,
+   "message": "Function 'wpa_hexdump_ascii' does not validate pointer parameter 'title' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'title' at the start of the function, e.g., 'if (!title) { return error_code; }'"
+  },
+  {
+   "column": 46,
+   "file": "src/utils/wpa_debug.c",
+   "line": 524,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 65,
+   "file": "src/utils/wpa_debug.c",
+   "line": 524,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 531,
+   "message": "Function 'wpa_hexdump_ascii_key' does not validate pointer parameter 'title' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'title' at the start of the function, e.g., 'if (!title) { return error_code; }'"
+  },
+  {
+   "column": 50,
+   "file": "src/utils/wpa_debug.c",
+   "line": 531,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 69,
+   "file": "src/utils/wpa_debug.c",
+   "line": 531,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 539,
+   "message": "Shared variable 'last_path' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 542,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 565,
+   "message": "Function 'wpa_debug_open_file' performs compound operation on shared static variables (last_path, out_file) without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 11,
+   "file": "src/utils/wpa_debug.c",
+   "line": 575,
+   "message": "Passing null pointer 'last_path' to 'os_free' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'last_path' is not NULL before passing to 'os_free'"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 576,
+   "message": "Value assigned to 'last_path' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 11,
+   "file": "src/utils/wpa_debug.c",
+   "line": 579,
+   "message": "File reopened using filename 'path' without verifying file attributes (st_dev, st_ino)",
+   "rule_id": "FIO05-C",
+   "severity": "Medium",
+   "suggestion": "Use fstat() to check st_dev and st_ino before and after reopening, or avoid closing and reopening the file"
+  },
+  {
+   "column": 11,
+   "file": "src/utils/wpa_debug.c",
+   "line": 579,
+   "message": "open() called without O_NOFOLLOW flag and without lstat() validation. This may be vulnerable to symlink attacks.",
+   "rule_id": "POS01-C",
+   "severity": "High",
+   "suggestion": "Use O_NOFOLLOW flag in open() call, or validate with lstat() before opening"
+  },
+  {
+   "column": 17,
+   "file": "src/utils/wpa_debug.c",
+   "line": 592,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 17,
+   "file": "src/utils/wpa_debug.c",
+   "line": 592,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/wpa_debug.c",
+   "line": 601,
+   "message": "Function returns without releasing all resources. Leaked: out_file. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/wpa_debug.c",
+   "line": 609,
+   "message": "Function returns without releasing all resources. Leaked: out_file. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/wpa_debug.c",
+   "line": 618,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/wpa_debug.c",
+   "line": 618,
+   "message": "Return value of 'fclose' ignored: 'fclose(out_file)' - Returns non-zero on error",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (fclose(file) != 0) for close errors"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 619,
+   "message": "Value assigned to 'out_file' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 629,
+   "message": "Value assigned to 'last_path' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 645,
+   "message": "Shared variable 'wpa_msg_cb' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 653,
+   "message": "Shared variable 'wpa_msg_ifname_cb' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 12,
+   "file": "src/utils/wpa_debug.c",
+   "line": 685,
+   "message": "'ifname' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/wpa_debug.c",
+   "line": 690,
+   "message": "Return value of 'vsnprintf' assigned to 'len' but not checked for errors: 'vsnprintf(buf, buflen, fmt, ap)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/wpa_debug.c",
+   "line": 720,
+   "message": "Return value of 'vsnprintf' assigned to 'len' but not checked for errors: 'vsnprintf(buf, buflen, fmt, ap)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/wpa_debug.c",
+   "line": 745,
+   "message": "Return value of 'vsnprintf' assigned to 'len' but not checked for errors: 'vsnprintf(buf, buflen, fmt, ap)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 754,
+   "message": "Function 'wpa_msg_global_ctrl' does not validate pointer parameter 'ctx' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ctx' at the start of the function, e.g., 'if (!ctx) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/wpa_debug.c",
+   "line": 775,
+   "message": "Return value of 'vsnprintf' assigned to 'len' but not checked for errors: 'vsnprintf(buf, buflen, fmt, ap)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/wpa_debug.c",
+   "line": 800,
+   "message": "Return value of 'vsnprintf' assigned to 'len' but not checked for errors: 'vsnprintf(buf, buflen, fmt, ap)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/wpa_debug.c",
+   "line": 827,
+   "message": "Return value of 'vsnprintf' assigned to 'len' but not checked for errors: 'vsnprintf(buf, buflen, fmt, ap)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpa_debug.c",
+   "line": 839,
+   "message": "Shared variable 'hostapd_logger_cb' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/wpa_debug.c",
+   "line": 866,
+   "message": "Return value of 'vsnprintf' assigned to 'len' but not checked for errors: 'vsnprintf(buf, buflen, fmt, ap)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  }
+ ]
+}

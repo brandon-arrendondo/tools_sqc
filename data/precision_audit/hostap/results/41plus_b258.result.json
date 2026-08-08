@@ -1,0 +1,980 @@
+{
+ "labels": [
+  {
+   "rule": "FIO23-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 75,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "return at :75 is inside read_interface not main(); also exit() flushes stdout per C std"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 83,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "RegQueryValueEx output buffer arg misread as a read; write-only out-param, established FP class"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 87,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "phantom-directive misfire: multi-line concatenated printf() string literal, no actual #if/#ifdef in call args"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 94,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "RegQueryValueEx output buffer arg misread as a read; write-only out-param, established FP class"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 98,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "phantom-directive misfire: multi-line concatenated printf() string literal, no actual #if/#ifdef in call args"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 105,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "RegQueryValueEx output buffer arg misread as a read; write-only out-param, established FP class"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 109,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "phantom-directive misfire: multi-line concatenated printf() string literal, no actual #if/#ifdef in call args"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 116,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "RegQueryValueEx output buffer arg misread as a read; write-only out-param, established FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 158,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "RegQueryValueEx output buffer arg misread as a read; write-only out-param, established FP class"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 195,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "phantom-directive misfire: multi-line concatenated printf() string literal, no actual #if/#ifdef in call args"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 195,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "phantom-directive misfire: multi-line concatenated printf() string literal, no actual #if/#ifdef in call args"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 205,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Win32 SDK API declared via windows.h, external header sqc's tree-sitter parse doesn't resolve"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 212,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "phantom-directive misfire: multi-line concatenated printf() string literal, no actual #if/#ifdef in call args"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 219,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "namelen clamped to 254 by `if (namelen>=255) namelen=254;` two lines above; name[namelen] always in-bounds"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 245,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Win32 SDK API declared via windows.h, external header sqc's tree-sitter parse doesn't resolve"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 245,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "static-storage var w/ no initializer is zero-init guaranteed by C std, not uninitialized"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 246,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "phantom-directive misfire: multi-line concatenated printf() string literal, no actual #if/#ifdef in call args"
+  },
+  {
+   "rule": "DCL11-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 259,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "TSTR macro (\"%s\"/\"%S\") unresolved by sqc in concatenated literal; format actually has 1 specifier matching 1 arg"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 259,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same TSTR macro-unexpanded-format-literal issue as paired DCL11-C finding"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 261,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Win32 SDK API declared via windows.h, external header sqc's tree-sitter parse doesn't resolve"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 267,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Win32 SDK API declared via windows.h, external header sqc's tree-sitter parse doesn't resolve"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 274,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Win32 SDK API declared via windows.h, external header sqc's tree-sitter parse doesn't resolve"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 280,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Win32 SDK API declared via windows.h, external header sqc's tree-sitter parse doesn't resolve"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 281,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "phantom-directive misfire: multi-line concatenated printf() string literal, no actual #if/#ifdef in call args"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 286,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Win32 SDK API declared via windows.h, external header sqc's tree-sitter parse doesn't resolve"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 287,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Win32 SDK API declared via windows.h, external header sqc's tree-sitter parse doesn't resolve"
+  },
+  {
+   "rule": "DCL11-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 300,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "TSTR macro (\"%s\"/\"%S\") unresolved by sqc in concatenated literal; format actually has 1 specifier matching 1 arg"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 300,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same TSTR macro-unexpanded-format-literal issue as paired DCL11-C finding"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 302,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Win32 SDK API declared via windows.h, external header sqc's tree-sitter parse doesn't resolve"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 308,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Win32 SDK API declared via windows.h, external header sqc's tree-sitter parse doesn't resolve"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 311,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Win32 SDK API declared via windows.h, external header sqc's tree-sitter parse doesn't resolve"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 315,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Win32 SDK API declared via windows.h, external header sqc's tree-sitter parse doesn't resolve"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 317,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "phantom-directive misfire: multi-line concatenated printf() string literal, no actual #if/#ifdef in call args"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 317,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "phantom-directive misfire: multi-line concatenated printf() string literal, no actual #if/#ifdef in call args"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 319,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Win32 SDK API declared via windows.h, external header sqc's tree-sitter parse doesn't resolve"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 321,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "phantom-directive misfire: multi-line concatenated printf() string literal, no actual #if/#ifdef in call args"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 324,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Win32 SDK API declared via windows.h, external header sqc's tree-sitter parse doesn't resolve"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 328,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Win32 SDK API declared via windows.h, external header sqc's tree-sitter parse doesn't resolve"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 334,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Win32 SDK API declared via windows.h, external header sqc's tree-sitter parse doesn't resolve"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 335,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Win32 SDK API declared via windows.h, external header sqc's tree-sitter parse doesn't resolve"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 351,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "static-storage var w/ no initializer is zero-init guaranteed by C std, not uninitialized"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 355,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Win32 SDK API declared via windows.h, external header sqc's tree-sitter parse doesn't resolve"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 355,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "static-storage var w/ no initializer is zero-init guaranteed by C std, not uninitialized"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 356,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "phantom-directive misfire: multi-line concatenated printf() string literal, no actual #if/#ifdef in call args"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 362,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "SCM invokes service_ctrl_handler in its own thread concurrently with svc_thread; shared statics genuinely unsynchronized"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 362,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "service_start matches fixed LPSERVICE_MAIN_FUNCTION callback typedef registered in SERVICE_TABLE_ENTRY; signature pinned"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 366,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Win32 SDK API declared via windows.h, external header sqc's tree-sitter parse doesn't resolve"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 369,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "phantom-directive misfire: multi-line concatenated printf() string literal, no actual #if/#ifdef in call args"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 379,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Win32 SDK API declared via windows.h, external header sqc's tree-sitter parse doesn't resolve"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 380,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "phantom-directive misfire: multi-line concatenated printf() string literal, no actual #if/#ifdef in call args"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 404,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Win32 SDK API declared via windows.h, external header sqc's tree-sitter parse doesn't resolve"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 405,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "phantom-directive misfire: multi-line concatenated printf() string literal, no actual #if/#ifdef in call args"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 415,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "main()'s argc/argv guaranteed valid by C runtime; established FP bundle"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 417,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dt[] sized exactly by its own brace initializer; no bound to omit"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 431,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Win32 SDK API declared via windows.h, external header sqc's tree-sitter parse doesn't resolve"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 432,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "phantom-directive misfire: multi-line concatenated printf() string literal, no actual #if/#ifdef in call args"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 432,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "phantom-directive misfire: multi-line concatenated printf() string literal, no actual #if/#ifdef in call args"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 447,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "deliberate: falls through to StartServiceCtrlDispatcher() default service-start path, not an unhandled case"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 452,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Win32 SDK API declared via windows.h, external header sqc's tree-sitter parse doesn't resolve"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 453,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "phantom-directive misfire: multi-line concatenated printf() string literal, no actual #if/#ifdef in call args"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 25,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "31-sig-char collision technically true but not practically actionable on any real modern toolchain (established convention)"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 36,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "_WIN32_WINNT is underscore+uppercase, reserved in all scopes per C 7.1.3; forced by Windows SDK contract but literally a violation"
+  },
+  {
+   "rule": "API01-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 69,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "req_buf is always written bounded (buf[len]='\\0' clamped <REQUEST_BUFSIZE, or ReadFileEx w/ sizeof bound); no overflow path"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 84,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic T*,size_t pairing or plain opaque object pointer; rule misapplied to non-array pointers"
+  },
+  {
+   "rule": "DCL36-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 89,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "WINAPI is a calling-convention macro token, not a declared identifier; parser misattributes it as a redeclared object with conflicting linkage"
+  },
+  {
+   "rule": "DCL36-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 96,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "WINAPI is a calling-convention macro token, not a declared identifier; parser misattributes it as a redeclared object with conflicting linkage"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 104,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Win32 SDK API declared via windows.h, external header sqc's tree-sitter parse doesn't resolve"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 114,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper, param genuinely read-only in body, not bound to any callback/vtable typedef"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 127,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'dst' is a plain local variable/param declared in this function, never global or static; finding's premise is factually wrong"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 138,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr) on a not-yet-assigned local is a non-evaluated context, not a dereference; established highest-volume FP class"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 147,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CreateEvent(NULL, TRUE, TRUE, NULL): both flagged args are literal NULL, no real object aliasing"
+  },
+  {
+   "rule": "FIO24-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 204,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "the two CloseHandle(dst->pipe) calls sit in mutually exclusive ConnectNamedPipe success/failure branches; only one ever executes"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 210,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto-fail-label CFG blindness: code at this line runs on the normal success path, unrelated to fail:'s ctrl_close_pipe(dst); dst not actually freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 211,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto-fail-label CFG blindness: code at this line runs on the normal success path, unrelated to fail:'s ctrl_close_pipe(dst); dst not actually freed here"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 216,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label is a real goto target reached from earlier failure branches; not actually unreachable"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 217,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto-fail-label CFG blindness: code at this line runs on the normal success path, unrelated to fail:'s ctrl_close_pipe(dst); dst not actually freed here"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 228,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof applied to a fixed-size struct member (overlap.hEvent / priv.attr), not to a decayed array/pointer parameter itself"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 254,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function returns Windows VOID (typedef for void); sqc doesn't resolve the unresolved-header typedef and treats it as non-void"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 268,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Win32 SDK API declared via windows.h, external header sqc's tree-sitter parse doesn't resolve"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 303,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi(buf+6) parses a ctrl-iface LEVEL command with zero range/error checking anywhere downstream"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 303,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi(buf+6) parses a ctrl-iface LEVEL command with zero range/error checking anywhere downstream"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 330,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Win32 SDK API declared via windows.h, external header sqc's tree-sitter parse doesn't resolve"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 345,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function returns Windows VOID (typedef for void); sqc doesn't resolve the unresolved-header typedef and treats it as non-void"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 356,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "matches fixed dispatch-contract typedef (eloop event/sock handler or wpa_msg_cb_func); signature pinned by callback contract"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 365,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Win32 SDK API declared via windows.h, external header sqc's tree-sitter parse doesn't resolve"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 400,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof applied to a fixed-size struct member (overlap.hEvent / priv.attr), not to a decayed array/pointer parameter itself"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 401,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof applied to a fixed-size struct member (overlap.hEvent / priv.attr), not to a decayed array/pointer parameter itself"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 425,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic T*,size_t pairing or plain opaque object pointer; rule misapplied to non-array pointers"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 425,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "matches fixed dispatch-contract typedef (eloop event/sock handler or wpa_msg_cb_func); signature pinned by callback contract"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 427,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic T*,size_t pairing or plain opaque object pointer; rule misapplied to non-array pointers"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 441,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr) on a not-yet-assigned local is a non-evaluated context, not a dereference; established highest-volume FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 447,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv is heap memory from os_zalloc(), not automatic/stack storage; local-variable-vs-local-storage confusion"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 461,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv is heap memory from os_zalloc(), not automatic/stack storage; local-variable-vs-local-storage confusion"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 465,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper, param genuinely read-only in body, not bound to any callback/vtable typedef"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 478,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper, param genuinely read-only in body, not bound to any callback/vtable typedef"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 479,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "idiomatic T*,size_t pairing or plain opaque object pointer; rule misapplied to non-array pointers"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 521,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'dst' is a plain local variable/param declared in this function, never global or static; finding's premise is factually wrong"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 527,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper, param genuinely read-only in body, not bound to any callback/vtable typedef"
+  },
+  {
+   "rule": "API01-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 548,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "req_buf is always written bounded (buf[len]='\\0' clamped <REQUEST_BUFSIZE, or ReadFileEx w/ sizeof bound); no overflow path"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 559,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper, param genuinely read-only in body, not bound to any callback/vtable typedef"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 572,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'dst' is a plain local variable/param declared in this function, never global or static; finding's premise is factually wrong"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 582,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr) on a not-yet-assigned local is a non-evaluated context, not a dereference; established highest-volume FP class"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 590,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CreateEvent(NULL, TRUE, TRUE, NULL): both flagged args are literal NULL, no real object aliasing"
+  },
+  {
+   "rule": "FIO24-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 638,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "the two CloseHandle(dst->pipe) calls sit in mutually exclusive ConnectNamedPipe success/failure branches; only one ever executes"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 644,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto-fail-label CFG blindness: code at this line runs on the normal success path, unrelated to fail:'s ctrl_close_pipe(dst); dst not actually freed here"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 645,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto-fail-label CFG blindness: code at this line runs on the normal success path, unrelated to fail:'s ctrl_close_pipe(dst); dst not actually freed here"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 650,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: label is a real goto target reached from earlier failure branches; not actually unreachable"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 651,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto-fail-label CFG blindness: code at this line runs on the normal success path, unrelated to fail:'s ctrl_close_pipe(dst); dst not actually freed here"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 662,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof applied to a fixed-size struct member (overlap.hEvent / priv.attr), not to a decayed array/pointer parameter itself"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 688,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function returns Windows VOID (typedef for void); sqc doesn't resolve the unresolved-header typedef and treats it as non-void"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 702,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Win32 SDK API declared via windows.h, external header sqc's tree-sitter parse doesn't resolve"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 720,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "reply=NULL initializer unconditionally overwritten at line 729 before any read; genuine dead store"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 752,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Win32 SDK API declared via windows.h, external header sqc's tree-sitter parse doesn't resolve"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 764,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function returns Windows VOID (typedef for void); sqc doesn't resolve the unresolved-header typedef and treats it as non-void"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 776,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "matches fixed dispatch-contract typedef (eloop event/sock handler or wpa_msg_cb_func); signature pinned by callback contract"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 785,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Win32 SDK API declared via windows.h, external header sqc's tree-sitter parse doesn't resolve"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 811,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr) on a not-yet-assigned local is a non-evaluated context, not a dereference; established highest-volume FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 821,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "priv is heap memory from os_zalloc(), not automatic/stack storage; local-variable-vs-local-storage confusion"
+  },
+  {
+   "rule": "DCL40-C",
+   "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+   "line": 825,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "31-sig-char collision technically true but not practically actionable on any real modern toolchain (established convention)"
+  }
+ ],
+ "fns": [
+  {
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 391,
+   "rule": "MEM12-C",
+   "desc": "kill_svc HANDLE (CreateEvent at :385) leaked if CreateThread fails at :391-394; no CloseHandle(kill_svc) on that return path",
+   "upstream_present": "unknown"
+  },
+  {
+   "file": "wpa_supplicant/main_winsvc.c",
+   "line": 186,
+   "rule": "EXP34-C",
+   "desc": "when wpa_supplicant_init() returns NULL, exitcode is set but execution continues to call read_interface(global,...) with global still NULL, forwarded into wpa_supplicant_add_iface(global,...)",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [
+  "wpa_supplicant/ctrl_iface_named_pipe.c"
+ ],
+ "summary": {
+  "tp": 10,
+  "fp": 109,
+  "fn": 2
+ }
+}

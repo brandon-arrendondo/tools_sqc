@@ -1,0 +1,517 @@
+{
+ "src/ap/hostapd.c#part2of2": [
+  {
+   "column": 2,
+   "file": "src/ap/hostapd.c",
+   "line": 4034,
+   "message": "Memory leak: 'new_iface' allocated with 'hostapd_iface_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'new_iface' before this return statement"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hostapd.c",
+   "line": 4075,
+   "message": "Function 'hostapd_remove_iface' does not validate pointer parameter 'interfaces' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'interfaces' at the start of the function, e.g., 'if (!interfaces) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hostapd.c",
+   "line": 4078,
+   "message": "Value assigned to 'k' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/hostapd.c",
+   "line": 4084,
+   "message": "Implicit boolean test on 'os_strcmp(hapd_iface->conf->bss[0]->iface, buf)'. May be unclear what constitutes success or failure.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Use explicit test: os_strcmp(hapd_iface->conf->bss[0]->iface, buf) == 0 or os_strcmp(hapd_iface->conf->bss[0]->iface, buf) != 0 depending on success convention"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/hostapd.c",
+   "line": 4104,
+   "message": "Implicit boolean test on 'os_strcmp(hapd_iface->conf->bss[j]->iface, buf)'. May be unclear what constitutes success or failure.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Use explicit test: os_strcmp(hapd_iface->conf->bss[j]->iface, buf) == 0 or os_strcmp(hapd_iface->conf->bss[j]->iface, buf) != 0 depending on success convention"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/hostapd.c",
+   "line": 4208,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/hostapd.c",
+   "line": 4223,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/hostapd.c",
+   "line": 4272,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 50,
+   "file": "src/ap/hostapd.c",
+   "line": 4279,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hostapd.c",
+   "line": 4317,
+   "message": "Function 'hostapd_build_beacon_data' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hostapd.c",
+   "line": 4324,
+   "message": "Value assigned to 'size' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 23,
+   "file": "src/ap/hostapd.c",
+   "line": 4328,
+   "message": "sizeof applied to pointer/array parameter 'beacon' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*beacon)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 35,
+   "file": "src/ap/hostapd.c",
+   "line": 4394,
+   "message": "Potential null pointer dereference in member access of variable 'tx_bss'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'tx_bss' is not NULL before member access"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/hostapd.c",
+   "line": 4470,
+   "message": "Function returns without releasing all resources. Leaked: beacon->mbssid.mbssid_elem_offset, beacon->mbssid.rnr_elem_offset. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/hostapd.c",
+   "line": 4501,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 64,
+   "file": "src/ap/hostapd.c",
+   "line": 4594,
+   "message": "Pointer parameter 'freq_params' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *freq_params'"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/hostapd.c",
+   "line": 4597,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hostapd.c",
+   "line": 4690,
+   "message": "Function 'hostapd_cleanup_cs_params' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 38,
+   "file": "src/ap/hostapd.c",
+   "line": 4692,
+   "message": "sizeof applied to pointer/array parameter 'hapd' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(hapd->cs_freq_params)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hostapd.c",
+   "line": 4703,
+   "message": "Function 'hostapd_chan_switch_config' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 32,
+   "file": "src/ap/hostapd.c",
+   "line": 4704,
+   "message": "Pointer parameter 'freq_params' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *freq_params'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hostapd.c",
+   "line": 4762,
+   "message": "Function 'hostapd_force_channel_switch' does not validate pointer parameter 'iface' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'iface' at the start of the function, e.g., 'if (!iface) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hostapd.c",
+   "line": 4762,
+   "message": "Function 'hostapd_force_channel_switch' does not validate pointer parameter 'settings' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'settings' at the start of the function, e.g., 'if (!settings) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hostapd.c",
+   "line": 4765,
+   "message": "Value assigned to 'ret' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hostapd.c",
+   "line": 4798,
+   "message": "Function 'hostapd_switch_channel_fallback' does not validate pointer parameter 'iface' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'iface' at the start of the function, e.g., 'if (!iface) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hostapd.c",
+   "line": 4798,
+   "message": "Function 'hostapd_switch_channel_fallback' does not validate pointer parameter 'freq_params' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'freq_params' at the start of the function, e.g., 'if (!freq_params) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hostapd.c",
+   "line": 4873,
+   "message": "Function 'hostapd_cleanup_cca_params' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hostapd.c",
+   "line": 4883,
+   "message": "Function 'hostapd_fill_cca_settings' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 13,
+   "file": "src/ap/hostapd.c",
+   "line": 4928,
+   "message": "Pointer parameter 'user_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *user_ctx'"
+  },
+  {
+   "column": 30,
+   "file": "src/ap/hostapd.c",
+   "line": 4930,
+   "message": "Casting from char * (alignment 1) to struct hostapd_data * (alignment 4) may cause alignment issues",
+   "rule_id": "EXP36-C",
+   "severity": "Low",
+   "suggestion": "Use memcpy or ensure proper alignment before casting"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/hostapd.c",
+   "line": 4938,
+   "message": "Variable 'hapd' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 18,
+   "file": "src/ap/hostapd.c",
+   "line": 4943,
+   "message": "Modulo operator used with potentially signed operands. The result of % with negative operands is implementation-defined and can be negative. Use unsigned types (size_t, unsigned int) or explicitly handle negative remainders.",
+   "rule_id": "INT10-C",
+   "severity": "Medium",
+   "suggestion": "Convert operands to unsigned types (size_t, unsigned int) or add explicit checks for negative values"
+  },
+  {
+   "column": 14,
+   "file": "src/ap/hostapd.c",
+   "line": 4945,
+   "message": "Variable 'r' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 46,
+   "file": "src/ap/hostapd.c",
+   "line": 4945,
+   "message": "Shift operation '1ULL << r' by 'r' without validating shift amount is non-negative and within type width",
+   "rule_id": "INT34-C",
+   "severity": "Medium",
+   "suggestion": "Check that 'r' is >= 0 and < the bit width of the operand before shifting"
+  },
+  {
+   "column": 15,
+   "file": "src/ap/hostapd.c",
+   "line": 4948,
+   "message": "Modulo operator used with potentially signed operands. The result of % with negative operands is implementation-defined and can be negative. Use unsigned types (size_t, unsigned int) or explicitly handle negative remainders.",
+   "rule_id": "INT10-C",
+   "severity": "Medium",
+   "suggestion": "Convert operands to unsigned types (size_t, unsigned int) or add explicit checks for negative values"
+  },
+  {
+   "column": 55,
+   "file": "src/ap/hostapd.c",
+   "line": 4956,
+   "message": "Modulo operator used with potentially signed operands. The result of % with negative operands is implementation-defined and can be negative. Use unsigned types (size_t, unsigned int) or explicitly handle negative remainders.",
+   "rule_id": "INT10-C",
+   "severity": "Medium",
+   "suggestion": "Convert operands to unsigned types (size_t, unsigned int) or add explicit checks for negative values"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/hostapd.c",
+   "line": 4957,
+   "message": "Loop uses uninitialized variable 'b' as bound for array access. This has indeterminate value and can cause out-of-bounds access.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize 'b' to a valid value before using it in the loop"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hostapd.c",
+   "line": 5017,
+   "message": "Function 'hostapd_get_iface' does not validate pointer parameter 'interfaces' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'interfaces' at the start of the function, e.g., 'if (!interfaces) { return error_code; }'"
+  },
+  {
+   "column": 64,
+   "file": "src/ap/hostapd.c",
+   "line": 5017,
+   "message": "Pointer parameter 'interfaces' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *interfaces'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hostapd.c",
+   "line": 5037,
+   "message": "Function 'hostapd_periodic_iface' does not validate pointer parameter 'iface' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'iface' at the start of the function, e.g., 'if (!iface) { return error_code; }'"
+  },
+  {
+   "column": 59,
+   "file": "src/ap/hostapd.c",
+   "line": 5057,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hostapd.c",
+   "line": 5080,
+   "message": "Function 'hostapd_mld_get_link_bss' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 18,
+   "file": "src/ap/hostapd.c",
+   "line": 5087,
+   "message": "Potential null pointer dereference in member access of variable 'hapd'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'hapd' is not NULL before member access"
+  },
+  {
+   "column": 5,
+   "file": "src/ap/hostapd.c",
+   "line": 5103,
+   "message": "Function returns pointer to local variable 'bss' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 48,
+   "file": "src/ap/hostapd.c",
+   "line": 5111,
+   "message": "Pointer parameter 'hapd1' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd1'"
+  },
+  {
+   "column": 27,
+   "file": "src/ap/hostapd.c",
+   "line": 5112,
+   "message": "Pointer parameter 'hapd2' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd2'"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/hostapd.c",
+   "line": 5114,
+   "message": "Potential null pointer dereference in member access of variable 'hapd1'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'hapd1' is not NULL before member access"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/hostapd.c",
+   "line": 5117,
+   "message": "Implicit boolean test on 'os_strcmp(hapd1->conf->iface, hapd2->conf->iface)'. May be unclear what constitutes success or failure.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Use explicit test: os_strcmp(hapd1->conf->iface, hapd2->conf->iface) == 0 or os_strcmp(hapd1->conf->iface, hapd2->conf->iface) != 0 depending on success convention"
+  },
+  {
+   "column": 51,
+   "file": "src/ap/hostapd.c",
+   "line": 5201,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 69,
+   "file": "src/ap/hostapd.c",
+   "line": 5221,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 28,
+   "file": "src/ap/hostapd.c",
+   "line": 5223,
+   "message": "Potential null pointer dereference in member access of variable 'hapd'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'hapd' is not NULL before member access"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/hostapd.c",
+   "line": 5272,
+   "message": "Function 'hostapd_get_punct_bitmap' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 50,
+   "file": "src/ap/hostapd.c",
+   "line": 5272,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 51,
+   "file": "src/ap/hostapd.c",
+   "line": 5289,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 65,
+   "file": "src/ap/hostapd.c",
+   "line": 5298,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 67,
+   "file": "src/ap/hostapd.c",
+   "line": 5325,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 16,
+   "file": "src/ap/hostapd.c",
+   "line": 5326,
+   "message": "Pointer parameter '_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *_ctx'"
+  }
+ ]
+}

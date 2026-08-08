@@ -1,0 +1,1354 @@
+{
+ "wpa_supplicant/wpa_supplicant.c#part2of3": [
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3985,
+   "message": "Unsigned integer compound addition 'wpa_ie_len += wpas_supp_op_class_ie(wpa_s, ssid, bss,\n\t\t\t\t\t\t    wpa_ie + wpa_ie_len,\n\t\t\t\t\t\t    max_wpa_ie_len -\n\t\t\t\t\t\t    wpa_ie_len)' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 11,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3987,
+   "message": "Unsigned integer subtraction 'max_wpa_ie_len -\n\t\t\t\t\t\t    wpa_ie_len' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4011,
+   "message": "Unsigned integer addition 'wpa_ie_len + ext_capab_len' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4014,
+   "message": "Signed integer addition '2 + pos[1]' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4016,
+   "message": "Unsigned integer subtraction 'wpa_ie_len - (pos - wpa_ie)' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4017,
+   "message": "Unsigned integer compound addition 'wpa_ie_len += ext_capab_len' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 24,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4022,
+   "message": "Unsigned integer addition 'wpa_ie_len + 5' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4030,
+   "message": "Unsigned integer compound addition 'wpa_ie_len += 5' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4045,
+   "message": "Unsigned integer subtraction 'max_wpa_ie_len - wpa_ie_len' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4047,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4049,
+   "message": "Unsigned integer compound addition 'wpa_ie_len += wpabuf_len(hs20)' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4062,
+   "message": "Unsigned integer subtraction 'max_wpa_ie_len - wpa_ie_len' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4064,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4066,
+   "message": "Unsigned integer compound addition 'wpa_ie_len += wpabuf_len(buf)' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4074,
+   "message": "Unsigned integer addition 'wpa_ie_len + fst_ies_len' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4077,
+   "message": "Unsigned integer compound addition 'wpa_ie_len += fst_ies_len' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4088,
+   "message": "Unsigned integer subtraction 'max_wpa_ie_len - wpa_ie_len' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4092,
+   "message": "Unsigned integer compound addition 'wpa_ie_len += len' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4101,
+   "message": "Unsigned integer subtraction 'max_wpa_ie_len - wpa_ie_len' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4102,
+   "message": "Unsigned integer compound addition 'wpa_ie_len += len' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 29,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4136,
+   "message": "Unsigned integer subtraction 'max_wpa_ie_len - wpa_ie_len' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4137,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4139,
+   "message": "Unsigned integer compound addition 'wpa_ie_len += wpabuf_len(owe_ie)' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4165,
+   "message": "Unsigned integer subtraction 'max_wpa_ie_len - wpa_ie_len' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4166,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4169,
+   "message": "Unsigned integer compound addition 'wpa_ie_len += wpabuf_len(wpa_s->dpp_pfs->ie)' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4185,
+   "message": "Signed integer addition 'mdie + 2' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4193,
+   "message": "Unsigned integer subtraction 'max_wpa_ie_len - wpa_ie_len' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4194,
+   "message": "Unsigned integer compound addition 'wpa_ie_len += len' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4211,
+   "message": "Unsigned integer subtraction 'max_wpa_ie_len - wpa_ie_len' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4213,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4216,
+   "message": "Unsigned integer compound addition 'wpa_ie_len += wpabuf_len(wpa_s->rsnxe_override_assoc)' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4220,
+   "message": "Unsigned integer subtraction 'max_wpa_ie_len - wpa_ie_len' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4222,
+   "message": "Unsigned integer compound addition 'wpa_ie_len += wpa_s->rsnxe_len' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4249,
+   "message": "Unsigned integer addition 'wpa_ie_len + wpabuf_len(mscs_ie)' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4254,
+   "message": "Unsigned integer compound addition 'wpa_ie_len += mscs_ie_len' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4273,
+   "message": "Unsigned integer subtraction 'max_wpa_ie_len - wpa_ie_len' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4281,
+   "message": "Unsigned integer compound addition 'wpa_ie_len += multi_ap_ie_len' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4290,
+   "message": "Unsigned integer addition 'wpa_ie_len + 2' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }"
+  },
+  {
+   "column": 34,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4291,
+   "message": "Pointer to const assigned to non-const pointer without cast: *start = pos: '*start = pos'",
+   "rule_id": "EXP40-C",
+   "severity": "Low",
+   "suggestion": "Either remove const qualifier if the object should be modifiable, or use explicit casts to show intentional const removal"
+  },
+  {
+   "column": 11,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4307,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4322,
+   "message": "Unsigned integer compound addition 'wpa_ie_len += pos - start' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4419,
+   "message": "Variable 'primary_channel' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4455,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 42,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4463,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 33,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4464,
+   "message": "Pointer parameter 'freq' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *freq'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4484,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 11,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4598,
+   "message": "Function 'wpas_populate_assoc_ies' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4609,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 45,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4621,
+   "message": "Signed integer addition '2 + ie[1]' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4877,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 4897,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5009,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5095,
+   "message": "Function 'wpa_supplicant_deauthenticate' participates in indirect recursion: wpa_supplicant_deauthenticate -> wpa_supplicant_event -> wpa_supplicant_event_unprot_disassoc -> sme_event_unprot_disconnect -> sme_start_sa_query -> sme_sa_query_timer -> sme_check_sa_query_timeout -> wpa_supplicant_deauthenticate",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to eliminate the recursion cycle"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5102,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5118,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5163,
+   "message": "Function 'wpa_supplicant_reconnect' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 34,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5174,
+   "message": "Potential null pointer dereference in member access of variable 'ssid'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'ssid' is not NULL before member access"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5202,
+   "message": "Function 'wpa_supplicant_add_network' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5213,
+   "message": "Function returns pointer to local variable 'ssid' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5230,
+   "message": "Function 'wpa_supplicant_remove_network' does not validate integer parameter 'id' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'id' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5289,
+   "message": "Function 'wpa_supplicant_remove_all_networks' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5315,
+   "message": "Pointer to const assigned to non-const pointer without cast: *remove_ssid = ssid: '*remove_ssid = ssid'",
+   "rule_id": "EXP40-C",
+   "severity": "Low",
+   "suggestion": "Either remove const qualifier if the object should be modifiable, or use explicit casts to show intentional const removal"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5334,
+   "message": "Function 'wpa_supplicant_enable_network' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5337,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5368,
+   "message": "Function 'wpa_supplicant_disable_network' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5374,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5397,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 53,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5422,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5423,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5429,
+   "message": "Potential null pointer dereference in member access of variable 'ssid'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'ssid' is not NULL before member access"
+  },
+  {
+   "column": 57,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5449,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 23,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5450,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 32,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5454,
+   "message": "Potential null pointer dereference in member access of variable 'ssid'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'ssid' is not NULL before member access"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5472,
+   "message": "Function 'wpa_supplicant_select_network' participates in indirect recursion: wpa_supplicant_select_network -> wpa_supplicant_deauthenticate -> wpa_supplicant_event -> wpas_event_deauth -> wpas_event_disconnect -> wpa_supplicant_event_disassoc_finish -> wpas_connection_failed -> wpa_supplicant_fast_associate -> wpas_select_network_from_last_scan -> wpas_p2p_scan_no_go_seen -> wpas_p2p_fallback_to_go_neg -> wpas_p2p_connect -> wpas_p2p_join -> wpas_p2p_join_scan_req -> wpas_p2p_scan_res_join -> wpas_p2p_join_start -> wpas_start_gc -> wpa_supplicant_select_network",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to eliminate the recursion cycle"
+  },
+  {
+   "column": 68,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5583,
+   "message": "Pointer parameter 'cred' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *cred'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5630,
+   "message": "Function 'wpas_remove_all_creds' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5663,
+   "message": "Recursive function can cause excessive stack allocation",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Consider iterative approach or limit recursion depth"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5670,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5675,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5756,
+   "message": "Function 'wpa_supplicant_set_bss_expiration_age' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5779,
+   "message": "Function 'wpa_supplicant_set_bss_expiration_count' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5802,
+   "message": "Function 'wpa_supplicant_set_scan_interval' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5897,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5929,
+   "message": "Function returns pointer to local variable 'entry' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5936,
+   "message": "Function returns pointer to local variable 'entry' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5946,
+   "message": "Function returns pointer to local variable 'entry' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5952,
+   "message": "Function returns pointer to local variable 'entry' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5988,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 5997,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 35,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6047,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6093,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6199,
+   "message": "Preprocessor directive '#ifdef' used inside invocation of 'BSSID'. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6205,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6212,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 45,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6224,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 61,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6232,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 49,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6295,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6301,
+   "message": "Dereference of uninitialized pointer 'eth'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'eth' before dereferencing"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6306,
+   "message": "Variable 'eth' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6307,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6313,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 43,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6315,
+   "message": "Scaled integer arithmetic with pointer: 'buf + sizeof(*eth)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 34,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6327,
+   "message": "sizeof applied to pointer/array parameter 'wpa_s' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(wpa_s->bridge_ifname)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6342,
+   "message": "sizeof applied to pointer/array parameter 'wpa_s' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(wpa_s->bridge_ifname)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6365,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6390,
+   "message": "Shared variable 'interface_count' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 29,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6440,
+   "message": "Modulo operator used with potentially signed operands. The result of % with negative operands is implementation-defined and can be negative. Use unsigned types (size_t, unsigned int) or explicitly handle negative remainders.",
+   "rule_id": "INT10-C",
+   "severity": "Medium",
+   "suggestion": "Convert operands to unsigned types (size_t, unsigned int) or add explicit checks for negative values"
+  },
+  {
+   "column": 51,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6442,
+   "message": "Modulo operator used with potentially signed operands. The result of % with negative operands is implementation-defined and can be negative. Use unsigned types (size_t, unsigned int) or explicitly handle negative remainders.",
+   "rule_id": "INT10-C",
+   "severity": "Medium",
+   "suggestion": "Convert operands to unsigned types (size_t, unsigned int) or add explicit checks for negative values"
+  },
+  {
+   "column": 27,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6465,
+   "message": "Dereference of uninitialized pointer 'wpa_s'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'wpa_s' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6497,
+   "message": "Function returns pointer to local variable 'wpa_s' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 11,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6531,
+   "message": "Passing null pointer 'end' to 'wpa_msg' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'end' is not NULL before passing to 'wpa_msg'"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6540,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6540,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 28,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6626,
+   "message": "Shift operation on signed integer 'density' may be used for arithmetic optimization (use explicit arithmetic instead)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use explicit arithmetic operations like * or / instead of shift operations on signed integers"
+  },
+  {
+   "column": 47,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6712,
+   "message": "Shift operation on signed integer 'tx_stbc' may be used for arithmetic optimization (use explicit arithmetic instead)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use explicit arithmetic operations like * or / instead of shift operations on signed integers"
+  },
+  {
+   "column": 47,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6738,
+   "message": "Shift operation on signed integer 'rx_stbc' may be used for arithmetic optimization (use explicit arithmetic instead)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use explicit arithmetic operations like * or / instead of shift operations on signed integers"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6744,
+   "message": "Function 'wpa_supplicant_apply_ht_overrides' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6782,
+   "message": "Function 'wpa_supplicant_apply_vht_overrides' does not validate pointer parameter 'params' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'params' at the start of the function, e.g., 'if (!params) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6832,
+   "message": "Function-like macro 'OVERRIDE_MCS' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6832,
+   "message": "Macro parameter 'i' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'i' in parentheses: (i) instead of i"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6832,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (if (ssid->vht_tx_mcs_nss_ ##i >= 0) {\t\t\t\t\\\n\t\tvhtcaps_mask->vht_supported_mcs_set.tx_map |=\t\t\\\n\t\t\thost_to_le16(3 << 2 * (i - 1));\t\t\t\\\n\t\tvhtcaps->vht_supported_mcs_set.tx_map |=\t\t\\\n\t\t\thost_to_le16(ssid->vht_tx_mcs_nss_ ##i <<\t\\\n\t\t\t\t     2 * (i - 1));\t\t\t\\\n\t}\t\t\t\t\t\t\t\t\\\n\tif (ssid->vht_rx_mcs_nss_ ##i >= 0) {\t\t\t\t\\\n\t\tvhtcaps_mask->vht_supported_mcs_set.rx_map |=\t\t\\\n\t\t\thost_to_le16(3 << 2 * (i - 1));\t\t\t\\\n\t\tvhtcaps->vht_supported_mcs_set.rx_map |=\t\t\\\n\t\t\thost_to_le16(ssid->vht_rx_mcs_nss_ ##i <<\t\\\n\t\t\t\t     2 * (i - 1));\t\t\t\\\n\t})"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6832,
+   "message": "Macro 'OVERRIDE_MCS' uses token concatenation operator (##) which prevents parameter expansion - consider using two-level macro indirection for proper expansion",
+   "rule_id": "PRE05-C",
+   "severity": "Low",
+   "suggestion": "Use two-level indirection: define a wrapper macro that calls another macro with ##, allowing parameters to expand first"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6832,
+   "message": "Multistatement macro 'OVERRIDE_MCS' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+   "rule_id": "PRE10-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6832,
+   "message": "Macro evaluates parameter 'i' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6861,
+   "message": "Function 'wpa_supplicant_apply_he_overrides' does not validate pointer parameter 'params' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'params' at the start of the function, e.g., 'if (!params) { return error_code; }'"
+  },
+  {
+   "column": 24,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6862,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6873,
+   "message": "Function 'wpa_supplicant_apply_eht_overrides' does not validate pointer parameter 'params' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'params' at the start of the function, e.g., 'if (!params) { return error_code; }'"
+  },
+  {
+   "column": 24,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6874,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6904,
+   "message": "sizeof applied to pointer/array parameter 'wpa_s' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(wpa_s->imsi)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6942,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 46,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6960,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 47,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6969,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 39,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 6987,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7010,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7014,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 57,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7021,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 43,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7030,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 48,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7045,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 47,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7059,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 31,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7060,
+   "message": "Pointer parameter 'get_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *get_ctx'"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7069,
+   "message": "sizeof applied to pointer/array parameter 'iface_obj' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*iface_obj)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7111,
+   "message": "Function 'wpas_get_bands' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 51,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7111,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 15,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7118,
+   "message": "Potentially unsafe array access with variable index 'i': Buffer 'freqs' with size 15 (allocated at line 9590)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 30,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7119,
+   "message": "Potentially unsafe array access with variable index 'i': Buffer 'freqs' with size 15 (allocated at line 9590)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7138,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7162,
+   "message": "Function returns pointer to local variable 'radio' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 27,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7170,
+   "message": "Dereference of uninitialized pointer 'radio'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'radio' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 7180,
+   "message": "Function returns pointer to local variable 'radio' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  }
+ ]
+}

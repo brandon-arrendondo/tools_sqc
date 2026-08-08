@@ -1,0 +1,652 @@
+{
+ "src/l2_packet/l2_packet_linux.c": [
+  {
+   "column": 2,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 24,
+   "message": "String buffer placed before pointer in struct 'l2_packet_data': 'char ifname[IFNAMSIZ + 1];' before 'void (*rx_callback)(void *ctx, const u8 *src_addr,' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'char ifname' after the pointer field 'void (*rx_callback)(void *ctx, const u8 *src_addr,\n\t\t\t    const u8 *buf, size_t len);', or use a char* pointer instead of a char array"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 46,
+   "message": "Shared variable 'dhcp_sock_filter_insns' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 27,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 46,
+   "message": "Array declaration 'dhcp_sock_filter_insns[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 71,
+   "message": "Shared variable 'ndisc_sock_filter_insns' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 27,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 71,
+   "message": "Array declaration 'ndisc_sock_filter_insns[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 95,
+   "message": "Shared variable 'pkt_type_filter_insns' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 27,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 95,
+   "message": "Array declaration 'pkt_type_filter_insns[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 108,
+   "message": "Function 'l2_packet_get_own_addr' does not validate pointer parameter 'l2' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'l2' at the start of the function, e.g., 'if (!l2) { return error_code; }'"
+  },
+  {
+   "column": 50,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 108,
+   "message": "Pointer parameter 'l2' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *l2'"
+  },
+  {
+   "column": 5,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 122,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 8,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 128,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 8,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 128,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 8,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 141,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 8,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 141,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 63,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 148,
+   "message": "Pointer parameter 'sock_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sock_ctx'"
+  },
+  {
+   "column": 7,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 162,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 162,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 13,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 172,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 10,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 173,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 66,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 219,
+   "message": "Pointer parameter 'sock_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sock_ctx'"
+  },
+  {
+   "column": 12,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 227,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 9,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 228,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 7,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 237,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 237,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 271,
+   "message": "Function 'l2_packet_init' does not validate pointer parameter 'ifname' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ifname' at the start of the function, e.g., 'if (!ifname) { return error_code; }'"
+  },
+  {
+   "column": 17,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 296,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 17,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 296,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 6,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 302,
+   "message": "Structure 'ifr' passed to trust boundary function 'ioctl' may leak padding bytes. Use packed attributes, explicit padding fields, or serialize fields individually.",
+   "rule_id": "DCL39-C",
+   "severity": "Medium",
+   "suggestion": "Use __attribute__((__packed__)) or serialize fields: copy_to_user(buf, &ifr.a, sizeof(ifr.a)); ..."
+  },
+  {
+   "column": 17,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 304,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 17,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 304,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 6,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 316,
+   "message": "Privileged operation 'bind' without subsequent privilege dropping",
+   "rule_id": "POS02-C",
+   "severity": "Medium",
+   "suggestion": "Call setuid/setgid to drop privileges after setup"
+  },
+  {
+   "column": 17,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 318,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 17,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 318,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 3,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 319,
+   "message": "Resource 'l2->fd' is closed again after already being closed at line 305. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 6,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 324,
+   "message": "Structure 'ifr' passed to trust boundary function 'ioctl' may leak padding bytes. Use packed attributes, explicit padding fields, or serialize fields individually.",
+   "rule_id": "DCL39-C",
+   "severity": "Medium",
+   "suggestion": "Use __attribute__((__packed__)) or serialize fields: copy_to_user(buf, &ifr.a, sizeof(ifr.a)); ..."
+  },
+  {
+   "column": 17,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 326,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 17,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 326,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 3,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 327,
+   "message": "Resource 'l2->fd' is closed again after already being closed at line 305. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 2,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 336,
+   "message": "Function returns pointer to local variable 'l2' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 340,
+   "message": "Function 'l2_packet_init_bridge' does not validate pointer parameter 'br_ifname' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'br_ifname' at the start of the function, e.g., 'if (!br_ifname) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 340,
+   "message": "Function 'l2_packet_init_bridge' does not validate pointer parameter 'ifname' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ifname' at the start of the function, e.g., 'if (!ifname) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 340,
+   "message": "Function 'l2_packet_init_bridge' does not validate pointer parameter 'own_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'own_addr' at the start of the function, e.g., 'if (!own_addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 340,
+   "message": "Function 'l2_packet_init_bridge' does not validate pointer parameter 'rx_callback' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'rx_callback' at the start of the function, e.g., 'if (!rx_callback) { return error_code; }'"
+  },
+  {
+   "column": 21,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 349,
+   "message": "Array declaration 'ethertype_sock_filter_insns[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 17,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 389,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 17,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 389,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 3,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 391,
+   "message": "Function returns pointer to local variable 'l2' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 6,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 398,
+   "message": "Privileged operation 'bind' without subsequent privilege dropping",
+   "rule_id": "POS02-C",
+   "severity": "Medium",
+   "suggestion": "Call setuid/setgid to drop privileges after setup"
+  },
+  {
+   "column": 17,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 400,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 17,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 400,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 3,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 404,
+   "message": "Function returns pointer to local variable 'l2' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 7,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 411,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 411,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 3,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 413,
+   "message": "Resource 'l2->fd_br_rx' is closed again after already being closed at line 402. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 3,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 415,
+   "message": "Function returns pointer to local variable 'l2' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 421,
+   "message": "Function returns pointer to local variable 'l2' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 5,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 427,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 446,
+   "message": "Function 'l2_packet_get_ip_addr' does not validate pointer parameter 'l2' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'l2' at the start of the function, e.g., 'if (!l2) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 446,
+   "message": "Function 'l2_packet_get_ip_addr' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  },
+  {
+   "column": 49,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 446,
+   "message": "Pointer parameter 'l2' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *l2'"
+  },
+  {
+   "column": 59,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 446,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 17,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 456,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 17,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 456,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 6,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 461,
+   "message": "Structure 'ifr' passed to trust boundary function 'ioctl' may leak padding bytes. Use packed attributes, explicit padding fields, or serialize fields individually.",
+   "rule_id": "DCL39-C",
+   "severity": "Medium",
+   "suggestion": "Use __attribute__((__packed__)) or serialize fields: copy_to_user(buf, &ifr.a, sizeof(ifr.a)); ..."
+  },
+  {
+   "column": 18,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 464,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 18,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 464,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 2,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 468,
+   "message": "Resource 's' is closed again after already being closed at line 465. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 24,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 472,
+   "message": "'inet_ntoa()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'inet_ntop' instead for thread safety"
+  },
+  {
+   "column": 56,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 479,
+   "message": "Pointer parameter 'l2' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *l2'"
+  },
+  {
+   "column": 55,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 484,
+   "message": "Pointer parameter 'l2' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *l2'"
+  },
+  {
+   "column": 7,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 510,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 7,
+   "file": "src/l2_packet/l2_packet_linux.c",
+   "line": 510,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  }
+ ]
+}

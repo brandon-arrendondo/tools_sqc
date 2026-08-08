@@ -1,0 +1,895 @@
+{
+ "wpa_supplicant/rrm.c": [
+  {
+   "column": 68,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 21,
+   "message": "Pointer parameter 'user_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *user_ctx'"
+  },
+  {
+   "column": 18,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 23,
+   "message": "Pointer to const assigned to non-const pointer without cast: *rrm = data: '*rrm = data'",
+   "rule_id": "EXP40-C",
+   "severity": "Low",
+   "suggestion": "Either remove const qualifier if the object should be modifiable, or use explicit casts to show intentional const removal"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 71,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 17,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 98,
+   "message": "Memory allocated with 'wpabuf_alloc' for variable 'neighbor_rep' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(neighbor_rep)' before the variable goes out of scope"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 116,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (-1)"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 119,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (-1)"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 122,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (-1)"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 151,
+   "message": "Function 'wpas_rrm_send_neighbor_rep_request' does not validate pointer parameter 'cb' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cb' at the start of the function, e.g., 'if (!cb) { return error_code; }'"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 174,
+   "message": "Potential null pointer dereference in array access of variable 'rrm_ie'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'rrm_ie' is not NULL before array access"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 265,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 300,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 307,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 27,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 388,
+   "message": "Floating-point division without error checking (consider using feclearexcept/fetestexcept)",
+   "rule_id": "FLP03-C",
+   "severity": "Low",
+   "suggestion": "Use feclearexcept(FE_ALL_EXCEPT) before and fetestexcept(FE_ALL_EXCEPT) after floating-point operations"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 393,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 403,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 430,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 53,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 441,
+   "message": "Pointer parameter 'pos' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pos'"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 450,
+   "message": "Loop uses sizeof() as bound (byte count) but performs pointer arithmetic (element-based), causing double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Use array element count (sizeof(array)/sizeof(array[0])) instead of sizeof(array) in loop bound"
+  },
+  {
+   "column": 35,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 450,
+   "message": "Dereference of uninitialized pointer 'msr_rep'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'msr_rep' before dereferencing"
+  },
+  {
+   "column": 23,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 473,
+   "message": "Variable 'msr_rep_end' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'msr_rep_end' before use, e.g., at its declaration"
+  },
+  {
+   "column": 34,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 491,
+   "message": "Pointer to const assigned to non-const pointer without cast: *next = pos: '*next = pos'",
+   "rule_id": "EXP40-C",
+   "severity": "Low",
+   "suggestion": "Either remove const qualifier if the object should be modifiable, or use explicit casts to show intentional const removal"
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 502,
+   "message": "Potential null pointer dereference in array access of variable 'next'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'next' is not NULL before array access"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 551,
+   "message": "Division or modulo by 'op->inc' without checking for zero",
+   "rule_id": "INT33-C",
+   "severity": "High",
+   "suggestion": "Check if 'op->inc' is not zero before division"
+  },
+  {
+   "column": 65,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 563,
+   "message": "Dereference of uninitialized pointer 'freqs'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'freqs' before dereferencing"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 588,
+   "message": "Array/pointer 'freqs' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'freqs' after calling free(). Set pointer to NULL after freeing: free(freqs); freqs = NULL;"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 593,
+   "message": "Function returns pointer to local variable 'freqs' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 593,
+   "message": "Returning pointer to local array 'freqs' which will be destroyed when function returns, creating a dangling pointer.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Consider allocating the array dynamically (malloc/calloc), declaring it as static, or passing a buffer as a parameter."
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 600,
+   "message": "Array declaration 'channels_80mhz_5ghz[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 601,
+   "message": "Array declaration 'channels_160mhz_5ghz[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 602,
+   "message": "Array declaration 'channels_80mhz_6ghz[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 604,
+   "message": "Array declaration 'channels_160mhz_6ghz[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 605,
+   "message": "Array declaration 'channels_320mhz_6ghz[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 624,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 62,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 633,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 23,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 634,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 640,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:subelems' and 'ap_chan_elem'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 35,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 646,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:subelems' and 'ap_chan_elem'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 688,
+   "message": "Function returns pointer to local variable 'freqs' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 689,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 699,
+   "message": "Value assigned to 'ext_freqs' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 754,
+   "message": "Value assigned to 'chanwidth' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 46,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 767,
+   "message": "Variable 'elems' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'elems' before use, e.g., at its declaration"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 773,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 23,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 800,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 809,
+   "message": "Scaled integer arithmetic with pointer: '255 - sizeof(struct rrm_measurement_beacon_report) -\n\t\tsizeof(struct rrm_measurement_report_element)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 836,
+   "message": "sizeof applied to pointer/array parameter 'bss' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(bss->tsf)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 843,
+   "message": "Signed integer compound subtraction 'rem_len -= pos - buf' may overflow without checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 29,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 853,
+   "message": "Subscript operation 'ies[1]' on non-array pointer 'ies'. Subscript notation implies array access",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Only use subscript notation on array pointers, not pointers to single objects"
+  },
+  {
+   "column": 38,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 855,
+   "message": "Subscript operation 'ies[0]' on non-array pointer 'ies'. Subscript notation implies array access",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Only use subscript notation on array pointers, not pointers to single objects"
+  },
+  {
+   "column": 20,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 856,
+   "message": "Subscript operation 'ies[0]' on non-array pointer 'ies'. Subscript notation implies array access",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Only use subscript notation on array pointers, not pointers to single objects"
+  },
+  {
+   "column": 52,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 856,
+   "message": "Subscript operation 'ies[1]' on non-array pointer 'ies'. Subscript notation implies array access",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Only use subscript notation on array pointers, not pointers to single objects"
+  },
+  {
+   "column": 34,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 857,
+   "message": "Subscript operation 'ies[2]' on non-array pointer 'ies'. Subscript notation implies array access",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Only use subscript notation on array pointers, not pointers to single objects"
+  },
+  {
+   "column": 14,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 858,
+   "message": "Subscript operation 'ies[1]' on non-array pointer 'ies'. Subscript notation implies array access",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Only use subscript notation on array pointers, not pointers to single objects"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 864,
+   "message": "Subscript operation 'ies[0]' on non-array pointer 'ies'. Subscript notation implies array access",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Only use subscript notation on array pointers, not pointers to single objects"
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 866,
+   "message": "Pointer arithmetic on non-array pointer 'ies'. Only perform arithmetic on array pointers",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 18,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 871,
+   "message": "Subscript operation 'ies[1]' on non-array pointer 'ies'. Subscript notation implies array access",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Only use subscript notation on array pointers, not pointers to single objects"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 872,
+   "message": "Compound assignment 'ies += 2 + ies[1]' on non-array pointer 'ies'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 14,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 872,
+   "message": "Subscript operation 'ies[1]' on non-array pointer 'ies'. Subscript notation implies array access",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Only use subscript notation on array pointers, not pointers to single objects"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 876,
+   "message": "Local variable 'ies' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 11,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 879,
+   "message": "Subtracting pointers from different arrays ('pos' from 'buf' and 'buf' from 'ies'). Pointer subtraction is only defined for pointers within the same array object.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Only subtract pointers that point to elements within the same array object."
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 880,
+   "message": "Subtracting pointers from different arrays ('pos' from 'buf' and 'buf' from 'ies'). Pointer subtraction is only defined for pointers within the same array object.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Only subtract pointers that point to elements within the same array object."
+  },
+  {
+   "column": 60,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 884,
+   "message": "Pointer parameter 'data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *data'"
+  },
+  {
+   "column": 18,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 899,
+   "message": "sizeof applied to pointer/array parameter 'rep' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*rep)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 22,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 903,
+   "message": "sizeof applied to pointer/array parameter 'rep' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*rep)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 22,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 907,
+   "message": "sizeof applied to pointer/array parameter 'rep' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*rep)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 913,
+   "message": "Scaled integer arithmetic with pointer: 'buf + ret + sizeof(*rep)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 20,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 913,
+   "message": "sizeof applied to pointer/array parameter 'rep' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*rep)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 14,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 944,
+   "message": "sizeof applied to pointer/array parameter 'rep' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*rep)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 54,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 951,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 53,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 971,
+   "message": "Variable 'rep' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'rep' before use, e.g., at its declaration"
+  },
+  {
+   "column": 61,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 997,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 1024,
+   "message": "Function 'wpas_rrm_refuse_request' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 35,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 1037,
+   "message": "Passing null pointer 'buf' to 'wpas_rrm_send_msr_report' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'buf' is not NULL before passing to 'wpas_rrm_send_msr_report'"
+  },
+  {
+   "column": 57,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 1045,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 68,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 1069,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 1224,
+   "message": "File-scope identifier '_rand' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 1228,
+   "message": "sizeof applied to pointer/array parameter 'req' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*req)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 20,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 1237,
+   "message": "sizeof applied to pointer/array parameter 'req' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*req)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 1263,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 15,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 1279,
+   "message": "sizeof applied to pointer/array parameter 'req' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*req)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 1280,
+   "message": "Use-after-free: accessing freed pointer 'params->freqs'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 18,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 1303,
+   "message": "Signed integer multiplication '(_rand % (rand_interval + 1)) * 1024' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check using complex multiplication overflow detection"
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 1303,
+   "message": "Variable '_rand' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize '_rand' before use, e.g., at its declaration"
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 1303,
+   "message": "Division or modulo by '(rand_interval + 1)' without checking for zero",
+   "rule_id": "INT33-C",
+   "severity": "High",
+   "suggestion": "Check if '(rand_interval + 1)' is not zero before division"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 1307,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 1331,
+   "message": "Variable 'req' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 1424,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 1426,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 1432,
+   "message": "Function 'wpas_rrm_handle_radio_measurement_request' does not validate pointer parameter 'dst' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dst' at the start of the function, e.g., 'if (!dst) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 1432,
+   "message": "Function 'wpas_rrm_handle_radio_measurement_request' does not validate pointer parameter 'frame' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'frame' at the start of the function, e.g., 'if (!frame) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 1470,
+   "message": "Function 'wpas_rrm_handle_link_measurement_request' does not validate pointer parameter 'frame' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'frame' at the start of the function, e.g., 'if (!frame) { return error_code; }'"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 1528,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 62,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 1538,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 23,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 1560,
+   "message": "Pointer parameter 'info' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *info'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 1562,
+   "message": "Value assigned to 'i' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 1575,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 1596,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 1634,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/rrm.c",
+   "line": 1654,
+   "message": "Unreachable code after unconditional 'goto'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  }
+ ]
+}

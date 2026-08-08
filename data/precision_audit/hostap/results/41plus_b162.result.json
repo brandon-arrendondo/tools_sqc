@@ -1,0 +1,1139 @@
+{
+ "labels": [
+  {
+   "rule": "API05-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 53,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer+size_t companion-parameter idiom or scalar output pointer; conformant-array-syntax suggestion doesn't apply."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 57,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Internal helper, param read-only (not a vtable/eloop dispatch slot); genuine if low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 63,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Internal helper, param read-only (not a vtable/eloop dispatch slot); genuine if low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 70,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Internal helper, param read-only (not a vtable/eloop dispatch slot); genuine if low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 76,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Internal helper, param read-only (not a vtable/eloop dispatch slot); genuine if low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 83,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Internal helper, param read-only (not a vtable/eloop dispatch slot); genuine if low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 89,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Internal helper, param read-only (not a vtable/eloop dispatch slot); genuine if low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 99,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Internal helper, param read-only (not a vtable/eloop dispatch slot); genuine if low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 140,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Internal helper, param read-only (not a vtable/eloop dispatch slot); genuine if low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 141,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Internal helper, param read-only (not a vtable/eloop dispatch slot); genuine if low-value TP."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 167,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API: sm/param always supplied live by hostap's own state machine, never externally nullable."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 175,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Internal helper, param read-only (not a vtable/eloop dispatch slot); genuine if low-value TP."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 175,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer+size_t companion-parameter idiom or scalar output pointer; conformant-array-syntax suggestion doesn't apply."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 175,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'imsi' is written through the derived alias 'pos' (pos = imsi + *imsi_len; pos += os_snprintf(pos,...)), so it cannot correctly be made const despite no direct 'imsi[i]=' write."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 193,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mnc_len is normalized to 2 or 3 by the 'if (mnc_len!=2 && mnc_len!=3) mnc_len=3;' guard immediately above; no third case is reachable."
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 201,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "pos += os_snprintf(...) result used directly in pointer arithmetic with no os_snprintf_error() check -- matches the established genuine-if-low-severity TP shape for this idiom."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 203,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "mnc's [0..2] are set by one of the mnc_len==2/==3 branches (mnc_len is normalized to 2 or 3 above) and [3] unconditionally after; same guard as the MSC01-C finding at :193."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 268,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'(u32) -1' is an intentional sentinel/max-value assignment, not a subtraction that can overflow."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 316,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "num_rounds is reset every session and compared against EAP_MAX_AUTH_ROUNDS(100) in SM_STEP; cannot practically reach INT_MAX."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 318,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "num_rounds_short is reset every session and compared against EAP_MAX_AUTH_ROUNDS_SHORT(50) in SM_STEP; cannot practically reach INT_MAX."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 435,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'nak:' is a goto target reached from earlier branches (goto nak); not literally unreachable."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 464,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer is heap-allocated (os_malloc/os_strdup/os_zalloc/eap_msg_alloc) or an existing heap list-node, not automatic-storage local; misclassified."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 464,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "realm is heap-allocated (os_malloc/os_strdup), not a local array; not a dangling-pointer case."
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 477,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Flow-insensitive: at these returns 'realm' is either the very value being returned, still NULL (alloc failed), or not yet allocated on that path -- nothing leaked."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 481,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer is heap-allocated (os_malloc/os_strdup/os_zalloc/eap_msg_alloc) or an existing heap list-node, not automatic-storage local; misclassified."
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 481,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Flow-insensitive: at these returns 'realm' is either the very value being returned, still NULL (alloc failed), or not yet allocated on that path -- nothing leaked."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 481,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "realm is heap-allocated (os_malloc/os_strdup), not a local array; not a dangling-pointer case."
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 505,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Flow-insensitive: at these returns 'realm' is either the very value being returned, still NULL (alloc failed), or not yet allocated on that path -- nothing leaked."
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 511,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Flow-insensitive: at these returns 'realm' is either the very value being returned, still NULL (alloc failed), or not yet allocated on that path -- nothing leaked."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 514,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pos is bounded (<=~65) because the earlier eap_sm_append_3gpp_realm() call already enforces imsi_len+36<=100 and returns -1 (bailing out) otherwise; analyzer misses this interprocedural correlation."
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 516,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Flow-insensitive: at these returns 'realm' is either the very value being returned, still NULL (alloc failed), or not yet allocated on that path -- nothing leaked."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 519,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer is heap-allocated (os_malloc/os_strdup/os_zalloc/eap_msg_alloc) or an existing heap list-node, not automatic-storage local; misclassified."
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 519,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Flow-insensitive: at these returns 'realm' is either the very value being returned, still NULL (alloc failed), or not yet allocated on that path -- nothing leaked."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 519,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "realm is heap-allocated (os_malloc/os_strdup), not a local array; not a dangling-pointer case."
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 523,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Flow-insensitive: at these returns 'realm' is either the very value being returned, still NULL (alloc failed), or not yet allocated on that path -- nothing leaked."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 546,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer is heap-allocated (os_malloc/os_strdup/os_zalloc/eap_msg_alloc) or an existing heap list-node, not automatic-storage local; misclassified."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 560,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer is heap-allocated (os_malloc/os_strdup/os_zalloc/eap_msg_alloc) or an existing heap list-node, not automatic-storage local; misclassified."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 570,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr) on a pointer-to-struct/header param is the correct idiom, not a decayed-array misuse."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 580,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "erp is the while-loop condition's own non-NULL result (while ((erp=...)!=NULL)); already guaranteed non-null."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 586,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API: sm/param always supplied live by hostap's own state machine, never externally nullable."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 593,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free(NULL) is a documented no-op/safe call."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 620,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API: sm/param always supplied live by hostap's own state machine, never externally nullable."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 635,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free(NULL) is a documented no-op/safe call."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 685,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API: sm/param always supplied live by hostap's own state machine, never externally nullable."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 692,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "session_id is initialized NULL then unconditionally overwritten by the if/else two lines later with no intervening read."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 693,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "session_id_len is initialized 0 then unconditionally overwritten by the if/else two lines later with no intervening read."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 802,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API: sm/param always supplied live by hostap's own state machine, never externally nullable."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 815,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "realm is set NULL right after os_free(realm) purely defensively and is never read again in the function."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 843,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hmac_sha256(..., wpabuf_head(msg), wpabuf_len(msg), ...) -- wpabuf_head/wpabuf_len are pure accessors, no side effects; matches the standing EXP30-C pure-accessor FP class."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 855,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer is heap-allocated (os_malloc/os_strdup/os_zalloc/eap_msg_alloc) or an existing heap list-node, not automatic-storage local; misclassified."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 921,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_sm_method_state_txt()/eap_sm_decision_txt() are pure enum-to-string lookup functions passed as sibling wpa_printf args; no side effects."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 1124,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Internal helper, param read-only (not a vtable/eloop dispatch slot); genuine if low-value TP."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 1136,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "lastId's '&0xff' models the EAP Identifier field's 1-octet wraparound alongside '+1/+2'; standard, intentional idiom, not a readability hazard."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 1179,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Inside an RFC4137 SM_STEP transition function; falling through with no matching condition correctly means 'stay in current state', not a bug."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 1186,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Internal helper, param read-only (not a vtable/eloop dispatch slot); genuine if low-value TP."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 1285,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "switch is over the exhaustive enum eap_state covering every EAP_* value; no default needed."
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 1346,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "SM_STEP(EAP) expands (state_machine.h) to 'static void sm_EAP_Step(struct eap_sm *sm)' -- a void function; macro-blind misparse as non-void."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 1444,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer is heap-allocated (os_malloc/os_strdup/os_zalloc/eap_msg_alloc) or an existing heap list-node, not automatic-storage local; misclassified."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 1493,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer is heap-allocated (os_malloc/os_strdup/os_zalloc/eap_msg_alloc) or an existing heap list-node, not automatic-storage local; misclassified."
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 1538,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi(mcc_str) has no error/range checking; literal rule violation, low real impact (SIM-supplied MCC digits, not remote-network data)."
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 1538,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Same atoi() call; no errno/end-pointer/range check."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 1671,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'id' is only ever passed through to eap_msg_alloc() as an opaque EAP identifier byte; no arithmetic is performed on it in this function, so there is no overflow to validate."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 1741,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Falling through (config->pcsc false, identity already set) is the normal continuation path to building the identity response, not an unhandled case."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 1742,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "When config->pcsc && config->imsi_privacy_cert are both set, 'identity' is already non-NULL from the privacy_identity branch, so this 'return NULL' (scard PIN failure) skips wpabuf_free(privacy_identity), leaking it."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 1745,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Same privacy_identity allocation leaked on this #else-PCSC_FUNCS 'return NULL', reachable only if config->pcsc is set on a build without PCSC_FUNCS support."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 1747,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Falling through (identity non-NULL) is the normal continuation path; no else needed."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 1751,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "This branch only executes when identity is NULL, which means the imsi_privacy_cert branch (the only one that allocates privacy_identity) was not taken -- nothing to leak here."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 1767,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer is heap-allocated (os_malloc/os_strdup/os_zalloc/eap_msg_alloc) or an existing heap list-node, not automatic-storage local; misclassified."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 1771,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Internal helper, param read-only (not a vtable/eloop dispatch slot); genuine if low-value TP."
+  },
+  {
+   "rule": "STR00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 1788,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos is 'const u8 *' (unsigned char); isprint() receives an already-unsigned value, not plain char."
+  },
+  {
+   "rule": "STR37-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 1788,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same: pos[i] is u8/unsigned char, so no negative-value UB risk exists."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 1812,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr) on a pointer-to-struct/header param is the correct idiom, not a decayed-array misuse."
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 1859,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "len is the size of an already-received, actually-allocated EAP packet buffer; pointer-arithmetic wraparound is not practically reachable."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 1872,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr) on a pointer-to-struct/header param is the correct idiom, not a decayed-array misuse."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 1883,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*ptr) on a pointer-to-struct/header param is the correct idiom, not a decayed-array misuse."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 1924,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Immediately preceded by 'if (parse.keyname_len > 253) return;' bounding the index for the 254-byte nai buffer."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 1944,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'end' is a moving const u8* into a validated wire buffer, not a declared array; the -17 offset is bounds-proven by the preceding max_len>=17 check."
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 1952,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Guarded by the earlier 'max_len < 1+hash_len' check, which proves end-start>=17 and thus end-hdr well exceeds hash_len; no real underflow."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2028,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*hdr) is compile-time and never dereferences hdr; hdr is declared but unused until after the length check."
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2044,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'const u8 *addr[1]' is a 1-element array of pointers, not a character/string buffer; rule is about char arrays."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2213,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*sm) inside os_zalloc(sizeof(*sm)) never dereferences sm; sm is being assigned, not read."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2255,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer is heap-allocated (os_malloc/os_strdup/os_zalloc/eap_msg_alloc) or an existing heap list-node, not automatic-storage local; misclassified."
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2268,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic preference for a dedicated validation function; a direct NULL check is not a defect."
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2277,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Only one os_free(sm) exists in this function; the other calls free sm's *members* (sm->ext_pw_buf via eap_deinit_prev_method, sm->identity, etc.), not sm itself -- name-based confusion, not a real double-free."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2290,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API: sm/param always supplied live by hostap's own state machine, never externally nullable."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2415,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API: sm/param always supplied live by hostap's own state machine, never externally nullable."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2415,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer+size_t companion-parameter idiom or scalar output pointer; conformant-array-syntax suggestion doesn't apply."
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2419,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic preference for a dedicated validation function; a direct NULL check is not a defect."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2456,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same pure enum-to-string lookup functions (eap_sm_method_state_txt/eap_sm_decision_txt) as sibling os_snprintf args."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2462,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_sm_method_state_txt is a function being called (eap_sm_method_state_txt(ret.methodState)), not a static variable; factual misparse of a function-call as a variable read."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2463,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_sm_decision_txt is a function being called, not a static variable; same factual misparse."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2476,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer+size_t companion-parameter idiom or scalar output pointer; conformant-array-syntax suggestion doesn't apply."
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2483,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic preference for a dedicated validation function; a direct NULL check is not a defect."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2540,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Internal helper, param read-only (not a vtable/eloop dispatch slot); genuine if low-value TP."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2618,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API: sm/param always supplied live by hostap's own state machine, never externally nullable."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2618,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer+size_t companion-parameter idiom or scalar output pointer; conformant-array-syntax suggestion doesn't apply."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2657,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API: sm/param always supplied live by hostap's own state machine, never externally nullable."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2704,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API: sm/param always supplied live by hostap's own state machine, never externally nullable."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2708,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'v' is an output parameter passed by address to eap_peer_get_type(name, &v), which writes it; not a read of an uninitialized value."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2726,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "eap_get_phase2_types only reads config fields; internal helper, genuine if low-value TP."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2757,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer is heap-allocated (os_malloc/os_strdup/os_zalloc/eap_msg_alloc) or an existing heap list-node, not automatic-storage local; misclassified."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2766,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API: sm/param always supplied live by hostap's own state machine, never externally nullable."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2777,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API: sm/param always supplied live by hostap's own state machine, never externally nullable."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2793,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API: sm/param always supplied live by hostap's own state machine, never externally nullable."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2793,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Internal helper, param read-only (not a vtable/eloop dispatch slot); genuine if low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2823,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Internal helper, param read-only (not a vtable/eloop dispatch slot); genuine if low-value TP."
+  },
+  {
+   "rule": "MEM03-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2826,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'password' is only ever a pointer alias into config->password/config->machine_password (caller-owned, needed for future retries); it is never a locally-owned buffer this function should clear."
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2849,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sm->ext_pw_buf is freed then unconditionally reassigned via ext_password_get() two lines above the flagged read; free-state tracking doesn't clear on struct-field reassignment (documented MEM30 gap)."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2895,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer+size_t companion-parameter idiom or scalar output pointer; conformant-array-syntax suggestion doesn't apply."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2935,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API: sm/param always supplied live by hostap's own state machine, never externally nullable."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2951,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API: sm/param always supplied live by hostap's own state machine, never externally nullable."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2969,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API: sm/param always supplied live by hostap's own state machine, never externally nullable."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 2986,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API: sm/param always supplied live by hostap's own state machine, never externally nullable."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 3000,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API: sm/param always supplied live by hostap's own state machine, never externally nullable."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 3009,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API: sm/param always supplied live by hostap's own state machine, never externally nullable."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 3023,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API: sm/param always supplied live by hostap's own state machine, never externally nullable."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 3023,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Internal helper, param read-only (not a vtable/eloop dispatch slot); genuine if low-value TP."
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 3056,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic preference for a dedicated validation function; a direct NULL check is not a defect."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 3084,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Internal helper, param read-only (not a vtable/eloop dispatch slot); genuine if low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 3107,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Internal helper, param read-only (not a vtable/eloop dispatch slot); genuine if low-value TP."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 3139,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Pointer is heap-allocated (os_malloc/os_strdup/os_zalloc/eap_msg_alloc) or an existing heap list-node, not automatic-storage local; misclassified."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 3166,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API: sm/param always supplied live by hostap's own state machine, never externally nullable."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 3166,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'blob' is an internally-parsed wpa_config_blob object from hostap's own config subsystem, never externally nullable."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 3166,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Internal helper, param read-only (not a vtable/eloop dispatch slot); genuine if low-value TP."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 3180,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API: sm/param always supplied live by hostap's own state machine, never externally nullable."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 3180,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'name' is an internal blob-name string supplied by hostap's own config/method code, not attacker-controlled wire data."
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 3180,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Every compiled variant (the #ifndef branch and its #else) has an explicit return; #ifdef-blind false positive."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 3180,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Internal helper, param read-only (not a vtable/eloop dispatch slot); genuine if low-value TP."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 3199,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API: sm/param always supplied live by hostap's own state machine, never externally nullable."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 3210,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API: sm/param always supplied live by hostap's own state machine, never externally nullable."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 3225,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API: sm/param always supplied live by hostap's own state machine, never externally nullable."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 3225,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Internal helper, param read-only (not a vtable/eloop dispatch slot); genuine if low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 3242,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Internal helper, param read-only (not a vtable/eloop dispatch slot); genuine if low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 3255,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Internal helper, param read-only (not a vtable/eloop dispatch slot); genuine if low-value TP."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 3268,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API: sm/param always supplied live by hostap's own state machine, never externally nullable."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 3268,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "'ext' is supplied internally by hostap's own ext_password subsystem init path, never externally nullable."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 3282,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API: sm/param always supplied live by hostap's own state machine, never externally nullable."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 3282,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Internal helper, param read-only (not a vtable/eloop dispatch slot); genuine if low-value TP."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 3289,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only API: sm/param always supplied live by hostap's own state machine, never externally nullable."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_peer/eap.c",
+   "line": 3289,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Internal helper, param read-only (not a vtable/eloop dispatch slot); genuine if low-value TP."
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/eap_peer/eap.c",
+   "line": 2847,
+   "rule": "MEM03-C",
+   "desc": "eap_get_ext_password() copies the plaintext password into a heap buffer 'name' (os_zalloc+os_memcpy) and frees it with plain os_free(name) instead of a clearing free (bin_clear_free/os_free_sensitive), leaving the password bytes in freed heap memory.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 35,
+  "fp": 105,
+  "fn": 1
+ }
+}

@@ -1,0 +1,71 @@
+{
+ "labels": [
+  {
+   "rule": "API00-C",
+   "file": "src/utils/os_unix.c",
+   "line": 797,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "os_strdup is a strdup()-style utility wrapper mirroring libc's no-NULL-check contract; matches established API00-C internal-utility FP class."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/utils/os_unix.c",
+   "line": 807,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'d' is os_malloc'd heap memory, not automatic storage; classic DCL30-C heap-vs-stack confusion FP class."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/utils/os_unix.c",
+   "line": 807,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'d' is a heap pointer from os_malloc, not a local array; same heap-vs-stack confusion as the DCL30-C finding on this line."
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/utils/os_unix.c",
+   "line": 827,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "_program is declared inside the forked-child block (block scope), not file scope; block-scope-misclassified-as-file-scope FP class."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/utils/os_unix.c",
+   "line": 828,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "argv[MAX_ARG+1] size derives from 'const int MAX_ARG = 30' literal, not a runtime-sized VLA; fixed-size-array MEM05-C FP class."
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/utils/os_unix.c",
+   "line": 846,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'*pos++ = \\0' is plain char-to-char assignment, no widening; matches the established highest-volume *pos++='\\0' STR34-C FP shape."
+  },
+  {
+   "rule": "ERR05-C",
+   "file": "src/utils/os_unix.c",
+   "line": 854,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "exit(0) runs only in the forked child after execv() fails; child has no caller to report to, exit is the only correct action."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/utils/os_unix.c",
+   "line": 855,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "return -1 genuinely unreachable after exit(0) (noreturn), not a goto-CFG misfire; literal dead code, low severity."
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": ["src/utils/os_unix.c"],
+ "summary": {"tp": 1, "fp": 7, "fn": 0}
+}

@@ -1,0 +1,949 @@
+{
+ "labels": [
+  {
+   "rule": "EXP05-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6889,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cast away const purely to forward mgmt read-only to callback; no write follows (EXP05-C read-only-cast pattern)."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6894,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Flags a `case` label after `break` as unreachable; case labels are switch jump targets, always reachable."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6897,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same read-only cast-away-const forward to vendor_action_cb; no write through pointer."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6940,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "hapd only read (hapd->msg_ctx); genuine const opportunity, not a callback/vtable contract."
+  },
+  {
+   "rule": "CON02-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 6976,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssi_signal is a plain local int (`int ssi_signal = ...`), not a global flag variable at all."
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7014,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "#ifdef here is an unrelated && chain condition in an if-statement, not inside WLAN_FC_GET_STYPE's single call at :6994."
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7018,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same misattribution of unrelated #ifdef to WLAN_FC_GET_STYPE, which is called cleanly once elsewhere."
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7023,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same misattribution; #ifdef is part of an && chain, unrelated to the macro call."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7037,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR(mgmt->bssid) is a pure array-read macro; no actual side effects to unsequence (EXP30-C pure-macro-arg pattern)."
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7049,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same misattributed #ifdef pattern as :7014/:7018/:7023."
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7053,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same misattributed #ifdef pattern."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7128,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(mgmt->u.auth) applied to a struct member, not a decayed pointer/array parameter."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7174,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "sta parameter is entirely unused in hostapd_set_wds_encryption's body; trivially constifiable."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7188,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cites unrelated `size_t len[2]` local from a different, distant function (:4118); real array is ssid->wep.len[NUM_WEP_KEYS==4], matching the loop bound."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7205,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "link only read (peer_addr, status); not a dispatch/vtable callback, genuine const opportunity."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7248,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sta only compared/read in this function's own scope; forwarded tmp_sta (not sta) to the mutator call."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7310,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(mgmt->u.reassoc_resp) on a struct member, not a decayed array/pointer parameter."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7311,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(mgmt->u.assoc_resp) on a struct member, same category error."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7380,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause else-if; omitting a final else means \"no VLAN rebinding needed\", not an unhandled case."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7403,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char ifname_wds[IFNAMSIZ+1] is a fixed-size array of constant-folded macros, not a VLA."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7442,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() are pure accessors on the same buffer; no real unsequenced side effects."
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7581,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`24+5+sizeof(*report)` is a plain integer bounds check; no pointer arithmetic/scaling is involved at all."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7581,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*report) never evaluates report; not a dereference of the uninitialized pointer (confirmed sizeof(*ptr) pattern)."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7604,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "buf is an internal driver-callback parameter, always supplied by the mgmt-frame TX-status path (API00-C internal-API pattern)."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7604,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "len likewise internally supplied by the driver callback path; not externally-nullable/overflow-prone here."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7661,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "hapd unused; function body is `/* TODO */ return 0;`."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7661,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain `char *buf, size_t buflen` idiom; API05-C categorical FP on pointer+size pairs."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7661,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "buf also unused in the TODO stub; trivially constifiable."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7668,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "hapd is internal-only, always supplied by caller (API00-C internal-API pattern)."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7668,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "buflen used only via os_snprintf's own bounds-checked size_t arithmetic; not a real overflow risk."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7668,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "hapd never referenced in ieee802_11_get_mib_sta's body; genuine const/unused opportunity."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7668,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "sta only read via sta->auth_alg; genuine const opportunity."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7669,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf/buflen companion pair; API05-C categorical FP idiom."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7669,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf IS modified: os_snprintf(buf+len, ...) writes into it; DCL13-C misses writes-through-pointer (new eid/buf-write-miss pattern)."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7684,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "hapd internal-only API param, always valid at hostapd_tx_status's call sites."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7684,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "addr likewise internal, always a valid STA MAC from the driver layer."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7684,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "buf likewise internal-only, forwarded from a driver TX-status callback."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7714,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "hapd internal-only API param in hostapd_client_poll_ok."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7714,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "addr likewise internal-only from the driver layer."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7766,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same fixed-size char[IFNAMSIZ+1] shape as :7403; not a VLA."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7809,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eid IS modified via `*eid++ = ...` writes throughout the function; DCL13-C misses writes-through-pointer."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7816,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "tx_pwr_count genuinely used with both `+`/`<=` arithmetic and `|` bitwise packing in the same encoding logic."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7841,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "hapd internal-only API param, always valid in hostapd_eid_txpower_envelope's callers."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7841,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "hapd only read (iface/iconf/mode fields); genuine const opportunity."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7995,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "hapd only read (cs_freq_params fields) in hostapd_eid_wb_channel_switch."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 7995,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eid IS modified via `*eid++ = ...` writes; same write-miss as :7809."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8063,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "hapd only read (cs_freq_params) in hostapd_eid_bw_indication."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8063,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eid IS modified via `*eid++ = ...` / bw_ind_elem writes; same write-miss pattern."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8131,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "eid internal-only IE-builder buffer, always supplied by the beacon/mgmt build path."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8227,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bss_idx is initialized by the for-loop's own `bss_idx = 0` init clause immediately before use."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8250,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "skip_profiles only read (->start/->end); genuine const opportunity."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8303,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "hapd only read (iface->num_bss/bss[]) in hostapd_eid_rnr_iface_len."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8413,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "hapd only read in get_colocation_mode."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8505,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "hapd internal-only API param, always valid in hostapd_eid_rnr_len's callers."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8524,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hapd/reporting_hapd are plain (non-restrict) pointers; passing the same value for both is legal, no aliasing UB (EXP43-C no-restrict pattern)."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8530,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same no-restrict EXP43-C FP as :8524."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8553,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`(eid - len) + 1` is pointer-minus-integer offset arithmetic, not a pointer-pointer subtraction between different arrays."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8599,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eid returned here is hostapd_eid_nr_db's own parameter (caller-owned buffer position), not an automatic-storage local."
+  },
+  {
+   "rule": "DCL22-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8614,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Ordinary local pointer `eid`; no setjmp/longjmp or signal-handler context anywhere in this function (batch-local DCL22-C pattern)."
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8614,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Neither eid nor *pos is const-qualified; the rule's own \"pointer to const\" premise doesn't apply (matches wmm.c:104 precedent)."
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8639,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eid is a caller-buffer-backed write pointer in hostapd_eid_rnr_bss's IE-builder idiom, not a single-object pointer."
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8640,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same array-backed eid++ pattern."
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8641,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same array-backed eid++ pattern."
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8642,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same array-backed eid++ pattern."
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8646,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same array-backed eid++ pattern."
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8648,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`eid += ETH_ALEN` on the same array-backed IE-builder pointer."
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8650,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`eid += 4` on the same array-backed IE-builder pointer."
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8666,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same array-backed eid++ pattern."
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8667,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same array-backed eid++ pattern."
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8680,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same array-backed eid++ pattern."
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8683,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same array-backed eid++ pattern."
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8692,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same array-backed eid++ pattern."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8698,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`*pos = eid` writes eid's current *value* (an offset into a caller buffer) through an out-param; no address-of a local occurs."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8706,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eid IS modified via `*eid++ = ...` throughout hostapd_eid_rnr_iface; same write-miss pattern."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8713,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`(eid - len) + 1` pointer-minus-integer offset arithmetic, same category error as :8553."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8721,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`return eid;` returns the function's own parameter directly, not a local automatic-storage object."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8728,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same as :8721 \u2014 returning the eid parameter on an early-return guard."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8777,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eid_start is a local alias initialized from the eid parameter; returning it returns caller-owned buffer position, not stack storage."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8780,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`return eid;` returns the parameter-derived pointer, not a local."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8841,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "hapd internal-only API param, always valid in hostapd_eid_rnr's callers."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8860,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same no-restrict EXP43-C FP as :8524/:8530 (hapd passed as both hapd/reporting_hapd)."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8865,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same no-restrict EXP43-C FP."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8869,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`return eid_start;` returns a parameter-derived alias, not automatic storage."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8880,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same eid_start parameter-alias return."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8882,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`return eid;` returns the parameter-derived pointer."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8889,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "i is only used arithmetically (`i/8`, `i%8`); the bitwise `|`/BIT() applies to a macro-shifted literal, not to i itself."
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8891,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "known_bss[i/8] is the standard buf+known_bss_len companion subscript idiom, not a single-object pointer."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8937,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is a write-target passed to hostapd_eid_ext_supp_rates(); only its address is used (`-buf` length calc), never its uninitialized contents read."
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8939,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "i is a plain `size_t` loop counter, not a pointer at all (ARR37-C plain-integer-counter pattern)."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8941,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "auth is unconditionally assigned (wpa_auth_get_wpa_ie) before its first read at `if (auth)`; no read-before-write path exists."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 8985,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause else-if; no rate-length adjustment needed when neither branch applies."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 9013,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "hapd_probed internal-only API param, always valid at hostapd_eid_mbssid_len's callers."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 9013,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "elem_count IS explicitly null-checked at :9026 before any dereference, contradicting the finding."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 9013,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "known_bss is intentionally optional-by-design; guarded via `!known_bss` inside mbssid_known_bss()."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 9013,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "rnr_len IS explicitly null-checked (`&& rnr_len`) at :9043 before dereference, contradicting the finding."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 9020,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hapd = hostapd_mbssid_get_tx_bss(...) structurally never returns NULL (hostapd.c:96 returns bss[0] or hapd itself)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 9066,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "end is entirely unused anywhere in hostapd_eid_mbssid_elem's body."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 9080,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is a write-target for hostapd_eid_ext_supp_rates(); same pattern as :8937."
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 9082,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "i is a plain size_t loop counter, not a pointer, same as :8939."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 9084,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conf is unconditionally assigned (`conf = bss->conf`) immediately after the continue-guard, before any read."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 9085,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tx_bss = hostapd_mbssid_get_tx_bss(hapd) never returns NULL, same helper-invariant blindness as :9020."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 9086,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eid_len_pos is unconditionally assigned (`eid_len_pos = eid++`) before its only later read at :9182; no read-before-write path."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 9087,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "auth unconditionally assigned before its first read, same shape as :8941 in the sibling function."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 9088,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "non_inherit_ie[] elements are only ever read up to ie_count, which is incremented exactly once per element written (bounded write/read idiom)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 9113,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "tx_conf = tx_bss->conf; every initialized hapd structurally has a non-null conf, an invariant sqc can't see across the helper call."
+  },
+  {
+   "rule": "INT33-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 9121,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "elem_count is structurally >=1 here: the mirrored counting pass (hostapd_eid_mbssid_len) increments *elem_count on every loop iteration this code also executes."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 9199,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "hapd_probed internal-only API param, always valid at hostapd_eid_mbssid's callers."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 9199,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "end is never dereferenced anywhere in the function body; unused param."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 9199,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "known_bss is intentionally optional-by-design (same as hostapd_eid_mbssid_len)."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 9199,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "rnr_eid IS folded into the `add_rnr = ... && rnr_eid && ...` guard at :9221-9223 before any use."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 9199,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "rnr_count IS covered by the same add_rnr guard before dereference."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 9199,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "rnr_offset IS covered by the same add_rnr guard before dereference."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 9206,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "cur_len's initial `=0` is always overwritten by a later `cur_len=0` (in-loop or post-loop) before ever being read via &cur_len; harmless but genuinely dead."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 9210,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hapd = hostapd_mbssid_get_tx_bss(...) never returns NULL, same as :9020/:9085."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 9249,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "rnr_offset is guarded by the same-function `add_rnr` check (:9221-9223) before this array access, an earlier-guard the rule misses."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 9249,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "rnr_count likewise guarded by add_rnr before this dereference."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/ieee802_11.c",
+   "line": 9269,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Final `rnr_eid = hostapd_eid_rnr_colocation(...)` is never read again; the function returns `eid`, a different variable, so this assignment is genuinely dead."
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "src/ap/ieee802_11.c#part3of3 (lines ~6860-9276 reviewed; no additional missed CERT-C violations found beyond the adjudicated findings)"
+ ],
+ "summary": {
+  "tp": 18,
+  "fp": 99,
+  "fn": 0
+ }
+}

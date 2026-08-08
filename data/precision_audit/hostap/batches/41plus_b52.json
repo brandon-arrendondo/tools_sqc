@@ -1,0 +1,1354 @@
+{
+ "src/ap/wpa_auth.c#part1of4": [
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.c",
+   "line": 15,
+   "message": "Header file 'ieee802_11_defs.h' has the same first 8 characters (case-insensitive) as 'ieee802_11.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_defs.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.c",
+   "line": 33,
+   "message": "Header file 'wpa_auth.h' has the same first 8 characters (case-insensitive) as 'wpa_auth_i.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'wpa_auth.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.c",
+   "line": 33,
+   "message": "Header file 'wpa_auth.h' has the same first 8 characters (case-insensitive) as 'wpa_auth_ie.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'wpa_auth.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.c",
+   "line": 35,
+   "message": "Header file 'wpa_auth_i.h' has the same first 8 characters (case-insensitive) as 'wpa_auth_ie.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'wpa_auth_i.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.c",
+   "line": 62,
+   "message": "Function has pointer parameter without size argument: 'static int wpa_derive_ptk(struct wpa_state_machine *sm, const u8 *snonce,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *key_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/wpa_auth.c",
+   "line": 130,
+   "message": "Potential null pointer dereference in member access of variable 'partner_group'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'partner_group' is not NULL before member access"
+  },
+  {
+   "column": 57,
+   "file": "src/ap/wpa_auth.c",
+   "line": 138,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 31,
+   "file": "src/ap/wpa_auth.c",
+   "line": 169,
+   "message": "Pointer to const assigned to non-const pointer without cast: *ctx = data: '*ctx = data'",
+   "rule_id": "EXP40-C",
+   "severity": "Low",
+   "suggestion": "Either remove const qualifier if the object should be modifiable, or use explicit casts to show intentional const removal"
+  },
+  {
+   "column": 31,
+   "file": "src/ap/wpa_auth.c",
+   "line": 206,
+   "message": "Pointer to const assigned to non-const pointer without cast: *ctx = data: '*ctx = data'",
+   "rule_id": "EXP40-C",
+   "severity": "Low",
+   "suggestion": "Either remove const qualifier if the object should be modifiable, or use explicit casts to show intentional const removal"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.c",
+   "line": 220,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 27,
+   "file": "src/ap/wpa_auth.c",
+   "line": 241,
+   "message": "Pointer parameter 'wpa_auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_auth'"
+  },
+  {
+   "column": 27,
+   "file": "src/ap/wpa_auth.c",
+   "line": 250,
+   "message": "Pointer parameter 'wpa_auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_auth'"
+  },
+  {
+   "column": 64,
+   "file": "src/ap/wpa_auth.c",
+   "line": 257,
+   "message": "Pointer parameter 'wpa_auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_auth'"
+  },
+  {
+   "column": 63,
+   "file": "src/ap/wpa_auth.c",
+   "line": 266,
+   "message": "Pointer parameter 'wpa_auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_auth'"
+  },
+  {
+   "column": 68,
+   "file": "src/ap/wpa_auth.c",
+   "line": 275,
+   "message": "Pointer parameter 'wpa_auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_auth'"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/wpa_auth.c",
+   "line": 279,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 61,
+   "file": "src/ap/wpa_auth.c",
+   "line": 288,
+   "message": "Pointer parameter 'wpa_auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_auth'"
+  },
+  {
+   "column": 61,
+   "file": "src/ap/wpa_auth.c",
+   "line": 297,
+   "message": "Pointer parameter 'wpa_auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_auth'"
+  },
+  {
+   "column": 69,
+   "file": "src/ap/wpa_auth.c",
+   "line": 311,
+   "message": "Pointer parameter 'wpa_auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_auth'"
+  },
+  {
+   "column": 64,
+   "file": "src/ap/wpa_auth.c",
+   "line": 324,
+   "message": "Pointer parameter 'wpa_auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_auth'"
+  },
+  {
+   "column": 46,
+   "file": "src/ap/wpa_auth.c",
+   "line": 361,
+   "message": "Pointer parameter 'wpa_auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_auth'"
+  },
+  {
+   "column": 64,
+   "file": "src/ap/wpa_auth.c",
+   "line": 372,
+   "message": "Pointer parameter 'wpa_auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_auth'"
+  },
+  {
+   "column": 67,
+   "file": "src/ap/wpa_auth.c",
+   "line": 382,
+   "message": "Pointer parameter 'wpa_auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_auth'"
+  },
+  {
+   "column": 52,
+   "file": "src/ap/wpa_auth.c",
+   "line": 401,
+   "message": "Pointer parameter 'wpa_auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_auth'"
+  },
+  {
+   "column": 53,
+   "file": "src/ap/wpa_auth.c",
+   "line": 411,
+   "message": "Pointer parameter 'wpa_auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_auth'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.c",
+   "line": 421,
+   "message": "Function 'wpa_auth_store_ptksa' does not validate pointer parameter 'wpa_auth' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_auth' at the start of the function, e.g., 'if (!wpa_auth) { return error_code; }'"
+  },
+  {
+   "column": 52,
+   "file": "src/ap/wpa_auth.c",
+   "line": 421,
+   "message": "Pointer parameter 'wpa_auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_auth'"
+  },
+  {
+   "column": 60,
+   "file": "src/ap/wpa_auth.c",
+   "line": 431,
+   "message": "Pointer parameter 'wpa_auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_auth'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.c",
+   "line": 439,
+   "message": "Function 'wpa_auth_logger' does not validate pointer parameter 'addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'addr' at the start of the function, e.g., 'if (!addr) { return error_code; }'"
+  },
+  {
+   "column": 47,
+   "file": "src/ap/wpa_auth.c",
+   "line": 439,
+   "message": "Pointer parameter 'wpa_auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_auth'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.c",
+   "line": 448,
+   "message": "Function 'wpa_auth_vlogger' does not validate pointer parameter 'addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'addr' at the start of the function, e.g., 'if (!addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.c",
+   "line": 448,
+   "message": "Function 'wpa_auth_vlogger' does not validate pointer parameter 'fmt' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'fmt' at the start of the function, e.g., 'if (!fmt) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.c",
+   "line": 448,
+   "message": "Function 'wpa_auth_vlogger' should be declared static if it doesn't need external linkage",
+   "rule_id": "DCL15-C",
+   "severity": "Low",
+   "suggestion": "Add 'static' storage-class specifier: static void wpa_auth_vlogger"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.c",
+   "line": 448,
+   "message": "Function 'wpa_auth_vlogger' is only used within this file. It should be declared static to minimize scope.",
+   "rule_id": "DCL19-C",
+   "severity": "Low",
+   "suggestion": "Add 'static' storage class to function 'wpa_auth_vlogger'"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wpa_auth.c",
+   "line": 464,
+   "message": "Return value of 'vsnprintf' ignored: 'vsnprintf(format, maxlen, fmt, ap)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  },
+  {
+   "column": 57,
+   "file": "src/ap/wpa_auth.c",
+   "line": 473,
+   "message": "Pointer parameter 'wpa_auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_auth'"
+  },
+  {
+   "column": 54,
+   "file": "src/ap/wpa_auth.c",
+   "line": 485,
+   "message": "Pointer parameter 'wpa_auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_auth'"
+  },
+  {
+   "column": 58,
+   "file": "src/ap/wpa_auth.c",
+   "line": 495,
+   "message": "Pointer parameter 'wpa_auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_auth'"
+  },
+  {
+   "column": 49,
+   "file": "src/ap/wpa_auth.c",
+   "line": 504,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 49,
+   "file": "src/ap/wpa_auth.c",
+   "line": 512,
+   "message": "Hard-coded sensitive information detected passed to `wpa_auth_logger`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"GMK rekeyd\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 48,
+   "file": "src/ap/wpa_auth.c",
+   "line": 528,
+   "message": "Hard-coded sensitive information detected passed to `wpa_auth_logger`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"rekeying GTK\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 3,
+   "file": "src/ap/wpa_auth.c",
+   "line": 544,
+   "message": "Local variable 'next' assigned to global/static variable 'group' - creates dangling pointer",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage for local variable or copy data instead of assigning pointer"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/wpa_auth.c",
+   "line": 562,
+   "message": "Local variable 'next' assigned to global/static variable 'group' - creates dangling pointer",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage for local variable or copy data instead of assigning pointer"
+  },
+  {
+   "column": 49,
+   "file": "src/ap/wpa_auth.c",
+   "line": 594,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/wpa_auth.c",
+   "line": 637,
+   "message": "Hard-coded sensitive information detected passed to `wpa_auth_logger`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"rekeying PTK\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 71,
+   "file": "src/ap/wpa_auth.c",
+   "line": 657,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 68,
+   "file": "src/ap/wpa_auth.c",
+   "line": 679,
+   "message": "Pointer parameter 'wpa_auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_auth'"
+  },
+  {
+   "column": 25,
+   "file": "src/ap/wpa_auth.c",
+   "line": 680,
+   "message": "Pointer parameter 'group' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *group'"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wpa_auth.c",
+   "line": 682,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/wpa_auth.c",
+   "line": 682,
+   "message": "Scaled integer arithmetic with pointer: 'ETH_ALEN + 8 + sizeof(unsigned long)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 29,
+   "file": "src/ap/wpa_auth.c",
+   "line": 708,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Key Counter\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wpa_auth.c",
+   "line": 757,
+   "message": "Function returns pointer to local variable 'group' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 56,
+   "file": "src/ap/wpa_auth.c",
+   "line": 761,
+   "message": "Pointer parameter 'wpa_auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_auth'"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/wpa_auth.c",
+   "line": 834,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 15,
+   "file": "src/ap/wpa_auth.c",
+   "line": 874,
+   "message": "Signed integer addition 'WPA_GET_BE32(conf->ip_addr_end) -\n\t\t\tWPA_GET_BE32(conf->ip_addr_start) + 1' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.c",
+   "line": 894,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.c",
+   "line": 907,
+   "message": "Function 'wpa_init_keys' does not validate pointer parameter 'wpa_auth' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_auth' at the start of the function, e.g., 'if (!wpa_auth) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.c",
+   "line": 937,
+   "message": "Function 'wpa_deinit' does not validate pointer parameter 'wpa_auth' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_auth' at the start of the function, e.g., 'if (!wpa_auth) { return error_code; }'"
+  },
+  {
+   "column": 35,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1000,
+   "message": "sizeof applied to pointer/array parameter 'conf' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*conf)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1021,
+   "message": "Function 'wpa_auth_sta_init' does not validate pointer parameter 'addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'addr' at the start of the function, e.g., 'if (!addr) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1044,
+   "message": "Function returns pointer to local variable 'sm' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1049,
+   "message": "Function 'wpa_store_eppke_pmk_ptk_sm' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1049,
+   "message": "Function 'wpa_store_eppke_pmk_ptk_sm' does not validate pointer parameter 'pmk' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pmk' at the start of the function, e.g., 'if (!pmk) { return error_code; }'"
+  },
+  {
+   "column": 33,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1103,
+   "message": "sizeof applied to pointer/array parameter 'sm' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(sm->key_replay)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 4,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1109,
+   "message": "Hard-coded sensitive information detected passed to `wpa_auth_logger`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"start authentication\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 6,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1113,
+   "message": "Testing 'wpa_sm_step(sm)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: wpa_sm_step(sm) != 0"
+  },
+  {
+   "column": 5,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1119,
+   "message": "Hard-coded sensitive information detected passed to `wpa_auth_logger`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Skip EAPOL for 4-way handshake offload case\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 21,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1182,
+   "message": "sizeof applied to pointer/array parameter 'sm' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*sm)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 67,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1252,
+   "message": "Pointer parameter 'ctr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctr'"
+  },
+  {
+   "column": 57,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1282,
+   "message": "Pointer parameter 'wpa_auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_auth'"
+  },
+  {
+   "column": 37,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1284,
+   "message": "Pointer parameter 'kde' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *kde'"
+  },
+  {
+   "column": 5,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1342,
+   "message": "Hard-coded sensitive information detected passed to `wpa_auth_logger`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"PMKR1Name mismatch in FT 4-way handshake\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 5,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1393,
+   "message": "Hard-coded sensitive information detected passed to `wpa_auth_logger`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"ignore Michael MIC failure report since group cipher is not TKIP\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 5,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1396,
+   "message": "Hard-coded sensitive information detected passed to `wpa_auth_logger`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"ignore Michael MIC failure report since pairwise cipher is not TKIP\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1422,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1423,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1485,
+   "message": "Variable 'key_len' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'key_len' before use, e.g., at its declaration"
+  },
+  {
+   "column": 68,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1503,
+   "message": "Pointer parameter 'wpa_auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_auth'"
+  },
+  {
+   "column": 5,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1532,
+   "message": "Hard-coded sensitive information detected passed to `wpa_auth_logger`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"advertised support for AES-128-CMAC, but did not use it\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 5,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1542,
+   "message": "Hard-coded sensitive information detected passed to `wpa_auth_logger`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"did not use HMAC-SHA1-AES with CCMP/GCMP\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 5,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1550,
+   "message": "Hard-coded sensitive information detected passed to `wpa_auth_logger`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"did not use EAPOL-Key descriptor version 0 as required for AKM-defined cases\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 5,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1568,
+   "message": "Hard-coded sensitive information detected passed to `wpa_auth_logger`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"received EAPOL-Key request with replayed counter\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 6,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1605,
+   "message": "Hard-coded sensitive information detected passed to `wpa_auth_vlogger`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Process SNonce update from STA based on retransmitted EAPOL-Key 1/4\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 6,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1626,
+   "message": "Hard-coded sensitive information detected passed to `wpa_auth_vlogger`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Try to process received EAPOL-Key 4/4 based on old Replay Counter and SNonce from an earlier EAPOL-Key 1/4\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 21,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1678,
+   "message": "Dereference of uninitialized pointer 'key'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'key' before dereferencing"
+  },
+  {
+   "column": 24,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1680,
+   "message": "Dereference of uninitialized pointer 'hdr'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'hdr' before dereferencing"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1685,
+   "message": "Do not cast away const qualification: '(struct ieee802_1x_hdr *) data'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1685,
+   "message": "Casting from char * (alignment 1) to struct ieee802_1x_hdr * (alignment 4) may cause alignment issues",
+   "rule_id": "EXP36-C",
+   "severity": "Low",
+   "suggestion": "Use memcpy or ensure proper alignment before casting"
+  },
+  {
+   "column": 24,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1700,
+   "message": "Scaled integer arithmetic with pointer: 'data_len - sizeof(*hdr)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1704,
+   "message": "Scaled integer arithmetic with pointer: 'data_len - sizeof(*hdr)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 10,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1716,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1901,
+   "message": "Hard-coded sensitive information detected passed to `wpa_auth_logger`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"received EAPOL-Key with invalid MIC\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 6,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1915,
+   "message": "Hard-coded sensitive information detected passed to `wpa_auth_logger`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"received EAPOL-Key with invalid MIC\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 6,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1936,
+   "message": "Hard-coded sensitive information detected passed to `wpa_auth_logger`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"received EAPOL-Key request without Secure=1\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 6,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1946,
+   "message": "Hard-coded sensitive information detected passed to `wpa_auth_logger`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"received EAPOL-Key request with invalid MIC\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 6,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1958,
+   "message": "Hard-coded sensitive information detected passed to `wpa_auth_logger`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"received EAPOL-Key Request for new 4-Way Handshake\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 6,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1963,
+   "message": "Hard-coded sensitive information detected passed to `wpa_auth_logger`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"received EAPOL-Key Request for GTK rekeying\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 7,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1989,
+   "message": "sizeof applied to pointer/array parameter 'sm' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(sm->key_replay)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 7,
+   "file": "src/ap/wpa_auth.c",
+   "line": 1992,
+   "message": "sizeof applied to pointer/array parameter 'sm' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(sm->prev_key_replay)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 53,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2021,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2024,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2024,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 5,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2076,
+   "message": "Hard-coded sensitive information detected passed to `wpa_auth_logger`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Ignore EAPOL-Key timeout while waiting for RADIUS PSK\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 4,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2082,
+   "message": "Hard-coded sensitive information detected passed to `wpa_auth_logger`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"EAPOL-Key timeout\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2088,
+   "message": "Function '__wpa_send_eapol' does not validate pointer parameter 'wpa_auth' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_auth' at the start of the function, e.g., 'if (!wpa_auth) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2088,
+   "message": "Function '__wpa_send_eapol' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2088,
+   "message": "Function '__wpa_send_eapol' does not validate integer parameter 'kde_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'kde_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2088,
+   "message": "Function '__wpa_send_eapol' does not validate integer parameter 'keyidx' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'keyidx' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2088,
+   "message": "Reserved identifier '__wpa_send_eapol' should not be used as function name",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Use a non-reserved function name"
+  },
+  {
+   "column": 21,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2106,
+   "message": "Dereference of uninitialized pointer 'key'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'key' before dereferencing"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2140,
+   "message": "Signed integer compound addition 'key_data_len += pad_len + 8' may overflow without checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2143,
+   "message": "Unsigned integer compound addition 'len += key_data_len' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2145,
+   "message": "Unsigned integer compound addition 'len += AES_BLOCK_SIZE' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 29,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2152,
+   "message": "Unsigned integer subtraction 'len  - sizeof(*hdr)' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 13,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2155,
+   "message": "Unsigned integer addition '((u8 *) (hdr + 1)) + keyhdrlen' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }"
+  },
+  {
+   "column": 15,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2163,
+   "message": "Shift operation on signed integer 'keyidx' may be used for arithmetic optimization (use explicit arithmetic instead)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use explicit arithmetic operations like * or / instead of shift operations on signed integers"
+  },
+  {
+   "column": 13,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2202,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 10,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2203,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 30,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2206,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Plaintext EAPOL-Key Key Data\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 9,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2225,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2231,
+   "message": "Local variable 'buf' assigned to global/static variable 'pos' - creates dangling pointer",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage for local variable or copy data instead of assigning pointer"
+  },
+  {
+   "column": 5,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2239,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Plaintext EAPOL-Key Key Data (+ padding)\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 11,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2247,
+   "message": "Signed integer subtraction 'key_data_len - 8' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b < 0 && a > INT_MAX + b) || (b > 0 && a < INT_MIN + b)) { /* handle error */ }"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2276,
+   "message": "Double-free: 'key_data_len' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 6,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2283,
+   "message": "Hard-coded sensitive information detected passed to `wpa_auth_logger`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"PTK not valid when sending EAPOL-Key frame\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 4,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2284,
+   "message": "Double-free: 'hdr' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 7,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2288,
+   "message": "Use-after-free: passing freed pointer 'hdr' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 7,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2288,
+   "message": "Use-after-free: passing freed pointer 'len' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 4,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2291,
+   "message": "Double-free: 'hdr' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 6,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2300,
+   "message": "Hard-coded sensitive information detected passed to `wpa_auth_logger`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"Corrupting group EAPOL-Key Key MIC\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2307,
+   "message": "Use-after-free: passing freed pointer 'hdr' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2307,
+   "message": "Use-after-free: passing freed pointer 'len' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2308,
+   "message": "Use-after-free: passing freed pointer 'hdr' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2308,
+   "message": "Use-after-free: passing freed pointer 'len' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 60,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2314,
+   "message": "Pointer parameter 'wpa_auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_auth'"
+  },
+  {
+   "column": 72,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2381,
+   "message": "Pointer parameter 'PTK' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *PTK'"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2388,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 24,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2391,
+   "message": "Dereference of uninitialized pointer 'hdr'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'hdr' before dereferencing"
+  },
+  {
+   "column": 39,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2391,
+   "message": "Dereference of uninitialized pointer 'key'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'key' before dereferencing"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2394,
+   "message": "Do not cast away const qualification: '(struct ieee802_1x_hdr *) data'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2394,
+   "message": "Casting from char * (alignment 1) to struct ieee802_1x_hdr * (alignment 4) may cause alignment issues",
+   "rule_id": "EXP36-C",
+   "severity": "Low",
+   "suggestion": "Use memcpy or ensure proper alignment before casting"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2410,
+   "message": "Function 'wpa_remove_ptk' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 25,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2413,
+   "message": "sizeof applied to pointer/array parameter 'sm' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(sm->PTK)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2442,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 25,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2456,
+   "message": "sizeof applied to pointer/array parameter 'sm' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(sm->PMK)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 27,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2459,
+   "message": "sizeof applied to pointer/array parameter 'sm' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(sm->xxkey)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 28,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2461,
+   "message": "sizeof applied to pointer/array parameter 'sm' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(sm->pmk_r1)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2465,
+   "message": "Unreachable code after unconditional 'break'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2479,
+   "message": "Testing 'wpa_sm_step(sm)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: wpa_sm_step(sm) != 0"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wpa_auth.c",
+   "line": 2524,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  }
+ ]
+}

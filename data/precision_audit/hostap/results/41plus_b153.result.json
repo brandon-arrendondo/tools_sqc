@@ -1,0 +1,1213 @@
+{
+ "labels": [
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 19,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "PRE08-C header-family first-8-char collision convention: literally true, low-value TP per established disposition."
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 19,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Same PRE08-C header-collision convention (ieee802_1x.h vs ieee802_11.h)."
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 24,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Same PRE08-C header-collision convention (eapol_auth_sm.h vs eapol_auth_sm_i.h)."
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 30,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Same PRE08-C header-collision convention (wpa_auth.h vs wpa_auth_kay.h)."
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 38,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Same PRE08-C header-collision convention (ieee802_11.h vs ieee802_1x.h)."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 59,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*xhdr) is a non-evaluating context, not a dereference; xhdr set at line 67 before real use."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 134,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C no-final-else guard-clause pedantry: deliberate mutually exclusive if/else-if with no remaining case."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 148,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sta IS modified: os_get_reltime(&sta->connected_time) writes through the pointer; DCL13-C missed the mutation."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 165,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tmp_sta assigned in its own for-loop init clause before any use; declaration-line-flagged-as-a-use misfire."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 166,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "link assigned immediately after declaration before any read; same declaration-flagged-as-use misfire."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 200,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-only-API default: hapd/sta always valid at call sites (post-association state)."
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 226,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "key_len is WEP-key-length, config-bounded (<=~32); sizeof(*key)+key_len cannot realistically wrap."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 226,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*key) is non-evaluating; key set at line 232 before use."
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 227,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len already computed bounded (sizeof(*key)+key_len); sizeof(*hdr)+len cannot wrap in practice."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 227,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*hdr) is non-evaluating; hdr set at line 231 before use."
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 284,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT30-C mislabels pointer arithmetic (ekey is u8*) as unsigned-integer addition; established pointer-mistyped-INT30 class."
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 297,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len already bounded from prior computation; sizeof(*hdr)+len cannot wrap."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 343,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free(NULL) is safe (wraps free()); ikey may be NULL only via the !ikey branch, established os_free(NULL)-is-safe class."
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 347,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC41-C hexdump-title misfire: \"Individual WEP key\" is a descriptive label argument to wpa_hexdump_key, not embedded secret data."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 372,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal static helper; hapd only read (hapd->eapol_auth), never modified through the pointer."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 388,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-only-API default; radius_sta_rate always called with a valid sta from add_common_radius_sta_attr."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 388,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hapd parameter is entirely unused in radius_sta_rate's body; genuine (trivial) const opportunity."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 388,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "sta only read (sta->supported_rates[]), never modified."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 393,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sta invariant non-null: radius_sta_rate is only called from add_common_radius_sta_attr guarded by its own sta usage; caller-guaranteed."
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 427,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sm->identity reassigned at line 426 (dup_binstr) before this read; MEM30-C reassign-clears-freed-state struct-field variant."
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 434,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same reassignment: line 434 reads the fresh post-dup_binstr sm->identity, not the freed one."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 439,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal helper; hapd only read."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 441,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal helper; sta only read (sta->wpa_sm)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 447,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sta invariant non-null in add_common_radius_sta_attr_rsn (called only with sta guarded by caller wpa && sta->wpa_sm)."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 515,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sta invariant non-null in add_common_radius_sta_attr, same caller-guard chain as other sta accesses in this function."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 530,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT14-C misattributes the bitwise op (sta->supported_rates[i] & 0x7f) to base identifier 'sta' rather than the array element."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 535,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT14-C fires on a call to a same-named function (radius_sta_rate(...) & 1) -- not a variable at all."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 535,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT14-C misattributes the bitwise op (applied to the function-call result) to the unrelated 'hapd' argument."
+  },
+  {
+   "rule": "DCL22-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 603,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL22-C volatile suggestion on an ordinary local int with no setjmp/signal-handler context; established no-context FP class."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 637,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ssid_len is config-bounded to SSID_MAX_LEN=32 (src/utils/common.h); combined with the fixed MAC-string prefix this never approaches buf[128]."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 676,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/wpabuf_len are pure accessors with no side effects; established pure-accessor-args EXP30-C class."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 688,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sta guarded by callers (`if (sta && add_sqlite_radius_attr(...))`, both call sites in ieee802_1x.c and accounting.c)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 688,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal helper; hapd only read (hapd->rad_attr_db)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 688,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal helper; sta only read to format addrtxt."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 693,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "addrtxt[3 * ETH_ALEN] is a fixed compile-time-constant size (18 bytes), not a VLA."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 700,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sta invariant non-null: ieee802_1x_encapsulate_radius dereferences sta->eapol_sm unconditionally at line 750, before this use."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 713,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*hdr) inside a struct member decl area is non-evaluating; not an uninitialized read."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 725,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/wpabuf_len pure-accessor-args misfire, same class as index 35."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 745,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-only-API default; eap always sourced from a caller-validated buffer."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 769,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto fail; targets the fail: label at line 916 which calls radius_msg_free(msg); MEM31-C goto-target-frees-it FP class."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 779,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same fail: label frees msg; goto-target-blindness FP."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 796,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same fail: label frees msg."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 801,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same fail: label frees msg."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 814,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same fail: label frees msg."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 835,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same fail: label frees msg."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 848,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same fail: label frees msg."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 851,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sta invariant non-null (unconditional dereference at line 750 before this use)."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 857,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT14-C conflates bitwise-on-*pos (dereferenced value) with pointer arithmetic pos+1; base-identifier/deref misattribution."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 857,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pos = wpabuf_head_u8(sta->hs20_ie) immediately preceded by wpabuf_len(sta->hs20_ie) > 0 guard, guaranteeing a non-NULL head pointer."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 870,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same fail: label frees msg."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 875,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/wpabuf_len pure-accessor-args misfire."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 881,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same fail: label frees msg."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 894,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same fail: label frees msg."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 905,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same fail: label frees msg."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 914,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "radius_client_send() takes ownership of msg (adds it to its own retransmission queue per its documented contract); not a leak on the success return."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 916,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fail: is a goto target reached from many goto fail; sites above, not fallthrough from the preceding return; goto-label-blindness MSC07-C class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 923,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain static helper; sta only read (sta->eapol_sm pointer value copied into sm, sta's own fields never written)."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 934,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*eap) is the correct dereference-then-sizeof idiom, not a decayed-pointer sizeof; ARR01-C category error."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 941,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "be_to_host16/eap_server_get_name are pure functions; extends the pure-accessor-args EXP30-C class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 956,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain static helper; sta only read."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 966,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*eap) correct idiom, same as index 62."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1012,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "buf only cast/read in handle_eap, never written through."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1017,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No sizeof at this line; eap = (struct eap_hdr *) buf; is a cast followed only by reads via eap-> after the length guard, not an uninitialized dereference."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1035,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C no-final-else pedantry: eap_len<sizeof / >len / <len chain deliberately leaves the eap_len==len case as a no-op."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1041,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C no-default pedantry: switch on eap->code deliberately ignores unhandled codes."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1052,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-only-API default; hapd/sta always valid (association-time call)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1053,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain exported helper; hapd only read (hapd->eapol_auth)."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1077,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*sta->pending_eapol_rx) is the correct dereference-then-sizeof idiom on a struct-member pointer, not a decayed array/pointer param."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1094,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain static helper (ieee802_1x_check_encryption); sta only read."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1152,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*hdr) is non-evaluating; not a real dereference of an uninitialized pointer."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1157,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr is only ever read after the cast (hdr->version, hdr->type, hdr->length); read-only const-cast-away overlay, established EXP05-C FP class."
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1206,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ieee802_1x_check_encryption returns bool; `!func(...)` is the standard, unambiguous idiom for testing a boolean result, not an unclear integer convention."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1294,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Line 1294 is a case label (IEEE802_1X_TYPE_EAPOL_LOGOFF) reached normally via switch dispatch, not unreachable code after the preceding case's break."
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1315,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "The EAPOL_ENCAPSULATED_ASF_ALERT case has its own break; at line 1318 before the next (ifdef-gated) case; no actual fallthrough."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1495,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hapd is entirely unused in ieee802_1x_free_station's body."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1521,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "sta only read (sta->eapol_sm, sta->addr) in ieee802_1x_decapsulate_radius; sm (a separate object) is what gets modified."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1550,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*hdr) is non-evaluating context, not a dereference."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1584,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sqc miscalculates the index: buf[64] declared at line 1526, buf[sizeof(buf)-1] = buf[63], in-bounds; the '127'/'size 64' figures in the message are internally inconsistent (cross-function buffer-size conflation)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1597,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain helper; hapd only read."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1598,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain helper; sta only read."
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1616,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC41-C hexdump-title misfire: \"MS-MPPE-Send-Key\" is a descriptive label argument, not the secret key material itself (passed separately as keys->send)."
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1618,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same MSC41-C hexdump-title misfire for \"MS-MPPE-Recv-Key\"."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1634,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "keys passed only for %p-style diagnostic printing inside a debug wpa_printf; established %p-NULL-is-not-a-dereference EXP34-C class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1660,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain helper; hapd only read."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1661,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain helper; sta only read (sta->eapol_sm, sta->addr)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1716,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain helper (ieee802_1x_update_sta_cui); sta only read (sta->eapol_sm)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1747,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain helper; hapd only read."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1748,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain helper; sta only read (sta->eapol_sm)."
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1783,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Guarded immediately above by `if (len < 3) return;`; len-3 cannot underflow -- already-validated-upstream-in-the-same-function INT30-C class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1808,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain helper (ieee802_1x_hs20_session_info); pos only read."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1851,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain helper (ieee802_1x_hs20_t_c_filtering); pos only read."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1863,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hapd entirely unused in ieee802_1x_hs20_t_c_url's body."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1871,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta->t_c_url is allocated with os_malloc(len + 1) two lines above; t_c_url[len] is exactly the last valid index (size len+1)."
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1871,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same allocation-tied-to-len relationship; index is provably in-bounds, not unvalidated."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1912,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C no-default pedantry: switch on WFA VSA subtype deliberately ignores unrecognized subtypes."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1938,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ieee802_1x_sta_key_available matches the ap_for_each_sta callback typedef (int(*)(struct hostapd_data*, struct sta_info*, void*)), registered at line 2286; dispatch-contract class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 1939,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Same ap_for_each_sta dispatch-contract class as index 100 (registered as ieee802_1x_select_radius_identifier at line 1961)."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2017,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C paired-pointer+size_t idiom (shared_secret/shared_secret_len); established categorical FP."
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2019,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Neither *hapd nor data is const-qualified anywhere; EXP40-C phantom cast-away-const on an ordinary void*-to-typed-pointer assignment."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2028,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "radius_msg_get_hdr() returns msg->hdr, populated unconditionally at message-construction time; never NULL for a message reaching this RadiusRxResult callback."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2061,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "termination_action IS read later at line 2102-2103 (`if (session_timeout_set && termination_action == ...)`); MSC13-C dead-store claim factually wrong."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2121,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Line 2121 is the RADIUS_CODE_ACCESS_REJECT case label reached via normal switch dispatch, not unreachable code after the prior case's break."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2177,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-only-API default; hapd always valid at all call sites of ieee802_1x_abort_auth."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2177,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-only-API default; sta always valid, and sm=sta->eapol_sm is checked which already implies sta itself is non-null upstream."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2210,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain helper (ieee802_1x_rekey_broadcast); hapd only read."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2236,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ieee802_1x_sta_key_available's hapd/ctx params match the ap_for_each_sta callback contract; same dispatch-contract class as index 100."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2237,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Same ap_for_each_sta dispatch-contract class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2247,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ieee802_1x_rekey(void *eloop_ctx, void *timeout_ctx) matches eloop_timeout_handler; timeout_ctx is unused entirely, registered via eloop_register_timeout at line 2289; established eloop dispatch-contract FP class."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2297,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C paired-pointer+size_t idiom (data/datalen in ieee802_1x_eapol_send)."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2297,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C paired-pointer+size_t idiom, second parameter of same signature."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2328,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C paired-pointer+size_t idiom (data/datalen in ieee802_1x_aaa_send)."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2328,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C paired-pointer+size_t idiom, second parameter."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2355,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C paired-pointer+size_t idiom (password/password_len-style pair in ieee802_1x_get_eap_user)."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2368,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*user) is the correct dereference-then-sizeof idiom on a struct pointer parameter, not decayed-pointer sizeof."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2475,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ieee802_1x_eapol_event(void *ctx, void *sta_ctx, enum eapol_event) matches the eapol_auth_cb.eapol_event dispatch-contract typedef, assigned at line 2578."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2475,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same eapol_auth_cb.eapol_event dispatch-contract class as index 119."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2481,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C no-default pedantry: switch on hdr->code is exhaustive by construction -- hdr->code was already validated to be one of ACCESS_ACCEPT/REJECT/CHALLENGE at lines 2042-2047, making any default unreachable."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2503,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "erp is a dl_list-owned heap node (added via dl_list_add elsewhere), not local automatic storage; dl_list-for-each-heap-pointer DCL30-C FP class."
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2521,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Recursion in ieee802_1x_init is depth-bounded to at most one level: it only recurses on the first BSS of an MLD group, whose own hostapd_mld_is_first_bss() check is true, terminating immediately -- no stack-blowup risk."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2618,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-only-API default; hapd always valid, ieee802_1x_erp_flush is only called from ieee802_1x_deinit(hapd) with a valid hapd."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2624,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "The while ((erp = dl_list_first(...)) != NULL) condition itself is the NULL guard before erp->list is dereferenced in the loop body; established self-guard EXP34-C class."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2657,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-only-API default; hapd always valid."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2657,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-only-API default; buf is the driver-reported TX'd frame, always a valid pointer when ack-status is delivered."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2667,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*hdr) is non-evaluating; hdr assigned before any real dereference."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2670,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hdr/pos are only ever read after the cast (os_memcmp, WPA_GET_BE16); read-only cast-away-const overlay, same as index 75."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2684,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-only-API default; called only from ieee802_1x_tx_status (same file) and driver TX-status glue with an always-valid hapd."
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2689,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf + sizeof(*xhdr) is ordinary single byte-offset pointer arithmetic on a u8*, not double-scaled; established byte-pointer-single-scaling ARR39-C FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2694,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR/be_to_host16 are pure accessors with no side effects; pure-accessor-args EXP30-C class."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2727,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT14-C misattributes the bitwise ops on key->key_index (a struct member) to the base identifier 'key', and the flagged 'arithmetic' is pos+sizeof(*key) where key only appears inside sizeof."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2727,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*key) is non-evaluating; key assigned at line 2728 before real use."
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2728,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/key are only ever read after the cast (key->key_index); read-only cast-away-const overlay."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2749,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain exported getter (ieee802_1x_get_identity); sm only read."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2759,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain exported getter (ieee802_1x_get_radius_class); sm only read."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2771,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain exported getter (ieee802_1x_get_radius_cui); sm only read."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2779,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain exported getter (ieee802_1x_get_key); sm only read."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2791,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain exported getter (ieee802_1x_get_session_id); sm only read."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2840,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hapd is entirely unused in the ieee802_1x_get_mib stub (`/* TODO */ return 0;`)."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2840,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C paired-pointer+size_t idiom (buf/buflen)."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2840,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "buf is likewise entirely unused in the ieee802_1x_get_mib stub."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2847,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-only-API default; buflen comes from an internal MIB-dump caller's own fixed buffer, not attacker-controlled wire input."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2847,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hapd is entirely unused anywhere in ieee802_1x_get_mib_sta's body."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2848,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C paired-pointer+size_t idiom (buf/buflen) in ieee802_1x_get_mib_sta."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2848,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "buf IS modified: repeatedly written via os_snprintf(buf + len, buflen - len, ...) throughout the function; DCL13-C missed the offset-pointer mutation (alias-blindness class)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2874,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bool_txt() calls are pure (no side effects); pure-accessor-args EXP30-C class."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/ap/ieee802_1x.c",
+   "line": 2874,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_snprintf is a plain variadic printf-style function with no restrict-qualified parameters at all; EXP43-C non-restrict-callee category error."
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "src/ap/ieee802_1x.c"
+ ],
+ "summary": {
+  "tp": 38,
+  "fp": 112,
+  "fn": 0
+ }
+}

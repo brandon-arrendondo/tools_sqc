@@ -1,0 +1,685 @@
+{
+  "labels": [
+    {
+      "rule": "ERR07-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 81,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "atoi(pos+8) parses config string, no strtol/range check -- literal-rule TP per audit default"
+    },
+    {
+      "rule": "ERR34-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 81,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "atoi(pos+8) parses config string, no strtol/range check -- literal-rule TP per audit default"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 101,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "deliberate guard-clause chain (default already set/no-op needed); FP class per categorical_patterns.md"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 113,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "deliberate guard-clause chain (default already set/no-op needed); FP class per categorical_patterns.md"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 126,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "deliberate guard-clause chain (default already set/no-op needed); FP class per categorical_patterns.md"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 138,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "deliberate guard-clause chain (default already set/no-op needed); FP class per categorical_patterns.md"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 151,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*data) before os_zalloc assignment is not a runtime deref -- established sizeof(*ptr) FP class"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 180,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "data = os_zalloc(...); heap storage, not automatic/local -- DCL30-C heap-vs-stack FP class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 206,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*data) inside the bin_clear_free(data,...) call itself, not a runtime deref of freed data"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 234,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "msg is from eap_msg_alloc() (heap), not local automatic storage"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 238,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "plain internal helper eap_peap_get_isk; data param genuinely never mutated -- low-value TP"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 329,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "eap_tlv_add_cryptobinding: sm param never referenced in body -- low-value TP"
+    },
+    {
+      "rule": "ARR30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 391,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "'len' is a scalar size_t (len=6; len+=60), not a buffer/array -- category error"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 407,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "msg is from eap_msg_alloc() (heap), not local automatic storage"
+    },
+    {
+      "rule": "DCL22-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 417,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "single-threaded eloop code, no signal handler/setjmp/ISR context requiring volatile"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 472,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "peap_phase2_sufficient: plain internal helper, sm/data never mutated -- low-value TP"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 473,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "peap_phase2_sufficient: plain internal helper, sm/data never mutated -- low-value TP"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 517,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "bitwise op is on *pos (dereferenced byte), misattributed to pointer variable pos itself"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 576,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "deliberate guard-clause chain (default already set/no-op needed); FP class per categorical_patterns.md"
+    },
+    {
+      "rule": "CON43-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 650,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "single-threaded eloop dispatch, no concurrent writer -- no real double-fetch race"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 781,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "config from eap_get_config(sm) unguarded at same call-site shape in eap_fast.c/eap_ttls.c external-cert-check paths -- internal invariant, config set for duration of active phase2/cert-check"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 830,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "deliberate guard-clause chain (default already set/no-op needed); FP class per categorical_patterns.md"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 864,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "nmsg is aliased into in_decrypted at line 878 (in_decrypted = nmsg) and freed via that alias later -- free-tracker misses reassignment/aliasing"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 870,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "nhdr = wpabuf_put(nmsg, sizeof(*nhdr)) -- sizeof(*nhdr) is not a deref, nhdr assigned same statement"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 887,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "nmsg was reassigned into in_decrypted (line 878) before this return; in_decrypted is freed on this path -- aliasing missed"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 896,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "nmsg was reassigned into in_decrypted (line 878) before this return; in_decrypted is freed on this path -- aliasing missed"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 915,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "nmsg was reassigned into in_decrypted (line 878) before this return; in_decrypted is freed on this path -- aliasing missed"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 932,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "nmsg was reassigned into in_decrypted (line 878) before this return; in_decrypted is freed on this path -- aliasing missed"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 944,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "nmsg was reassigned into in_decrypted (line 878) before this return; in_decrypted is freed on this path -- aliasing missed"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 948,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "resp reused across mutually-exclusive switch cases (EAP_CODE_SUCCESS/FAILURE), freed once at line 1014 -- mutually-exclusive-branch confusion"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 950,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "rhdr = wpabuf_put(resp, sizeof(*rhdr)) -- sizeof(*rhdr) is not a deref, rhdr assigned same statement"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 973,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "mislabeled: the wpabuf_alloc() on this line assigns to 'resp' not 'rmsg'; resp is freed at line 1014"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1017,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "'nmsg' freed via in_decrypted alias earlier; 'rmsg' is never itself wpabuf_alloc'd -- it aliases resp (freed at :1014) or a stack wpabuf 'buf'"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1017,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "'nmsg' freed via in_decrypted alias earlier; 'rmsg' is never itself wpabuf_alloc'd -- it aliases resp (freed at :1014) or a stack wpabuf 'buf'"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1073,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "config from eap_get_config(sm) unguarded at same call-site shape in eap_fast.c/eap_ttls.c external-cert-check paths -- internal invariant, config set for duration of active phase2/cert-check"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1080,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "resp is a heap wpabuf* from eap_peap_decrypt/eap_peer_tls_process_helper, not local automatic storage"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1108,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "resp is a heap wpabuf* from eap_peap_decrypt/eap_peer_tls_process_helper, not local automatic storage"
+    },
+    {
+      "rule": "STR31-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1122,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_tls13_context[1] is a single-byte TLS 1.3 context value, not a NUL-terminated string buffer"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1140,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peap_free_key(data) at :1128 frees only data->key_data sub-field, not data itself -- 'free'-named-helper misattribution class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1140,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peap_free_key(data) at :1128 frees only data->key_data sub-field, not data itself -- 'free'-named-helper misattribution class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1144,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peap_free_key(data) at :1128 frees only data->key_data sub-field, not data itself -- 'free'-named-helper misattribution class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1152,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peap_free_key(data) at :1128 frees only data->key_data sub-field, not data itself -- 'free'-named-helper misattribution class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1152,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peap_free_key(data) at :1128 frees only data->key_data sub-field, not data itself -- 'free'-named-helper misattribution class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1152,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peap_free_key(data) at :1128 frees only data->key_data sub-field, not data itself -- 'free'-named-helper misattribution class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1156,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peap_free_key(data) at :1128 frees only data->key_data sub-field, not data itself -- 'free'-named-helper misattribution class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1157,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peap_free_key(data) at :1128 frees only data->key_data sub-field, not data itself -- 'free'-named-helper misattribution class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1159,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peap_free_key(data) at :1128 frees only data->key_data sub-field, not data itself -- 'free'-named-helper misattribution class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1163,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peap_free_key(data) at :1128 frees only data->key_data sub-field, not data itself -- 'free'-named-helper misattribution class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1163,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peap_free_key(data) at :1128 frees only data->key_data sub-field, not data itself -- 'free'-named-helper misattribution class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1173,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peap_free_key(data) at :1128 frees only data->key_data sub-field, not data itself -- 'free'-named-helper misattribution class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1173,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peap_free_key(data) at :1128 frees only data->key_data sub-field, not data itself -- 'free'-named-helper misattribution class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1173,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peap_free_key(data) at :1128 frees only data->key_data sub-field, not data itself -- 'free'-named-helper misattribution class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1173,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peap_free_key(data) at :1128 frees only data->key_data sub-field, not data itself -- 'free'-named-helper misattribution class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1175,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peap_free_key(data) at :1128 frees only data->key_data sub-field, not data itself -- 'free'-named-helper misattribution class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1175,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peap_free_key(data) at :1128 frees only data->key_data sub-field, not data itself -- 'free'-named-helper misattribution class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1176,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peap_free_key(data) at :1128 frees only data->key_data sub-field, not data itself -- 'free'-named-helper misattribution class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1177,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peap_free_key(data) at :1128 frees only data->key_data sub-field, not data itself -- 'free'-named-helper misattribution class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1177,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peap_free_key(data) at :1128 frees only data->key_data sub-field, not data itself -- 'free'-named-helper misattribution class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1179,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peap_free_key(data) at :1128 frees only data->key_data sub-field, not data itself -- 'free'-named-helper misattribution class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1179,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peap_free_key(data) at :1128 frees only data->key_data sub-field, not data itself -- 'free'-named-helper misattribution class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1185,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peap_free_key(data) at :1128 frees only data->key_data sub-field, not data itself -- 'free'-named-helper misattribution class"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1228,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "resp is a heap wpabuf* returned from eap_peap_decrypt/eap_peer_tls_process_helper, not local automatic storage"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1232,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peap_has_reauth_data assigned to eap->has_reauth_data vtable slot -- fixed dispatch-contract signature"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1232,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peap_has_reauth_data assigned to eap->has_reauth_data vtable slot -- fixed dispatch-contract signature"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1263,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "os_free(data) here is the only free of the whole struct on this path; eap_peap_free_key(data) at :1259 only frees the key_data sub-field -- misattributed as an earlier free"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1275,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "priv is a function parameter (void*), not a local variable at all, and points to heap storage"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1275,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "the only os_free(data) on this path is at :1263, inside a mutually-exclusive early-return branch that never reaches this return"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1279,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf+buflen is the idiomatic ptr+size_t pair -- established API05-C FP class"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1279,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "buf+buflen is the idiomatic ptr+size_t pair -- established API05-C FP class"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1299,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peap_isKeyAvailable assigned to eap->isKeyAvailable vtable slot -- fixed dispatch-contract signature"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1299,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peap_isKeyAvailable assigned to eap->isKeyAvailable vtable slot -- fixed dispatch-contract signature"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1306,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peap_getKey assigned to eap->getKey vtable slot -- fixed dispatch-contract signature"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1306,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "u8*/size_t* getKey idiom -- established API05-C FP class"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1306,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peap_getKey assigned to eap->getKey vtable slot -- fixed dispatch-contract signature"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1341,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "key = os_malloc(...) is heap storage, not local automatic storage"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1345,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peap_get_emsk assigned to eap->get_emsk vtable slot -- fixed dispatch-contract signature"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1345,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "u8*/size_t* get_emsk idiom -- established API05-C FP class"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1345,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peap_get_emsk assigned to eap->get_emsk vtable slot -- fixed dispatch-contract signature"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1364,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "key = os_memdup(...) is heap storage, not local automatic storage"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1368,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peap_get_session_id assigned to eap->getSessionId vtable slot -- fixed dispatch-contract signature"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1368,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "u8*/size_t* get_session_id idiom -- established API05-C FP class"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1368,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap_peap_get_session_id assigned to eap->getSessionId vtable slot -- fixed dispatch-contract signature"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1382,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "id = os_memdup(...) is heap storage, not local automatic storage"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/eap_peer/eap_peap.c",
+      "line": 1390,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "eap ownership transferred to eap_peer_method_register(eap) -- established method-register ownership-transfer FP class"
+    }
+  ],
+  "fns": [],
+  "files_clean_for_fn": [
+    "src/eap_peer/eap_peap.c"
+  ],
+  "summary": {
+    "tp": 6,
+    "fp": 78,
+    "fn": 0
+  }
+}

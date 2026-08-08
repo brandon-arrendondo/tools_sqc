@@ -1,0 +1,688 @@
+{
+ "wpa_supplicant/p2p_supplicant_sd.c": [
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 32,
+   "message": "Recursive function can cause excessive stack allocation",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Consider iterative approach or limit recursion depth"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 35,
+   "message": "Pointer comparison '<' between pointers from different arrays: 'param:spos' and 'param:end'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before comparison"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 36,
+   "message": "Variable 'spos' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 51,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:spos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 18,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 58,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:spos' and 'param:start'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 15,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 65,
+   "message": "Scaled integer arithmetic with pointer: 'start + offset'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 77,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:spos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 17,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 84,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:uend' and 'param:upos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 89,
+   "message": "Pointer dereference '*upos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 39,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 102,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 39,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 102,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 107,
+   "message": "string/character literal contains a non-ASCII byte (>= 0x80) -- not portable across locales/national ASCII variants",
+   "rule_id": "MSC09-C",
+   "severity": "Low",
+   "suggestion": "Restrict string and character literals to the portable ASCII subset (letters, digits, space, and basic punctuation)"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 110,
+   "message": "Value assigned to 'ret' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 140,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 140,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'upos' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 141,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'upos' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 159,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 161,
+   "message": "Function returns pointer to local variable 'bsrv' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 177,
+   "message": "Function returns pointer to local variable 'usrv' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 249,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 55,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 261,
+   "message": "Pointer parameter 'bsrv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bsrv'"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 328,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 51,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 477,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 55,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 532,
+   "message": "Pointer parameter 'adv_data' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *adv_data'"
+  },
+  {
+   "column": 51,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 557,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 11,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 580,
+   "message": "Subscript operation 'svc[svc_len]' on non-array pointer 'svc'. Subscript notation implies array access",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Only use subscript notation on array pointers, not pointers to single objects"
+  },
+  {
+   "column": 15,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 581,
+   "message": "Increment/decrement operation 'info++' on non-array pointer 'info'",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Use array indexing or ensure pointer refers to an array"
+  },
+  {
+   "column": 17,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 592,
+   "message": "Subscript operation 'svc[svc_len - 1]' on non-array pointer 'svc'. Subscript notation implies array access",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Only use subscript notation on array pointers, not pointers to single objects"
+  },
+  {
+   "column": 11,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 628,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 11,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 682,
+   "message": "Array declaration 'q[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 689,
+   "message": "Function 'wpas_sd_request' does not validate pointer parameter 'sa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sa' at the start of the function, e.g., 'if (!sa) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 689,
+   "message": "Function 'wpas_sd_request' does not validate pointer parameter 'tlvs' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'tlvs' at the start of the function, e.g., 'if (!tlvs) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 689,
+   "message": "Function 'wpas_sd_request' does not validate integer parameter 'tlvs_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'tlvs_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 27,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 689,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 779,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 824,
+   "message": "Pointer comparison '<' between pointers from different arrays: 'param:pos' and 'param:tlv_end'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before comparison"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 830,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:tlv_end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 22,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 833,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:tlv_end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 847,
+   "message": "Potentially unsafe array access with variable index 'svc_len': Buffer 'svc_str' with size 256 (allocated at line 822)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 33,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 858,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:tlv_end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 888,
+   "message": "Function 'wpas_sd_response' does not validate pointer parameter 'sa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sa' at the start of the function, e.g., 'if (!sa) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 888,
+   "message": "Function 'wpas_sd_response' does not validate pointer parameter 'tlvs' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'tlvs' at the start of the function, e.g., 'if (!tlvs) { return error_code; }'"
+  },
+  {
+   "column": 28,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 888,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 47,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 958,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 967,
+   "message": "Function 'wpas_p2p_sd_request_upnp' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 967,
+   "message": "Function 'wpas_p2p_sd_request_upnp' does not validate pointer parameter 'dst' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dst' at the start of the function, e.g., 'if (!dst) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 967,
+   "message": "Function 'wpas_p2p_sd_request_upnp' does not validate pointer parameter 'query' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'query' at the start of the function, e.g., 'if (!query) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 987,
+   "message": "Function 'wpas_p2p_sd_request_asp' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 987,
+   "message": "Function 'wpas_p2p_sd_request_asp' does not validate pointer parameter 'dst' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dst' at the start of the function, e.g., 'if (!dst) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 987,
+   "message": "Function 'wpas_p2p_sd_request_asp' does not validate pointer parameter 'svc_str' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'svc_str' at the start of the function, e.g., 'if (!svc_str) { return error_code; }'"
+  },
+  {
+   "column": 58,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 1022,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 1049,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 1049,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 1066,
+   "message": "Function 'wpas_p2p_sd_request_wifi_display' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 1066,
+   "message": "Function 'wpas_p2p_sd_request_wifi_display' does not validate pointer parameter 'dst' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dst' at the start of the function, e.g., 'if (!dst) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 1066,
+   "message": "Function 'wpas_p2p_sd_request_wifi_display' does not validate pointer parameter 'role' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'role' at the start of the function, e.g., 'if (!role) { return error_code; }'"
+  },
+  {
+   "column": 54,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 1100,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 49,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 1109,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 1120,
+   "message": "Function 'wpas_p2p_sd_service_update' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 55,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 1120,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 1144,
+   "message": "Function 'wpas_p2p_service_flush' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 59,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 1162,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 1174,
+   "message": "Function 'wpas_p2p_service_del_asp' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 1185,
+   "message": "Function 'wpas_p2p_service_add_asp' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 1202,
+   "message": "Function 'wpas_p2p_service_flush_asp' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 55,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 1202,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 1208,
+   "message": "Function 'wpas_p2p_service_add_bonjour' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 1213,
+   "message": "Dereference of uninitialized pointer 'bsrv'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'bsrv' before dereferencing"
+  },
+  {
+   "column": 16,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 1216,
+   "message": "Memory allocated with 'wpabuf_dup' for variable 'bsrv->query' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(bsrv->query)' before the variable goes out of scope"
+  },
+  {
+   "column": 15,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 1219,
+   "message": "Memory allocated with 'wpabuf_dup' for variable 'bsrv->resp' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(bsrv->resp)' before the variable goes out of scope"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 1227,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 1235,
+   "message": "Function 'wpas_p2p_service_del_bonjour' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 1235,
+   "message": "Function 'wpas_p2p_service_del_bonjour' does not validate pointer parameter 'query' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'query' at the start of the function, e.g., 'if (!query) { return error_code; }'"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 1256,
+   "message": "Dereference of uninitialized pointer 'usrv'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'usrv' before dereferencing"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 1272,
+   "message": "Function 'wpas_p2p_service_del_upnp' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/p2p_supplicant_sd.c",
+   "line": 1272,
+   "message": "Function 'wpas_p2p_service_del_upnp' does not validate pointer parameter 'service' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'service' at the start of the function, e.g., 'if (!service) { return error_code; }'"
+  }
+ ]
+}

@@ -1,0 +1,1354 @@
+{
+ "wpa_supplicant/wpa_supplicant.c#part1of3": [
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 143,
+   "message": "Function 'wpa_set_wep_keys' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 143,
+   "message": "Function 'wpa_set_wep_keys' does not validate pointer parameter 'ssid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ssid' at the start of the function, e.g., 'if (!ssid) { return error_code; }'"
+  },
+  {
+   "column": 68,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 143,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 165,
+   "message": "Function 'wpa_supplicant_set_wpa_none_key' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 25,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 166,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 58,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 223,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 275,
+   "message": "Function 'wpas_auth_timeout_restart' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 275,
+   "message": "Function 'wpas_auth_timeout_restart' does not validate integer parameter 'sec_diff' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'sec_diff' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 406,
+   "message": "Function 'wpa_supplicant_set_non_wpa_policy' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 28,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 407,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 441,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 29,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 494,
+   "message": "Variable 'prev' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'prev' before use, e.g., at its declaration"
+  },
+  {
+   "column": 16,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 506,
+   "message": "Potential null pointer dereference in member access of variable 'req'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'req' is not NULL before member access"
+  },
+  {
+   "column": 70,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 513,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 518,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 552,
+   "message": "Function returns pointer to local variable 'attr' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 53,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 557,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 586,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 58,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 596,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 16,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 614,
+   "message": "Potential null pointer dereference in member access of variable 'dso'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'dso' is not NULL before member access"
+  },
+  {
+   "column": 16,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 691,
+   "message": "Use-after-free: accessing freed pointer 'wpa_s->wpa'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 824,
+   "message": "Double free detected: 'wpa_s' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate free_bss_tmp_disallowed() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 17,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 840,
+   "message": "Potential null pointer dereference in member access of variable 'entry'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'entry' is not NULL before member access"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1016,
+   "message": "Function 'wpa_supplicant_start_autoscan' participates in indirect recursion: wpa_supplicant_start_autoscan -> autoscan_init -> request_scan -> wpa_supplicant_req_sched_scan -> wpa_supplicant_set_state -> wpa_supplicant_start_autoscan",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to eliminate the recursion cycle"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1029,
+   "message": "Function 'wpa_supplicant_reinit_autoscan' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 59,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1039,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1139,
+   "message": "Function 'wpa_supplicant_set_state' participates in indirect recursion: wpa_supplicant_set_state -> wpa_supplicant_start_autoscan -> autoscan_init -> request_scan -> wpa_supplicant_req_sched_scan -> wpa_supplicant_set_state",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to eliminate the recursion cycle"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1147,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1159,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1194,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1261,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1281,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1330,
+   "message": "Function 'wpa_supplicant_terminate_proc' does not validate pointer parameter 'global' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'global' at the start of the function, e.g., 'if (!global) { return error_code; }'"
+  },
+  {
+   "column": 54,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1330,
+   "message": "Pointer parameter 'global' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *global'"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1337,
+   "message": "Testing 'wpas_wps_terminate_pending(wpa_s)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: wpas_wps_terminate_pending(wpa_s) != 0"
+  },
+  {
+   "column": 45,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1544,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1556,
+   "message": "Function 'wpas_set_mgmt_group_cipher' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1556,
+   "message": "Function 'wpas_set_mgmt_group_cipher' does not validate pointer parameter 'ssid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ssid' at the start of the function, e.g., 'if (!ssid) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1556,
+   "message": "Function 'wpas_set_mgmt_group_cipher' does not validate pointer parameter 'ie' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ie' at the start of the function, e.g., 'if (!ie) { return error_code; }'"
+  },
+  {
+   "column": 47,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1557,
+   "message": "Pointer parameter 'ie' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ie'"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1570,
+   "message": "Bitwise operator '&' used on signed operand 'sel' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'sel' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1574,
+   "message": "Bitwise operator '&' used on signed operand 'sel' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'sel' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1578,
+   "message": "Bitwise operator '&' used on signed operand 'sel' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'sel' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1582,
+   "message": "Bitwise operator '&' used on signed operand 'sel' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'sel' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 22,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1608,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 44,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1608,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 32,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1612,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"PSK (set in config)\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 32,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1625,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"PSK (from passphrase)\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1635,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1651,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1652,
+   "message": "Potentially unsafe array access with variable index 'wpabuf_len(pw)': Buffer 'pw_str' with size 65 (allocated at line 1635)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1666,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"PSK (from external passphrase)\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 33,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1678,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"PSK (from external PSK)\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1689,
+   "message": "Double-free: 'pw' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1867,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 43,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1873,
+   "message": "Signed integer addition '2 + bss_rsn[1]' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 34,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1874,
+   "message": "Signed integer addition '2 + bss_rsn[1]' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 43,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1885,
+   "message": "Signed integer addition '2 + bss_wpa[1]' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 34,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1886,
+   "message": "Signed integer addition '2 + bss_wpa[1]' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 17,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1969,
+   "message": "Signed integer addition '2 + bss_wpa[1]' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 17,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1971,
+   "message": "Signed integer addition '2 + bss_rsn[1]' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 17,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1973,
+   "message": "Signed integer addition '2 + bss_rsnx[1]' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 15,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1975,
+   "message": "Signed integer addition '2 + rsnoe[1]' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 18,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1977,
+   "message": "Signed integer addition '2 + rsno2e[1]' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 17,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 1979,
+   "message": "Signed integer addition '2 + rsnxoe[1]' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 14,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2033,
+   "message": "Bitwise operator '&' used on signed operand 'sel' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'sel' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2049,
+   "message": "Bitwise operator '&' used on signed operand 'sel' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'sel' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2055,
+   "message": "Bitwise operator '&' used on signed operand 'sel' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'sel' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2061,
+   "message": "Bitwise operator '&' used on signed operand 'sel' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'sel' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2068,
+   "message": "Bitwise operator '&' used on signed operand 'sel' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'sel' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2072,
+   "message": "Bitwise operator '&' used on signed operand 'sel' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'sel' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2076,
+   "message": "Bitwise operator '&' used on signed operand 'sel' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'sel' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2080,
+   "message": "Bitwise operator '&' used on signed operand 'sel' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'sel' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 14,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2085,
+   "message": "Bitwise operator '&' used on signed operand 'sel' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'sel' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2099,
+   "message": "Bitwise operator '&' used on signed operand 'sel' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'sel' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2104,
+   "message": "Bitwise operator '&' used on signed operand 'sel' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'sel' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2108,
+   "message": "Bitwise operator '&' used on signed operand 'sel' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'sel' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2111,
+   "message": "Bitwise operator '&' used on signed operand 'sel' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'sel' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2114,
+   "message": "Bitwise operator '&' used on signed operand 'sel' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'sel' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2119,
+   "message": "Bitwise operator '&' used on signed operand 'sel' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'sel' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2123,
+   "message": "Bitwise operator '&' used on signed operand 'sel' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'sel' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2127,
+   "message": "Bitwise operator '&' used on signed operand 'sel' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'sel' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2131,
+   "message": "Bitwise operator '&' used on signed operand 'sel' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'sel' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2134,
+   "message": "Bitwise operator '&' used on signed operand 'sel' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'sel' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2137,
+   "message": "Bitwise operator '&' used on signed operand 'sel' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'sel' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2141,
+   "message": "Bitwise operator '&' used on signed operand 'sel' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'sel' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 28,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2377,
+   "message": "Hard-coded sensitive information detected passed to `wpas_auth_failed`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"NO_PSK_AVAILABLE\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2420,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2438,
+   "message": "Unreachable code after unconditional 'break'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2516,
+   "message": "Function 'wpas_build_ext_capab' does not validate pointer parameter 'bss' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'bss' at the start of the function, e.g., 'if (!bss) { return error_code; }'"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2519,
+   "message": "Pointer to const assigned to non-const pointer without cast: *pos = buf: '*pos = buf'",
+   "rule_id": "EXP40-C",
+   "severity": "Low",
+   "suggestion": "Either remove const qualifier if the object should be modifiable, or use explicit casts to show intentional const removal"
+  },
+  {
+   "column": 21,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2553,
+   "message": "Pointer parameter 'test_bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *test_bss'"
+  },
+  {
+   "column": 50,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2566,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 23,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2567,
+   "message": "Pointer parameter 'test_ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *test_ssid'"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2592,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2614,
+   "message": "Function 'wpas_update_random_addr' does not validate pointer parameter 'ssid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ssid' at the start of the function, e.g., 'if (!ssid) { return error_code; }'"
+  },
+  {
+   "column": 24,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2616,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2631,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2708,
+   "message": "Array declaration 'default_groups[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2709,
+   "message": "Sensitive buffer 'password' not cleared before function exit",
+   "rule_id": "MEM03-C",
+   "severity": "Medium",
+   "suggestion": "Call SecureZeroMemory(password, size) or memset(password, 0, size) before the buffer goes out of scope"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2711,
+   "message": "Sensitive buffer 'password_id' not cleared before function exit",
+   "rule_id": "MEM03-C",
+   "severity": "Medium",
+   "suggestion": "Call SecureZeroMemory(password_id, size) or memset(password_id, 0, size) before the buffer goes out of scope"
+  },
+  {
+   "column": 39,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2711,
+   "message": "Potential null pointer dereference in member access of variable 'ssid'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'ssid' is not NULL before member access"
+  },
+  {
+   "column": 22,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2740,
+   "message": "Division or modulo by 'ids->num' without checking for zero",
+   "rule_id": "INT33-C",
+   "severity": "High",
+   "suggestion": "Check if 'ids->num' is not zero before division"
+  },
+  {
+   "column": 23,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2741,
+   "message": "Potentially unsafe array access with variable index 'idx': Buffer 'buf' with size 30 (allocated at line 9713)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2842,
+   "message": "Potential null pointer dereference in member access of variable 'ssid'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'ssid' is not NULL before member access"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2871,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 2891,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 27,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3002,
+   "message": "Dereference of uninitialized pointer 'cwork'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'cwork' before dereferencing"
+  },
+  {
+   "column": 39,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3016,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 51,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3023,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 70,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3065,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 56,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3084,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 56,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3140,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3154,
+   "message": "Array subscript uses function parameter 'ieee80211_mode' without bounds checking. Caller could pass invalid index.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Add bounds checking for 'ieee80211_mode' before using it as an array index"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3154,
+   "message": "Potentially unsafe array access with unvalidated function parameter index 'ieee80211_mode'",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking for function parameter before using as array index."
+  },
+  {
+   "column": 57,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3161,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3173,
+   "message": "Array subscript uses function parameter 'ieee80211_mode' without bounds checking. Caller could pass invalid index.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Add bounds checking for 'ieee80211_mode' before using it as an array index"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3173,
+   "message": "Potentially unsafe array access with unvalidated function parameter index 'ieee80211_mode'",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking for function parameter before using as array index."
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3190,
+   "message": "Array declaration 'ht40plus_5ghz[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3194,
+   "message": "Array declaration 'ht40plus_6ghz[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3205,
+   "message": "Loop uses uninitialized variable 'chan_idx' as bound for array access. This has indeterminate value and can cause out-of-bounds access.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize 'chan_idx' to a valid value before using it in the loop"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3326,
+   "message": "Function 'ibss_mesh_select_80_160mhz' performs compound operation on shared static variables (bw160, bw320, bw80) without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 62,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3326,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3331,
+   "message": "Array declaration 'bw80[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3336,
+   "message": "Array declaration 'bw160[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3340,
+   "message": "Array declaration 'bw320[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3420,
+   "message": "Array subscript uses function parameter 'ieee80211_mode' without bounds checking. Caller could pass invalid index.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Add bounds checking for 'ieee80211_mode' before using it as an array index"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3443,
+   "message": "Array subscript uses function parameter 'ieee80211_mode' without bounds checking. Caller could pass invalid index.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Add bounds checking for 'ieee80211_mode' before using it as an array index"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3497,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3502,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3517,
+   "message": "Array subscript uses function parameter 'ieee80211_mode' without bounds checking. Caller could pass invalid index.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Add bounds checking for 'ieee80211_mode' before using it as an array index"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3518,
+   "message": "Array subscript uses function parameter 'ieee80211_mode' without bounds checking. Caller could pass invalid index.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Add bounds checking for 'ieee80211_mode' before using it as an array index"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3529,
+   "message": "Function 'ibss_mesh_setup_freq' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3605,
+   "message": "Unsigned subtraction 'ie_buf_len - ie_len' without guard assumes non-negative result",
+   "rule_id": "INT00-C",
+   "severity": "Medium",
+   "suggestion": "Add a guard: if (a >= b) before unsigned subtraction a - b"
+  },
+  {
+   "column": 18,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3632,
+   "message": "string/character literal contains a non-ASCII byte (>= 0x80) -- not portable across locales/national ASCII variants",
+   "rule_id": "MSC09-C",
+   "severity": "Low",
+   "suggestion": "Restrict string and character literals to the portable ASCII subset (letters, digits, space, and basic punctuation)"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3663,
+   "message": "Function 'wpa_is_fils_supported' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 49,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3663,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3672,
+   "message": "Function 'wpa_is_fils_sk_pfs_supported' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3672,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 56,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3672,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3698,
+   "message": "Out-of-bounds array access at index 1: Buffer 'wfa_capa' with size 1 (allocated at line 3712)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 38,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3698,
+   "message": "Out-of-bounds array access at index 6: Buffer 'wfa_capa' with size 1 (allocated at line 3712)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3699,
+   "message": "Out-of-bounds array access at index 7: Buffer 'wfa_capa' with size 1 (allocated at line 3712)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3708,
+   "message": "Function 'wpas_populate_wfa_capa' does not validate integer parameter 'wpa_ie_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'wpa_ie_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3709,
+   "message": "Pointer parameter 'wpa_ie' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_ie'"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3712,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3796,
+   "message": "Unsigned integer compound addition 'max_wpa_ie_len += 3 + 2 * ETH_ALEN + 6 + wpabuf_len(req->pkt) +\n\t\t\t\t  2 + 2 * wpabuf_len(req->pkt) / 255' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3925,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3958,
+   "message": "Unsigned integer subtraction 'max_wpa_ie_len - wpa_ie_len' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/wpa_supplicant.c",
+   "line": 3962,
+   "message": "Unsigned integer compound addition 'wpa_ie_len += res' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  }
+ ]
+}

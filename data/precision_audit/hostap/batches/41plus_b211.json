@@ -1,0 +1,769 @@
+{
+ "src/p2p/p2p_group.c": [
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_group.c",
+   "line": 12,
+   "message": "Header file 'ieee802_11_defs.h' has the same first 8 characters (case-insensitive) as 'ieee802_11_common.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_defs.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_group.c",
+   "line": 46,
+   "message": "Function 'p2p_group_init' does not validate pointer parameter 'p2p' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'p2p' at the start of the function, e.g., 'if (!p2p) { return error_code; }'"
+  },
+  {
+   "column": 27,
+   "file": "src/p2p/p2p_group.c",
+   "line": 51,
+   "message": "Dereference of uninitialized pointer 'group'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'group' before dereferencing"
+  },
+  {
+   "column": 11,
+   "file": "src/p2p/p2p_group.c",
+   "line": 55,
+   "message": "Function 'os_realloc_array' called with overlapping memory regions. If parameters are restrict-qualified, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure memory regions do not overlap when using restrict pointers"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_group.c",
+   "line": 71,
+   "message": "Function returns pointer to local variable 'group' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 5,
+   "file": "src/p2p/p2p_group.c",
+   "line": 103,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_group.c",
+   "line": 108,
+   "message": "Loop uses uninitialized variable 'g' as bound for array access. This has indeterminate value and can cause out-of-bounds access.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize 'g' to a valid value before using it in the loop"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_group.c",
+   "line": 123,
+   "message": "Double-free: 'group' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 72,
+   "file": "src/p2p/p2p_group.c",
+   "line": 127,
+   "message": "Pointer parameter 'm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *m'"
+  },
+  {
+   "column": 55,
+   "file": "src/p2p/p2p_group.c",
+   "line": 137,
+   "message": "Pointer parameter 'group' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *group'"
+  },
+  {
+   "column": 5,
+   "file": "src/p2p/p2p_group.c",
+   "line": 166,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "src/p2p/p2p_group.c",
+   "line": 181,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_group.c",
+   "line": 204,
+   "message": "Function returns pointer to local variable 'ie' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_group.c",
+   "line": 208,
+   "message": "Function 'p2p_group_build_p2p2_ie' does not validate pointer parameter 'p2p2_ie' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'p2p2_ie' at the start of the function, e.g., 'if (!p2p2_ie) { return error_code; }'"
+  },
+  {
+   "column": 13,
+   "file": "src/p2p/p2p_group.c",
+   "line": 261,
+   "message": "Memory allocated with 'wpabuf_alloc' for variable 'p2p2_ie' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(p2p2_ie)' before the variable goes out of scope"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_group.c",
+   "line": 271,
+   "message": "Function returns pointer to local variable 'ie' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_group.c",
+   "line": 271,
+   "message": "Memory leak: 'p2p2_ie' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'p2p2_ie' before this return statement"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_group.c",
+   "line": 277,
+   "message": "Function 'p2p_group_get_wfd_ie' does not validate pointer parameter 'g' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'g' at the start of the function, e.g., 'if (!g) { return error_code; }'"
+  },
+  {
+   "column": 55,
+   "file": "src/p2p/p2p_group.c",
+   "line": 277,
+   "message": "Pointer parameter 'g' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *g'"
+  },
+  {
+   "column": 5,
+   "file": "src/p2p/p2p_group.c",
+   "line": 288,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_group.c",
+   "line": 309,
+   "message": "Function returns pointer to local variable 'ie' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 33,
+   "file": "src/p2p/p2p_group.c",
+   "line": 314,
+   "message": "Pointer parameter 'm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *m'"
+  },
+  {
+   "column": 43,
+   "file": "src/p2p/p2p_group.c",
+   "line": 382,
+   "message": "Pointer parameter 'group' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *group'"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_group.c",
+   "line": 430,
+   "message": "Function returns pointer to local variable 'wfd_ie' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 46,
+   "file": "src/p2p/p2p_group.c",
+   "line": 442,
+   "message": "Pointer parameter 'group' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *group'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_group.c",
+   "line": 464,
+   "message": "Function 'p2p_group_buf_add_id' does not validate pointer parameter 'group' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'group' at the start of the function, e.g., 'if (!group) { return error_code; }'"
+  },
+  {
+   "column": 44,
+   "file": "src/p2p/p2p_group.c",
+   "line": 464,
+   "message": "Pointer parameter 'group' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *group'"
+  },
+  {
+   "column": 11,
+   "file": "src/p2p/p2p_group.c",
+   "line": 496,
+   "message": "Memory allocated with 'wpabuf_dup' for variable 'extra' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(extra)' before the variable goes out of scope"
+  },
+  {
+   "column": 24,
+   "file": "src/p2p/p2p_group.c",
+   "line": 502,
+   "message": "Memory allocated with 'wpabuf_dup' for variable 'wfd' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(wfd)' before the variable goes out of scope"
+  },
+  {
+   "column": 13,
+   "file": "src/p2p/p2p_group.c",
+   "line": 507,
+   "message": "Memory allocated with 'wpabuf_alloc' for variable 'p2p2_ie' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(p2p2_ie)' before the variable goes out of scope"
+  },
+  {
+   "column": 4,
+   "file": "src/p2p/p2p_group.c",
+   "line": 510,
+   "message": "Memory leak: 'extra' allocated with 'wpabuf_dup' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'extra' before this return statement"
+  },
+  {
+   "column": 4,
+   "file": "src/p2p/p2p_group.c",
+   "line": 510,
+   "message": "Memory leak: 'wfd' allocated with 'wpabuf_dup' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'wfd' before this return statement"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_group.c",
+   "line": 516,
+   "message": "Function returns pointer to local variable 'ie' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_group.c",
+   "line": 516,
+   "message": "Memory leak: 'extra' allocated with 'wpabuf_dup' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'extra' before this return statement"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_group.c",
+   "line": 516,
+   "message": "Memory leak: 'wfd' allocated with 'wpabuf_dup' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'wfd' before this return statement"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_group.c",
+   "line": 516,
+   "message": "Memory leak: 'p2p2_ie' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'p2p2_ie' before this return statement"
+  },
+  {
+   "column": 5,
+   "file": "src/p2p/p2p_group.c",
+   "line": 569,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_group.c",
+   "line": 606,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 5,
+   "file": "src/p2p/p2p_group.c",
+   "line": 614,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_group.c",
+   "line": 640,
+   "message": "Function 'p2p_group_notif_assoc' does not validate pointer parameter 'addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'addr' at the start of the function, e.g., 'if (!addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_group.c",
+   "line": 640,
+   "message": "Function 'p2p_group_notif_assoc' does not validate pointer parameter 'ie' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ie' at the start of the function, e.g., 'if (!ie) { return error_code; }'"
+  },
+  {
+   "column": 5,
+   "file": "src/p2p/p2p_group.c",
+   "line": 645,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 23,
+   "file": "src/p2p/p2p_group.c",
+   "line": 650,
+   "message": "Dereference of uninitialized pointer 'm'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'm' before dereferencing"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_group.c",
+   "line": 684,
+   "message": "Function 'p2p_group_assoc_resp_ie' does not validate pointer parameter 'group' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'group' at the start of the function, e.g., 'if (!group) { return error_code; }'"
+  },
+  {
+   "column": 58,
+   "file": "src/p2p/p2p_group.c",
+   "line": 684,
+   "message": "Pointer parameter 'group' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *group'"
+  },
+  {
+   "column": 13,
+   "file": "src/p2p/p2p_group.c",
+   "line": 726,
+   "message": "Memory allocated with 'wpabuf_alloc' for variable 'p2p2_ie' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(p2p2_ie)' before the variable goes out of scope"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_group.c",
+   "line": 736,
+   "message": "Function returns pointer to local variable 'resp' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_group.c",
+   "line": 736,
+   "message": "Memory leak: 'p2p2_ie' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'p2p2_ie' before this return statement"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_group.c",
+   "line": 740,
+   "message": "Function 'p2p_group_notif_disassoc' does not validate pointer parameter 'group' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'group' at the start of the function, e.g., 'if (!group) { return error_code; }'"
+  },
+  {
+   "column": 62,
+   "file": "src/p2p/p2p_group.c",
+   "line": 766,
+   "message": "Pointer parameter 'm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *m'"
+  },
+  {
+   "column": 6,
+   "file": "src/p2p/p2p_group.c",
+   "line": 786,
+   "message": "Variable 'attr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'attr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 47,
+   "file": "src/p2p/p2p_group.c",
+   "line": 809,
+   "message": "Pointer parameter 'group' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *group'"
+  },
+  {
+   "column": 45,
+   "file": "src/p2p/p2p_group.c",
+   "line": 826,
+   "message": "Pointer parameter 'group' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *group'"
+  },
+  {
+   "column": 5,
+   "file": "src/p2p/p2p_group.c",
+   "line": 853,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_group.c",
+   "line": 861,
+   "message": "Function 'p2p_group_notif_noa' does not validate pointer parameter 'group' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'group' at the start of the function, e.g., 'if (!group) { return error_code; }'"
+  },
+  {
+   "column": 5,
+   "file": "src/p2p/p2p_group.c",
+   "line": 864,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 72,
+   "file": "src/p2p/p2p_group.c",
+   "line": 891,
+   "message": "Pointer parameter 'group' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *group'"
+  },
+  {
+   "column": 4,
+   "file": "src/p2p/p2p_group.c",
+   "line": 898,
+   "message": "Function returns pointer to local variable 'm' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 19,
+   "file": "src/p2p/p2p_group.c",
+   "line": 920,
+   "message": "Pointer parameter 'group' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *group'"
+  },
+  {
+   "column": 4,
+   "file": "src/p2p/p2p_group.c",
+   "line": 926,
+   "message": "Function returns pointer to local variable 'm' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 5,
+   "file": "src/p2p/p2p_group.c",
+   "line": 937,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_group.c",
+   "line": 956,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_group.c",
+   "line": 960,
+   "message": "Function 'p2p_group_go_discover' does not validate pointer parameter 'group' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'group' at the start of the function, e.g., 'if (!group) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_group.c",
+   "line": 960,
+   "message": "Function 'p2p_group_go_discover' does not validate pointer parameter 'dev_id' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dev_id' at the start of the function, e.g., 'if (!dev_id) { return error_code; }'"
+  },
+  {
+   "column": 6,
+   "file": "src/p2p/p2p_group.c",
+   "line": 991,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_group.c",
+   "line": 1006,
+   "message": "Function 'p2p_group_get_interface_addr' does not validate pointer parameter 'group' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'group' at the start of the function, e.g., 'if (!group) { return error_code; }'"
+  },
+  {
+   "column": 58,
+   "file": "src/p2p/p2p_group.c",
+   "line": 1006,
+   "message": "Pointer parameter 'group' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *group'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_group.c",
+   "line": 1012,
+   "message": "Function 'p2p_group_presence_req' does not validate pointer parameter 'client_interface_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'client_interface_addr' at the start of the function, e.g., 'if (!client_interface_addr) { return error_code; }'"
+  },
+  {
+   "column": 57,
+   "file": "src/p2p/p2p_group.c",
+   "line": 1050,
+   "message": "Pointer parameter 'group' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *group'"
+  },
+  {
+   "column": 47,
+   "file": "src/p2p/p2p_group.c",
+   "line": 1059,
+   "message": "Pointer parameter 'group' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *group'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_group.c",
+   "line": 1068,
+   "message": "Function 'p2p_iterate_group_members' does not validate pointer parameter 'group' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'group' at the start of the function, e.g., 'if (!group) { return error_code; }'"
+  },
+  {
+   "column": 55,
+   "file": "src/p2p/p2p_group.c",
+   "line": 1068,
+   "message": "Pointer parameter 'group' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *group'"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_group.c",
+   "line": 1077,
+   "message": "Local variable 'iter' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_group.c",
+   "line": 1086,
+   "message": "Function 'p2p_group_is_client_connected' does not validate pointer parameter 'group' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'group' at the start of the function, e.g., 'if (!group) { return error_code; }'"
+  },
+  {
+   "column": 52,
+   "file": "src/p2p/p2p_group.c",
+   "line": 1086,
+   "message": "Pointer parameter 'group' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *group'"
+  },
+  {
+   "column": 50,
+   "file": "src/p2p/p2p_group.c",
+   "line": 1099,
+   "message": "Pointer parameter 'group' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *group'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_group.c",
+   "line": 1111,
+   "message": "Function 'p2p_group_force_beacon_update_ies' does not validate pointer parameter 'group' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'group' at the start of the function, e.g., 'if (!group) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_group.c",
+   "line": 1118,
+   "message": "Function 'p2p_group_get_freq' does not validate pointer parameter 'group' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'group' at the start of the function, e.g., 'if (!group) { return error_code; }'"
+  },
+  {
+   "column": 41,
+   "file": "src/p2p/p2p_group.c",
+   "line": 1118,
+   "message": "Pointer parameter 'group' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *group'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_group.c",
+   "line": 1124,
+   "message": "Function 'p2p_group_get_config' does not validate pointer parameter 'group' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'group' at the start of the function, e.g., 'if (!group) { return error_code; }'"
+  },
+  {
+   "column": 71,
+   "file": "src/p2p/p2p_group.c",
+   "line": 1124,
+   "message": "Pointer parameter 'group' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *group'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_group.c",
+   "line": 1130,
+   "message": "Function 'p2p_loop_on_all_groups' does not validate pointer parameter 'p2p' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'p2p' at the start of the function, e.g., 'if (!p2p) { return error_code; }'"
+  },
+  {
+   "column": 45,
+   "file": "src/p2p/p2p_group.c",
+   "line": 1130,
+   "message": "Pointer parameter 'p2p' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *p2p'"
+  },
+  {
+   "column": 8,
+   "file": "src/p2p/p2p_group.c",
+   "line": 1138,
+   "message": "Function 'group_callback' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_group.c",
+   "line": 1157,
+   "message": "Function 'p2p_channels_union' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  }
+ ]
+}

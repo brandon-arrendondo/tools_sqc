@@ -1,0 +1,1211 @@
+{
+ "labels": [
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 6792,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos[1] only evaluated after 'pos == NULL ||' short-circuits on the same line; safe guard sqc doesn't recognize (new same-line short-circuit variant of guard-blindness family)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 6800,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char '\\0' assignment idiom (no widening) - confirmed STR34-C FP pattern"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 6807,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "utf8_unescape(inp,in_size,outp,out_size) has no restrict qualifier and unescaping's output index never exceeds input index, so in-place use is standards-safe (EXP43-C only applies to restrict-qualified aliasing, per confirmed pattern)"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 6818,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len&1 parity check then len/=2 arithmetic on the same variable - confirmed INT14-C parity-then-arithmetic FP pattern"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 6821,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tlvs is unconditionally wpabuf_free()'d at line 6830 on every path through the else-branch before any of these later statements execute; not freed here only because it was already freed earlier in the same function"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 6837,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tlvs is unconditionally wpabuf_free()'d at line 6830 on every path through the else-branch before any of these later statements execute; not freed here only because it was already freed earlier in the same function"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 6846,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf() return value IS checked (!=1 / ==1 inline) right at the call site - ERR34-C 'lacks error detection' premise is factually false here"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 6846,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "FIO47-C engine bug: compares the quoted format-string literal itself (always typed Pointer) against the spec's expected type, instead of the actual vararg pointer - self-referential, guaranteed-mismatch bug, fires on every sscanf() numeric conversion"
+  },
+  {
+   "rule": "INT05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 6846,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sscanf() numeric conversion has no errno/ERANGE check on overflow, unlike strtol - literal INT05-C violation, though low severity for local ctrl_iface input"
+  },
+  {
+   "rule": "MSC24-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 6846,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf() is not among the C standard's actually-deprecated/obsolescent functions (gets/asctime/rewind); recommending the non-portable, rarely-implemented Annex K sscanf_s() is not a valid MSC24-C violation"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 6848,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "variable is only used after 'if (sscanf(...) != 1) return -1;' guarantees the sscanf conversion succeeded and wrote through the pointer - extends the output-param EXP33-C FP family to checked-sscanf writes"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 6865,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char '\\0' assignment idiom (no widening) - confirmed STR34-C FP pattern"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 6866,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "atoi(cmd) result checked via 'if (freq == 0) return -1' immediately after - catches non-numeric/garbage input which atoi maps to 0"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 6866,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "atoi(cmd) result checked via 'if (freq == 0) return -1' immediately after - catches non-numeric/garbage input which atoi maps to 0"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 6880,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char '\\0' assignment idiom (no widening) - confirmed STR34-C FP pattern"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 6881,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 6881,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 6884,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len&1 parity check then len/=2 arithmetic on the same variable - confirmed INT14-C parity-then-arithmetic FP pattern"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 6906,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "cmd is validated to be exactly \"0\" or \"1\" via os_strcmp() before atoi() is ever called - narrow enumerated-set check, confirmed atoi FP pattern"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 6906,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "cmd is validated to be exactly \"0\" or \"1\" via os_strcmp() before atoi() is ever called - narrow enumerated-set check, confirmed atoi FP pattern"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 6922,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char '\\0' assignment idiom (no widening) - confirmed STR34-C FP pattern"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 6925,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len&1 parity check then len/=2 arithmetic on the same variable - confirmed INT14-C parity-then-arithmetic FP pattern"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 6964,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char '\\0' assignment idiom (no widening) - confirmed STR34-C FP pattern"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 6981,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed-size local array/buffer sized by compile-time macro constant(s); no getenv/putenv or VLA anywhere in file - confirmed ENV01-C/MEM05-C misfire-on-fixed-array pattern"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 6981,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed-size local array/buffer sized by compile-time macro constant(s); no getenv/putenv or VLA anywhere in file - confirmed ENV01-C/MEM05-C misfire-on-fixed-array pattern"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 6986,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char '\\0' assignment idiom (no widening) - confirmed STR34-C FP pattern"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 6990,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "auto_accept immediately validated via switch(){case NONE/NEW/CLIENT/GROUP_OWNER: break; default: return -1;} - narrow enumerated-set check, confirmed atoi FP pattern"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 6990,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "auto_accept immediately validated via switch(){case NONE/NEW/CLIENT/GROUP_OWNER: break; default: return -1;} - narrow enumerated-set check, confirmed atoi FP pattern"
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 6992,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stacked/grouped case labels (P2PS_SETUP_NONE/NEW/CLIENT/GROUP_OWNER) share one body ending in 'break;' - standard grouped-case-label idiom, not unintentional fallthrough"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7006,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char '\\0' assignment idiom (no widening) - confirmed STR34-C FP pattern"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7009,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf() return value IS checked (!=1 / ==1 inline) right at the call site - ERR34-C 'lacks error detection' premise is factually false here"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7009,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "FIO47-C engine bug: compares the quoted format-string literal itself (always typed Pointer) against the spec's expected type, instead of the actual vararg pointer - self-referential, guaranteed-mismatch bug, fires on every sscanf() numeric conversion"
+  },
+  {
+   "rule": "INT05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7009,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sscanf() numeric conversion has no errno/ERANGE check on overflow, unlike strtol - literal INT05-C violation, though low severity for local ctrl_iface input"
+  },
+  {
+   "rule": "MSC24-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7009,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf() is not among the C standard's actually-deprecated/obsolescent functions (gets/asctime/rewind); recommending the non-portable, rarely-implemented Annex K sscanf_s() is not a valid MSC24-C violation"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7009,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "variable is only used after 'if (sscanf(...) != 1) return -1;' guarantees the sscanf conversion succeeded and wrote through the pointer - extends the output-param EXP33-C FP family to checked-sscanf writes"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7022,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf() return value IS checked (!=1 / ==1 inline) right at the call site - ERR34-C 'lacks error detection' premise is factually false here"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7022,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "FIO47-C engine bug: compares the quoted format-string literal itself (always typed Pointer) against the spec's expected type, instead of the actual vararg pointer - self-referential, guaranteed-mismatch bug, fires on every sscanf() numeric conversion"
+  },
+  {
+   "rule": "INT05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7022,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sscanf() numeric conversion has no errno/ERANGE check on overflow, unlike strtol - literal INT05-C violation, though low severity for local ctrl_iface input"
+  },
+  {
+   "rule": "MSC24-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7022,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf() is not among the C standard's actually-deprecated/obsolescent functions (gets/asctime/rewind); recommending the non-portable, rarely-implemented Annex K sscanf_s() is not a valid MSC24-C violation"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7022,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "variable is only used after 'if (sscanf(...) != 1) return -1;' guarantees the sscanf conversion succeeded and wrote through the pointer - extends the output-param EXP33-C FP family to checked-sscanf writes"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7031,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf() return value IS checked (!=1 / ==1 inline) right at the call site - ERR34-C 'lacks error detection' premise is factually false here"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7031,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "FIO47-C engine bug: compares the quoted format-string literal itself (always typed Pointer) against the spec's expected type, instead of the actual vararg pointer - self-referential, guaranteed-mismatch bug, fires on every sscanf() numeric conversion"
+  },
+  {
+   "rule": "INT05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7031,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sscanf() numeric conversion has no errno/ERANGE check on overflow, unlike strtol - literal INT05-C violation, though low severity for local ctrl_iface input"
+  },
+  {
+   "rule": "MSC24-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7031,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf() is not among the C standard's actually-deprecated/obsolescent functions (gets/asctime/rewind); recommending the non-portable, rarely-implemented Annex K sscanf_s() is not a valid MSC24-C violation"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7034,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "variable is only used after 'if (sscanf(...) != 1) return -1;' guarantees the sscanf conversion succeeded and wrote through the pointer - extends the output-param EXP33-C FP family to checked-sscanf writes"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7052,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char '\\0' assignment idiom (no widening) - confirmed STR34-C FP pattern"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7058,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char '\\0' assignment idiom (no widening) - confirmed STR34-C FP pattern"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7078,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "utf8_unescape(inp,in_size,outp,out_size) has no restrict qualifier and unescaping's output index never exceeds input index, so in-place use is standards-safe (EXP43-C only applies to restrict-qualified aliasing, per confirmed pattern)"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7095,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char '\\0' assignment idiom (no widening) - confirmed STR34-C FP pattern"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7116,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len&1 parity check then len/=2 arithmetic on the same variable - confirmed INT14-C parity-then-arithmetic FP pattern"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7141,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char '\\0' assignment idiom (no widening) - confirmed STR34-C FP pattern"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7159,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf() return value IS checked (!=1 / ==1 inline) right at the call site - ERR34-C 'lacks error detection' premise is factually false here"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7159,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "FIO47-C engine bug: compares the quoted format-string literal itself (always typed Pointer) against the spec's expected type, instead of the actual vararg pointer - self-referential, guaranteed-mismatch bug, fires on every sscanf() numeric conversion"
+  },
+  {
+   "rule": "INT05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7159,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sscanf() numeric conversion has no errno/ERANGE check on overflow, unlike strtol - literal INT05-C violation, though low severity for local ctrl_iface input"
+  },
+  {
+   "rule": "MSC24-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7159,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf() is not among the C standard's actually-deprecated/obsolescent functions (gets/asctime/rewind); recommending the non-portable, rarely-implemented Annex K sscanf_s() is not a valid MSC24-C violation"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7162,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "variable is only used after 'if (sscanf(...) != 1) return -1;' guarantees the sscanf conversion succeeded and wrote through the pointer - extends the output-param EXP33-C FP family to checked-sscanf writes"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7173,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char '\\0' assignment idiom (no widening) - confirmed STR34-C FP pattern"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7193,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char '\\0' assignment idiom (no widening) - confirmed STR34-C FP pattern"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7221,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'_peer' is a block-scope local variable inside p2p_ctrl_invite_persistent, not a file-scope identifier; DCL37-C's underscore restriction only applies at file scope (confirmed pattern)"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7239,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "id is validated via wpa_config_get_network() lookup + disabled!=2 check right after - any garbage atoi() result safely fails the lookup"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7239,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "id is validated via wpa_config_get_network() lookup + disabled!=2 check right after - any garbage atoi() result safely fails the lookup"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7247,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if/else-if handles two independent, non-exhaustive conditions by design (persistent-id case vs p2p2-without-peer case); falling through with neither true is valid, not a missing-case defect (confirmed pattern)"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7256,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "freq checked via 'if (freq <= 0) return -1' immediately after"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7256,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "freq checked via 'if (freq <= 0) return -1' immediately after"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7264,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pref_freq checked via 'if (pref_freq <= 0) return -1' immediately after"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7264,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pref_freq checked via 'if (pref_freq <= 0) return -1' immediately after"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7277,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "freq2 is fed into chwidth_freq2_to_ch_width() whose result is checked '< 0' right after - indirect but real validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7277,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "freq2 is fed into chwidth_freq2_to_ch_width() whose result is checked '< 0' right after - indirect but real validation"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7281,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "chwidth is fed into chwidth_freq2_to_ch_width() whose result is checked '< 0' right after - indirect but real validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7281,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "chwidth is fed into chwidth_freq2_to_ch_width() whose result is checked '< 0' right after - indirect but real validation"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7308,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char '\\0' assignment idiom (no widening) - confirmed STR34-C FP pattern"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7394,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf() return value IS checked (!=1 / ==1 inline) right at the call site - ERR34-C 'lacks error detection' premise is factually false here"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7394,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "format string has exactly one conversion specifier, so sscanf() can only return -1/0/1 here - '==1' is the only meaningful test, not a >1-vs-!=0 hazard EXP20-C assumes"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7394,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "FIO47-C engine bug: compares the quoted format-string literal itself (always typed Pointer) against the spec's expected type, instead of the actual vararg pointer - self-referential, guaranteed-mismatch bug, fires on every sscanf() numeric conversion"
+  },
+  {
+   "rule": "INT05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7394,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sscanf() numeric conversion has no errno/ERANGE check on overflow, unlike strtol - literal INT05-C violation, though low severity for local ctrl_iface input"
+  },
+  {
+   "rule": "MSC24-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7394,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf() is not among the C standard's actually-deprecated/obsolescent functions (gets/asctime/rewind); recommending the non-portable, rarely-implemented Annex K sscanf_s() is not a valid MSC24-C violation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7395,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf() return value IS checked (!=1 / ==1 inline) right at the call site - ERR34-C 'lacks error detection' premise is factually false here"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7395,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "format string has exactly one conversion specifier, so sscanf() can only return -1/0/1 here - '==1' is the only meaningful test, not a >1-vs-!=0 hazard EXP20-C assumes"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7395,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "FIO47-C engine bug: compares the quoted format-string literal itself (always typed Pointer) against the spec's expected type, instead of the actual vararg pointer - self-referential, guaranteed-mismatch bug, fires on every sscanf() numeric conversion"
+  },
+  {
+   "rule": "INT05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7395,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sscanf() numeric conversion has no errno/ERANGE check on overflow, unlike strtol - literal INT05-C violation, though low severity for local ctrl_iface input"
+  },
+  {
+   "rule": "MSC24-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7395,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf() is not among the C standard's actually-deprecated/obsolescent functions (gets/asctime/rewind); recommending the non-portable, rarely-implemented Annex K sscanf_s() is not a valid MSC24-C violation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7396,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf() return value IS checked (!=1 / ==1 inline) right at the call site - ERR34-C 'lacks error detection' premise is factually false here"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7396,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "format string has exactly one conversion specifier, so sscanf() can only return -1/0/1 here - '==1' is the only meaningful test, not a >1-vs-!=0 hazard EXP20-C assumes"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7396,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "FIO47-C engine bug: compares the quoted format-string literal itself (always typed Pointer) against the spec's expected type, instead of the actual vararg pointer - self-referential, guaranteed-mismatch bug, fires on every sscanf() numeric conversion"
+  },
+  {
+   "rule": "INT05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7396,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sscanf() numeric conversion has no errno/ERANGE check on overflow, unlike strtol - literal INT05-C violation, though low severity for local ctrl_iface input"
+  },
+  {
+   "rule": "MSC24-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7396,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf() is not among the C standard's actually-deprecated/obsolescent functions (gets/asctime/rewind); recommending the non-portable, rarely-implemented Annex K sscanf_s() is not a valid MSC24-C violation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7397,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf() return value IS checked (!=1 / ==1 inline) right at the call site - ERR34-C 'lacks error detection' premise is factually false here"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7397,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "format string has exactly one conversion specifier, so sscanf() can only return -1/0/1 here - '==1' is the only meaningful test, not a >1-vs-!=0 hazard EXP20-C assumes"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7397,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "FIO47-C engine bug: compares the quoted format-string literal itself (always typed Pointer) against the spec's expected type, instead of the actual vararg pointer - self-referential, guaranteed-mismatch bug, fires on every sscanf() numeric conversion"
+  },
+  {
+   "rule": "INT05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7397,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sscanf() numeric conversion has no errno/ERANGE check on overflow, unlike strtol - literal INT05-C violation, though low severity for local ctrl_iface input"
+  },
+  {
+   "rule": "MSC24-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7397,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf() is not among the C standard's actually-deprecated/obsolescent functions (gets/asctime/rewind); recommending the non-portable, rarely-implemented Annex K sscanf_s() is not a valid MSC24-C violation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7403,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sscanf() return value IS checked (!=1 / ==1 inline) right at the call site - ERR34-C 'lacks error detection' premise is factually false here"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7403,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "format string has exactly one conversion specifier, so sscanf() can only return -1/0/1 here - '==1' is the only meaningful test, not a >1-vs-!=0 hazard EXP20-C assumes"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7403,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "FIO47-C engine bug: compares the quoted format-string literal itself (always typed Pointer) against the spec's expected type, instead of the actual vararg pointer - self-referential, guaranteed-mismatch bug, fires on every sscanf() numeric conversion"
+  },
+  {
+   "rule": "INT05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7403,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sscanf() numeric conversion has no errno/ERANGE check on overflow, unlike strtol - literal INT05-C violation, though low severity for local ctrl_iface input"
+  },
+  {
+   "rule": "MSC24-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7403,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sscanf() is not among the C standard's actually-deprecated/obsolescent functions (gets/asctime/rewind); recommending the non-portable, rarely-implemented Annex K sscanf_s() is not a valid MSC24-C violation"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7436,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed-size local array/buffer sized by compile-time macro constant(s); no getenv/putenv or VLA anywhere in file - confirmed ENV01-C/MEM05-C misfire-on-fixed-array pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7492,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_s is only read (current_ssid/global/p2p_group) in this plain internal helper, not forwarded to any non-const vtable call - genuine, if low-severity, const opportunity"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7492,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Classic 'T *ptr, size_t len' paired pointer+size parameter idiom (buf/buflen, cmd) - confirmed API05-C conformant-array-syntax FP pattern"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7493,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Classic 'T *ptr, size_t len' paired pointer+size parameter idiom (buf/buflen, cmd) - confirmed API05-C conformant-array-syntax FP pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7515,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "global is only read (global->ifaces traversal) in this plain internal helper - genuine const opportunity"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7529,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Classic 'T *ptr, size_t len' paired pointer+size parameter idiom (buf/buflen, cmd) - confirmed API05-C conformant-array-syntax FP pattern"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7530,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Classic 'T *ptr, size_t len' paired pointer+size parameter idiom (buf/buflen, cmd) - confirmed API05-C conformant-array-syntax FP pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7530,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf's pointee IS modified: pos=buf then os_snprintf(pos,...) writes through it repeatedly - DCL13-C's 'not modified' scan misses the write via the aliased pos variable (real tool miss, same family as p2p_invitation.c:129)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7575,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Only one real function call (wps_dev_type_bin2str) among the snprintf args; MAC2STR/other args are plain struct-field reads / pure macro byte-extraction with no side effects - not multiple unsequenced side-effecting calls"
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7605,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "t is declared 'const u8 *'; assigning &array[i] (non-const array) to a const-qualified pointer is a standard-legal implicit qualification-adding conversion, not a const-removal hazard - rule fires on the safe direction"
+  },
+  {
+   "rule": "ERR02-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7633,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_snprintf_hex() is a custom bounded helper (not libc snprintf) whose return value is used directly (pos += ...); it doesn't share os_snprintf's truncation-signaling contract that os_snprintf_error() checks - name-substring misfire on 'snprintf'"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7633,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() are side-effect-free accessor getters passed as sibling args - confirmed EXP30-C pure-accessor FP pattern"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7680,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char '\\0' assignment idiom (no widening) - confirmed STR34-C FP pattern"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7684,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7684,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7689,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7689,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7697,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7697,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7699,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7699,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7714,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "count checked via combined range validation a few lines later (count<0||count>255||start<0||duration<0)"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7714,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "count checked via combined range validation a few lines later (count<0||count>255||start<0||duration<0)"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7719,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "start checked via the same combined range validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7719,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "start checked via the same combined range validation"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7724,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "duration checked via the same combined range validation"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7724,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "duration checked via the same combined range validation"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7735,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7735,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7738,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7738,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7741,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7741,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7744,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7744,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7771,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7771,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7784,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7784,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7791,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7791,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7803,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7803,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7808,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7808,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7813,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7813,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7818,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7818,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7844,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7844,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7848,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain char-to-char '\\0' assignment idiom (no widening) - confirmed STR34-C FP pattern"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7850,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/ctrl_iface.c",
+   "line": 7850,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "atoi() result used with no subsequent validation of any kind - real, if low-severity, missing-error-detection per literal ERR07-C/ERR34-C text"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 48,
+  "fp": 102,
+  "fn": 0
+ }
+}

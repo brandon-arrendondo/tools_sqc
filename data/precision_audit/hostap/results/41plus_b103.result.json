@@ -1,0 +1,1213 @@
+{
+ "labels": [
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 78,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only ctrl_iface entry point; wpa_s/cmd always non-null from dispatch"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 78,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only ctrl_iface entry point; wpa_s/cmd always non-null from dispatch"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 88,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dpp_notify_new_qr_code() has a documented tri-state {-1,0,1} contract; ==1 correctly isolates success"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 95,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() are pure accessors; sibling-arg unsequenced-side-effects misfire"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 117,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only ctrl_iface entry point; wpa_s/cmd always non-null"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 117,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only ctrl_iface entry point; wpa_s/cmd always non-null"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 117,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain ctrl_iface handler (not vtable/callback); wpa_s only read via wpa_s->dpp"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 129,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only ctrl_iface entry point; wpa_s/cmd always non-null"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 129,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only ctrl_iface entry point; wpa_s/cmd always non-null"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 129,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain ctrl_iface handler; wpa_s only read via wpa_s->dpp"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 138,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi(pos) result used as bootstrap-id lookup key, no narrow range check"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 138,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi(pos) result used as bootstrap-id lookup key, no narrow range check"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 161,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only ctrl_iface entry point; wpa_s/cmd always non-null"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 161,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only ctrl_iface entry point; wpa_s/cmd always non-null"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 161,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain ctrl_iface handler; wpa_s only read via wpa_s->dpp"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 170,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi(pos) result used as bootstrap-id lookup key, no narrow range check"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 170,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi(pos) result used as bootstrap-id lookup key, no narrow range check"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 196,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "timeout_ctx is the fixed eloop_register_timeout callback signature (dispatch contract)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 210,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure-accessor sibling-arg misfire"
+  },
+  {
+   "rule": "FLP03-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 288,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "diff.usec/1000 is plain integer os_reltime-field division, not floating point"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 305,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "timeout_ctx is the fixed eloop callback signature"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 329,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain helper wpas_dpp_connected; wpa_s only read"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 362,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*pos = '\\0'; plain char-to-char assignment, no widening conversion"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 373,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "str is os_zalloc'd heap memory, not automatic-storage local"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 430,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure-accessor sibling-arg misfire"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 443,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "timeout_ctx is the fixed eloop callback signature"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 472,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "timeout_ctx is the fixed eloop callback signature"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 489,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "timeout_ctx is the fixed eloop callback signature"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 629,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "timeout_ctx is the fixed eloop callback signature"
+  },
+  {
+   "rule": "FLP03-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 644,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "diff.usec/1000 is plain integer division, not floating point"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 695,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "timeout_ctx is the fixed eloop callback signature"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 731,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "timeout_ctx is the fixed eloop callback signature"
+  },
+  {
+   "rule": "FLP03-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 783,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No floating point at cited line; diff.usec/1000 is integer division (line-drift)"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 784,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Category error: diff.sec/max_wait_time are plain scalar ints, not pointers, and no such comparison exists at this line"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 826,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR() macro is a pure read accessor; unsequenced-side-effects misfire"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 834,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only ctrl_iface entry point; wpa_s/cmd always non-null"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 834,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto-label blindness: function returns on every path via goto fail; label reachability not seen"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 855,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi(pos) peer bootstrap-id lookup key, no narrow range check"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 855,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi(pos) peer bootstrap-id lookup key, no narrow range check"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 866,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi(pos) tcp_port value, no narrow range check"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 866,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi(pos) tcp_port value, no narrow range check"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 880,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard clause: no tcp_addr= specified is a legitimate no-op, not a missing case"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 894,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi(pos) own bootstrap-id lookup key, no narrow range check"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 894,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi(pos) own bootstrap-id lookup key, no narrow range check"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 938,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi(pos+10) neg_freq value, no narrow range check"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 938,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi(pos+10) neg_freq value, no narrow range check"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 984,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto-label blindness: fail: label is reached via goto from earlier in the function"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1069,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*lwork) is a non-dereferencing type-size expression, not a read of lwork"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1084,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Internal-only ctrl_iface entry point; cmd always non-null"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1088,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "freq<=0 check immediately follows; 0 (atoi failure) is never a valid listen frequency, no exploitable path"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1088,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "freq<=0 check immediately follows; 0 (atoi failure) is never a valid listen frequency, no exploitable path"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1132,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "duration is driver-supplied via a fixed remain-on-channel callback, bounded by hardware capability, not attacker input"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1160,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure-accessor sibling-arg misfire"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1169,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "timeout_ctx is the fixed eloop callback signature"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1387,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Interprocedural: both call sites of wpas_dpp_start_gas_server already guarantee wpa_s->dpp_auth non-null before calling"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1477,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure-accessor sibling-arg misfire"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1486,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure-accessor sibling-arg misfire"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1496,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure-accessor sibling-arg misfire"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1518,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set_quoted's var param is const char*; literal cannot be modified (rule-logic bug)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1524,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set_quoted's var param is const char*; literal cannot be modified"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1560,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*blob) is a non-dereferencing type-size expression"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1582,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set's var/value params are const char*; literals cannot be modified"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1582,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set's var/value params are const char*; literals cannot be modified"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1625,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set's var/value params are const char*; literals cannot be modified"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1625,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_set's var/value params are const char*; literals cannot be modified"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1633,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid is heap-allocated via wpa_config_add_network, not automatic-storage local"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1633,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "return ssid; is the intended ownership-transfer output, not a leak"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1634,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto-label blindness: fail: label reached via goto"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1637,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_config_remove_network() transitively frees the whole ssid struct including all its fields via wpa_config_free_ssid()"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1724,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char hex[64*2+1] is a fixed compile-time-constant-sized array, not a VLA"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1731,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard clause: neither passphrase nor psk_set present means nothing to report"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1732,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "char hex[PMK_LEN*2+1] is a fixed macro-constant-sized array, not a VLA"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1751,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure-accessor sibling-arg misfire"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1766,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure-accessor sibling-arg misfire"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1770,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hex here is a distinct variable declared in its own disjoint if-block scope, not a reuse of an earlier-freed hex"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1780,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure-accessor sibling-arg misfire"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1791,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hex here is a distinct variable in its own disjoint if-block scope, not the same allocation freed twice"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1799,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure-accessor sibling-arg misfire"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1809,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure-accessor sibling-arg misfire"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1813,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "b64 here is a distinct variable in its own disjoint if-block scope, not the same allocation freed twice"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1830,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "All three hex locals are distinct disjoint-scope variables, each already freed within its own block; nothing leaked at return"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1862,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "timeout_ctx is the fixed eloop callback signature"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1875,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Reassign-then-check: auth->csr is freed then immediately reassigned; the if checks the fresh value, not the freed one"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1887,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "timeout_ctx is the fixed eloop callback signature"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1932,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "|| is a sequence point; pos is assigned once and only read in later operands (guarded-parse idiom)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1932,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "|| is a sequence point; pos is assigned once and only read in later operands"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1932,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "|| is a sequence point; pos is assigned once and only read in later operands"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1932,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "|| is a sequence point; pos is assigned once and only read in later operands"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1932,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "|| is a sequence point; pos is assigned once and only read in later operands"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1932,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "|| is a sequence point; pos is assigned once and only read in later operands"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1932,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "|| is a sequence point; pos is assigned once and only read in later operands"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1933,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos IS read via pos[0]..pos[9] on the very next lines; factually wrong"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1933,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate combined assign+null-check+validate idiom inside an || chain, not an accidental = for =="
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 1934,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos[0] access is only reached if the preceding !(pos=wpabuf_head(...)) is false, i.e. pos is guaranteed non-null"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 2003,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure-accessor sibling-arg misfire"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 2023,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "timeout_ctx is the fixed eloop callback signature"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 2069,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto-label blindness: fail: block only reached after the function's earlier if(!auth) return guard"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 2165,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure-accessor sibling-arg misfire"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 2208,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "timeout_ctx is the fixed eloop callback signature"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 2225,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "timeout_ctx is the fixed eloop callback signature"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 2244,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain read-only helper wpas_dpp_pb_active; wpa_s only read"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 2251,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Factually wrong: wpa_s IS modified through info->rx_time = &wpa_s->dpp_pb[i] field writes"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 2369,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "u8 ssid[SSID_MAX_LEN] is a fixed local buffer; zero getenv() calls in this function/file"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 2445,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bi matches struct dpp_global_config.remove_bi's fixed callback-table signature (dispatch contract)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 2530,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "timeout_ctx is the fixed eloop callback signature"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 2629,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure-accessor sibling-arg misfire"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 2667,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "!ssid short-circuits the || before ssid->dpp_connector is evaluated; this is the guard itself"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 2688,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure-accessor sibling-arg misfire"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 2729,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure-accessor sibling-arg misfire"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 2774,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Call-graph cycle threaded through wpa_supplicant_event's multi-branch dispatch; the rx_mgmt_action edge is unreachable from the deauthenticate call path in practice"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 2808,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "!ssid short-circuits the || before ssid->dpp_connector is evaluated; this is the guard itself"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 2880,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*entry) is a non-dereferencing type-size expression"
+  },
+  {
+   "rule": "MSC05-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 2908,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "seconds = expiry - now.sec directly subtracts two time_t values instead of using difftime()"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 2932,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain read-only helper wpas_dpp_allow_ir; wpa_s only read"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 2965,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Self-limiting recursion, depth bounded to 4 fixed frequencies, no runtime-sized allocation"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 2977,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_dpp_allow_ir() has a documented {-1,0,1} tri-state return; ==1 correctly isolates the allowed case"
+  },
+  {
+   "rule": "ERR07-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 3026,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi(pos) own bootstrap-id lookup key, no narrow range check"
+  },
+  {
+   "rule": "ERR34-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 3026,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "atoi(pos) own bootstrap-id lookup key, no narrow range check"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 3118,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure-accessor sibling-arg misfire"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 3131,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "timeout_ctx is the fixed eloop callback signature"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 3165,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure-accessor sibling-arg misfire"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 3294,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure-accessor sibling-arg misfire"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 3337,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure-accessor sibling-arg misfire"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 3380,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "bi is owned by the dpp_pkex/bootstrap-table internals via dpp_pkex_finish(), not automatic-storage local"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 3422,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure-accessor sibling-arg misfire"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 3517,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure-accessor sibling-arg misfire"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 3555,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure-accessor sibling-arg misfire"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 3709,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure-accessor sibling-arg misfire"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 3842,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain helper wpas_dpp_send_private_peer_intro_update; intro only read"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 3843,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain helper; ssid only read (ssid->dpp_connector)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 3891,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head(pt)/wpabuf_len(pt) pure-accessor sibling-arg misfire"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 3929,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() pure-accessor sibling-arg misfire"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 3932,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Reassign-then-free idiom: msg is freed then reassigned to a fresh dpp_alloc_msg() before this later free"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 3947,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "peer_version=1 initializer is never read: overwritten on success before use, untouched on every early goto fail"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 3972,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "!ssid short-circuits the || before ssid->dpp_connector is evaluated; this is the guard itself"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4042,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*entry) is a non-dereferencing type-size expression"
+  },
+  {
+   "rule": "MSC05-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4054,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "seconds = expiry - now.sec directly subtracts two time_t values instead of using difftime()"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4081,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "src is supplied non-null by the driver's frame-RX wrapper for every caller"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4081,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Same call-graph over-approximation as the :2774 instance"
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4141,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "case has a real unconditional break; immediately before an #endif/#ifdef-gated next case label"
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4163,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "case has a real unconditional break; immediately before an #endif/#ifdef-gated next case label"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4225,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop_ctx is the fixed eloop callback signature"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4226,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "timeout_ctx is the fixed eloop callback signature"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4242,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sa is a fixed 6-byte MAC address with no adjacent size param at all; opaque-parameter idiom"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4242,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "query/query_len is the idiomatic pointer+size pair, not a conformant-array gap"
+  },
+  {
+   "rule": "API05-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4243,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "query/query_len idiomatic pointer+size pair"
+  },
+  {
+   "rule": "STR05-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4295,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "char *name = \"\"; assigns a string literal to a non-const char* local"
+  },
+  {
+   "rule": "STR05-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4298,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "char *mud_url = \"N/A\"; assigns a string literal to a non-const char* local"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4320,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*pos = '\\0'; plain char-to-char assignment, no widening conversion"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dpp_supplicant.c",
+   "line": 4331,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR()/dpp_netrole_str() are pure accessors; unsequenced-side-effects misfire"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "wpa_supplicant/dpp_supplicant.c"
+ ],
+ "summary": {
+  "tp": 27,
+  "fp": 123,
+  "fn": 0
+ }
+}

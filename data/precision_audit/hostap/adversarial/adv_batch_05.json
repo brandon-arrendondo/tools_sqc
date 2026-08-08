@@ -1,0 +1,722 @@
+[
+ {
+  "rule": "API05-C",
+  "file": "hostapd/config_file.c",
+  "line": 915,
+  "verdict": "FP",
+  "reason": "`u8 *key, size_t key_len` is the confirmed pointer+size idiom FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "API05-C",
+  "file": "hostapd/config_file.c",
+  "line": 2179,
+  "verdict": "FP",
+  "reason": "buf+max_len is the idiomatic pointer+size companion pair; confirmed API05-C FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "API05-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 87,
+  "verdict": "FP",
+  "reason": "ptr+len idiom, confirmed categorical API05-C FP",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "API05-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 192,
+  "verdict": "FP",
+  "reason": "confirmed categorical API05-C FP",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "API05-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 265,
+  "verdict": "FP",
+  "reason": "confirmed categorical API05-C FP",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "API05-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 295,
+  "verdict": "FP",
+  "reason": "confirmed categorical API05-C FP",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "API05-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 317,
+  "verdict": "FP",
+  "reason": "confirmed categorical API05-C FP",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "API09-C",
+  "file": "src/common/ieee802_11_common.c",
+  "line": 3535,
+  "verdict": "FP",
+  "reason": "returns a fragment count, not the accumulated size (that's the *defrag_len out-param)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ARR32-C",
+  "file": "hostapd/hostapd_cli.c",
+  "line": 2082,
+  "verdict": "FP",
+  "reason": "max_args is '#define max_args 10' (src/common/cli.h:44), a compile-time constant - not a runtime-sized VLA at all",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ARR32-C",
+  "file": "src/drivers/driver_nl80211.c",
+  "line": 4402,
+  "verdict": "FP",
+  "reason": "ARRAY_SIZE(...)+1 is a compile-time constant, always positive and bounded by the fixed extra_bss_membership_selectors array size; the 'unsafe size' concern is moot",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ARR32-C",
+  "file": "src/eap_common/eap_psk_common.c",
+  "line": 37,
+  "verdict": "FP",
+  "reason": "same array, size is compile-time constant 16 via macro",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ARR32-C",
+  "file": "wpa_supplicant/eapol_test.c",
+  "line": 1103,
+  "verdict": "FP",
+  "reason": "num_triplets is a #define macro (5), not a variable; not a VLA",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ARR32-C",
+  "file": "wpa_supplicant/eapol_test.c",
+  "line": 1104,
+  "verdict": "FP",
+  "reason": "num_triplets is a #define macro (5), not a variable; not a VLA",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ARR32-C",
+  "file": "wpa_supplicant/eapol_test.c",
+  "line": 1105,
+  "verdict": "FP",
+  "reason": "num_triplets is a #define macro (5), not a variable; not a VLA",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ARR32-C",
+  "file": "wpa_supplicant/sme.c",
+  "line": 2331,
+  "verdict": "FP",
+  "reason": "max_hlp is a fixed literal (20), already trivially validated positive/bounded",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ARR32-C",
+  "file": "wpa_supplicant/wpa_cli.c",
+  "line": 4810,
+  "verdict": "FP",
+  "reason": "same as the paired MEM05-C finding on this line: max_args is a compile-time #define (cli.h:44), not a runtime size.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ARR38-C",
+  "file": "src/crypto/tls_openssl.c",
+  "line": 821,
+  "verdict": "FP",
+  "reason": "strncmp(name,\"cert_store://\",13): 13 exactly equals strlen of the literal -- safe prefix-compare idiom, not a hazard",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ARR38-C",
+  "file": "src/drivers/driver_ndis.c",
+  "line": 2383,
+  "verdict": "FP",
+  "reason": "len is bounded <=81 by an earlier 'if (len>80) return -1' guard; memcpy size is provably small and safe",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ARR38-C",
+  "file": "src/drivers/driver_ndis.c",
+  "line": 2384,
+  "verdict": "FP",
+  "reason": "9*sizeof(TCHAR) is a compile-time constant (18); the &multi[len] destination is bounded since len<=81+9<=100 (array size 100)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ARR38-C",
+  "file": "src/drivers/ndis_events.c",
+  "line": 478,
+  "verdict": "FP",
+  "reason": "events->adapter_desc allocated exactly (len+1)*sizeof(WCHAR); size arg matches the buffer's WCHAR capacity exactly",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "CON02-C",
+  "file": "hostapd/hlr_auc_gw.c",
+  "line": 69,
+  "verdict": "FP",
+  "reason": "'stop' only ever set from the normal request-handling path (TERMINATE cmd), never from a signal handler; No pthread/threading anywhere in this single-process, blocking-loop file; matches confirmed no-pthread CON0x-C FP class.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "CON02-C",
+  "file": "hostapd/hostapd_cli.c",
+  "line": 40,
+  "verdict": "FP",
+  "reason": "interactive is a mode flag, not a sync primitive; no pthread in file",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "CON02-C",
+  "file": "src/ap/ieee802_11.c",
+  "line": 6976,
+  "verdict": "FP",
+  "reason": "ssi_signal is a plain local int (`int ssi_signal = ...`), not a global flag variable at all.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "CON02-C",
+  "file": "wpa_supplicant/wpa_cli.c",
+  "line": 57,
+  "verdict": "FP",
+  "reason": "extends no-pthread CON03-C class to CON02-C; 'interactive' is a plain mode flag, no thread sync involved",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "CON32-C",
+  "file": "src/ap/gas_query_ap.c",
+  "line": 315,
+  "verdict": "FP",
+  "reason": "CON32-C: gas_query_rx_comeback_timeout runs only via the single-threaded eloop callback model; no pthread usage anywhere in hostapd's ap/ core - confirmed CON32/POS49 categorical FP for hostap core",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "CON32-C",
+  "file": "src/ap/gas_query_ap.c",
+  "line": 316,
+  "verdict": "FP",
+  "reason": "CON32-C: same single-threaded-eloop reasoning",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "CON32-C",
+  "file": "src/ap/gas_query_ap.c",
+  "line": 323,
+  "verdict": "FP",
+  "reason": "CON32-C: same single-threaded-eloop reasoning",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "CON32-C",
+  "file": "src/ap/gas_query_ap.c",
+  "line": 326,
+  "verdict": "FP",
+  "reason": "CON32-C: same single-threaded-eloop reasoning, wait_comeback bitfield",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "CON32-C",
+  "file": "src/common/dpp_tcp.c",
+  "line": 1901,
+  "verdict": "FP",
+  "reason": "No pthread usage anywhere in this codebase; hostap's eloop is single-threaded, so no concurrent-access hazard exists.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "CON32-C",
+  "file": "src/common/dpp_tcp.c",
+  "line": 1971,
+  "verdict": "FP",
+  "reason": "No pthread usage anywhere in this codebase; hostap's eloop is single-threaded, so no concurrent-access hazard exists.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "CON32-C",
+  "file": "src/common/dpp_tcp.c",
+  "line": 2079,
+  "verdict": "FP",
+  "reason": "No pthread usage anywhere in this codebase; hostap's eloop is single-threaded, so no concurrent-access hazard exists.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "CON32-C",
+  "file": "src/common/dpp_tcp.c",
+  "line": 2500,
+  "verdict": "FP",
+  "reason": "No pthread usage anywhere in this codebase; hostap's eloop is single-threaded, so no concurrent-access hazard exists.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "CON32-C",
+  "file": "src/crypto/tls_gnutls.c",
+  "line": 537,
+  "verdict": "FP",
+  "reason": "CON32-C/POS49-C no-pthread bitfield-mutex FP class: single-threaded code, no concurrent access",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "CON32-C",
+  "file": "src/crypto/tls_gnutls.c",
+  "line": 549,
+  "verdict": "FP",
+  "reason": "CON32-C/POS49-C no-pthread bitfield-mutex FP class: single-threaded code, no concurrent access",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "CON43-C",
+  "file": "src/ap/dhcp_snoop.c",
+  "line": 71,
+  "verdict": "FP",
+  "reason": "single-threaded eloop processing a single packet once; no shared-memory double-fetch/TOCTOU hazard",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "CON43-C",
+  "file": "src/ap/gas_serv.c",
+  "line": 1143,
+  "verdict": "FP",
+  "reason": "no concurrency in hostapd (single-threaded eloop model); no TOCTOU double-fetch risk on switch(*pos)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "CON43-C",
+  "file": "src/common/dpp_tcp.c",
+  "line": 1828,
+  "verdict": "FP",
+  "reason": "switch on a dereferenced pointer into caller-owned, non-shared memory in a single-threaded (no pthread) codebase; no concurrent modifier exists.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "CON43-C",
+  "file": "src/common/wpa_common.c",
+  "line": 1686,
+  "verdict": "FP",
+  "reason": "single-threaded PASN derivation, alg written by the immediately preceding call, no concurrent access; extends the no-pthread CON-family FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "CON43-C",
+  "file": "src/crypto/tls_openssl.c",
+  "line": 5098,
+  "verdict": "FP",
+  "reason": "c is a local scan pointer into a caller-owned array in a single-threaded eloop codebase, no concurrent modifier exists (CON43-C extends single-threaded FP class)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "CON43-C",
+  "file": "src/crypto/tls_wolfssl.c",
+  "line": 2301,
+  "verdict": "FP",
+  "reason": "switch on a dereferenced local scan pointer in a single-threaded, no-pthread codebase",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "CON43-C",
+  "file": "src/eap_peer/eap_peap.c",
+  "line": 650,
+  "verdict": "FP",
+  "reason": "single-threaded eloop dispatch, no concurrent writer -- no real double-fetch race",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "CON43-C",
+  "file": "src/eap_peer/eap_ttls.c",
+  "line": 490,
+  "verdict": "FP",
+  "reason": "single-threaded switch(*pos) on a local decrypted buffer; no concurrent re-fetch/double-fetch possible",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "CON43-C",
+  "file": "src/eap_server/eap_server_gpsk.c",
+  "line": 552,
+  "verdict": "FP",
+  "reason": "switch(*pos) evaluates the controlling expression exactly once; pos is a stable local const pointer, no double-fetch",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "CON43-C",
+  "file": "src/eap_server/eap_server_psk.c",
+  "line": 425,
+  "verdict": "FP",
+  "reason": "'decrypted' is a private just-allocated heap buffer in single-threaded EAP processing, no concurrent modifier exists; double-fetch concern inapplicable",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL01-C",
+  "file": "src/ap/wps_hostapd.c",
+  "line": 1955,
+  "verdict": "FP",
+  "reason": "sqc misparses 'else if' keyword as a variable named 'if'; no such variable exists",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL01-C",
+  "file": "src/ap/wps_hostapd.c",
+  "line": 1958,
+  "verdict": "FP",
+  "reason": "same keyword-as-identifier misparse as line 1955; 'return' is not a variable",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL03-C",
+  "file": "wpa_supplicant/eapol_test.c",
+  "line": 1054,
+  "verdict": "FP",
+  "reason": "assert(0) is inside a runtime-conditional error branch; static_assert(0) would always fail to compile",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL03-C",
+  "file": "wpa_supplicant/eapol_test.c",
+  "line": 1079,
+  "verdict": "FP",
+  "reason": "assert(0) is inside a runtime-conditional error branch; static_assert(0) would always fail to compile",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL12-C",
+  "file": "src/drivers/driver_nl80211.h",
+  "line": 129,
+  "verdict": "FP",
+  "reason": "internal driver-module header intentionally exposes fields to sibling .c files (nl80211_scan.c etc.), not a real public API boundary",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL12-C",
+  "file": "src/utils/radiotap_iter.h",
+  "line": 27,
+  "verdict": "FP",
+  "reason": "iterator's public fields are the intended API surface per doc comment, not leaked internals",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL12-C",
+  "file": "src/utils/radiotap_iter.h",
+  "line": 64,
+  "verdict": "FP",
+  "reason": "same: this_arg/this_arg_index etc. are documented public fields, opaque type would break the design",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL20-C",
+  "file": "wpa_supplicant/binder/binder_manager.h",
+  "line": 34,
+  "verdict": "FP",
+  "reason": "Line has a declared parameter (wpa_s), not an empty parameter list; finding is misattributed",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL20-C",
+  "file": "wpa_supplicant/binder/iface.h",
+  "line": 32,
+  "verdict": "FP",
+  "reason": "destructor's () misparsed as a C empty-parameter-list function; C++ misparse FP",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL20-C",
+  "file": "wpa_supplicant/binder/supplicant.h",
+  "line": 34,
+  "verdict": "FP",
+  "reason": "C++ misparse of struct member declaration as a function",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL20-C",
+  "file": "wpa_supplicant/wpa_gui-qt4/addinterface.h",
+  "line": 31,
+  "verdict": "FP",
+  "reason": "C++ Qt-slot method decl misparsed; Qt misparse FP",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL20-C",
+  "file": "wpa_supplicant/wpa_gui-qt4/eventhistory.h",
+  "line": 51,
+  "verdict": "FP",
+  "reason": "C++ () already means zero params; DCL20-C premise is C89-only",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL20-C",
+  "file": "wpa_supplicant/wpa_gui-qt4/networkconfig.h",
+  "line": 31,
+  "verdict": "FP",
+  "reason": "C++ class method; empty () already means no-args in C++, unlike C",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL20-C",
+  "file": "wpa_supplicant/wpa_gui-qt4/networkconfig.h",
+  "line": 35,
+  "verdict": "FP",
+  "reason": "C++ method, (void) not idiomatic/needed",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL20-C",
+  "file": "wpa_supplicant/wpa_gui-qt4/networkconfig.h",
+  "line": 38,
+  "verdict": "FP",
+  "reason": "C++ method",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL20-C",
+  "file": "wpa_supplicant/wpa_gui-qt4/networkconfig.h",
+  "line": 40,
+  "verdict": "FP",
+  "reason": "C++ method",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL20-C",
+  "file": "wpa_supplicant/wpa_gui-qt4/networkconfig.h",
+  "line": 43,
+  "verdict": "FP",
+  "reason": "C++ method",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL22-C",
+  "file": "src/ap/ieee802_11.c",
+  "line": 8614,
+  "verdict": "FP",
+  "reason": "Ordinary local pointer `eid`; no setjmp/longjmp or signal-handler context anywhere in this function (batch-local DCL22-C pattern).",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL22-C",
+  "file": "src/ap/ieee802_11_he.c",
+  "line": 99,
+  "verdict": "FP",
+  "reason": "epos is a plain local pointer walked across ordinary (non-signal, non-async) os_memcpy calls; not a volatile candidate",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL22-C",
+  "file": "src/ap/ieee802_1x.c",
+  "line": 603,
+  "verdict": "FP",
+  "reason": "DCL22-C volatile suggestion on an ordinary local int with no setjmp/signal-handler context; established no-context FP class.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL22-C",
+  "file": "src/ap/taxonomy.c",
+  "line": 243,
+  "verdict": "FP",
+  "reason": "Ordinary local pointer pos, no setjmp/signal-handler context anywhere in file; confirmed DCL22-C FP class.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL22-C",
+  "file": "src/ap/wmm.c",
+  "line": 217,
+  "verdict": "FP",
+  "reason": "DCL22-C: val (u16 val, surplus;) is an ordinary local used only for protocol-field bookkeeping in wmm_process_tspec; no setjmp/longjmp or signal-handler context anywhere in the function - confirmed DCL22-C-with-no-setjmp-context FP class (4th instance)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL22-C",
+  "file": "src/ap/wpa_auth_ft.c",
+  "line": 3834,
+  "verdict": "FP",
+  "reason": "ordinary local pointer, no setjmp/longjmp or signal-handler context in this function (confirmed DCL22 misfire class)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL22-C",
+  "file": "src/ap/wpa_auth_ie.c",
+  "line": 427,
+  "verdict": "FP",
+  "reason": "pos is an ordinary sequential local pointer, no signal handler/setjmp context in file",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL22-C",
+  "file": "src/ap/wpa_auth_ie.c",
+  "line": 457,
+  "verdict": "FP",
+  "reason": "pos is an ordinary sequential local pointer, no signal handler/setjmp context in file",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL22-C",
+  "file": "src/common/wpa_common.c",
+  "line": 2341,
+  "verdict": "FP",
+  "reason": "pos is an ordinary local pointer with no setjmp/longjmp or signal-handler context; confirmed DCL22-C FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL22-C",
+  "file": "src/common/wpa_common.c",
+  "line": 2529,
+  "verdict": "FP",
+  "reason": "pos is an ordinary local pointer, no setjmp/signal context; confirmed DCL22-C FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL23-C",
+  "file": "src/tls/asn1.h",
+  "line": 199,
+  "verdict": "FP",
+  "reason": "numeric key-size suffix (256/384/512) is standard unambiguous naming, same convention as unflagged sha256/384/512 above",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL23-C",
+  "file": "src/tls/asn1.h",
+  "line": 200,
+  "verdict": "FP",
+  "reason": "same as line 199: idiomatic numeric-suffix naming",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL23-C",
+  "file": "src/tls/asn1.h",
+  "line": 201,
+  "verdict": "FP",
+  "reason": "same as line 199: idiomatic numeric-suffix naming",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL23-C",
+  "file": "src/tls/asn1.h",
+  "line": 202,
+  "verdict": "FP",
+  "reason": "same as line 199; also a literal duplicate extern decl of line 199 (real but different issue)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL23-C",
+  "file": "src/tls/asn1.h",
+  "line": 203,
+  "verdict": "FP",
+  "reason": "same as line 199",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL23-C",
+  "file": "src/tls/asn1.h",
+  "line": 204,
+  "verdict": "FP",
+  "reason": "same as line 199",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL23-C",
+  "file": "wpa_supplicant/wpa_supplicant_i.h",
+  "line": 28,
+  "verdict": "FP",
+  "reason": "Idiomatic sequential license-text constants (license1..5), no real confusion risk",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL23-C",
+  "file": "wpa_supplicant/wpa_supplicant_i.h",
+  "line": 29,
+  "verdict": "FP",
+  "reason": "Same sequential license-const idiom",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL23-C",
+  "file": "wpa_supplicant/wpa_supplicant_i.h",
+  "line": 30,
+  "verdict": "FP",
+  "reason": "Same sequential license-const idiom",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL23-C",
+  "file": "wpa_supplicant/wpa_supplicant_i.h",
+  "line": 31,
+  "verdict": "FP",
+  "reason": "Same sequential license-const idiom",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL30-C",
+  "file": "hostapd/config_file.c",
+  "line": 246,
+  "verdict": "FP",
+  "reason": "pos2 is a local pointer VARIABLE pointing into the caller-owned buffer (not this function's stack storage); confirmed DCL30-C local-var-vs-local-storage FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL30-C",
+  "file": "hostapd/config_file.c",
+  "line": 597,
+  "verdict": "FP",
+  "reason": "nserv holds the HEAP pointer returned by os_realloc_array, not local automatic storage; confirmed DCL30-C FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL30-C",
+  "file": "hostapd/config_file.c",
+  "line": 870,
+  "verdict": "FP",
+  "reason": "`*int_list = list` \u2014 list is heap memory from os_malloc, not local automatic storage; confirmed DCL30-C FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL30-C",
+  "file": "hostapd/config_file.c",
+  "line": 1352,
+  "verdict": "FP",
+  "reason": "ls holds the HEAP pointer from os_realloc_array, not local automatic storage; confirmed DCL30-C FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL30-C",
+  "file": "hostapd/config_file.c",
+  "line": 1901,
+  "verdict": "FP",
+  "reason": "elems is a heap pointer from wpabuf_parse_bin, not local automatic storage; confirmed DCL30-C variable-vs-storage FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL30-C",
+  "file": "hostapd/config_file.c",
+  "line": 2231,
+  "verdict": "FP",
+  "reason": "tmp is a wpabuf_alloc heap pointer, not local automatic storage; confirmed DCL30-C variable-vs-storage FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL30-C",
+  "file": "hostapd/config_file.c",
+  "line": 5073,
+  "verdict": "FP",
+  "reason": "DCL30-C local-variable-vs-local-storage confusion pattern: 'conf' is a local pointer but points to os_zalloc'd heap memory (verified in ap_config.c:217)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL30-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 4837,
+  "verdict": "FP",
+  "reason": "'buf' returned here is heap memory from os_malloc(), not automatic/stack storage - confused local variable with local storage (established DCL30-C FP class)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL30-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 5028,
+  "verdict": "FP",
+  "reason": "returned 'buf' is heap memory from os_malloc(), not automatic storage - same DCL30-C FP class as :4837",
+  "set": "SAFE_FP"
+ }
+]

@@ -1,0 +1,679 @@
+{
+ "src/common/wpa_helpers.c": [
+  {
+   "column": 1,
+   "file": "src/common/wpa_helpers.c",
+   "line": 18,
+   "message": "Shared variable 'wpas_ctrl_path' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_helpers.c",
+   "line": 18,
+   "message": "Variable 'wpas_ctrl_path' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const wpas_ctrl_path = ..."
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_helpers.c",
+   "line": 18,
+   "message": "Variable 'wpas_ctrl_path' should be declared static if it doesn't need external linkage",
+   "rule_id": "DCL15-C",
+   "severity": "Low",
+   "suggestion": "Add 'static' storage-class specifier"
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_helpers.c",
+   "line": 18,
+   "message": "File-scope variable should have minimal scope. Consider making it static within a function or limiting its scope.",
+   "rule_id": "DCL19-C",
+   "severity": "Low",
+   "suggestion": "Move variable to the smallest scope where it's used, or make it static inside a function"
+  },
+  {
+   "column": 6,
+   "file": "src/common/wpa_helpers.c",
+   "line": 18,
+   "message": "Pointer variable '(unknown)' is assigned a string literal without const qualification. String literals are immutable and should be declared as 'const char *' or 'const wchar_t *'.",
+   "rule_id": "STR05-C",
+   "severity": "Low",
+   "suggestion": "Add 'const' qualifier to the pointee type (e.g., change 'char *' to 'const char *')."
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_helpers.c",
+   "line": 19,
+   "message": "Shared variable 'default_timeout' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 3,
+   "file": "src/common/wpa_helpers.c",
+   "line": 30,
+   "message": "Type mismatch in printf(): format specifier '%s' expects Pointer but argument 1 ('buf') is Integer",
+   "rule_id": "FIO47-C",
+   "severity": "High",
+   "suggestion": "Ensure format specifiers match argument types"
+  },
+  {
+   "column": 2,
+   "file": "src/common/wpa_helpers.c",
+   "line": 31,
+   "message": "Function returns pointer to local variable 'ctrl' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_helpers.c",
+   "line": 35,
+   "message": "Function 'wpa_command' does not validate pointer parameter 'ifname' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ifname' at the start of the function, e.g., 'if (!ifname) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/wpa_helpers.c",
+   "line": 52,
+   "message": "Potentially unsafe array access with variable index 'len': Buffer 'buf' with size 128 (allocated at line 38)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_helpers.c",
+   "line": 61,
+   "message": "Function 'wpa_command_resp' does not validate pointer parameter 'ifname' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ifname' at the start of the function, e.g., 'if (!ifname) { return error_code; }'"
+  },
+  {
+   "column": 33,
+   "file": "src/common/wpa_helpers.c",
+   "line": 61,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 53,
+   "file": "src/common/wpa_helpers.c",
+   "line": 61,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 13,
+   "file": "src/common/wpa_helpers.c",
+   "line": 62,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_helpers.c",
+   "line": 83,
+   "message": "Function 'open_wpa_mon' does not validate pointer parameter 'ifname' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ifname' at the start of the function, e.g., 'if (!ifname) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/wpa_helpers.c",
+   "line": 95,
+   "message": "Function returns pointer to local variable 'ctrl' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_helpers.c",
+   "line": 99,
+   "message": "Function 'get_wpa_cli_event2' does not validate pointer parameter 'mon' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'mon' at the start of the function, e.g., 'if (!mon) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_helpers.c",
+   "line": 99,
+   "message": "Function 'get_wpa_cli_event2' does not validate pointer parameter 'event' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'event' at the start of the function, e.g., 'if (!event) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_helpers.c",
+   "line": 99,
+   "message": "Function 'get_wpa_cli_event2' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_helpers.c",
+   "line": 99,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 21,
+   "file": "src/common/wpa_helpers.c",
+   "line": 100,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 40,
+   "file": "src/common/wpa_helpers.c",
+   "line": 100,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 15,
+   "file": "src/common/wpa_helpers.c",
+   "line": 101,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/common/wpa_helpers.c",
+   "line": 115,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'len' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 27,
+   "file": "src/common/wpa_helpers.c",
+   "line": 128,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 27,
+   "file": "src/common/wpa_helpers.c",
+   "line": 128,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 3,
+   "file": "src/common/wpa_helpers.c",
+   "line": 138,
+   "message": "Potentially unsafe array access with variable index 'len': Buffer 'buf' with size 200 (allocated at line 290)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 14,
+   "file": "src/common/wpa_helpers.c",
+   "line": 148,
+   "message": "arithmetic operator '-' applied directly to time_t-typed 'now' -- the encoding of time_t is unspecified",
+   "rule_id": "MSC05-C",
+   "severity": "Low",
+   "suggestion": "Use difftime() to compute a duration between two time_t values instead of subtracting/adding them directly"
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_helpers.c",
+   "line": 156,
+   "message": "Function 'get_wpa_cli_event' does not validate pointer parameter 'mon' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'mon' at the start of the function, e.g., 'if (!mon) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_helpers.c",
+   "line": 156,
+   "message": "Function 'get_wpa_cli_event' does not validate pointer parameter 'event' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'event' at the start of the function, e.g., 'if (!event) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_helpers.c",
+   "line": 156,
+   "message": "Function 'get_wpa_cli_event' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  },
+  {
+   "column": 20,
+   "file": "src/common/wpa_helpers.c",
+   "line": 157,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 33,
+   "file": "src/common/wpa_helpers.c",
+   "line": 157,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_helpers.c",
+   "line": 163,
+   "message": "Function 'get_wpa_status' does not validate pointer parameter 'ifname' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ifname' at the start of the function, e.g., 'if (!ifname) { return error_code; }'"
+  },
+  {
+   "column": 31,
+   "file": "src/common/wpa_helpers.c",
+   "line": 163,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 51,
+   "file": "src/common/wpa_helpers.c",
+   "line": 163,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 64,
+   "file": "src/common/wpa_helpers.c",
+   "line": 163,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/common/wpa_helpers.c",
+   "line": 181,
+   "message": "Potentially unsafe array access with variable index 'len': Buffer 'buf' with size 4096 (allocated at line 167)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 41,
+   "file": "src/common/wpa_helpers.c",
+   "line": 193,
+   "message": "Potentially unsafe array access with variable index 'flen': Buffer 'pos' with size 4096 (allocated at line 167)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 3,
+   "file": "src/common/wpa_helpers.c",
+   "line": 201,
+   "message": "Pointer dereference '*end++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "src/common/wpa_helpers.c",
+   "line": 204,
+   "message": "memcpy() size argument contains arithmetic that may overflow: 'end - pos'",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Validate size calculations before passing to memory functions"
+  },
+  {
+   "column": 3,
+   "file": "src/common/wpa_helpers.c",
+   "line": 204,
+   "message": "memcpy used for string copying may not include null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Use strcpy/strncpy or memcpy with size+1 for null terminator"
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_helpers.c",
+   "line": 212,
+   "message": "Function 'wait_ip_addr' does not validate pointer parameter 'ifname' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ifname' at the start of the function, e.g., 'if (!ifname) { return error_code; }'"
+  },
+  {
+   "column": 9,
+   "file": "src/common/wpa_helpers.c",
+   "line": 219,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 4,
+   "file": "src/common/wpa_helpers.c",
+   "line": 224,
+   "message": "Type mismatch in printf(): format specifier '%s' expects Pointer but argument 1 ('ip') is Integer",
+   "rule_id": "FIO47-C",
+   "severity": "High",
+   "suggestion": "Ensure format specifiers match argument types"
+  },
+  {
+   "column": 9,
+   "file": "src/common/wpa_helpers.c",
+   "line": 246,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 9,
+   "file": "src/common/wpa_helpers.c",
+   "line": 246,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_helpers.c",
+   "line": 250,
+   "message": "Function 'set_network' does not validate pointer parameter 'ifname' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ifname' at the start of the function, e.g., 'if (!ifname) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_helpers.c",
+   "line": 250,
+   "message": "Function 'set_network' does not validate pointer parameter 'field' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'field' at the start of the function, e.g., 'if (!field) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_helpers.c",
+   "line": 250,
+   "message": "Function 'set_network' does not validate pointer parameter 'value' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'value' at the start of the function, e.g., 'if (!value) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/wpa_helpers.c",
+   "line": 254,
+   "message": "Return value of 'snprintf' ignored: 'snprintf(buf, sizeof(buf), \"SET_NETWORK %d %s %s\", id, field, value)' - Returns negative on error, or >= buffer size on truncation",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check result: int ret = snprintf(buf, size, fmt, ...); if (ret < 0 || ret >= size) handle_error();"
+  },
+  {
+   "column": 2,
+   "file": "src/common/wpa_helpers.c",
+   "line": 254,
+   "message": "Call to snprintf may inadvertently truncate string without proper length validation",
+   "rule_id": "STR03-C",
+   "severity": "Medium",
+   "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+  },
+  {
+   "column": 57,
+   "file": "src/common/wpa_helpers.c",
+   "line": 254,
+   "message": "Do not cast away const qualification: 'field'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_helpers.c",
+   "line": 259,
+   "message": "Function 'set_network_quoted' does not validate pointer parameter 'ifname' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ifname' at the start of the function, e.g., 'if (!ifname) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_helpers.c",
+   "line": 259,
+   "message": "Function 'set_network_quoted' does not validate pointer parameter 'field' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'field' at the start of the function, e.g., 'if (!field) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_helpers.c",
+   "line": 259,
+   "message": "Function 'set_network_quoted' does not validate pointer parameter 'value' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'value' at the start of the function, e.g., 'if (!value) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/wpa_helpers.c",
+   "line": 263,
+   "message": "Return value of 'snprintf' ignored: 'snprintf(buf, sizeof(buf), \"SET_NETWORK %d %s \\\"%s\\\"\",\n\t\t id, field, value)' - Returns negative on error, or >= buffer size on truncation",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check result: int ret = snprintf(buf, size, fmt, ...); if (ret < 0 || ret >= size) handle_error();"
+  },
+  {
+   "column": 2,
+   "file": "src/common/wpa_helpers.c",
+   "line": 263,
+   "message": "Call to snprintf may inadvertently truncate string without proper length validation",
+   "rule_id": "STR03-C",
+   "severity": "Medium",
+   "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+  },
+  {
+   "column": 10,
+   "file": "src/common/wpa_helpers.c",
+   "line": 263,
+   "message": "Function 'snprintf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 8,
+   "file": "src/common/wpa_helpers.c",
+   "line": 264,
+   "message": "Do not cast away const qualification: 'field'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 9,
+   "file": "src/common/wpa_helpers.c",
+   "line": 275,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 9,
+   "file": "src/common/wpa_helpers.c",
+   "line": 275,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_helpers.c",
+   "line": 279,
+   "message": "Function 'set_cred' does not validate pointer parameter 'ifname' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ifname' at the start of the function, e.g., 'if (!ifname) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_helpers.c",
+   "line": 279,
+   "message": "Function 'set_cred' does not validate pointer parameter 'field' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'field' at the start of the function, e.g., 'if (!field) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_helpers.c",
+   "line": 279,
+   "message": "Function 'set_cred' does not validate pointer parameter 'value' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'value' at the start of the function, e.g., 'if (!value) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/wpa_helpers.c",
+   "line": 282,
+   "message": "Return value of 'snprintf' ignored: 'snprintf(buf, sizeof(buf), \"SET_CRED %d %s %s\", id, field, value)' - Returns negative on error, or >= buffer size on truncation",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check result: int ret = snprintf(buf, size, fmt, ...); if (ret < 0 || ret >= size) handle_error();"
+  },
+  {
+   "column": 2,
+   "file": "src/common/wpa_helpers.c",
+   "line": 282,
+   "message": "Call to snprintf may inadvertently truncate string without proper length validation",
+   "rule_id": "STR03-C",
+   "severity": "Medium",
+   "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+  },
+  {
+   "column": 54,
+   "file": "src/common/wpa_helpers.c",
+   "line": 282,
+   "message": "Do not cast away const qualification: 'field'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_helpers.c",
+   "line": 287,
+   "message": "Function 'set_cred_quoted' does not validate pointer parameter 'ifname' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ifname' at the start of the function, e.g., 'if (!ifname) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_helpers.c",
+   "line": 287,
+   "message": "Function 'set_cred_quoted' does not validate pointer parameter 'field' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'field' at the start of the function, e.g., 'if (!field) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/common/wpa_helpers.c",
+   "line": 287,
+   "message": "Function 'set_cred_quoted' does not validate pointer parameter 'value' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'value' at the start of the function, e.g., 'if (!value) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/common/wpa_helpers.c",
+   "line": 291,
+   "message": "Return value of 'snprintf' ignored: 'snprintf(buf, sizeof(buf), \"SET_CRED %d %s \\\"%s\\\"\",\n\t\t id, field, value)' - Returns negative on error, or >= buffer size on truncation",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check result: int ret = snprintf(buf, size, fmt, ...); if (ret < 0 || ret >= size) handle_error();"
+  },
+  {
+   "column": 2,
+   "file": "src/common/wpa_helpers.c",
+   "line": 291,
+   "message": "Call to snprintf may inadvertently truncate string without proper length validation",
+   "rule_id": "STR03-C",
+   "severity": "Medium",
+   "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+  },
+  {
+   "column": 10,
+   "file": "src/common/wpa_helpers.c",
+   "line": 291,
+   "message": "Function 'snprintf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 8,
+   "file": "src/common/wpa_helpers.c",
+   "line": 292,
+   "message": "Do not cast away const qualification: 'field'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  }
+ ]
+}

@@ -1,0 +1,535 @@
+{
+ "wpa_supplicant/interworking.c#part2of2": [
+  {
+   "column": 7,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1919,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1922,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1922,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1931,
+   "message": "Passing string literal to function 'wpa_config_set' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1951,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1954,
+   "message": "Double-free: 'count' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1954,
+   "message": "Double free detected: 'realm' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate nai_realm_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1954,
+   "message": "Double free detected: 'count' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate nai_realm_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1967,
+   "message": "sizeof applied to pointer/array parameter 'wpa_s' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(wpa_s->imsi)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 1974,
+   "message": "Potentially unsafe array access with variable index 'len': Buffer 'imsi' with size 16 (allocated at line 2025)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2010,
+   "message": "Potentially unsafe array access with variable index 'len': Buffer 'imsi' with size 16 (allocated at line 2025)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2022,
+   "message": "Variable 'sep' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'sep' before use, e.g., at its declaration"
+  },
+  {
+   "column": 15,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2023,
+   "message": "Variable 'imsi' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'imsi' before use, e.g., at its declaration"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2025,
+   "message": "Variable 'imsi_buf' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'imsi_buf' before use, e.g., at its declaration"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2086,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2154,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2199,
+   "message": "Static variable 'interworking_credentials_available_realm' used without explicit initialization",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'interworking_credentials_available_realm' before use, e.g., at its declaration"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2201,
+   "message": "Static variable 'interworking_credentials_available_3gpp' used without explicit initialization",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'interworking_credentials_available_3gpp' before use, e.g., at its declaration"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2227,
+   "message": "Function returns pointer to local variable 'cred' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2241,
+   "message": "Function returns pointer to local variable 'cred' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2247,
+   "message": "Function 'domain_name_list_contains' does not validate pointer parameter 'domain' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'domain' at the start of the function, e.g., 'if (!domain) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2284,
+   "message": "Function 'interworking_home_sp_cred' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2285,
+   "message": "Pointer parameter 'cred' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *cred'"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2295,
+   "message": "Potential null pointer dereference in member access of variable 'cred'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'cred' is not NULL before member access"
+  },
+  {
+   "column": 54,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2306,
+   "message": "Pointer parameter 'imsi' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *imsi'"
+  },
+  {
+   "column": 54,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2306,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 56,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2386,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 29,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2387,
+   "message": "Pointer parameter 'partner' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *partner'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2393,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 25,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2405,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2409,
+   "message": "Potential null pointer dereference in member access of variable 'bss'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'bss' is not NULL before member access"
+  },
+  {
+   "column": 18,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2420,
+   "message": "Potential null pointer dereference in member access of variable 'cred'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'cred' is not NULL before member access"
+  },
+  {
+   "column": 46,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2449,
+   "message": "Potential null pointer dereference in member access of variable 'selected'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'selected' is not NULL before member access"
+  },
+  {
+   "column": 6,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2450,
+   "message": "Potential null pointer dereference in member access of variable 'cred'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'cred' is not NULL before member access"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2476,
+   "message": "Value assigned to 'best_prio' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 29,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2544,
+   "message": "Passing null pointer 'selected2_cred' to 'cred_prio_cmp' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'selected2_cred' is not NULL before passing to 'cred_prio_cmp'"
+  },
+  {
+   "column": 30,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2551,
+   "message": "Passing null pointer 'selected2_home_cred' to 'cred_prio_cmp' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'selected2_home_cred' is not NULL before passing to 'cred_prio_cmp'"
+  },
+  {
+   "column": 29,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2559,
+   "message": "Passing null pointer 'selected_cred' to 'cred_prio_cmp' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'selected_cred' is not NULL before passing to 'cred_prio_cmp'"
+  },
+  {
+   "column": 30,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2566,
+   "message": "Passing null pointer 'selected_home_cred' to 'cred_prio_cmp' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'selected_home_cred' is not NULL before passing to 'cred_prio_cmp'"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2591,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2640,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 75,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2646,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2671,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 17,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2714,
+   "message": "Memory allocated with 'wpa_bss_anqp_alloc' for variable 'bss->anqp' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(bss->anqp)' before the variable goes out of scope"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2720,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2742,
+   "message": "Variable 'bss' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'bss' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2777,
+   "message": "Function 'anqp_send_req' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 50,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2857,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 2869,
+   "message": "Value assigned to 'elem' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 3004,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 3091,
+   "message": "Function 'anqp_resp_cb' does not validate pointer parameter 'dst' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dst' at the start of the function, e.g., 'if (!dst) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 3091,
+   "message": "Function 'anqp_resp_cb' does not validate pointer parameter 'adv_proto' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'adv_proto' at the start of the function, e.g., 'if (!adv_proto) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 3091,
+   "message": "Function 'anqp_resp_cb' does not validate pointer parameter 'resp' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'resp' at the start of the function, e.g., 'if (!resp) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 3129,
+   "message": "Value assigned to 'bss' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 3129,
+   "message": "Local variable 'tmp' assigned to global/static variable 'bss' - creates dangling pointer",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage for local variable or copy data instead of assigning pointer"
+  },
+  {
+   "column": 32,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 3173,
+   "message": "Pointer parameter 'scan_res' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *scan_res'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 3181,
+   "message": "Function 'interworking_select' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 3181,
+   "message": "Function 'interworking_select' does not validate pointer parameter 'freqs' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'freqs' at the start of the function, e.g., 'if (!freqs) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/interworking.c",
+   "line": 3232,
+   "message": "Function 'gas_send_request' does not validate pointer parameter 'wpa_s' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wpa_s' at the start of the function, e.g., 'if (!wpa_s) { return error_code; }'"
+  }
+ ]
+}

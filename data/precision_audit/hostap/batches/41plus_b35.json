@@ -1,0 +1,823 @@
+{
+ "src/crypto/crypto_openssl.c#part4of4": [
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4606,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4613,
+   "message": "Function 'crypto_rsa_oaep_sha256_encrypt' does not validate pointer parameter 'key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4613,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4626,
+   "message": "Variable(s) 'res' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4629,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4631,
+   "message": "Assignment in if statement condition: 'res = wpabuf_alloc(outlen)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4632,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4650,
+   "message": "Function 'crypto_rsa_oaep_sha256_decrypt' does not validate pointer parameter 'key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4650,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4663,
+   "message": "Variable(s) 'res' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4666,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4668,
+   "message": "Assignment in if statement condition: 'res = wpabuf_alloc(outlen)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4669,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 22,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4731,
+   "message": "sizeof applied to pointer/array parameter 'ctx' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*ctx)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 25,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4743,
+   "message": "Dereference of uninitialized pointer 'ctx'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ctx' before dereferencing"
+  },
+  {
+   "column": 9,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4819,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4829,
+   "message": "Function returns pointer to local variable 'ctx' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4830,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 49,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4836,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4855,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 16,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4857,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4860,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 9,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4887,
+   "message": "Function 'EVP_MAC_fetch' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4920,
+   "message": "Double-free: 'hctx' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4920,
+   "message": "Double free detected: 'hctx' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate EVP_MAC_CTX_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 18,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4947,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 10,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4948,
+   "message": "Pointer parameter 'out' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *out'"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4952,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 31,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4954,
+   "message": "'label' (signed/plain char) converted to larger integer type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before conversion to larger type"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4955,
+   "message": "Variable 'pos' should be declared volatile - modified around function calls that may have external side effects",
+   "rule_id": "DCL22-C",
+   "severity": "Low",
+   "suggestion": "Declare as 'volatile' to prevent compiler optimizations that assume variable state is unchanged across function calls"
+  },
+  {
+   "column": 17,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4983,
+   "message": "Variable 'suite_id' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'suite_id' before use, e.g., at its declaration"
+  },
+  {
+   "column": 9,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 4992,
+   "message": "Function 'EVP_MAC_fetch' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 20,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5009,
+   "message": "Variable 'hctx' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'hctx' before use, e.g., at its declaration"
+  },
+  {
+   "column": 26,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5010,
+   "message": "Variable 'hmac' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'hmac' before use, e.g., at its declaration"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5063,
+   "message": "Double free detected: 'hctx' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate HMAC_CTX_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5077,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5077,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5078,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5106,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5106,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5107,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5107,
+   "message": "Sensitive buffer 'secret' not cleared before function exit",
+   "rule_id": "MEM03-C",
+   "severity": "Medium",
+   "suggestion": "Call SecureZeroMemory(secret, size) or memset(secret, 0, size) before the buffer goes out of scope"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5170,
+   "message": "Variable(s) 'dhss' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5170,
+   "message": "Variable(s) 'dhss' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5174,
+   "message": "Assignment in if statement condition: 'dhss = os_malloc(dhss_len)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5180,
+   "message": "Potential memory leak: 'pctx' allocated with 'EVP_PKEY_CTX_new' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'pctx' is freed before this goto or at the target label"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5187,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5197,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 37,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5197,
+   "message": "Passing null pointer 'dhss' to 'hpke_extract_and_expand' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'dhss' is not NULL before passing to 'hpke_extract_and_expand'"
+  },
+  {
+   "column": 17,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5201,
+   "message": "Passing null pointer 'dhss' to 'bin_clear_free' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'dhss' is not NULL before passing to 'bin_clear_free'"
+  },
+  {
+   "column": 36,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5211,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5227,
+   "message": "Potential memory leak: 'cctx' allocated with 'EVP_CIPHER_CTX_new' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'cctx' is freed before this goto or at the target label"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5233,
+   "message": "Potential memory leak: 'cctx' allocated with 'EVP_CIPHER_CTX_new' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'cctx' is freed before this goto or at the target label"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5241,
+   "message": "Potential memory leak: 'cctx' allocated with 'EVP_CIPHER_CTX_new' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'cctx' is freed before this goto or at the target label"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5250,
+   "message": "Potential memory leak: 'cctx' allocated with 'EVP_CIPHER_CTX_new' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'cctx' is freed before this goto or at the target label"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5257,
+   "message": "Double free detected: 'ct' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5259,
+   "message": "Potential memory leak: 'cctx' allocated with 'EVP_CIPHER_CTX_new' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'cctx' is freed before this goto or at the target label"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5276,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5276,
+   "message": "Sensitive buffer 'shared_secret' not cleared before function exit",
+   "rule_id": "MEM03-C",
+   "severity": "Medium",
+   "suggestion": "Call SecureZeroMemory(shared_secret, size) or memset(shared_secret, 0, size) before the buffer goes out of scope"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5277,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5277,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5317,
+   "message": "Value assigned to 'pctx' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5321,
+   "message": "Value assigned to 'pk_e' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5337,
+   "message": "Variable(s) 'dhss' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5337,
+   "message": "Variable(s) 'dhss' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5341,
+   "message": "Assignment in if statement condition: 'dhss = os_malloc(dhss_len)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5347,
+   "message": "Potential memory leak: 'pctx' allocated with 'EVP_PKEY_CTX_new' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'pctx' is freed before this goto or at the target label"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5357,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 37,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5357,
+   "message": "Passing null pointer 'dhss' to 'hpke_extract_and_expand' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'dhss' is not NULL before passing to 'hpke_extract_and_expand'"
+  },
+  {
+   "column": 17,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5361,
+   "message": "Passing null pointer 'dhss' to 'bin_clear_free' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'dhss' is not NULL before passing to 'bin_clear_free'"
+  },
+  {
+   "column": 36,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5370,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5392,
+   "message": "Potential memory leak: 'cctx' allocated with 'EVP_CIPHER_CTX_new' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'cctx' is freed before this goto or at the target label"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5398,
+   "message": "Potential memory leak: 'cctx' allocated with 'EVP_CIPHER_CTX_new' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'cctx' is freed before this goto or at the target label"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5406,
+   "message": "Potential memory leak: 'cctx' allocated with 'EVP_CIPHER_CTX_new' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'cctx' is freed before this goto or at the target label"
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5411,
+   "message": "Do not cast away const qualification: '(void *) tag'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5416,
+   "message": "Potential memory leak: 'cctx' allocated with 'EVP_CIPHER_CTX_new' may not be freed due to goto",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Ensure 'cctx' is freed before this goto or at the target label"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5422,
+   "message": "Double free detected: 'pt' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5440,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5440,
+   "message": "Sensitive buffer 'shared_secret' not cleared before function exit",
+   "rule_id": "MEM03-C",
+   "severity": "Medium",
+   "suggestion": "Call SecureZeroMemory(shared_secret, size) or memset(shared_secret, 0, size) before the buffer goes out of scope"
+  },
+  {
+   "column": 22,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5474,
+   "message": "sizeof applied to pointer/array parameter 'suite' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*suite)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5515,
+   "message": "Implicit boolean test on 'OSSL_HPKE_suite_check(*suite)'. May be unclear what constitutes success or failure.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Use explicit test: OSSL_HPKE_suite_check(*suite) == 0 or OSSL_HPKE_suite_check(*suite) != 0 depending on success convention"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5555,
+   "message": "Memory allocated with 'wpabuf_alloc' for variable 'buf@5555:8' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(buf@5555:8)' before the variable goes out of scope"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5568,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5591,
+   "message": "Use-after-free: returning freed pointer 'res'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not return freed memory from functions."
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5640,
+   "message": "Memory allocated with 'wpabuf_alloc' for variable 'buf@5640:8' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(buf@5640:8)' before the variable goes out of scope"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5658,
+   "message": "Use-after-free: returning freed pointer 'res'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not return freed memory from functions."
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5663,
+   "message": "Function 'hpke_base_seal' does not validate pointer parameter 'info' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'info' at the start of the function, e.g., 'if (!info) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5663,
+   "message": "Function 'hpke_base_seal' does not validate pointer parameter 'aad' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'aad' at the start of the function, e.g., 'if (!aad) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5663,
+   "message": "Function 'hpke_base_seal' does not validate pointer parameter 'pt' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pt' at the start of the function, e.g., 'if (!pt) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5676,
+   "message": "Function 'hpke_base_open' does not validate pointer parameter 'info' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'info' at the start of the function, e.g., 'if (!info) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 5676,
+   "message": "Function 'hpke_base_open' does not validate pointer parameter 'aad' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'aad' at the start of the function, e.g., 'if (!aad) { return error_code; }'"
+  }
+ ]
+}

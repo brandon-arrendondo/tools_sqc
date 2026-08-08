@@ -1,0 +1,20 @@
+{
+ "labels": [
+  {"rule": "DCL13-C", "file": "src/common/sae.c", "line": 2312, "verdict": "TP", "confidence": "med", "reason": "Plain internal helper, sae only read (tmp->kck/kck_len/prime_len); not a dispatch/callback contract; low-severity genuine TP."},
+  {"rule": "ENV01-C", "file": "src/common/sae.c", "line": 2321, "verdict": "FP", "confidence": "high", "reason": "Wholesale ENV01-C misfire: scalar_b1/b2 stack buffers, no getenv anywhere in file."},
+  {"rule": "EXP43-C", "file": "src/common/sae.c", "line": 2346, "verdict": "FP", "confidence": "high", "reason": "hkdf_extract's u8* params are not restrict-qualified, and confirm != salt/addr anyway; EXP43-C UB only applies to restrict aliasing."},
+  {"rule": "ENV01-C", "file": "src/common/sae.c", "line": 2358, "verdict": "FP", "confidence": "high", "reason": "Wholesale ENV01-C misfire: element_b1 fixed-size stack buffer, no getenv in file."},
+  {"rule": "MEM05-C", "file": "src/common/sae.c", "line": 2358, "verdict": "FP", "confidence": "high", "reason": "element_b1 is a fixed compile-time-sized array (2*SAE_MAX_ECC_PRIME_LEN), not a VLA; matches confirmed MEM05-C fixed-size-buffer misfire."},
+  {"rule": "ENV01-C", "file": "src/common/sae.c", "line": 2359, "verdict": "FP", "confidence": "high", "reason": "Wholesale ENV01-C misfire: element_b2 fixed-size stack buffer, no getenv in file."},
+  {"rule": "MEM05-C", "file": "src/common/sae.c", "line": 2359, "verdict": "FP", "confidence": "high", "reason": "element_b2 is a fixed compile-time-sized array, not a VLA; same misfire as element_b1."},
+  {"rule": "EXP33-C", "file": "src/common/sae.c", "line": 2362, "verdict": "FP", "confidence": "high", "reason": "element_b1 is the destination write-pointer arg to crypto_ec_point_to_bin (writes EC point), not a read of uninitialized data."},
+  {"rule": "EXP33-C", "file": "src/common/sae.c", "line": 2364, "verdict": "FP", "confidence": "high", "reason": "element_b2 is likewise a write-destination arg to crypto_ec_point_to_bin, not a read."},
+  {"rule": "ENV01-C", "file": "src/common/sae.c", "line": 2381, "verdict": "FP", "confidence": "high", "reason": "Wholesale ENV01-C misfire: element_b1 (FFC variant) fixed-size stack buffer, no getenv in file."},
+  {"rule": "ENV01-C", "file": "src/common/sae.c", "line": 2382, "verdict": "FP", "confidence": "high", "reason": "Wholesale ENV01-C misfire: element_b2 (FFC variant) fixed-size stack buffer, no getenv in file."},
+  {"rule": "API05-C", "file": "src/common/sae.c", "line": 2438, "verdict": "FP", "confidence": "high", "reason": "sae_check_confirm(sae, data, len, ...): classic ptr-immediately-followed-by-its-size idiom, confirmed categorical API05-C FP."},
+  {"rule": "ENV01-C", "file": "src/common/sae.c", "line": 2440, "verdict": "FP", "confidence": "high", "reason": "Wholesale ENV01-C misfire: verifier[SAE_MAX_HASH_LEN] fixed-size stack buffer, no getenv in file."}
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {"tp": 1, "fp": 12, "fn": 0}
+}

@@ -1,0 +1,834 @@
+{
+ "src/p2p/p2p_build.c": [
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_build.c",
+   "line": 12,
+   "message": "Header file 'ieee802_11_defs.h' has the same first 8 characters (case-insensitive) as 'ieee802_11_common.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_defs.h' -> unique name)"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_build.c",
+   "line": 52,
+   "message": "Function returns pointer to local variable 'len' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_build.c",
+   "line": 56,
+   "message": "Function 'p2p_buf_update_ie_hdr' does not validate pointer parameter 'len' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'len' at the start of the function, e.g., 'if (!len) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_build.c",
+   "line": 59,
+   "message": "Potential null pointer dereference of variable 'len'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'len' is not NULL before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_build.c",
+   "line": 72,
+   "message": "Function returns pointer to local variable 'len' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 6,
+   "file": "src/p2p/p2p_build.c",
+   "line": 95,
+   "message": "Shift operation on signed integer 'go_intent' may be used for arithmetic optimization (use explicit arithmetic instead)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use explicit arithmetic operations like * or / instead of shift operations on signed integers"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_build.c",
+   "line": 99,
+   "message": "Function 'p2p_buf_add_listen_channel' does not validate pointer parameter 'country' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'country' at the start of the function, e.g., 'if (!country) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_build.c",
+   "line": 113,
+   "message": "Function 'p2p_buf_add_operating_channel' does not validate pointer parameter 'country' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'country' at the start of the function, e.g., 'if (!country) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_build.c",
+   "line": 127,
+   "message": "Function 'p2p_buf_add_pref_channel_list' does not validate pointer parameter 'pref_freq_list' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pref_freq_list' at the start of the function, e.g., 'if (!pref_freq_list) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_build.c",
+   "line": 167,
+   "message": "Function 'p2p_buf_add_channel_list' does not validate pointer parameter 'country' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'country' at the start of the function, e.g., 'if (!country) { return error_code; }'"
+  },
+  {
+   "column": 30,
+   "file": "src/p2p/p2p_build.c",
+   "line": 168,
+   "message": "Pointer parameter 'chan' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *chan'"
+  },
+  {
+   "column": 3,
+   "file": "src/p2p/p2p_build.c",
+   "line": 179,
+   "message": "Variable 'c' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const c = ..."
+  },
+  {
+   "column": 66,
+   "file": "src/p2p/p2p_build.c",
+   "line": 205,
+   "message": "Pointer parameter 'p2p' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *p2p'"
+  },
+  {
+   "column": 27,
+   "file": "src/p2p/p2p_build.c",
+   "line": 206,
+   "message": "Pointer parameter 'peer' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *peer'"
+  },
+  {
+   "column": 8,
+   "file": "src/p2p/p2p_build.c",
+   "line": 226,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 4,
+   "file": "src/p2p/p2p_build.c",
+   "line": 242,
+   "message": "sizeof applied to pointer/array parameter 'p2p' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(p2p->cfg->pri_dev_type)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_build.c",
+   "line": 264,
+   "message": "Function 'p2p_buf_add_device_id' does not validate pointer parameter 'dev_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dev_addr' at the start of the function, e.g., 'if (!dev_addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_build.c",
+   "line": 298,
+   "message": "Function 'p2p_buf_add_group_bssid' does not validate pointer parameter 'bssid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'bssid' at the start of the function, e.g., 'if (!bssid) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_build.c",
+   "line": 309,
+   "message": "Function 'p2p_buf_add_group_id' does not validate integer parameter 'ssid_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'ssid_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 74,
+   "file": "src/p2p/p2p_build.c",
+   "line": 333,
+   "message": "Pointer parameter 'desc' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *desc'"
+  },
+  {
+   "column": 5,
+   "file": "src/p2p/p2p_build.c",
+   "line": 335,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_build.c",
+   "line": 372,
+   "message": "Function 'p2p_buf_add_p2p_interface' does not validate pointer parameter 'p2p' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'p2p' at the start of the function, e.g., 'if (!p2p) { return error_code; }'"
+  },
+  {
+   "column": 68,
+   "file": "src/p2p/p2p_build.c",
+   "line": 372,
+   "message": "Pointer parameter 'p2p' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *p2p'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_build.c",
+   "line": 389,
+   "message": "Function 'p2p_buf_add_oob_go_neg_channel' does not validate pointer parameter 'country' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'country' at the start of the function, e.g., 'if (!country) { return error_code; }'"
+  },
+  {
+   "column": 67,
+   "file": "src/p2p/p2p_build.c",
+   "line": 406,
+   "message": "Pointer parameter 'p2p' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *p2p'"
+  },
+  {
+   "column": 71,
+   "file": "src/p2p/p2p_build.c",
+   "line": 421,
+   "message": "Pointer parameter 'p2p' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *p2p'"
+  },
+  {
+   "column": 47,
+   "file": "src/p2p/p2p_build.c",
+   "line": 479,
+   "message": "Pointer parameter 'p2p' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *p2p'"
+  },
+  {
+   "column": 48,
+   "file": "src/p2p/p2p_build.c",
+   "line": 495,
+   "message": "Pointer parameter 'p2p' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *p2p'"
+  },
+  {
+   "column": 20,
+   "file": "src/p2p/p2p_build.c",
+   "line": 511,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 13,
+   "file": "src/p2p/p2p_build.c",
+   "line": 520,
+   "message": "Scaled integer arithmetic with pointer: 'sizeof(adv_id) + sizeof(config_methods) + sizeof(u8)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 22,
+   "file": "src/p2p/p2p_build.c",
+   "line": 537,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:pos' and 'param:ie_len'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 18,
+   "file": "src/p2p/p2p_build.c",
+   "line": 555,
+   "message": "Scaled integer arithmetic with pointer: 'sizeof(u32) + sizeof(u16) + sizeof(u8)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 17,
+   "file": "src/p2p/p2p_build.c",
+   "line": 561,
+   "message": "Scaled integer arithmetic with pointer: 'sizeof(u32) + sizeof(u16) + sizeof(u8)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 3,
+   "file": "src/p2p/p2p_build.c",
+   "line": 562,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 13,
+   "file": "src/p2p/p2p_build.c",
+   "line": 562,
+   "message": "Scaled integer arithmetic with pointer: 'sizeof(u32) + sizeof(u16) + sizeof(u8)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 15,
+   "file": "src/p2p/p2p_build.c",
+   "line": 575,
+   "message": "Scaled integer arithmetic with pointer: '255 - 4 - (sizeof(u32) + sizeof(u16) + sizeof(u8))'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 26,
+   "file": "src/p2p/p2p_build.c",
+   "line": 575,
+   "message": "Scaled integer arithmetic with pointer: 'sizeof(u32) + sizeof(u16) + sizeof(u8)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 16,
+   "file": "src/p2p/p2p_build.c",
+   "line": 581,
+   "message": "Scaled integer arithmetic with pointer: 'sizeof(adv_id) + sizeof(config_methods) +\n\t\t\tsizeof(u8)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 33,
+   "file": "src/p2p/p2p_build.c",
+   "line": 629,
+   "message": "Pointer parameter 'adv_list' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *adv_list'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_build.c",
+   "line": 634,
+   "message": "Value assigned to 'tmp_buf' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_build.c",
+   "line": 635,
+   "message": "Value assigned to 'ie_len' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_build.c",
+   "line": 726,
+   "message": "Function 'p2p_buf_add_persistent_group_info' does not validate integer parameter 'ssid_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'ssid_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 59,
+   "file": "src/p2p/p2p_build.c",
+   "line": 739,
+   "message": "Pointer parameter 'p2p' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *p2p'"
+  },
+  {
+   "column": 59,
+   "file": "src/p2p/p2p_build.c",
+   "line": 820,
+   "message": "Pointer parameter 'p2p' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *p2p'"
+  },
+  {
+   "column": 38,
+   "file": "src/p2p/p2p_build.c",
+   "line": 876,
+   "message": "Pointer parameter 'p2p' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *p2p'"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_build.c",
+   "line": 1008,
+   "message": "Function returns pointer to local variable 'ie' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  }
+ ],
+ "src/utils/os.h": [
+  {
+   "column": 49,
+   "file": "src/utils/os.h",
+   "line": 48,
+   "message": "Pointer parameter 'a' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *a'"
+  },
+  {
+   "column": 68,
+   "file": "src/utils/os.h",
+   "line": 48,
+   "message": "Pointer parameter 'b' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *b'"
+  },
+  {
+   "column": 47,
+   "file": "src/utils/os.h",
+   "line": 55,
+   "message": "Pointer parameter 'a' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *a'"
+  },
+  {
+   "column": 66,
+   "file": "src/utils/os.h",
+   "line": 55,
+   "message": "Pointer parameter 'b' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *b'"
+  },
+  {
+   "column": 55,
+   "file": "src/utils/os.h",
+   "line": 69,
+   "message": "Pointer parameter 'a' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *a'"
+  },
+  {
+   "column": 27,
+   "file": "src/utils/os.h",
+   "line": 70,
+   "message": "Pointer parameter 'b' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *b'"
+  },
+  {
+   "column": 53,
+   "file": "src/utils/os.h",
+   "line": 77,
+   "message": "Pointer parameter 'a' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *a'"
+  },
+  {
+   "column": 75,
+   "file": "src/utils/os.h",
+   "line": 77,
+   "message": "Pointer parameter 'b' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *b'"
+  },
+  {
+   "column": 54,
+   "file": "src/utils/os.h",
+   "line": 125,
+   "message": "Pointer parameter 'ts' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ts'"
+  },
+  {
+   "column": 60,
+   "file": "src/utils/os.h",
+   "line": 131,
+   "message": "Pointer parameter 't' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *t'"
+  },
+  {
+   "column": 33,
+   "file": "src/utils/os.h",
+   "line": 185,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os.h",
+   "line": 260,
+   "message": "Function has pointer parameter without size argument: 'char * os_readfile(const char *name, size_t *len);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 31,
+   "file": "src/utils/os.h",
+   "line": 260,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os.h",
+   "line": 274,
+   "message": "Function has pointer parameter without size argument: 'int os_fdatasync(FILE *stream);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'FILE *stream' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 22,
+   "file": "src/utils/os.h",
+   "line": 299,
+   "message": "Division or modulo by 'size' without checking for zero",
+   "rule_id": "INT33-C",
+   "severity": "High",
+   "suggestion": "Check if 'size' is not zero before division"
+  },
+  {
+   "column": 24,
+   "file": "src/utils/os.h",
+   "line": 342,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 23,
+   "file": "src/utils/os.h",
+   "line": 360,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 41,
+   "file": "src/utils/os.h",
+   "line": 360,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 24,
+   "file": "src/utils/os.h",
+   "line": 371,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 42,
+   "file": "src/utils/os.h",
+   "line": 371,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 23,
+   "file": "src/utils/os.h",
+   "line": 380,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 26,
+   "file": "src/utils/os.h",
+   "line": 391,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 42,
+   "file": "src/utils/os.h",
+   "line": 391,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 31,
+   "file": "src/utils/os.h",
+   "line": 427,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 47,
+   "file": "src/utils/os.h",
+   "line": 427,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 27,
+   "file": "src/utils/os.h",
+   "line": 463,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 43,
+   "file": "src/utils/os.h",
+   "line": 463,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os.h",
+   "line": 494,
+   "message": "Variadic function declaration should use proper header",
+   "rule_id": "EXP37-C",
+   "severity": "Medium",
+   "suggestion": "Include proper header instead of declaring variadic function"
+  },
+  {
+   "column": 22,
+   "file": "src/utils/os.h",
+   "line": 494,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 52,
+   "file": "src/utils/os.h",
+   "line": 494,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 24,
+   "file": "src/utils/os.h",
+   "line": 500,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 44,
+   "file": "src/utils/os.h",
+   "line": 585,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 22,
+   "file": "src/utils/os.h",
+   "line": 587,
+   "message": "Division or modulo by 'size' without checking for zero",
+   "rule_id": "INT33-C",
+   "severity": "High",
+   "suggestion": "Check if 'size' is not zero before division"
+  },
+  {
+   "column": 44,
+   "file": "src/utils/os.h",
+   "line": 599,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 44,
+   "file": "src/utils/os.h",
+   "line": 599,
+   "message": "Pointer parameter 'ptr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ptr'"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os.h",
+   "line": 618,
+   "message": "Function has pointer parameter without size argument: 'size_t os_strlcpy(char *dest, const char *src, size_t siz);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'char *dest' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 24,
+   "file": "src/utils/os.h",
+   "line": 618,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 42,
+   "file": "src/utils/os.h",
+   "line": 618,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 32,
+   "file": "src/utils/os.h",
+   "line": 635,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 47,
+   "file": "src/utils/os.h",
+   "line": 635,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 29,
+   "file": "src/utils/os.h",
+   "line": 647,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os.h",
+   "line": 693,
+   "message": "Function has pointer parameter without size argument: 'int testing_set_fail_pattern(bool is_alloc, char *patterns);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'char *patterns' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 50,
+   "file": "src/utils/os.h",
+   "line": 694,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 64,
+   "file": "src/utils/os.h",
+   "line": 701,
+   "message": "Pointer parameter 'patterns' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *patterns'"
+  },
+  {
+   "column": 64,
+   "file": "src/utils/os.h",
+   "line": 706,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 64,
+   "file": "src/utils/os.h",
+   "line": 706,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  }
+ ]
+}

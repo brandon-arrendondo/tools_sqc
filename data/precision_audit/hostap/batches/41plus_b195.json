@@ -1,0 +1,868 @@
+{
+ "src/tls/x509v3.c": [
+  {
+   "column": 27,
+   "file": "src/tls/x509v3.c",
+   "line": 37,
+   "message": "sizeof applied to pointer/array parameter 'name' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(name->rid)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 5,
+   "file": "src/tls/x509v3.c",
+   "line": 47,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/x509v3.c",
+   "line": 67,
+   "message": "Function 'x509_certificate_chain_free' does not validate pointer parameter 'cert' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cert' at the start of the function, e.g., 'if (!cert) { return error_code; }'"
+  },
+  {
+   "column": 44,
+   "file": "src/tls/x509v3.c",
+   "line": 86,
+   "message": "Pointer parameter 'a' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *a'"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/x509v3.c",
+   "line": 93,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'ipos' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/x509v3.c",
+   "line": 93,
+   "message": "Manual string copying loop without apparent bounds checking detected.",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Add explicit bounds checking or use standard string functions with size limits"
+  },
+  {
+   "column": 4,
+   "file": "src/tls/x509v3.c",
+   "line": 98,
+   "message": "Direct assignment of flexible array structure instances. Use memcpy() for dynamic copying.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Use memcpy() to copy the structure and its flexible array member"
+  },
+  {
+   "column": 4,
+   "file": "src/tls/x509v3.c",
+   "line": 98,
+   "message": "Pointer dereference '*opos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 14,
+   "file": "src/tls/x509v3.c",
+   "line": 98,
+   "message": "Pointer dereference '*ipos' (char type) assigned to larger type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment: (unsigned char)*ptr"
+  },
+  {
+   "column": 14,
+   "file": "src/tls/x509v3.c",
+   "line": 98,
+   "message": "Pointer dereference '*ipos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/x509v3.c",
+   "line": 102,
+   "message": "Pointer dereference '*opos--' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 34,
+   "file": "src/tls/x509v3.c",
+   "line": 103,
+   "message": "Potential null pointer dereference of variable 'opos'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'opos' is not NULL before dereferencing"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/x509v3.c",
+   "line": 104,
+   "message": "Pointer dereference '*opos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 11,
+   "file": "src/tls/x509v3.c",
+   "line": 124,
+   "message": "Passing null pointer 'aa' to 'os_free' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'aa' is not NULL before passing to 'os_free'"
+  },
+  {
+   "column": 11,
+   "file": "src/tls/x509v3.c",
+   "line": 125,
+   "message": "Passing null pointer 'bb' to 'os_free' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'bb' is not NULL before passing to 'os_free'"
+  },
+  {
+   "column": 40,
+   "file": "src/tls/x509v3.c",
+   "line": 148,
+   "message": "Pointer parameter 'a' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *a'"
+  },
+  {
+   "column": 61,
+   "file": "src/tls/x509v3.c",
+   "line": 148,
+   "message": "Pointer parameter 'b' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *b'"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/x509v3.c",
+   "line": 181,
+   "message": "Function 'x509_parse_algorithm_identifier' does not validate integer parameter 'len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/x509v3.c",
+   "line": 205,
+   "message": "Local variable 'end' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/x509v3.c",
+   "line": 244,
+   "message": "Local variable 'end' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/x509v3.c",
+   "line": 285,
+   "message": "Function 'x509_parse_name' does not validate integer parameter 'len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 4,
+   "file": "src/tls/x509v3.c",
+   "line": 374,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  },
+  {
+   "column": 10,
+   "file": "src/tls/x509v3.c",
+   "line": 415,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 40,
+   "file": "src/tls/x509v3.c",
+   "line": 492,
+   "message": "Pointer parameter 'name' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *name'"
+  },
+  {
+   "column": 52,
+   "file": "src/tls/x509v3.c",
+   "line": 492,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 52,
+   "file": "src/tls/x509v3.c",
+   "line": 492,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 23,
+   "file": "src/tls/x509v3.c",
+   "line": 513,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'pos' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 23,
+   "file": "src/tls/x509v3.c",
+   "line": 513,
+   "message": "Out-of-bounds array access at index -1: Buffer 'pos' with size 128 (allocated at line 2145)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 41,
+   "file": "src/tls/x509v3.c",
+   "line": 513,
+   "message": "Array subscript -2 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'pos' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 41,
+   "file": "src/tls/x509v3.c",
+   "line": 513,
+   "message": "Out-of-bounds array access at index -2: Buffer 'pos' with size 128 (allocated at line 2145)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 3,
+   "file": "src/tls/x509v3.c",
+   "line": 515,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/x509v3.c",
+   "line": 517,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/x509v3.c",
+   "line": 530,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/x509v3.c",
+   "line": 531,
+   "message": "Array subscript -1 is negative. Array indices must be non-negative (0 or greater).",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Array 'end' requires a non-negative index. Negative indices access memory before the array."
+  },
+  {
+   "column": 35,
+   "file": "src/tls/x509v3.c",
+   "line": 535,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 6,
+   "file": "src/tls/x509v3.c",
+   "line": 545,
+   "message": "Use of 'sscanf()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace sscanf() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 6,
+   "file": "src/tls/x509v3.c",
+   "line": 545,
+   "message": "Type mismatch in sscanf(): format specifier '%d' expects Integer but argument 1 ('\"%2d\"') is Pointer",
+   "rule_id": "FIO47-C",
+   "severity": "High",
+   "suggestion": "Ensure format specifiers match argument types"
+  },
+  {
+   "column": 6,
+   "file": "src/tls/x509v3.c",
+   "line": 545,
+   "message": "Input function 'sscanf' used for integer conversion without errno check for ERANGE",
+   "rule_id": "INT05-C",
+   "severity": "Medium",
+   "suggestion": "Either use fgets() + strtol/strtoll() for safe conversion, or check errno for ERANGE after scanf"
+  },
+  {
+   "column": 6,
+   "file": "src/tls/x509v3.c",
+   "line": 545,
+   "message": "'sscanf' is deprecated/obsolescent -- prefer sscanf_s()",
+   "rule_id": "MSC24-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'sscanf' with sscanf_s()"
+  },
+  {
+   "column": 9,
+   "file": "src/tls/x509v3.c",
+   "line": 547,
+   "message": "Variable 'ret' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'ret' before use, e.g., at its declaration"
+  },
+  {
+   "column": 35,
+   "file": "src/tls/x509v3.c",
+   "line": 551,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 6,
+   "file": "src/tls/x509v3.c",
+   "line": 563,
+   "message": "Use of 'sscanf()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace sscanf() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 6,
+   "file": "src/tls/x509v3.c",
+   "line": 563,
+   "message": "Type mismatch in sscanf(): format specifier '%d' expects Integer but argument 1 ('\"%4d\"') is Pointer",
+   "rule_id": "FIO47-C",
+   "severity": "High",
+   "suggestion": "Ensure format specifiers match argument types"
+  },
+  {
+   "column": 6,
+   "file": "src/tls/x509v3.c",
+   "line": 563,
+   "message": "Input function 'sscanf' used for integer conversion without errno check for ERANGE",
+   "rule_id": "INT05-C",
+   "severity": "Medium",
+   "suggestion": "Either use fgets() + strtol/strtoll() for safe conversion, or check errno for ERANGE after scanf"
+  },
+  {
+   "column": 6,
+   "file": "src/tls/x509v3.c",
+   "line": 563,
+   "message": "'sscanf' is deprecated/obsolescent -- prefer sscanf_s()",
+   "rule_id": "MSC24-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'sscanf' with sscanf_s()"
+  },
+  {
+   "column": 9,
+   "file": "src/tls/x509v3.c",
+   "line": 565,
+   "message": "Variable 'ret' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'ret' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/x509v3.c",
+   "line": 569,
+   "message": "Function 'x509_parse_time' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/x509v3.c",
+   "line": 569,
+   "message": "Function 'x509_parse_time' does not validate integer parameter 'len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 4,
+   "file": "src/tls/x509v3.c",
+   "line": 601,
+   "message": "Signed integer compound addition 'year += 2000' may overflow without checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 4,
+   "file": "src/tls/x509v3.c",
+   "line": 603,
+   "message": "Signed integer compound addition 'year += 1900' may overflow without checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 9,
+   "file": "src/tls/x509v3.c",
+   "line": 727,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:next' and 'hdr.payload'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 43,
+   "file": "src/tls/x509v3.c",
+   "line": 746,
+   "message": "Pointer parameter 'oid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *oid'"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/x509v3.c",
+   "line": 856,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'pos' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/x509v3.c",
+   "line": 1033,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/x509v3.c",
+   "line": 1034,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/x509v3.c",
+   "line": 1035,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/x509v3.c",
+   "line": 1036,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 56,
+   "file": "src/tls/x509v3.c",
+   "line": 1097,
+   "message": "Pointer parameter 'oid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *oid'"
+  },
+  {
+   "column": 44,
+   "file": "src/tls/x509v3.c",
+   "line": 1108,
+   "message": "Pointer parameter 'oid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *oid'"
+  },
+  {
+   "column": 45,
+   "file": "src/tls/x509v3.c",
+   "line": 1221,
+   "message": "Pointer parameter 'oid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *oid'"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/x509v3.c",
+   "line": 1498,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'pos' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 44,
+   "file": "src/tls/x509v3.c",
+   "line": 1645,
+   "message": "Pointer parameter 'oid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *oid'"
+  },
+  {
+   "column": 35,
+   "file": "src/tls/x509v3.c",
+   "line": 1671,
+   "message": "Pointer parameter 'oid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *oid'"
+  },
+  {
+   "column": 42,
+   "file": "src/tls/x509v3.c",
+   "line": 1683,
+   "message": "Pointer parameter 'oid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *oid'"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/x509v3.c",
+   "line": 1727,
+   "message": "Function 'x509_certificate_parse' does not validate integer parameter 'len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 26,
+   "file": "src/tls/x509v3.c",
+   "line": 1733,
+   "message": "Dereference of uninitialized pointer 'cert'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'cert' before dereferencing"
+  },
+  {
+   "column": 45,
+   "file": "src/tls/x509v3.c",
+   "line": 1767,
+   "message": "Pointer subtraction between pointers from different arrays: 'hdr.payload' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/x509v3.c",
+   "line": 1817,
+   "message": "Function returns pointer to local variable 'cert' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/x509v3.c",
+   "line": 1828,
+   "message": "Function 'x509_certificate_check_signature' does not validate pointer parameter 'cert' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cert' at the start of the function, e.g., 'if (!cert) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/x509v3.c",
+   "line": 1837,
+   "message": "Function 'x509_check_signature' does not validate pointer parameter 'signed_data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'signed_data' at the start of the function, e.g., 'if (!signed_data) { return error_code; }'"
+  },
+  {
+   "column": 50,
+   "file": "src/tls/x509v3.c",
+   "line": 1837,
+   "message": "Pointer parameter 'issuer' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *issuer'"
+  },
+  {
+   "column": 12,
+   "file": "src/tls/x509v3.c",
+   "line": 1850,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 9,
+   "file": "src/tls/x509v3.c",
+   "line": 1851,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/x509v3.c",
+   "line": 2016,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/x509v3.c",
+   "line": 2017,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/x509v3.c",
+   "line": 2032,
+   "message": "Double-free: 'data' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 3,
+   "file": "src/tls/x509v3.c",
+   "line": 2032,
+   "message": "Double free detected: 'data' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/x509v3.c",
+   "line": 2069,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/x509v3.c",
+   "line": 2073,
+   "message": "Double-free: 'data' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 3,
+   "file": "src/tls/x509v3.c",
+   "line": 2073,
+   "message": "Double free detected: 'data' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/x509v3.c",
+   "line": 2081,
+   "message": "Double-free: 'data' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 3,
+   "file": "src/tls/x509v3.c",
+   "line": 2081,
+   "message": "Double free detected: 'data' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 33,
+   "file": "src/tls/x509v3.c",
+   "line": 2085,
+   "message": "Use-after-free: pointer arithmetic on freed pointer 'data'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not use freed pointers in arithmetic."
+  },
+  {
+   "column": 8,
+   "file": "src/tls/x509v3.c",
+   "line": 2089,
+   "message": "Use-after-free: pointer arithmetic on freed pointer 'data'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not use freed pointers in arithmetic."
+  },
+  {
+   "column": 3,
+   "file": "src/tls/x509v3.c",
+   "line": 2090,
+   "message": "Double-free: 'data' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 3,
+   "file": "src/tls/x509v3.c",
+   "line": 2090,
+   "message": "Double free detected: 'data' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/x509v3.c",
+   "line": 2094,
+   "message": "Double-free: 'data' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "src/tls/x509v3.c",
+   "line": 2094,
+   "message": "Double free detected: 'data' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/x509v3.c",
+   "line": 2138,
+   "message": "Function 'x509_certificate_chain_validate' does not validate pointer parameter 'trusted' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'trusted' at the start of the function, e.g., 'if (!trusted) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/x509v3.c",
+   "line": 2138,
+   "message": "Function 'x509_certificate_chain_validate' does not validate pointer parameter 'chain' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'chain' at the start of the function, e.g., 'if (!chain) { return error_code; }'"
+  },
+  {
+   "column": 61,
+   "file": "src/tls/x509v3.c",
+   "line": 2138,
+   "message": "Pointer parameter 'trusted' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *trusted'"
+  },
+  {
+   "column": 33,
+   "file": "src/tls/x509v3.c",
+   "line": 2139,
+   "message": "Pointer parameter 'chain' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *chain'"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/x509v3.c",
+   "line": 2269,
+   "message": "Function 'x509_certificate_get_subject' does not validate pointer parameter 'chain' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'chain' at the start of the function, e.g., 'if (!chain) { return error_code; }'"
+  },
+  {
+   "column": 54,
+   "file": "src/tls/x509v3.c",
+   "line": 2270,
+   "message": "Pointer parameter 'chain' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *chain'"
+  },
+  {
+   "column": 4,
+   "file": "src/tls/x509v3.c",
+   "line": 2277,
+   "message": "Function returns pointer to local variable 'cert' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/x509v3.c",
+   "line": 2288,
+   "message": "Function 'x509_certificate_self_signed' does not validate pointer parameter 'cert' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cert' at the start of the function, e.g., 'if (!cert) { return error_code; }'"
+  }
+ ]
+}

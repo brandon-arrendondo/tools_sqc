@@ -1,0 +1,247 @@
+{
+ "wpa_supplicant/eapol_test.c#part2of2": [
+  {
+   "column": 34,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1414,
+   "message": "fopen() with mode \"w\" does not guarantee exclusive file creation. Use \"wx\" or \"w+x\" mode for exclusive creation.",
+   "rule_id": "FIO03-C",
+   "severity": "Medium",
+   "suggestion": "Use fopen() with \"wx\" or \"w+x\" mode for C11, or use open() with O_CREAT|O_EXCL for POSIX"
+  },
+  {
+   "column": 34,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1414,
+   "message": "fopen() cannot explicitly specify file permissions; use open() for security-sensitive files",
+   "rule_id": "FIO06-C",
+   "severity": "Medium",
+   "suggestion": "Use open(filename, O_CREAT | O_WRONLY, mode) to explicitly specify file permissions"
+  },
+  {
+   "column": 34,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1414,
+   "message": "fopen() called without 'N' flag in mode string \"w\". On Windows, file handles are inheritable by default unless the 'N' flag is specified.",
+   "rule_id": "WIN03-C",
+   "severity": "High",
+   "suggestion": "Add 'N' flag to the mode string (e.g., \"rwN\") to disable handle inheritance on Windows."
+  },
+  {
+   "column": 11,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1416,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 14,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1422,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 14,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1422,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 40,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1428,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 40,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1428,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 14,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1440,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 14,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1440,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1444,
+   "message": "Bit-field 'ctrl_iface' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1463,
+   "message": "Dereference of uninitialized pointer 'p1'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'p1' before dereferencing"
+  },
+  {
+   "column": 14,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1472,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 14,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1472,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 11,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1482,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1482,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Incorrect format of attribute \"\n\t\t\t\t       \"specification\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 56,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1540,
+   "message": "Type mismatch in variadic function call: format specifier '%s' expects char* but argument 1 is NULL",
+   "rule_id": "DCL11-C",
+   "severity": "High",
+   "suggestion": "Use correct format specifier for NULL or cast argument to char*"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1554,
+   "message": "Passing null pointer 'ca_cert' to 'wpa_init_conf' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'ca_cert' is not NULL before passing to 'wpa_init_conf'"
+  },
+  {
+   "column": 18,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1554,
+   "message": "Passing null pointer 'client_cert' to 'wpa_init_conf' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'client_cert' is not NULL before passing to 'wpa_init_conf'"
+  },
+  {
+   "column": 31,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1554,
+   "message": "Passing null pointer 'private_key' to 'wpa_init_conf' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'private_key' is not NULL before passing to 'wpa_init_conf'"
+  },
+  {
+   "column": 44,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1554,
+   "message": "Passing null pointer 'private_key_passwd' to 'wpa_init_conf' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'private_key_passwd' is not NULL before passing to 'wpa_init_conf'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1556,
+   "message": "Bit-field 'ctrl_iface' may be accessed from multiple threads without mutex protection",
+   "rule_id": "POS49-C",
+   "severity": "Medium",
+   "suggestion": "Protect bit-field access with pthread_mutex_lock/unlock"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1558,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1558,
+   "message": "Argument to 'printf' contains preprocessor directive: '\"Failed to initialize control interface '%s'.\\n\"\n\t\t       \"You may have another eapol_test process already \"\n\t\t       \"running or the file was\\n\"\n\t\t       \"left by an unclean termination of eapol_test in \"\n\t\t       \"which case you will need\\n\"\n\t\t       \"to manually remove this file before starting \"\n\t\t       \"eapol_test again.\\n\"'",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1615,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1615,
+   "message": "Return value of 'fclose' ignored: 'fclose(eapol_test.server_cert_file)' - Returns non-zero on error",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (fclose(file) != 0) for close errors"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/eapol_test.c",
+   "line": 1617,
+   "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  }
+ ]
+}

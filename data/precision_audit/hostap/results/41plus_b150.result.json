@@ -1,0 +1,47 @@
+{
+ "labels": [
+  {
+   "rule": "API00-C",
+   "file": "src/common/dpp_crypto.c",
+   "line": 2571,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only-API FP class; connector supplied only by DPP's own CONFIG_TESTING_OPTIONS test harness, never external input"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/common/dpp_crypto.c",
+   "line": 2571,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto-label-blindness: every path (incl. fail: goto out;) reaches out: return tmp; sqc's CFG misses the goto edge"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/common/dpp_crypto.c",
+   "line": 2598,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "guarded earlier in same function: line 2594 'if (!signature || signature_len == 0) goto fail;' proves signature_len>=1 before the -1"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/common/dpp_crypto.c",
+   "line": 2613,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "goto-label-blindness: 'fail:' is a real goto target reached from earlier failure checks, not dead code after the preceding return"
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/common/dpp_crypto.c",
+   "line": 2440,
+   "rule": "MEM03-C",
+   "desc": "dpp_derive_auth_i(): the res<0 check after dpp_hkdf_expand does 'return -1;' instead of 'goto fail;', skipping forced_memzero(Sx,...) and forced_memzero(tmp,...) that clear the ECDH shared secret and HKDF-Extract intermediate on the fail: path — sensitive key material left on the stack on this error branch.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {"tp": 0, "fp": 4, "fn": 1}
+}

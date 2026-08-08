@@ -1,0 +1,854 @@
+{
+ "labels": [
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/http_server.c",
+   "line": 41,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C dispatch-contract FP: 'handle' is httpread's fixed httpread_cb callback signature (httpread.h)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/wps/http_server.c",
+   "line": 48,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor-args FP: inet_ntoa/ntohs pure reads, no errno involved"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/wps/http_server.c",
+   "line": 49,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33/34-C no-pthread FP: inet_ntoa static buffer, file has zero threading"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/wps/http_server.c",
+   "line": 54,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor-args FP: inet_ntoa/ntohs pure reads"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/wps/http_server.c",
+   "line": 55,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON34-C no-pthread FP: inet_ntoa, no threading in file"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/http_server.c",
+   "line": 72,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C sizeof(*ptr)-not-a-deref FP: sizeof(*req) is non-evaluated context on line before assignment"
+  },
+  {
+   "rule": "FIO24-C",
+   "file": "src/wps/http_server.c",
+   "line": 74,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "FIO24-C double-close-mutually-exclusive-branches FP: line 68 close is in the request_count-exceeded early return; line 74 close is in the separate os_zalloc-failure branch, never both reached"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/wps/http_server.c",
+   "line": 82,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C ownership-transfer FP: req->hread is stored in req, which is returned to the caller; freed later via http_request_deinit->httpread_destroy"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/wps/http_server.c",
+   "line": 90,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C heap-vs-automatic-storage confusion FP: req is os_zalloc'd heap memory, not automatic storage"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/wps/http_server.c",
+   "line": 90,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C ownership-transfer FP: same root cause as :82, req->hread freed later via http_request_deinit"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/http_server.c",
+   "line": 99,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MEM10-C ad-hoc-NULL-check pedantry FP: idiomatic free()-tolerates-NULL guard"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/http_server.c",
+   "line": 124,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "DCL13-C const-would-break-compilation FP: req forwarded to non-const http_request_deinit(prev) inside the free-all loop"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/wps/http_server.c",
+   "line": 135,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP: all callers (browser-*.c, wps_er.c, wps_upnp_web.c) pass a live req from the dispatch callback, never NULL"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/http_server.c",
+   "line": 135,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C plain-internal-helper genuine-if-low-value TP: req only read (cli addr/port/fd), never written or forwarded to a mutating call"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/wps/http_server.c",
+   "line": 139,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor-args FP: wpabuf_head/wpabuf_len pure reads"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/wps/http_server.c",
+   "line": 141,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON34-C no-pthread FP: inet_ntoa, no threading in file"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/wps/http_server.c",
+   "line": 144,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor-args FP: inet_ntoa/ntohs pure reads"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/wps/http_server.c",
+   "line": 147,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33-C no-pthread FP: strerror(errno) alone in statement, no threading in file"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/wps/http_server.c",
+   "line": 147,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON34-C no-pthread FP: strerror static buffer, no threading in file"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/wps/http_server.c",
+   "line": 148,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C no-final-else guard-clause pedantry FP: send()<size case just logs and TODO-comments, no transition needed"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/wps/http_server.c",
+   "line": 158,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP: fixed dispatch-callback caller"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/wps/http_server.c",
+   "line": 166,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP: fixed dispatch-callback caller"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/http_server.c",
+   "line": 166,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C plain-internal-helper genuine-if-low-value TP: req only read via req->hread accessor"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/wps/http_server.c",
+   "line": 172,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP: fixed dispatch-callback caller"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/http_server.c",
+   "line": 172,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C plain-internal-helper genuine-if-low-value TP: req only read via req->hread accessor"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/wps/http_server.c",
+   "line": 178,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP: fixed dispatch-callback caller"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/http_server.c",
+   "line": 178,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C plain-internal-helper genuine-if-low-value TP: req only read via req->hread accessor"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/wps/http_server.c",
+   "line": 184,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP: fixed dispatch-callback caller"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/http_server.c",
+   "line": 184,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C plain-internal-helper genuine-if-low-value TP: req only read via req->hread accessor"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/wps/http_server.c",
+   "line": 190,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP: fixed dispatch-callback caller"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/http_server.c",
+   "line": 190,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C plain-internal-helper genuine-if-low-value TP: req only read via req->hread accessor"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/wps/http_server.c",
+   "line": 196,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP: fixed dispatch-callback caller"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/http_server.c",
+   "line": 196,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C plain-internal-helper genuine-if-low-value TP: req only returns &req->cli, never written"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/http_server.c",
+   "line": 202,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C dispatch-contract FP: sock_ctx is eloop_sock_handler's fixed 3rd param (eloop.h), unused here"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/wps/http_server.c",
+   "line": 213,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33-C no-pthread FP: strerror(errno) alone, no threading in file"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/wps/http_server.c",
+   "line": 213,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON34-C no-pthread FP: strerror static buffer, no threading in file"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/wps/http_server.c",
+   "line": 216,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor-args FP: inet_ntoa/ntohs pure reads"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/wps/http_server.c",
+   "line": 217,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON34-C no-pthread FP: inet_ntoa, no threading in file"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/http_server.c",
+   "line": 217,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C output-param-populated-by-callee-write FP: accept() writes addr/addr_len through pointers before this line"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/wps/http_server.c",
+   "line": 229,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP: all 3 callers pass fixed non-NULL function pointer literals for cb"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/http_server.c",
+   "line": 238,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C sizeof(*ptr)-not-a-deref FP: sizeof(*srv) is non-evaluated context before assignment"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/wps/http_server.c",
+   "line": 252,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33-C no-pthread FP: strerror(errno) alone, no threading in file"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/wps/http_server.c",
+   "line": 252,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON34-C no-pthread FP: strerror static buffer, no threading in file"
+  },
+  {
+   "rule": "POS02-C",
+   "file": "src/wps/http_server.c",
+   "line": 269,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "POS02-C bind()-without-privilege-drop categorical FP"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/wps/http_server.c",
+   "line": 278,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33-C no-pthread FP: strerror(errno) alone, no threading in file"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/wps/http_server.c",
+   "line": 278,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON34-C no-pthread FP: strerror static buffer, no threading in file"
+  },
+  {
+   "rule": "POS02-C",
+   "file": "src/wps/http_server.c",
+   "line": 281,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "POS02-C listen()-without-privilege-drop categorical FP"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/wps/http_server.c",
+   "line": 288,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON34-C no-pthread FP: inet_ntoa, no threading in file"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/wps/http_server.c",
+   "line": 290,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C heap-vs-automatic-storage confusion FP: srv is os_zalloc'd heap memory"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/wps/http_server.c",
+   "line": 292,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC07-C goto-target-label-after-return blindness FP: fail: label reached only via earlier goto fail, not from the preceding return"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/http_server.c",
+   "line": 300,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MEM10-C ad-hoc-NULL-check pedantry FP: idiomatic free()-tolerates-NULL guard"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/wps/http_server.c",
+   "line": 312,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP: both callers (wps_upnp_web.c, wps_er.c) pass their own already-checked srv"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/http_server.c",
+   "line": 312,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C plain-internal-helper genuine-if-low-value TP: srv only read (->port)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 20,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API05-C ptr+size_t idiom FP: buf/len is the standard companion-pointer-and-length pair, not a real conformant-array-syntax issue"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 26,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "INT14-C genuine (low-severity) TP: sum genuinely mixes arithmetic (+=) and bitwise (>>,&) ops in this standard 16-bit checksum-fold idiom"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 37,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C plain-internal-helper genuine-if-low-value TP: dhcpofferend only read (end=dhcpofferend), never modified or forwarded to a mutating call"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 80,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C same-underlying-buffer misidentified as cross-array FP: end/pos both derive from sta->hlp_dhcp_discover's single wpabuf; message's 'DHCPREQUEST' attribution is a mislabel artifact"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 106,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C same-underlying-buffer misidentified as cross-array FP: end=dhcpofferend and pos both derive from the same dhcpoffer buffer parameter"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 132,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor-args FP: wpabuf_head/wpabuf_len pure reads"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 137,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33-C no-pthread FP: strerror(errno) alone, no threading in file"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 137,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON34-C no-pthread FP: strerror static buffer, no threading in file"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 140,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor-args FP: inet_ntoa/ntohs pure reads, no errno in this statement"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 142,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON34-C no-pthread FP: inet_ntoa, no threading in file"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 150,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C dispatch-contract FP: eloop_ctx is eloop_sock_handler's fixed 2nd param (eloop.h), unused here"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 172,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33-C no-pthread FP: strerror(errno) alone, no threading in file"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 172,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON34-C no-pthread FP: strerror static buffer, no threading in file"
+  },
+  {
+   "rule": "ERR32-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 172,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ERR32-C misapplied FP: fils_dhcp_handler is an eloop socket-read callback (registered via eloop_register_sock), not a signal()/sigaction() handler"
+  },
+  {
+   "rule": "ERR32-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 172,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ERR32-C misapplied FP: same non-signal-handler root cause as :172 col7"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 175,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor-args FP: inet_ntoa/ntohs pure reads"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 176,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON34-C no-pthread FP: inet_ntoa, no threading in file"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 176,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C output-param-populated-by-callee-write FP: recvfrom(...,&addr,&addr_len) writes addr through the pointer just above"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 178,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C sizeof(*ptr)-not-a-deref FP: sizeof(*dhcp) is non-evaluated context before dhcp's assignment at :180"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 191,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR30-C recv-length-cap FP: res is recvfrom()'s own return value into a sizeof(buf)-bounded call, provably <= 1500"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 247,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC01-C no-final-else guard-clause pedantry FP: deliberate 'fall through and send as-is' default"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 253,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR39-C pure-integer-sum-no-pointer-operand FP: plain size computation for wpabuf_alloc(), no pointer being scaled"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 253,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR39-C pure-integer-sum-no-pointer-operand FP: same expression, second sub-finding"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 254,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C sizeof(*ptr)-not-a-deref FP: sizeof(*iph) is non-evaluated context, iph assigned later at :261"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 254,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C sizeof(*ptr)-not-a-deref FP: sizeof(*udph) is non-evaluated context, udph assigned later at :270"
+  },
+  {
+   "rule": "MSC09-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 259,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC09-C raw-byte-pattern-not-text FP: \\xaa\\xaa\\x03\\x00\\x00\\x00 is a literal SNAP/LLC header byte sequence, not locale text"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 273,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT30-C bounded-by-protocol-frame-size FP: end-pos is a management-frame-derived offset, far below wrap threshold"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 278,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C same-underlying-buffer misidentified as cross-array FP: end_opt and pos both derive from buf"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 278,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR36-C same-underlying-buffer misidentified as cross-array FP: pos/buf both point within the same recv buf; message's variable pairing doesn't even match the flagged expression"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 281,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C same-underlying-buffer misidentified as cross-array FP: end and end_opt both derive from buf"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 281,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR36-C same-underlying-buffer misidentified as cross-array FP: buf/pos both point within the same recv buf; message's variable pairing mismatched"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 338,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C sizeof(*ptr)-not-a-deref FP: sizeof(*dhcp) is non-evaluated context, dhcp assigned at :340"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 408,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33-C no-pthread FP: strerror(errno) alone, no threading in file"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 408,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON34-C no-pthread FP: strerror static buffer, no threading in file"
+  },
+  {
+   "rule": "POS02-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 418,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "POS02-C bind()-without-privilege-drop categorical FP"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 421,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33-C no-pthread FP: strerror(errno) alone, no threading in file"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 421,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON34-C no-pthread FP: strerror static buffer, no threading in file"
+  },
+  {
+   "rule": "FIO24-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 428,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "FIO24-C double-close-mutually-exclusive-branches FP: :422 close is in the bind()-failure branch, :428 close is in the separate eloop_register_sock-failure branch, never both reached"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 449,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON33-C no-pthread FP: strerror(errno) alone, no threading in file"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 449,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON34-C no-pthread FP: strerror static buffer, no threading in file"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 458,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor-args FP: inet_ntoa/ntohs pure reads"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 460,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "CON34-C no-pthread FP: inet_ntoa, no threading in file"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 486,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C sizeof(*ptr)-not-a-deref FP: sizeof(*iph) is non-evaluated context, iph assigned at :488"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 486,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C sizeof(*ptr)-not-a-deref FP: sizeof(*udph) is non-evaluated context, udph assigned at :489"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 502,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT30-C explicit-prior-bounds-check-not-recognized FP: guarded one line above by 'ulen < sizeof(*udph)' check"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 516,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C sizeof(*ptr)-not-a-deref FP: sizeof(*iph) is non-evaluated context, iph assigned at :518"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 545,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C MAC2STR pure-accessor-macro misfire FP"
+  },
+  {
+   "rule": "MSC09-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 559,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC09-C raw-byte-pattern-not-text FP: same SNAP/LLC header byte sequence as :259"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 576,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-only-API FP: left is a real (Re)Association-Request-frame-derived IE length, bounded by the max management-frame size, far below int overflow range for pos+left/os_malloc(end-pos)"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 630,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C same-underlying-buffer misidentified as cross-array FP: end/pos both derive from fils_process_hlp's own pos parameter, not tmp"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 631,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C same-underlying-buffer misidentified as cross-array FP: same expression, second operand"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/fils_hlp.c",
+   "line": 647,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP: both callers (drv_callbacks.c, hostapd.c) pass their own hapd unconditionally"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "src/wps/http_server.c",
+  "src/ap/fils_hlp.c"
+ ],
+ "summary": {
+  "tp": 10,
+  "fp": 95,
+  "fn": 0
+ }
+}

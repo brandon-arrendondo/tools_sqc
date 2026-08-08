@@ -1,0 +1,780 @@
+{
+ "src/rsn_supp/wpa_ft.c": [
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 16,
+   "message": "Header file 'ieee802_11_defs.h' has the same first 8 characters (case-insensitive) as 'ieee802_11_common.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_defs.h' -> unique name)"
+  },
+  {
+   "column": 50,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 31,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 37,
+   "message": "Function 'wpa_derive_ptk_ft' does not validate pointer parameter 'src_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'src_addr' at the start of the function, e.g., 'if (!src_addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 37,
+   "message": "Function 'wpa_derive_ptk_ft' does not validate pointer parameter 'ptk' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ptk' at the start of the function, e.g., 'if (!ptk) { return error_code; }'"
+  },
+  {
+   "column": 5,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 116,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 12,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 227,
+   "message": "Scaled integer arithmetic with pointer: '2 + sizeof(struct rsn_mdie) + 2 +\n\t\tsizeof(struct rsn_ftie_sha512)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 12,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 227,
+   "message": "Unsigned integer addition '2 + sizeof(struct rsn_mdie) + 2 +\n\t\tsizeof(struct rsn_ftie_sha512) +\n\t\t2 + sm->r0kh_id_len + ric_ies_len' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }"
+  },
+  {
+   "column": 12,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 227,
+   "message": "Unsigned integer addition '2 + sizeof(struct rsn_mdie) + 2 +\n\t\tsizeof(struct rsn_ftie_sha512)' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }"
+  },
+  {
+   "column": 12,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 227,
+   "message": "Unsigned integer addition '2 + sizeof(struct rsn_mdie)' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }"
+  },
+  {
+   "column": 16,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 239,
+   "message": "Signed integer addition 'rsnie + 1' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 15,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 330,
+   "message": "Signed integer subtraction '(pos - (u8 *) rsnie) - 2' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b < 0 && a > INT_MAX + b) || (b > 0 && a < INT_MIN + b)) { /* handle error */ }"
+  },
+  {
+   "column": 38,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 333,
+   "message": "Unsigned integer subtraction 'buf_len - (pos - buf)' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check: if (a < b) { /* handle error */ }"
+  },
+  {
+   "column": 4,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 471,
+   "message": "Signed integer compound addition '*elem_count += 1' may overflow without checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 30,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 474,
+   "message": "Unsigned integer addition '2 + sizeof(*mdie)' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 530,
+   "message": "Function 'wpa_ft_prepare_auth_request' does not validate pointer parameter 'mdie' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'mdie' at the start of the function, e.g., 'if (!mdie) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 553,
+   "message": "Function 'wpa_ft_add_mdie' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 553,
+   "message": "Function 'wpa_ft_add_mdie' does not validate pointer parameter 'ap_mdie' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ap_mdie' at the start of the function, e.g., 'if (!ap_mdie) { return error_code; }'"
+  },
+  {
+   "column": 35,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 553,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 43,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 553,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 27,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 559,
+   "message": "Dereference of uninitialized pointer 'mdie'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'mdie' before dereferencing"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 578,
+   "message": "Function 'wpa_sm_get_ft_md' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 43,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 578,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 584,
+   "message": "Function 'wpa_ft_process_response' does not validate pointer parameter 'sm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sm' at the start of the function, e.g., 'if (!sm) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 584,
+   "message": "Function 'wpa_ft_process_response' does not validate pointer parameter 'ies' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ies' at the start of the function, e.g., 'if (!ies) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 584,
+   "message": "Function 'wpa_ft_process_response' does not validate pointer parameter 'target_ap' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'target_ap' at the start of the function, e.g., 'if (!target_ap) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 584,
+   "message": "Function 'wpa_ft_process_response' does not validate pointer parameter 'ric_ies' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ric_ies' at the start of the function, e.g., 'if (!ric_ies) { return error_code; }'"
+  },
+  {
+   "column": 24,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 682,
+   "message": "Variable 'parse' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 39,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 780,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 5,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 782,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 817,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 44,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 832,
+   "message": "Variable 'gtk_elem' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 2,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 886,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 5,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 906,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 45,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 926,
+   "message": "Pointer arithmetic 'igtk_elem + 9' goes 1 elements past the end of array 'igtk_elem[8]'. This exceeds array bounds.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Ensure pointer arithmetic stays within array bounds (0 to 8)"
+  },
+  {
+   "column": 2,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 956,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 46,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 994,
+   "message": "Pointer arithmetic 'bigtk_elem + 9' goes 1 elements past the end of array 'bigtk_elem[8]'. This exceeds array bounds.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Ensure pointer arithmetic stays within array bounds (0 to 8)"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 1021,
+   "message": "Function 'wpa_ft_validate_reassoc_resp' does not validate pointer parameter 'ies' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ies' at the start of the function, e.g., 'if (!ies) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 1027,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 55,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 1296,
+   "message": "Pointer arithmetic 'mdie + 2' goes 1 elements past the end of array 'mdie[1]'. This exceeds array bounds.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Ensure pointer arithmetic stays within array bounds (0 to 1)"
+  },
+  {
+   "column": 65,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 1327,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 8,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 1347,
+   "message": "Function 'os_realloc_array' called with overlapping memory regions. If parameters are restrict-qualified, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure memory regions do not overlap when using restrict pointers"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 1367,
+   "message": "Function 'wpa_pasn_ft_derive_pmk_r1' does not validate pointer parameter 'bssid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'bssid' at the start of the function, e.g., 'if (!bssid) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/rsn_supp/wpa_ft.c",
+   "line": 1367,
+   "message": "Function 'wpa_pasn_ft_derive_pmk_r1' does not validate pointer parameter 'pmk_r1_len' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pmk_r1_len' at the start of the function, e.g., 'if (!pmk_r1_len) { return error_code; }'"
+  }
+ ],
+ "src/tls/tlsv1_cred.c": [
+  {
+   "column": 26,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 24,
+   "message": "Dereference of uninitialized pointer 'cred'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'cred' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 25,
+   "message": "Function returns pointer to local variable 'cred' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 5,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 31,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 70,
+   "message": "Local variable 'cert' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 36,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 82,
+   "message": "Variable `pem_key_begin` appears to store sensitive information and is initialized with a hard-coded string literal. Sensitive data should not be embedded in source code. Code: \"-----BEGIN RSA PRIVATE KEY-----\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 34,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 83,
+   "message": "Variable `pem_key_end` appears to store sensitive information and is initialized with a hard-coded string literal. Sensitive data should not be embedded in source code. Code: \"-----END RSA PRIVATE KEY-----\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 40,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 86,
+   "message": "Variable `pem_key_enc_begin` appears to store sensitive information and is initialized with a hard-coded string literal. Sensitive data should not be embedded in source code. Code: \"-----BEGIN ENCRYPTED PRIVATE KEY-----\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 38,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 87,
+   "message": "Variable `pem_key_enc_end` appears to store sensitive information and is initialized with a hard-coded string literal. Sensitive data should not be embedded in source code. Code: \"-----END ENCRYPTED PRIVATE KEY-----\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 41,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 90,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 16,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 158,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 66,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 194,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 20,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 196,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 25,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 226,
+   "message": "Passing null pointer 'cert' to 'os_strncmp' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'cert' is not NULL before passing to 'os_strncmp'"
+  },
+  {
+   "column": 49,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 235,
+   "message": "Passing null pointer 'cert' to 'tlsv1_set_cert_chain' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'cert' is not NULL before passing to 'tlsv1_set_cert_chain'"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 258,
+   "message": "Function 'tlsv1_set_cert' does not validate pointer parameter 'cred' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cred' at the start of the function, e.g., 'if (!cred) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 258,
+   "message": "Function 'tlsv1_set_cert' does not validate pointer parameter 'cert' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cert' at the start of the function, e.g., 'if (!cert) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 258,
+   "message": "Function 'tlsv1_set_cert' does not validate pointer parameter 'cert_blob' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cert_blob' at the start of the function, e.g., 'if (!cert_blob) { return error_code; }'"
+  },
+  {
+   "column": 63,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 258,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 301,
+   "message": "Function returns pointer to local variable 'pkey' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 20,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 307,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 5,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 314,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 329,
+   "message": "Function returns pointer to local variable 'pkey' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 42,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 335,
+   "message": "Pointer parameter 'oid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *oid'"
+  },
+  {
+   "column": 41,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 357,
+   "message": "Pointer parameter 'oid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *oid'"
+  },
+  {
+   "column": 41,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 381,
+   "message": "Pointer parameter 'oid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *oid'"
+  },
+  {
+   "column": 51,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 415,
+   "message": "Pointer parameter 'cred' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *cred'"
+  },
+  {
+   "column": 22,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 425,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 25,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 528,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 25,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 553,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 44,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 607,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 22,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 680,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 25,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 725,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:pos'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 16,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 845,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 24,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 855,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:buf' and 'hdr.payload'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 25,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 864,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:buf' and 'hdr.payload'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 42,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 885,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 43,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 1007,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 1036,
+   "message": "Function 'tlsv1_set_private_key' does not validate pointer parameter 'cred' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cred' at the start of the function, e.g., 'if (!cred) { return error_code; }'"
+  },
+  {
+   "column": 17,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 1037,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 17,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 1038,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 25,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 1096,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:dh' and 'hdr.payload'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 25,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 1113,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:dh' and 'hdr.payload'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 67,
+   "file": "src/tls/tlsv1_cred.c",
+   "line": 1188,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ]
+}

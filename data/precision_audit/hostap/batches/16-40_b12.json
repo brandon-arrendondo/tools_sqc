@@ -1,0 +1,899 @@
+{
+ "src/common/ieee802_11_common.h": [
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_common.h",
+   "line": 15,
+   "message": "flexible array structure 'element' declared with global storage. Only dynamic storage duration is allowed for flexible array structures.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation: struct element *ptr = malloc(sizeof(struct element) + sizeof(element_type) * count);"
+  },
+  {
+   "column": 56,
+   "file": "src/common/ieee802_11_common.h",
+   "line": 237,
+   "message": "Array declaration 'wmm_ac_params[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 60,
+   "file": "src/common/ieee802_11_common.h",
+   "line": 249,
+   "message": "Array declaration 'queue[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_common.h",
+   "line": 317,
+   "message": "Function-like macro 'IS_2P4GHZ' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_common.h",
+   "line": 317,
+   "message": "Macro parameter 'n' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'n' in parentheses: (n) instead of n"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_common.h",
+   "line": 317,
+   "message": "Macro evaluates parameter 'n' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_common.h",
+   "line": 318,
+   "message": "Function-like macro 'IS_5GHZ' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_common.h",
+   "line": 318,
+   "message": "Macro parameter 'n' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'n' in parentheses: (n) instead of n"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_common.h",
+   "line": 318,
+   "message": "Macro evaluates parameter 'n' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 48,
+   "file": "src/common/ieee802_11_common.h",
+   "line": 320,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_common.h",
+   "line": 332,
+   "message": "Function-like macro 'for_each_element' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_common.h",
+   "line": 332,
+   "message": "Macro parameter '_elem' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter '_elem' in parentheses: (_elem) instead of _elem"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_common.h",
+   "line": 332,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (for (_elem = (const struct element *) (_data);\t\t\t\\\n\t     (const u8 *) (_data) + (_datalen) - (const u8 *) _elem >=\t\\\n\t\t(int) sizeof(*_elem) &&\t\t\t\t\t\\\n\t     (const u8 *) (_data) + (_datalen) - (const u8 *) _elem >=\t\\\n\t\t(int) sizeof(*_elem) + _elem->datalen;\t\t\t\\\n\t     _elem = (const struct element *) (_elem->data + _elem->datalen)))"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_common.h",
+   "line": 332,
+   "message": "Multistatement macro 'for_each_element' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+   "rule_id": "PRE10-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_common.h",
+   "line": 332,
+   "message": "Macro evaluates parameter '_elem' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_common.h",
+   "line": 340,
+   "message": "Function-like macro 'for_each_element_id' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_common.h",
+   "line": 340,
+   "message": "Macro parameter 'element' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'element' in parentheses: (element) instead of element"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_common.h",
+   "line": 340,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (for_each_element(element, data, datalen)\t\t\t\\\n\t\tif (element->id == (_id)))"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_common.h",
+   "line": 340,
+   "message": "Macro evaluates parameter 'element' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_common.h",
+   "line": 344,
+   "message": "Function-like macro 'for_each_element_extid' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_common.h",
+   "line": 344,
+   "message": "Macro parameter 'element' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'element' in parentheses: (element) instead of element"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_common.h",
+   "line": 344,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (for_each_element(element, _data, _datalen)\t\t\t\\\n\t\tif (element->id == WLAN_EID_EXTENSION &&\t\t\\\n\t\t    element->datalen > 0 &&\t\t\t\t\\\n\t\t    element->data[0] == (extid)))"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_common.h",
+   "line": 344,
+   "message": "Macro evaluates parameter 'element' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_common.h",
+   "line": 350,
+   "message": "Function-like macro 'for_each_subelement' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_common.h",
+   "line": 350,
+   "message": "Macro evaluates parameter 'element' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_common.h",
+   "line": 353,
+   "message": "Function-like macro 'for_each_subelement_id' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_common.h",
+   "line": 353,
+   "message": "Macro evaluates parameter 'element' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_common.h",
+   "line": 356,
+   "message": "Function-like macro 'for_each_subelement_extid' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_common.h",
+   "line": 356,
+   "message": "Macro evaluates parameter 'element' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 22,
+   "file": "src/common/ieee802_11_common.h",
+   "line": 373,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 33,
+   "file": "src/common/ieee802_11_common.h",
+   "line": 375,
+   "message": "Casting from char * (alignment 1) to const u8 * (alignment 4) may cause alignment issues",
+   "rule_id": "EXP36-C",
+   "severity": "Low",
+   "suggestion": "Use memcpy or ensure proper alignment before casting"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_common.h",
+   "line": 388,
+   "message": "Function has pointer parameter without size argument: 'ssize_t ieee802_11_defrag_mle_subelem(struct wpabuf *mlbuf,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *defrag_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_common.h",
+   "line": 388,
+   "message": "Using ssize_t mixes error indicators with data; use separate error parameter",
+   "rule_id": "ERR02-C",
+   "severity": "Medium",
+   "suggestion": "Use size_t with separate errno_t error parameter"
+  }
+ ],
+ "src/crypto/sha256-internal.c": [
+  {
+   "column": 1,
+   "file": "src/crypto/sha256-internal.c",
+   "line": 68,
+   "message": "Function-like macro 'RORc' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/sha256-internal.c",
+   "line": 68,
+   "message": "Macro evaluates parameter 'x' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/sha256-internal.c",
+   "line": 71,
+   "message": "Function-like macro 'Ch' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/sha256-internal.c",
+   "line": 71,
+   "message": "Macro parameter 'x' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'x' in parentheses: (x) instead of x"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/sha256-internal.c",
+   "line": 71,
+   "message": "Macro parameter 'y' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'y' in parentheses: (y) instead of y"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/sha256-internal.c",
+   "line": 71,
+   "message": "Macro parameter 'z' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'z' in parentheses: (z) instead of z"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/sha256-internal.c",
+   "line": 71,
+   "message": "Macro evaluates parameter 'z' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/sha256-internal.c",
+   "line": 72,
+   "message": "Function-like macro 'Maj' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/sha256-internal.c",
+   "line": 72,
+   "message": "Macro parameter 'x' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'x' in parentheses: (x) instead of x"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/sha256-internal.c",
+   "line": 72,
+   "message": "Macro evaluates parameter 'x' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/sha256-internal.c",
+   "line": 75,
+   "message": "Function-like macro 'Sigma0' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/sha256-internal.c",
+   "line": 75,
+   "message": "Macro evaluates parameter 'x' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/sha256-internal.c",
+   "line": 76,
+   "message": "Function-like macro 'Sigma1' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/sha256-internal.c",
+   "line": 76,
+   "message": "Macro evaluates parameter 'x' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/sha256-internal.c",
+   "line": 77,
+   "message": "Function-like macro 'Gamma0' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/sha256-internal.c",
+   "line": 77,
+   "message": "Macro evaluates parameter 'x' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/sha256-internal.c",
+   "line": 78,
+   "message": "Function-like macro 'Gamma1' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/sha256-internal.c",
+   "line": 78,
+   "message": "Macro evaluates parameter 'x' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 67,
+   "file": "src/crypto/sha256-internal.c",
+   "line": 81,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/sha256-internal.c",
+   "line": 83,
+   "message": "Variable 't0' is declared but never used.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Use the variable or remove it"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/sha256-internal.c",
+   "line": 83,
+   "message": "Variable 't1' is declared but never used.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Use the variable or remove it"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/sha256-internal.c",
+   "line": 103,
+   "message": "Function-like macro 'RND' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/sha256-internal.c",
+   "line": 103,
+   "message": "Macro parameter 'd' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'd' in parentheses: (d) instead of d"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/sha256-internal.c",
+   "line": 103,
+   "message": "Macro parameter 'h' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'h' in parentheses: (h) instead of h"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/sha256-internal.c",
+   "line": 103,
+   "message": "Macro parameter 'i' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'i' in parentheses: (i) instead of i"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/sha256-internal.c",
+   "line": 103,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (t0 = h + Sigma1(e) + Ch(e, f, g) + K[i] + W[i];\t\\\n\tt1 = Sigma0(a) + Maj(a, b, c);\t\t\t\\\n\td += t0;\t\t\t\t\t\\\n\th  = t0 + t1;)"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/sha256-internal.c",
+   "line": 103,
+   "message": "Multistatement macro 'RND' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+   "rule_id": "PRE10-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/sha256-internal.c",
+   "line": 103,
+   "message": "Macro 'RND' definition ends with a semicolon. This can cause unexpected behavior when the macro is used.",
+   "rule_id": "PRE11-C",
+   "severity": "Medium",
+   "suggestion": "Remove the trailing semicolon from the macro definition. The semicolon should be added by the macro user, not in the definition."
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/sha256-internal.c",
+   "line": 103,
+   "message": "Macro evaluates parameter 'a' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 20,
+   "file": "src/crypto/sha256-internal.c",
+   "line": 150,
+   "message": "sizeof applied to pointer/array parameter 'md' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(md->buf)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 28,
+   "file": "src/crypto/sha256-internal.c",
+   "line": 155,
+   "message": "Do not cast away const qualification: '(unsigned char *) in'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 56,
+   "file": "src/crypto/sha256-internal.c",
+   "line": 185,
+   "message": "Pointer parameter 'out' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *out'"
+  },
+  {
+   "column": 20,
+   "file": "src/crypto/sha256-internal.c",
+   "line": 189,
+   "message": "sizeof applied to pointer/array parameter 'md' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(md->buf)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  }
+ ],
+ "src/drivers/linux_ioctl.c": [
+  {
+   "column": 6,
+   "file": "src/drivers/linux_ioctl.c",
+   "line": 30,
+   "message": "Structure 'ifr' passed to trust boundary function 'ioctl' may leak padding bytes. Use packed attributes, explicit padding fields, or serialize fields individually.",
+   "rule_id": "DCL39-C",
+   "severity": "Medium",
+   "suggestion": "Use __attribute__((__packed__)) or serialize fields: copy_to_user(buf, &ifr.a, sizeof(ifr.a)); ..."
+  },
+  {
+   "column": 15,
+   "file": "src/drivers/linux_ioctl.c",
+   "line": 33,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 15,
+   "file": "src/drivers/linux_ioctl.c",
+   "line": 33,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/linux_ioctl.c",
+   "line": 47,
+   "message": "Structure 'ifr' passed to trust boundary function 'ioctl' may leak padding bytes. Use packed attributes, explicit padding fields, or serialize fields individually.",
+   "rule_id": "DCL39-C",
+   "severity": "Medium",
+   "suggestion": "Use __attribute__((__packed__)) or serialize fields: copy_to_user(buf, &ifr.a, sizeof(ifr.a)); ..."
+  },
+  {
+   "column": 39,
+   "file": "src/drivers/linux_ioctl.c",
+   "line": 51,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 39,
+   "file": "src/drivers/linux_ioctl.c",
+   "line": 51,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/linux_ioctl.c",
+   "line": 70,
+   "message": "Structure 'ifr' passed to trust boundary function 'ioctl' may leak padding bytes. Use packed attributes, explicit padding fields, or serialize fields individually.",
+   "rule_id": "DCL39-C",
+   "severity": "Medium",
+   "suggestion": "Use __attribute__((__packed__)) or serialize fields: copy_to_user(buf, &ifr.a, sizeof(ifr.a)); ..."
+  },
+  {
+   "column": 15,
+   "file": "src/drivers/linux_ioctl.c",
+   "line": 73,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 15,
+   "file": "src/drivers/linux_ioctl.c",
+   "line": 73,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/linux_ioctl.c",
+   "line": 81,
+   "message": "Function 'linux_get_ifhwaddr' does not validate pointer parameter 'ifname' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ifname' at the start of the function, e.g., 'if (!ifname) { return error_code; }'"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/linux_ioctl.c",
+   "line": 87,
+   "message": "Structure 'ifr' passed to trust boundary function 'ioctl' may leak padding bytes. Use packed attributes, explicit padding fields, or serialize fields individually.",
+   "rule_id": "DCL39-C",
+   "severity": "Medium",
+   "suggestion": "Use __attribute__((__packed__)) or serialize fields: copy_to_user(buf, &ifr.a, sizeof(ifr.a)); ..."
+  },
+  {
+   "column": 15,
+   "file": "src/drivers/linux_ioctl.c",
+   "line": 89,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 15,
+   "file": "src/drivers/linux_ioctl.c",
+   "line": 89,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/linux_ioctl.c",
+   "line": 104,
+   "message": "Function 'linux_set_ifhwaddr' does not validate pointer parameter 'addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'addr' at the start of the function, e.g., 'if (!addr) { return error_code; }'"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/linux_ioctl.c",
+   "line": 113,
+   "message": "Structure 'ifr' passed to trust boundary function 'ioctl' may leak padding bytes. Use packed attributes, explicit padding fields, or serialize fields individually.",
+   "rule_id": "DCL39-C",
+   "severity": "Medium",
+   "suggestion": "Use __attribute__((__packed__)) or serialize fields: copy_to_user(buf, &ifr.a, sizeof(ifr.a)); ..."
+  },
+  {
+   "column": 15,
+   "file": "src/drivers/linux_ioctl.c",
+   "line": 115,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 15,
+   "file": "src/drivers/linux_ioctl.c",
+   "line": 115,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 15,
+   "file": "src/drivers/linux_ioctl.c",
+   "line": 129,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 15,
+   "file": "src/drivers/linux_ioctl.c",
+   "line": 129,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/linux_ioctl.c",
+   "line": 130,
+   "message": "Value assigned to 'errno' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 15,
+   "file": "src/drivers/linux_ioctl.c",
+   "line": 142,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 15,
+   "file": "src/drivers/linux_ioctl.c",
+   "line": 142,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/linux_ioctl.c",
+   "line": 155,
+   "message": "Function 'if_nametoindex' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/linux_ioctl.c",
+   "line": 162,
+   "message": "Structure 'ifr' passed to trust boundary function 'ioctl' may leak padding bytes. Use packed attributes, explicit padding fields, or serialize fields individually.",
+   "rule_id": "DCL39-C",
+   "severity": "Medium",
+   "suggestion": "Use __attribute__((__packed__)) or serialize fields: copy_to_user(buf, &ifr.a, sizeof(ifr.a)); ..."
+  },
+  {
+   "column": 33,
+   "file": "src/drivers/linux_ioctl.c",
+   "line": 167,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 33,
+   "file": "src/drivers/linux_ioctl.c",
+   "line": 167,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/linux_ioctl.c",
+   "line": 189,
+   "message": "Function 'if_nametoindex' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/linux_ioctl.c",
+   "line": 196,
+   "message": "Structure 'ifr' passed to trust boundary function 'ioctl' may leak padding bytes. Use packed attributes, explicit padding fields, or serialize fields individually.",
+   "rule_id": "DCL39-C",
+   "severity": "Medium",
+   "suggestion": "Use __attribute__((__packed__)) or serialize fields: copy_to_user(buf, &ifr.a, sizeof(ifr.a)); ..."
+  },
+  {
+   "column": 40,
+   "file": "src/drivers/linux_ioctl.c",
+   "line": 198,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 40,
+   "file": "src/drivers/linux_ioctl.c",
+   "line": 198,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/linux_ioctl.c",
+   "line": 213,
+   "message": "readlink() called with size 'sizeof(brlink)' without reserving space for null terminator - may cause buffer overflow",
+   "rule_id": "POS30-C",
+   "severity": "High",
+   "suggestion": "Subtract 1 from buffer size (e.g., sizeof(buf) - 1 or bufsize - 1) and check return value != -1 before using"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/linux_ioctl.c",
+   "line": 226,
+   "message": "Function 'linux_master_get' does not validate pointer parameter 'ifname' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ifname' at the start of the function, e.g., 'if (!ifname) { return error_code; }'"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/linux_ioctl.c",
+   "line": 234,
+   "message": "readlink() called with size 'sizeof(masterlink)' without reserving space for null terminator - may cause buffer overflow",
+   "rule_id": "POS30-C",
+   "severity": "High",
+   "suggestion": "Subtract 1 from buffer size (e.g., sizeof(buf) - 1 or bufsize - 1) and check return value != -1 before using"
+  }
+ ]
+}

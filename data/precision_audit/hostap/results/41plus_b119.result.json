@@ -1,0 +1,1211 @@
+{
+ "labels": [
+  {
+   "rule": "PRE08-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 23,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "PRE08-C literal match wps_upnp.h/wps_upnp_i.h share first 8 chars; low-value but technically-correct per categorical convention"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 46,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*token) sizes the alloc for bin_clear_free, correct idiom not a decayed-pointer sizeof"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 67,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "token points into heap dl_list nodes, not automatic storage; DCL30-C conflates local pointer var with heap storage it references"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 123,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "pbc genuinely never modified through the pointer in this function body (only os_free(prev) on an aliased copy); low-value const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 234,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reg->authorized_macs is genuinely memcpy-written in this function, so the const claim is factually wrong"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 251,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(reg->authorized_macs) sizes a fixed array struct member for hexdump, correct idiom not decayed-pointer sizeof"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 255,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reg->authorized_macs is memcpy/memset-written in this function, const claim factually wrong"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 276,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(reg->authorized_macs) fixed-array-member correct idiom, same as #5"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 280,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "dev's pointee is freed via aliased local 'prev' in the loop; const would conflict with the free semantics even though not textually mutated through 'dev' itself"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 293,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "reg is read only in wps_device_get (reg->devices), never mutated; genuine low-value const opportunity"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 300,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dev iterates reg->devices, heap-allocated nodes via os_zalloc; DCL30-C conflates local pointer variable with the heap storage it points to"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 306,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dst is genuinely memcpy/WPS_STRDUP-written in this function, const claim factually wrong"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 307,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "src is only ever read in this function body, genuine (low-value) const opportunity"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 312,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "WPS_STRDUP's 'n' parameter is used only as a -> field designator (dst->n), never a runtime expression; category error, matches dl_list-macro PRE00/01/12 field-designator FP class"
+  },
+  {
+   "rule": "PRE01-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 312,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same field-designator misapplication as #13"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 312,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same field-designator misapplication as #13"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 325,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "wps_device_store is an internal-only API always called with valid reg/dev from trusted call sites; matches API00-C internal-API FP convention"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 325,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "same as #16, for the 'uuid' param"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 428,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "wps_registrar_pbc_overlap is hostap-internal despite lacking 'static'; matches API00-C internal-API FP convention"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 428,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "reg is only read in this function body (reg->pbc_sessions), genuine low-value const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 477,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wps only read (wps->wps_state) in wps_build_wps_state, genuine low-value const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 513,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wps only read (wps->ap_setup_locked) in wps_build_ap_setup_locked"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 526,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "reg only read (reg->sel_reg_union) in wps_build_selected_registrar"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 539,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "reg only read in wps_build_sel_reg_dev_password_id"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 555,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "reg only read in wps_build_sel_pbc_reg_uuid_e"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 592,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "reg only read in wps_build_sel_reg_config_methods"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 615,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "reg only read (reg->wps->config_methods) in wps_build_probe_config_methods"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 634,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "reg only read (reg->wps->config_methods) in wps_build_config_methods_r"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 641,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "reg only read (reg->authorized_macs_union) in wps_authorized_macs"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 728,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "stylistic MEM10-C misfire on a plain 'if (X==NULL)' guard, matches established ad-hoc-NULL-check FP class"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 748,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same MEM10-C stylistic class as #29"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 785,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "wps_registrar_add_pin internal API, matches API00-C internal-API FP convention"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 791,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "p = os_zalloc(sizeof(*p)); sizeof(*p) never evaluates p, classic sizeof(*ptr) misidentified-as-deref FP"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 796,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic class"
+  },
+  {
+   "rule": "MSC09-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 828,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "\\xff\\xff\\xff\\xff\\xff\\xff is a broadcast MAC address byte pattern, not human-readable text; matches MSC09-C raw-byte-pattern FP class"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 828,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "broadcast MAC address (0xff x6) is not sensitive information (no password/key/token); MSC41-C misfire on a public constant"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 910,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "wps_registrar_invalidate_pin internal API FP convention"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 939,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "found=pin is read immediately after loop break at 'if (!found)' a few lines later; matches dl_list_for_each dead-store-misses-post-loop-read FP class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 952,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wildcard=1 is read later at 'if (wildcard) found->wildcard_uuid++;'; same post-loop-read FP class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 954,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "found=pin (2nd wildcard loop) is read at 'if (!found) return NULL;' immediately after break; same FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 990,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "wps_registrar_unlock_pin internal API FP convention"
+  },
+  {
+   "rule": "MSC09-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1016,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "broadcast MAC literal, same MSC09-C byte-pattern FP class as #34"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1016,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "broadcast MAC literal, same MSC41-C FP class as #35"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1021,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps_registrar_set_selected_timeout matches eloop_timeout_handler's fixed void(*)(void*,void*) dispatch-contract signature; established DCL13-C eloop-callback FP class"
+  },
+  {
+   "rule": "MSC09-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1064,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "broadcast MAC literal, same MSC09-C class"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1064,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "broadcast MAC literal, same MSC41-C class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1094,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "wps_registrar_complete internal API FP convention"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1125,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if/else-if in wps_registrar_wps_cancel is a deliberate exhaustive guard-clause pair, MSC01-C stylistic pedantry"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1146,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "wps_registrar_probe_req_rx internal API FP convention"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1160,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "struct wps_parse_attr attr is written by wps_parse_msg(wps_data, &attr) via pointer before any field is read; write-only-output-param FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1182,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "WPA_GET_BE16 calls on config_methods/dev_password_id are pure byte-extraction reads with no side effects; matches EXP30-C pure-accessor-macro-arg FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1229,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "wps_cb_new_psk internal API FP convention (mac_addr)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1229,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "wps_cb_new_psk internal API FP convention (p2p_dev_addr)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1229,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "reg only read (reg->new_psk_cb, reg->cb_ctx) in wps_cb_new_psk"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1240,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "reg only read in wps_cb_pin_needed"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1250,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "reg only read in wps_cb_reg_success"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1261,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "reg only read (reg->set_ie_cb, reg->cb_ctx) in wps_cb_set_ie"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1268,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "reg only read in wps_cb_set_sel_reg"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1293,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "reg only read (reg->lookup_pskfile_cb, reg->cb_ctx) in wps_cp_lookup_pskfile"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1374,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "beacon is handed to wps_cb_set_ie->hostapd_wps_set_ie_cb, which assigns it to hapd->wps_beacon_ie (ownership transfer), not leaked; ownership-transfer-to-callback FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1374,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "probe likewise transferred to hapd->wps_probe_resp_ie in hostapd_wps_set_ie_cb, not leaked"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1375,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'fail:' is a goto target reached from earlier failure branches, not dead code after the preceding return; goto-label-blindness FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1444,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wps only read in wps_build_r_snonce1-style accessor (wps->snonce read-only)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1454,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wps only read in wps_build_r_snonce2"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1502,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wps only read in the corresponding wps_build_cred_* accessor at line 1502"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1512,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wps only read in the corresponding accessor at line 1512"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1599,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "wps_build_credential_wrap internal API FP convention"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1630,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(wps->cred) sizes a fixed struct member for memcpy, correct idiom not decayed-pointer sizeof"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1633,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(wps->cred) same correct-idiom class as #67 (os_memset)"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1665,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'wps' itself is never used both ways; the bitwise op is on wps->auth_type and the arithmetic op is on the unrelated wps->new_psk_len -- INT14-C conflates a struct pointer with its distinct dereferenced members"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1668,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'else if (wps->auth_type & WPS_AUTH_WPAPSK)' contains no function pointer at all; WIN04-C factually-wrong-claim class, likely triggered by the adjacent #ifndef CONFIG_NO_TKIP directive"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1671,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC13-C misparses the 'if' keyword of 'else if' as an lvalue identifier right at a preprocessor-branch boundary (#endif above); established #ifdef-adjacent MSC13-C/WIN04-C parser-confusion FP class"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1671,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same line, no function pointer present; WIN04-C factually-wrong-claim FP class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1686,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "if/else-if chain here is a deliberate mutually exclusive selection with no need for a catch-all else; MSC01-C pedantry"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1693,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same #ifdef-adjacent 'if'-token misparse as #71 (near #ifndef CONFIG_NO_TKIP at line 1692)"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1693,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no function pointer on this line; WIN04-C factually-wrong-claim class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1705,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same #ifdef-adjacent 'if'-token misparse (near #ifdef CONFIG_TESTING_OPTIONS at 1704)"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1705,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no function pointer on this line; WIN04-C factually-wrong-claim class"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1733,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps->new_psk is os_free()'d then immediately reassigned via base64_encode() at the very next line before this check reads it; the read targets the fresh pointer, not the freed one -- struct-field extension of the MEM30 reassign/fresh-binding fix gap"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1737,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reads the freshly-assigned wps->new_psk (post-reassignment), same reasoning as #78"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1740,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same reasoning as #78, reads freshly-assigned pointer"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1741,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same reasoning as #78, os_memcpy from the freshly-assigned wps->new_psk"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1762,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "deliberate if/else-if chain in wps_build_cred falls through to 'use_provided' regardless of match; MSC01-C pedantry"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1787,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'if (wps_testing_stub_cred)' sits directly after '#ifdef CONFIG_WPS_TESTING'; same #ifdef-adjacent 'if'-token misparse FP class as #71/#74/#76"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1787,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no function pointer present on this line; WIN04-C factually-wrong-claim class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1788,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cred = wpabuf_alloc(200) is an assignment, not a read of an uninitialized variable; part of the same #ifdef-boundary parser confusion"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1788,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cred (the #ifdef CONFIG_WPS_TESTING stub) is freed at line 1809 wpabuf_free(cred) within the very same block; preprocessor-branch-blind false leak"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1819,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cred is freed via wpabuf_clear_free(cred) at line 1818, the line immediately before this return -1; false leak, off-by-one on the free/return adjacency"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1833,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cred was already freed via wpabuf_clear_free(cred) at line 1825 before reaching this return 0; false leak"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1873,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg is heap memory from wpabuf_alloc(1000), not automatic storage; DCL30-C heap-vs-stack FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1925,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'plain' (#ifdef CONFIG_WPS_NFC local) is freed on both the failure branch (line 1931 wpabuf_clear_free) and the success path (line 1934); not leaked"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1931,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_clear_free() is NULL-safe (checks 'if (buf)' before dereferencing, src/utils/wpabuf.c:212-218); os_free(NULL)-is-safe FP class extended to wpabuf_clear_free"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1941,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'plain' is block-scoped to the #ifdef CONFIG_WPS_NFC if-body and already freed within that block; by this later return NULL it is out of scope entirely, not a real leak"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1946,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg heap memory from wpabuf_alloc, DCL30-C heap-vs-stack FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1946,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same out-of-scope/already-freed 'plain' confusion as #92"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 1985,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg heap memory, DCL30-C heap-vs-stack FP class (wps_build_m2d)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2024,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg heap memory, DCL30-C heap-vs-stack FP class (wps_build_m4)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2060,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg heap memory, DCL30-C heap-vs-stack FP class (wps_build_m6)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2096,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg heap memory, DCL30-C heap-vs-stack FP class (wps_build_m8)"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2110,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps_registrar_free_pending_m2(wps->wps) frees pending-M2 list nodes (p2/p2->msg) inside the wps_context, it does not free the wps_context ('wps->wps') itself; MEM30-C misattributes the freed object"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2122,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same misattribution as #99; wps->wps (the wps_context) is never freed here"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2138,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "msg here is either a UPnP-pending p->msg or a wps_build_* heap buffer, never automatic storage; DCL30-C heap-vs-stack FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2194,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same DCL30-C heap-vs-stack FP class at the function's final return msg"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2198,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps->nonce_e is memcpy-written in wps_process_enrollee_nonce, const claim factually wrong"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2200,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic ad-hoc-NULL-check class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2213,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wps only read (wps->nonce_r via os_memcmp) in wps_process_registrar_nonce, genuine low-value const opportunity"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2215,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2229,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps->uuid_e is memcpy-written in wps_process_uuid_e, const claim factually wrong"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic class"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2245,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2257,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps->peer_hash1 is memcpy-written in wps_process_e_hash1, const claim factually wrong"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2259,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2271,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps->peer_hash2 is memcpy-written in wps_process_e_hash2, const claim factually wrong"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2273,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic class"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2291,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic class"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2331,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2375,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wps->mac_addr_e/wps->peer_dev.mac_addr are memcpy-written in wps_process_mac_addr, const claim factually wrong"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2377,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic class"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2412,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic class"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2469,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2505,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wps param is entirely unread in wps_process_conn_type_flags beyond being passed through, genuine const opportunity"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2507,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic class"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2524,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2558,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wps param is unused in wps_process_wps_state, genuine const opportunity"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2560,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2573,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wps param is unused in wps_process_assoc_state, genuine const opportunity"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2577,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2589,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wps param is unused in wps_process_config_error, genuine const opportunity"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2593,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM10-C stylistic class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2605,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wps only read via wps->wps->registrar/wps->p2p_dev_addr in wps_registrar_p2p_dev_addr_match, genuine const opportunity"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2614,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "two separate MAC2STR(...) macro invocations are pure array-index reads with no side effects; EXP30-C pure-accessor-macro-arg FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2626,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wps only read in wps_registrar_skip_overlap, genuine const opportunity"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2693,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "addr[1] is a const u8* array (pointer array), not a character array; STR31-C misapplied-to-non-char-array FP class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2725,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "deliberate else-if chain inside #ifdef CONFIG_WPS_NFC with no need for a catch-all else; MSC01-C pedantry"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2780,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "attr (struct wps_parse_attr*) is only read in wps_process_m3, genuine low-value const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2815,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "attr is only read in wps_process_m5, genuine low-value const opportunity"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2862,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eattr is written by wps_parse_msg(decrypted,&eattr) via pointer immediately before any field read; write-only-output-param FP class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2884,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "auth_type if/else-if in wps_sta_cred_cb intentionally leaves the value untouched when no bit matches; MSC01-C pedantry"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2888,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "encr_type if/else-if, same deliberate no-op-on-no-match pattern; MSC01-C pedantry"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2900,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(dst->ssid) sizes a fixed array struct member for memcpy, correct idiom not decayed-pointer sizeof"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2905,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(dst->key) same correct-idiom class as #139"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 2966,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "attr is only read in wps_process_m7, genuine low-value const opportunity"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 3014,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eattr written via wps_parse_msg(decrypted,&eattr) pointer-write before read; write-only-output-param FP class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 3033,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ret's initial '= WPS_CONTINUE' is genuinely dead: every switch case either reassigns ret or the default case returns immediately without reading it"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 3040,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "attr is written by wps_parse_msg(msg,&attr) via pointer at the line immediately above before attr.msg_type is read; write-only-output-param FP class"
+  },
+  {
+   "rule": "CON43-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 3054,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostap's eloop is single-threaded/cooperative with zero pthread usage in this codebase; switch(*attr.msg_type) on a local non-shared struct cannot double-fetch; single-threaded-eloop CON43-C FP class"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 3071,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'case WPS_M3:' is a normal, reachable switch case label, not unreachable straight-line code after the preceding case's break; MSC07-C misidentifies a case label as dead code"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 3122,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "attr written via wps_parse_msg(msg,&attr) pointer-write before read; write-only-output-param FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 3194,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "attr written via wps_parse_msg(msg,&attr) pointer-write before read; write-only-output-param FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/wps/wps_registrar.c",
+   "line": 3278,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "attr written via wps_parse_msg(msg,&attr) pointer-write before read; write-only-output-param FP class"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 35,
+  "fp": 115,
+  "fn": 0
+ }
+}

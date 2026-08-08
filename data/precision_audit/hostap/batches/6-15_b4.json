@@ -1,0 +1,1110 @@
+{
+ "src/eap_server/eap_sim_db.h": [
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_sim_db.h",
+   "line": 45,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (-1)"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_sim_db.h",
+   "line": 46,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (-2)"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_sim_db.h",
+   "line": 54,
+   "message": "Function has pointer parameter without size argument: 'int eap_sim_db_add_pseudonym(struct eap_sim_db_data *data,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'char *pseudonym' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_sim_db.h",
+   "line": 57,
+   "message": "Function has pointer parameter without size argument: 'int eap_sim_db_add_reauth(struct eap_sim_db_data *data, const char *permanent,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'char *reauth_id' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_sim_db.h",
+   "line": 59,
+   "message": "Function has pointer parameter without size argument: 'int eap_sim_db_add_reauth_prime(struct eap_sim_db_data *data,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'char *reauth_id' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_server/eap_sim_db.h",
+   "line": 85,
+   "message": "Function has pointer parameter without size argument: 'int eap_sim_db_get_aka_auth(struct eap_sim_db_data *data, const char *username,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *res_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 70,
+   "file": "src/eap_server/eap_sim_db.h",
+   "line": 85,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 39,
+   "file": "src/eap_server/eap_sim_db.h",
+   "line": 87,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ],
+ "src/fst/fst_internal.h": [
+  {
+   "column": 1,
+   "file": "src/fst/fst_internal.h",
+   "line": 20,
+   "message": "Macro 'fst_printf' uses token concatenation operator (##) which prevents parameter expansion - consider using two-level macro indirection for proper expansion",
+   "rule_id": "PRE05-C",
+   "severity": "Low",
+   "suggestion": "Use two-level indirection: define a wrapper macro that calls another macro with ##, allowing parameters to expand first"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_internal.h",
+   "line": 23,
+   "message": "Macro 'fst_printf_group' uses token concatenation operator (##) which prevents parameter expansion - consider using two-level macro indirection for proper expansion",
+   "rule_id": "PRE05-C",
+   "severity": "Low",
+   "suggestion": "Use two-level indirection: define a wrapper macro that calls another macro with ##, allowing parameters to expand first"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_internal.h",
+   "line": 27,
+   "message": "Function-like macro 'fst_printf_iface' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_internal.h",
+   "line": 27,
+   "message": "Macro 'fst_printf_iface' uses token concatenation operator (##) which prevents parameter expansion - consider using two-level macro indirection for proper expansion",
+   "rule_id": "PRE05-C",
+   "severity": "Low",
+   "suggestion": "Use two-level indirection: define a wrapper macro that calls another macro with ##, allowing parameters to expand first"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_internal.h",
+   "line": 27,
+   "message": "Macro evaluates parameter 'iface' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_internal.h",
+   "line": 40,
+   "message": "Function-like macro 'foreach_fst_ctrl_call' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_internal.h",
+   "line": 40,
+   "message": "Macro parameter 'clb' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'clb' in parentheses: (clb) instead of clb"
+  },
+  {
+   "column": 1,
+   "file": "src/fst/fst_internal.h",
+   "line": 40,
+   "message": "Macro evaluates parameter 'clb' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  }
+ ],
+ "src/tls/tlsv1_client.h": [
+  {
+   "column": 60,
+   "file": "src/tls/tlsv1_client.h",
+   "line": 21,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_client.h",
+   "line": 24,
+   "message": "Function has pointer parameter without size argument: 'u8 * tlsv1_client_handshake(struct tlsv1_client *conn,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *out_len' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_client.h",
+   "line": 24,
+   "message": "Function has pointer parameter without size argument: 'u8 * tlsv1_client_handshake(struct tlsv1_client *conn,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'int *need_more_data' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 35,
+   "file": "src/tls/tlsv1_client.h",
+   "line": 27,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_client.h",
+   "line": 31,
+   "message": "Function has pointer parameter without size argument: 'struct wpabuf * tlsv1_client_decrypt(struct tlsv1_client *conn,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'int *need_more_data' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 14,
+   "file": "src/tls/tlsv1_client.h",
+   "line": 33,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 61,
+   "file": "src/tls/tlsv1_client.h",
+   "line": 34,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 62,
+   "file": "src/tls/tlsv1_client.h",
+   "line": 60,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ],
+ "wpa_supplicant/binder/binder_manager.h": [
+  {
+   "column": 1,
+   "file": "wpa_supplicant/binder/binder_manager.h",
+   "line": 22,
+   "message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add a return statement on all execution paths of this function"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/binder/binder_manager.h",
+   "line": 30,
+   "message": "Function 'BinderManager' calls itself directly (direct recursion)",
+   "rule_id": "MSC04-C",
+   "severity": "Medium",
+   "suggestion": "Refactor to use iteration instead of recursion"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/binder/binder_manager.h",
+   "line": 30,
+   "message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add a return statement on all execution paths of this function"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/binder/binder_manager.h",
+   "line": 33,
+   "message": "Old-style function declaration without parameter types",
+   "rule_id": "EXP37-C",
+   "severity": "Medium",
+   "suggestion": "Specify parameter types in function declaration"
+  },
+  {
+   "column": 29,
+   "file": "wpa_supplicant/binder/binder_manager.h",
+   "line": 34,
+   "message": "Function has empty parameter list () - should explicitly specify (void) to indicate no arguments",
+   "rule_id": "DCL20-C",
+   "severity": "Medium",
+   "suggestion": "Change () to (void) to explicitly indicate function takes no arguments"
+  },
+  {
+   "column": 11,
+   "file": "wpa_supplicant/binder/binder_manager.h",
+   "line": 49,
+   "message": "Chained relational or equality operators should use explicit logical operators: 'sp<Supplicant> supplicant_object_'",
+   "rule_id": "EXP13-C",
+   "severity": "Low",
+   "suggestion": "Use explicit logical operators (&&, ||) to clarify intent: e.g., (a < b) && (b < c)"
+  },
+  {
+   "column": 37,
+   "file": "wpa_supplicant/binder/binder_manager.h",
+   "line": 53,
+   "message": "Use parentheses to clarify operator precedence: 'Iface>> iface_object_map_'",
+   "rule_id": "EXP00-C",
+   "severity": "Low",
+   "suggestion": "Add parentheses to enforce the intended order of operations"
+  },
+  {
+   "column": 37,
+   "file": "wpa_supplicant/binder/binder_manager.h",
+   "line": 53,
+   "message": "Shift operation 'Iface>> iface_object_map_' by 'iface_object_map_' without validating shift amount is non-negative and within type width",
+   "rule_id": "INT34-C",
+   "severity": "Medium",
+   "suggestion": "Check that 'iface_object_map_' is >= 0 and < the bit width of the operand before shifting"
+  }
+ ],
+ "wpa_supplicant/mesh.h": [
+  {
+   "column": 1,
+   "file": "wpa_supplicant/mesh.h",
+   "line": 19,
+   "message": "Function has pointer parameter without size argument: 'int wpas_mesh_scan_result_text(const u8 *ies, size_t ies_len, char *buf,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'char *buf' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/mesh.h",
+   "line": 19,
+   "message": "Function has pointer parameter without size argument: 'int wpas_mesh_scan_result_text(const u8 *ies, size_t ies_len, char *buf,' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'char *end' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 68,
+   "file": "wpa_supplicant/mesh.h",
+   "line": 19,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 16,
+   "file": "wpa_supplicant/mesh.h",
+   "line": 20,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 64,
+   "file": "wpa_supplicant/mesh.h",
+   "line": 21,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 63,
+   "file": "wpa_supplicant/mesh.h",
+   "line": 36,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 74,
+   "file": "wpa_supplicant/mesh.h",
+   "line": 42,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 24,
+   "file": "wpa_supplicant/mesh.h",
+   "line": 43,
+   "message": "Pointer parameter 'extra_ie' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *extra_ie'"
+  }
+ ],
+ "wpa_supplicant/wpa_gui-qt4/scanresults.h": [
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_gui-qt4/scanresults.h",
+   "line": 22,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 46,
+   "file": "wpa_supplicant/wpa_gui-qt4/scanresults.h",
+   "line": 22,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/wpa_gui-qt4/scanresults.h",
+   "line": 23,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 43,
+   "file": "wpa_supplicant/wpa_gui-qt4/scanresults.h",
+   "line": 23,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 28,
+   "file": "wpa_supplicant/wpa_gui-qt4/scanresults.h",
+   "line": 28,
+   "message": "Function has empty parameter list () - should explicitly specify (void) to indicate no arguments",
+   "rule_id": "DCL20-C",
+   "severity": "Medium",
+   "suggestion": "Change () to (void) to explicitly indicate function takes no arguments"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/wpa_gui-qt4/scanresults.h",
+   "line": 29,
+   "message": "Function has empty parameter list () - should explicitly specify (void) to indicate no arguments",
+   "rule_id": "DCL20-C",
+   "severity": "Medium",
+   "suggestion": "Change () to (void) to explicitly indicate function takes no arguments"
+  },
+  {
+   "column": 25,
+   "file": "wpa_supplicant/wpa_gui-qt4/scanresults.h",
+   "line": 30,
+   "message": "Function has empty parameter list () - should explicitly specify (void) to indicate no arguments",
+   "rule_id": "DCL20-C",
+   "severity": "Medium",
+   "suggestion": "Change () to (void) to explicitly indicate function takes no arguments"
+  },
+  {
+   "column": 29,
+   "file": "wpa_supplicant/wpa_gui-qt4/scanresults.h",
+   "line": 34,
+   "message": "Function has empty parameter list () - should explicitly specify (void) to indicate no arguments",
+   "rule_id": "DCL20-C",
+   "severity": "Medium",
+   "suggestion": "Change () to (void) to explicitly indicate function takes no arguments"
+  }
+ ],
+ "src/ap/mbo_ap.h": [
+  {
+   "column": 48,
+   "file": "src/ap/mbo_ap.h",
+   "line": 20,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 63,
+   "file": "src/ap/mbo_ap.h",
+   "line": 27,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 24,
+   "file": "src/ap/mbo_ap.h",
+   "line": 28,
+   "message": "Pointer parameter 'sta' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sta'"
+  },
+  {
+   "column": 32,
+   "file": "src/ap/mbo_ap.h",
+   "line": 29,
+   "message": "Pointer parameter 'elems' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *elems'"
+  },
+  {
+   "column": 51,
+   "file": "src/ap/mbo_ap.h",
+   "line": 33,
+   "message": "Pointer parameter 'sta' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sta'"
+  },
+  {
+   "column": 62,
+   "file": "src/ap/mbo_ap.h",
+   "line": 33,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 62,
+   "file": "src/ap/mbo_ap.h",
+   "line": 33,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 68,
+   "file": "src/ap/mbo_ap.h",
+   "line": 39,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 52,
+   "file": "src/ap/mbo_ap.h",
+   "line": 45,
+   "message": "Pointer parameter 'sta' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sta'"
+  }
+ ],
+ "src/ap/preauth_auth.h": [
+  {
+   "column": 62,
+   "file": "src/ap/preauth_auth.h",
+   "line": 24,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 65,
+   "file": "src/ap/preauth_auth.h",
+   "line": 29,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 61,
+   "file": "src/ap/preauth_auth.h",
+   "line": 33,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 22,
+   "file": "src/ap/preauth_auth.h",
+   "line": 34,
+   "message": "Pointer parameter 'sta' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sta'"
+  },
+  {
+   "column": 57,
+   "file": "src/ap/preauth_auth.h",
+   "line": 39,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 25,
+   "file": "src/ap/preauth_auth.h",
+   "line": 40,
+   "message": "Pointer parameter 'sta' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sta'"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/preauth_auth.h",
+   "line": 41,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 65,
+   "file": "src/ap/preauth_auth.h",
+   "line": 45,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 26,
+   "file": "src/ap/preauth_auth.h",
+   "line": 46,
+   "message": "Pointer parameter 'sta' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sta'"
+  }
+ ],
+ "src/common/ctrl_iface_common.c": [
+  {
+   "column": 53,
+   "file": "src/common/ctrl_iface_common.c",
+   "line": 17,
+   "message": "Pointer parameter 'a' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *a'"
+  },
+  {
+   "column": 32,
+   "file": "src/common/ctrl_iface_common.c",
+   "line": 18,
+   "message": "Pointer parameter 'b' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *b'"
+  },
+  {
+   "column": 10,
+   "file": "src/common/ctrl_iface_common.c",
+   "line": 63,
+   "message": "Pointer arithmetic on struct pointer with byte offset. Cast to char* before adding offset.",
+   "rule_id": "EXP08-C",
+   "severity": "Medium",
+   "suggestion": null
+  },
+  {
+   "column": 10,
+   "file": "src/common/ctrl_iface_common.c",
+   "line": 104,
+   "message": "Pointer arithmetic on struct pointer with byte offset. Cast to char* before adding offset.",
+   "rule_id": "EXP08-C",
+   "severity": "Medium",
+   "suggestion": null
+  },
+  {
+   "column": 8,
+   "file": "src/common/ctrl_iface_common.c",
+   "line": 128,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 8,
+   "file": "src/common/ctrl_iface_common.c",
+   "line": 128,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ctrl_iface_common.c",
+   "line": 190,
+   "message": "Function 'ctrl_iface_level' does not validate pointer parameter 'level' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'level' at the start of the function, e.g., 'if (!level) { return error_code; }'"
+  },
+  {
+   "column": 23,
+   "file": "src/common/ctrl_iface_common.c",
+   "line": 203,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 23,
+   "file": "src/common/ctrl_iface_common.c",
+   "line": 203,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  }
+ ],
+ "src/crypto/crypto_internal-rsa.c": [
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_internal-rsa.c",
+   "line": 22,
+   "message": "Function 'crypto_public_key_import' does not validate pointer parameter 'key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+  },
+  {
+   "column": 24,
+   "file": "src/crypto/crypto_internal-rsa.c",
+   "line": 40,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_internal-rsa.c",
+   "line": 47,
+   "message": "Function returns pointer to local variable 'res' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 4,
+   "file": "src/crypto/crypto_internal-rsa.c",
+   "line": 53,
+   "message": "Function returns pointer to local variable 'res' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_internal-rsa.c",
+   "line": 72,
+   "message": "Function 'crypto_public_key_encrypt_pkcs1_v15' does not validate pointer parameter 'key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_internal-rsa.c",
+   "line": 72,
+   "message": "Function 'crypto_public_key_encrypt_pkcs1_v15' does not validate pointer parameter 'out' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'out' at the start of the function, e.g., 'if (!out) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_internal-rsa.c",
+   "line": 81,
+   "message": "Function 'crypto_private_key_decrypt_pkcs1_v15' does not validate pointer parameter 'key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_internal-rsa.c",
+   "line": 90,
+   "message": "Function 'crypto_private_key_sign_pkcs1' does not validate pointer parameter 'key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_internal-rsa.c",
+   "line": 105,
+   "message": "Function 'crypto_private_key_free' does not validate pointer parameter 'key' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'key' at the start of the function, e.g., 'if (!key) { return error_code; }'"
+  }
+ ],
+ "src/crypto/sha256-prf.c": [
+  {
+   "column": 1,
+   "file": "src/crypto/sha256-prf.c",
+   "line": 30,
+   "message": "Function 'sha256_prf' does not validate integer parameter 'buf_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'buf_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 58,
+   "file": "src/crypto/sha256-prf.c",
+   "line": 30,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/sha256-prf.c",
+   "line": 54,
+   "message": "Function 'sha256_prf_bits' does not validate integer parameter 'buf_len_bits' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'buf_len_bits' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 63,
+   "file": "src/crypto/sha256-prf.c",
+   "line": 54,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 19,
+   "file": "src/crypto/sha256-prf.c",
+   "line": 64,
+   "message": "Variable 'buf_len_bits' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 12,
+   "file": "src/crypto/sha256-prf.c",
+   "line": 68,
+   "message": "Do not cast away const qualification: '(u8 *) label'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 4,
+   "file": "src/crypto/sha256-prf.c",
+   "line": 84,
+   "message": "Unsigned integer compound addition 'pos += SHA256_MAC_LEN' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 4,
+   "file": "src/crypto/sha256-prf.c",
+   "line": 90,
+   "message": "Unsigned integer compound addition 'pos += plen' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 13,
+   "file": "src/crypto/sha256-prf.c",
+   "line": 101,
+   "message": "Shift operation '0xff << (8 - buf_len_bits % 8)' by '(8 - buf_len_bits % 8)' without validating shift amount is non-negative and within type width",
+   "rule_id": "INT34-C",
+   "severity": "Medium",
+   "suggestion": "Check that '(8 - buf_len_bits % 8)' is >= 0 and < the bit width of the operand before shifting"
+  }
+ ],
+ "src/crypto/sha384-prf.c": [
+  {
+   "column": 1,
+   "file": "src/crypto/sha384-prf.c",
+   "line": 30,
+   "message": "Function 'sha384_prf' does not validate integer parameter 'buf_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'buf_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 58,
+   "file": "src/crypto/sha384-prf.c",
+   "line": 30,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/sha384-prf.c",
+   "line": 54,
+   "message": "Function 'sha384_prf_bits' does not validate integer parameter 'buf_len_bits' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'buf_len_bits' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 63,
+   "file": "src/crypto/sha384-prf.c",
+   "line": 54,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 19,
+   "file": "src/crypto/sha384-prf.c",
+   "line": 64,
+   "message": "Variable 'buf_len_bits' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 12,
+   "file": "src/crypto/sha384-prf.c",
+   "line": 68,
+   "message": "Do not cast away const qualification: '(u8 *) label'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 4,
+   "file": "src/crypto/sha384-prf.c",
+   "line": 84,
+   "message": "Unsigned integer compound addition 'pos += SHA384_MAC_LEN' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 4,
+   "file": "src/crypto/sha384-prf.c",
+   "line": 90,
+   "message": "Unsigned integer compound addition 'pos += plen' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 13,
+   "file": "src/crypto/sha384-prf.c",
+   "line": 101,
+   "message": "Shift operation '0xff << (8 - buf_len_bits % 8)' by '(8 - buf_len_bits % 8)' without validating shift amount is non-negative and within type width",
+   "rule_id": "INT34-C",
+   "severity": "Medium",
+   "suggestion": "Check that '(8 - buf_len_bits % 8)' is >= 0 and < the bit width of the operand before shifting"
+  }
+ ],
+ "src/crypto/sha512-prf.c": [
+  {
+   "column": 1,
+   "file": "src/crypto/sha512-prf.c",
+   "line": 30,
+   "message": "Function 'sha512_prf' does not validate integer parameter 'buf_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'buf_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 58,
+   "file": "src/crypto/sha512-prf.c",
+   "line": 30,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/sha512-prf.c",
+   "line": 54,
+   "message": "Function 'sha512_prf_bits' does not validate integer parameter 'buf_len_bits' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'buf_len_bits' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 63,
+   "file": "src/crypto/sha512-prf.c",
+   "line": 54,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 19,
+   "file": "src/crypto/sha512-prf.c",
+   "line": 64,
+   "message": "Variable 'buf_len_bits' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 12,
+   "file": "src/crypto/sha512-prf.c",
+   "line": 68,
+   "message": "Do not cast away const qualification: '(u8 *) label'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 4,
+   "file": "src/crypto/sha512-prf.c",
+   "line": 84,
+   "message": "Unsigned integer compound addition 'pos += SHA512_MAC_LEN' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 4,
+   "file": "src/crypto/sha512-prf.c",
+   "line": 90,
+   "message": "Unsigned integer compound addition 'pos += plen' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+   "column": 13,
+   "file": "src/crypto/sha512-prf.c",
+   "line": 101,
+   "message": "Shift operation '0xff << (8 - buf_len_bits % 8)' by '(8 - buf_len_bits % 8)' without validating shift amount is non-negative and within type width",
+   "rule_id": "INT34-C",
+   "severity": "Medium",
+   "suggestion": "Check that '(8 - buf_len_bits % 8)' is >= 0 and < the bit width of the operand before shifting"
+  }
+ ],
+ "src/eap_common/eap_common.c": [
+  {
+   "column": 1,
+   "file": "src/eap_common/eap_common.c",
+   "line": 25,
+   "message": "Function 'eap_hdr_len_valid' does not validate integer parameter 'min_payload' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'min_payload' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 5,
+   "file": "src/eap_common/eap_common.c",
+   "line": 30,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 3,
+   "file": "src/eap_common/eap_common.c",
+   "line": 100,
+   "message": "Function returns pointer to local variable 'pos' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 31,
+   "file": "src/eap_common/eap_common.c",
+   "line": 141,
+   "message": "Dereference of uninitialized pointer 'hdr'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'hdr' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_common/eap_common.c",
+   "line": 154,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 31,
+   "file": "src/eap_common/eap_common.c",
+   "line": 186,
+   "message": "Dereference of uninitialized pointer 'eap'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'eap' before dereferencing"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_common/eap_common.c",
+   "line": 209,
+   "message": "Function 'erp_parse_tlvs' does not validate pointer parameter 'end' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'end' at the start of the function, e.g., 'if (!end) { return error_code; }'"
+  },
+  {
+   "column": 21,
+   "file": "src/eap_common/eap_common.c",
+   "line": 212,
+   "message": "sizeof applied to pointer/array parameter 'tlvs' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*tlvs)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 11,
+   "file": "src/eap_common/eap_common.c",
+   "line": 256,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  }
+ ]
+}

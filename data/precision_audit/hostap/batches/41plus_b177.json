@@ -1,0 +1,1030 @@
+{
+ "src/ap/ap_config.c": [
+  {
+   "column": 1,
+   "file": "src/ap/ap_config.c",
+   "line": 15,
+   "message": "Header file 'ieee802_11_defs.h' has the same first 8 characters (case-insensitive) as 'ieee802_1x_defs.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_defs.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ap_config.c",
+   "line": 33,
+   "message": "Value assigned to 'prev' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 22,
+   "file": "src/ap/ap_config.c",
+   "line": 157,
+   "message": "Variable 'HS20_VERSION' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 26,
+   "file": "src/ap/ap_config.c",
+   "line": 217,
+   "message": "Dereference of uninitialized pointer 'conf'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'conf' before dereferencing"
+  },
+  {
+   "column": 25,
+   "file": "src/ap/ap_config.c",
+   "line": 218,
+   "message": "Dereference of uninitialized pointer 'bss'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'bss' before dereferencing"
+  },
+  {
+   "column": 11,
+   "file": "src/ap/ap_config.c",
+   "line": 222,
+   "message": "Passing null pointer 'conf' to 'os_free' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'conf' is not NULL before passing to 'os_free'"
+  },
+  {
+   "column": 11,
+   "file": "src/ap/ap_config.c",
+   "line": 223,
+   "message": "Passing null pointer 'bss' to 'os_free' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'bss' is not NULL before passing to 'os_free'"
+  },
+  {
+   "column": 41,
+   "file": "src/ap/ap_config.c",
+   "line": 290,
+   "message": "Modulo operator used with potentially signed operands. The result of % with negative operands is implementation-defined and can be negative. Use unsigned types (size_t, unsigned int) or explicitly handle negative remainders.",
+   "rule_id": "INT10-C",
+   "severity": "Medium",
+   "suggestion": "Convert operands to unsigned types (size_t, unsigned int) or add explicit checks for negative values"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ap_config.c",
+   "line": 316,
+   "message": "Function returns pointer to local variable 'conf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/ap_config.c",
+   "line": 344,
+   "message": "Return value from fopen() should be checked for errors",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Check if fopen() returned an error value (NULL, -1, etc.)"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/ap_config.c",
+   "line": 344,
+   "message": "File opened for reading using variable filename 'fname' without verifying file attributes (fstat + st_uid/st_gid check)",
+   "rule_id": "FIO05-C",
+   "severity": "Medium",
+   "suggestion": "Use fstat() to check file ownership (st_uid, st_gid) before reading untrusted files"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/ap_config.c",
+   "line": 344,
+   "message": "fopen() called without 'N' flag in mode string \"r\". On Windows, file handles are inheritable by default unless the 'N' flag is specified.",
+   "rule_id": "WIN03-C",
+   "severity": "High",
+   "suggestion": "Add 'N' flag to the mode string (e.g., \"rwN\") to disable handle inheritance on Windows."
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ap_config.c",
+   "line": 350,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'pos' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 33,
+   "file": "src/ap/ap_config.c",
+   "line": 350,
+   "message": "Do not cast away const qualification: 'f'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ap_config.c",
+   "line": 359,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'pos' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 5,
+   "file": "src/ap/ap_config.c",
+   "line": 361,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/ap_config.c",
+   "line": 381,
+   "message": "Implicit boolean test on 'os_strcmp(name, \"keyid\")'. May be unclear what constitutes success or failure.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Use explicit test: os_strcmp(name, \"keyid\") == 0 or os_strcmp(name, \"keyid\") != 0 depending on success convention"
+  },
+  {
+   "column": 15,
+   "file": "src/ap/ap_config.c",
+   "line": 383,
+   "message": "Implicit boolean test on 'os_strcmp(name, \"wps\")'. May be unclear what constitutes success or failure.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Use explicit test: os_strcmp(name, \"wps\") == 0 or os_strcmp(name, \"wps\") != 0 depending on success convention"
+  },
+  {
+   "column": 11,
+   "file": "src/ap/ap_config.c",
+   "line": 384,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 11,
+   "file": "src/ap/ap_config.c",
+   "line": 384,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 15,
+   "file": "src/ap/ap_config.c",
+   "line": 385,
+   "message": "Implicit boolean test on 'os_strcmp(name, \"vlanid\")'. May be unclear what constitutes success or failure.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Use explicit test: os_strcmp(name, \"vlanid\") == 0 or os_strcmp(name, \"vlanid\") != 0 depending on success convention"
+  },
+  {
+   "column": 15,
+   "file": "src/ap/ap_config.c",
+   "line": 386,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 15,
+   "file": "src/ap/ap_config.c",
+   "line": 386,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 26,
+   "file": "src/ap/ap_config.c",
+   "line": 409,
+   "message": "Dereference of uninitialized pointer 'psk'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'psk' before dereferencing"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/ap_config.c",
+   "line": 435,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/ap_config.c",
+   "line": 443,
+   "message": "Double free detected: 'psk' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 5,
+   "file": "src/ap/ap_config.c",
+   "line": 454,
+   "message": "Double free detected: 'psk' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ap_config.c",
+   "line": 466,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 35,
+   "file": "src/ap/ap_config.c",
+   "line": 481,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_ascii_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"PSK (ASCII passphrase)\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 29,
+   "file": "src/ap/ap_config.c",
+   "line": 490,
+   "message": "Hard-coded sensitive information detected passed to `wpa_hexdump_key`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \"PSK (from passphrase)\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 6,
+   "file": "src/ap/ap_config.c",
+   "line": 502,
+   "message": "Array declaration 'default_groups[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ap_config.c",
+   "line": 592,
+   "message": "Function 'hostapd_config_get_radius_attr' does not validate pointer parameter 'attr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'attr' at the start of the function, e.g., 'if (!attr) { return error_code; }'"
+  },
+  {
+   "column": 59,
+   "file": "src/ap/ap_config.c",
+   "line": 593,
+   "message": "Pointer parameter 'attr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *attr'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ap_config.c",
+   "line": 603,
+   "message": "Function 'hostapd_parse_radius_attr' does not validate pointer parameter 'value' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'value' at the start of the function, e.g., 'if (!value) { return error_code; }'"
+  },
+  {
+   "column": 26,
+   "file": "src/ap/ap_config.c",
+   "line": 610,
+   "message": "Dereference of uninitialized pointer 'attr'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'attr' before dereferencing"
+  },
+  {
+   "column": 15,
+   "file": "src/ap/ap_config.c",
+   "line": 614,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 15,
+   "file": "src/ap/ap_config.c",
+   "line": 614,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ap_config.c",
+   "line": 624,
+   "message": "Function returns pointer to local variable 'attr' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ap_config.c",
+   "line": 624,
+   "message": "Memory leak: 'attr->val' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'attr->val' before this return statement"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ap_config.c",
+   "line": 630,
+   "message": "Memory leak: 'attr->val' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'attr->val' before this return statement"
+  },
+  {
+   "column": 11,
+   "file": "src/ap/ap_config.c",
+   "line": 632,
+   "message": "Pointer dereference '*pos' (char type) assigned to larger type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment: (unsigned char)*ptr"
+  },
+  {
+   "column": 11,
+   "file": "src/ap/ap_config.c",
+   "line": 632,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/ap_config.c",
+   "line": 641,
+   "message": "Variable 'len' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 15,
+   "file": "src/ap/ap_config.c",
+   "line": 654,
+   "message": "Memory allocated with 'wpabuf_alloc' for variable 'attr->val' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(attr->val)' before the variable goes out of scope"
+  },
+  {
+   "column": 31,
+   "file": "src/ap/ap_config.c",
+   "line": 656,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 31,
+   "file": "src/ap/ap_config.c",
+   "line": 656,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ap_config.c",
+   "line": 660,
+   "message": "Memory leak: 'attr->val' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'attr->val' before this return statement"
+  },
+  {
+   "column": 7,
+   "file": "src/ap/ap_config.c",
+   "line": 663,
+   "message": "Use-after-free: accessing member of freed pointer 'attr'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ap_config.c",
+   "line": 664,
+   "message": "Double-free: 'attr' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ap_config.c",
+   "line": 664,
+   "message": "Double free detected: 'attr' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ap_config.c",
+   "line": 668,
+   "message": "Function returns pointer to local variable 'attr' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ap_config.c",
+   "line": 668,
+   "message": "Use-after-free: returning freed pointer 'attr'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not return freed memory from functions."
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ap_config.c",
+   "line": 668,
+   "message": "Memory leak: 'attr->val' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'attr->val' before this return statement"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ap_config.c",
+   "line": 672,
+   "message": "Function 'hostapd_config_free_radius_attr' does not validate pointer parameter 'attr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'attr' at the start of the function, e.g., 'if (!attr) { return error_code; }'"
+  },
+  {
+   "column": 65,
+   "file": "src/ap/ap_config.c",
+   "line": 672,
+   "message": "Pointer parameter 'attr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *attr'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ap_config.c",
+   "line": 685,
+   "message": "Function 'hostapd_config_free_eap_user' does not validate pointer parameter 'user' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'user' at the start of the function, e.g., 'if (!user) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ap_config.c",
+   "line": 695,
+   "message": "Function 'hostapd_config_free_eap_users' does not validate pointer parameter 'user' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'user' at the start of the function, e.g., 'if (!user) { return error_code; }'"
+  },
+  {
+   "column": 60,
+   "file": "src/ap/ap_config.c",
+   "line": 695,
+   "message": "Pointer parameter 'user' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *user'"
+  },
+  {
+   "column": 16,
+   "file": "src/ap/ap_config.c",
+   "line": 765,
+   "message": "Potential null pointer dereference in member access of variable 'elem'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'elem' is not NULL before member access"
+  },
+  {
+   "column": 16,
+   "file": "src/ap/ap_config.c",
+   "line": 779,
+   "message": "Potential null pointer dereference in member access of variable 'realm'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'realm' is not NULL before member access"
+  },
+  {
+   "column": 73,
+   "file": "src/ap/ap_config.c",
+   "line": 811,
+   "message": "Pointer parameter 'conf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conf'"
+  },
+  {
+   "column": 5,
+   "file": "src/ap/ap_config.c",
+   "line": 830,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ap_config.c",
+   "line": 895,
+   "message": "Use-after-free: passing freed pointer 'conf' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 5,
+   "file": "src/ap/ap_config.c",
+   "line": 1032,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ap_config.c",
+   "line": 1061,
+   "message": "Function 'hostapd_maclist_found' does not validate pointer parameter 'list' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'list' at the start of the function, e.g., 'if (!list) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ap_config.c",
+   "line": 1061,
+   "message": "Function 'hostapd_maclist_found' does not validate integer parameter 'num_entries' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'num_entries' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 48,
+   "file": "src/ap/ap_config.c",
+   "line": 1061,
+   "message": "Pointer parameter 'list' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *list'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ap_config.c",
+   "line": 1114,
+   "message": "Function 'hostapd_get_vlan_id_ifname' does not validate pointer parameter 'vlan' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'vlan' at the start of the function, e.g., 'if (!vlan) { return error_code; }'"
+  },
+  {
+   "column": 61,
+   "file": "src/ap/ap_config.c",
+   "line": 1114,
+   "message": "Pointer parameter 'vlan' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *vlan'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ap_config.c",
+   "line": 1126,
+   "message": "Function 'hostapd_get_psk' does not validate pointer parameter 'conf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conf' at the start of the function, e.g., 'if (!conf) { return error_code; }'"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/ap_config.c",
+   "line": 1137,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ap_config.c",
+   "line": 1147,
+   "message": "Floating-point variable 'psk' used as loop counter. Floating-point arithmetic may cause unexpected iteration counts.",
+   "rule_id": "FLP30-C",
+   "severity": "Low",
+   "suggestion": "Use an integer counter and derive floating-point values inside the loop"
+  },
+  {
+   "column": 33,
+   "file": "src/ap/ap_config.c",
+   "line": 1147,
+   "message": "loop termination uses '!=' with a step other than +-1 -- the counter can skip over the target value and never terminate",
+   "rule_id": "MSC21-C",
+   "severity": "Low",
+   "suggestion": "Use a relational operator (<, <=, >, >=) to terminate the loop instead of an equality operator, unless the step is exactly 1"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ap_config.c",
+   "line": 1181,
+   "message": "Preprocessor directive '#ifdef' used inside invocation of 'fclose'. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 31,
+   "file": "src/ap/ap_config.c",
+   "line": 1246,
+   "message": "Pointer parameter 'conf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conf'"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/ap_config.c",
+   "line": 1250,
+   "message": "Implicit boolean test on 'hostapd_config_check_bss_6g(bss)'. May be unclear what constitutes success or failure.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Use explicit test: hostapd_config_check_bss_6g(bss) == 0 or hostapd_config_check_bss_6g(bss) != 0 depending on success convention"
+  },
+  {
+   "column": 5,
+   "file": "src/ap/ap_config.c",
+   "line": 1323,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 58,
+   "file": "src/ap/ap_config.c",
+   "line": 1536,
+   "message": "Pointer parameter 'conf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conf'"
+  },
+  {
+   "column": 17,
+   "file": "src/ap/ap_config.c",
+   "line": 1538,
+   "message": "Array subscript uses function parameter 'queue' without bounds checking. Caller could pass invalid index.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Add bounds checking for 'queue' before using it as an array index"
+  },
+  {
+   "column": 17,
+   "file": "src/ap/ap_config.c",
+   "line": 1538,
+   "message": "Potentially unsafe array access with unvalidated function parameter index 'queue'",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking for function parameter before using as array index."
+  },
+  {
+   "column": 17,
+   "file": "src/ap/ap_config.c",
+   "line": 1539,
+   "message": "Array subscript uses function parameter 'queue' without bounds checking. Caller could pass invalid index.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Add bounds checking for 'queue' before using it as an array index"
+  },
+  {
+   "column": 17,
+   "file": "src/ap/ap_config.c",
+   "line": 1539,
+   "message": "Potentially unsafe array access with unvalidated function parameter index 'queue'",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking for function parameter before using as array index."
+  },
+  {
+   "column": 17,
+   "file": "src/ap/ap_config.c",
+   "line": 1540,
+   "message": "Array subscript uses function parameter 'queue' without bounds checking. Caller could pass invalid index.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Add bounds checking for 'queue' before using it as an array index"
+  },
+  {
+   "column": 17,
+   "file": "src/ap/ap_config.c",
+   "line": 1540,
+   "message": "Potentially unsafe array access with unvalidated function parameter index 'queue'",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking for function parameter before using as array index."
+  },
+  {
+   "column": 17,
+   "file": "src/ap/ap_config.c",
+   "line": 1541,
+   "message": "Array subscript uses function parameter 'queue' without bounds checking. Caller could pass invalid index.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Add bounds checking for 'queue' before using it as an array index"
+  },
+  {
+   "column": 17,
+   "file": "src/ap/ap_config.c",
+   "line": 1541,
+   "message": "Potentially unsafe array access with unvalidated function parameter index 'queue'",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking for function parameter before using as array index."
+  },
+  {
+   "column": 10,
+   "file": "src/ap/ap_config.c",
+   "line": 1674,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ap_config.c",
+   "line": 1710,
+   "message": "Function 'hostapd_sae_pw_id_in_use' does not validate pointer parameter 'conf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conf' at the start of the function, e.g., 'if (!conf) { return error_code; }'"
+  },
+  {
+   "column": 56,
+   "file": "src/ap/ap_config.c",
+   "line": 1710,
+   "message": "Pointer parameter 'conf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conf'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/ap_config.c",
+   "line": 1733,
+   "message": "Function 'hostapd_sae_pk_in_use' does not validate pointer parameter 'conf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conf' at the start of the function, e.g., 'if (!conf) { return error_code; }'"
+  },
+  {
+   "column": 54,
+   "file": "src/ap/ap_config.c",
+   "line": 1733,
+   "message": "Pointer parameter 'conf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conf'"
+  },
+  {
+   "column": 59,
+   "file": "src/ap/ap_config.c",
+   "line": 1749,
+   "message": "Pointer parameter 'conf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conf'"
+  },
+  {
+   "column": 28,
+   "file": "src/ap/ap_config.c",
+   "line": 1781,
+   "message": "Use-after-free: dereferencing freed pointer 'acl'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access memory after freeing it."
+  },
+  {
+   "column": 44,
+   "file": "src/ap/ap_config.c",
+   "line": 1781,
+   "message": "sizeof applied to pointer/array parameter 'acl' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(**acl)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 51,
+   "file": "src/ap/ap_config.c",
+   "line": 1781,
+   "message": "Use-after-free: dereferencing freed pointer 'acl'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access memory after freeing it."
+  },
+  {
+   "column": 52,
+   "file": "src/ap/ap_config.c",
+   "line": 1781,
+   "message": "Use-after-free: dereferencing freed pointer 'acl'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access memory after freeing it."
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ap_config.c",
+   "line": 1787,
+   "message": "Local variable 'newacl' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ap_config.c",
+   "line": 1787,
+   "message": "Use-after-free: writing to freed memory via 'acl'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access memory after freeing it."
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ap_config.c",
+   "line": 1788,
+   "message": "Use-after-free: passing freed pointer 'acl' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 12,
+   "file": "src/ap/ap_config.c",
+   "line": 1788,
+   "message": "Use-after-free: accessing member of freed pointer 'acl'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 12,
+   "file": "src/ap/ap_config.c",
+   "line": 1788,
+   "message": "Use-after-free: accessing freed array '(*acl)'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access memory after freeing it."
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ap_config.c",
+   "line": 1789,
+   "message": "Use-after-free: passing freed pointer 'acl' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 12,
+   "file": "src/ap/ap_config.c",
+   "line": 1789,
+   "message": "Use-after-free: dereferencing freed pointer 'acl'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access memory after freeing it."
+  },
+  {
+   "column": 13,
+   "file": "src/ap/ap_config.c",
+   "line": 1789,
+   "message": "Use-after-free: accessing member of freed pointer 'acl'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 13,
+   "file": "src/ap/ap_config.c",
+   "line": 1789,
+   "message": "Use-after-free: accessing freed array '(*acl)'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access memory after freeing it."
+  },
+  {
+   "column": 38,
+   "file": "src/ap/ap_config.c",
+   "line": 1789,
+   "message": "sizeof applied to pointer/array parameter 'acl' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof((*acl)[*num].vlan_id)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 45,
+   "file": "src/ap/ap_config.c",
+   "line": 1789,
+   "message": "Use-after-free: accessing member of freed pointer 'acl'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 45,
+   "file": "src/ap/ap_config.c",
+   "line": 1789,
+   "message": "Use-after-free: accessing freed array '(*acl)'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access memory after freeing it."
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ap_config.c",
+   "line": 1790,
+   "message": "Use-after-free: accessing member of freed pointer 'acl'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ap_config.c",
+   "line": 1790,
+   "message": "Use-after-free: accessing freed array '(*acl)'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access memory after freeing it."
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ap_config.c",
+   "line": 1791,
+   "message": "Use-after-free: accessing member of freed pointer 'acl'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 2,
+   "file": "src/ap/ap_config.c",
+   "line": 1791,
+   "message": "Use-after-free: accessing freed array '(*acl)'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access memory after freeing it."
+  },
+  {
+   "column": 50,
+   "file": "src/ap/ap_config.c",
+   "line": 1798,
+   "message": "Pointer parameter 'acl' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *acl'"
+  },
+  {
+   "column": 35,
+   "file": "src/ap/ap_config.c",
+   "line": 1805,
+   "message": "sizeof applied to pointer/array parameter 'acl' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(**acl)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  }
+ ]
+}

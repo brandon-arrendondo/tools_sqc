@@ -1,0 +1,1219 @@
+{
+ "labels": [
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2155,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sm read-only in wpa_auth_ft_store_keys; genuine low-value plain-internal-helper const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2193,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_auth only read (cb/cb_ctx) in forwarding wrapper wpa_auth_get_seqnum; low-value real opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2202,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sm read-only in wpa_ft_gtk_subelem, never mutated; genuine low-value const opportunity"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2211,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "keybuf fixed buffer, no getenv() anywhere in function - wholesale ENV01 misfire (categorical_patterns.md)"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2228,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "sm->group set at STA init; gsm is a caller/init-guaranteed non-NULL invariant, not attacker-reachable NULL"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2242,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "misattributes bitwise/arithmetic mix on gsm->GN member to base pointer 'gsm', not the field (INT14 base-identifier misattribution class)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2293,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "subelem is os_zalloc'd heap memory, not automatic storage; confused local variable with storage duration"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2297,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sm read-only in wpa_ft_igtk_subelem; low-value real const opportunity"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2306,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "stub_igtk fixed buffer, no getenv() in function - wholesale ENV01 misfire"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2354,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "heap (os_zalloc) pointer returned from wpa_ft_igtk_subelem, not local storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2358,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sm read-only in wpa_ft_bigtk_subelem; low-value real const opportunity"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2403,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "heap pointer from wpa_ft_bigtk_subelem, same misfire as :2293/:2354"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2407,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sm read-only in wpa_ft_process_rdie; low-value real const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2408,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "end only used in pointer-diff comparisons, never mutated; genuine const opportunity"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2419,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end are the same output-buffer pair threaded through the parser, not different arrays (documented pos/end triple-misfire class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2419,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*rdie) is compile-time, never dereferences at runtime (confirmed sizeof(*ptr) EXP33 class)"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2432,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "callee ieee802_11_parse_elems itself takes const u8*; cast is a no-op and function never writes through it"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2440,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "parse is populated by ieee802_11_parse_elems on the success path taken to reach this line"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2443,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*tspec), non-evaluating context, same confirmed class as :2419"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2450,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same pos/end output-buffer pair as :2419"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2497,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "rpos is a byte pointer (u8*); sizeof(*rdie) bound with 1:1 byte arithmetic, no double scaling (confirmed byte-pointer ARR39 class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2497,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*rdie), non-evaluating context"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2505,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "rpos is a plain pointer into a larger buffer, not a 1-element array; sqc mis-infers a size-1 bound from rpos[1] indexing (new pattern this batch)"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2506,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same byte-pointer-indexed-as-1-elem-array misfire as :2505"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2520,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal API; pos is always the caller's assoc-resp IE buffer, never externally nullable"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2520,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "max_len is an internal caller-controlled buffer size, no realistic overflow path"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2540,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "stylistic ad-hoc NULL-check pedantry; the check IS present"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2662,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nbuf aliases subelem via subelem=nbuf right after realloc; the later os_free(subelem) frees the same memory (realloc-reassign alias MEM12 class)"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2678,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same realloc-reassign alias as :2662 (bigtk branch)"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2694,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same realloc-reassign alias, OCV subelement growth branch"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2703,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same realloc-reassign alias as :2694"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2737,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "end-pos is the pos/end idiom on one output buffer; 'pos from nbuf' misattributes an unrelated already-freed-name variable"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2741,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same nbuf/subelem alias misfire as :2662 et al."
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2748,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "_ftie is a block-scope local, not file-scope; C 7.1.3's single-underscore restriction is file-scope only (confirmed DCL37 local-vs-file-scope class)"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2756,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same block-scope-local misclassification as :2748"
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2762,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same block-scope-local misclassification as :2748"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2837,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nbuf already aliased/freed via subelem earlier; sm->assoc_resp_ftie is a struct field owned by sm, freed on the next call (ownership-transfer class)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2841,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_auth only read (cb/cb_ctx) in forwarding wrapper wpa_auth_set_key; low-value real opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2855,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_auth only read in wpa_auth_set_ltf_keyseed forwarding wrapper; low-value real opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2868,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_auth only read in wpa_auth_add_sta_ft forwarding wrapper; low-value real opportunity"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2936,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "out_pmk_r1 fixed-size (PMK_LEN) output buffer idiom, standard hostap convention (confirmed API05 pointer+size idiom class)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2941,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "out_identity already paired with out_identity_len on the same declaration (double-pointer variant of the idiom)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3016,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "parse only read (key_mgmt/pairwise_cipher) in wpa_ft_set_key_mgmt; low-value real opportunity"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3029,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "key_mgmt genuinely declared plain int and used with '&'; literal rule match, low practical severity (not the wrong-type-detection FP class)"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3032,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Windows-only EncodePointer() rule misapplied to POSIX/Linux hostapd code"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3035,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same Windows-only rule misapplication"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3038,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same Windows-only rule misapplication"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3040,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "misattributes to the bare '#endif' preprocessor line inside an if/else-if/#ifdef chain; 'if' is not a real variable"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3040,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "fires on a bare '#endif' preprocessor directive line, not a function-pointer store at all (preprocessor-branch-blind CFG bug)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3057,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sm read-only in wpa_ft_local_derive_pmk_r1; low-value real const opportunity"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3061,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "r0kh_id already paired with r0kh_id_len on the same line"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3066,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "identity already paired with identity_len (double-pointer idiom)"
+  },
+  {
+   "rule": "MEM33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3108,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "struct vlan_description has no flexible array member (fixed int tagged[32]); confirmed MEM33 rule-engine-bug class fires on plain struct assignment"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3110,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*vlan) correctly dereferences to the pointee struct size, the idiom the rule should want (confirmed ARR01 sizeof(*ptr) class)"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3136,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wholesale ENV01 misfire, no getenv() in wpa_ft_process_auth_req"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3273,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pmk_r1_derived: label is reached via 3 earlier goto statements, not by fallthrough (confirmed goto-target MSC07 class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3360,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "identity always set by whichever of the 3 mutually-exclusive helper calls (each takes &identity) reached the shared pmk_r1_derived label before this use"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3362,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "radius_cui set the same way as identity at :3360"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3368,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buflen is pure size_t arithmetic; no pointer operand at all in the expression (confirmed pure-integer-sum ARR39 class)"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3380,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos points into the heap-allocated *resp_ies buffer, a real array, not a bare scalar pointer (confirmed ARR37 class on a genuine buffer pointer)"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3385,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same pos-into-resp_ies-buffer misfire as :3380"
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3393,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same pos-into-resp_ies-buffer misfire as :3380"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3408,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; ies is always the frame body handed down from the ieee802_11 dispatcher"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3408,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "cb is always the fixed pending-auth callback supplied by the caller, never NULL by convention"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3408,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ctx is an internal opaque context pointer, same internal-API FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3413,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ies/ies_len pointer+size pair inside a pinned callback typedef parameter"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3420,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "stylistic ad-hoc NULL-check pedantry"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3426,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR is a pure read/formatting macro, no side effects to unsequence"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3442,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR and status2str are pure accessor/lookup calls, same confirmed EXP30 class"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3457,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mic fixed buffer, no getenv() in wpa_ft_validate_reassoc - wholesale ENV01 misfire"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3465,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "stylistic ad-hoc NULL-check pedantry"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3626,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR pure macro args, same confirmed EXP30 class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3680,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "deliberate guard-clause chain; missing final else means \"OCV succeeded, continue\" (confirmed no-final-else class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3700,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only API; data's length is validated at :3716 before any use, this isn't a NULL-pointer risk class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3700,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sm read-only in wpa_ft_action_rx; low-value real const opportunity"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3708,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "stylistic ad-hoc NULL-check pedantry"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3723,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data is a plain pointer bounded by the earlier len<14 check, not a 1-element array; same byte-pointer-indexed-as-array misfire as :2505"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3724,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same misfire as :3723"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3725,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same misfire as :3723"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3728,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR pure macro args x2, confirmed EXP30 class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3733,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR pure macro args x2, confirmed EXP30 class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3759,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*frame) inside the os_malloc call, non-evaluating context, not a dereference"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3776,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "dst is a fixed 6-byte MAC address idiom inside a pinned callback typedef"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3826,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "sm read-only in wpa_ft_send_rrb_auth_resp; low-value real const opportunity"
+  },
+  {
+   "rule": "DCL22-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3834,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ordinary local pointer, no setjmp/longjmp or signal-handler context in this function (confirmed DCL22 misfire class)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3836,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR/status2str pure accessor args, confirmed EXP30 class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3850,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*frame), non-evaluating context, same as :3759"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3885,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wholesale ENV01 misfire, no getenv() in wpa_ft_rrb_build_r0"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3888,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(le16) is a compile-time constant, f_pairwise is not a VLA (confirmed fixed-size-array MEM05 class)"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3889,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(le16) compile-time constant, same confirmed class"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3890,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(le32) compile-time constant, same confirmed class"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3895,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sess_tlv[] is sized by its own 7-element initializer list (confirmed array-sized-by-initializer class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3897,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pmk_r1 array address is stored for later use in sess_tlv; contents filled by wpa_derive_pmk_r1 (:3917) before wpa_ft_rrb_build reads it (:3938)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3899,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pmk_r1_name filled by the same wpa_derive_pmk_r1 call before use, same reasoning as :3897"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3901,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "f_pairwise filled via WPA_PUT_LE16 (:3919) before wpa_ft_rrb_build consumes sess_tlv"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3903,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "f_expires_in filled via WPA_PUT_LE16 (:3928) before use, same reasoning"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3910,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "f_session_timeout filled via WPA_PUT_LE32 (:3936) before use, same reasoning"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3973,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f_r0kh_id set by the RRB_GET_AUTH macro on the same line before this use (macro-blind output-param class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3973,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f_r0kh_id_len set by the same RRB_GET_AUTH macro invocation"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3981,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f_r1kh_id set by RRB_GET_AUTH at :3980 before this use"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3995,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "\"pull request\" is a debug msgtype tag string, not a password/key/secret (confirmed MSC41 debug-string class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3996,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f_nonce set by RRB_GET_AUTH on the same line before this use"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 3996,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f_nonce_len set by the same macro invocation"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4037,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f_pmk_r0_name set by RRB_GET at :4036 before this use"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4038,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f_pmk_r0_name_len set by the same macro invocation"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4041,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f_s1kh_id set by RRB_GET at :4040 before this use"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4048,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR pure macro args x2, confirmed EXP30 class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4053,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f_s1kh_id_len set by RRB_GET at :4040 before this use"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4069,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f_r1kh_id_len set by RRB_GET_AUTH at :3980 before this use"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4109,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "s1kh_id_out is a fixed 6-byte MAC-address output-buffer idiom, standard hostap convention"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4125,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "f_r1kh_id_len is written via the RRB_GET_AUTH macro's &f_r1kh_id_len output-arg (address-of, would not be a compiler warning) but its value is never subsequently read - macro-blind use-detection, not truly 'declared but never used'"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4125,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "f_s1kh_id_len same macro-set-but-unread reasoning as the sibling f_r1kh_id_len finding on this line"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4128,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "f_pmk_r1_name_len set via RRB_GET macro output-arg, value never read afterward (same macro-blind class)"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4129,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "f_expires_in_len set via RRB_GET_OPTIONAL macro output-arg, value never read afterward"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4131,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "f_session_timeout_len set via RRB_GET_OPTIONAL macro output-arg, value never read afterward"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4140,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f_r0kh_id set by RRB_GET_AUTH at :4139 before this use"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4140,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f_r0kh_id_len set by the same macro invocation"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4143,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f_r1kh_id set by RRB_GET_AUTH at :4142 before this use"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4202,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f_s1kh_id set by RRB_GET at :4201 before this use"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4207,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ret=-2 sentinel is read via 'return ret;' if the very next RRB_GET macro call (:4208) fails and gotos out; sqc doesn't see the macro's embedded goto consuming it"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4208,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "macro-argument-token misattribution: bare 'pairwise' at this RRB_GET() invocation is token-pasted into f_pairwise/f_pairwise_len, never itself read here"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4209,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f_pairwise set by the RRB_GET macro at :4208 before this use"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4209,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f_pairwise_len set by the same macro invocation"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4214,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f_pmk_r1_name set by RRB_GET at :4212 before this use"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4227,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "macro-argument-token misattribution: bare 'expires_in' at this RRB_GET_OPTIONAL() invocation is token-pasted into f_expires_in/f_expires_in_len, never itself read here"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4229,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f_expires_in set (or left NULL) unconditionally by the RRB_GET_OPTIONAL macro at :4227 before this guarded read"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4247,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f_identity set unconditionally (success or NULL) by RRB_GET_OPTIONAL macro before this guarded read"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4249,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f_identity_len set by the same macro invocation"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4252,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f_radius_cui set unconditionally by RRB_GET_OPTIONAL macro before this guarded read"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4254,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f_radius_cui_len set by the same macro invocation"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4256,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "macro-argument-token misattribution: bare 'session_timeout' at this RRB_GET_OPTIONAL() invocation is token-pasted into f_session_timeout(_len), never itself read here"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4258,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f_session_timeout set unconditionally by the RRB_GET_OPTIONAL macro at :4256 before this guarded read"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4290,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head/wpabuf_len are pure accessor calls, no side effects to unsequence (confirmed EXP30 pure-accessor class)"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4305,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sm->ft_pending_cb's typedef has no restrict-qualified parameters at all; EXP43's UB only applies to restrict-qualified aliasing"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4336,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_ft_rrb_rx_resp returns explicitly on every path (out: return ret; plus earlier explicit returns); goto-label-with-return misdetected as fallthrough"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4343,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ret=-1 initializer is read via 'return ret;' if the very next RRB_GET_AUTH (:4351) fails and gotos out; macro-embedded-goto not seen by sqc, same class as :4207"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4352,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f_nonce set by RRB_GET_AUTH on the same line before this use"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4352,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f_nonce_len set by the same macro invocation"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4408,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_ft_rrb_rx_seq returns explicitly on every path (out: return -1; plus return 0;), same goto-label misdetection as :4336"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4422,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "f_r1kh_id_len set via RRB_GET_AUTH macro output-arg but the function only ever reads f_r1kh_id (not its len); macro-blind use-detection, same class as :4125"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4429,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "\"seq\" is a debug msgtype tag string, not a secret (same confirmed MSC41 debug-string class as :3995)"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4430,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same debug msgtype-string misfire as :4429"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4432,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "wpa_ft_rrb_check_r0kh is a verified internal 0/-1-only contract; '!f()' is the textually-correct idiom for that contract (extends the OpenSSL-1/0-contract EXP20 class to an internal function)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4432,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f_r0kh_id set by RRB_GET_AUTH at :4429 before this use"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4432,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f_r0kh_id_len set by the same macro invocation"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4433,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "wpa_ft_rrb_check_r1kh is a verified internal 0/-1-only contract, same reasoning as :4432"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4433,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "f_r1kh_id set by RRB_GET_AUTH at :4430 before this use"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4489,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "r0kh_wildcard set via wpa_ft_rrb_lookup_r0kh's &r0kh_wildcard output-param earlier in the same if(!to_r0kh) block, before this use"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4499,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "r0kh points to a persistent object owned by the R0KH list (looked up or added via wpa_ft_rrb_add_r0kh), not local automatic storage (confirmed local-pointer-vs-heap/persistent-storage class)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 4501,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "r0kh_wildcard is likewise a persistent R0KH-list object, not a local stack variable"
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/ap/wpa_auth_ft.c",
+   "line": 2419,
+   "rule": "ARR38-C",
+   "desc": "wpa_ft_process_rdie checks only 'end - pos < sizeof(*rdie)' before writing 2 header bytes (EID+Length) plus sizeof(*rdie) of struct data (2424-2430) - the bounds check is short by 2 bytes per call. wpa_ft_process_ric invokes this once per attacker-controlled RIC subelement in an FT Reassociation Request, so enough small subelements can cumulatively overrun the fixed +200-byte margin computed in wpa_sm_write_assoc_resp_ies's buflen. Bounded/narrow but a real off-by-2 bounds-check bug on wire-derived-count input.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 15,
+  "fp": 135,
+  "fn": 1
+ }
+}

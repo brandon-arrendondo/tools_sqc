@@ -1,0 +1,49 @@
+{
+ "src/ap/wpa_auth.c#part4of4": [
+  {
+   "column": 1,
+   "file": "src/ap/wpa_auth.c",
+   "line": 8089,
+   "message": "Function 'wpa_select_vlan_wpa_group' does not validate pointer parameter 'gsm' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'gsm' at the start of the function, e.g., 'if (!gsm) { return error_code; }'"
+  },
+  {
+   "column": 63,
+   "file": "src/ap/wpa_auth.c",
+   "line": 8089,
+   "message": "Pointer parameter 'gsm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *gsm'"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wpa_auth.c",
+   "line": 8105,
+   "message": "Function returns pointer to local variable 'vlan_gsm' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 59,
+   "file": "src/ap/wpa_auth.c",
+   "line": 8121,
+   "message": "Pointer parameter 'wpa_auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_auth'"
+  },
+  {
+   "column": 9,
+   "file": "src/ap/wpa_auth.c",
+   "line": 8130,
+   "message": "Potential null pointer dereference in member access of variable 'group'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'group' is not NULL before member access"
+  }
+ ]
+}

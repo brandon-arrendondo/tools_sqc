@@ -1,0 +1,731 @@
+{
+ "labels": [
+  {
+   "rule": "PRE08-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 16,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "eap_sim_common.h/eap_sim_db.h share first 8 chars 'eap_sim_'; literal-rule-text TP, low value (PRE08-C header-family convention)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 85,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Args are two calls to pure eap_aka_state_txt() (switch->string literal, no side effects); pure-accessor-sibling-args FP class."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 120,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(data->permanent), a fixed char[20] struct member, not the decayed data pointer; established ARR01-C member-array FP class."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 123,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(sm->sim_aka_permanent), fixed char[20] field in struct eap_sm (eap_i.h:163), not decayed sm pointer."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 137,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(data->permanent) fixed array member, same ARR01-C FP class."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 187,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(data->permanent) fixed array member, same ARR01-C FP class."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 193,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Reached only when neither prior os_free(username)+return branch executed; username not freed on this path. Mutually-exclusive-branch free-tracking misfire."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 195,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same condition as line 193; username genuinely unfreed here."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 209,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(data->permanent) fixed array member."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 230,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*data) is a non-evaluating context, not an actual dereference; sizeof(*ptr)-not-a-deref FP class."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 240,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data = os_zalloc(sizeof(*data)) is heap storage, not automatic/local; DCL30-C heap-vs-local FP class."
+  },
+  {
+   "rule": "DCL00-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 249,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "network_name is initialized and genuinely never reassigned in eap_aka_prime_init; could be const (low-value TP)."
+  },
+  {
+   "rule": "STR05-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 249,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "char *network_name = \"WLAN\" assigns a string literal to a non-const char*; genuine (low-value) TP."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 256,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*data) non-evaluating context, same FP class as line 230."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 273,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data = os_zalloc(...) heap storage returned from eap_aka_prime_init, not a local automatic variable."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 278,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_aka_reset is assigned to eap->reset (eap_server_aka_register); fixed struct eap_method vtable signature, sm can't be tightened."
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 292,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Ad-hoc NULL check stylistic pedantry FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 308,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "eap_aka_add_checkcode is an internal helper (never assigned to eap-> field); data genuinely only read. Not the vtable exception per the b6 distinguishing test."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 341,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "eap_aka_verify_checkcode is a plain internal helper, data never modified; genuine (low-value) TP, not vtable-bound."
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 349,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Ad-hoc NULL check stylistic pedantry FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 389,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "eap_aka_build_identity is called only internally from eap_aka_buildReq, itself never assigned to an eap-> field; sm only read. Genuine low-value TP."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 427,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is the wpabuf returned by eap_sim_msg_finish() -- heap-allocated, not automatic storage."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 431,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "eap_aka_build_encr is a plain internal helper (not itself a vtable field); sm only read via sm->cfg. Genuine low-value TP."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 487,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Both args are os_strlen(data->next_pseudonym), a pure read-only function; no actual side effects to unsequence."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 496,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Both args are os_strlen(data->next_reauth_id), pure read-only calls; same FP class as line 487."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 641,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf returned from eap_sim_msg_finish() is heap memory, not a local automatic variable."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 645,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "eap_aka_build_reauth is a plain internal helper, never itself assigned to an eap-> field; sm only read (identity fields). Genuine low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 646,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data IS modified in this function: random_get_bytes(data->nonce_s,...) and os_memcpy(data->reauth_mac,...) both write through data. 'not modified' claim is factually wrong."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 707,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_aka_check is assigned to eap->check; fixed vtable signature, sm can't be tightened without breaking the eap_method contract."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 707,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same eap->check vtable signature; priv is the fixed void* slot of struct eap_method."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 725,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "eap_aka_subtype_ok is a plain internal helper (called from eap_aka_process, never itself a vtable field); data only reads data->state. Genuine low-value TP."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 789,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "username[0] check occurs before any os_free() on this control-flow path (the only prior free+return is a disjoint sibling branch). Mutually-exclusive-branch misfire."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 791,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same condition as line 789; username unfreed here."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 800,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "username[0] check is the if-condition itself, evaluated before the os_free() inside that same block's body (line 808). Not yet freed."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 802,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same if-condition as line 800; username still valid."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 816,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(data->permanent) fixed array member, same ARR01-C FP class."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 818,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "username[0] check is the else-if condition, evaluated before any free in this branch (os_free at line 824 is after this read)."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 820,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same else-if condition as line 818; username still valid at this point."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 823,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(data->permanent) fixed array member, same ARR01-C FP class."
+  },
+  {
+   "rule": "ARR37-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 843,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos is initialized from &sm->identity[1] and bounded by end=&sm->identity[len]; it walks a real heap array, not a 'non-array pointer'. Established ARR37-C FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 873,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Flagged line contains only struct-member/array-index comparisons (sm->user->methods[i].vendor/.method), zero function calls; rule misfires with no calls present."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 875,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same misfire: plain struct-field comparison, no function calls on this line."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 880,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same misfire: bare enum comparison continuation line, no function calls."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 882,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_free(dec) here is on the 'if(!new_id)' branch, which is mutually exclusive with the earlier 'if(!username)' free (both goto fail immediately); dec was never freed twice."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 888,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "This is the sole free of dec on the success path; the two earlier frees at 877/882 are on mutually-exclusive goto-fail branches that never reach here. Not a double free."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 889,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(data->permanent) fixed array member, same ARR01-C FP class."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 890,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "username was freed once at line 834 then reassigned to a fresh allocation at line 875 (sim_get_username); the object freed here was never freed before. Reassignment-after-free misfire."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 897,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "'return;' immediately follows an unconditional 'goto fail;' on the previous line; genuinely unreachable dead code."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 903,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'fail:' is a goto target reached from many earlier 'goto fail;' statements in this function, not unreachable. goto-target-label-after-return blindness FP class."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 926,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(sm->imsi), fixed char[20] field in struct eap_sm (eap_i.h:162), not the decayed sm pointer."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1027,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "eap_aka_verify_mac is a plain internal helper, data only read (k_aut, eap_method). Genuine low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1039,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "eap_aka_process_challenge is dispatched internally by eap_aka_process (itself the vtable field), never itself assigned to eap->; sm only read via sm->cfg. Genuine TP per the distinguishing test."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1125,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_sim_db_add_reauth_prime declares no restrict-qualified parameters at all (eap_sim_db.h:59-62); phantom restrict-violation finding."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1133,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_sim_db_add_reauth likewise declares no restrict-qualified parameters (eap_sim_db.h:57-58); phantom finding."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1146,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "eap_aka_process_sync_failure is a plain internal helper; respData is entirely unused in the body. Genuine (low-value) TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1147,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Same function; attr is only read (attr->auts). Genuine low-value TP, not vtable-bound."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1180,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "eap_aka_process_reauth is a plain internal helper; attr only read (mac/encr_data/iv). Genuine low-value TP."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1217,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "decrypted=NULL at this line is never read again on any path from here to the function's returns; the fail: label (which does read it) is unreachable from here. Genuine dead store."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1240,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_sim_db_add_reauth_prime has no restrict-qualified parameters; phantom EXP43-C finding, same as line 1125."
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1248,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_sim_db_add_reauth has no restrict-qualified parameters; phantom finding, same as line 1133."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1263,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'fail:' label is reached via 'goto fail;' from several earlier branches in eap_aka_process_reauth; not unreachable."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1268,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "All 'goto fail' sites in this function occur before decrypted is freed (line 1216 free only happens on the non-failing continuation, which never reaches fail:). No path double-frees decrypted."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1272,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "eap_aka_process_client_error is a plain internal helper; sm is entirely unused in the body. Genuine low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1274,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Same function; respData entirely unused. Genuine low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1275,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Same function; attr entirely unused (only attr->client_error_code is read via caller's own arg, not modified). Genuine low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1287,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "eap_aka_process_authentication_reject is a plain internal helper; sm entirely unused. Genuine low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1288,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Same function; respData entirely unused. Genuine low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1288,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Same function; attr entirely unused. Genuine low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1295,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "eap_aka_process_notification is a plain internal helper; sm entirely unused. Genuine low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1297,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Same function; respData entirely unused. Genuine low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1298,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "Same function; attr entirely unused. Genuine low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1380,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_aka_isDone is assigned to eap->isDone; fixed vtable signature, sm can't be tightened."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1380,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same eap->isDone vtable signature; priv is the fixed void* slot."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1387,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_aka_getKey is assigned to eap->getKey; fixed vtable signature, sm can't be tightened."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1387,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "(void *priv, size_t *len) is the idiomatic opaque-handle+out-length pair (also vtable-fixed by struct eap_method); established API05-C ptr+size idiom FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1387,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same eap->getKey vtable signature; priv is the fixed void* slot."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1399,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "key = os_memdup(data->msk, ...) is heap-allocated, not automatic storage."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1403,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_aka_get_emsk is assigned to eap->get_emsk; fixed vtable signature."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1403,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same (void *priv, size_t *len) idiomatic pair, vtable-fixed; API05-C FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1403,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same eap->get_emsk vtable signature; priv is the fixed void* slot."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1415,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "key = os_memdup(data->emsk, ...) is heap-allocated, not automatic storage."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1419,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_aka_isSuccess is assigned to eap->isSuccess; fixed vtable signature."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1419,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same eap->isSuccess vtable signature; priv is the fixed void* slot."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1426,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_aka_get_session_id is assigned to eap->getSessionId; fixed vtable signature."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1426,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same (void *priv, size_t *len) idiomatic pair, vtable-fixed; API05-C FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1426,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same eap->getSessionId vtable signature; priv is the fixed void* slot."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1454,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "id = os_malloc(*len) is heap-allocated, not automatic storage."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1462,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap is passed to eap_server_method_register(), which either frees it on failure or links it into the persistent eap_methods list; ownership transferred, not leaked. Established eap_server_method_register() MEM31-C FP class."
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1487,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same eap_server_method_register() ownership-transfer FP class as line 1462."
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/eap_server/eap_server_aka.c",
+   "line": 1022,
+   "rule": "ERR33-C",
+   "desc": "eap_aka_add_id_msg(data, respData) return value ignored in eap_aka_process_identity; on OOM (wpabuf_resize failure) the AKA/Identity message silently isn't recorded into id_msgs, corrupting the later AT_CHECKCODE hash without any error signal. Low severity (OOM-only, no memory-safety impact).",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 25,
+  "fp": 64,
+  "fn": 1
+ }
+}

@@ -1,0 +1,953 @@
+{
+ "src/ap/wnm_ap.c": [
+  {
+   "column": 2,
+   "file": "src/ap/wnm_ap.c",
+   "line": 57,
+   "message": "Function returns pointer to local variable 'own_addr' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/wnm_ap.c",
+   "line": 118,
+   "message": "Double free detected: 'wnmtfs_ie' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/wnm_ap.c",
+   "line": 136,
+   "message": "Double free detected: 'wnmtfs_ie' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/wnm_ap.c",
+   "line": 141,
+   "message": "Double free detected: 'wnmtfs_ie' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 26,
+   "file": "src/ap/wnm_ap.c",
+   "line": 151,
+   "message": "Dereference of uninitialized pointer 'mgmt'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'mgmt' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wnm_ap.c",
+   "line": 268,
+   "message": "Double free detected: 'wnmtfs_ie' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 18,
+   "file": "src/ap/wnm_ap.c",
+   "line": 313,
+   "message": "Do not cast away const qualification: '(struct wnm_sleep_element *) pos'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 23,
+   "file": "src/ap/wnm_ap.c",
+   "line": 316,
+   "message": "Do not cast away const qualification: '(u8 *) pos'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 20,
+   "file": "src/ap/wnm_ap.c",
+   "line": 317,
+   "message": "Do not cast away const qualification: '(u8 *) pos'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 26,
+   "file": "src/ap/wnm_ap.c",
+   "line": 393,
+   "message": "Dereference of uninitialized pointer 'mgmt'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'mgmt' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wnm_ap.c",
+   "line": 413,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 8,
+   "file": "src/ap/wnm_ap.c",
+   "line": 421,
+   "message": "Pointer subtraction between pointers from different arrays: 'mgmt->u.action.u.bss_tm_req.variable' and 'mgmt->u.action.category'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/wnm_ap.c",
+   "line": 470,
+   "message": "Signed integer addition '2 * (end - pos) + 1' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 12,
+   "file": "src/ap/wnm_ap.c",
+   "line": 470,
+   "message": "Signed integer multiplication '2 * (end - pos)' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check using complex multiplication overflow detection"
+  },
+  {
+   "column": 41,
+   "file": "src/ap/wnm_ap.c",
+   "line": 485,
+   "message": "Pointer parameter 'eloop_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *eloop_ctx'"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/wnm_ap.c",
+   "line": 556,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wnm_ap.c",
+   "line": 617,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  },
+  {
+   "column": 69,
+   "file": "src/ap/wnm_ap.c",
+   "line": 628,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wnm_ap.c",
+   "line": 673,
+   "message": "Function-like macro 'W2S' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wnm_ap.c",
+   "line": 673,
+   "message": "Macro 'W2S' uses token concatenation operator (##) which prevents parameter expansion - consider using two-level macro indirection for proper expansion",
+   "rule_id": "PRE05-C",
+   "severity": "Low",
+   "suggestion": "Use two-level indirection: define a wrapper macro that calls another macro with ##, allowing parameters to expand first"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wnm_ap.c",
+   "line": 673,
+   "message": "Macro 'W2S' definition ends with a semicolon. This can cause unexpected behavior when the macro is used.",
+   "rule_id": "PRE11-C",
+   "severity": "Medium",
+   "suggestion": "Remove the trailing semicolon from the macro definition. The semicolon should be added by the macro user, not in the definition."
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wnm_ap.c",
+   "line": 673,
+   "message": "Macro evaluates parameter 'wtype' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wnm_ap.c",
+   "line": 697,
+   "message": "Value assigned to 'tsf_len' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 14,
+   "file": "src/ap/wnm_ap.c",
+   "line": 710,
+   "message": "Do not cast away const qualification: '(struct wnm_event_report_element *) pos'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wnm_ap.c",
+   "line": 724,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 35,
+   "file": "src/ap/wnm_ap.c",
+   "line": 784,
+   "message": "Shift operation '1ULL << color' by 'color' without validating shift amount is non-negative and within type width",
+   "rule_id": "INT34-C",
+   "severity": "Medium",
+   "suggestion": "Check that 'color' is >= 0 and < the bit width of the operand before shifting"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wnm_ap.c",
+   "line": 797,
+   "message": "Function 'ieee802_11_rx_wnm_action_ap' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wnm_ap.c",
+   "line": 797,
+   "message": "Function 'ieee802_11_rx_wnm_action_ap' does not validate pointer parameter 'mgmt' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'mgmt' at the start of the function, e.g., 'if (!mgmt) { return error_code; }'"
+  },
+  {
+   "column": 39,
+   "file": "src/ap/wnm_ap.c",
+   "line": 870,
+   "message": "Pointer subtraction between pointers from different arrays: 'mgmt->u.action.u.bss_tm_req.variable' and 'buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 39,
+   "file": "src/ap/wnm_ap.c",
+   "line": 944,
+   "message": "Pointer subtraction between pointers from different arrays: 'mgmt->u.action.u.bss_tm_req.variable' and 'buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wnm_ap.c",
+   "line": 959,
+   "message": "Function 'wnm_send_bss_tm_req' does not validate integer parameter 'nei_rep_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'nei_rep_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 15,
+   "file": "src/ap/wnm_ap.c",
+   "line": 962,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 59,
+   "file": "src/ap/wnm_ap.c",
+   "line": 1087,
+   "message": "Bitwise operator '|' used on signed operand 'timeout' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'timeout' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wnm_ap.c",
+   "line": 1089,
+   "message": "Increment/decrement operation 'pos++' on struct member pointer 'pos'. Pointer arithmetic on struct members is undefined behavior",
+   "rule_id": "ARR37-C",
+   "severity": "High",
+   "suggestion": "Do not perform pointer arithmetic across struct members"
+  },
+  {
+   "column": 39,
+   "file": "src/ap/wnm_ap.c",
+   "line": 1094,
+   "message": "Pointer subtraction between pointers from different arrays: 'mgmt->u.action.u.coloc_intf_req' and 'buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  }
+ ],
+ "src/p2p/p2p_invitation.c": [
+  {
+   "column": 4,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 36,
+   "message": "Variable 'g' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const g = ..."
+  },
+  {
+   "column": 19,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 37,
+   "message": "Variable 'ie' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'ie' before use, e.g., at its declaration"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 124,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 26,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 129,
+   "message": "Pointer parameter 'peer' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *peer'"
+  },
+  {
+   "column": 4,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 145,
+   "message": "Variable 'g' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const g = ..."
+  },
+  {
+   "column": 19,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 146,
+   "message": "Variable 'ie' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'ie' before use, e.g., at its declaration"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 223,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 227,
+   "message": "Function 'p2p_process_invitation_req' does not validate pointer parameter 'sa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sa' at the start of the function, e.g., 'if (!sa) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 227,
+   "message": "Function 'p2p_process_invitation_req' does not validate integer parameter 'len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 233,
+   "message": "Value assigned to 'resp' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 16,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 282,
+   "message": "Variable 'msg' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 293,
+   "message": "Passing pointer to uninitialized variable 'all_channels' to 'p2p_channels_union' which reads the value",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'all_channels' before passing its address to 'p2p_channels_union'"
+  },
+  {
+   "column": 7,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 324,
+   "message": "Variable 'intersection' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'intersection' before use, e.g., at its declaration"
+  },
+  {
+   "column": 10,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 409,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 7,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 447,
+   "message": "Passing null pointer 'new_ssid' to 'p2p_build_invitation_resp' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'new_ssid' is not NULL before passing to 'p2p_build_invitation_resp'"
+  },
+  {
+   "column": 28,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 461,
+   "message": "Passing null pointer 'new_ssid' to 'os_memcpy' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'new_ssid' is not NULL before passing to 'os_memcpy'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 482,
+   "message": "Function 'p2p_handle_invitation_req' does not validate pointer parameter 'p2p' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'p2p' at the start of the function, e.g., 'if (!p2p) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 482,
+   "message": "Function 'p2p_handle_invitation_req' does not validate pointer parameter 'sa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sa' at the start of the function, e.g., 'if (!sa) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 482,
+   "message": "Function 'p2p_handle_invitation_req' does not validate pointer parameter 'data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'data' at the start of the function, e.g., 'if (!data) { return error_code; }'"
+  },
+  {
+   "column": 6,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 501,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 511,
+   "message": "Function 'p2p_process_invitation_resp' does not validate pointer parameter 'sa' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sa' at the start of the function, e.g., 'if (!sa) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 511,
+   "message": "Function 'p2p_process_invitation_resp' does not validate integer parameter 'len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 516,
+   "message": "Value assigned to 'channels' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 3,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 611,
+   "message": "Passing pointer to uninitialized variable 'intersection' to 'p2p_channels_intersect' which reads the value",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'intersection' before passing its address to 'p2p_channels_intersect'"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 655,
+   "message": "Value assigned to 'go_dev_addr' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 681,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 3,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 691,
+   "message": "Passing pointer to uninitialized variable 'intersection' to 'p2p_channels_intersect' which reads the value",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'intersection' before passing its address to 'p2p_channels_intersect'"
+  },
+  {
+   "column": 30,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 717,
+   "message": "sizeof applied to pointer/array parameter 'dev' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(dev->inv_ssid)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 724,
+   "message": "Function 'p2p_invite_send' does not validate pointer parameter 'go_dev_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'go_dev_addr' at the start of the function, e.g., 'if (!go_dev_addr) { return error_code; }'"
+  },
+  {
+   "column": 6,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 753,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 792,
+   "message": "Function 'p2p_invitation_resp_cb' does not validate pointer parameter 'peer' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'peer' at the start of the function, e.g., 'if (!peer) { return error_code; }'"
+  },
+  {
+   "column": 5,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 798,
+   "message": "File-scope identifier '_pmkid' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 2,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 799,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 5,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 799,
+   "message": "File-scope identifier '_pmk' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 1,
+   "file": "src/p2p/p2p_invitation.c",
+   "line": 837,
+   "message": "Function 'p2p_invite' does not validate pointer parameter 'ssid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'ssid' at the start of the function, e.g., 'if (!ssid) { return error_code; }'"
+  }
+ ],
+ "src/utils/list.h": [
+  {
+   "column": 1,
+   "file": "src/utils/list.h",
+   "line": 20,
+   "message": "Function-like macro 'DL_LIST_HEAD_INIT' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/utils/list.h",
+   "line": 20,
+   "message": "Macro evaluates parameter 'l' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 52,
+   "file": "src/utils/list.h",
+   "line": 36,
+   "message": "Pointer parameter 'list' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *list'"
+  },
+  {
+   "column": 26,
+   "file": "src/utils/list.h",
+   "line": 58,
+   "message": "loop termination uses '!=' with a step other than +-1 -- the counter can skip over the target value and never terminate",
+   "rule_id": "MSC21-C",
+   "severity": "Low",
+   "suggestion": "Use a relational operator (<, <=, >, >=) to terminate the loop instead of an equality operator, unless the step is exactly 1"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/list.h",
+   "line": 64,
+   "message": "Macro parameter 'type' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'type' in parentheses: (type) instead of type"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/list.h",
+   "line": 67,
+   "message": "Function-like macro 'dl_list_entry' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/utils/list.h",
+   "line": 67,
+   "message": "Macro parameter 'item' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'item' in parentheses: (item) instead of item"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/list.h",
+   "line": 67,
+   "message": "Macro parameter 'type' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'type' in parentheses: (type) instead of type"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/list.h",
+   "line": 67,
+   "message": "Macro evaluates parameter 'type' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/list.h",
+   "line": 70,
+   "message": "Function-like macro 'dl_list_first' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/utils/list.h",
+   "line": 70,
+   "message": "Macro evaluates parameter 'list' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/list.h",
+   "line": 74,
+   "message": "Function-like macro 'dl_list_last' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/utils/list.h",
+   "line": 74,
+   "message": "Macro evaluates parameter 'list' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/list.h",
+   "line": 78,
+   "message": "Function-like macro 'dl_list_for_each' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/utils/list.h",
+   "line": 78,
+   "message": "Macro parameter 'item' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'item' in parentheses: (item) instead of item"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/list.h",
+   "line": 78,
+   "message": "Macro parameter 'member' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'member' in parentheses: (member) instead of member"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/list.h",
+   "line": 78,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (for (item = dl_list_entry((list)->next, type, member); \\\n\t     &item->member != (list); \\\n\t     item = dl_list_entry(item->member.next, type, member)))"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/list.h",
+   "line": 78,
+   "message": "Multistatement macro 'dl_list_for_each' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+   "rule_id": "PRE10-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/list.h",
+   "line": 78,
+   "message": "Macro evaluates parameter 'item' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/list.h",
+   "line": 83,
+   "message": "Function-like macro 'dl_list_for_each_safe' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/utils/list.h",
+   "line": 83,
+   "message": "Macro parameter 'item' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'item' in parentheses: (item) instead of item"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/list.h",
+   "line": 83,
+   "message": "Macro parameter 'n' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'n' in parentheses: (n) instead of n"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/list.h",
+   "line": 83,
+   "message": "Macro parameter 'member' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'member' in parentheses: (member) instead of member"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/list.h",
+   "line": 83,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (for (item = dl_list_entry((list)->next, type, member), \\\n\t\t     n = dl_list_entry(item->member.next, type, member); \\\n\t     &item->member != (list); \\\n\t     item = n, n = dl_list_entry(n->member.next, type, member)))"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/list.h",
+   "line": 83,
+   "message": "Multistatement macro 'dl_list_for_each_safe' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+   "rule_id": "PRE10-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/list.h",
+   "line": 83,
+   "message": "Macro evaluates parameter 'item' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/list.h",
+   "line": 89,
+   "message": "Function-like macro 'dl_list_for_each_reverse' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/utils/list.h",
+   "line": 89,
+   "message": "Macro parameter 'item' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'item' in parentheses: (item) instead of item"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/list.h",
+   "line": 89,
+   "message": "Macro parameter 'member' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'member' in parentheses: (member) instead of member"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/list.h",
+   "line": 89,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (for (item = dl_list_entry((list)->prev, type, member); \\\n\t     &item->member != (list); \\\n\t     item = dl_list_entry(item->member.prev, type, member)))"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/list.h",
+   "line": 89,
+   "message": "Multistatement macro 'dl_list_for_each_reverse' is not wrapped in a do-while loop. This can cause issues when used in if statements without braces",
+   "rule_id": "PRE10-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the macro body in: do { /* statements */ } while (0)"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/list.h",
+   "line": 89,
+   "message": "Macro evaluates parameter 'item' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/list.h",
+   "line": 94,
+   "message": "Function-like macro 'DEFINE_DL_LIST' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/utils/list.h",
+   "line": 94,
+   "message": "Macro parameter 'name' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'name' in parentheses: (name) instead of name"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/list.h",
+   "line": 94,
+   "message": "Macro evaluates parameter 'name' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  }
+ ]
+}

@@ -1,0 +1,679 @@
+{
+ "src/wps/wps_common.c": [
+  {
+   "column": 1,
+   "file": "src/wps/wps_common.c",
+   "line": 24,
+   "message": "Function 'wps_kdf' does not validate pointer parameter 'label_prefix' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'label_prefix' at the start of the function, e.g., 'if (!label_prefix) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_common.c",
+   "line": 24,
+   "message": "Function 'wps_kdf' does not validate integer parameter 'res_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'res_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 18,
+   "file": "src/wps/wps_common.c",
+   "line": 25,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 29,
+   "file": "src/wps/wps_common.c",
+   "line": 25,
+   "message": "Pointer parameter 'res' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *res'"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_common.c",
+   "line": 40,
+   "message": "Out-of-bounds array access at index 2: Buffer 'addr' with size 2 (allocated at line 502)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_common.c",
+   "line": 42,
+   "message": "Out-of-bounds array access at index 3: Buffer 'addr' with size 2 (allocated at line 502)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 10,
+   "file": "src/wps/wps_common.c",
+   "line": 45,
+   "message": "Unsigned integer addition 'res_len + SHA256_MAC_LEN' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }"
+  },
+  {
+   "column": 4,
+   "file": "src/wps/wps_common.c",
+   "line": 55,
+   "message": "Unsigned integer compound subtraction 'left -= SHA256_MAC_LEN' may wrap without underflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add underflow check before compound assignment"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_common.c",
+   "line": 68,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_common.c",
+   "line": 110,
+   "message": "Out-of-bounds array access at index 2: Buffer 'addr' with size 2 (allocated at line 502)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_common.c",
+   "line": 132,
+   "message": "Function 'wps_derive_psk' does not validate integer parameter 'dev_passwd_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'dev_passwd_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 36,
+   "file": "src/wps/wps_common.c",
+   "line": 132,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_common.c",
+   "line": 138,
+   "message": "Unsigned integer addition 'dev_passwd_len + 1' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }"
+  },
+  {
+   "column": 18,
+   "file": "src/wps/wps_common.c",
+   "line": 142,
+   "message": "Unsigned integer addition 'dev_passwd_len + 1' may wrap without overflow checking",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }"
+  },
+  {
+   "column": 59,
+   "file": "src/wps/wps_common.c",
+   "line": 155,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 6,
+   "file": "src/wps/wps_common.c",
+   "line": 177,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_common.c",
+   "line": 203,
+   "message": "Function returns pointer to local variable 'decrypted' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_common.c",
+   "line": 248,
+   "message": "Variable 'val' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'val' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_common.c",
+   "line": 256,
+   "message": "Function 'wps_pin_str_valid' does not validate pointer parameter 'pin' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pin' at the start of the function, e.g., 'if (!pin) { return error_code; }'"
+  },
+  {
+   "column": 9,
+   "file": "src/wps/wps_common.c",
+   "line": 262,
+   "message": "Potential null pointer dereference of variable 'p'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'p' is not NULL before dereferencing"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_common.c",
+   "line": 272,
+   "message": "Function 'wps_fail_event' does not validate pointer parameter 'mac_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'mac_addr' at the start of the function, e.g., 'if (!mac_addr) { return error_code; }'"
+  },
+  {
+   "column": 40,
+   "file": "src/wps/wps_common.c",
+   "line": 272,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_common.c",
+   "line": 289,
+   "message": "Function 'wps_success_event' does not validate pointer parameter 'mac_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'mac_addr' at the start of the function, e.g., 'if (!mac_addr) { return error_code; }'"
+  },
+  {
+   "column": 43,
+   "file": "src/wps/wps_common.c",
+   "line": 289,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 12,
+   "file": "src/wps/wps_common.c",
+   "line": 297,
+   "message": "Accessing union 'data' member 'success' after writing to 'fail' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_common.c",
+   "line": 302,
+   "message": "Function 'wps_pwd_auth_fail_event' does not validate pointer parameter 'mac_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'mac_addr' at the start of the function, e.g., 'if (!mac_addr) { return error_code; }'"
+  },
+  {
+   "column": 49,
+   "file": "src/wps/wps_common.c",
+   "line": 302,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_common.c",
+   "line": 311,
+   "message": "Accessing union 'data' member 'pwd_auth_fail' after writing to 'fail' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 47,
+   "file": "src/wps/wps_common.c",
+   "line": 318,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 47,
+   "file": "src/wps/wps_common.c",
+   "line": 327,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 46,
+   "file": "src/wps/wps_common.c",
+   "line": 336,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 47,
+   "file": "src/wps/wps_common.c",
+   "line": 345,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_common.c",
+   "line": 408,
+   "message": "Function returns pointer to local variable 'plain' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 6,
+   "file": "src/wps/wps_common.c",
+   "line": 422,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_common.c",
+   "line": 431,
+   "message": "Function returns pointer to local variable 'data' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_common.c",
+   "line": 435,
+   "message": "Function 'wps_oob_use_cred' does not validate pointer parameter 'wps' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'wps' at the start of the function, e.g., 'if (!wps) { return error_code; }'"
+  },
+  {
+   "column": 41,
+   "file": "src/wps/wps_common.c",
+   "line": 435,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 69,
+   "file": "src/wps/wps_common.c",
+   "line": 435,
+   "message": "Pointer parameter 'attr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *attr'"
+  },
+  {
+   "column": 7,
+   "file": "src/wps/wps_common.c",
+   "line": 446,
+   "message": "Passing pointer to uninitialized variable 'cattr' to 'wps_parse_msg' which reads the value",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'cattr' before passing its address to 'wps_parse_msg'"
+  },
+  {
+   "column": 46,
+   "file": "src/wps/wps_common.c",
+   "line": 462,
+   "message": "Array parameter uses size variable 'WPS_DEV_TYPE_LEN' that is declared after the array parameter",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Declare size parameter 'WPS_DEV_TYPE_LEN' before the array parameter, or use K&R style with semicolon"
+  },
+  {
+   "column": 25,
+   "file": "src/wps/wps_common.c",
+   "line": 467,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 25,
+   "file": "src/wps/wps_common.c",
+   "line": 467,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 29,
+   "file": "src/wps/wps_common.c",
+   "line": 478,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 29,
+   "file": "src/wps/wps_common.c",
+   "line": 478,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 38,
+   "file": "src/wps/wps_common.c",
+   "line": 485,
+   "message": "Array parameter uses size variable 'WPS_DEV_TYPE_LEN' that is declared after the array parameter",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Declare size parameter 'WPS_DEV_TYPE_LEN' before the array parameter, or use K&R style with semicolon"
+  },
+  {
+   "column": 71,
+   "file": "src/wps/wps_common.c",
+   "line": 485,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 8,
+   "file": "src/wps/wps_common.c",
+   "line": 490,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_common.c",
+   "line": 500,
+   "message": "Function 'uuid_gen_mac_addr' does not validate pointer parameter 'mac_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'mac_addr' at the start of the function, e.g., 'if (!mac_addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_common.c",
+   "line": 500,
+   "message": "Function 'uuid_gen_mac_addr' does not validate pointer parameter 'uuid' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'uuid' at the start of the function, e.g., 'if (!uuid) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_common.c",
+   "line": 594,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_common.c",
+   "line": 618,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_common.c",
+   "line": 642,
+   "message": "Function returns pointer to local variable 'ret' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_common.c",
+   "line": 664,
+   "message": "Local variable 'pub' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_common.c",
+   "line": 666,
+   "message": "Local variable 'priv' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 7,
+   "file": "src/wps/wps_common.c",
+   "line": 679,
+   "message": "Memory allocated with 'wpabuf_alloc' for variable 'pw' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(pw)' before the variable goes out of scope"
+  },
+  {
+   "column": 15,
+   "file": "src/wps/wps_common.c",
+   "line": 695,
+   "message": "Variable 'val' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'val' before use, e.g., at its declaration"
+  },
+  {
+   "column": 19,
+   "file": "src/wps/wps_common.c",
+   "line": 695,
+   "message": "Modulo operator used with potentially signed operands. The result of % with negative operands is implementation-defined and can be negative. Use unsigned types (size_t, unsigned int) or explicitly handle negative remainders.",
+   "rule_id": "INT10-C",
+   "severity": "Medium",
+   "suggestion": "Convert operands to unsigned types (size_t, unsigned int) or add explicit checks for negative values"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_common.c",
+   "line": 697,
+   "message": "Local variable 'pw' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 63,
+   "file": "src/wps/wps_common.c",
+   "line": 703,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_common.c",
+   "line": 709,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_common.c",
+   "line": 715,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 3,
+   "file": "src/wps/wps_common.c",
+   "line": 723,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_common.c",
+   "line": 736,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 66,
+   "file": "src/wps/wps_common.c",
+   "line": 740,
+   "message": "Pointer parameter 'wps' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wps'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_common.c",
+   "line": 790,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_common.c",
+   "line": 796,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 3,
+   "file": "src/wps/wps_common.c",
+   "line": 804,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_common.c",
+   "line": 819,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_common.c",
+   "line": 828,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_common.c",
+   "line": 834,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 3,
+   "file": "src/wps/wps_common.c",
+   "line": 841,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_common.c",
+   "line": 856,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 5,
+   "file": "src/wps/wps_common.c",
+   "line": 869,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 3,
+   "file": "src/wps/wps_common.c",
+   "line": 885,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps_common.c",
+   "line": 908,
+   "message": "Function returns pointer to local variable 'msg' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  }
+ ]
+}

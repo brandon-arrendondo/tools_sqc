@@ -1,0 +1,76 @@
+{
+ "src/utils/os_unix.c#part2of2": [
+  {
+   "column": 1,
+   "file": "src/utils/os_unix.c",
+   "line": 797,
+   "message": "Function 'os_strdup' does not validate pointer parameter 's' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 's' at the start of the function, e.g., 'if (!s) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_unix.c",
+   "line": 807,
+   "message": "Function returns pointer to local variable 'd' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_unix.c",
+   "line": 807,
+   "message": "Returning pointer to local array 'd' which will be destroyed when function returns, creating a dangling pointer.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Consider allocating the array dynamically (malloc/calloc), declaring it as static, or passing a buffer as a parameter."
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_unix.c",
+   "line": 827,
+   "message": "File-scope identifier '_program' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_unix.c",
+   "line": 828,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 5,
+   "file": "src/utils/os_unix.c",
+   "line": 846,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_unix.c",
+   "line": 854,
+   "message": "Function 'os_exec' calls 'exit', which dictates error handling. Application-independent code should report errors to the caller (via return values, error parameters, or error indicators) rather than terminating the program.",
+   "rule_id": "ERR05-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'exit' with error reporting via return value (e.g., 'return ERROR_CODE;'), error parameter (e.g., '*err = ERROR_CODE;'), or global error indicator"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_unix.c",
+   "line": 855,
+   "message": "Unreachable code after unconditional 'noreturn function call'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  }
+ ]
+}

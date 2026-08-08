@@ -1,0 +1,1093 @@
+{
+ "labels": [
+  {
+   "rule": "ARR37-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4401,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sta_info_len is a plain size_t byte-counter, not a pointer; established scalar-mistaken-for-pointer ARR37-C FP class"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4420,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Line is the 'out:' goto target reached from many earlier goto out; statements; goto-label-blindness FP class"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4421,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mlbuf freed once at out: (goto) or once on normal exit; mutually exclusive branches, not a double free"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4421,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same mutually-exclusive goto/normal-exit free confusion as the MEM30-C finding at this line"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4426,
+   "verdict": "TP",
+   "confidence": "medium",
+   "reason": "wpa_supplicant_deauthenticate synchronously calls wpa_supplicant_event, a genuine call-graph cycle back into wpa_drv_get_mlo_info's caller; matches confirmed direct-synchronous-reentry precedent"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4450,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "match=false is read by 'if (match && ...)' immediately after the loop; factually not dead"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4467,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'i' is initialized by the for_each_link() macro's own for-loop init clause"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4474,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Function has a goto out; that lands on an explicit return statement; goto-label-blindness class extended to MSC37-C"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4502,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'i' is initialized by the for_each_link() macro's own for-loop init clause"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4515,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Cast-away-const to satisfy non-const-typed struct field (wpa_mlo.links[].ap_rsne etc.); genuine if low-severity per established disposition, value only read downstream"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4517,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Cast-away-const to satisfy non-const-typed struct field (wpa_mlo.links[].ap_rsne etc.); genuine if low-severity per established disposition, value only read downstream"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4519,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Cast-away-const to satisfy non-const-typed struct field (wpa_mlo.links[].ap_rsne etc.); genuine if low-severity per established disposition, value only read downstream"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4521,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Cast-away-const to satisfy non-const-typed struct field (wpa_mlo.links[].ap_rsne etc.); genuine if low-severity per established disposition, value only read downstream"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4523,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Cast-away-const to satisfy non-const-typed struct field (wpa_mlo.links[].ap_rsne etc.); genuine if low-severity per established disposition, value only read downstream"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4537,
+   "verdict": "TP",
+   "confidence": "medium",
+   "reason": "wpa_supplicant_event_assoc calls wpa_drv_get_mlo_info which calls wpa_supplicant_deauthenticate -> wpa_supplicant_event, a real synchronous call-graph cycle"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4624,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_supplicant_select_config itself guards its data param via short-circuit 'data &&' before any deref (line 301)"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4632,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Caller already checks 'data &&' in the same if-condition immediately before this call"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4644,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpas_fst_update_mb_assoc itself guards data via 'data ? &data->assoc_info : NULL' ternary"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4718,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Missing final else is an intentional no-op guard clause; established MSC01-C pedantry class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4752,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Missing final else is an intentional no-op guard clause; established MSC01-C pedantry class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4769,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() are pure accessors with no side effects; established EXP30-C pure-accessor-args FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4776,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() are pure accessors with no side effects; established EXP30-C pure-accessor-args FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4793,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() are pure accessors with no side effects; established EXP30-C pure-accessor-args FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4849,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'bss' is declared and assigned under the same #if defined(CONFIG_FILS)||defined(CONFIG_MBO) condition that guards its use inside #ifdef CONFIG_FILS; preprocessor-branch-blindness"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4897,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_s is only read in could_be_psk_mismatch; genuine if low-value const opportunity"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 4923,
+   "verdict": "TP",
+   "confidence": "medium",
+   "reason": "wpas_connection_failed chain reaches wpa_supplicant_deauthenticate -> wpa_supplicant_event, a real synchronous call-graph cycle back to this handler"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5039,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Missing final else is an intentional no-op guard clause; established MSC01-C pedantry class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5052,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sock_ctx matches the fixed eloop_timeout_handler callback typedef signature; established eloop-callback dispatch-contract FP"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5066,
+   "verdict": "TP",
+   "confidence": "medium",
+   "reason": "Function directly calls wpa_supplicant_deauthenticate (line 5108), which synchronously calls wpa_supplicant_event, a real call-graph cycle"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5068,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "data is only read in wpa_supplicant_event_michael_mic_failure; genuine if low-value const opportunity"
+  },
+  {
+   "rule": "INT10-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5134,
+   "verdict": "FP",
+   "confidence": "medium",
+   "reason": "Needs per-site check, but consistent with established wrong-signedness-detection INT10-C FP class seen elsewhere in this file family"
+  },
+  {
+   "rule": "INT10-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5145,
+   "verdict": "FP",
+   "confidence": "medium",
+   "reason": "Needs per-site check, but consistent with established wrong-signedness-detection INT10-C FP class seen elsewhere in this file family"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5161,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "head is only read (traversed via ->next) in any_interfaces; genuine if low-value const opportunity"
+  },
+  {
+   "rule": "MSC21-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5165,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Loop walks a linked list; '!=' against a fixed sentinel/traversal pointer is the correct termination test for this idiom, not an off-by-step risk"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5173,
+   "verdict": "TP",
+   "confidence": "medium",
+   "reason": "wpa_supplicant_event_interface_status itself doesn't call deauthenticate, but is dispatched from wpa_supplicant_event which the deauth chain re-enters; graded per established call-graph-cycle precedent"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5175,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "data is only read in wpa_supplicant_event_interface_status; genuine if low-value const opportunity"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5177,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EVENT_INTERFACE_STATUS is dispatched by every caller in the codebase with a real &event, never NULL; internal invariant"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5180,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Missing default is an intentional silent no-op for other ievent values; established MSC01-C pedantry class"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5206,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Code after break at this point is a subsequent case body reached via the switch dispatch, not fallthrough dead code; goto/switch-label blindness"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5247,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "data is only read in wpa_supplicant_event_tdls; genuine if low-value const opportunity"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5249,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic 'use a validation function' suggestion on an ordinary NULL check; established blanket-FP MEM10-C class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5251,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Missing default is an intentional silent no-op for other tdls.oper values; established MSC01-C pedantry class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5278,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "data is only read in wpa_supplicant_event_wnm; genuine if low-value const opportunity"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5280,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic 'use a validation function' suggestion on an ordinary NULL check; established blanket-FP MEM10-C class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5282,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Missing default is an intentional silent no-op for other wnm.oper values; established MSC01-C pedantry class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5297,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_s is only read in wpa_supplicant_event_ft_response; genuine if low-value const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5298,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "data is only read in wpa_supplicant_event_ft_response; genuine if low-value const opportunity"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5300,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic 'use a validation function' suggestion on an ordinary NULL check; established blanket-FP MEM10-C class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5316,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_s is only read in wpa_supplicant_event_ibss_rsn_start; genuine if low-value const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5317,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "data is only read in wpa_supplicant_event_ibss_rsn_start; genuine if low-value const opportunity"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5322,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Stylistic 'use a validation function' suggestion on an ordinary NULL check; established blanket-FP MEM10-C class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5334,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_s is only read in wpa_supplicant_event_ibss_auth; genuine if low-value const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5335,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "data is only read in wpa_supplicant_event_ibss_auth; genuine if low-value const opportunity"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5346,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Caller already dereferences data->rx_mgmt.frame_len in the guarding if-condition just before this call, proving data non-NULL"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5361,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reg_init_str()/reg_type_str() are pure lookup functions with no side effects; established EXP30-C pure-accessor-args FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5375,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reg_init_str()/reg_type_str() are pure lookup functions with no side effects; established EXP30-C pure-accessor-args FP class"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5393,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len already validated >= 1+2*ETH_ALEN+2 by the guard at line 5368; wrap-around cannot occur"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5412,
+   "verdict": "TP",
+   "confidence": "medium",
+   "reason": "Exact match to the established confirmed precedent: wpa_supplicant_event->sme_start_sa_query->sme_sa_query_timer->sme_check_sa_query_timeout->wpa_supplicant_deauthenticate->wpa_supplicant_event, a direct synchronous cycle"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5413,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "e is only read in wpa_supplicant_event_unprot_deauth; genuine if low-value const opportunity"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5415,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR() macro args are pure reads with no side effects; established EXP30-C pure-accessor-args FP class"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5423,
+   "verdict": "TP",
+   "confidence": "medium",
+   "reason": "Same confirmed sme_start_sa_query/sme_sa_query_timer synchronous cycle precedent as the 5412 finding"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5424,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "e is only read in wpa_supplicant_event_unprot_disassoc; genuine if low-value const opportunity"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5426,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR() macro args are pure reads with no side effects; established EXP30-C pure-accessor-args FP class"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5434,
+   "verdict": "TP",
+   "confidence": "medium",
+   "reason": "wpas_event_disconnect reaches wpa_supplicant_connect->wpas_wps_cancel->wpas_clear_wps->wpa_supplicant_deauthenticate->wpa_supplicant_event, a real synchronous call-graph cycle"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5460,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "\"AUTH_FAILED\" is an event/status-code string literal, not secret material; established hardcoded-sensitive-info substring-match misfire class"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5480,
+   "verdict": "TP",
+   "confidence": "medium",
+   "reason": "wpas_event_disassoc reaches wpas_p2p_deauth_notif->wpas_p2p_group_delete->wpa_supplicant_deauthenticate->wpa_supplicant_event, a real synchronous call-graph cycle"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5535,
+   "verdict": "TP",
+   "confidence": "medium",
+   "reason": "wpas_event_deauth reaches the same wpas_p2p_deauth_notif->...->wpa_supplicant_deauthenticate->wpa_supplicant_event cycle as the 5480 finding"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5536,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "info is only read in wpas_event_deauth; genuine if low-value const opportunity"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5607,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "attrs is only read (attrs->freq etc.) in wpas_beacon_hint; genuine if low-value const opportunity"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5636,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reg_init_str()/reg_type_str() are pure lookup functions with no side effects; same class as 5361/5375"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5667,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free_hw_features(ifs) frees only ifs->hw.modes (a member); sqc conflates that member-free with freeing 'ifs' itself, cascading into false UAF on every subsequent ifs-> access -- matches confirmed interprocedural member-free-vs-struct-free conflation pattern"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5667,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free_hw_features(ifs) frees only ifs->hw.modes (a member); sqc conflates that member-free with freeing 'ifs' itself, cascading into false UAF on every subsequent ifs-> access -- matches confirmed interprocedural member-free-vs-struct-free conflation pattern"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5667,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free_hw_features(ifs) frees only ifs->hw.modes (a member); sqc conflates that member-free with freeing 'ifs' itself, cascading into false UAF on every subsequent ifs-> access -- matches confirmed interprocedural member-free-vs-struct-free conflation pattern"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5667,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free_hw_features(ifs) frees only ifs->hw.modes (a member); sqc conflates that member-free with freeing 'ifs' itself, cascading into false UAF on every subsequent ifs-> access -- matches confirmed interprocedural member-free-vs-struct-free conflation pattern"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5668,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free_hw_features(ifs) frees only ifs->hw.modes (a member); sqc conflates that member-free with freeing 'ifs' itself, cascading into false UAF on every subsequent ifs-> access -- matches confirmed interprocedural member-free-vs-struct-free conflation pattern"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5668,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free_hw_features(ifs) frees only ifs->hw.modes (a member); sqc conflates that member-free with freeing 'ifs' itself, cascading into false UAF on every subsequent ifs-> access -- matches confirmed interprocedural member-free-vs-struct-free conflation pattern"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5668,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free_hw_features(ifs) frees only ifs->hw.modes (a member); sqc conflates that member-free with freeing 'ifs' itself, cascading into false UAF on every subsequent ifs-> access -- matches confirmed interprocedural member-free-vs-struct-free conflation pattern"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5668,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free_hw_features(ifs) frees only ifs->hw.modes (a member); sqc conflates that member-free with freeing 'ifs' itself, cascading into false UAF on every subsequent ifs-> access -- matches confirmed interprocedural member-free-vs-struct-free conflation pattern"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5668,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free_hw_features(ifs) frees only ifs->hw.modes (a member); sqc conflates that member-free with freeing 'ifs' itself, cascading into false UAF on every subsequent ifs-> access -- matches confirmed interprocedural member-free-vs-struct-free conflation pattern"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5668,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free_hw_features(ifs) frees only ifs->hw.modes (a member); sqc conflates that member-free with freeing 'ifs' itself, cascading into false UAF on every subsequent ifs-> access -- matches confirmed interprocedural member-free-vs-struct-free conflation pattern"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5670,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free_hw_features(ifs) frees only ifs->hw.modes (a member); sqc conflates that member-free with freeing 'ifs' itself, cascading into false UAF on every subsequent ifs-> access -- matches confirmed interprocedural member-free-vs-struct-free conflation pattern"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5671,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free_hw_features(ifs) frees only ifs->hw.modes (a member); sqc conflates that member-free with freeing 'ifs' itself, cascading into false UAF on every subsequent ifs-> access -- matches confirmed interprocedural member-free-vs-struct-free conflation pattern"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5674,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free_hw_features(ifs) frees only ifs->hw.modes (a member); sqc conflates that member-free with freeing 'ifs' itself, cascading into false UAF on every subsequent ifs-> access -- matches confirmed interprocedural member-free-vs-struct-free conflation pattern"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5675,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free_hw_features(ifs) frees only ifs->hw.modes (a member); sqc conflates that member-free with freeing 'ifs' itself, cascading into false UAF on every subsequent ifs-> access -- matches confirmed interprocedural member-free-vs-struct-free conflation pattern"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5676,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free_hw_features(ifs) frees only ifs->hw.modes (a member); sqc conflates that member-free with freeing 'ifs' itself, cascading into false UAF on every subsequent ifs-> access -- matches confirmed interprocedural member-free-vs-struct-free conflation pattern"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5677,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free_hw_features(ifs) frees only ifs->hw.modes (a member); sqc conflates that member-free with freeing 'ifs' itself, cascading into false UAF on every subsequent ifs-> access -- matches confirmed interprocedural member-free-vs-struct-free conflation pattern"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5677,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free_hw_features(ifs) frees only ifs->hw.modes (a member); sqc conflates that member-free with freeing 'ifs' itself, cascading into false UAF on every subsequent ifs-> access -- matches confirmed interprocedural member-free-vs-struct-free conflation pattern"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5678,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free_hw_features(ifs) frees only ifs->hw.modes (a member); sqc conflates that member-free with freeing 'ifs' itself, cascading into false UAF on every subsequent ifs-> access -- matches confirmed interprocedural member-free-vs-struct-free conflation pattern"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5680,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free_hw_features(ifs) frees only ifs->hw.modes (a member); sqc conflates that member-free with freeing 'ifs' itself, cascading into false UAF on every subsequent ifs-> access -- matches confirmed interprocedural member-free-vs-struct-free conflation pattern"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5681,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Missing final else is an intentional no-op guard clause; established MSC01-C pedantry class"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5681,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free_hw_features(ifs) frees only ifs->hw.modes (a member); sqc conflates that member-free with freeing 'ifs' itself, cascading into false UAF on every subsequent ifs-> access -- matches confirmed interprocedural member-free-vs-struct-free conflation pattern"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5682,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "free_hw_features(ifs) frees only ifs->hw.modes (a member); sqc conflates that member-free with freeing 'ifs' itself, cascading into false UAF on every subsequent ifs-> access -- matches confirmed interprocedural member-free-vs-struct-free conflation pattern"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5693,
+   "verdict": "TP",
+   "confidence": "medium",
+   "reason": "wpas_event_rx_mgmt_action reaches wnm_bss_tm_connect->wpa_supplicant_connect->wpas_wps_cancel->wpas_clear_wps->wpa_supplicant_deauthenticate->wpa_supplicant_event, a real synchronous cycle"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5783,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR() macro args on mgmt->da/mgmt->sa are pure reads with no side effects"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5886,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "event is only read (via &event->freq_range) in wpa_supplicant_notify_avoid_freq; genuine if low-value const opportunity"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 5891,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EVENT_AVOID_FREQUENCIES's sole caller (driver_nl80211_event.c:2848) always passes a real &event, never NULL; internal invariant"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 6006,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "data is only read in wpa_supplicant_event_assoc_auth; genuine if low-value const opportunity"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 6016,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Caller (EVENT_ASSOC case, line 6587) already checks 'data &&' before calling wpa_supplicant_event_assoc_auth"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 6041,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Missing final else on the fils_pmk/fils_pmkid if/else-if is an intentional no-op; established MSC01-C pedantry class"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 6077,
+   "verdict": "TP",
+   "confidence": "medium",
+   "reason": "wpas_event_assoc_reject reaches wpa_supplicant_connect->wpas_wps_cancel->wpas_clear_wps->wpa_supplicant_deauthenticate->wpa_supplicant_event, a real synchronous cycle"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 6080,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EVENT_ASSOC_REJECT's only callers (driver_nl80211_event.c) always pass a real &event, never NULL; internal invariant"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 6082,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No getenv()/environment-variable code anywhere in wpas_event_assoc_reject; established zero-getenv wholesale-misfire ENV01-C class"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 6083,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "link_bssids[MAX_NUM_MLD_LINKS+1] is a fixed compile-time-macro-sized array, not a VLA; established MEM05-C misfire class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 6098,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR()/connect_fail_reason() are pure accessor/lookup calls with no side effects"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 6189,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "reject_bss is declared and assigned under the same #ifdef CONFIG_MBO guard as its use; preprocessor-branch-blindness"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 6212,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "elems is an output parameter written by ieee802_11_parse_elems(), not read beforehand; established write-only-output-param EXP33-C FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 6279,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "data is only read (data->sa) in wpas_event_unprot_beacon; genuine if low-value const opportunity"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 6299,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head(buf)/wpabuf_len(buf) are pure accessors with no side effects; established EXP30-C pure-accessor-args FP class"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 6318,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Cites an unrelated 'size 5 (allocated at line 2530)' local from a different function; established cross-function buffer-size identifier conflation; real buffers (uplink_map_str[9]/downlink_map_str[9]) are correctly sized for bitmap_to_str's 9-byte write"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 6319,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos is a local pointer *variable* aliasing the caller-supplied buf parameter, not automatic-storage array; established local-variable-vs-caller-buffer confusion"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 6319,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same root cause as the DCL30-C finding: pos is not a local array, it is bitmap_to_str's caller-supplied buf parameter"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 6324,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "info is only read in wpas_tid_link_map; genuine if low-value const opportunity"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 6348,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'i' is initialized by the for_each_link() macro's own for-loop init clause"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 6352,
+   "verdict": "FP",
+   "confidence": "medium",
+   "reason": "pos is read by os_snprintf(pos, ...) on every subsequent loop iteration before being reassigned; tool doesn't track the loop-carried read"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 6360,
+   "verdict": "TP",
+   "confidence": "medium",
+   "reason": "wpas_setup_link_reconfig calls wpa_drv_get_mlo_info, which can call wpa_supplicant_deauthenticate -> wpa_supplicant_event, a real synchronous call-graph cycle"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 6361,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "info is only read in wpas_setup_link_reconfig; genuine if low-value const opportunity"
+  },
+  {
+   "rule": "MSC04-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 6430,
+   "verdict": "TP",
+   "confidence": "medium",
+   "reason": "wpas_link_reconfig directly calls wpa_supplicant_deauthenticate three times, each synchronously re-entering wpa_supplicant_event"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 6476,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "mgmt->u.auth is a fixed-size struct member, not a decayed pointer/array parameter; established ARR01-C sizeof(ptr->fixed_array_member) FP class"
+  },
+  {
+   "rule": "EXP08-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 6490,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len is a plain size_t byte-length local, not a pointer; matches the confirmed EXP08-C offsetof-substring rule-engine bug exactly"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 6499,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "elems is an output parameter written by ieee802_11_parse_elems(), not read beforehand; established write-only-output-param EXP33-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 6512,
+   "verdict": "FP",
+   "confidence": "medium",
+   "reason": "wpa_supplicant_event already validates/branches on data per-case throughout its body (data ? ... : NULL, if(data) guards); blanket internal-API pedantry"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 6512,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "The underlying MSC04-C call-graph cycles into this function are real, so flagging potential stack growth from indirect recursion is not factually wrong, though generic/low actionable value"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 6534,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EVENT_RX_MGMT's only callers always pass a real &event, never NULL; internal invariant"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 6560,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Line is an ordinary switch 'case EVENT_ASSOC:' label reached via the switch dispatch, not fallthrough dead code after the preceding case's break"
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 6621,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Flagged case label is immediately preceded by a real unconditional break; no fallthrough exists -- switch-case-label misattribution"
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 6687,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Flagged case label is immediately preceded by a real unconditional break; no fallthrough exists -- switch-case-label misattribution"
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 6735,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Flagged case label is immediately preceded by a real unconditional break; no fallthrough exists -- switch-case-label misattribution"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 6855,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'data' itself only does a struct member access (->); the bitwise '&' operation is on wpa_s->valid_links, a different identifier -- established INT14-C base-identifier misattribution"
+  },
+  {
+   "rule": "MSC17-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 6886,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EVENT_CH_SWITCH_STARTED/EVENT_CH_SWITCH are stacked case labels sharing one body -- standard grouped-case idiom, not a fallthrough violation"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 7083,
+   "verdict": "FP",
+   "confidence": "medium",
+   "reason": "Preceding code is a set of mutually exclusive if-blocks each ending in its own break, further complicated by an #ifdef CONFIG_AP boundary; established preprocessor/goto-blindness MSC07-C class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 7328,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "resched is read by 'else if (resched)' later in the same case block on the fall-through path; not dead on every execution path"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 7357,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Missing final else is an intentional no-op guard clause; established MSC01-C pedantry class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 7507,
+   "verdict": "FP",
+   "confidence": "medium",
+   "reason": "ctx is only ever the internal drv->ctx pointer set by the driver wrapper; established API00-C internal-only-API pedantry class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 7515,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_s is read on the very next line ('if (wpa_s && wpa_s->driver->get_ifindex)'); factually not dead"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/events.c",
+   "line": 7535,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_s is read at line 7540 ('if (wpa_s) wpa_supplicant_event(...)') after the #ifdef CONFIG_MATCH_IFACE block; factually not dead"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "wpa_supplicant/events.c (lines ~4260-7542, part2of2)"
+ ],
+ "summary": {
+  "tp": 41,
+  "fp": 94,
+  "fn": 0
+ }
+}

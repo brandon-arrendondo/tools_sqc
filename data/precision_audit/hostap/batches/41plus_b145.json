@@ -1,0 +1,1354 @@
+{
+ "src/utils/os_unix.c#part1of2": [
+  {
+   "column": 1,
+   "file": "src/utils/os_unix.c",
+   "line": 35,
+   "message": "Shared variable 'alloc_list' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 37,
+   "file": "src/utils/os_unix.c",
+   "line": 53,
+   "message": "arithmetic operator '*' applied directly to time_t-typed 'usec' -- the encoding of time_t is unspecified",
+   "rule_id": "MSC05-C",
+   "severity": "Low",
+   "suggestion": "Use difftime() to compute a duration between two time_t values instead of subtracting/adding them directly"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os_unix.c",
+   "line": 76,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_unix.c",
+   "line": 84,
+   "message": "Shared variable 'clock_id' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 14,
+   "file": "src/utils/os_unix.c",
+   "line": 96,
+   "message": "Floating-point division without error checking (consider using feclearexcept/fetestexcept)",
+   "rule_id": "FLP03-C",
+   "severity": "Low",
+   "suggestion": "Use feclearexcept(FE_ALL_EXCEPT) before and fetestexcept(FE_ALL_EXCEPT) after floating-point operations"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_unix.c",
+   "line": 99,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_unix.c",
+   "line": 116,
+   "message": "Shared variable 'info' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_unix.c",
+   "line": 124,
+   "message": "Floating-point division without error checking (consider using feclearexcept/fetestexcept)",
+   "rule_id": "FLP03-C",
+   "severity": "Low",
+   "suggestion": "Use feclearexcept(FE_ALL_EXCEPT) before and fetestexcept(FE_ALL_EXCEPT) after floating-point operations"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_unix.c",
+   "line": 124,
+   "message": "Division or modulo by 'info.denom' without checking for zero",
+   "rule_id": "INT33-C",
+   "severity": "High",
+   "suggestion": "Check if 'info.denom' is not zero before division"
+  },
+  {
+   "column": 11,
+   "file": "src/utils/os_unix.c",
+   "line": 126,
+   "message": "Division or modulo by 'NSEC_PER_SEC' without checking for zero",
+   "rule_id": "INT33-C",
+   "severity": "High",
+   "suggestion": "Check if 'NSEC_PER_SEC' is not zero before division"
+  },
+  {
+   "column": 12,
+   "file": "src/utils/os_unix.c",
+   "line": 127,
+   "message": "Division or modulo by 'NSEC_PER_USEC' without checking for zero",
+   "rule_id": "INT33-C",
+   "severity": "High",
+   "suggestion": "Check if 'NSEC_PER_USEC' is not zero before division"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_unix.c",
+   "line": 154,
+   "message": "Return value of 'mktime' assigned to 't_local' but not checked for errors: 'mktime(&tm)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_unix.c",
+   "line": 157,
+   "message": "Storing pointer returned by 'localtime' is prohibited. The data referenced may be overwritten by subsequent calls. Use strdup(), malloc()/strcpy(), or consume the value immediately.",
+   "rule_id": "ENV34-C",
+   "severity": "Medium",
+   "suggestion": "Instead of 'ptr = localtime()', use 'ptr = strdup(localtime())' and remember to free() later, or use 'const char *ptr' for immediate use only"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_unix.c",
+   "line": 157,
+   "message": "Return value of 'localtime' assigned to 'tm1' but not checked for errors: 'localtime(&t_local)' - Returns NULL on error",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (result == NULL) before using time structure"
+  },
+  {
+   "column": 8,
+   "file": "src/utils/os_unix.c",
+   "line": 157,
+   "message": "Call to non-thread-safe function 'localtime'. Use strftime() with localtime_r()/gmtime_r() (POSIX), or use thread-safe time conversion functions",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strftime() with localtime_r()/gmtime_r() (POSIX), or use thread-safe time conversion functions"
+  },
+  {
+   "column": 8,
+   "file": "src/utils/os_unix.c",
+   "line": 157,
+   "message": "'localtime()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'localtime_r' instead for thread safety"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_unix.c",
+   "line": 159,
+   "message": "Return value of 'mktime' assigned to 't1' but not checked for errors: 'mktime(tm1)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  },
+  {
+   "column": 8,
+   "file": "src/utils/os_unix.c",
+   "line": 159,
+   "message": "Passing variable 'tm1' (from 'gmtime()') to function 'mktime()' which may modify it.",
+   "rule_id": "ENV30-C",
+   "severity": "Medium",
+   "suggestion": "Copy the return value to a local buffer before passing to functions that may modify it"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_unix.c",
+   "line": 160,
+   "message": "Storing pointer returned by 'gmtime' is prohibited. The data referenced may be overwritten by subsequent calls. Use strdup(), malloc()/strcpy(), or consume the value immediately.",
+   "rule_id": "ENV34-C",
+   "severity": "Medium",
+   "suggestion": "Instead of 'ptr = gmtime()', use 'ptr = strdup(gmtime())' and remember to free() later, or use 'const char *ptr' for immediate use only"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_unix.c",
+   "line": 160,
+   "message": "Return value of 'gmtime' assigned to 'tm1' but not checked for errors: 'gmtime(&t_local)' - Returns NULL on error",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (result == NULL) before using time structure"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_unix.c",
+   "line": 160,
+   "message": "Call to non-thread-safe function 'gmtime'. Use strftime() with localtime_r()/gmtime_r() (POSIX), or use thread-safe time conversion functions",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strftime() with localtime_r()/gmtime_r() (POSIX), or use thread-safe time conversion functions"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_unix.c",
+   "line": 160,
+   "message": "'gmtime()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'gmtime_r' instead for thread safety"
+  },
+  {
+   "column": 4,
+   "file": "src/utils/os_unix.c",
+   "line": 162,
+   "message": "Return value of 'mktime' assigned to 't2' but not checked for errors: 'mktime(tm1)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_unix.c",
+   "line": 162,
+   "message": "Passing variable 'tm1' (from 'gmtime()') to function 'mktime()' which may modify it.",
+   "rule_id": "ENV30-C",
+   "severity": "Medium",
+   "suggestion": "Copy the return value to a local buffer before passing to functions that may modify it"
+  },
+  {
+   "column": 16,
+   "file": "src/utils/os_unix.c",
+   "line": 163,
+   "message": "arithmetic operator '-' applied directly to time_t-typed 't2' -- the encoding of time_t is unspecified",
+   "rule_id": "MSC05-C",
+   "severity": "Low",
+   "suggestion": "Use difftime() to compute a duration between two time_t values instead of subtracting/adding them directly"
+  },
+  {
+   "column": 7,
+   "file": "src/utils/os_unix.c",
+   "line": 169,
+   "message": "arithmetic operator '-' applied directly to time_t-typed 'tz_offset' -- the encoding of time_t is unspecified",
+   "rule_id": "MSC05-C",
+   "severity": "Low",
+   "suggestion": "Use difftime() to compute a duration between two time_t values instead of subtracting/adding them directly"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_unix.c",
+   "line": 179,
+   "message": "Storing pointer returned by 'gmtime' is prohibited. The data referenced may be overwritten by subsequent calls. Use strdup(), malloc()/strcpy(), or consume the value immediately.",
+   "rule_id": "ENV34-C",
+   "severity": "Medium",
+   "suggestion": "Instead of 'ptr = gmtime()', use 'ptr = strdup(gmtime())' and remember to free() later, or use 'const char *ptr' for immediate use only"
+  },
+  {
+   "column": 8,
+   "file": "src/utils/os_unix.c",
+   "line": 179,
+   "message": "Call to non-thread-safe function 'gmtime'. Use strftime() with localtime_r()/gmtime_r() (POSIX), or use thread-safe time conversion functions",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strftime() with localtime_r()/gmtime_r() (POSIX), or use thread-safe time conversion functions"
+  },
+  {
+   "column": 8,
+   "file": "src/utils/os_unix.c",
+   "line": 179,
+   "message": "'gmtime()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'gmtime_r' instead for thread safety"
+  },
+  {
+   "column": 12,
+   "file": "src/utils/os_unix.c",
+   "line": 201,
+   "message": "open() called without O_NOFOLLOW flag and without lstat() validation. This may be vulnerable to symlink attacks.",
+   "rule_id": "POS01-C",
+   "severity": "High",
+   "suggestion": "Use O_NOFOLLOW flag in open() call, or validate with lstat() before opening"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_unix.c",
+   "line": 211,
+   "message": "Resource 'devnull' is closed again after already being closed at line 206. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_unix.c",
+   "line": 216,
+   "message": "Resource 'devnull' is closed again after already being closed at line 206. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os_unix.c",
+   "line": 227,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 8,
+   "file": "src/utils/os_unix.c",
+   "line": 238,
+   "message": "Return value of 'fopen' assigned to 'f' but not checked for errors: 'fopen(pid_file, \"w\")' - Returns NULL if file cannot be opened",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (file == NULL) before using the file pointer"
+  },
+  {
+   "column": 13,
+   "file": "src/utils/os_unix.c",
+   "line": 238,
+   "message": "Return value from fopen() should be checked for errors",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Check if fopen() returned an error value (NULL, -1, etc.)"
+  },
+  {
+   "column": 13,
+   "file": "src/utils/os_unix.c",
+   "line": 238,
+   "message": "fopen() with mode \"w\" does not guarantee exclusive file creation. Use \"wx\" or \"w+x\" mode for exclusive creation.",
+   "rule_id": "FIO03-C",
+   "severity": "Medium",
+   "suggestion": "Use fopen() with \"wx\" or \"w+x\" mode for C11, or use open() with O_CREAT|O_EXCL for POSIX"
+  },
+  {
+   "column": 13,
+   "file": "src/utils/os_unix.c",
+   "line": 238,
+   "message": "fopen() cannot explicitly specify file permissions; use open() for security-sensitive files",
+   "rule_id": "FIO06-C",
+   "severity": "Medium",
+   "suggestion": "Use open(filename, O_CREAT | O_WRONLY, mode) to explicitly specify file permissions"
+  },
+  {
+   "column": 13,
+   "file": "src/utils/os_unix.c",
+   "line": 238,
+   "message": "fopen() called without 'N' flag in mode string \"w\". On Windows, file handles are inheritable by default unless the 'N' flag is specified.",
+   "rule_id": "WIN03-C",
+   "severity": "High",
+   "suggestion": "Add 'N' flag to the mode string (e.g., \"rwN\") to disable handle inheritance on Windows."
+  },
+  {
+   "column": 4,
+   "file": "src/utils/os_unix.c",
+   "line": 241,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 4,
+   "file": "src/utils/os_unix.c",
+   "line": 241,
+   "message": "Return value of 'fclose' ignored: 'fclose(f)' - Returns non-zero on error",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (fclose(file) != 0) for close errors"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os_unix.c",
+   "line": 257,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 33,
+   "file": "src/utils/os_unix.c",
+   "line": 257,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 12,
+   "file": "src/utils/os_unix.c",
+   "line": 263,
+   "message": "Bitwise operator '&' used on signed operand 'i' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'i' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_unix.c",
+   "line": 272,
+   "message": "Return value of 'fopen' assigned to 'f' but not checked for errors: 'fopen(\"/dev/urandom\", \"rb\")' - Returns NULL if file cannot be opened",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (file == NULL) before using the file pointer"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/os_unix.c",
+   "line": 272,
+   "message": "Return value from fopen() should be checked for errors",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Check if fopen() returned an error value (NULL, -1, etc.)"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/os_unix.c",
+   "line": 272,
+   "message": "fopen() called without 'N' flag in mode string \"rb\". On Windows, file handles are inheritable by default unless the 'N' flag is specified.",
+   "rule_id": "WIN03-C",
+   "severity": "High",
+   "suggestion": "Add 'N' flag to the mode string (e.g., \"rwN\") to disable handle inheritance on Windows."
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_unix.c",
+   "line": 278,
+   "message": "Return value of 'fread' assigned to 'rc' but not checked for errors: 'fread(buf, 1, len, f)' - Returns number of items read, may be less than requested",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (items_read == expected_items) or handle partial reads"
+  },
+  {
+   "column": 7,
+   "file": "src/utils/os_unix.c",
+   "line": 278,
+   "message": "Return value from fread() should be checked for errors",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Check if fread() returned an error value (NULL, -1, etc.)"
+  },
+  {
+   "column": 7,
+   "file": "src/utils/os_unix.c",
+   "line": 278,
+   "message": "fread() used without explicitly accounting for null terminator in character buffer",
+   "rule_id": "FIO17-C",
+   "severity": "Medium",
+   "suggestion": "Ensure buffer size accounts for null terminator, or explicitly add null terminator after fread()"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_unix.c",
+   "line": 279,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_unix.c",
+   "line": 279,
+   "message": "Return value of 'fclose' ignored: 'fclose(f)' - Returns non-zero on error",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (fclose(file) != 0) for close errors"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_unix.c",
+   "line": 288,
+   "message": "Function 'random' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_unix.c",
+   "line": 288,
+   "message": "Pseudorandom number generator 'random()' called without proper seeding - will produce predictable sequences",
+   "rule_id": "MSC32-C",
+   "severity": "Medium",
+   "suggestion": "Call srand() or srandom() with a non-deterministic seed (e.g., from time() or /dev/urandom) before calling random()"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os_unix.c",
+   "line": 294,
+   "message": "Value assigned to 'buf' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 4,
+   "file": "src/utils/os_unix.c",
+   "line": 318,
+   "message": "Array/pointer 'buf' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Do not access 'buf' after calling free(). Set pointer to NULL after freeing: free(buf); buf = NULL;"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_unix.c",
+   "line": 333,
+   "message": "Double-free: 'buf' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_unix.c",
+   "line": 334,
+   "message": "Function returns without releasing all resources. Leaked: buf, ret. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 8,
+   "file": "src/utils/os_unix.c",
+   "line": 348,
+   "message": "Array declaration 'groups[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 8,
+   "file": "src/utils/os_unix.c",
+   "line": 350,
+   "message": "Array declaration 'groups[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 4,
+   "file": "src/utils/os_unix.c",
+   "line": 365,
+   "message": "Shift operation '1 << CAP_NET_ADMIN' by 'CAP_NET_ADMIN' without validating shift amount is non-negative and within type width",
+   "rule_id": "INT34-C",
+   "severity": "Medium",
+   "suggestion": "Check that 'CAP_NET_ADMIN' is >= 0 and < the bit width of the operand before shifting"
+  },
+  {
+   "column": 27,
+   "file": "src/utils/os_unix.c",
+   "line": 365,
+   "message": "Shift operation '1 << CAP_NET_RAW' by 'CAP_NET_RAW' without validating shift amount is non-negative and within type width",
+   "rule_id": "INT34-C",
+   "severity": "Medium",
+   "suggestion": "Check that 'CAP_NET_RAW' is >= 0 and < the bit width of the operand before shifting"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_unix.c",
+   "line": 371,
+   "message": "Function 'srandom' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 11,
+   "file": "src/utils/os_unix.c",
+   "line": 371,
+   "message": "Variable 'seed' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'seed' before use, e.g., at its declaration"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_unix.c",
+   "line": 404,
+   "message": "Function 'setenv' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os_unix.c",
+   "line": 408,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 31,
+   "file": "src/utils/os_unix.c",
+   "line": 420,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/os_unix.c",
+   "line": 426,
+   "message": "File opened for reading using variable filename 'name' without verifying file attributes (fstat + st_uid/st_gid check)",
+   "rule_id": "FIO05-C",
+   "severity": "Medium",
+   "suggestion": "Use fstat() to check file ownership (st_uid, st_gid) before reading untrusted files"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/os_unix.c",
+   "line": 426,
+   "message": "fopen() called without 'N' flag in mode string \"rb\". On Windows, file handles are inheritable by default unless the 'N' flag is specified.",
+   "rule_id": "WIN03-C",
+   "severity": "High",
+   "suggestion": "Add 'N' flag to the mode string (e.g., \"rwN\") to disable handle inheritance on Windows."
+  },
+  {
+   "column": 6,
+   "file": "src/utils/os_unix.c",
+   "line": 430,
+   "message": "fseek() with SEEK_END should not be used on binary streams (undefined behavior with null padding)",
+   "rule_id": "FIO14-C",
+   "severity": "Medium",
+   "suggestion": "Use SEEK_SET or SEEK_CUR instead, or ensure stream is in text mode"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/os_unix.c",
+   "line": 430,
+   "message": "Using fseek()/ftell() to compute file size - use fstat() or platform-specific APIs instead",
+   "rule_id": "FIO19-C",
+   "severity": "Medium",
+   "suggestion": "Use fstat() with fileno() to get file size reliably"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/os_unix.c",
+   "line": 430,
+   "message": "fseek() operation on device file; this operation is only appropriate for regular files",
+   "rule_id": "FIO32-C",
+   "severity": "Medium",
+   "suggestion": null
+  },
+  {
+   "column": 36,
+   "file": "src/utils/os_unix.c",
+   "line": 430,
+   "message": "Return value of 'ftell' assigned to 'pos' but not checked for errors: 'ftell(f)' - Returns -1L on failure",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (pos == -1L) for position errors"
+  },
+  {
+   "column": 42,
+   "file": "src/utils/os_unix.c",
+   "line": 430,
+   "message": "Return value from ftell() should be checked for errors",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Check if ftell() returned an error value (NULL, -1, etc.)"
+  },
+  {
+   "column": 42,
+   "file": "src/utils/os_unix.c",
+   "line": 430,
+   "message": "ftell() operation on device file; this operation is only appropriate for regular files",
+   "rule_id": "FIO32-C",
+   "severity": "Medium",
+   "suggestion": null
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_unix.c",
+   "line": 431,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/os_unix.c",
+   "line": 435,
+   "message": "fseek() operation on device file; this operation is only appropriate for regular files",
+   "rule_id": "FIO32-C",
+   "severity": "Medium",
+   "suggestion": null
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_unix.c",
+   "line": 436,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_unix.c",
+   "line": 436,
+   "message": "Resource 'f' is closed again after already being closed at line 431. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_unix.c",
+   "line": 442,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_unix.c",
+   "line": 442,
+   "message": "Resource 'f' is closed again after already being closed at line 431. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_unix.c",
+   "line": 443,
+   "message": "Function returns without releasing all resources. Leaked: buf. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/os_unix.c",
+   "line": 446,
+   "message": "fread() used without explicitly accounting for null terminator in character buffer",
+   "rule_id": "FIO17-C",
+   "severity": "Medium",
+   "suggestion": "Ensure buffer size accounts for null terminator, or explicitly add null terminator after fread()"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_unix.c",
+   "line": 447,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_unix.c",
+   "line": 447,
+   "message": "Return value of 'fclose' ignored: 'fclose(f)' - Returns non-zero on error",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check if (fclose(file) != 0) for close errors"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_unix.c",
+   "line": 447,
+   "message": "Resource 'f' is closed again after already being closed at line 431. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_unix.c",
+   "line": 449,
+   "message": "Function returns without releasing all resources. Leaked: buf. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_unix.c",
+   "line": 452,
+   "message": "Return value from fclose() is ignored. Error handling is required.",
+   "rule_id": "ERR00-C",
+   "severity": "Medium",
+   "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_unix.c",
+   "line": 452,
+   "message": "Resource 'f' is closed again after already being closed at line 431. Double close is undefined behavior.",
+   "rule_id": "FIO24-C",
+   "severity": "Medium",
+   "suggestion": "Remove the duplicate close call, or set the variable to NULL/INVALID_HANDLE_VALUE/-1 after the first close to prevent double close."
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_unix.c",
+   "line": 454,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_unix.c",
+   "line": 454,
+   "message": "Function returns without releasing all resources. Leaked: buf. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os_unix.c",
+   "line": 464,
+   "message": "Function 'os_fdatasync' does not validate pointer parameter 'stream' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'stream' at the start of the function, e.g., 'if (!stream) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os_unix.c",
+   "line": 486,
+   "message": "Mixed string management approaches detected. Static char array at line 550 and dynamic allocation at line 486. Consider adopting a consistent approach.",
+   "rule_id": "STR01-C",
+   "severity": "Low",
+   "suggestion": "Adopt either static string arrays OR dynamic allocation consistently throughout the codebase. Document the chosen approach in coding standards."
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_unix.c",
+   "line": 486,
+   "message": "calloc(1, size) may cause integer overflow in size calculation",
+   "rule_id": "INT30-C",
+   "severity": "High",
+   "suggestion": "Check for overflow: if (count > SIZE_MAX / size) { /* handle error */ }"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_unix.c",
+   "line": 486,
+   "message": "calloc() called with potentially zero argument(s) without prior check: num='1', size='size'. Zero-length allocations have implementation-defined behavior.",
+   "rule_id": "MEM04-C",
+   "severity": "Low",
+   "suggestion": "Check that both arguments are non-zero before calling calloc()"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_unix.c",
+   "line": 486,
+   "message": "Sensitive data allocated with calloc may be written to disk. Use mlock() (POSIX) or VirtualLock() (Windows) to lock memory pages, or use setrlimit(RLIMIT_CORE, 0) to disable core dumps.",
+   "rule_id": "MEM06-C",
+   "severity": "Medium",
+   "suggestion": "Consider using mlock()/munlock() to prevent memory from being swapped to disk, or use setrlimit() to disable core dumps."
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_unix.c",
+   "line": 486,
+   "message": "calloc() arguments may wrap when multiplied; check for overflow before allocation",
+   "rule_id": "MEM07-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if (num_elements > SIZE_MAX/element_size) { /* handle error */ }"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os_unix.c",
+   "line": 491,
+   "message": "Function 'os_strlcpy' does not validate pointer parameter 'src' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'src' at the start of the function, e.g., 'if (!src) { return error_code; }'"
+  },
+  {
+   "column": 24,
+   "file": "src/utils/os_unix.c",
+   "line": 491,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 42,
+   "file": "src/utils/os_unix.c",
+   "line": 491,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_unix.c",
+   "line": 498,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'dest' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_unix.c",
+   "line": 499,
+   "message": "Direct assignment of flexible array structure instances. Use memcpy() for dynamic copying.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Use memcpy() to copy the structure and its flexible array member"
+  },
+  {
+   "column": 9,
+   "file": "src/utils/os_unix.c",
+   "line": 499,
+   "message": "Pointer dereference '*dest++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 19,
+   "file": "src/utils/os_unix.c",
+   "line": 499,
+   "message": "Pointer dereference '*s' (char type) assigned to larger type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment: (unsigned char)*ptr"
+  },
+  {
+   "column": 19,
+   "file": "src/utils/os_unix.c",
+   "line": 499,
+   "message": "Pointer dereference '*s++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 4,
+   "file": "src/utils/os_unix.c",
+   "line": 507,
+   "message": "Pointer dereference '*dest' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 32,
+   "file": "src/utils/os_unix.c",
+   "line": 516,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 47,
+   "file": "src/utils/os_unix.c",
+   "line": 516,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 29,
+   "file": "src/utils/os_unix.c",
+   "line": 530,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_unix.c",
+   "line": 532,
+   "message": "Variable 'r' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const r = ..."
+  },
+  {
+   "column": 14,
+   "file": "src/utils/os_unix.c",
+   "line": 550,
+   "message": "Array declaration 'ignore_list[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_unix.c",
+   "line": 561,
+   "message": "Loop uses uninitialized variable 'idx' as bound for array access. This has indeterminate value and can cause out-of-bounds access.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize 'idx' to a valid value before using it in the loop"
+  },
+  {
+   "column": 33,
+   "file": "src/utils/os_unix.c",
+   "line": 561,
+   "message": "Reading from 'wpa_trace_test_fail' which may contain uninitialized data",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize the contents of 'wpa_trace_test_fail' before reading"
+  },
+  {
+   "column": 31,
+   "file": "src/utils/os_unix.c",
+   "line": 568,
+   "message": "Variable 'func' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'func' before use, e.g., at its declaration"
+  },
+  {
+   "column": 10,
+   "file": "src/utils/os_unix.c",
+   "line": 606,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os_unix.c",
+   "line": 655,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 12,
+   "file": "src/utils/os_unix.c",
+   "line": 663,
+   "message": "Potentially unsafe array access with unvalidated function parameter index 'is_alloc'",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking for function parameter before using as array index."
+  },
+  {
+   "column": 12,
+   "file": "src/utils/os_unix.c",
+   "line": 663,
+   "message": "Reading from 'wpa_trace_test_fail' which may contain uninitialized data",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize the contents of 'wpa_trace_test_fail' before reading"
+  },
+  {
+   "column": 12,
+   "file": "src/utils/os_unix.c",
+   "line": 664,
+   "message": "Potentially unsafe array access with unvalidated function parameter index 'is_alloc'",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking for function parameter before using as array index."
+  },
+  {
+   "column": 10,
+   "file": "src/utils/os_unix.c",
+   "line": 667,
+   "message": "Assignment in while statement condition: 'token = str_token(patterns, \" \\n\\r\\t\", &context)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside while condition"
+  },
+  {
+   "column": 38,
+   "file": "src/utils/os_unix.c",
+   "line": 667,
+   "message": "Hard-coded sensitive information detected passed to `str_token`. Sensitive data like passwords, keys, or tokens should not be embedded in source code. Code: \" \\n\\r\\t\"",
+   "rule_id": "MSC41-C",
+   "severity": "High",
+   "suggestion": "Consider reading sensitive data from environment variables, configuration files, or user input at runtime."
+  },
+  {
+   "column": 26,
+   "file": "src/utils/os_unix.c",
+   "line": 668,
+   "message": "Potentially unsafe array access with unvalidated function parameter index 'is_alloc'",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking for function parameter before using as array index."
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_unix.c",
+   "line": 669,
+   "message": "Potentially unsafe array access with unvalidated function parameter index 'is_alloc'",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking for function parameter before using as array index."
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_unix.c",
+   "line": 669,
+   "message": "Potentially unsafe array access with unvalidated function parameter index 'is_alloc'",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking for function parameter before using as array index."
+  },
+  {
+   "column": 51,
+   "file": "src/utils/os_unix.c",
+   "line": 669,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 51,
+   "file": "src/utils/os_unix.c",
+   "line": 669,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 14,
+   "file": "src/utils/os_unix.c",
+   "line": 672,
+   "message": "Potentially unsafe array access with unvalidated function parameter index 'is_alloc'",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking for function parameter before using as array index."
+  },
+  {
+   "column": 14,
+   "file": "src/utils/os_unix.c",
+   "line": 673,
+   "message": "Potentially unsafe array access with unvalidated function parameter index 'is_alloc'",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking for function parameter before using as array index."
+  },
+  {
+   "column": 14,
+   "file": "src/utils/os_unix.c",
+   "line": 677,
+   "message": "Potentially unsafe array access with unvalidated function parameter index 'is_alloc'",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking for function parameter before using as array index."
+  },
+  {
+   "column": 14,
+   "file": "src/utils/os_unix.c",
+   "line": 677,
+   "message": "Potentially unsafe array access with unvalidated function parameter index 'is_alloc'",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking for function parameter before using as array index."
+  },
+  {
+   "column": 14,
+   "file": "src/utils/os_unix.c",
+   "line": 679,
+   "message": "Potentially unsafe array access with unvalidated function parameter index 'is_alloc'",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking for function parameter before using as array index."
+  },
+  {
+   "column": 14,
+   "file": "src/utils/os_unix.c",
+   "line": 679,
+   "message": "Potentially unsafe array access with unvalidated function parameter index 'is_alloc'",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking for function parameter before using as array index."
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os_unix.c",
+   "line": 690,
+   "message": "Function 'testing_get_fail_pattern' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os_unix.c",
+   "line": 690,
+   "message": "Function 'testing_get_fail_pattern' does not validate integer parameter 'buflen' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'buflen' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os_unix.c",
+   "line": 690,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 50,
+   "file": "src/utils/os_unix.c",
+   "line": 690,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_unix.c",
+   "line": 699,
+   "message": "Loop uses uninitialized variable 'idx' as bound for array access. This has indeterminate value and can cause out-of-bounds access.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize 'idx' to a valid value before using it in the loop"
+  },
+  {
+   "column": 33,
+   "file": "src/utils/os_unix.c",
+   "line": 699,
+   "message": "Reading from 'wpa_trace_test_fail' which may contain uninitialized data",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize the contents of 'wpa_trace_test_fail' before reading"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os_unix.c",
+   "line": 719,
+   "message": "Function 'os_malloc' does not validate integer parameter 'size' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'size' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_unix.c",
+   "line": 726,
+   "message": "Memory allocation result not cast; assign to 'a' without explicit cast",
+   "rule_id": "MEM02-C",
+   "severity": "Low",
+   "suggestion": "Cast the result: (struct os_alloc_trace *)malloc(...)"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/os_unix.c",
+   "line": 726,
+   "message": "malloc() argument 1 contains arithmetic that may overflow: 'sizeof(*a) + size'",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Validate arithmetic operations before passing to allocation functions"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/os_unix.c",
+   "line": 726,
+   "message": "Sensitive data allocated with malloc may be written to disk. Use mlock() (POSIX) or VirtualLock() (Windows) to lock memory pages, or use setrlimit(RLIMIT_CORE, 0) to disable core dumps.",
+   "rule_id": "MEM06-C",
+   "severity": "Medium",
+   "suggestion": "Consider using mlock()/munlock() to prevent memory from being swapped to disk, or use setrlimit() to disable core dumps."
+  },
+  {
+   "column": 6,
+   "file": "src/utils/os_unix.c",
+   "line": 726,
+   "message": "Memory allocated with 'malloc' for variable 'a' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(a)' before the variable goes out of scope"
+  },
+  {
+   "column": 20,
+   "file": "src/utils/os_unix.c",
+   "line": 726,
+   "message": "Dereference of uninitialized pointer 'a'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'a' before dereferencing"
+  },
+  {
+   "column": 24,
+   "file": "src/utils/os_unix.c",
+   "line": 737,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 5,
+   "file": "src/utils/os_unix.c",
+   "line": 743,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_unix.c",
+   "line": 752,
+   "message": "Function 'os_realloc' calls 'abort', which dictates error handling. Application-independent code should report errors to the caller (via return values, error parameters, or error indicators) rather than terminating the program.",
+   "rule_id": "ERR05-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'abort' with error reporting via return value (e.g., 'return ERROR_CODE;'), error parameter (e.g., '*err = ERROR_CODE;'), or global error indicator"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/os_unix.c",
+   "line": 762,
+   "message": "Function returns pointer to local variable 'n' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 5,
+   "file": "src/utils/os_unix.c",
+   "line": 770,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/os_unix.c",
+   "line": 778,
+   "message": "Function 'os_free' calls 'abort', which dictates error handling. Application-independent code should report errors to the caller (via return values, error parameters, or error indicators) rather than terminating the program.",
+   "rule_id": "ERR05-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'abort' with error reporting via return value (e.g., 'return ERROR_CODE;'), error parameter (e.g., '*err = ERROR_CODE;'), or global error indicator"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/os_unix.c",
+   "line": 784,
+   "message": "Value assigned to 'a' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  }
+ ]
+}

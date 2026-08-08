@@ -1,0 +1,1052 @@
+{
+ "src/utils/wpabuf.c": [
+  {
+   "column": 4,
+   "file": "src/utils/wpabuf.c",
+   "line": 25,
+   "message": "Scaled integer arithmetic with pointer: '(const u8 *) buf - sizeof(struct wpabuf_trace)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/wpabuf.c",
+   "line": 34,
+   "message": "Potential null pointer dereference in member access of variable 'trace'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'trace' is not NULL before member access"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/wpabuf.c",
+   "line": 43,
+   "message": "Function 'wpabuf_overflow' calls 'abort', which dictates error handling. Application-independent code should report errors to the caller (via return values, error parameters, or error indicators) rather than terminating the program.",
+   "rule_id": "ERR05-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'abort' with error reporting via return value (e.g., 'return ERROR_CODE;'), error parameter (e.g., '*err = ERROR_CODE;'), or global error indicator"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/wpabuf.c",
+   "line": 61,
+   "message": "Potential null pointer dereference in member access of variable 'trace'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'trace' is not NULL before member access"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/wpabuf.c",
+   "line": 65,
+   "message": "Function 'wpabuf_resize' calls 'abort', which dictates error handling. Application-independent code should report errors to the caller (via return values, error parameters, or error indicators) rather than terminating the program.",
+   "rule_id": "ERR05-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'abort' with error reporting via return value (e.g., 'return ERROR_CODE;'), error parameter (e.g., '*err = ERROR_CODE;'), or global error indicator"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/wpabuf.c",
+   "line": 69,
+   "message": "Variable 'buf' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 22,
+   "file": "src/utils/wpabuf.c",
+   "line": 79,
+   "message": "Variable 'trace' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'trace' before use, e.g., at its declaration"
+  },
+  {
+   "column": 5,
+   "file": "src/utils/wpabuf.c",
+   "line": 83,
+   "message": "Function returns without releasing all resources. Leaked: nbuf, nbuf. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 14,
+   "file": "src/utils/wpabuf.c",
+   "line": 86,
+   "message": "Scaled integer arithmetic with pointer: 'nbuf + sizeof(struct wpabuf_trace) +\n\t\t\t\t  sizeof(struct wpabuf)'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 8,
+   "file": "src/utils/wpabuf.c",
+   "line": 91,
+   "message": "Use-after-free: accessing member of freed pointer 'buf'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 5,
+   "file": "src/utils/wpabuf.c",
+   "line": 93,
+   "message": "Function returns without releasing all resources. Leaked: nbuf, nbuf, nbuf. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 4,
+   "file": "src/utils/wpabuf.c",
+   "line": 99,
+   "message": "Local variable 'buf' assigned through pointer parameter - address will be invalid when function returns",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Copy data instead of assigning pointer, or use static/allocated storage"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/wpabuf.c",
+   "line": 104,
+   "message": "Function returns without releasing all resources. Leaked: nbuf, nbuf, nbuf. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpabuf.c",
+   "line": 113,
+   "message": "Function 'wpabuf_alloc' does not validate integer parameter 'len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpabuf.c",
+   "line": 135,
+   "message": "Function 'wpabuf_alloc_ext_data' does not validate pointer parameter 'data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'data' at the start of the function, e.g., 'if (!data) { return error_code; }'"
+  },
+  {
+   "column": 46,
+   "file": "src/utils/wpabuf.c",
+   "line": 160,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/wpabuf.c",
+   "line": 177,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/wpabuf.c",
+   "line": 178,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 5,
+   "file": "src/utils/wpabuf.c",
+   "line": 190,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/wpabuf.c",
+   "line": 193,
+   "message": "Potential null pointer dereference in member access of variable 'trace'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'trace' is not NULL before member access"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/wpabuf.c",
+   "line": 197,
+   "message": "Function 'wpabuf_free' calls 'abort', which dictates error handling. Application-independent code should report errors to the caller (via return values, error parameters, or error indicators) rather than terminating the program.",
+   "rule_id": "ERR05-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'abort' with error reporting via return value (e.g., 'return ERROR_CODE;'), error parameter (e.g., '*err = ERROR_CODE;'), or global error indicator"
+  },
+  {
+   "column": 5,
+   "file": "src/utils/wpabuf.c",
+   "line": 203,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 3,
+   "file": "src/utils/wpabuf.c",
+   "line": 215,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpabuf.c",
+   "line": 221,
+   "message": "Function 'wpabuf_put' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/wpabuf.c",
+   "line": 224,
+   "message": "Potential null pointer dereference in member access of variable 'buf'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'buf' is not NULL before member access"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/wpabuf.c",
+   "line": 228,
+   "message": "Function returns pointer to local variable 'tmp' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpabuf.c",
+   "line": 243,
+   "message": "Value assigned to 'n' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 5,
+   "file": "src/utils/wpabuf.c",
+   "line": 246,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpabuf.c",
+   "line": 279,
+   "message": "Function 'wpabuf_zeropad' does not validate integer parameter 'len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 5,
+   "file": "src/utils/wpabuf.c",
+   "line": 284,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/wpabuf.c",
+   "line": 298,
+   "message": "Function returns pointer to local variable 'ret' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpabuf.c",
+   "line": 302,
+   "message": "Function 'wpabuf_printf' should be declared static if it doesn't need external linkage",
+   "rule_id": "DCL15-C",
+   "severity": "Low",
+   "suggestion": "Add 'static' storage-class specifier: static void wpabuf_printf"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/wpabuf.c",
+   "line": 309,
+   "message": "Return value of 'vsnprintf' assigned to 'res' but not checked for errors: 'vsnprintf(tmp, buf->size - buf->used, fmt, ap)' - Can return error indicator",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check return value for errors"
+  },
+  {
+   "column": 6,
+   "file": "src/utils/wpabuf.c",
+   "line": 330,
+   "message": "Variable 'len' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/wpabuf.c",
+   "line": 343,
+   "message": "Function returns pointer to local variable 'ret' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 24,
+   "file": "src/utils/wpabuf.c",
+   "line": 351,
+   "message": "Dereference of uninitialized pointer 'wa'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'wa' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/wpabuf.c",
+   "line": 352,
+   "message": "Function returns pointer to local variable 'wa' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/utils/wpabuf.c",
+   "line": 362,
+   "message": "Loop uses uninitialized variable 'idx' as bound for array access. This has indeterminate value and can cause out-of-bounds access.",
+   "rule_id": "ARR00-C",
+   "severity": "Medium",
+   "suggestion": "Initialize 'idx' to a valid value before using it in the loop"
+  },
+  {
+   "column": 1,
+   "file": "src/utils/wpabuf.c",
+   "line": 384,
+   "message": "Function 'wpabuf_array_remove' does not validate integer parameter 'idx' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'idx' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  }
+ ],
+ "src/wps/wps.c": [
+  {
+   "column": 4,
+   "file": "src/wps/wps.c",
+   "line": 77,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 14,
+   "file": "src/wps/wps.c",
+   "line": 111,
+   "message": "Variable 'attr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'attr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 4,
+   "file": "src/wps/wps.c",
+   "line": 127,
+   "message": "Double-free: 'data->dev_password_len' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps.c",
+   "line": 159,
+   "message": "Function 'wps_deinit' does not validate pointer parameter 'data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'data' at the start of the function, e.g., 'if (!data) { return error_code; }'"
+  },
+  {
+   "column": 9,
+   "file": "src/wps/wps.c",
+   "line": 173,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 40,
+   "file": "src/wps/wps.c",
+   "line": 184,
+   "message": "sizeof applied to pointer/array parameter 'data' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*data->new_ap_settings)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 7,
+   "file": "src/wps/wps.c",
+   "line": 248,
+   "message": "Variable 'attr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'attr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 60,
+   "file": "src/wps/wps.c",
+   "line": 264,
+   "message": "Pointer parameter 'attr' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *attr'"
+  },
+  {
+   "column": 6,
+   "file": "src/wps/wps.c",
+   "line": 301,
+   "message": "Passing pointer to uninitialized variable 'attr' to 'wps_parse_msg' which reads the value",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'attr' before passing its address to 'wps_parse_msg'"
+  },
+  {
+   "column": 7,
+   "file": "src/wps/wps.c",
+   "line": 327,
+   "message": "Variable 'attr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'attr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 18,
+   "file": "src/wps/wps.c",
+   "line": 339,
+   "message": "Floating-point division without error checking (consider using feclearexcept/fetestexcept)",
+   "rule_id": "FLP03-C",
+   "severity": "Low",
+   "suggestion": "Use feclearexcept(FE_ALL_EXCEPT) before and fetestexcept(FE_ALL_EXCEPT) after floating-point operations"
+  },
+  {
+   "column": 10,
+   "file": "src/wps/wps.c",
+   "line": 366,
+   "message": "Variable 'attr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'attr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 9,
+   "file": "src/wps/wps.c",
+   "line": 395,
+   "message": "Variable 'attr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'attr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 9,
+   "file": "src/wps/wps.c",
+   "line": 408,
+   "message": "Variable 'attr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'attr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps.c",
+   "line": 443,
+   "message": "Function returns pointer to local variable 'ie' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/wps/wps.c",
+   "line": 477,
+   "message": "Function returns pointer to local variable 'ie' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 7,
+   "file": "src/wps/wps.c",
+   "line": 505,
+   "message": "Memory allocated with 'wpabuf_alloc' for variable 'ie' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(ie)' before the variable goes out of scope"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps.c",
+   "line": 535,
+   "message": "Function 'wps_free_pending_msgs' does not validate pointer parameter 'msgs' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'msgs' at the start of the function, e.g., 'if (!msgs) { return error_code; }'"
+  },
+  {
+   "column": 56,
+   "file": "src/wps/wps.c",
+   "line": 535,
+   "message": "Pointer parameter 'msgs' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *msgs'"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps.c",
+   "line": 548,
+   "message": "Function 'wps_attr_text' does not validate pointer parameter 'buf' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'buf' at the start of the function, e.g., 'if (!buf) { return error_code; }'"
+  },
+  {
+   "column": 56,
+   "file": "src/wps/wps.c",
+   "line": 548,
+   "message": "Pointer parameter 'end' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *end'"
+  },
+  {
+   "column": 6,
+   "file": "src/wps/wps.c",
+   "line": 557,
+   "message": "Variable 'attr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'attr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 27,
+   "file": "src/wps/wps.c",
+   "line": 559,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 27,
+   "file": "src/wps/wps.c",
+   "line": 562,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 25,
+   "file": "src/wps/wps.c",
+   "line": 566,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 26,
+   "file": "src/wps/wps.c",
+   "line": 572,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 25,
+   "file": "src/wps/wps.c",
+   "line": 574,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 26,
+   "file": "src/wps/wps.c",
+   "line": 580,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 25,
+   "file": "src/wps/wps.c",
+   "line": 582,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 26,
+   "file": "src/wps/wps.c",
+   "line": 588,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 25,
+   "file": "src/wps/wps.c",
+   "line": 591,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 26,
+   "file": "src/wps/wps.c",
+   "line": 597,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 25,
+   "file": "src/wps/wps.c",
+   "line": 601,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 26,
+   "file": "src/wps/wps.c",
+   "line": 608,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 25,
+   "file": "src/wps/wps.c",
+   "line": 613,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 26,
+   "file": "src/wps/wps.c",
+   "line": 631,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 25,
+   "file": "src/wps/wps.c",
+   "line": 633,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 26,
+   "file": "src/wps/wps.c",
+   "line": 639,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  },
+  {
+   "column": 25,
+   "file": "src/wps/wps.c",
+   "line": 642,
+   "message": "Pointer subtraction between pointers from different arrays: 'param:end' and 'param:buf'",
+   "rule_id": "ARR36-C",
+   "severity": "High",
+   "suggestion": "Ensure both pointers refer to the same array before subtraction"
+  }
+ ],
+ "hostapd/sae_pk_gen.c": [
+  {
+   "column": 1,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 17,
+   "message": "Function 'main' does not validate pointer parameter 'argv' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'argv' at the start of the function, e.g., 'if (!argv) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 28,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 29,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 29,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 30,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 35,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 10,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 43,
+   "message": "Function 'fprintf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 8,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 48,
+   "message": "Use of 'atoi' which lacks error checking - prefer 'strtol'",
+   "rule_id": "ERR07-C",
+   "severity": "Medium",
+   "suggestion": "Replace 'atoi' with 'strtol': strtol provides error indication and prevents undefined behavior on overflow"
+  },
+  {
+   "column": 8,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 48,
+   "message": "Use of 'atoi()' for string-to-number conversion lacks error detection. Use strtol/strtoul family with error checking",
+   "rule_id": "ERR34-C",
+   "severity": "High",
+   "suggestion": "Replace atoi() with strtol/strtoul family and check errno, end pointer, and range"
+  },
+  {
+   "column": 10,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 50,
+   "message": "Function 'fprintf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 10,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 61,
+   "message": "Function 'fprintf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 13,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 62,
+   "message": "Call to non-thread-safe function 'strerror'. Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting",
+   "rule_id": "CON33-C",
+   "severity": "Medium",
+   "suggestion": "Use strerror_r() (POSIX) or strerror_s() (C11 Annex K) for thread-safe error reporting"
+  },
+  {
+   "column": 13,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 62,
+   "message": "'strerror()' uses internal static storage that is shared between threads",
+   "rule_id": "CON34-C",
+   "severity": "Medium",
+   "suggestion": "Use 'strerror_r' instead for thread safety"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 106,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 115,
+   "message": "Variable 'hash' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 12,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 116,
+   "message": "Function 'fprintf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 6,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 117,
+   "message": "Type mismatch in variadic function call: format specifier '%3.2f' expects double but argument 1 is long",
+   "rule_id": "DCL11-C",
+   "severity": "High",
+   "suggestion": "Use correct format specifier for long or cast argument to double"
+  },
+  {
+   "column": 6,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 117,
+   "message": "Floating-point division without error checking (consider using feclearexcept/fetestexcept)",
+   "rule_id": "FLP03-C",
+   "severity": "Low",
+   "suggestion": "Use feclearexcept(FE_ALL_EXCEPT) before and fetestexcept(FE_ALL_EXCEPT) after floating-point operations"
+  },
+  {
+   "column": 14,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 117,
+   "message": "Floating-point conversion to 'double' without range checking",
+   "rule_id": "FLP34-C",
+   "severity": "Medium",
+   "suggestion": "Check for isnan(), compare with FLT_MAX/FLT_MIN or DBL_MAX/DBL_MIN before conversion"
+  },
+  {
+   "column": 27,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 117,
+   "message": "Floating-point conversion to 'double' without range checking",
+   "rule_id": "FLP34-C",
+   "severity": "Medium",
+   "suggestion": "Check for isnan(), compare with FLT_MAX/FLT_MIN or DBL_MAX/DBL_MIN before conversion"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 131,
+   "message": "Format specifier '%llu' makes assumptions about type sizes - violates data model assumptions",
+   "rule_id": "INT00-C",
+   "severity": "Medium",
+   "suggestion": "Use correct format specifier or verify data model assumptions with static assertions"
+  },
+  {
+   "column": 9,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 131,
+   "message": "Function 'fprintf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+   "rule_id": "PRE32-C",
+   "severity": "High",
+   "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 138,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'pos' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 138,
+   "message": "Manual string copying loop without apparent bounds checking detected.",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Add explicit bounds checking or use standard string functions with size limits"
+  },
+  {
+   "column": 4,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 140,
+   "message": "Direct assignment of flexible array structure instances. Use memcpy() for dynamic copying.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Use memcpy() to copy the structure and its flexible array member"
+  },
+  {
+   "column": 4,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 140,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 13,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 140,
+   "message": "Pointer dereference '*src' (char type) assigned to larger type without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment: (unsigned char)*ptr"
+  },
+  {
+   "column": 13,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 140,
+   "message": "Pointer dereference '*src' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 143,
+   "message": "Potential null pointer dereference of variable 'pos'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'pos' is not NULL before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 143,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 12,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 151,
+   "message": "Do not assume constant values in expressions: 'sec_1b << 19'",
+   "rule_id": "EXP07-C",
+   "severity": "Low",
+   "suggestion": "Use the constant identifier directly instead of assuming its numeric value"
+  },
+  {
+   "column": 7,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 154,
+   "message": "Variable 'j' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 14,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 160,
+   "message": "Do not assume constant values in expressions: 'val20 >> 12'",
+   "rule_id": "EXP07-C",
+   "severity": "Low",
+   "suggestion": "Use the constant identifier directly instead of assuming its numeric value"
+  },
+  {
+   "column": 12,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 162,
+   "message": "Output operation on file stream 'val20' follows input without intervening positioning call (fseek, fsetpos, or rewind)",
+   "rule_id": "FIO50-C",
+   "severity": "Low",
+   "suggestion": "Insert a positioning function (fseek, fsetpos, rewind) between input and output operations, unless input encountered EOF"
+  },
+  {
+   "column": 12,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 162,
+   "message": "Output operation on file stream 'val20' follows input without intervening positioning call (fseek, fsetpos, or rewind)",
+   "rule_id": "FIO50-C",
+   "severity": "Low",
+   "suggestion": "Insert a positioning function (fseek, fsetpos, rewind) between input and output operations, unless input encountered EOF"
+  },
+  {
+   "column": 50,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 175,
+   "message": "Type mismatch in variadic function call: format specifier '%s' expects char* but argument 3 is NULL",
+   "rule_id": "DCL11-C",
+   "severity": "High",
+   "suggestion": "Use correct format specifier for NULL or cast argument to char*"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 191,
+   "message": "Double free detected: 'pw' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/sae_pk_gen.c",
+   "line": 195,
+   "message": "main() returns without calling fclose(stdout) - data may be unflushed",
+   "rule_id": "FIO23-C",
+   "severity": "Medium",
+   "suggestion": "Call fclose(stdout) before return to ensure data is flushed"
+  }
+ ]
+}

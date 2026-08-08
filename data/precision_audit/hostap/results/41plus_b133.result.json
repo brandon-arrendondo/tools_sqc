@@ -1,0 +1,1219 @@
+{
+ "labels": [
+  {
+   "rule": "CON03-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 43,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No-pthread eloop-only codebase; static tls_ref_count/tls_global/counter class (categorical_patterns.md)"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 72,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No-pthread eloop-only codebase; static tls_ref_count/tls_global/counter class (categorical_patterns.md)"
+  },
+  {
+   "rule": "API01-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 91,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Struct-layout API01-C categorical FP; client/server_random written bounded via sizeof(field)"
+  },
+  {
+   "rule": "API01-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 92,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Struct-layout API01-C categorical FP; client/server_random written bounded via sizeof(field)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 161,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed wolfSSL I/O/session/OCSP callback prototype; const-qualifying breaks registration"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 186,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed wolfSSL I/O/session/OCSP callback prototype; const-qualifying breaks registration"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 207,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed wolfSSL I/O/session/OCSP callback prototype; const-qualifying breaks registration"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 312,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Guard-clause/default-no-op shape; missing branch intentionally means no state change"
+  },
+  {
+   "rule": "INT08-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 376,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ecc_key_sz only ever assigned small compile-time literals (128/256/384); /8 cannot overflow short"
+  },
+  {
+   "rule": "INT08-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 378,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ecc_key_sz only ever assigned small compile-time literals (128/256/384); /8 cannot overflow short"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 408,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Ownership persists at module scope (tls_global) or is freed via tls_deinit/tls_connection_deinit later"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 408,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Ownership persists at module scope (tls_global) or is freed via tls_deinit/tls_connection_deinit later"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 413,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Local pointer variable references heap storage (os_zalloc/wolfSSL_CTX_new/wpabuf_alloc), not automatic storage"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 413,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "context is heap-allocated (tls_context_new/os_zalloc), not a stack pointer escape"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 425,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wolfSSL library function declared in wolfssl/ssl.h; DCL31-C system-header class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 432,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls_global is a module static consumed by later tls_init/tls_deinit calls, not dead"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 436,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wolfSSL library function declared in wolfssl/ssl.h; DCL31-C system-header class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 437,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wolfSSL library function declared in wolfssl/ssl.h; DCL31-C system-header class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 459,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Ownership persists at module scope (tls_global) or is freed via tls_deinit/tls_connection_deinit later"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 459,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Ownership persists at module scope (tls_global) or is freed via tls_deinit/tls_connection_deinit later"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 463,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Local pointer variable references heap storage (os_zalloc/wolfSSL_CTX_new/wpabuf_alloc), not automatic storage"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 463,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Ownership persists at module scope (tls_global) or is freed via tls_deinit/tls_connection_deinit later"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 481,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls_context_free has its own internal `if (context)` NULL guard"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 482,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls_global is a module static consumed by later tls_init/tls_deinit calls, not dead"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 487,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 512,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "conn is being assigned via os_zalloc on this line, not dereferenced; NULL-checked before first deref"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 515,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Ownership persists at module scope (tls_global) or is freed via tls_deinit/tls_connection_deinit later"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 532,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Local pointer variable references heap storage (os_zalloc/wolfSSL_CTX_new/wpabuf_alloc), not automatic storage"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 532,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Ownership persists at module scope (tls_global) or is freed via tls_deinit/tls_connection_deinit later"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 536,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 557,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Body is `return conn ? ... : 0;` -- ternary NULL guard literally present; factually wrong finding"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 557,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 557,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 563,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 564,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 571,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 571,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 647,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Static internal helper, param genuinely unmodified; not a pinned vtable/tls.h contract"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 648,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 703,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 704,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Static internal helper, param genuinely unmodified; not a pinned vtable/tls.h contract"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 705,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 706,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP"
+  },
+  {
+   "rule": "MEM03-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 711,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "passwd is an os_strdup'd private-key passphrase, os_free'd without zeroing; genuine (low-severity) sensitive-data-not-cleared gap"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 782,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 851,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 851,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP"
+  },
+  {
+   "rule": "INT00-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 874,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Guarded earlier in the same function: `if (match_len > len ...) return 0;` precedes the subtraction"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 882,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 902,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Args are pure accessor calls (ASN1_STRING_data/length, wpabuf_head/len/mhead/size); no real side effects to unsequence"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 905,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "domain_suffix_match is a local static function whose body provably returns only 0 or 1"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 926,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cn assigned then NULL-checked (`if (!cn) continue;`) immediately before any use"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 939,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "domain_suffix_match is a local static function whose body provably returns only 0 or 1"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1035,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Misattributes a pointer parameter/`\\0` literal assignment as a scalar char-widening conversion; no such conversion exists at this line"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1178,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Static internal helper, param genuinely unmodified; not a pinned vtable/tls.h contract"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1184,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "cert=NULL immediately overwritten before any read; genuine harmless dead init"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1225,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Guard-clause/default-no-op shape; missing branch intentionally means no state change"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1234,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "EXP39-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1257,
+   "verdict": "FP",
+   "confidence": "low",
+   "reason": "Unclassified rule; defaulting per batch review"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1262,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Misapplied to a 1-element pointer/size array (`const u8 *addr[1]`/`size_t len[1]`), not a char array"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1263,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Misapplied to a 1-element pointer/size array (`const u8 *addr[1]`/`size_t len[1]`), not a char array"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1279,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos assigned via os_malloc immediately after declaration; no use precedes the assignment"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1283,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`ext` is declared plain `void *ext;` (not const-qualified); nothing is actually cast away"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1311,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Args are pure accessor calls (ASN1_STRING_data/length, wpabuf_head/len/mhead/size); no real side effects to unsequence"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1314,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Misattributes a pointer parameter/`\\0` literal assignment as a scalar char-widening conversion; no such conversion exists at this line"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1365,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Guard-clause/default-no-op shape; missing branch intentionally means no state change"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1404,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Misapplied to a 1-element pointer/size array (`const u8 *addr[1]`/`size_t len[1]`), not a char array"
+  },
+  {
+   "rule": "STR31-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1405,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Misapplied to a 1-element pointer/size array (`const u8 *addr[1]`/`size_t len[1]`), not a char array"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1414,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Guard-clause/default-no-op shape; missing branch intentionally means no state change"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1481,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Guard-clause/default-no-op shape; missing branch intentionally means no state change"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1513,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1514,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1516,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP"
+  },
+  {
+   "rule": "CON32-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1521,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in file; single-threaded eloop model, bit-field access class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1521,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in file; single-threaded eloop model, bit-field access class"
+  },
+  {
+   "rule": "CON32-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1526,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in file; single-threaded eloop model, bit-field access class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1526,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in file; single-threaded eloop model, bit-field access class"
+  },
+  {
+   "rule": "CON32-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1527,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in file; single-threaded eloop model, bit-field access class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1527,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in file; single-threaded eloop model, bit-field access class"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1531,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ca_cert guarded non-NULL by the same `ca_cert &&` short-circuit in the flagged expression"
+  },
+  {
+   "rule": "CON32-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1554,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in file; single-threaded eloop model, bit-field access class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1554,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in file; single-threaded eloop model, bit-field access class"
+  },
+  {
+   "rule": "CON32-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1606,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in file; single-threaded eloop model, bit-field access class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1606,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in file; single-threaded eloop model, bit-field access class"
+  },
+  {
+   "rule": "MEM03-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1779,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "passwd is an os_strdup'd private-key passphrase, os_free'd without zeroing; genuine (low-severity) sensitive-data-not-cleared gap"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1837,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed wolfSSL I/O/session/OCSP callback prototype; const-qualifying breaks registration"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1838,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed wolfSSL I/O/session/OCSP callback prototype; const-qualifying breaks registration"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1864,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Body is `os_free(response);`; os_free(NULL) is safe, no check needed"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1864,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Fixed wolfSSL I/O/session/OCSP callback prototype; const-qualifying breaks registration"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 1882,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "context is set by tls_init's ex_data contract for any valid tls_ctx reaching this internal API"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2010,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal tls.h-contract API; NULL forwarded safely to callee or guaranteed valid by tls_init lifecycle"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2010,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage in file; single-threaded eloop model, static counter class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2010,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2014,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No-pthread eloop-only codebase; static tls_ref_count/tls_global/counter class (categorical_patterns.md)"
+  },
+  {
+   "rule": "CON32-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2024,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in file; single-threaded eloop model, bit-field access class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2024,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in file; single-threaded eloop model, bit-field access class"
+  },
+  {
+   "rule": "CON32-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2029,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in file; single-threaded eloop model, bit-field access class"
+  },
+  {
+   "rule": "POS49-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2029,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage anywhere in file; single-threaded eloop model, bit-field access class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2126,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Static internal helper, param genuinely unmodified; not a pinned vtable/tls.h contract"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2135,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Args are pure accessor calls (ASN1_STRING_data/length, wpabuf_head/len/mhead/size); no real side effects to unsequence"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2188,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Local pointer variable references heap storage (os_zalloc/wolfSSL_CTX_new/wpabuf_alloc), not automatic storage"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2192,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal tls.h-contract API; NULL forwarded safely to callee or guaranteed valid by tls_init lifecycle"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2192,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2201,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal tls.h-contract API; NULL forwarded safely to callee or guaranteed valid by tls_init lifecycle"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2201,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal tls.h-contract API; NULL forwarded safely to callee or guaranteed valid by tls_init lifecycle"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2201,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal tls.h-contract API; NULL forwarded safely to callee or guaranteed valid by tls_init lifecycle"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2201,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2210,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2223,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Args are pure accessor calls (ASN1_STRING_data/length, wpabuf_head/len/mhead/size); no real side effects to unsequence"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2238,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2262,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Args are pure accessor calls (ASN1_STRING_data/length, wpabuf_head/len/mhead/size); no real side effects to unsequence"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2272,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Local pointer variable references heap storage (os_zalloc/wolfSSL_CTX_new/wpabuf_alloc), not automatic storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2276,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2276,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2282,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2282,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2283,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2298,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Sentinel-terminated scan: tls.h documents cipher array as TLS_CIPHER_NONE-terminated"
+  },
+  {
+   "rule": "CON43-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2301,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "switch on a dereferenced local scan pointer in a single-threaded, no-pthread codebase"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2351,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2351,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2351,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2352,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2372,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2373,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2380,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2380,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2389,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2389,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2399,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2400,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2411,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal tls.h-contract API; NULL forwarded safely to callee or guaranteed valid by tls_init lifecycle"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2411,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2417,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2417,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2417,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2418,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2434,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2445,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*keys) pointee-dereference idiom / sizeof on real fixed-size struct-member arrays (client_random/server_random)"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2448,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*keys) pointee-dereference idiom / sizeof on real fixed-size struct-member arrays (client_random/server_random)"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2451,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*keys) pointee-dereference idiom / sizeof on real fixed-size struct-member arrays (client_random/server_random)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2457,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2457,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2457,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2458,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2481,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal tls.h-contract API; NULL forwarded safely to callee or guaranteed valid by tls_init lifecycle"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2481,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic T*ptr,size_t len companion-pointer convention; categorical API05-C FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2481,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2481,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tls.h multi-backend public API contract (shared verbatim across TLS backends); confirmed class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 2485,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ret=-1 init always overwritten before its one read; matches established dead-init TP class"
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/crypto/tls_wolfssl.c",
+   "line": 416,
+   "rule": "MEM31-C",
+   "desc": "tls_init(): on the first-ever call (tls_ref_count==0), 'tls_global = context;' runs at line 413 before wolfSSL_Init() is checked at 415-416; if wolfSSL_Init() < 0, the function returns NULL without freeing context/tls_global and without incrementing tls_ref_count. The tls_context_new()-allocated context is leaked, and tls_global is left pointing at an orphaned, uncounted context (a later successful tls_init() call re-enters the tls_ref_count==0 branch and overwrites tls_global, permanently losing the reference). Not caught by sqc in this batch (no finding at line 416).",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 8,
+  "fp": 142,
+  "fn": 1
+ }
+}

@@ -1,0 +1,1219 @@
+{
+ "labels": [
+  {
+   "rule": "CON03-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 27,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage in file; single-threaded eloop CLI, established no-pthread CON03-C FP class"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 28,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage in file; single-threaded eloop CLI, established no-pthread CON03-C FP class"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 36,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage in file; single-threaded eloop CLI, established no-pthread CON03-C FP class"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 39,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage in file; single-threaded eloop CLI, established no-pthread CON03-C FP class"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 40,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage in file; single-threaded eloop CLI, established no-pthread CON03-C FP class"
+  },
+  {
+   "rule": "CON02-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 40,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "interactive is a mode flag, not a sync primitive; no pthread in file"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 41,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage in file; single-threaded eloop CLI, established no-pthread CON03-C FP class"
+  },
+  {
+   "rule": "API02-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 45,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "print_help(FILE*, const char *cmd) has no array param; cmd is a NUL-terminated string, not an array needing a size arg"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 55,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "usage() builds one literal via string concat with #ifdef fragments resolved by preprocessor before the fprintf call; fprintf is an ordinary function, not a macro (established #ifdef-fragmented-literal FP class)"
+  },
+  {
+   "rule": "FIO30-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 56,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Compile-time literal (with #ifdef fragments), not user input, passed correctly as format string"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 56,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same established #ifdef-fragmented-literal-in-fprintf FP class as line 55/61"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 61,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "usage() builds one literal via string concat with #ifdef fragments resolved by preprocessor before the fprintf call; fprintf is an ordinary function, not a macro (established #ifdef-fragmented-literal FP class)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 92,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "static struct wpa_ctrl *ctrl_conn has no initializer; C 6.7.9p10 guarantees NULL zero-init, so a NULL/!ctrl_conn check is well-defined, not an uninitialized read"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 103,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage in file; single-threaded eloop CLI, established no-pthread compound-op FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 105,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "static struct wpa_ctrl *ctrl_conn has no initializer; C 6.7.9p10 guarantees NULL zero-init, so a NULL/!ctrl_conn check is well-defined, not an uninitialized read"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 109,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "event_handler_registered is a static global read by later calls to (un)register_event_handler; not dead, just outside this call"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 114,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd_cli_open_connection: both the #ifdef CONFIG_CTRL_IFACE_UDP branch and the #else branch return on every path; preprocessor-branch-blind MSC37-C FP class"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 121,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Established MEM10-C stylistic \"use a validation function\" FP class; ordinary NULL check is idiomatic C"
+  },
+  {
+   "rule": "STR01-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 129,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Compares unrelated variables in different functions (cfile here vs. an unrelated local buf[4096] in _wpa_ctrl_command at line 203); not a real mixed-management pattern"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 129,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cfile is checked for NULL on the very next line (130)"
+  },
+  {
+   "rule": "MEM02-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 129,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Casting the return of malloc() is not required and is discouraged in modern C; stylistic non-issue"
+  },
+  {
+   "rule": "ERR00-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 129,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cfile is checked for NULL on the very next line (130)"
+  },
+  {
+   "rule": "MEM04-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 129,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "flen = strlen(ctrl_iface_dir)+strlen(ifname)+2 is provably >=2; can never be zero"
+  },
+  {
+   "rule": "MEM06-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 129,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cfile only ever holds a directory/socket path string, not sensitive data (password/key material)"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 131,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "This return path is taken only when malloc(flen) failed (cfile==NULL, nothing to free); ctrl_conn is untouched by this function up to this point"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 132,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "flen is computed to exactly match strlen(ctrl_iface_dir)+1+strlen(ifname)+1, so this snprintf can never truncate"
+  },
+  {
+   "rule": "STR03-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 132,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same exact-fit sizing as the paired ERR33-C finding; truncation is impossible by construction"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 132,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No cast is present in the source at this call at all; ctrl_iface_dir is passed as a plain const char* vararg to snprintf, factually wrong finding"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 137,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Misattributed: line is a free(cfile) call, not an assignment; cfile is read/used at 132/136/141 and is not overwritten before those reads"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 138,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "This early return (client_socket_dir access() failure) happens before ctrl_conn is ever touched in this function; nothing to leak"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 141,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "client_socket_dir==NULL is an explicitly supported value: wpa_ctrl_open() itself calls wpa_ctrl_open2(ctrl_path, NULL) (wpa_ctrl.c:90)"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 142,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Misattributed: line is a free(cfile) call, not an assignment; cfile is read/used at 132/136/141 and is not overwritten before those reads"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 143,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctrl_conn is the functions own return value (ownership transferred to the caller/global), not a leak; established MEM12 ownership-transfer-on-return FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 150,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "static struct wpa_ctrl *ctrl_conn has no initializer; C 6.7.9p10 guarantees NULL zero-init, so a NULL/!ctrl_conn check is well-defined, not an uninitialized read"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 156,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd_cli_attached is a static global consumed by later invocations (e.g. hostapd_cli_close_connection/reconnect); not dead"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 159,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctrl_conn=NULL after wpa_ctrl_close is a defensive null-out of a static global read by later calls/functions, not dead code"
+  },
+  {
+   "rule": "CON07-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 163,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No pthread usage in file; single-threaded eloop CLI, established no-pthread compound-op FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 174,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "next_ctrl_ifname is heap memory from os_strdup(), not automatic/stack storage; established local-var-vs-heap-storage DCL30-C confusion class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 194,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size/len companion-parameter C convention (msg/len, addr/addr_len, ctrl/cmd), established categorical API05-C FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 207,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "static struct wpa_ctrl *ctrl_conn has no initializer; C 6.7.9p10 guarantees NULL zero-init, so a NULL/!ctrl_conn check is well-defined, not an uninitialized read"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 217,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Guard-clause shape: both branches return, no final else needed; established MSC01-C pedantry class"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 222,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf[len]='\\0' where len is the out-param of wpa_ctrl_request, bounded by the in-value sizeof(buf)-1; established recv/request length-cap FP family"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 223,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf/addr are char arrays that decay to a pointer for %s; engine Integer-vs-Pointer classification is simply wrong, established FIO47-C misidentification class"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 241,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No #if/#ifdef/#endif token appears anywhere in or near this printf call; phantom PRE32-C finding"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 251,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Handler function registered in hostapd_cli_commands[] dispatch table with fixed signature int(*)(struct wpa_ctrl*, int, char*argv[]); const-qualifying would break the vtable match"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 257,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Handler function registered in hostapd_cli_commands[] dispatch table with fixed signature int(*)(struct wpa_ctrl*, int, char*argv[]); const-qualifying would break the vtable match"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 264,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Handler function registered in hostapd_cli_commands[] dispatch table with fixed signature int(*)(struct wpa_ctrl*, int, char*argv[]); const-qualifying would break the vtable match"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 270,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Handler function registered in hostapd_cli_commands[] dispatch table with fixed signature int(*)(struct wpa_ctrl*, int, char*argv[]); const-qualifying would break the vtable match"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 278,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Handler function registered in hostapd_cli_commands[] dispatch table with fixed signature int(*)(struct wpa_ctrl*, int, char*argv[]); const-qualifying would break the vtable match"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 308,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size/len companion-parameter C convention (msg/len, addr/addr_len, ctrl/cmd), established categorical API05-C FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 308,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hostapd_cli_action_process is a plain internal helper (not itself registered as a callback); msg is genuinely never modified and is only forwarded to cli_event(const char*), so const is a real if low-value opportunity"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 325,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size/len companion-parameter C convention (msg/len, addr/addr_len, ctrl/cmd), established categorical API05-C FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 331,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Handler function registered in hostapd_cli_commands[] dispatch table with fixed signature int(*)(struct wpa_ctrl*, int, char*argv[]); const-qualifying would break the vtable match"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 335,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain concatenated string-literal printf call with zero preprocessor tokens anywhere in the call; phantom PRE32-C finding, established class"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 335,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain concatenated string-literal printf call with zero preprocessor tokens anywhere in the call; phantom PRE32-C finding, established class"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 340,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "snprintf return genuinely never checked/consulted anywhere in the function for a fixed-size buffer receiving free-form user-typed CLI argv text; low real-world severity (local admin CLI) but a real unchecked-truncation gap"
+  },
+  {
+   "rule": "STR03-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 340,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Same unchecked-truncation gap: no os_snprintf_error()-style guard exists for these free-form argv-derived command strings"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 342,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "snprintf return genuinely never checked/consulted anywhere in the function for a fixed-size buffer receiving free-form user-typed CLI argv text; low real-world severity (local admin CLI) but a real unchecked-truncation gap"
+  },
+  {
+   "rule": "STR03-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 342,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Same unchecked-truncation gap: no os_snprintf_error()-style guard exists for these free-form argv-derived command strings"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 349,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "str is a const char* parameter merely forwarded into get_cmd_arg_num(str,pos); no scalar char-to-int widening occurs, established STR34-C pointer-forwarding misattribution"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 363,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Handler function registered in hostapd_cli_commands[] dispatch table with fixed signature int(*)(struct wpa_ctrl*, int, char*argv[]); const-qualifying would break the vtable match"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 367,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain concatenated string-literal printf call with zero preprocessor tokens anywhere in the call; phantom PRE32-C finding, established class"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 367,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain concatenated string-literal printf call with zero preprocessor tokens anywhere in the call; phantom PRE32-C finding, established class"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 371,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "snprintf return genuinely never checked/consulted anywhere in the function for a fixed-size buffer receiving free-form user-typed CLI argv text; low real-world severity (local admin CLI) but a real unchecked-truncation gap"
+  },
+  {
+   "rule": "STR03-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 371,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Same unchecked-truncation gap: no os_snprintf_error()-style guard exists for these free-form argv-derived command strings"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 377,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Handler function registered in hostapd_cli_commands[] dispatch table with fixed signature int(*)(struct wpa_ctrl*, int, char*argv[]); const-qualifying would break the vtable match"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 381,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain concatenated string-literal printf call with zero preprocessor tokens anywhere in the call; phantom PRE32-C finding, established class"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 381,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain concatenated string-literal printf call with zero preprocessor tokens anywhere in the call; phantom PRE32-C finding, established class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 395,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Handler function registered in hostapd_cli_commands[] dispatch table with fixed signature int(*)(struct wpa_ctrl*, int, char*argv[]); const-qualifying would break the vtable match"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 399,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain concatenated string-literal printf call with zero preprocessor tokens anywhere in the call; phantom PRE32-C finding, established class"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 399,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain concatenated string-literal printf call with zero preprocessor tokens anywhere in the call; phantom PRE32-C finding, established class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 414,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Handler function registered in hostapd_cli_commands[] dispatch table with fixed signature int(*)(struct wpa_ctrl*, int, char*argv[]); const-qualifying would break the vtable match"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 429,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Handler function registered in hostapd_cli_commands[] dispatch table with fixed signature int(*)(struct wpa_ctrl*, int, char*argv[]); const-qualifying would break the vtable match"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 433,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain concatenated string-literal printf call with zero preprocessor tokens anywhere in the call; phantom PRE32-C finding, established class"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 433,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain concatenated string-literal printf call with zero preprocessor tokens anywhere in the call; phantom PRE32-C finding, established class"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 437,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "snprintf return genuinely never checked/consulted anywhere in the function for a fixed-size buffer receiving free-form user-typed CLI argv text; low real-world severity (local admin CLI) but a real unchecked-truncation gap"
+  },
+  {
+   "rule": "STR03-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 437,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Same unchecked-truncation gap: no os_snprintf_error()-style guard exists for these free-form argv-derived command strings"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 444,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Handler function registered in hostapd_cli_commands[] dispatch table with fixed signature int(*)(struct wpa_ctrl*, int, char*argv[]); const-qualifying would break the vtable match"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 448,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain concatenated string-literal printf call with zero preprocessor tokens anywhere in the call; phantom PRE32-C finding, established class"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 448,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain concatenated string-literal printf call with zero preprocessor tokens anywhere in the call; phantom PRE32-C finding, established class"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 453,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "snprintf return genuinely never checked/consulted anywhere in the function for a fixed-size buffer receiving free-form user-typed CLI argv text; low real-world severity (local admin CLI) but a real unchecked-truncation gap"
+  },
+  {
+   "rule": "STR03-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 453,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Same unchecked-truncation gap: no os_snprintf_error()-style guard exists for these free-form argv-derived command strings"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 456,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "snprintf return genuinely never checked/consulted anywhere in the function for a fixed-size buffer receiving free-form user-typed CLI argv text; low real-world severity (local admin CLI) but a real unchecked-truncation gap"
+  },
+  {
+   "rule": "STR03-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 456,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Same unchecked-truncation gap: no os_snprintf_error()-style guard exists for these free-form argv-derived command strings"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 459,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "snprintf return genuinely never checked/consulted anywhere in the function for a fixed-size buffer receiving free-form user-typed CLI argv text; low real-world severity (local admin CLI) but a real unchecked-truncation gap"
+  },
+  {
+   "rule": "STR03-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 459,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Same unchecked-truncation gap: no os_snprintf_error()-style guard exists for these free-form argv-derived command strings"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 465,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Handler function registered in hostapd_cli_commands[] dispatch table with fixed signature int(*)(struct wpa_ctrl*, int, char*argv[]); const-qualifying would break the vtable match"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 471,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain concatenated string-literal printf call with zero preprocessor tokens anywhere in the call; phantom PRE32-C finding, established class"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 471,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain concatenated string-literal printf call with zero preprocessor tokens anywhere in the call; phantom PRE32-C finding, established class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 491,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Handler function registered in hostapd_cli_commands[] dispatch table with fixed signature int(*)(struct wpa_ctrl*, int, char*argv[]); const-qualifying would break the vtable match"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 498,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Handler function registered in hostapd_cli_commands[] dispatch table with fixed signature int(*)(struct wpa_ctrl*, int, char*argv[]); const-qualifying would break the vtable match"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 506,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Handler function registered in hostapd_cli_commands[] dispatch table with fixed signature int(*)(struct wpa_ctrl*, int, char*argv[]); const-qualifying would break the vtable match"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 513,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain concatenated string-literal printf call with zero preprocessor tokens anywhere in the call; phantom PRE32-C finding, established class"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 513,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain concatenated string-literal printf call with zero preprocessor tokens anywhere in the call; phantom PRE32-C finding, established class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 532,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Handler function registered in hostapd_cli_commands[] dispatch table with fixed signature int(*)(struct wpa_ctrl*, int, char*argv[]); const-qualifying would break the vtable match"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 538,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain concatenated string-literal printf call with zero preprocessor tokens anywhere in the call; phantom PRE32-C finding, established class"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 538,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain concatenated string-literal printf call with zero preprocessor tokens anywhere in the call; phantom PRE32-C finding, established class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 554,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Handler function registered in hostapd_cli_commands[] dispatch table with fixed signature int(*)(struct wpa_ctrl*, int, char*argv[]); const-qualifying would break the vtable match"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 560,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain concatenated string-literal printf call with zero preprocessor tokens anywhere in the call; phantom PRE32-C finding, established class"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 560,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain concatenated string-literal printf call with zero preprocessor tokens anywhere in the call; phantom PRE32-C finding, established class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 575,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Handler function registered in hostapd_cli_commands[] dispatch table with fixed signature int(*)(struct wpa_ctrl*, int, char*argv[]); const-qualifying would break the vtable match"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 581,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain concatenated string-literal printf call with zero preprocessor tokens anywhere in the call; phantom PRE32-C finding, established class"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 581,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain concatenated string-literal printf call with zero preprocessor tokens anywhere in the call; phantom PRE32-C finding, established class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 599,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Handler function registered in hostapd_cli_commands[] dispatch table with fixed signature int(*)(struct wpa_ctrl*, int, char*argv[]); const-qualifying would break the vtable match"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 603,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain concatenated string-literal printf call with zero preprocessor tokens anywhere in the call; phantom PRE32-C finding, established class"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 603,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain concatenated string-literal printf call with zero preprocessor tokens anywhere in the call; phantom PRE32-C finding, established class"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 608,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "snprintf return genuinely never checked/consulted anywhere in the function for a fixed-size buffer receiving free-form user-typed CLI argv text; low real-world severity (local admin CLI) but a real unchecked-truncation gap"
+  },
+  {
+   "rule": "STR03-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 608,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Same unchecked-truncation gap: no os_snprintf_error()-style guard exists for these free-form argv-derived command strings"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 611,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "snprintf return genuinely never checked/consulted anywhere in the function for a fixed-size buffer receiving free-form user-typed CLI argv text; low real-world severity (local admin CLI) but a real unchecked-truncation gap"
+  },
+  {
+   "rule": "STR03-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 611,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Same unchecked-truncation gap: no os_snprintf_error()-style guard exists for these free-form argv-derived command strings"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 614,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "snprintf return genuinely never checked/consulted anywhere in the function for a fixed-size buffer receiving free-form user-typed CLI argv text; low real-world severity (local admin CLI) but a real unchecked-truncation gap"
+  },
+  {
+   "rule": "STR03-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 614,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Same unchecked-truncation gap: no os_snprintf_error()-style guard exists for these free-form argv-derived command strings"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 620,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Handler function registered in hostapd_cli_commands[] dispatch table with fixed signature int(*)(struct wpa_ctrl*, int, char*argv[]); const-qualifying would break the vtable match"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 627,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Handler function registered in hostapd_cli_commands[] dispatch table with fixed signature int(*)(struct wpa_ctrl*, int, char*argv[]); const-qualifying would break the vtable match"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 630,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid_hex is a fixed array sized by SSID_MAX_LEN macro arithmetic; function never calls getenv(); established ENV01-C wholesale-misfire class"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 630,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid_hex[2*SSID_MAX_LEN+1]/key_hex[2*64+1] are ordinary fixed arrays with compile-time-constant macro/literal dimensions, not VLAs; established MEM05-C misfire class"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 631,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ssid_hex[2*SSID_MAX_LEN+1]/key_hex[2*64+1] are ordinary fixed arrays with compile-time-constant macro/literal dimensions, not VLAs; established MEM05-C misfire class"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 635,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain concatenated string-literal printf call with zero preprocessor tokens anywhere in the call; phantom PRE32-C finding, established class"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 635,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain concatenated string-literal printf call with zero preprocessor tokens anywhere in the call; phantom PRE32-C finding, established class"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 658,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "snprintf return genuinely never checked/consulted anywhere in the function for a fixed-size buffer receiving free-form user-typed CLI argv text; low real-world severity (local admin CLI) but a real unchecked-truncation gap"
+  },
+  {
+   "rule": "STR03-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 658,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Same unchecked-truncation gap: no os_snprintf_error()-style guard exists for these free-form argv-derived command strings"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 661,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "snprintf return genuinely never checked/consulted anywhere in the function for a fixed-size buffer receiving free-form user-typed CLI argv text; low real-world severity (local admin CLI) but a real unchecked-truncation gap"
+  },
+  {
+   "rule": "STR03-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 661,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Same unchecked-truncation gap: no os_snprintf_error()-style guard exists for these free-form argv-derived command strings"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 664,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "snprintf return genuinely never checked/consulted anywhere in the function for a fixed-size buffer receiving free-form user-typed CLI argv text; low real-world severity (local admin CLI) but a real unchecked-truncation gap"
+  },
+  {
+   "rule": "STR03-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 664,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Same unchecked-truncation gap: no os_snprintf_error()-style guard exists for these free-form argv-derived command strings"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 672,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Handler function registered in hostapd_cli_commands[] dispatch table with fixed signature int(*)(struct wpa_ctrl*, int, char*argv[]); const-qualifying would break the vtable match"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 678,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain concatenated string-literal printf call with zero preprocessor tokens anywhere in the call; phantom PRE32-C finding, established class"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 678,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain concatenated string-literal printf call with zero preprocessor tokens anywhere in the call; phantom PRE32-C finding, established class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 692,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Handler function registered in hostapd_cli_commands[] dispatch table with fixed signature int(*)(struct wpa_ctrl*, int, char*argv[]); const-qualifying would break the vtable match"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 698,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain concatenated string-literal printf call with zero preprocessor tokens anywhere in the call; phantom PRE32-C finding, established class"
+  },
+  {
+   "rule": "PRE32-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 698,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain concatenated string-literal printf call with zero preprocessor tokens anywhere in the call; phantom PRE32-C finding, established class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 712,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Handler function registered in hostapd_cli_commands[] dispatch table with fixed signature int(*)(struct wpa_ctrl*, int, char*argv[]); const-qualifying would break the vtable match"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 739,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Handler function registered in hostapd_cli_commands[] dispatch table with fixed signature int(*)(struct wpa_ctrl*, int, char*argv[]); const-qualifying would break the vtable match"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 745,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size/len companion-parameter C convention (msg/len, addr/addr_len, ctrl/cmd), established categorical API05-C FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 746,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic pointer+size/len companion-parameter C convention (msg/len, addr/addr_len, ctrl/cmd), established categorical API05-C FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 752,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "static struct wpa_ctrl *ctrl_conn has no initializer; C 6.7.9p10 guarantees NULL zero-init, so a NULL/!ctrl_conn check is well-defined, not an uninitialized read"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 762,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same guard-clause shape as line 217, both branches return"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 767,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf[len]='\\0' where len is the out-param of wpa_ctrl_request, bounded by the in-value sizeof(buf)-1; established recv/request length-cap FP family"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 771,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf/addr are char arrays that decay to a pointer for %s; engine Integer-vs-Pointer classification is simply wrong, established FIO47-C misidentification class"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 776,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "*pos = '\\0' is a plain char-to-char assignment (pos is char*); no widening conversion exists, established plain-char-assignment STR34-C FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 783,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Handler function registered in hostapd_cli_commands[] dispatch table with fixed signature int(*)(struct wpa_ctrl*, int, char*argv[]); const-qualifying would break the vtable match"
+  },
+  {
+   "rule": "ERR33-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 790,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cmd[64] receives \"STA-NEXT \" (9 chars) + addr, and addr is itself bounded to addr_len=32 (via os_strlcpy in wpa_ctrl_command_sta); truncation is provably impossible"
+  },
+  {
+   "rule": "STR03-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 790,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same provably-bounded addr (<=32 bytes incl NUL) into a 64-byte cmd buffer; truncation impossible"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 798,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Handler function registered in hostapd_cli_commands[] dispatch table with fixed signature int(*)(struct wpa_ctrl*, int, char*argv[]); const-qualifying would break the vtable match"
+  },
+  {
+   "rule": "FIO47-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 806,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf/addr are char arrays that decay to a pointer for %s; engine Integer-vs-Pointer classification is simply wrong, established FIO47-C misidentification class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 814,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Handler function registered in hostapd_cli_commands[] dispatch table with fixed signature int(*)(struct wpa_ctrl*, int, char*argv[]); const-qualifying would break the vtable match"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 814,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Handler function registered in hostapd_cli_commands[] dispatch table with fixed signature int(*)(struct wpa_ctrl*, int, char*argv[]); const-qualifying would break the vtable match"
+  },
+  {
+   "rule": "STR34-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 823,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same forwarded-pointer STR34-C misattribution as line 349 (hostapd_cli_complete_help)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 828,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "list_cmd_list is a forward-declared FUNCTION (line 46), not a variable; sqc mistook the call for a read of an uninitialized static"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "hostapd/hostapd_cli.c",
+   "line": 836,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Handler function registered in hostapd_cli_commands[] dispatch table with fixed signature int(*)(struct wpa_ctrl*, int, char*argv[]); const-qualifying would break the vtable match"
+  }
+ ],
+ "fns": [
+  {
+   "file": "hostapd/hostapd_cli.c",
+   "line": 634,
+   "rule": "EXP34-C",
+   "desc": "hostapd_cli_cmd_wps_config checks 'argc < 1' (line 634) but the error message and the final else-branch (lines 663-665) require argc>=2; when invoked with exactly argc==1, execution reaches 'snprintf(buf, sizeof(buf), \"WPS_CONFIG %s %s\", ssid_hex, argv[1])' (line 664) with argv[1] out of bounds (argv[argc] is NULL) -- a NULL/OOB pointer passed as a %s vararg.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 27,
+  "fp": 123,
+  "fn": 1
+ }
+}

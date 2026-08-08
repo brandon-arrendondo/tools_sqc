@@ -1,0 +1,1233 @@
+{
+ "labels": [
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4863,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "mask_buf is used, aliased into 'u8 *mask = mask_buf;' one line later and mask's address is passed to dbus_message_iter_append_fixed_array; sqc misses the pointer-alias use"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4870,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "local types[] array's only consumer uses ARRAY_SIZE(types); matches confirmed ARR02-C sizeof/ARRAY_SIZE-consumed-array FP class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4880,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const take const char* name+message (dbus-errors.h); cannot modify literal, categorical rule-logic FP (cf. STR30-C const-param class)"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4903,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_message_iter_close_container/dbus_set_error declared in <dbus/dbus.h>, included via dbus_new_helpers.h; libdbus third-party header FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4905,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_message_iter_close_container/dbus_set_error declared in <dbus/dbus.h>, included via dbus_new_helpers.h; libdbus third-party header FP class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4907,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const take const char* name+message (dbus-errors.h); cannot modify literal, categorical rule-logic FP (cf. STR30-C const-param class)"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4913,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_message_iter_close_container/dbus_set_error declared in <dbus/dbus.h>, included via dbus_new_helpers.h; libdbus third-party header FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4914,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_message_iter_close_container/dbus_set_error declared in <dbus/dbus.h>, included via dbus_new_helpers.h; libdbus third-party header FP class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4915,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const take const char* name+message (dbus-errors.h); cannot modify literal, categorical rule-logic FP (cf. STR30-C const-param class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4932,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4932,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4932,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is a WPADBusPropertyAccessor (DECLARE_ACCESSOR) declared extern in dbus_new_handlers.h and registered by address in dbus_new.c property tables; static would break linkage, DCL15-C extern-linkage-needed FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4934,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data param is part of the fixed WPADBusPropertyAccessor typedef (DECLARE_ACCESSOR) shared by every D-Bus getter/setter; DCL13-C vtable/dispatch-contract FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4953,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4953,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4953,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is a WPADBusPropertyAccessor (DECLARE_ACCESSOR) declared extern in dbus_new_handlers.h and registered by address in dbus_new.c property tables; static would break linkage, DCL15-C extern-linkage-needed FP class"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4953,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "#ifdef CONFIG_AP / #else return FALSE #endif \u2014 both preprocessor branches end in return; MSC37-C preprocessor-branch-blind FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4955,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data param is part of the fixed WPADBusPropertyAccessor typedef (DECLARE_ACCESSOR) shared by every D-Bus getter/setter; DCL13-C vtable/dispatch-contract FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4983,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4983,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4983,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is a WPADBusPropertyAccessor (DECLARE_ACCESSOR) declared extern in dbus_new_handlers.h and registered by address in dbus_new.c property tables; static would break linkage, DCL15-C extern-linkage-needed FP class"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4983,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "#ifdef CONFIG_AP / #else return FALSE #endif \u2014 both preprocessor branches end in return; MSC37-C preprocessor-branch-blind FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4985,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data param is part of the fixed WPADBusPropertyAccessor typedef (DECLARE_ACCESSOR) shared by every D-Bus getter/setter; DCL13-C vtable/dispatch-contract FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5013,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5013,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5013,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is a WPADBusPropertyAccessor (DECLARE_ACCESSOR) declared extern in dbus_new_handlers.h and registered by address in dbus_new.c property tables; static would break linkage, DCL15-C extern-linkage-needed FP class"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5013,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "#ifdef CONFIG_AP / #else return FALSE #endif \u2014 both preprocessor branches end in return; MSC37-C preprocessor-branch-blind FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5015,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data param is part of the fixed WPADBusPropertyAccessor typedef (DECLARE_ACCESSOR) shared by every D-Bus getter/setter; DCL13-C vtable/dispatch-contract FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5043,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5043,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5043,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is a WPADBusPropertyAccessor (DECLARE_ACCESSOR) declared extern in dbus_new_handlers.h and registered by address in dbus_new.c property tables; static would break linkage, DCL15-C extern-linkage-needed FP class"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5043,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "#ifdef CONFIG_AP / #else return FALSE #endif \u2014 both preprocessor branches end in return; MSC37-C preprocessor-branch-blind FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5045,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data param is part of the fixed WPADBusPropertyAccessor typedef (DECLARE_ACCESSOR) shared by every D-Bus getter/setter; DCL13-C vtable/dispatch-contract FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5082,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5082,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5082,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is a WPADBusPropertyAccessor (DECLARE_ACCESSOR) declared extern in dbus_new_handlers.h and registered by address in dbus_new.c property tables; static would break linkage, DCL15-C extern-linkage-needed FP class"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5082,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "#ifdef CONFIG_AP / #else return FALSE #endif \u2014 both preprocessor branches end in return; MSC37-C preprocessor-branch-blind FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5084,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data param is part of the fixed WPADBusPropertyAccessor typedef (DECLARE_ACCESSOR) shared by every D-Bus getter/setter; DCL13-C vtable/dispatch-contract FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5121,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5121,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5121,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is a WPADBusPropertyAccessor (DECLARE_ACCESSOR) declared extern in dbus_new_handlers.h and registered by address in dbus_new.c property tables; static would break linkage, DCL15-C extern-linkage-needed FP class"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5121,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "#ifdef CONFIG_AP / #else return FALSE #endif \u2014 both preprocessor branches end in return; MSC37-C preprocessor-branch-blind FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5123,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data param is part of the fixed WPADBusPropertyAccessor typedef (DECLARE_ACCESSOR) shared by every D-Bus getter/setter; DCL13-C vtable/dispatch-contract FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5160,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5160,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5160,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is a WPADBusPropertyAccessor (DECLARE_ACCESSOR) declared extern in dbus_new_handlers.h and registered by address in dbus_new.c property tables; static would break linkage, DCL15-C extern-linkage-needed FP class"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5160,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "#ifdef CONFIG_AP / #else return FALSE #endif \u2014 both preprocessor branches end in return; MSC37-C preprocessor-branch-blind FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5162,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data param is part of the fixed WPADBusPropertyAccessor typedef (DECLARE_ACCESSOR) shared by every D-Bus getter/setter; DCL13-C vtable/dispatch-contract FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5190,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "get_bss_helper is a plain internal static helper (not a vtable/callback slot); args is only read (args->wpa_s, args->id), genuine low-severity const opportunity"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5198,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_message_iter_close_container/dbus_set_error declared in <dbus/dbus.h>, included via dbus_new_helpers.h; libdbus third-party header FP class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5198,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const take const char* name+message (dbus-errors.h); cannot modify literal, categorical rule-logic FP (cf. STR30-C const-param class)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5203,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "res returned by get_bss_helper via wpa_bss_get_id() points into a persistent dl_list-owned struct wpa_bss, not local automatic storage; DCL30-C local-var-vs-local-storage confusion FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5216,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5216,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5216,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is a WPADBusPropertyAccessor (DECLARE_ACCESSOR) declared extern in dbus_new_handlers.h and registered by address in dbus_new.c property tables; static would break linkage, DCL15-C extern-linkage-needed FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5242,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5242,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5242,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is a WPADBusPropertyAccessor (DECLARE_ACCESSOR) declared extern in dbus_new_handlers.h and registered by address in dbus_new.c property tables; static would break linkage, DCL15-C extern-linkage-needed FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5268,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5268,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5268,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is a WPADBusPropertyAccessor (DECLARE_ACCESSOR) declared extern in dbus_new_handlers.h and registered by address in dbus_new.c property tables; static would break linkage, DCL15-C extern-linkage-needed FP class"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5280,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "operand is res->caps (u16 struct field), not 'res' (a pointer) as reported; INT13-C type-detection-wrong FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5295,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5295,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5295,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is a WPADBusPropertyAccessor (DECLARE_ACCESSOR) declared extern in dbus_new_handlers.h and registered by address in dbus_new.c property tables; static would break linkage, DCL15-C extern-linkage-needed FP class"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5308,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "operand is res->caps (u16 struct field), not 'res' (a pointer) as reported; INT13-C type-detection-wrong FP class"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5324,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "operand is res->caps (u16 struct field), not 'res' (a pointer) as reported; INT13-C type-detection-wrong FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5344,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5344,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5344,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is a WPADBusPropertyAccessor (DECLARE_ACCESSOR) declared extern in dbus_new_handlers.h and registered by address in dbus_new.c property tables; static would break linkage, DCL15-C extern-linkage-needed FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5371,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5371,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5371,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is a WPADBusPropertyAccessor (DECLARE_ACCESSOR) declared extern in dbus_new_handlers.h and registered by address in dbus_new.c property tables; static would break linkage, DCL15-C extern-linkage-needed FP class"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5391,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "qsort comparator cmp_u8s_desc casts const void* only to read via dereference, never writes; EXP05-C read-only-cast-away-const FP class"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5391,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "qsort comparator cmp_u8s_desc casts const void* only to read via dereference, never writes; EXP05-C read-only-cast-away-const FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5404,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5404,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5404,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is a WPADBusPropertyAccessor (DECLARE_ACCESSOR) declared extern in dbus_new_handlers.h and registered by address in dbus_new.c property tables; static would break linkage, DCL15-C extern-linkage-needed FP class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5413,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "success=FALSE initializer is unconditionally overwritten before any read; genuine harmless dead assignment, matches confirmed MSC13-C dead-init-correctly-caught class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5428,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const take const char* name+message (dbus-errors.h); cannot modify literal, categorical rule-logic FP (cf. STR30-C const-param class)"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5433,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free(ie_rates) only executes in the !real_rates branch which returns FALSE immediately; the read at this line is on the disjoint success path \u2014 mutually-exclusive-branch free/access FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5447,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpas_dbus_get_bss_security_prop is a plain internal helper (different signature from WPADBusPropertyAccessor, not itself vtable-bound); ie_data only read, genuine low-severity const opportunity"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5521,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "key_mgmt/pairwise arrays filled via n++ and only ever read up to count n via wpa_dbus_dict_append_string_array(...,n); extends counted-partial-fill-array FP family to string arrays"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5575,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "key_mgmt/pairwise arrays filled via n++ and only ever read up to count n via wpa_dbus_dict_append_string_array(...,n); extends counted-partial-fill-array FP family to string arrays"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5595,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_message_iter_close_container/dbus_set_error declared in <dbus/dbus.h>, included via dbus_new_helpers.h; libdbus third-party header FP class"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5600,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "code after return is the nomem: fail-label target, reached via earlier goto nomem; MSC07-C goto-label-blindness FP class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5601,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const take const char* name+message (dbus-errors.h); cannot modify literal, categorical rule-logic FP (cf. STR30-C const-param class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5615,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5615,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5615,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5615,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is a WPADBusPropertyAccessor (DECLARE_ACCESSOR) declared extern in dbus_new_handlers.h and registered by address in dbus_new.c property tables; static would break linkage, DCL15-C extern-linkage-needed FP class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5631,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const take const char* name+message (dbus-errors.h); cannot modify literal, categorical rule-logic FP (cf. STR30-C const-param class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5649,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5649,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5649,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5649,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is a WPADBusPropertyAccessor (DECLARE_ACCESSOR) declared extern in dbus_new_handlers.h and registered by address in dbus_new.c property tables; static would break linkage, DCL15-C extern-linkage-needed FP class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5665,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const take const char* name+message (dbus-errors.h); cannot modify literal, categorical rule-logic FP (cf. STR30-C const-param class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5683,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5683,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is a WPADBusPropertyAccessor (DECLARE_ACCESSOR) declared extern in dbus_new_handlers.h and registered by address in dbus_new.c property tables; static would break linkage, DCL15-C extern-linkage-needed FP class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5711,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "if/else-if chain leaves 'type' at its already-initialized default (\"\") when no branch matches; MSC01-C stylistic-pedantry no-final-else FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5720,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_message_iter_close_container/dbus_set_error declared in <dbus/dbus.h>, included via dbus_new_helpers.h; libdbus third-party header FP class"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5725,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "code after return is the nomem: fail-label target, reached via earlier goto nomem; MSC07-C goto-label-blindness FP class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5726,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const take const char* name+message (dbus-errors.h); cannot modify literal, categorical rule-logic FP (cf. STR30-C const-param class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5740,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5740,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5740,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is a WPADBusPropertyAccessor (DECLARE_ACCESSOR) declared extern in dbus_new_handlers.h and registered by address in dbus_new.c property tables; static would break linkage, DCL15-C extern-linkage-needed FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5766,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5766,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5766,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is a WPADBusPropertyAccessor (DECLARE_ACCESSOR) declared extern in dbus_new_handlers.h and registered by address in dbus_new.c property tables; static would break linkage, DCL15-C extern-linkage-needed FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5796,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5796,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is a WPADBusPropertyAccessor (DECLARE_ACCESSOR) declared extern in dbus_new_handlers.h and registered by address in dbus_new.c property tables; static would break linkage, DCL15-C extern-linkage-needed FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5820,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() are pure side-effect-free accessors passed as sibling args; EXP30-C side-effect-free-accessor FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5826,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() are pure side-effect-free accessors passed as sibling args; EXP30-C side-effect-free-accessor FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5832,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() are pure side-effect-free accessors passed as sibling args; EXP30-C side-effect-free-accessor FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5838,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() are pure side-effect-free accessors passed as sibling args; EXP30-C side-effect-free-accessor FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5844,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() are pure side-effect-free accessors passed as sibling args; EXP30-C side-effect-free-accessor FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5850,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() are pure side-effect-free accessors passed as sibling args; EXP30-C side-effect-free-accessor FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5856,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() are pure side-effect-free accessors passed as sibling args; EXP30-C side-effect-free-accessor FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5862,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() are pure side-effect-free accessors passed as sibling args; EXP30-C side-effect-free-accessor FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5868,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() are pure side-effect-free accessors passed as sibling args; EXP30-C side-effect-free-accessor FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5876,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() are pure side-effect-free accessors passed as sibling args; EXP30-C side-effect-free-accessor FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5882,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() are pure side-effect-free accessors passed as sibling args; EXP30-C side-effect-free-accessor FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5888,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() are pure side-effect-free accessors passed as sibling args; EXP30-C side-effect-free-accessor FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5894,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() are pure side-effect-free accessors passed as sibling args; EXP30-C side-effect-free-accessor FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5900,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() are pure side-effect-free accessors passed as sibling args; EXP30-C side-effect-free-accessor FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5913,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_head()/wpabuf_len() are pure side-effect-free accessors passed as sibling args; EXP30-C side-effect-free-accessor FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5930,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_message_iter_close_container/dbus_set_error declared in <dbus/dbus.h>, included via dbus_new_helpers.h; libdbus third-party header FP class"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5935,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "code after return is the nomem: fail-label target, reached via earlier goto nomem; MSC07-C goto-label-blindness FP class"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5936,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_message_iter_close_container/dbus_set_error declared in <dbus/dbus.h>, included via dbus_new_helpers.h; libdbus third-party header FP class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5936,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const take const char* name+message (dbus-errors.h); cannot modify literal, categorical rule-logic FP (cf. STR30-C const-param class)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5950,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5950,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5950,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is a WPADBusPropertyAccessor (DECLARE_ACCESSOR) declared extern in dbus_new_handlers.h and registered by address in dbus_new.c property tables; static would break linkage, DCL15-C extern-linkage-needed FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5952,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data param is part of the fixed WPADBusPropertyAccessor typedef (DECLARE_ACCESSOR) shared by every D-Bus getter/setter; DCL13-C vtable/dispatch-contract FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5971,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is a WPADBusPropertyAccessor (DECLARE_ACCESSOR) declared extern in dbus_new_handlers.h and registered by address in dbus_new.c property tables; static would break linkage, DCL15-C extern-linkage-needed FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5973,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data param is part of the fixed WPADBusPropertyAccessor typedef (DECLARE_ACCESSOR) shared by every D-Bus getter/setter; DCL13-C vtable/dispatch-contract FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 6005,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is a WPADBusPropertyAccessor (DECLARE_ACCESSOR) declared extern in dbus_new_handlers.h and registered by address in dbus_new.c property tables; static would break linkage, DCL15-C extern-linkage-needed FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 6007,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data param is part of the fixed WPADBusPropertyAccessor typedef (DECLARE_ACCESSOR) shared by every D-Bus getter/setter; DCL13-C vtable/dispatch-contract FP class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 6016,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const take const char* name+message (dbus-errors.h); cannot modify literal, categorical rule-logic FP (cf. STR30-C const-param class)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 6023,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const take const char* name+message (dbus-errors.h); cannot modify literal, categorical rule-logic FP (cf. STR30-C const-param class)"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 6031,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const take const char* name+message (dbus-errors.h); cannot modify literal, categorical rule-logic FP (cf. STR30-C const-param class)"
+  },
+  {
+   "rule": "DCL31-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 6040,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_message_iter_close_container/dbus_set_error declared in <dbus/dbus.h>, included via dbus_new_helpers.h; libdbus third-party header FP class"
+  },
+  {
+   "rule": "STR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 6041,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dbus_set_error/dbus_set_error_const take const char* name+message (dbus-errors.h); cannot modify literal, categorical rule-logic FP (cf. STR30-C const-param class)"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 6049,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "iterator walks a NULL-terminated char* pair array returned by wpa_config_get_all(), bounded by the NULL sentinel (while(*iterator)); extends ARR30-C NUL/sentinel-terminated-scan FP family to pointer arrays"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 6067,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 6067,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL15-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 6067,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "function is a WPADBusPropertyAccessor (DECLARE_ACCESSOR) declared extern in dbus_new_handlers.h and registered by address in dbus_new.c property tables; static would break linkage, DCL15-C extern-linkage-needed FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 6069,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "user_data param is part of the fixed WPADBusPropertyAccessor typedef (DECLARE_ACCESSOR) shared by every D-Bus getter/setter; DCL13-C vtable/dispatch-contract FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 6082,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "internal-only D-Bus accessor invoked only by the property dispatch framework with guaranteed non-null iter/error/message; API00-C internal-API FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 6155,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpas_dbus_signal_preq is a plain directly-called internal function, not a vtable/callback slot; wpa_s only read, genuine low-severity const opportunity"
+  }
+ ],
+ "fns": [
+  {
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4961,
+   "rule": "EXP34-C",
+   "desc": "wpas_dbus_getter_sta_address dereferences args->wpa_s->ap_iface->bss[0] with no NULL check on ap_iface, unlike sibling getters (sta_rx_packets/tx_packets/tx_bytes/rx_bytes at 5053/5092/5131/5170) which guard `if (!args->wpa_s->ap_iface) return FALSE;` before the same dereference \u2014 plausible NULL deref if the AP interface is torn down while a Station D-Bus object still exists.",
+   "upstream_present": "unknown"
+  },
+  {
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 4991,
+   "rule": "EXP34-C",
+   "desc": "wpas_dbus_getter_sta_aid has the same missing args->wpa_s->ap_iface NULL guard as sta_address (see 4961) before dereferencing ->bss[0].",
+   "upstream_present": "unknown"
+  },
+  {
+   "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+   "line": 5021,
+   "rule": "EXP34-C",
+   "desc": "wpas_dbus_getter_sta_caps has the same missing args->wpa_s->ap_iface NULL guard as sta_address (see 4961) before dereferencing ->bss[0].",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 4,
+  "fp": 146,
+  "fn": 3
+ }
+}

@@ -1,0 +1,643 @@
+{
+ "labels": [
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6023,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API pattern; wpa_sm_set_test_assoc_ie is CONFIG_TESTING_OPTIONS internal, sm never externally-nullable"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6023,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API pattern; buf always caller-owned local"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6030,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API pattern, testing-only setter"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6030,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6037,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API pattern, testing-only setter"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6037,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API pattern"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6044,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API pattern; read-only accessor, sm always non-NULL from state machine"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6044,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C plain-internal-helper read-only-param TP pattern; sm only read (sm->anonce), not forwarded to any callback/vtable"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6052,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6052,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C plain-internal-helper read-only-param TP pattern; sm only read (sm->key_mgmt)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6058,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6058,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C plain-internal-helper read-only-param TP pattern; sm only read (sm->mlo.*, sm->bssid)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6066,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API pattern; sm always the caller's own state-machine object"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6151,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C sizeof(*ptr)-misidentified-as-deref pattern: 'wpabuf_put_u8(buf, sizeof(*mdie))' -- sizeof doesn't evaluate/dereference its operand; mdie is assigned on the very next line before any real use"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6181,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor-args pattern; wpabuf_head()/wpabuf_len() are pure reads, no unsequenced side effects"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6197,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API pattern; sm always wpa_s->wpa from sme.c's single call site"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6197,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API pattern; bssid always wpa_s->pending_bssid"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6197,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API pattern; data always data->auth.ies from a driver event, single call site"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6197,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C internal-only-API pattern extended to integer len; len is data->auth.ies_len from a bounded driver frame event, not attacker-arbitrary-sized"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6204,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ENV01-C wholesale misfire; zero getenv() anywhere in wpa.c, ick[] is a plain crypto buffer"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6240,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR30-C cross-function buffer-size name conflation: cites 'size 2 allocated at line 7161', which is owe_process_assoc_resp's unrelated local 'size_t len[2]' in a completely different function; pos here walks the bounded data/len wire buffer with explicit end-pos checks"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6278,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C output-param-uninitialized misfire; elems is filled by ieee802_11_parse_elems(pos, end-pos, &elems, 1) two lines earlier, which os_memset's it unconditionally as its own first statement"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6387,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ENV01-C wholesale misfire; zero getenv() in file, rmsk[] is a plain crypto buffer"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6471,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C double-free misfire; dh_ss was freed+NULLed at line 6416-6417 (wpabuf_clear_free(dh_ss); dh_ss=NULL;), so wpabuf_clear_free(NULL) here is a safe no-op, not a real double-free"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6476,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR01-C member-array-doesn't-decay pattern; sizeof(sm->tptk) sizes a fixed struct-field array via member access, sm itself never decays"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6510,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC07-C goto-blindness family; 'fail:' at line 6510 is reached via earlier 'goto fail' statements, not fallthrough from the preceding return"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6511,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C mutually-exclusive-branch double-free misfire; success path frees pub at line 6504 and returns before reaching fail:, fail: path (which frees pub once) is reached only via an earlier goto -- never both on the same execution path"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6512,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C mutually-exclusive-branch double-free misfire, same root cause as #27/#24; dh_ss may already be NULL (freed+nulled at 6471-6472) by the time a later goto fail is taken, making the fail-path free a safe no-op"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6514,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C mutually-exclusive-branch double-free misfire; wpa_ft_parse_ies_free(&parse) at success-path line 6507 and fail-path line 6514 are on mutually exclusive control-flow paths (success returns at 6509 without reaching fail:)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6529,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C sizeof(*ptr)-misidentified-as-deref pattern, same shape as #14: 'rsnie = wpabuf_put(buf, sizeof(*rsnie))' -- sizeof does not evaluate rsnie"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6631,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API pattern; sm from state machine"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6631,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API pattern; kek is an out-param pointer, always caller's own local"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6631,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API pattern; kek_len is an out-param pointer"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6631,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API pattern; snonce is an out-param pointer"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6631,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API pattern; anonce is an out-param pointer"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6631,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API pattern; hlp is null-checked at every use site ('hlp && ...')"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6646,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR30-C cross-function buffer-size name conflation, same root cause as #21; cites unrelated 'size 2 allocated at line 7161' (owe_process_assoc_resp's local); len here is fils_build_assoc_req's own size_t accumulator, not an array at all"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6648,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C category error; 'hlp' is a function parameter (const struct wpabuf **), not an uninitialized variable, and every dereference is guarded by 'hlp &&' in the loop condition itself"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6755,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C confuses local pointer variable with local storage; buf is heap-allocated via wpabuf_alloc(len) at line 6650, not automatic storage"
+  },
+  {
+   "rule": "MSC09-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6769,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC09-C fires on a deliberate SNAP/LLC header magic-byte constant (\\xaa\\xaa\\x03\\x00\\x00\\x00), a binary protocol pattern rather than human-readable text subject to locale/ASCII portability concerns"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6770,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR30-C cross-function buffer-size name conflation, same root cause as #21/#37; pos here is fils_process_hlp_resp's bounded pointer, guarded by 'end - pos >= 6' immediately above"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6787,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR30-C cross-function buffer-size name conflation, same root cause as #21; pos is fils_process_hlp_container's dynamically-sized wire-buffer walker, loop-bounded by 'end - pos >= 2' checks"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6802,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR30-C cross-function buffer-size name conflation, same root cause as #42"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6810,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C factually-wrong pointer-subtraction claim; the actual expressions at these lines are 'end - pos' (both from the same buffer) -- no 'pos - tmp' subtraction occurs on these lines at all"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6811,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR00-C factually-wrong pointer-subtraction claim, same as #44"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6862,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR36-C category error; mgmt is '(const struct ieee80211_mgmt *) resp' -- mgmt->u.assoc_resp.variable and end (=resp+len) are both views into the same underlying resp buffer, not different arrays"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6869,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C output-param-uninitialized misfire, same as #22; elems is filled by ieee802_11_parse_elems two lines earlier"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6890,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC01-C no-final-else guard-clause pedantry; the RSNE-match else-if intentionally does nothing when the condition doesn't hold (documented interop workaround), not a missing-behavior gap"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 6906,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP43-C category error; sm->ap_rsnxe (a struct field buffer) and elems.rsnxe (parsed from the received frame) are two genuinely distinct, non-overlapping buffers"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 7006,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT14-C identifier-only-match FP; the bitwise op is on kde.gtk[0] (a different member/array element) while the arithmetic is on kde.gtk_len -- different fields conflated by base identifier"
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 7067,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ARR36-C category error, same as #46; ie_start/end are both derived from the same resp buffer via the mgmt cast"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 7079,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC07-C goto-blindness family, same as #26; 'fail:' at 7079 reached via earlier goto, not fallthrough"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 7094,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C factually-wrong sub-pattern; the function body itself is 'return sm && sm->fils_completed;' -- already an inline NULL guard on the exact param flagged"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 7094,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC37-C ifdef-branch-blind pattern; both the #ifdef CONFIG_FILS and #else branches end in a return statement, sqc doesn't resolve the preprocessor branch"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 7094,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C plain-internal-helper read-only-param TP pattern; sm only read"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 7106,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API pattern; sm from state machine"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 7108,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "MSC13-C genuine dead store; 'ie = NULL' initializer is never read on any path -- the fail: label doesn't touch ie and the success path overwrites it unconditionally at line 7130 before any read"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 7143,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MSC07-C goto-blindness family, same as #26/#52"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 7144,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM30-C mutually-exclusive-branch double-free misfire; owe_build_assoc_req's success path (frees pub at 7138, returns ie at 7142) and fail: path (frees pub at 7144) are mutually exclusive, never both executed"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 7144,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM31-C mutually-exclusive-branch double-free misfire, same root cause as #59"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 7151,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API pattern; bssid from a single internal caller"
+  },
+  {
+   "rule": "MEM03-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 7156,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MEM03-C factually wrong; every exit path frees 'secret' via wpabuf_clear_free(secret), which is hostap's sensitive-buffer clear-then-free wrapper -- the buffer IS cleared before release"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 7173,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C output-param-uninitialized misfire, same as #22/#47; elems filled by ieee802_11_parse_elems immediately above"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 7266,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor-args pattern, same as #15; wpabuf_head()/wpabuf_len() are pure reads"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 7269,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor-args pattern, same as #64"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 7271,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC01-C 'already validated upstream' pattern; group is proven to be one of 19/20/21 by the exhaustive if/else-if/else return -1 at lines 7202-7209 earlier in the same function, so this later if/else-if is exhaustive by construction"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 7272,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP30-C pure-accessor-args pattern, same as #64/#65"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 7289,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "MSC01-C 'already validated upstream' pattern, same as #66"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 7335,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API pattern; sm from driver capability-flags callback, single internal caller"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 7348,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C plain-internal-helper read-only-param TP pattern; sm only read (sm->pmksa) in wpa_sm_pmksa_cache_reconfig"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 7355,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 7355,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C plain-internal-helper read-only-param TP pattern; sm only read (sm->spp_amsdu)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 7361,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 7361,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C plain-internal-helper read-only-param TP pattern; sm only read (sm->pmksa)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 7383,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C plain-internal-helper read-only-param TP pattern; sm only read throughout wpa_sm_known_sta_identification (sm->last_kck*, sm->ctx, sm->mgmt_group_cipher)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 7419,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL30-C confuses local pointer variable with local storage, same as #39; ie is heap-allocated via wpabuf_alloc at line 7400, not automatic storage"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 7434,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C dl_list_for_each/for_each_link macro lvalue-init misfire; 'i' is initialized inside for_each_link's own hidden loop-init clause, not at the point sqc treats as 'the declaration'"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 7443,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "DCL13-C plain-internal-helper read-only-param TP pattern; ie only read (ie->mlo_gtk[i], ie->mlo_gtk_len[i]) in wpa_supplicant_install_mlo_gtk_keys, never written"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/rsn_supp/wpa.c",
+   "line": 7451,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EXP33-C for_each_link macro lvalue-init misfire, same as #77"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 10,
+  "fp": 69,
+  "fn": 0
+ }
+}

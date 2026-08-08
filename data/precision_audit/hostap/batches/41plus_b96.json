@@ -1,0 +1,778 @@
+{
+ "wpa_supplicant/dbus/dbus_new.c#part2of2": [
+  {
+   "column": 44,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 2732,
+   "message": "Array declaration 'wpas_dbus_global_properties[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 42,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 2773,
+   "message": "Array declaration 'wpas_dbus_global_signals[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 2807,
+   "message": "Unbounded while loop with pointer increment. Loop increments 's' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 2811,
+   "message": "Pointer dereference '*s++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 37,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 2811,
+   "message": "Argument to 'toupper()' is not cast to unsigned char. This can cause undefined behavior if the argument has a negative value.",
+   "rule_id": "STR37-C",
+   "severity": "Medium",
+   "suggestion": "Cast the argument to unsigned char: 'toupper((unsigned char)...)'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 2817,
+   "message": "Function returns pointer to local variable 'str' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 68,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 2824,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 2831,
+   "message": "Use-after-free: accessing freed pointer 'priv->all_interface_properties[idx++].dbus_property'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 2832,
+   "message": "Use-after-free: accessing freed pointer 'priv->all_interface_properties'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access freed memory."
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 2881,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 44,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 2912,
+   "message": "Array declaration 'wpas_dbus_network_properties[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 42,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 2927,
+   "message": "Array declaration 'wpas_dbus_network_signals[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 2953,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 3008,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 3025,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 44,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 3059,
+   "message": "Array declaration 'wpas_dbus_bss_properties[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 42,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 3129,
+   "message": "Array declaration 'wpas_dbus_bss_signals[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 3151,
+   "message": "Array parameter uses size variable 'ETH_ALEN' that is declared after the array parameter",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Declare size parameter 'ETH_ALEN' before the array parameter, or use K&R style with semicolon"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 3151,
+   "message": "Pointer parameter 'bssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bssid'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 3154,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 3192,
+   "message": "Array parameter uses size variable 'ETH_ALEN' that is declared after the array parameter",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Declare size parameter 'ETH_ALEN' before the array parameter, or use K&R style with semicolon"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 3192,
+   "message": "Pointer parameter 'bssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bssid'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 3196,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 3245,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 44,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 3251,
+   "message": "Array declaration 'wpas_dbus_sta_properties[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 42,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 3284,
+   "message": "Array declaration 'wpas_dbus_sta_signals[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 3307,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 3344,
+   "message": "Function 'wpas_dbus_register_sta' does not validate pointer parameter 'sta' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'sta' at the start of the function, e.g., 'if (!sta) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 3348,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 3396,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 42,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 3402,
+   "message": "Array declaration 'wpas_dbus_interface_methods[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 44,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 3935,
+   "message": "Array declaration 'wpas_dbus_interface_properties[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 42,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 4207,
+   "message": "Array declaration 'wpas_dbus_interface_signals[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 28,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 4607,
+   "message": "Array declaration 'ignored_globals[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 4621,
+   "message": "sizeof applied to pointer/array parameter 'wpas_dbus_interface_properties' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(wpas_dbus_interface_properties[0])'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 4632,
+   "message": "sizeof applied to pointer/array parameter 'wpas_dbus_interface_properties' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(wpas_dbus_interface_properties)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 34,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 4636,
+   "message": "Variable 'desc' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'desc' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 4667,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 4680,
+   "message": "Value assigned to 'obj_desc' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 4719,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 44,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 4768,
+   "message": "Array declaration 'wpas_dbus_p2p_peer_properties[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 42,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 4852,
+   "message": "Array declaration 'wpas_dbus_p2p_peer_signals[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 57,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 4875,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 4882,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 4924,
+   "message": "Function 'wpas_dbus_signal_peer_device_found' does not validate pointer parameter 'dev_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dev_addr' at the start of the function, e.g., 'if (!dev_addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 4943,
+   "message": "Function 'wpas_dbus_signal_peer_device_lost' does not validate pointer parameter 'dev_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dev_addr' at the start of the function, e.g., 'if (!dev_addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 4959,
+   "message": "Function 'wpas_dbus_register_peer' does not validate pointer parameter 'dev_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dev_addr' at the start of the function, e.g., 'if (!dev_addr) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 4964,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5013,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5026,
+   "message": "Function 'wpas_dbus_unregister_peer' does not validate pointer parameter 'dev_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dev_addr' at the start of the function, e.g., 'if (!dev_addr) { return error_code; }'"
+  },
+  {
+   "column": 53,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5026,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5030,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 62,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5063,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5099,
+   "message": "Function 'wpas_dbus_signal_peer_groups_changed' does not validate pointer parameter 'dev_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'dev_addr' at the start of the function, e.g., 'if (!dev_addr) { return error_code; }'"
+  },
+  {
+   "column": 65,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5099,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5102,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5113,
+   "message": "Passing string literal to function 'wpa_dbus_mark_property_changed' which may modify it",
+   "rule_id": "STR30-C",
+   "severity": "High",
+   "suggestion": "Use a modifiable array instead of a string literal"
+  },
+  {
+   "column": 44,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5118,
+   "message": "Array declaration 'wpas_dbus_p2p_group_properties[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 42,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5172,
+   "message": "Array declaration 'wpas_dbus_p2p_group_signals[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5201,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5243,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5293,
+   "message": "Array declaration 'wpas_dbus_persistent_group_properties[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5320,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5384,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5408,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5446,
+   "message": "Function 'wpas_dbus_signal_hs20_t_c_acceptance' does not validate pointer parameter 'url' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'url' at the start of the function, e.g., 'if (!url) { return error_code; }'"
+  },
+  {
+   "column": 65,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5446,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5488,
+   "message": "Function 'wpas_dbus_signal_nan_discovery_result' does not validate pointer parameter 'peer_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'peer_addr' at the start of the function, e.g., 'if (!peer_addr) { return error_code; }'"
+  },
+  {
+   "column": 66,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5488,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5512,
+   "message": "Return value of 'snprintf' ignored: 'snprintf(addr_str, sizeof(addr_str), MACSTR, MAC2STR(peer_addr))' - Returns negative on error, or >= buffer size on truncation",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check result: int ret = snprintf(buf, size, fmt, ...); if (ret < 0 || ret >= size) handle_error();"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5512,
+   "message": "Call to snprintf may inadvertently truncate string without proper length validation",
+   "rule_id": "STR03-C",
+   "severity": "Medium",
+   "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+  },
+  {
+   "column": 47,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5512,
+   "message": "Do not cast away const qualification: 'MAC2STR(peer_addr)'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5551,
+   "message": "Function 'wpas_dbus_signal_nan_replied' does not validate pointer parameter 'peer_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'peer_addr' at the start of the function, e.g., 'if (!peer_addr) { return error_code; }'"
+  },
+  {
+   "column": 57,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5551,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5574,
+   "message": "Return value of 'snprintf' ignored: 'snprintf(addr_str, sizeof(addr_str), MACSTR, MAC2STR(peer_addr))' - Returns negative on error, or >= buffer size on truncation",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check result: int ret = snprintf(buf, size, fmt, ...); if (ret < 0 || ret >= size) handle_error();"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5574,
+   "message": "Call to snprintf may inadvertently truncate string without proper length validation",
+   "rule_id": "STR03-C",
+   "severity": "Medium",
+   "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+  },
+  {
+   "column": 47,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5574,
+   "message": "Do not cast away const qualification: 'MAC2STR(peer_addr)'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5610,
+   "message": "Function 'wpas_dbus_signal_nan_receive' does not validate pointer parameter 'peer_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'peer_addr' at the start of the function, e.g., 'if (!peer_addr) { return error_code; }'"
+  },
+  {
+   "column": 57,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5610,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5630,
+   "message": "Return value of 'snprintf' ignored: 'snprintf(addr_str, sizeof(addr_str), MACSTR, MAC2STR(peer_addr))' - Returns negative on error, or >= buffer size on truncation",
+   "rule_id": "ERR33-C",
+   "severity": "High",
+   "suggestion": "Check result: int ret = snprintf(buf, size, fmt, ...); if (ret < 0 || ret >= size) handle_error();"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5630,
+   "message": "Call to snprintf may inadvertently truncate string without proper length validation",
+   "rule_id": "STR03-C",
+   "severity": "Medium",
+   "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+  },
+  {
+   "column": 47,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5630,
+   "message": "Do not cast away const qualification: 'MAC2STR(peer_addr)'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5659,
+   "message": "Function 'wpas_dbus_signal_nan_publish_terminated' does not validate pointer parameter 'reason' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'reason' at the start of the function, e.g., 'if (!reason) { return error_code; }'"
+  },
+  {
+   "column": 68,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5659,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5698,
+   "message": "Function 'wpas_dbus_signal_nan_subscribe_terminated' does not validate pointer parameter 'reason' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'reason' at the start of the function, e.g., 'if (!reason) { return error_code; }'"
+  },
+  {
+   "column": 70,
+   "file": "wpa_supplicant/dbus/dbus_new.c",
+   "line": 5698,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  }
+ ]
+}

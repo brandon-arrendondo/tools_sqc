@@ -1,0 +1,938 @@
+{
+  "labels": [
+    {
+      "rule": "PRE08-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 16,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "Same 'ieee802_' 8-char prefix as ieee802_11_common.h, mechanically true low-value"
+    },
+    {
+      "rule": "PRE08-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 16,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "Same 'ieee802_' 8-char prefix as ieee802_11.h"
+    },
+    {
+      "rule": "PRE08-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 16,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "Same 'ieee802_' 8-char prefix as ieee802_11_auth.h"
+    },
+    {
+      "rule": "PRE08-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 16,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "Same 'ieee802_' 8-char prefix as ieee802_1x.h"
+    },
+    {
+      "rule": "PRE08-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 17,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "Same 'ieee802_' 8-char prefix as ieee802_11.h"
+    },
+    {
+      "rule": "PRE08-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 17,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "Same 'ieee802_' 8-char prefix as ieee802_11_auth.h"
+    },
+    {
+      "rule": "PRE08-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 17,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "Same 'ieee802_' 8-char prefix as ieee802_1x.h"
+    },
+    {
+      "rule": "PRE08-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 21,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "Same 'hw_featu' 8-char prefix as hw_features.h"
+    },
+    {
+      "rule": "PRE08-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 29,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "Same 'ieee802_' 8-char prefix as ieee802_11_auth.h"
+    },
+    {
+      "rule": "PRE08-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 29,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "Same 'ieee802_' 8-char prefix as ieee802_1x.h"
+    },
+    {
+      "rule": "PRE08-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 30,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "Same 'ieee802_' 8-char prefix as ieee802_1x.h"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 51,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Internal FILS eloop-timeout callback, hapd caller-guaranteed non-NULL"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 54,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "reply_res init to WLAN_STATUS_SUCCESS at decl is never read before being overwritten at line 81; harmless defensive default but literally a dead store"
+    },
+    {
+      "rule": "ENV01-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 56,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "No getenv() call anywhere in this function; misfire, buf is unrelated fixed-size mgmt buffer"
+    },
+    {
+      "rule": "EXP40-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 56,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "'*p = buf' is a declarator initializer (u8 *p = buf;), not an assignment; buf is not const-qualified"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 69,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "elems declared then immediately passed to ieee802_11_parse_elems; ParseFailed path returns before any real read"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 144,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "hapd param entirely unused in hostapd_update_sta_links_status body; direct static helper, not a dispatch-table callback"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 145,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sta genuinely mutated indirectly: info=&sta->mld_info; info->links[link_id].status=... writes through the pointee"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 169,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "elems parsed via ieee802_11_parse_elems before any use; ParseFailed returns early"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 213,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sta_profile assigned unconditionally at line 224 right after the length guard at 217-221, before any read"
+    },
+    {
+      "rule": "ARR37-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 235,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "Idiomatic bounded MLE STA-Profile buffer walk; subelem_defrag_len >= BASIC_MLE_STA_CTRL_LEN+1 checked at line 217 guarantees the index is in-bounds"
+    },
+    {
+      "rule": "ARR37-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 243,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "Same bounded buffer-walk expression reused from the already-guarded check at 234-235"
+    },
+    {
+      "rule": "ARR37-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 245,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "Same bounded buffer-walk expression reused from the already-guarded check at 234-235"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 250,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "sta_profile_len -= 2 at line 250 is never read again before the block/loop iteration ends; dead store"
+    },
+    {
+      "rule": "ARR37-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 251,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "Bounded pointer advance within the already length-checked MLE subelement buffer"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 269,
+      "verdict": "TP",
+      "confidence": "high",
+      "reason": "iface only read (num_bss, bss[j]) in hostapd_find_by_sta; direct static helper, not dispatch-table"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 286,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sta holds ap_get_sta()'s return value (a node in hapd->sta_list heap memory), not the address of the local variable itself"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 287,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "hapd is a local pointer variable holding iface->bss[j] (persistent driver-owned storage); returning it is not returning &local"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 301,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sta holds ap_get_sta(p_hapd,...)'s return value (heap sta_list node), same misattribution as line 286"
+    },
+    {
+      "rule": "MEM05-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 325,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(struct ieee80211_mgmt)+1024 is a compile-time constant; buf is a fixed-size array, not a VLA"
+    },
+    {
+      "rule": "INT30-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 325,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Both operands of the addition are compile-time constants far below SIZE_MAX; cannot wrap in practice"
+    },
+    {
+      "rule": "EXP40-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 326,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "'*p = buf' is the declarator initializer (u8 *p = buf;); buf (line 325) is non-const"
+    },
+    {
+      "rule": "MSC09-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 604,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "\"\\x00\\x50\\xf2\\x04\" contains byte 0xf2 (>=0x80); mechanically true though this is intentional binary OUI data, not text"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 760,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "if(wpa)/else-if(wps_state) chain has no final else; stylistic, harmless (falls through to skip_wpa_check)"
+    },
+    {
+      "rule": "EXP20-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 822,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpa_fils_validate_fils_session returns const u8 * (wpa_auth.h:629); '!' on a pointer return is the idiomatic NULL check, not an implicit-boolean-test misuse"
+    },
+    {
+      "rule": "INT30-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 901,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "sizeof(buf)-(p-buf) is the standard hostapd buffer-position idiom; p is always advanced by bounded IE-writer helpers that respect sizeof(buf), no realistic underflow"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 927,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "wpabuf_head/wpabuf_len are pure accessor macros with no side effects; standard sibling-argument misfire"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1041,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "hostapd_notif_disassoc_mld is only called from hostapd_notif_disassoc after hostapd_ml_get_assoc_sta sets *assoc_hapd unconditionally when it returns a non-NULL sta"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1041,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "sta checked non-NULL by the sole caller before this call (line 1128 'if (sta)')"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1041,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "addr is the outer hostapd_notif_disassoc's own param, already NULL-checked at function entry (line 1074)"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1050,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "tmp_sta assigned unconditionally at line 1059 (ap_get_sta) before its only read at 1060"
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1074,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "Ordinary direct NULL check on a single pointer param; not a genuine actionable defect"
+    },
+    {
+      "rule": "DCL00-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1100,
+      "verdict": "TP",
+      "confidence": "high",
+      "reason": "h (struct hostapd_iface*) is only read (h->bss[0]) in this loop body, never reassigned"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1118,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "'else if (!sta->mld_info.mld_sta)' has no final else; stylistic, intentional fallthrough to legacy handling"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1146,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "hostapd_event_sta_low_ack is an internal driver-event helper; addr comes from driver MAC-address fields, never NULL in practice"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1153,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "hapd->iface accessed here is the RHS evaluated with the original (still-valid, caller-guaranteed non-NULL) hapd before the reassignment on the same line completes"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1175,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "hostapd_event_sta_opmode_changed is dispatched only from wpa_supplicant_event's internal switch with ctx-derived hapd"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1175,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "addr is a driver-supplied MAC address field, internal invariant"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1317,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "if/else-if chain (cf1==5935/>5950/>5000) has no final else; seg0_idx keeps its line-1251 initializer of 0 by design"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1324,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "Same cf2 seg1_idx chain, initializer-default-on-no-match design"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1342,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "ch_switch_vht_config bitmask if/else-if has no final else; no-op when neither bit set is intentional"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1355,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "ch_switch_he_config bitmask if/else-if has no final else; intentional no-op"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1369,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "ch_switch_eht_config bitmask if/else-if has no final else; intentional no-op"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1382,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "width if/else-if for ht_capab bit has no final else; other widths intentionally leave the bit unchanged"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1403,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "chwidth if/else-if for vht_capab bits has no final else; other widths intentionally unchanged"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1438,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "csa_in_progress/DFS_OFFLOAD/is_dfs 3-way if/else-if has no final else; no-op default is intentional"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1477,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "hostapd_event_connect_failed_reason is dispatched only from wpa_supplicant_event's internal switch, ctx-derived hapd"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1477,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "addr is a driver-supplied MAC address field, internal invariant, only used via MAC2STR"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1477,
+      "verdict": "TP",
+      "confidence": "high",
+      "reason": "hapd only read (hapd->msg_ctx) in this function; direct call from wpa_supplicant_event's switch, not a dispatch-table slot"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1480,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "switch(reason_code) has no default; unhandled reason codes are silently ignored by design"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1606,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "ch_width 40/80/160 if/else-if has no final else; CONF_OPER_CHWIDTH_USE_HT default already set at line 1586"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1636,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "hostapd_probe_req_rx is dispatched only from wpa_supplicant_event's internal switch with ctx-derived hapd"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1636,
+      "verdict": "TP",
+      "confidence": "high",
+      "reason": "hapd only read (probereq_cb, num_probereq_cb); direct call from wpa_supplicant_event, not a dispatch-table slot"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1662,
+      "verdict": "FP",
+      "confidence": "low",
+      "reason": "Pointer-vs-array parameter syntax is semantically identical for a pass-through-only param (dst is never indexed); purely cosmetic, not actionable"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1709,
+      "verdict": "TP",
+      "confidence": "high",
+      "reason": "rx_auth only read (peer/auth_type/ies/ies_len/auth_transaction/status_code); direct call from hostapd_notif_auth's only caller"
+    },
+    {
+      "rule": "EXP43-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1756,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "hostapd_sta_auth's params (ap_drv_ops.h:134) have no restrict qualifier at all; the rule's UB precondition doesn't exist"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1763,
+      "verdict": "TP",
+      "confidence": "high",
+      "reason": "drv_mgmt only read (frame, frame_len, freq); direct call from wpa_supplicant_event, not a dispatch-table slot"
+    },
+    {
+      "rule": "DCL37-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1767,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "__maybe_unused is the common.h:503 __attribute__((unused)) macro used as a declaration modifier, not a declared identifier; parser misattribution"
+    },
+    {
+      "rule": "DCL37-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1767,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same __maybe_unused macro-as-modifier misparse"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1769,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "'Variable __maybe_unused' does not exist; same macro-modifier misparse as the DCL37-C findings on this line"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1782,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "MAC2STR(mgmt->sa)/MAC2STR(mgmt->da) are pure accessor macro expansions with no side effects"
+    },
+    {
+      "rule": "ARR36-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1827,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "mgmt is (struct ieee80211_mgmt*)drv_mgmt->frame -- a typed view of the SAME buffer, not a different array; end=drv_mgmt->frame+frame_len is that buffer's own end"
+    },
+    {
+      "rule": "ARR36-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1845,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same mgmt/drv_mgmt->frame same-buffer aliasing via cast as line 1827"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1902,
+      "verdict": "TP",
+      "confidence": "high",
+      "reason": "iface only read (num_bss) in get_hapd_bssid; direct call, not a dispatch-table slot"
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1907,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "Ordinary direct NULL check on a single pointer param; not a genuine actionable defect"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1921,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "p_hapd is the for_each_mld_link() loop-variable, assigned by the macro before any real read; same idiom as the elems findings"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1958,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "hapd->iface accessed on the function's own param, caller-guaranteed non-NULL internal invariant"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1977,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "hapd->iface accessed on switch_link_hapd's result, which always returns non-NULL given a non-NULL input per its own logic"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2010,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "iface was captured from the guaranteed-non-null hapd at line 1977 and never reassigned/freed since"
+    },
+    {
+      "rule": "EXP05-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2054,
+      "verdict": "TP",
+      "confidence": "high",
+      "reason": "hdr = (struct ieee80211_hdr *) buf casts away const from the const u8 *buf param into a non-const struct pointer; hdr should be declared const struct ieee80211_hdr *"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2057,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "hapd->iface accessed on switch_link_hapd's result at line 2055, guaranteed non-NULL"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2118,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "hapd->iface accessed on switch_link_hapd's result at line 2117, guaranteed non-NULL"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2141,
+      "verdict": "TP",
+      "confidence": "high",
+      "reason": "mode only read (num_channels, channels[i]) in hostapd_get_mode_chan; direct call, not a dispatch-table slot"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2149,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "chan holds &mode->channels[i], a member of a persistent hw_features array, not the address of the local pointer variable itself"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2167,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "chan holds hostapd_get_mode_chan's already-established persistent-array-member pointer, same misattribution as line 2149"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2184,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "dl_list_empty/else-if(survey->nf<chan->min_nf) has no final else; correct semantics is 'keep the smaller min_nf', no update needed otherwise"
+    },
+    {
+      "rule": "INT33-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2220,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "divisor = channel_time - last_channel_time is guarded by the enclosing 'channel_time > last_channel_time' check at line 2214, which guarantees divisor > 0"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2229,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "hostapd_event_get_survey dispatched only from wpa_supplicant_event with hapd->iface, internal invariant"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2286,
+      "verdict": "TP",
+      "confidence": "high",
+      "reason": "hapd only read (hapd->iface) in hostapd_event_dfs_radar_detected; direct call from wpa_supplicant_event's switch"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2287,
+      "verdict": "TP",
+      "confidence": "high",
+      "reason": "radar only read (freq/ht_enabled/chan_offset/chan_width/cf1/cf2); direct call"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2296,
+      "verdict": "TP",
+      "confidence": "high",
+      "reason": "hapd only read; direct call in hostapd_event_dfs_pre_cac_expired"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2297,
+      "verdict": "TP",
+      "confidence": "high",
+      "reason": "radar only read; direct call"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2306,
+      "verdict": "TP",
+      "confidence": "high",
+      "reason": "hapd only read; direct call in hostapd_event_dfs_cac_finished"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2307,
+      "verdict": "TP",
+      "confidence": "high",
+      "reason": "radar only read; direct call"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2316,
+      "verdict": "TP",
+      "confidence": "high",
+      "reason": "hapd only read; direct call in hostapd_event_dfs_cac_aborted"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2317,
+      "verdict": "TP",
+      "confidence": "high",
+      "reason": "radar only read; direct call"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2326,
+      "verdict": "TP",
+      "confidence": "high",
+      "reason": "hapd only read; direct call in hostapd_event_dfs_nop_finished"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2327,
+      "verdict": "TP",
+      "confidence": "high",
+      "reason": "radar only read; direct call"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2336,
+      "verdict": "TP",
+      "confidence": "high",
+      "reason": "hapd only read; direct call in hostapd_event_dfs_cac_started"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2337,
+      "verdict": "TP",
+      "confidence": "high",
+      "reason": "radar only read; direct call"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2398,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "elems parsed via ieee802_11_parse_elems at line 2392; ParseFailed goes to err: before any read, only populated elems is read at 2398"
+    },
+    {
+      "rule": "MSC07-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2445,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "err: label at line 2445 is a goto target (used at 2381,2385,2391,2396,2418), reachable by jumping over the preceding return; not unreachable"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2461,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "hapd->iface accessed on switch_link_hapd's result at line 2460, guaranteed non-NULL"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2517,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "hapd->disabled&&started / else-if(disabled&&cac_started) has no final else; intentional no-op otherwise"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2528,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "hostapd_free_stas(hapd) (sta_info.c:542) only frees the sta_info list nodes hanging off hapd->sta_list, not hapd itself; same sub-field-free misattribution class"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2528,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Same hostapd_free_stas misattribution; hapd is not freed, only hapd->sta_list entries are"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2583,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "wpa_supplicant_event's real NULL-data risk is narrowly gated: all EVENT_RX_MGMT callers pass &event (stack address); most switch cases with genuinely-nullable data explicitly guard 'if (!data)'"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2591,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "data->rx_mgmt.frame dereferenced only when event==EVENT_RX_MGMT, and every EVENT_RX_MGMT call site in the tree passes &event (never NULL)"
+    },
+    {
+      "rule": "DCL00-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2628,
+      "verdict": "TP",
+      "confidence": "high",
+      "reason": "h (struct hostapd_iface*) only read (h->bss[0]) in this EVENT_SCAN_RESULTS loop, never reassigned"
+    },
+    {
+      "rule": "MSC07-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2639,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Known ifdef-in-switch parsing class: line 2638's break is preceded by '#endif /* CONFIG_IEEE80211BE */' at 2637; the next case label is a normal reachable jump target, not unreachable code"
+    },
+    {
+      "rule": "MSC17-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2639,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Known MSC17-C #ifdef-intervening-next-case fallthrough misfire class; the preceding case ends with an explicit break at line 2638"
+    },
+    {
+      "rule": "MSC17-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2729,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Preceding case ends with an explicit break at line 2728; case label is always a valid jump target, not a fallthrough"
+    },
+    {
+      "rule": "MSC17-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2808,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Preceding case ends with an explicit break at line 2807"
+    },
+    {
+      "rule": "MSC17-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2872,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Preceding case ends with an explicit break at line 2871"
+    },
+    {
+      "rule": "MSC17-C",
+      "file": "src/ap/drv_callbacks.c",
+      "line": 2893,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "Preceding case ends with an explicit break at line 2892"
+    }
+  ],
+  "fns": [
+    {
+      "file": "src/ap/drv_callbacks.c",
+      "line": 1838,
+      "rule": "ARR30-C",
+      "desc": "CONFIG_NAN_USD action-frame handler in hostapd_action_rx checks only 'plen >= 5' before reading mgmt->u.action.u.vs_public_action.variable[0], but variable[0] is byte offset 5 (category[0]+action[1]+oui[2..4]) relative to plen's base -- needs plen >= 6. The sibling CONFIG_DPP branch a few lines above correctly requires 'plen >= 2+4' (=6) for the same variable[0] read. A 5-byte NAN public-action frame from an untrusted peer triggers a 1-byte out-of-bounds read, and the subsequent 'pos++' / 'end - pos' (line 1843-1845) compounds it by advancing past the buffer and potentially underflowing the pointer subtraction passed to hostapd_nan_usd_rx_sdf.",
+      "upstream_present": "unknown"
+    }
+  ],
+  "summary": {
+    "tp": 51,
+    "fp": 64,
+    "fn": 1
+  }
+}

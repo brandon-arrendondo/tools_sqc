@@ -1,0 +1,794 @@
+{
+  "labels": [
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 58,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 62,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/utils/http_curl.c",
+      "line": 68,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "debug_dump's ctx param genuinely unused/unmodified in body; plain-internal-helper genuine-if-low-value TP"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/utils/http_curl.c",
+      "line": 68,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ptr+size_t / ptr+companion-buf idiom (curl callback buf/len/ptr/size/nmemb params); established API05-C FP class"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/utils/http_curl.c",
+      "line": 69,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ptr+size_t / ptr+companion-buf idiom (curl callback buf/len/ptr/size/nmemb params); established API05-C FP class"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/utils/http_curl.c",
+      "line": 99,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "fixed libcurl callback signature (CURLOPT_DEBUGFUNCTION/CURLOPT_SSL_CTX_FUNCTION); dispatch-contract FP, new libcurl-callback instance of established eloop/vtable class"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/utils/http_curl.c",
+      "line": 99,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ptr+size_t / ptr+companion-buf idiom (curl callback buf/len/ptr/size/nmemb params); established API05-C FP class"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/utils/http_curl.c",
+      "line": 100,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ptr+size_t / ptr+companion-buf idiom (curl callback buf/len/ptr/size/nmemb params); established API05-C FP class"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/utils/http_curl.c",
+      "line": 136,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ptr+size_t / ptr+companion-buf idiom (curl callback buf/len/ptr/size/nmemb params); established API05-C FP class"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/utils/http_curl.c",
+      "line": 137,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ptr+size_t / ptr+companion-buf idiom (curl callback buf/len/ptr/size/nmemb params); established API05-C FP class"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/utils/http_curl.c",
+      "line": 168,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "'txt' is a pointer (BIO_read arg), not a char value undergoing widening; STR34-C category-error-on-pointer-argument established class"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/utils/http_curl.c",
+      "line": 212,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "if/else-if chain is an intentional guard clause (depth 0/1/2 tracking; OCSP good/mandatory-bad check; val 0/1/2 dispatch) with a deliberate no-op default; established MSC01-C no-final-else FP class"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/utils/http_curl.c",
+      "line": 233,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "if/else-if chain is an intentional guard clause (depth 0/1/2 tracking; OCSP good/mandatory-bad check; val 0/1/2 dispatch) with a deliberate no-op default; established MSC01-C no-final-else FP class"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 374,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "certs is either NULL, or was already sk_X509_free()'d+nulled on the earlier push-failure branch, or holds the live list; sk_X509_pop_free(NULL,...) safely no-ops -- exact match to tls_openssl.c:5371 sk_X509_pop_free NULL-safe precedent"
+    },
+    {
+      "rule": "EXP20-C",
+      "file": "src/utils/http_curl.c",
+      "line": 445,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "OCSP_check_validity() is documented to return exactly 1 (success)/0 (failure); if(!f()) is the unambiguous idiom for that contract -- exact match to tls_openssl.c:4128,4316,4346,5434 precedent"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/utils/http_curl.c",
+      "line": 484,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "static const SSL_METHOD *real_ssl_method; has no initializer but C guarantees zero/NULL static-storage-duration initialization (6.7.9p10); it is also set in curl_cb_ssl() before curl_patch_ssl_new() can run -- matches established 'static var used without explicit init' categorical FP class"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/utils/http_curl.c",
+      "line": 497,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "fixed libcurl callback signature (CURLOPT_DEBUGFUNCTION/CURLOPT_SSL_CTX_FUNCTION); dispatch-contract FP, new libcurl-callback instance of established eloop/vtable class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 546,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 550,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 551,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 553,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 554,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 570,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 573,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 574,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 578,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 579,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 580,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 581,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 582,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 583,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 585,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 586,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 587,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/utils/http_curl.c",
+      "line": 590,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "returned pointer (curl/ctx) is a heap/opaque-handle object from curl_easy_init()/os_zalloc(), not local automatic storage; established DCL30-C heap-vs-local-pointer FP class"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/utils/http_curl.c",
+      "line": 602,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API: ctx always the caller's own http_init_ctx()-allocated struct, verified via grep of osu_client.c call sites; established API00-C internal-only-API FP class"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/utils/http_curl.c",
+      "line": 606,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*ctx) inside os_zalloc(sizeof(*ctx)) is a compile-time type-size operation, not an actual dereference of the not-yet-assigned ctx; established sizeof(*ptr)-not-a-dereference FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 613,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/utils/http_curl.c",
+      "line": 615,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "returned pointer (curl/ctx) is a heap/opaque-handle object from curl_easy_init()/os_zalloc(), not local automatic storage; established DCL30-C heap-vs-local-pointer FP class"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/utils/http_curl.c",
+      "line": 619,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API: ctx always the caller's own http_init_ctx()-allocated struct, verified via grep of osu_client.c call sites; established API00-C internal-only-API FP class"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/utils/http_curl.c",
+      "line": 623,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "if/else-if chain is an intentional guard clause (depth 0/1/2 tracking; OCSP good/mandatory-bad check; val 0/1/2 dispatch) with a deliberate no-op default; established MSC01-C no-final-else FP class"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/utils/http_curl.c",
+      "line": 630,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API: ctx always the caller's own http_init_ctx()-allocated struct, verified via grep of osu_client.c call sites; established API00-C internal-only-API FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 634,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/utils/http_curl.c",
+      "line": 642,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API: ctx always the caller's own http_init_ctx()-allocated struct, verified via grep of osu_client.c call sites; established API00-C internal-only-API FP class"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/utils/http_curl.c",
+      "line": 642,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API: ctx always the caller's own http_init_ctx()-allocated struct, verified via grep of osu_client.c call sites; established API00-C internal-only-API FP class"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/utils/http_curl.c",
+      "line": 642,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API: ctx always the caller's own http_init_ctx()-allocated struct, verified via grep of osu_client.c call sites; established API00-C internal-only-API FP class"
+    },
+    {
+      "rule": "STR00-C",
+      "file": "src/utils/http_curl.c",
+      "line": 649,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "factually wrong: 'ret' is declared 'int ret = -1;' at line 649, not a plain char -- no such variable of type char exists on this line"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 656,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "FIO03-C",
+      "file": "src/utils/http_curl.c",
+      "line": 660,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "fopen(fname, \"wb\") for a downloaded file has no O_EXCL-equivalent exclusive-creation guard; matches established genuine (low-severity) data-file-rewrite TP precedent (hlr_auc_gw.c/eap_fast.c)"
+    },
+    {
+      "rule": "FIO06-C",
+      "file": "src/utils/http_curl.c",
+      "line": 660,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "fopen() cannot set explicit permissions on the downloaded file; same data-file-rewrite precedent as the paired FIO03-C finding"
+    },
+    {
+      "rule": "WIN03-C",
+      "file": "src/utils/http_curl.c",
+      "line": 660,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "literally true per rule text (mode string \"wb\" has no 'N' flag); no evidence this file is excluded from Windows builds (unlike the confirmed hlr_auc_gw.c never-built-for-Windows precedent), so graded genuine low-confidence/low-severity TP rather than platform-inapplicable FP"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 664,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 666,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 667,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 668,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 670,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 672,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 673,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 674,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 675,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 676,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 678,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 681,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 687,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 700,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "ERR00-C",
+      "file": "src/utils/http_curl.c",
+      "line": 702,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "fclose(f) return value ignored on a write-mode (\"wb\") stream -- a close-time flush failure is a real unreported data-loss risk; matches established write-stream (vs. FP-graded read-stream) ERR00-C/ERR33-C distinction"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/utils/http_curl.c",
+      "line": 708,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API: ctx always the caller's own http_init_ctx()-allocated struct, verified via grep of osu_client.c call sites; established API00-C internal-only-API FP class"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/utils/http_curl.c",
+      "line": 708,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API: ctx always the caller's own http_init_ctx()-allocated struct, verified via grep of osu_client.c call sites; established API00-C internal-only-API FP class"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/utils/http_curl.c",
+      "line": 708,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API: ctx always the caller's own http_init_ctx()-allocated struct, verified via grep of osu_client.c call sites; established API00-C internal-only-API FP class"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/utils/http_curl.c",
+      "line": 708,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API: ctx always the caller's own http_init_ctx()-allocated struct, verified via grep of osu_client.c call sites; established API00-C internal-only-API FP class"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/utils/http_curl.c",
+      "line": 708,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API: ctx always the caller's own http_init_ctx()-allocated struct, verified via grep of osu_client.c call sites; established API00-C internal-only-API FP class"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/utils/http_curl.c",
+      "line": 708,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API: ctx always the caller's own http_init_ctx()-allocated struct, verified via grep of osu_client.c call sites; established API00-C internal-only-API FP class"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/utils/http_curl.c",
+      "line": 708,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API: ctx always the caller's own http_init_ctx()-allocated struct, verified via grep of osu_client.c call sites; established API00-C internal-only-API FP class"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/utils/http_curl.c",
+      "line": 708,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API: ctx always the caller's own http_init_ctx()-allocated struct, verified via grep of osu_client.c call sites; established API00-C internal-only-API FP class"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/utils/http_curl.c",
+      "line": 708,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ptr+size_t / ptr+companion-buf idiom (curl callback buf/len/ptr/size/nmemb params); established API05-C FP class"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/utils/http_curl.c",
+      "line": 708,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ptr+size_t / ptr+companion-buf idiom (curl callback buf/len/ptr/size/nmemb params); established API05-C FP class"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/utils/http_curl.c",
+      "line": 709,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ptr+size_t / ptr+companion-buf idiom (curl callback buf/len/ptr/size/nmemb params); established API05-C FP class"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/utils/http_curl.c",
+      "line": 709,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ptr+size_t / ptr+companion-buf idiom (curl callback buf/len/ptr/size/nmemb params); established API05-C FP class"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/utils/http_curl.c",
+      "line": 710,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ptr+size_t / ptr+companion-buf idiom (curl callback buf/len/ptr/size/nmemb params); established API05-C FP class"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/utils/http_curl.c",
+      "line": 711,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ptr+size_t / ptr+companion-buf idiom (curl callback buf/len/ptr/size/nmemb params); established API05-C FP class"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/utils/http_curl.c",
+      "line": 711,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ptr+size_t / ptr+companion-buf idiom (curl callback buf/len/ptr/size/nmemb params); established API05-C FP class"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/utils/http_curl.c",
+      "line": 712,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ptr+size_t / ptr+companion-buf idiom (curl callback buf/len/ptr/size/nmemb params); established API05-C FP class"
+    },
+    {
+      "rule": "API05-C",
+      "file": "src/utils/http_curl.c",
+      "line": 712,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "ptr+size_t / ptr+companion-buf idiom (curl callback buf/len/ptr/size/nmemb params); established API05-C FP class"
+    },
+    {
+      "rule": "ERR33-C",
+      "file": "src/utils/http_curl.c",
+      "line": 731,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "snprintf() return value ignored; content_type is a caller-supplied, unbounded-length const char* into a fixed 200-byte 'ct' buffer with no length pre-check -- genuine (if low-probability) silent-truncation risk; http_post has no callers in this tree so the real-world bound on content_type is unverifiable"
+    },
+    {
+      "rule": "STR03-C",
+      "file": "src/utils/http_curl.c",
+      "line": 731,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "same silent-truncation root cause as the paired ERR33-C finding on this line -- content_type length is unbounded and unchecked before the fixed-size snprintf"
+    },
+    {
+      "rule": "EXP05-C",
+      "file": "src/utils/http_curl.c",
+      "line": 731,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no cast of any kind appears in 'snprintf(ct, sizeof(ct), \"Content-Type: %s\", content_type)' -- content_type is passed as a plain %s argument; phantom cast-away-const finding, established no-actual-cast-in-source FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 732,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 735,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 736,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 738,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 741,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 744,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "DCL31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 750,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "third-party libcurl/OpenSSL header (curl.h/openssl) unresolved by sqc's parser; established DCL31-C system-header FP class"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/utils/http_curl.c",
+      "line": 770,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "misattribution: ctx (the struct pointer) is never freed anywhere in http_post; only ctx->curl_buf is freed via free_curl_buf(), which self-nulls the field after each free, making repeat calls safe no-ops"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/utils/http_curl.c",
+      "line": 776,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API: ctx always the caller's own http_init_ctx()-allocated struct, verified via grep of osu_client.c call sites; established API00-C internal-only-API FP class"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/utils/http_curl.c",
+      "line": 776,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "http_get_err is a pure one-line accessor (return ctx->last_err); genuine-if-low-value TP"
+    }
+  ],
+  "fns": [
+    {
+      "file": "src/utils/http_curl.c",
+      "line": 708,
+      "rule": "MEM31-C",
+      "desc": "http_post() leaks the CURL easy handle returned by setup_curl_post()/curl_easy_init() on every call (success and all `goto fail` paths) -- unlike http_download_file(), there is no curl_easy_cleanup(curl) anywhere in the function.",
+      "upstream_present": "unknown"
+    },
+    {
+      "file": "src/utils/http_curl.c",
+      "line": 732,
+      "rule": "MEM31-C",
+      "desc": "Same function also leaks the `struct curl_slist *curl_hdr` list built via curl_slist_append() (content_type/ext_hdr headers) -- curl_slist_free_all(curl_hdr) is never called on any path; clear_curl()/free_curl_buf() only touch ctx->curl/ctx->curl_hdr, not this function-local curl/curl_hdr pair.",
+      "upstream_present": "unknown"
+    }
+  ],
+  "files_clean_for_fn": [],
+  "summary": {
+    "tp": 8,
+    "fp": 88,
+    "fn": 2
+  }
+}

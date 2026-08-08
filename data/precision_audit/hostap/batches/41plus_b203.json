@@ -1,0 +1,823 @@
+{
+ "src/common/ieee802_11_defs.h": [
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1011,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct ieee80211_hdr_s1g_beacon {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 sa[6];\n\tu8 timestamp[4];\n\tu8 change_seq[1];\n\t/* followed by:\n\t *   'u8 next_tbtt[3];' if the Next TBTT Present field in the\n\t *\t\t\tFrame Control field is 1\n\t *   'u8 compressed_ssid[4];' if the Compressed SSID Present field in\n\t *\t\t\tthe Frame Control is 1\n\t *   'u8 ano[1];' if the ANO field in the Frame Control field is 1\n\t */\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 2,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1016,
+   "message": "Flexible array member should use [] not [1]",
+   "rule_id": "DCL38-C",
+   "severity": "Medium",
+   "suggestion": "Use int data[]; syntax"
+  },
+  {
+   "column": 5,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1016,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1028,
+   "message": "Macro parameter 'type' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'type' in parentheses: (type) instead of type"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1028,
+   "message": "Macro parameter 'stype' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'stype' in parentheses: (stype) instead of stype"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1028,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (host_to_le16((type << 2) | (stype << 4)))"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1030,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct ieee80211_mgmt {\n\tle16 frame_control;\n\tle16 duration;\n\tu8 da[6];\n\tu8 sa[6];\n\tu8 bssid[6];\n\tle16 seq_ctrl;\n\tunion {\n\t\tstruct {\n\t\t\tle16 auth_alg;\n\t\t\tle16 auth_transaction;\n\t\t\tle16 status_code;\n\t\t\t/* possibly followed by Challenge text */\n\t\t\tu8 variable[];\n\t\t} STRUCT_PACKED auth;\n\t\tstruct {\n\t\t\tle16 reason_code;\n\t\t\tu8 variable[];\n\t\t} STRUCT_PACKED deauth;\n\t\tstruct {\n\t\t\tle16 capab_info;\n\t\t\tle16 listen_interval;\n\t\t\t/* followed by SSID and Supported rates */\n\t\t\tu8 variable[];\n\t\t} STRUCT_PACKED assoc_req;\n\t\tstruct {\n\t\t\tle16 capab_info;\n\t\t\tle16 status_code;\n\t\t\tle16 aid;\n\t\t\t/* followed by Supported rates */\n\t\t\tu8 variable[];\n\t\t} STRUCT_PACKED assoc_resp, reassoc_resp;\n\t\tstruct {\n\t\t\tle16 capab_info;\n\t\t\tle16 listen_interval;\n\t\t\tu8 current_ap[6];\n\t\t\t/* followed by SSID and Supported rates */\n\t\t\tu8 variable[];\n\t\t} STRUCT_PACKED reassoc_req;\n\t\tstruct {\n\t\t\tle16 reason_code;\n\t\t\tu8 variable[];\n\t\t} STRUCT_PACKED disassoc;\n\t\tstruct {\n\t\t\tu8 timestamp[8];\n\t\t\tle16 beacon_int;\n\t\t\tle16 capab_info;\n\t\t\t/* followed by some of SSID, Supported rates,\n\t\t\t * FH Params, DS Params, CF Params, IBSS Params, TIM */\n\t\t\tu8 variable[];\n\t\t} STRUCT_PACKED beacon;\n\t\t/* probe_req: only variable items: SSID, Supported rates */\n\t\tstruct {\n\t\t\tu8 timestamp[8];\n\t\t\tle16 beacon_int;\n\t\t\tle16 capab_info;\n\t\t\t/* followed by some of SSID, Supported rates,\n\t\t\t * FH Params, DS Params, CF Params, IBSS Params */\n\t\t\tu8 variable[];\n\t\t} STRUCT_PACKED probe_resp;\n\t\tstruct {\n\t\t\tu8 category;\n\t\t\tunion {\n\t\t\t\tstruct {\n\t\t\t\t\tu8 action_code;\n\t\t\t\t\tu8 dialog_token;\n\t\t\t\t\tu8 status_code;\n\t\t\t\t\tu8 variable[];\n\t\t\t\t} STRUCT_PACKED wmm_action;\n\t\t\t\tstruct{\n\t\t\t\t\tu8 action_code;\n\t\t\t\t\tu8 element_id;\n\t\t\t\t\tu8 length;\n\t\t\t\t\tu8 switch_mode;\n\t\t\t\t\tu8 new_chan;\n\t\t\t\t\tu8 switch_count;\n\t\t\t\t} STRUCT_PACKED chan_switch;\n\t\t\t\tstruct {\n\t\t\t\t\tu8 action;\n\t\t\t\t\tu8 sta_addr[ETH_ALEN];\n\t\t\t\t\tu8 target_ap_addr[ETH_ALEN];\n\t\t\t\t\tu8 variable[]; /* FT Request */\n\t\t\t\t} STRUCT_PACKED ft_action_req;\n\t\t\t\tstruct {\n\t\t\t\t\tu8 action;\n\t\t\t\t\tu8 sta_addr[ETH_ALEN];\n\t\t\t\t\tu8 target_ap_addr[ETH_ALEN];\n\t\t\t\t\tle16 status_code;\n\t\t\t\t\tu8 variable[]; /* FT Request */\n\t\t\t\t} STRUCT_PACKED ft_action_resp;\n\t\t\t\tstruct {\n\t\t\t\t\tu8 action;\n\t\t\t\t\tu8 trans_id[WLAN_SA_QUERY_TR_ID_LEN];\n\t\t\t\t\tu8 variable[]; /* OCI element */\n\t\t\t\t} STRUCT_PACKED sa_query_req;\n\t\t\t\tstruct {\n\t\t\t\t\tu8 action; /* */\n\t\t\t\t\tu8 trans_id[WLAN_SA_QUERY_TR_ID_LEN];\n\t\t\t\t\tu8 variable[]; /* OCI element */\n\t\t\t\t} STRUCT_PACKED sa_query_resp;\n\t\t\t\tstruct {\n\t\t\t\t\tu8 action;\n\t\t\t\t\tu8 dialogtoken;\n\t\t\t\t\tu8 variable[];\n\t\t\t\t} STRUCT_PACKED wnm_sleep_req;\n\t\t\t\tstruct {\n\t\t\t\t\tu8 action;\n\t\t\t\t\tu8 dialogtoken;\n\t\t\t\t\tle16 keydata_len;\n\t\t\t\t\tu8 variable[];\n\t\t\t\t} STRUCT_PACKED wnm_sleep_resp;\n\t\t\t\tstruct {\n\t\t\t\t\tu8 action;\n\t\t\t\t\tu8 variable[];\n\t\t\t\t} STRUCT_PACKED public_action;\n\t\t\t\tstruct {\n\t\t\t\t\tu8 action; /* 9 */\n\t\t\t\t\tu8 oui[3];\n\t\t\t\t\t/* Vendor-specific content */\n\t\t\t\t\tu8 variable[];\n\t\t\t\t} STRUCT_PACKED vs_public_action;\n\t\t\t\tstruct {\n\t\t\t\t\tu8 action; /* 7 */\n\t\t\t\t\tu8 dialog_token;\n\t\t\t\t\tu8 req_mode;\n\t\t\t\t\tle16 disassoc_timer;\n\t\t\t\t\tu8 validity_interval;\n\t\t\t\t\t/* BSS Termination Duration (optional),\n\t\t\t\t\t * Session Information URL (optional),\n\t\t\t\t\t * BSS Transition Candidate List\n\t\t\t\t\t * Entries */\n\t\t\t\t\tu8 variable[];\n\t\t\t\t} STRUCT_PACKED bss_tm_req;\n\t\t\t\tstruct {\n\t\t\t\t\tu8 action; /* 8 */\n\t\t\t\t\tu8 dialog_token;\n\t\t\t\t\tu8 status_code;\n\t\t\t\t\tu8 bss_termination_delay;\n\t\t\t\t\t/* Target BSSID (optional),\n\t\t\t\t\t * BSS Transition Candidate List\n\t\t\t\t\t * Entries (optional) */\n\t\t\t\t\tu8 variable[];\n\t\t\t\t} STRUCT_PACKED bss_tm_resp;\n\t\t\t\tstruct {\n\t\t\t\t\tu8 action; /* 6 */\n\t\t\t\t\tu8 dialog_token;\n\t\t\t\t\tu8 query_reason;\n\t\t\t\t\t/* BSS Transition Candidate List\n\t\t\t\t\t * Entries (optional) */\n\t\t\t\t\tu8 variable[];\n\t\t\t\t} STRUCT_PACKED bss_tm_query;\n\t\t\t\tstruct {\n\t\t\t\t\tu8 action; /* 11 */\n\t\t\t\t\tu8 dialog_token;\n\t\t\t\t\tu8 req_info;\n\t\t\t\t} STRUCT_PACKED coloc_intf_req;\n\t\t\t\tstruct {\n\t\t\t\t\tu8 action; /* 12 */\n\t\t\t\t\tu8 dialog_token;\n\t\t\t\t\tu8 variable[];\n\t\t\t\t} STRUCT_PACKED coloc_intf_report;\n\t\t\t\tstruct {\n\t\t\t\t\tu8 action; /* 15 */\n\t\t\t\t\tu8 variable[];\n\t\t\t\t} STRUCT_PACKED slf_prot_action;\n\t\t\t\tstruct {\n\t\t\t\t\tu8 action;\n\t\t\t\t\tu8 variable[];\n\t\t\t\t} STRUCT_PACKED fst_action;\n\t\t\t\tstruct {\n\t\t\t\t\tu8 action;\n\t\t\t\t\tu8 dialog_token;\n\t\t\t\t\tu8 variable[];\n\t\t\t\t} STRUCT_PACKED rrm;\n\t\t\t\tstruct {\n\t\t\t\t\tu8 action; /* Protected EHT - 11 */\n\t\t\t\t\tu8 dialog_token;\n\t\t\t\t\t/* Reconfiguration Multi-Link element,\n\t\t\t\t\t* OCI element (optional) */\n\t\t\t\t\tu8 variable[];\n\t\t\t\t} STRUCT_PACKED link_reconf_req;\n\t\t\t\tstruct {\n\t\t\t\t\tu8 action; /* Protected EHT - 12 */\n\t\t\t\t\tu8 dialog_token;\n\t\t\t\t\tu8 count;\n\t\t\t\t\t/* Reconfiguration status list,\n\t\t\t\t\t * Group Key Data (optional),\n\t\t\t\t\t * OCI element (optional),\n\t\t\t\t\t * Basic Multi-Link element (optional) */\n\t\t\t\t\tu8 variable[];\n\t\t\t\t} STRUCT_PACKED link_reconf_resp;\n\t\t\t} u;\n\t\t} STRUCT_PACKED action;\n\t} u;\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 3,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1038,
+   "message": "Inline struct definition with flexible array member embedded as field 'STRUCT_PACKED' in anonymous union. Inline flexible array structures cannot be embedded.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Define the flexible array structure separately and use a pointer to it"
+  },
+  {
+   "column": 3,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1045,
+   "message": "Inline struct definition with flexible array member embedded as field 'STRUCT_PACKED' in anonymous union. Inline flexible array structures cannot be embedded.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Define the flexible array structure separately and use a pointer to it"
+  },
+  {
+   "column": 3,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1049,
+   "message": "Inline struct definition with flexible array member embedded as field 'STRUCT_PACKED' in anonymous union. Inline flexible array structures cannot be embedded.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Define the flexible array structure separately and use a pointer to it"
+  },
+  {
+   "column": 3,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1055,
+   "message": "Inline struct definition with flexible array member embedded as field 'reassoc_resp' in anonymous union. Inline flexible array structures cannot be embedded.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Define the flexible array structure separately and use a pointer to it"
+  },
+  {
+   "column": 3,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1062,
+   "message": "Inline struct definition with flexible array member embedded as field 'STRUCT_PACKED' in anonymous union. Inline flexible array structures cannot be embedded.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Define the flexible array structure separately and use a pointer to it"
+  },
+  {
+   "column": 3,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1069,
+   "message": "Inline struct definition with flexible array member embedded as field 'STRUCT_PACKED' in anonymous union. Inline flexible array structures cannot be embedded.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Define the flexible array structure separately and use a pointer to it"
+  },
+  {
+   "column": 3,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1073,
+   "message": "Inline struct definition with flexible array member embedded as field 'STRUCT_PACKED' in anonymous union. Inline flexible array structures cannot be embedded.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Define the flexible array structure separately and use a pointer to it"
+  },
+  {
+   "column": 3,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1082,
+   "message": "Inline struct definition with flexible array member embedded as field 'STRUCT_PACKED' in anonymous union. Inline flexible array structures cannot be embedded.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Define the flexible array structure separately and use a pointer to it"
+  },
+  {
+   "column": 5,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1093,
+   "message": "Inline struct definition with flexible array member embedded as field 'STRUCT_PACKED' in anonymous union. Inline flexible array structures cannot be embedded.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Define the flexible array structure separately and use a pointer to it"
+  },
+  {
+   "column": 5,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1107,
+   "message": "Inline struct definition with flexible array member embedded as field 'STRUCT_PACKED' in anonymous union. Inline flexible array structures cannot be embedded.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Define the flexible array structure separately and use a pointer to it"
+  },
+  {
+   "column": 5,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1113,
+   "message": "Inline struct definition with flexible array member embedded as field 'STRUCT_PACKED' in anonymous union. Inline flexible array structures cannot be embedded.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Define the flexible array structure separately and use a pointer to it"
+  },
+  {
+   "column": 5,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1120,
+   "message": "Inline struct definition with flexible array member embedded as field 'STRUCT_PACKED' in anonymous union. Inline flexible array structures cannot be embedded.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Define the flexible array structure separately and use a pointer to it"
+  },
+  {
+   "column": 5,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1125,
+   "message": "Inline struct definition with flexible array member embedded as field 'STRUCT_PACKED' in anonymous union. Inline flexible array structures cannot be embedded.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Define the flexible array structure separately and use a pointer to it"
+  },
+  {
+   "column": 5,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1130,
+   "message": "Inline struct definition with flexible array member embedded as field 'STRUCT_PACKED' in anonymous union. Inline flexible array structures cannot be embedded.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Define the flexible array structure separately and use a pointer to it"
+  },
+  {
+   "column": 5,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1135,
+   "message": "Inline struct definition with flexible array member embedded as field 'STRUCT_PACKED' in anonymous union. Inline flexible array structures cannot be embedded.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Define the flexible array structure separately and use a pointer to it"
+  },
+  {
+   "column": 5,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1141,
+   "message": "Inline struct definition with flexible array member embedded as field 'STRUCT_PACKED' in anonymous union. Inline flexible array structures cannot be embedded.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Define the flexible array structure separately and use a pointer to it"
+  },
+  {
+   "column": 5,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1145,
+   "message": "Inline struct definition with flexible array member embedded as field 'STRUCT_PACKED' in anonymous union. Inline flexible array structures cannot be embedded.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Define the flexible array structure separately and use a pointer to it"
+  },
+  {
+   "column": 5,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1151,
+   "message": "Inline struct definition with flexible array member embedded as field 'STRUCT_PACKED' in anonymous union. Inline flexible array structures cannot be embedded.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Define the flexible array structure separately and use a pointer to it"
+  },
+  {
+   "column": 5,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1163,
+   "message": "Inline struct definition with flexible array member embedded as field 'STRUCT_PACKED' in anonymous union. Inline flexible array structures cannot be embedded.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Define the flexible array structure separately and use a pointer to it"
+  },
+  {
+   "column": 5,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1173,
+   "message": "Inline struct definition with flexible array member embedded as field 'STRUCT_PACKED' in anonymous union. Inline flexible array structures cannot be embedded.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Define the flexible array structure separately and use a pointer to it"
+  },
+  {
+   "column": 5,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1186,
+   "message": "Inline struct definition with flexible array member embedded as field 'STRUCT_PACKED' in anonymous union. Inline flexible array structures cannot be embedded.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Define the flexible array structure separately and use a pointer to it"
+  },
+  {
+   "column": 5,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1191,
+   "message": "Inline struct definition with flexible array member embedded as field 'STRUCT_PACKED' in anonymous union. Inline flexible array structures cannot be embedded.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Define the flexible array structure separately and use a pointer to it"
+  },
+  {
+   "column": 5,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1195,
+   "message": "Inline struct definition with flexible array member embedded as field 'STRUCT_PACKED' in anonymous union. Inline flexible array structures cannot be embedded.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Define the flexible array structure separately and use a pointer to it"
+  },
+  {
+   "column": 5,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1199,
+   "message": "Inline struct definition with flexible array member embedded as field 'STRUCT_PACKED' in anonymous union. Inline flexible array structures cannot be embedded.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Define the flexible array structure separately and use a pointer to it"
+  },
+  {
+   "column": 5,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1204,
+   "message": "Inline struct definition with flexible array member embedded as field 'STRUCT_PACKED' in anonymous union. Inline flexible array structures cannot be embedded.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Define the flexible array structure separately and use a pointer to it"
+  },
+  {
+   "column": 5,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1211,
+   "message": "Inline struct definition with flexible array member embedded as field 'STRUCT_PACKED' in anonymous union. Inline flexible array structures cannot be embedded.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Define the flexible array structure separately and use a pointer to it"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1233,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct ieee80211_ht_capabilities {\n\tle16 ht_capabilities_info;\n\tu8 a_mpdu_params; /* Maximum A-MPDU Length Exponent B0..B1\n\t\t\t   * Minimum MPDU Start Spacing B2..B4\n\t\t\t   * Reserved B5..B7 */\n\tu8 supported_mcs_set[16];\n\tle16 ht_extended_capabilities;\n\tle32 tx_bf_capability_info;\n\tu8 asel_capabilities;\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1246,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct ieee80211_ht_operation {\n\tu8 primary_chan;\n\t/* Five octets of HT Operation Information */\n\tu8 ht_param; /* B0..B7 */\n\tle16 operation_mode; /* B8..B23 */\n\tle16 param; /* B24..B39 */\n\tu8 basic_mcs_set[16];\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1256,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct ieee80211_obss_scan_parameters {\n\tle16 scan_passive_dwell;\n\tle16 scan_active_dwell;\n\tle16 width_trigger_scan_interval;\n\tle16 scan_passive_total_per_channel;\n\tle16 scan_active_total_per_channel;\n\tle16 channel_transition_delay_factor;\n\tle16 scan_activity_threshold;\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1267,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct ieee80211_vht_capabilities {\n\tle32 vht_capabilities_info;\n\tstruct {\n\t\tle16 rx_map;\n\t\tle16 rx_highest;\n\t\tle16 tx_map;\n\t\tle16 tx_highest;\n\t} vht_supported_mcs_set;\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1277,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct ieee80211_vht_operation {\n\tu8 vht_op_info_chwidth;\n\tu8 vht_op_info_chan_center_freq_seg0_idx;\n\tu8 vht_op_info_chan_center_freq_seg1_idx;\n\tle16 vht_basic_mcs_set;\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1284,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct ieee80211_ampe_ie {\n\tu8 selected_pairwise_suite[4];\n\tu8 local_nonce[32];\n\tu8 peer_nonce[32];\n\t/* Followed by\n\t * Key Replay Counter[8] (optional)\n\t *\t(only in Mesh Group Key Inform/Acknowledge frames)\n\t * GTKdata[variable] (optional)\n\t *\t(MGTK[variable] || Key RSC[8] || GTKExpirationTime[4])\n\t * IGTKdata[variable] (optional)\n\t *\t(Key ID[2], IPN[6], IGTK[variable] in IGTK KDE format)\n\t */\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1345,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (((u32) (BIT(6) | BIT(7)))"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1560,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct wmm_information_element {\n\t/* Element ID: 221 (0xdd); Length: 7 */\n\t/* required fields for WMM version 1 */\n\tu8 oui[3]; /* 00:50:f2 */\n\tu8 oui_type; /* 2 */\n\tu8 oui_subtype; /* 0 */\n\tu8 version; /* 1 for WMM version 1.0 */\n\tu8 qos_info; /* AP/STA specific QoS info */\n\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1588,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct wmm_ac_parameter {\n\tu8 aci_aifsn; /* AIFSN, ACM, ACI */\n\tu8 cw; /* ECWmin, ECWmax (CW = 2^ECW - 1) */\n\tle16 txop_limit;\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1598,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct wmm_parameter_element {\n\t/* Element ID: 221 (0xdd); Length: 24 */\n\t/* required fields for WMM version 1 */\n\tu8 oui[3]; /* 00:50:f2 */\n\tu8 oui_type; /* 2 */\n\tu8 oui_subtype; /* 1 */\n\tu8 version; /* 1 for WMM version 1.0 */\n\tu8 qos_info; /* AP/STA specific QoS info */\n\tu8 reserved; /* 0 */\n\tstruct wmm_ac_parameter ac[4]; /* AC_BE, AC_BK, AC_VI, AC_VO */\n\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1612,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct wmm_tspec_element {\n\tu8 eid; /* 221 = 0xdd */\n\tu8 length; /* 6 + 55 = 61 */\n\tu8 oui[3]; /* 00:50:f2 */\n\tu8 oui_type; /* 2 */\n\tu8 oui_subtype; /* 2 */\n\tu8 version; /* 1 */\n\t/* WMM TSPEC body (55 octets): */\n\tu8 ts_info[3];\n\tle16 nominal_msdu_size;\n\tle16 maximum_msdu_size;\n\tle32 minimum_service_interval;\n\tle32 maximum_service_interval;\n\tle32 inactivity_interval;\n\tle32 suspension_interval;\n\tle32 service_start_time;\n\tle32 minimum_data_rate;\n\tle32 mean_data_rate;\n\tle32 peak_data_rate;\n\tle32 maximum_burst_size;\n\tle32 delay_bound;\n\tle32 minimum_phy_rate;\n\tle16 surplus_bandwidth_allowance;\n\tle16 medium_time;\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 1866,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct p2ps_feature_capab {\n\tu8 cpt;\n\tu8 reserved;\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2106,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct ieee80211_2040_bss_coex_ie {\n\tu8 element_id;\n\tu8 length;\n\tu8 coex_param;\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2112,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct ieee80211_2040_intol_chan_report {\n\tu8 element_id;\n\tu8 length;\n\tu8 op_class;\n\tu8 variable[0];\t/* Channel List */\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 5,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2116,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2120,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct wnm_sleep_element {\n\tu8 eid;     /* WLAN_EID_WNMSLEEP */\n\tu8 len;\n\tu8 action_type; /* WNM_SLEEP_ENTER/WNM_SLEEP_MODE_EXIT */\n\tu8 status;\n\tle16 intval;\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2154,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct wnm_event_report_element {\n\tu8 eid; /* WLAN_EID_EVENT_REPORT */\n\tu8 len;\n\tu8 token;\n\tu8 type;\n\tu8 status;\n\t/* Followed by conditional fields */\n\tunion {\n\t\tstruct {\n\t\t\tu8 tsf[8]; /* Event TSF */\n\t\t\tu8 color_bitmap[8]; /* Event Report field */\n\t\t} STRUCT_PACKED bss_color_collision;\n\t\tstruct {\n\t\t\tu8 tsf[8]; /* Event TSF */\n\t\t\tu8 color; /* Event Report field */\n\t\t} STRUCT_PACKED bss_color_in_use;\n\t} u;\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2194,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct tpc_report {\n\tu8 eid;\n\tu8 len;\n\tu8 tx_power;\n\tu8 link_margin;\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2224,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct rrm_link_measurement_request {\n\tu8 dialog_token;\n\ts8 tx_power;\n\ts8 max_tp;\n\tu8 variable[0];\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 5,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2228,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2232,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct rrm_link_measurement_report {\n\tu8 dialog_token;\n\tstruct tpc_report tpc;\n\tu8 rx_ant_id;\n\tu8 tx_ant_id;\n\tu8 rcpi;\n\tu8 rsni;\n\tu8 variable[0];\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 5,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2239,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2243,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct rrm_measurement_request_element {\n\tu8 eid; /* Element ID */\n\tu8 len; /* Length */\n\tu8 token; /* Measurement Token */\n\tu8 mode; /* Measurement Request Mode */\n\tu8 type; /* Measurement Type */\n\tu8 variable[0]; /* Measurement Request */\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 5,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2249,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2260,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct rrm_measurement_beacon_request {\n\tu8 oper_class; /* Operating Class */\n\tu8 channel; /* Channel Number */\n\tle16 rand_interval; /* Randomization Interval (in TUs) */\n\tle16 duration; /* Measurement Duration (in TUs) */\n\tu8 mode; /* Measurement Mode */\n\tu8 bssid[ETH_ALEN]; /* BSSID */\n\tu8 variable[0]; /* Optional Subelements */\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 5,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2267,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2305,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct rrm_measurement_report_element {\n\tu8 eid; /* Element ID */\n\tu8 len; /* Length */\n\tu8 token; /* Measurement Token */\n\tu8 mode; /* Measurement Report Mode */\n\tu8 type; /* Measurement Type */\n\tu8 variable[0]; /* Measurement Report */\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 5,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2311,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2321,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct rrm_measurement_beacon_report {\n\tu8 op_class; /* Operating Class */\n\tu8 channel; /* Channel Number */\n\tle64 start_time; /* Actual Measurement Start Time\n\t\t\t  * (in TSF of the BSS requesting the measurement) */\n\tle16 duration; /* in TUs */\n\tu8 report_info; /* Reported Frame Information */\n\tu8 rcpi; /* RCPI */\n\tu8 rsni; /* RSNI */\n\tu8 bssid[ETH_ALEN]; /* BSSID */\n\tu8 antenna_id; /* Antenna ID */\n\tle32 parent_tsf; /* Parent TSF */\n\tu8 variable[0]; /* Optional Subelements */\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 5,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2333,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2353,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct multi_band_ie {\n\tu8 eid; /* WLAN_EID_MULTI_BAND */\n\tu8 len;\n\tu8 mb_ctrl;\n\tu8 band_id;\n\tu8 op_class;\n\tu8 chan;\n\tu8 bssid[ETH_ALEN];\n\tle16 beacon_int;\n\tu8 tsf_offs[8];\n\tu8 mb_connection_capability;\n\tu8 fst_session_tmout;\n\t/* Optional:\n\t *   STA MAC Address\n\t *   Pairwise Cipher Suite Count\n\t *   Pairwise Cipher Suite List\n\t */\n\tu8 variable[0];\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 5,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2370,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2465,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct ieee80211_he_capabilities {\n\tu8 he_mac_capab_info[6];\n\tu8 he_phy_capab_info[11];\n\t/* Supported HE-MCS And NSS Set field */\n\tstruct {\n\t\tle16 rx_map; /* Rx HE-MCS Map <= 80 MHz */\n\t\tle16 tx_map; /* Tx HE-MCS Map <= 80 MHz */\n\t\t/* Followed by 0, 4, or 8 octets of optional Rx/Tx HE-MCS maps\n\t\t * for 160 MHz and 80+80 MHz. These are included in the\n\t\t * optional[] below. */\n\t} he_basic_supported_mcs_set;\n\t/* Followed by optional variable length PPE Thresholds field. */\n\tu8 optional[33];\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2481,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct ieee80211_he_operation {\n\tle32 he_oper_params; /* HE Operation Parameters[3] and\n\t\t\t      * BSS Color Information[1] */\n\tle16 he_mcs_nss_set;\n\t/* Followed by conditional VHT Operation Information (3 octets),\n\t * Max Co-Hosted BSSID Indicator subfield (1 octet), and/or 6 GHz\n\t * Operation Information subfield (5 octets). */\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2491,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct ieee80211_he_6ghz_oper_info {\n\tu8 primary_chan;\n\tu8 control;\n\tu8 chan_center_freq_seg0;\n\tu8 chan_center_freq_seg1;\n\tu8 min_rate;\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2506,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct ieee80211_he_6ghz_band_cap {\n\t /* Minimum MPDU Start Spacing B0..B2\n\t  * Maximum A-MPDU Length Exponent B3..B5\n\t  * Maximum MPDU Length B6..B7\n\t  * SM Power Save B9..B10\n\t  * RD Responder B11\n\t  * Rx Antenna Pattern Consistency B12\n\t  * Tx Antenna Consistency B13 */\n\tle16 capab; /* Capabilities Information field */\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2542,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct ieee80211_spatial_reuse {\n\tu8 sr_ctrl; /* SR Control */\n\t/* Up to 19 octets of parameters:\n\t * Non-SRG OBSS PD Max Offset[0 or 1]\n\t * SRG OBSS PD Min Offset[0 or 1]\n\t * SRG OBSS PD Max Offset[0 or 1]\n\t * SRG BSS Color Bitmap[0 or 8]\n\t * SRG Partial BSSID Bitmap[0 or 8]\n\t */\n\tu8 params[19];\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2647,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct ieee80211_he_mu_edca_parameter_set {\n\tu8 he_qos_info;\n\tu8 he_mu_ac_be_param[3];\n\tu8 he_mu_ac_bk_param[3];\n\tu8 he_mu_ac_vi_param[3];\n\tu8 he_mu_ac_vo_param[3];\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2739,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct ieee80211_eht_oper_info {\n\tu8 control; /* B0..B2: Channel Width */\n\tu8 ccfs0;\n\tu8 ccfs1;\n\tle16 disabled_chan_bitmap; /* 0 or 2 octets */\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2747,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct ieee80211_eht_operation {\n\tu8 oper_params; /* EHT Operation Parameters: EHT_OPER_* bits */\n\tu8 basic_eht_mcs_nss_set[4];\n\tstruct ieee80211_eht_oper_info oper_info; /* 0 or 3 or 5 octets */\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2819,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct ieee80211_eht_capabilities {\n\t/* EHT MAC Capabilities Information */\n\tle16 mac_cap;\n\t/* EHT PHY Capabilities Information */\n\tu8 phy_cap[EHT_PHY_CAPAB_LEN];\n\t/* Supported EHT-MCS And NSS Set and EHT PPE thresholds (Optional) */\n\tu8 optional[EHT_MCS_NSS_CAPAB_LEN + EHT_PPE_THRESH_CAPAB_LEN];\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2882,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct eht_ml_basic_common_info {\n\tu8 len;\n\tu8 mld_addr[ETH_ALEN];\n\n\t/*\n\t * Followed by optional fields based on the multi link basic presence\n\t * bitmap\n\t *\n\t * Link ID Info: 1 octet\n\t * BSS Parameters Change Count: 1 octet\n\t * Medium Synchronization Delay Information: 2 octets\n\t * EML Capabilities: 2 octets\n\t * MLD Capabilities and Operations: 2 octets\n\t * AP MLD ID: 1 octet\n\t * Extended MLD Capabilities And Operations: 2 octets\n\t */\n\tu8 variable[];\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2882,
+   "message": "flexible array structure 'eht_ml_basic_common_info' declared with global storage. Only dynamic storage duration is allowed for flexible array structures.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation: struct eht_ml_basic_common_info *ptr = malloc(sizeof(struct eht_ml_basic_common_info) + sizeof(element_type) * count);"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2940,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct ieee80211_eht_per_sta_profile {\n\tle16 sta_control;\n\n\t/* Followed by STA Info and STA Profile fields */\n\tu8 variable[];\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2940,
+   "message": "flexible array structure 'ieee80211_eht_per_sta_profile' declared with global storage. Only dynamic storage duration is allowed for flexible array structures.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation: struct ieee80211_eht_per_sta_profile *ptr = malloc(sizeof(struct ieee80211_eht_per_sta_profile) + sizeof(element_type) * count);"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2956,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct eht_ml_probe_req_common_info {\n\tu8 len;\n\n\t/*\n\t * Followed by optional fields based on the multi link basic presence\n\t * bitmap\n\t *\n\t * AP MLD ID: 1 octet\n\t * MLD MAC Address: 6 cotets\n\t */\n\tu8 variable[];\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2956,
+   "message": "flexible array structure 'eht_ml_probe_req_common_info' declared with global storage. Only dynamic storage duration is allowed for flexible array structures.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation: struct eht_ml_probe_req_common_info *ptr = malloc(sizeof(struct eht_ml_probe_req_common_info) + sizeof(element_type) * count);"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2989,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct eht_ml_reconf_common_info {\n\tu8 len;\n\n\t/*\n\t * Followed by optional fields based on the multi link reconf presence\n\t * bitmap\n\t *\n\t * MLD MAC Address: 6 octets\n\t * EML Capabilities: 2 octets\n\t * MLD Capabilities and Operations: 2 octets\n\t * Extended MLD Capabilities and Operations: 2 octets\n\t */\n\tu8 variable[];\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 2989,
+   "message": "flexible array structure 'eht_ml_reconf_common_info' declared with global storage. Only dynamic storage duration is allowed for flexible array structures.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation: struct eht_ml_reconf_common_info *ptr = malloc(sizeof(struct eht_ml_reconf_common_info) + sizeof(element_type) * count);"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 3017,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct eht_ml_reconf_sta_info {\n\tu8 len;\n\n\t/* Followed by optional fields based on STA control presence bitmap.\n\t *\n\t * STA MAC Address: 6 octets\n\t * AP Removal Timer: 2 octets\n\t * Operation Parameters: 3 octets\n\t * NSTR Indication Bitmap: 1 or 2 octets\n\t */\n\tu8 variable[];\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 3017,
+   "message": "flexible array structure 'eht_ml_reconf_sta_info' declared with global storage. Only dynamic storage duration is allowed for flexible array structures.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation: struct eht_ml_reconf_sta_info *ptr = malloc(sizeof(struct eht_ml_reconf_sta_info) + sizeof(element_type) * count);"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 3032,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct ieee80211_eht_ml {\n\tle16 ml_control;\n\n\t/* Followed by Common Info and Link Info fields */\n\tu8 variable[];\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 3032,
+   "message": "flexible array structure 'ieee80211_eht_ml' declared with global storage. Only dynamic storage duration is allowed for flexible array structures.",
+   "rule_id": "MEM33-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation: struct ieee80211_eht_ml *ptr = malloc(sizeof(struct ieee80211_eht_ml) + sizeof(element_type) * count);"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 3043,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct ieee80211_bw_ind_info {\n\tu8 control; /* B0..B2: Channel Width */\n\tu8 ccfs0;\n\tu8 ccfs1;\n\tle16 disabled_chan_bitmap; /* 0 or 2 octets */\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 3059,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct ieee80211_bw_ind_element {\n\tu8 bw_ind_params; /* Bandwidth Indication Parameters */\n\tstruct ieee80211_bw_ind_info bw_ind_info; /* 3 or 5 octets */\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 3263,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct ieee80211_neighbor_ap_info {\n\tu8 tbtt_info_hdr;\n\tu8 tbtt_info_len;\n\tu8 op_class;\n\tu8 channel;\n\n\t/* Followed by the rest of the TBTT Information field contents */\n\tu8 data[0];\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  },
+  {
+   "column": 5,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 3270,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 1,
+   "file": "src/common/ieee802_11_defs.h",
+   "line": 3274,
+   "message": "Incompatible declarations of object 'STRUCT_PACKED': types 'struct ieee80211_hdr {\n\tle16 frame_control;\n\tle16 duration_id;\n\tu8 addr1[6];\n\tu8 addr2[6];\n\tu8 addr3[6];\n\tle16 seq_ctrl;\n\t/* followed by 'u8 addr4[6];' if ToDS and FromDS is set in data frame\n\t */\n}' and 'struct ieee80211_s1g_beacon_compat {\n\tu8 element_id;\n\tu8 length;\n\tle16 compat_info;\n\tle16 beacon_interval;\n\tle32 tsf_completion;\n}'",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same object have identical types"
+  }
+ ]
+}

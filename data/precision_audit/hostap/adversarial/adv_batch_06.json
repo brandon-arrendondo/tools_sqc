@@ -1,0 +1,722 @@
+[
+ {
+  "rule": "DCL30-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 5869,
+  "verdict": "FP",
+  "reason": "buf = os_malloc(len); heap-allocated, not automatic/stack storage -- confused local variable with local storage (confirmed DCL30-C FP class).",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL31-C",
+  "file": "hostapd/config_file.c",
+  "line": 2985,
+  "verdict": "FP",
+  "reason": "hostapd_config_parse_cipher is defined at :747, ~2200 lines earlier in the same file; DCL31-C same-file-distance blind spot (41plus_b6 precedent)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL31-C",
+  "file": "hostapd/config_file.c",
+  "line": 2995,
+  "verdict": "FP",
+  "reason": "hostapd_config_parse_cipher is defined at :747, ~2200 lines earlier in the same file; DCL31-C same-file-distance blind spot (41plus_b6 precedent)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL31-C",
+  "file": "hostapd/config_file.c",
+  "line": 3006,
+  "verdict": "FP",
+  "reason": "hostapd_config_parse_cipher is defined at :747, ~2200 lines earlier in the same file; DCL31-C same-file-distance blind spot (41plus_b6 precedent)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL31-C",
+  "file": "hostapd/config_file.c",
+  "line": 3019,
+  "verdict": "FP",
+  "reason": "hostapd_config_parse_cipher is defined at :747, ~2200 lines earlier in the same file; DCL31-C same-file-distance blind spot (41plus_b6 precedent)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL31-C",
+  "file": "hostapd/config_file.c",
+  "line": 3031,
+  "verdict": "FP",
+  "reason": "hostapd_config_parse_cipher is defined at :747, ~2200 lines earlier in the same file; DCL31-C same-file-distance blind spot (41plus_b6 precedent)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL31-C",
+  "file": "hostapd/config_file.c",
+  "line": 4372,
+  "verdict": "FP",
+  "reason": "parse_sae_password is defined (declared) at config_file.c:2008, far earlier in the same file - DCL31-C large-same-file-distance FP class (categorical_patterns.md 41plus_b9/b10 precedent)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL31-C",
+  "file": "hostapd/config_file.c",
+  "line": 5053,
+  "verdict": "FP",
+  "reason": "DCL31-C large-same-file-distance FP class (b20/3056): hostapd_config_fill is declared+defined at :2237, ~2800 lines earlier",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL31-C",
+  "file": "hostapd/config_file.c",
+  "line": 5084,
+  "verdict": "FP",
+  "reason": "DCL31-C large-same-file-distance FP class (b20/3056): hostapd_config_fill is declared+defined at :2237, ~2800 lines earlier",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL31-C",
+  "file": "src/ap/hostapd.c",
+  "line": 87,
+  "verdict": "FP",
+  "reason": "'cb' is a function-pointer *parameter* being invoked, not an undeclared function; sqc conflates the two",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL31-C",
+  "file": "src/ap/sta_info.c",
+  "line": 61,
+  "verdict": "FP",
+  "reason": "'cb' is a declared function-pointer parameter (ap_for_each_sta), calling through it is not an undeclared-function call",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL36-C",
+  "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+  "line": 89,
+  "verdict": "FP",
+  "reason": "WINAPI is a calling-convention macro token, not a declared identifier; parser misattributes it as a redeclared object with conflicting linkage",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL36-C",
+  "file": "wpa_supplicant/ctrl_iface_named_pipe.c",
+  "line": 96,
+  "verdict": "FP",
+  "reason": "WINAPI is a calling-convention macro token, not a declared identifier; parser misattributes it as a redeclared object with conflicting linkage",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL41-C",
+  "file": "src/drivers/driver_common.c",
+  "line": 31,
+  "verdict": "FP",
+  "reason": "X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL41-C",
+  "file": "src/drivers/driver_common.c",
+  "line": 32,
+  "verdict": "FP",
+  "reason": "X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL41-C",
+  "file": "src/drivers/driver_common.c",
+  "line": 33,
+  "verdict": "FP",
+  "reason": "X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL41-C",
+  "file": "src/drivers/driver_common.c",
+  "line": 34,
+  "verdict": "FP",
+  "reason": "X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL41-C",
+  "file": "src/drivers/driver_common.c",
+  "line": 35,
+  "verdict": "FP",
+  "reason": "X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL41-C",
+  "file": "src/drivers/driver_common.c",
+  "line": 36,
+  "verdict": "FP",
+  "reason": "X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL41-C",
+  "file": "src/drivers/driver_common.c",
+  "line": 37,
+  "verdict": "FP",
+  "reason": "X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL41-C",
+  "file": "src/drivers/driver_common.c",
+  "line": 38,
+  "verdict": "FP",
+  "reason": "X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL41-C",
+  "file": "src/drivers/driver_common.c",
+  "line": 39,
+  "verdict": "FP",
+  "reason": "X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "DCL41-C",
+  "file": "src/drivers/driver_common.c",
+  "line": 40,
+  "verdict": "FP",
+  "reason": "X-macro case-label generator (E2S/DF2S): sqc doesn't expand macro, parses case-label statement as pre-first-case code; DCL41-C X-macro FP class (41plus_b130).",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ENV01-C",
+  "file": "hostapd/config_file.c",
+  "line": 1292,
+  "verdict": "FP",
+  "reason": "`u8 oi[MAX_ROAMING_CONSORTIUM_LEN]` is an ordinary fixed-size local array; no getenv/env-var code anywhere in this function; confirmed ENV01-C wholesale-misfire FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ENV01-C",
+  "file": "hostapd/config_file.c",
+  "line": 2182,
+  "verdict": "FP",
+  "reason": "no getenv/environment-variable code anywhere in the function; confirmed ENV01-C wholesale-misfire FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ENV01-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 2067,
+  "verdict": "FP",
+  "reason": "Fixed-size buffer flagged for env-var use with no getenv/putenv anywhere nearby; CONFIRMED FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ENV01-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 2185,
+  "verdict": "FP",
+  "reason": "Fixed-size buffer flagged for env-var use with no getenv/putenv anywhere nearby; CONFIRMED FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ENV01-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 3101,
+  "verdict": "FP",
+  "reason": "Fixed-size buffer flagged for env-var use with no getenv/putenv anywhere nearby; CONFIRMED FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ENV01-C",
+  "file": "hostapd/hlr_auc_gw.c",
+  "line": 743,
+  "verdict": "FP",
+  "reason": "No getenv() call anywhere in this function or file (confirmed ENV01-C wholesale-misfire-on-fixed-buffer class).",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ENV01-C",
+  "file": "hostapd/hostapd_cli.c",
+  "line": 630,
+  "verdict": "FP",
+  "reason": "ssid_hex is a fixed array sized by SSID_MAX_LEN macro arithmetic; function never calls getenv(); established ENV01-C wholesale-misfire class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ENV01-C",
+  "file": "hostapd/sae_pk_gen.c",
+  "line": 28,
+  "verdict": "FP",
+  "reason": "hash[SAE_MAX_HASH_LEN] is an ordinary fixed local array sized by a compile-time macro (SAE_MAX_HASH_LEN=64 in sae.h); no getenv()/environment-variable usage anywhere in this file",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ENV01-C",
+  "file": "hostapd/sae_pk_gen.c",
+  "line": 29,
+  "verdict": "FP",
+  "reason": "hash_hex[...] fixed array sized by compile-time macros; no environment-variable usage in this file at all",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ENV01-C",
+  "file": "hostapd/sae_pk_gen.c",
+  "line": 30,
+  "verdict": "FP",
+  "reason": "pw_base_bin[SAE_MAX_HASH_LEN] fixed array sized by compile-time macro; no environment-variable usage in this file",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ENV34-C",
+  "file": "hostapd/hostapd_cli.c",
+  "line": 2170,
+  "verdict": "FP",
+  "reason": "getenv(\"HOME\") result is consumed immediately in the same scope (os_strlen/os_snprintf) with zero intervening env-mutating calls - no real invalidation window",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ENV34-C",
+  "file": "src/utils/os_internal.c",
+  "line": 91,
+  "verdict": "FP",
+  "reason": "gmtime() result consumed immediately (fields copied to tm), never stored beyond immediate use",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ENV34-C",
+  "file": "src/utils/os_unix.c",
+  "line": 157,
+  "verdict": "FP",
+  "reason": "localtime() result consumed immediately via mktime(tm1), never stored across calls",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ENV34-C",
+  "file": "src/utils/os_unix.c",
+  "line": 160,
+  "verdict": "FP",
+  "reason": "gmtime() result consumed immediately via mktime(tm1), not stored across calls",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ENV34-C",
+  "file": "src/utils/os_unix.c",
+  "line": 179,
+  "verdict": "FP",
+  "reason": "gmtime() result consumed immediately, function returns right after",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ENV34-C",
+  "file": "src/utils/os_win32.c",
+  "line": 85,
+  "verdict": "FP",
+  "reason": "tm1 consumed immediately (checked, passed to mktime, reassigned) within same scope; consume-immediately FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ENV34-C",
+  "file": "src/utils/os_win32.c",
+  "line": 88,
+  "verdict": "FP",
+  "reason": "tm1 consumed immediately (checked, passed to mktime); consume-immediately FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ENV34-C",
+  "file": "src/utils/os_win32.c",
+  "line": 107,
+  "verdict": "FP",
+  "reason": "tm2 checked and consumed immediately, fields copied to caller-owned struct; consume-immediately FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ENV34-C",
+  "file": "src/wps/wps_upnp.c",
+  "line": 229,
+  "verdict": "FP",
+  "reason": "gmtime() result consumed immediately in same function, no intervening call, not stored",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ENV34-C",
+  "file": "wpa_supplicant/wpa_cli.c",
+  "line": 4840,
+  "verdict": "FP",
+  "reason": "home is consumed immediately in the same scope (os_strlen/os_snprintf a few lines later) with zero intervening getenv/setenv/putenv calls anywhere in between \u2014 no actual invalidation window exists despite the missing strdup.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ERR32-C",
+  "file": "src/ap/fils_hlp.c",
+  "line": 172,
+  "verdict": "FP",
+  "reason": "ERR32-C misapplied FP: fils_dhcp_handler is an eloop socket-read callback (registered via eloop_register_sock), not a signal()/sigaction() handler",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ERR32-C",
+  "file": "src/wps/httpread.c",
+  "line": 382,
+  "verdict": "FP",
+  "reason": "no pthread usage anywhere in this codebase (CON33/CON34 no-thread FP); also not a signal handler, so ERR32-C's premise is doubly wrong",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ERR32-C",
+  "file": "src/wps/wps_upnp_ssdp.c",
+  "line": 294,
+  "verdict": "FP",
+  "reason": "advertisement_state_machine_handler is an eloop timeout callback, not a signal()/sigaction() handler; established ERR32-C wholesale misfire",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ERR32-C",
+  "file": "src/wps/wps_upnp_ssdp.c",
+  "line": 412,
+  "verdict": "FP",
+  "reason": "Not a signal()/sigaction() handler; established ERR32-C misfire",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ERR32-C",
+  "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+  "line": 1904,
+  "verdict": "FP",
+  "reason": "ERR32-C: not a signal handler; textbook errno=0/strtoul/errno-check idiom, confirmed misfire class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ERR32-C",
+  "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+  "line": 1906,
+  "verdict": "FP",
+  "reason": "ERR32-C: same textbook errno-checked strtoul idiom, not a signal handler",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ERR32-C",
+  "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+  "line": 2349,
+  "verdict": "FP",
+  "reason": "function is a D-Bus method handler, not a POSIX signal handler; ERR32-C misapplies \"signal handler\" restriction to ordinary code using errno",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ERR32-C",
+  "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+  "line": 2351,
+  "verdict": "FP",
+  "reason": "function is a D-Bus method handler, not a POSIX signal handler; ERR32-C misapplies \"signal handler\" restriction to ordinary code using errno",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ERR32-C",
+  "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+  "line": 2425,
+  "verdict": "FP",
+  "reason": "function is a D-Bus method handler, not a POSIX signal handler; ERR32-C misapplies \"signal handler\" restriction to ordinary code using errno",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "ERR32-C",
+  "file": "wpa_supplicant/dbus/dbus_new_handlers.c",
+  "line": 2427,
+  "verdict": "FP",
+  "reason": "function is a D-Bus method handler, not a POSIX signal handler; ERR32-C misapplies \"signal handler\" restriction to ordinary code using errno",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP00-C",
+  "file": "hostapd/config_file.c",
+  "line": 1471,
+  "verdict": "FP",
+  "reason": "Suggested parenthesization already present verbatim in source; moot/non-actionable finding",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP00-C",
+  "file": "src/crypto/sha1-internal.c",
+  "line": 285,
+  "verdict": "FP",
+  "reason": "expression is already fully parenthesized exactly per the suggested fix; no ambiguity",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP00-C",
+  "file": "wpa_supplicant/binder/binder_manager.h",
+  "line": 53,
+  "verdict": "FP",
+  "reason": "'>>' is the closing of a nested C++ template std::map<..., android::sp<Iface>>, not an operator expression",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP00-C",
+  "file": "wpa_supplicant/mesh_mpm.c",
+  "line": 314,
+  "verdict": "FP",
+  "reason": "expression is already parenthesized exactly as suggested",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP07-C",
+  "file": "hostapd/sae_pk_gen.c",
+  "line": 151,
+  "verdict": "FP",
+  "reason": "sec_1b is declared u32 (fixed 32-bit width); shifting a defined-width unsigned type by 19 is the intended bit-packing operation per the SAE-PK spec, not an unspecified-representation assumption",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP07-C",
+  "file": "hostapd/sae_pk_gen.c",
+  "line": 160,
+  "verdict": "FP",
+  "reason": "val20 is u32 (fixed 32-bit width); shifting by 12 is deliberate bit-packing, not an unspecified-representation assumption",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP07-C",
+  "file": "src/ap/wmm.c",
+  "line": 234,
+  "verdict": "FP",
+  "reason": "EXP07-C: val >> 13 is deliberate fixed-point protocol bit-packing (surplus bandwidth allowance format, documented in the comment above) on a width-explicit u16 - confirmed EXP07-C bit-packing FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP07-C",
+  "file": "src/ap/wpa_auth_ie.c",
+  "line": 1541,
+  "verdict": "FP",
+  "reason": "cipher << N is deliberate u32 protocol bit-packing, not assuming an external constant's value",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP07-C",
+  "file": "src/ap/wpa_auth_ie.c",
+  "line": 1559,
+  "verdict": "FP",
+  "reason": "selector << N is deliberate u32 protocol bit-packing, not assuming an external constant's value",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP07-C",
+  "file": "src/common/qca-vendor.h",
+  "line": 6595,
+  "verdict": "FP",
+  "reason": "1<<N kernel ABI bit-flag enumerator; established EXP07-C bit-packing FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP07-C",
+  "file": "src/common/qca-vendor.h",
+  "line": 6596,
+  "verdict": "FP",
+  "reason": "1<<N kernel ABI bit-flag enumerator; established EXP07-C bit-packing FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP07-C",
+  "file": "src/common/qca-vendor.h",
+  "line": 6597,
+  "verdict": "FP",
+  "reason": "1<<N kernel ABI bit-flag enumerator; established EXP07-C bit-packing FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP07-C",
+  "file": "src/common/qca-vendor.h",
+  "line": 6598,
+  "verdict": "FP",
+  "reason": "1<<N kernel ABI bit-flag enumerator; established EXP07-C bit-packing FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP07-C",
+  "file": "src/common/qca-vendor.h",
+  "line": 6599,
+  "verdict": "FP",
+  "reason": "1<<N kernel ABI bit-flag enumerator; established EXP07-C bit-packing FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP08-C",
+  "file": "src/ap/ieee802_11.c",
+  "line": 3111,
+  "verdict": "FP",
+  "reason": "EXP08-C misfires: 'len - offsetof(...)' is size_t arithmetic (offsetof used to compute a length), no pointer arithmetic exists in this expression at all",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP08-C",
+  "file": "src/ap/ieee802_11.c",
+  "line": 3207,
+  "verdict": "FP",
+  "reason": "Same EXP08-C misfire on offsetof-derived length arithmetic, no pointer arithmetic",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP08-C",
+  "file": "src/common/ctrl_iface_common.c",
+  "line": 63,
+  "verdict": "FP",
+  "reason": "a_len - offsetof(...) is plain integer subtraction on a socklen_t length, not pointer arithmetic on a struct pointer",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP08-C",
+  "file": "src/common/ctrl_iface_common.c",
+  "line": 104,
+  "verdict": "FP",
+  "reason": "socklen - offsetof(...) is integer arithmetic on a length variable, not pointer arithmetic",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP08-C",
+  "file": "src/common/proximity_ranging.c",
+  "line": 2076,
+  "verdict": "FP",
+  "reason": "len - offsetof(...) is plain integer subtraction to compute a length value, not pointer arithmetic on a struct pointer at all.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP08-C",
+  "file": "src/common/proximity_ranging.c",
+  "line": 2238,
+  "verdict": "FP",
+  "reason": "Same integer-subtraction-not-pointer-arithmetic misfire as :2076.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP08-C",
+  "file": "src/common/proximity_ranging.c",
+  "line": 2351,
+  "verdict": "FP",
+  "reason": "Same integer-subtraction-not-pointer-arithmetic misfire as :2076/:2238.",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP08-C",
+  "file": "src/p2p/p2p.c",
+  "line": 4537,
+  "verdict": "FP",
+  "reason": "EXP08-C: code already casts to (u8*) [uint8_t, byte-sized] before offset arithmetic, satisfying the rule's own suggestion; new instance, watch for recurrence",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP08-C",
+  "file": "src/p2p/p2p.c",
+  "line": 6722,
+  "verdict": "FP",
+  "reason": "Rule bug (verified in exp08_c.rs): fires whenever RHS text contains 'offsetof', without checking LHS is a pointer. len/ies_len is a plain size_t, no pointer arithmetic occurs",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP08-C",
+  "file": "src/p2p/p2p.c",
+  "line": 6758,
+  "verdict": "FP",
+  "reason": "Same EXP08-C offsetof-substring rule bug, len - offsetof(...) is plain integer arithmetic, no pointer involved",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP13-C",
+  "file": "wpa_supplicant/binder/binder_manager.h",
+  "line": 49,
+  "verdict": "FP",
+  "reason": "'<' '>' are C++ template angle brackets (android::sp<Supplicant>), not chained relational operators",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP37-C",
+  "file": "src/tls/libtommath.c",
+  "line": 142,
+  "verdict": "FP",
+  "reason": "stdarg.h is included transitively via includes.h before libtommath.c is #include'd into bignum.c's translation unit; va_list/va_start are properly declared",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP37-C",
+  "file": "src/tls/libtommath.c",
+  "line": 145,
+  "verdict": "FP",
+  "reason": "stdarg.h is included transitively via includes.h before libtommath.c is #include'd into bignum.c's translation unit; va_list/va_start are properly declared",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP37-C",
+  "file": "src/utils/common.h",
+  "line": 397,
+  "verdict": "FP",
+  "reason": "guarded pre-C99 compat snprintf/vsnprintf prototype under CONFIG_ANSI_C_EXTRA; va_list is valid via project-wide includes.h-always-first convention (stdarg.h pulled in there)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP37-C",
+  "file": "src/utils/os.h",
+  "line": 494,
+  "verdict": "FP",
+  "reason": "os_snprintf's trailing '...' is an ordinary C variadic-function prototype; no header inclusion is required for a variadic declaration itself (stdarg.h is only needed in the definition), rule appears to misapply the 'declare instead of #include a standard variadic fn' check to a legitimate custom wrapper",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP37-C",
+  "file": "wpa_supplicant/binder/binder_manager.h",
+  "line": 33,
+  "verdict": "FP",
+  "reason": "C++ empty parens unambiguously mean zero parameters; the K&R old-style-declaration rule is C-only and doesn't apply",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP37-C",
+  "file": "wpa_supplicant/wpa_gui-qt4/stringquery.h",
+  "line": 22,
+  "verdict": "FP",
+  "reason": "C++ constructor declaration, not an old-style C function",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP37-C",
+  "file": "wpa_supplicant/wpa_gui-qt4/wpagui.h",
+  "line": 168,
+  "verdict": "FP",
+  "reason": "wpagui.h is C++ (QObject-derived classes); CERT-C rule doesn't apply / sqc misparses the C++ construct as C",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP40-C",
+  "file": "hostapd/config_file.c",
+  "line": 201,
+  "verdict": "FP",
+  "reason": "actual code is `char *pos2 = *pos;` (decl+init, `pos` is `char **`), not `*pos2=*pos`; no const involved at all \u2014 type-confusion/misparse",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP40-C",
+  "file": "hostapd/config_file.c",
+  "line": 1688,
+  "verdict": "FP",
+  "reason": "buf parameter is plain char*, not const-qualified anywhere; EXP40-C's const premise is factually wrong",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP40-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 2950,
+  "verdict": "FP",
+  "reason": "Neither side of the assignment is const-qualified; EXP40-C's premise (const-to-non-const) doesn't apply; CONFIRMED FP class",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP40-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 4595,
+  "verdict": "FP",
+  "reason": "fabricated const: 'buf' is plain char[4096], no const qualifier anywhere in this statement (established fabricated-const EXP40-C FP class)",
+  "set": "SAFE_FP"
+ },
+ {
+  "rule": "EXP40-C",
+  "file": "hostapd/ctrl_iface.c",
+  "line": 4774,
+  "verdict": "FP",
+  "reason": "fabricated const: 'buf' is plain char[4096], no const qualifier anywhere in this statement",
+  "set": "SAFE_FP"
+ }
+]

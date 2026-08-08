@@ -1,0 +1,813 @@
+{
+ "labels": [
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 12,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "ieee802_11_defs.h/ieee802_11.h genuinely share first 8 chars; low-value 8.3-legacy convention TP"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 17,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "placeholder"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 17,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_auth.h shares first 8 chars with wpa_auth_i.h; low-value convention TP"
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 19,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_auth_ie.h shares first 8 chars with wpa_auth_i.h; low-value convention TP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 28,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "conf plain read-only param in internal static helper, genuine if low-value"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 28,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf written through aliased hdr=(struct wpa_ie_hdr*)buf; not genuinely unmodified"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 86,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos-buf within small fixed stack buffer (<=1500 bytes); cannot approach INT_MAX, established pointer-subtraction FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 92,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "conf plain read-only param in internal static helper, genuine if low-value"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 123,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "buf only used in bound-check arithmetic (buf+len-pos), never written; genuine if low-value"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 380,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "pmkid_count_set assigned twice, never read anywhere in function - genuine dead variable"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 400,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API; pointer/length always valid/bounded from internal call sites"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 418,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos-buf within small fixed stack buffer (<=1500 bytes); cannot approach INT_MAX, established pointer-subtraction FP class"
+  },
+  {
+   "rule": "DCL22-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 427,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos is an ordinary sequential local pointer, no signal handler/setjmp context in file"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 448,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos-buf within small fixed stack buffer (<=1500 bytes); cannot approach INT_MAX, established pointer-subtraction FP class"
+  },
+  {
+   "rule": "DCL22-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 457,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos is an ordinary sequential local pointer, no signal handler/setjmp context in file"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 478,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos-buf within small fixed stack buffer (<=1500 bytes); cannot approach INT_MAX, established pointer-subtraction FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 484,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "conf plain read-only param in internal static helper, genuine if low-value"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 534,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API; pointer/length always valid/bounded from internal call sites"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 534,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf aliased to pos and mutated only through pos (*pos++=...)"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 537,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "capab=0 initializer immediately overwritten at next line before any read - genuine dead store"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 556,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "capab is u32 shifted right 8 bits/iter, so loop runs <=4 times; length already validated against flen before loop"
+  },
+  {
+   "rule": "ARR30-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 592,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "capab is u32 shifted right 8 bits/iter, so loop runs <=4 times; length already validated against flen before loop"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 632,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(buf)-(pos-buf) guard is the bounds check itself for a size-checked IE-append idiom into a fixed 1500-byte buffer; pos never exceeds buf+sizeof(buf)"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 642,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is u8[1500]; byte-pointer + sizeof(buf) has no double scaling since sizeof(u8)==1"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 653,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(buf)-(pos-buf) guard is the bounds check itself for a size-checked IE-append idiom into a fixed 1500-byte buffer; pos never exceeds buf+sizeof(buf)"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 666,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is u8[1500]; byte-pointer + sizeof(buf) has no double scaling since sizeof(u8)==1"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 677,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is u8[1500]; byte-pointer + sizeof(buf) has no double scaling since sizeof(u8)==1"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 685,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is u8[1500]; byte-pointer + sizeof(buf) has no double scaling since sizeof(u8)==1"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 698,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(buf)-(pos-buf) guard is the bounds check itself for a size-checked IE-append idiom into a fixed 1500-byte buffer; pos never exceeds buf+sizeof(buf)"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 708,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is u8[1500]; byte-pointer + sizeof(buf) has no double scaling since sizeof(u8)==1"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 724,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(buf)-(pos-buf) guard is the bounds check itself for a size-checked IE-append idiom into a fixed 1500-byte buffer; pos never exceeds buf+sizeof(buf)"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 734,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is u8[1500]; byte-pointer + sizeof(buf) has no double scaling since sizeof(u8)==1"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 751,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(buf)-(pos-buf) guard is the bounds check itself for a size-checked IE-append idiom into a fixed 1500-byte buffer; pos never exceeds buf+sizeof(buf)"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 761,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is u8[1500]; byte-pointer + sizeof(buf) has no double scaling since sizeof(u8)==1"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 782,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "placeholder-multi"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 782,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API; data always caller-provided valid buffer pointer"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 782,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "data_len is a small internally-bounded KDE length, not attacker-controlled overflow risk"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 782,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "data2_len is a small internally-bounded KDE length, not attacker-controlled overflow risk"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 807,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "a matches wpa_auth_for_each_auth callback typedef int(*)(struct wpa_authenticator*,void*); dispatch-contract FP"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 827,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "a matches wpa_auth_for_each_auth callback typedef; dispatch-contract FP (ML variant)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 851,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "assoc_sm plain read-only param, genuine if low-value"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 903,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "selector already defaulted before else-if chain (line 898); missing final else is intentional"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 907,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 907,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "flags data.key_mgmt (a fully-initialized struct member read) as the uninitialized local key_mgmt; member-access misattribution parser bug"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 909,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 912,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 914,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 919,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 922,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 924,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 927,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 929,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 932,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 934,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 936,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 938,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 941,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 943,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 946,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 950,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 954,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 976,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "selector already defaulted before else-if chain (line 973); missing final else is intentional"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1021,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "chain (lines 1017-1074) does have a final else at line 1073; #ifdef splitting misleads line attribution"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1025,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1027,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1030,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1032,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1037,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1040,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1042,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1046,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1049,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1051,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1054,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1056,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1058,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1060,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1063,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1066,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "WIN04-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1070,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain enum-constant assignment inside an #ifdef-adjacent else-if chain; no function pointer present on the line at all"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1158,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ciphers is genuinely declared int and used in bitwise & ops; literal rule-text violation, low severity"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1166,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ciphers is genuinely declared int and used in bitwise & ops; literal rule-text violation, low severity"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1185,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "both branches return; falling through without an else is the intended non-FT continuation path"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1294,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "\"OKC match for PMKID\" is a plain debug log label, not embedded secret data"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1391,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sm->wpa_ie/sm->rsnxe are struct-owned persistent buffers freed via os_free before each realloc and at sm teardown, not local leaks"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1401,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sm->wpa_ie/sm->rsnxe are struct-owned persistent buffers freed via os_free before each realloc and at sm teardown, not local leaks"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1405,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API; pointer/length always valid/bounded from internal call sites"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1405,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "sm plain read-only param in one-line accessor, genuine if low-value"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1411,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API; pointer/length always valid/bounded from internal call sites"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1411,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "sm plain read-only param in one-line accessor, genuine if low-value"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1425,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "sm plain read-only param in one-line accessor, genuine if low-value"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1434,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API; pointer/length always valid/bounded from internal call sites"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1434,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "sm plain read-only param, genuine if low-value"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1467,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API; pointer/length always valid/bounded from internal call sites"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1484,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "wpa_auth plain read-only param, genuine if low-value"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1492,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tmp[10*RSN_SELECTOR_LEN] is a fixed compile-time-constant size, not a runtime VLA"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1518,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cipher already defaulted to 63 before switch (line 1516); missing default label is intentional"
+  },
+  {
+   "rule": "EXP07-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1541,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cipher << N is deliberate u32 protocol bit-packing, not assuming an external constant's value"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1556,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "selector already defaulted to 0 before else-if chain (line 1544); missing final else is intentional"
+  },
+  {
+   "rule": "EXP07-C",
+   "file": "src/ap/wpa_auth_ie.c",
+   "line": 1559,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "selector << N is deliberate u32 protocol bit-packing, not assuming an external constant's value"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [
+  "src/ap/wpa_auth_ie.c"
+ ],
+ "summary": {
+  "tp": 18,
+  "fp": 82,
+  "fn": 0
+ }
+}

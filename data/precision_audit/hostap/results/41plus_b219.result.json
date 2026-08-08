@@ -1,0 +1,675 @@
+{
+ "labels": [
+  {
+   "rule": "EXP30-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 104,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Both args are pure eap_fast_state_txt() switch-on-int lookups, no side effects to unsequence"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 111,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "sm entirely unused in eap_fast_req_failure body; plain internal helper, not bound to a callback typedef"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 120,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ticket+len idiom, plus fixed tls_connection_set_session_ticket_cb callback signature (dispatch contract)"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 157,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pac_opaque_len<8 guarded/returns at line 146 a few lines above, before the -8 subtraction; same-function guard not seen by rule"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 165,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same guard as :157 covers this second use of pac_opaque_len-8"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 204,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "\"decrypted PAC-Opaque\"/PAC-Key label is the wpa_hexdump_key title string, not the secret buffer itself; matches established hexdump-title FP pattern"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 257,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "missing final else is an intentional no-op (PAC still within refresh window, no state change needed); matches established no-final-else guard-clause pedantry pattern"
+  },
+  {
+   "rule": "MSC05-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 257,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "lifetime is os_time_t, hostap's own typedef to plain long (not actual time_t) specifically to avoid the encoding-portability concern this rule targets"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 268,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf freed at line 266 immediately before this return; data->identity is a persistent struct field owned by data, not a function-local leak"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 272,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "sm only read via sm->cfg->ssl_ctx, never modified; plain internal helper not bound to a callback typedef"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 302,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "sm only read via sm->cfg->ssl_ctx, never modified; plain internal helper not bound to a callback typedef"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 308,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*data->key_block_p) is the correct idiom to size the pointee struct for allocation, not a decayed-array bug"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 308,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*data->key_block_p) never dereferences at runtime; the field is reassigned on this same statement anyway"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 309,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NULL-comparison of data->key_block_p, which already holds the freshly-reassigned pointer from the statement above, not the freed one"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 319,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data->key_block_p was freed then reassigned to a fresh eap_fast_derive_key() result 2 lines above and NULL-checked; struct-field reassign not tracked, matches confirmed 16-40_b17 MEM30 reassign-then-check struct-field pattern"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 320,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(data->key_block_p->session_key_seed) sizes a fixed-size struct member array via pointer deref; correct idiom"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 320,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same free-then-reassign struct-field miss as :319"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 322,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same free-then-reassign struct-field miss as :319"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 325,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same free-then-reassign struct-field miss as :319"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 326,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(data->key_block_p->server_challenge) fixed-array-member idiom"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 326,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same free-then-reassign struct-field miss as :319"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 328,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same free-then-reassign struct-field miss as :319"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 329,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(data->key_block_p->client_challenge) fixed-array-member idiom"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 329,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same free-then-reassign struct-field miss as :319"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 334,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "data->phase2_method/phase2_priv only read in eap_fast_get_phase2_key, never modified; plain internal helper"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 389,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "imck is fully written by sha1_t_prf(..., imck, sizeof(imck)) as an output buffer 2 lines above before this use"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 413,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*data) never dereferences data at runtime; standard os_zalloc(sizeof(*ptr)) init idiom"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 493,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "data = os_zalloc(...) is heap memory, not automatic storage; confused local pointer variable with local storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 514,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "sm entirely unused in eap_fast_build_start body; plain internal helper"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 520,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "no bitwise op on data at this line at all (pure +); rule appears to misattribute the later `EAP_TLS_FLAGS_START | data->fast_version` bitwise use (:529, different field) to this arithmetic use of data->srv_id_len"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 536,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "req = eap_msg_alloc(...) is heap memory, not automatic storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 568,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "data->phase2_priv/phase2_method only read in eap_fast_build_phase2_req, never modified; plain internal helper"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 588,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "sm entirely unused in eap_fast_build_crypto_binding body; plain internal helper"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 594,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "2*sizeof(*result)+sizeof(*binding) is a plain size_t byte-count argument to wpabuf_alloc(), no pointer arithmetic operand present at all to double-scale"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 594,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*result) never dereferences the uninitialized result pointer at runtime"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 594,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*binding) never dereferences the uninitialized binding pointer at runtime"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 669,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf = wpabuf_alloc(...) is heap memory, not automatic storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 673,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "sm only read via sm->identity/sm->identity_len in eap_fast_build_pac, never modified; plain internal helper"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 674,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "data only read (pac_key_lifetime/srv_id/srv_id_info) in eap_fast_build_pac, never modified; plain internal helper"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 702,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "EAP_FAST_PAC_KEY_LEN is a compile-time macro constant, not a local variable; *pos++ = EAP_FAST_PAC_KEY_LEN just writes a byte value, nothing escapes the function"
+  },
+  {
+   "rule": "INT10-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 719,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pac_len is declared size_t (unsigned), not signed; modulo-with-signed-operand concern doesn't apply"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 727,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pac_buf freed at line 726 immediately before this return; nothing leaked"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 729,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(data->pac_opaque_encr) sizes a fixed 16-byte struct-member array via pointer deref; correct idiom"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 733,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "both pac_buf and pac_opaque freed at lines 731-732 immediately before this return"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 741,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf_len sum-of-sizeof() expression is a plain size_t byte count for wpabuf_alloc(), no pointer arithmetic operand present"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 741,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf_len sum-of-sizeof() expression is a plain size_t byte count for wpabuf_alloc(), no pointer arithmetic operand present"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 741,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*pac_tlv) inside the same buf_len computation never dereferences the uninitialized pac_tlv pointer at runtime"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 744,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*result) inside the same buf_len computation never dereferences the uninitialized result pointer"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 748,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pac_buf already freed at :735 and pac_opaque freed at :747 immediately before this return"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 773,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*pac_info) on the RHS of pac_info's own assignment never dereferences the not-yet-assigned pointer"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 803,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf = wpabuf_alloc(...) is heap memory, not automatic storage"
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 803,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pac_buf freed at :735 and pac_opaque freed at :770, both well before this return"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 921,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_fast_check is the struct eap_method.check vtable slot (eap->check=eap_fast_check at :1638); signature pinned by the dispatch contract, matches confirmed EAP-method-table DCL13 FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 921,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same vtable dispatch-contract FP as sm above, eap_fast_check's priv param"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 983,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "target type struct eap_hdr is STRUCT_PACKED, real alignment is 1, not the claimed 4; no alignment hazard casting char*/u8* to a packed struct"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 1086,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "`case FAILURE:` is a new case label starting the next switch arm, not unreachable code after the preceding case's break"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 1100,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "in_data only cast/read in eap_fast_process_phase2_eap, never modified; plain internal helper not bound to a callback typedef"
+  },
+  {
+   "rule": "EXP36-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 1105,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same struct eap_hdr (STRUCT_PACKED, alignment 1) target as :983"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 1142,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*tlv) zeroing the whole struct via os_memset(tlv,0,sizeof(*tlv)) is the correct idiom"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 1145,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pos[0] & 0x80 masks a dereferenced byte value while pos += N advances the pointer itself; two independent, idiomatic TLV-walk operations, not a confused mixed-use of one variable"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 1185,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "data only read (crypto_binding_nonce/cmk) in eap_fast_validate_crypto_binding, never modified; plain internal helper"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 1194,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(b->nonce) sizes a fixed-size struct-member array via pointer deref; correct idiom"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 1196,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(b->compound_mac) sizes a fixed-size struct-member array via pointer deref; correct idiom"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 1240,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "pac only read/cast in eap_fast_pac_type, never modified; plain internal helper"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 1244,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*tlv) never dereferences the uninitialized tlv pointer at runtime"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 1268,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tlv (a stack struct, not a pointer) is fully initialized by eap_fast_parse_tlvs(in_data,&tlv) two lines above, which itself os_memset()s it and fills fields; output-param-via-address-of-local not tracked"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 1374,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "missing final else is an intentional no-op (already handled by the earlier Intermediate-Result branch); matches established no-final-else guard-clause pedantry pattern"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 1430,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_fast_process_version is passed as the proc_version callback to eap_server_tls_process() (eap_tls_common.h fixed int(*)(struct eap_sm*,void*,int) typedef), a dispatch contract shared across all TLS-tunnel EAP server methods"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 1556,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_fast_isDone is the struct eap_method.isDone vtable slot (eap->isDone=eap_fast_isDone at :1640)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 1556,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same vtable dispatch-contract FP, eap_fast_isDone's priv param"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 1563,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_fast_getKey is the struct eap_method.getKey vtable slot (eap->getKey=eap_fast_getKey at :1641)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 1563,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "getKey's void*priv/size_t*len signature is pinned by the eap_method vtable contract, not a real conformant-array-syntax gap"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 1563,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same vtable dispatch-contract FP, eap_fast_getKey's priv param"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 1581,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eapKeyData = os_malloc(...) is heap memory, not automatic storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 1585,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_fast_get_emsk is the struct eap_method.get_emsk vtable slot (eap->get_emsk=eap_fast_get_emsk at :1642)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 1585,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "get_emsk's void*priv/size_t*len signature pinned by the eap_method vtable contract"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 1585,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same vtable dispatch-contract FP, eap_fast_get_emsk's priv param"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 1603,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eapKeyData = os_malloc(...) is heap memory, not automatic storage"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 1607,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_fast_isSuccess is the struct eap_method.isSuccess vtable slot (eap->isSuccess=eap_fast_isSuccess at :1643)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 1607,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same vtable dispatch-contract FP, eap_fast_isSuccess's priv param"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 1614,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "getSessionId is the struct eap_method.getSessionId vtable slot (eap->getSessionId=eap_fast_get_session_id at :1644); signature pinned by dispatch contract, plus idiomatic ptr+len output param"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 1630,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eap_server_method_register()'s doc comment: \"The caller must not free the allocated method data regardless of the return value\" -- ownership of eap is transferred/freed internally on every path"
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/eap_server/eap_server_fast.c",
+   "line": 713,
+   "rule": "ARR38-C",
+   "desc": "eap_fast_build_pac writes `*pos++ = sm->identity_len;` truncating the size_t identity length to a single byte when building the PAC-Opaque Identity TLV; for an EAP identity longer than 255 bytes the recorded TLV length byte silently wraps while the subsequent os_memcpy still copies the full (untruncated) identity_len bytes, producing a corrupt/mismatched PAC-Opaque Identity entry (no buffer overflow, since pac_len sizing used the untruncated length, but a real wire-format correctness bug for long identities).",
+   "upstream_present": true
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 12,
+  "fp": 70,
+  "fn": 1
+ }
+}

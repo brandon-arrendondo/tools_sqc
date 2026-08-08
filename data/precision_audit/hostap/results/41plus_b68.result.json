@@ -1,0 +1,1211 @@
+{
+ "labels": [
+  {
+   "rule": "PRE08-C",
+   "file": "src/p2p/p2p.c",
+   "line": 14,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PRE08-C 8.3-legacy-filesystem header-name-collision \u2014 reconfirmed FP for hostap (ieee802_11_defs.h/_common.h, same as 16-40_b22)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 57,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: p2p.c functions always called with a valid p2p/addr from the same trust boundary, never externally-nullable"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 145,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: p2p.c functions always called with a valid p2p/addr from the same trust boundary, never externally-nullable"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 145,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Read-only struct-pointer param, never reassigned nor forwarded to a non-const vtable slot \u2014 genuine low-value const opportunity per 16-40_b6/41plus_b3 clarification"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 151,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: p2p.c functions always called with a valid p2p/addr from the same trust boundary, never externally-nullable"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 151,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Read-only struct-pointer param, never reassigned nor forwarded to a non-const vtable slot \u2014 genuine low-value const opportunity per 16-40_b6/41plus_b3 clarification"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 157,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C misses mutation via direct param->field write (p2p->intended_addr/p2p->ssid_set/p2p->dev_sae_password) \u2014 confirmed miss-mutation FP class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 166,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "dead NULL-init (dev=NULL) always reassigned before use on every path \u2014 genuine low-severity dead-store per confirmed MSC13-C-caught-real-case class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 181,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "dead NULL-init (dev=NULL) always reassigned before use on every path \u2014 genuine low-severity dead-store per confirmed MSC13-C-caught-real-case class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 194,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR()/pure read-only macro+accessor args in a p2p_dbg() call \u2014 confirmed EXP30-C pure-accessor FP class"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 252,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(struct_ptr->fixed_size_member) \u2014 confirmed ARR01-C misclassification (member is a real fixed-size array field, not a decayed parameter)"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 253,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(struct_ptr->fixed_size_member) \u2014 confirmed ARR01-C misclassification (member is a real fixed-size array field, not a decayed parameter)"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/p2p/p2p.c",
+   "line": 288,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "tu=(r%%((max_disc_int-min_disc_int)+1)+min_disc_int)*100: p2p_set_disc_int() only enforces min<=max>=0, no upper cap, so a large ctrl_iface-set max_disc_int can make this signed multiply overflow \u2014 not provably bounded"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/p2p/p2p.c",
+   "line": 288,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Output parameter written by-reference by the callee (os_get_random/parse/p2p_channels_intersect/p2p_dfs_channel_filter) or sizeof(*ptr) idiom \u2014 confirmed EXP33-C output-param/sizeof(*ptr) FP class"
+  },
+  {
+   "rule": "INT33-C",
+   "file": "src/p2p/p2p.c",
+   "line": 288,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Divisor (max_disc_int-min_disc_int)+1 is guaranteed >=1 by p2p_set_disc_int()'s min<=max>=0 validation \u2014 confirmed div-by-zero-after-guard FP class"
+  },
+  {
+   "rule": "INT10-C",
+   "file": "src/p2p/p2p.c",
+   "line": 288,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "r is unsigned and the divisor is guaranteed positive by p2p_set_disc_int()'s validation \u2014 no realistic negative-modulo path, same guard as the paired INT33-C finding"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 396,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Returned pointer aliases heap memory (os_zalloc/dl_list-tracked device, not local automatic storage) \u2014 confirmed DCL30-C local-variable-vs-local-storage confusion class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 408,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: p2p.c functions always called with a valid p2p/addr from the same trust boundary, never externally-nullable"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 414,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Returned pointer aliases heap memory (os_zalloc/dl_list-tracked device, not local automatic storage) \u2014 confirmed DCL30-C local-variable-vs-local-storage confusion class"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 468,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(struct_ptr->fixed_size_member) \u2014 confirmed ARR01-C misclassification (member is a real fixed-size array field, not a decayed parameter)"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/p2p/p2p.c",
+   "line": 490,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain 'if (ptr == NULL)'/'if (!ptr)' guard already performs the validation \u2014 confirmed MEM10-C stylistic-pedantry FP class"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 508,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Loop counter is initialized in the very same for(x=0;...) init-clause \u2014 confirmed ARR00-C for-loop-init CFG-parsing FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/p2p/p2p.c",
+   "line": 508,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Output parameter written by-reference by the callee (os_get_random/parse/p2p_channels_intersect/p2p_dfs_channel_filter) or sizeof(*ptr) idiom \u2014 confirmed EXP33-C output-param/sizeof(*ptr) FP class"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 566,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(struct_ptr->fixed_size_member) \u2014 confirmed ARR01-C misclassification (member is a real fixed-size array field, not a decayed parameter)"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 569,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(struct_ptr->fixed_size_member) \u2014 confirmed ARR01-C misclassification (member is a real fixed-size array field, not a decayed parameter)"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 571,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(struct_ptr->fixed_size_member) \u2014 confirmed ARR01-C misclassification (member is a real fixed-size array field, not a decayed parameter)"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 577,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(struct_ptr->fixed_size_member) \u2014 confirmed ARR01-C misclassification (member is a real fixed-size array field, not a decayed parameter)"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 579,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(struct_ptr->fixed_size_member) \u2014 confirmed ARR01-C misclassification (member is a real fixed-size array field, not a decayed parameter)"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 585,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(struct_ptr->fixed_size_member) \u2014 confirmed ARR01-C misclassification (member is a real fixed-size array field, not a decayed parameter)"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 587,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(struct_ptr->fixed_size_member) \u2014 confirmed ARR01-C misclassification (member is a real fixed-size array field, not a decayed parameter)"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 593,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(struct_ptr->fixed_size_member) \u2014 confirmed ARR01-C misclassification (member is a real fixed-size array field, not a decayed parameter)"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 595,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(struct_ptr->fixed_size_member) \u2014 confirmed ARR01-C misclassification (member is a real fixed-size array field, not a decayed parameter)"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 602,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(struct_ptr->fixed_size_member) \u2014 confirmed ARR01-C misclassification (member is a real fixed-size array field, not a decayed parameter)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 603,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause chain (the unmatched-condition case needs no action, or is handled by a trailing return) \u2014 confirmed MSC01-C stylistic-pedantry FP class"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 605,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(struct_ptr->fixed_size_member) \u2014 confirmed ARR01-C misclassification (member is a real fixed-size array field, not a decayed parameter)"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/p2p/p2p.c",
+   "line": 621,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Bitwise ops apply only to msg->capability[i] element values, not to 'msg' itself \u2014 confirmed INT14-C struct-pointer/member conflation FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 651,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: p2p.c functions always called with a valid p2p/addr from the same trust boundary, never externally-nullable"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/p2p/p2p.c",
+   "line": 656,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dev/cla guaranteed non-NULL by internal calling convention or by a same-function 'found' flag correlation the rule doesn't track \u2014 confirmed EXP34-C internal-invariant FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 702,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Read-only struct-pointer param, never reassigned nor forwarded to a non-const vtable slot \u2014 genuine low-value const opportunity per 16-40_b6/41plus_b3 clarification"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/p2p/p2p.c",
+   "line": 781,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain 'if (ptr == NULL)'/'if (!ptr)' guard already performs the validation \u2014 confirmed MEM10-C stylistic-pedantry FP class"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/p2p/p2p.c",
+   "line": 960,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dev/cla guaranteed non-NULL by internal calling convention or by a same-function 'found' flag correlation the rule doesn't track \u2014 confirmed EXP34-C internal-invariant FP class"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1000,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Loop counter is initialized in the very same for(x=0;...) init-clause \u2014 confirmed ARR00-C for-loop-init CFG-parsing FP class"
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1004,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Loop counter is initialized in the very same for(x=0;...) init-clause \u2014 confirmed ARR00-C for-loop-init CFG-parsing FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1021,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Output parameter written by-reference by the callee (os_get_random/parse/p2p_channels_intersect/p2p_dfs_channel_filter) or sizeof(*ptr) idiom \u2014 confirmed EXP33-C output-param/sizeof(*ptr) FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1021,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Output parameter written by-reference by the callee (os_get_random/parse/p2p_channels_intersect/p2p_dfs_channel_filter) or sizeof(*ptr) idiom \u2014 confirmed EXP33-C output-param/sizeof(*ptr) FP class"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1021,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dev/cla guaranteed non-NULL by internal calling convention or by a same-function 'found' flag correlation the rule doesn't track \u2014 confirmed EXP34-C internal-invariant FP class"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1064,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "freq IS read via the enclosing '>0' comparison and later at p2p->cfg->p2p_scan() call \u2014 engine miss, not a dead store"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1084,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop timeout callback dispatch contract (fixed void(*)(void*,void*) typedef) \u2014 confirmed DCL13-C FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1092,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: p2p.c functions always called with a valid p2p/addr from the same trust boundary, never externally-nullable"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1139,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop timeout callback dispatch contract (fixed void(*)(void*,void*) typedef) \u2014 confirmed DCL13-C FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1161,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Read-only struct-pointer param, never reassigned nor forwarded to a non-const vtable slot \u2014 genuine low-value const opportunity per 16-40_b6/41plus_b3 clarification"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1176,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Output parameter written by-reference by the callee (os_get_random/parse/p2p_channels_intersect/p2p_dfs_channel_filter) or sizeof(*ptr) idiom \u2014 confirmed EXP33-C output-param/sizeof(*ptr) FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1196,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "API00-C overflow variant on internal-only API param (num_req_dev_types is locally-sourced, not wire data) \u2014 internal-only-API FP class"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1221,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No free of p2p occurs anywhere in p2p_find(); this is stale free-state bleeding in from p2p_free_req_dev_types(p2p)'s internal os_free(p2p->req_dev_types) member-free being misattributed as freeing p2p itself"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1221,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No free of p2p occurs anywhere in p2p_find(); this is stale free-state bleeding in from p2p_free_req_dev_types(p2p)'s internal os_free(p2p->req_dev_types) member-free being misattributed as freeing p2p itself"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1222,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "No free of p2p occurs anywhere in p2p_find(); this is stale free-state bleeding in from p2p_free_req_dev_types(p2p)'s internal os_free(p2p->req_dev_types) member-free being misattributed as freeing p2p itself"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1333,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause chain (the unmatched-condition case needs no action, or is handled by a trailing return) \u2014 confirmed MSC01-C stylistic-pedantry FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1415,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: p2p.c functions always called with a valid p2p/addr from the same trust boundary, never externally-nullable"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1441,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause chain (the unmatched-condition case needs no action, or is handled by a trailing return) \u2014 confirmed MSC01-C stylistic-pedantry FP class"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1474,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Local const int array is 0-terminated and only ever consumed by iterating to the sentinel (p2p_channel_select) \u2014 no sizeof/fixed-index consumer that could mismatch, confirmed ARR02-C local-initializer-array FP class"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1475,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Local const int array is 0-terminated and only ever consumed by iterating to the sentinel (p2p_channel_select) \u2014 no sizeof/fixed-index consumer that could mismatch, confirmed ARR02-C local-initializer-array FP class"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1476,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Local const int array is 0-terminated and only ever consumed by iterating to the sentinel (p2p_channel_select) \u2014 no sizeof/fixed-index consumer that could mismatch, confirmed ARR02-C local-initializer-array FP class"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1477,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Local const int array is 0-terminated and only ever consumed by iterating to the sentinel (p2p_channel_select) \u2014 no sizeof/fixed-index consumer that could mismatch, confirmed ARR02-C local-initializer-array FP class"
+  },
+  {
+   "rule": "ARR02-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1478,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Local const int array is 0-terminated and only ever consumed by iterating to the sentinel (p2p_channel_select) \u2014 no sizeof/fixed-index consumer that could mismatch, confirmed ARR02-C local-initializer-array FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1577,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: p2p.c functions always called with a valid p2p/addr from the same trust boundary, never externally-nullable"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1595,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Output parameter written by-reference by the callee (os_get_random/parse/p2p_channels_intersect/p2p_dfs_channel_filter) or sizeof(*ptr) idiom \u2014 confirmed EXP33-C output-param/sizeof(*ptr) FP class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1606,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause chain (the unmatched-condition case needs no action, or is handled by a trailing return) \u2014 confirmed MSC01-C stylistic-pedantry FP class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1627,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause chain (the unmatched-condition case needs no action, or is handled by a trailing return) \u2014 confirmed MSC01-C stylistic-pedantry FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1644,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: p2p.c functions always called with a valid p2p/addr from the same trust boundary, never externally-nullable"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1650,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end (or fixed ETH_ALEN pointer) buffer-pair idiom \u2014 confirmed API05-C paired-bounds/well-known-length FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1654,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR()/pure read-only macro+accessor args in a p2p_dbg() call \u2014 confirmed EXP30-C pure-accessor FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1751,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: p2p.c functions always called with a valid p2p/addr from the same trust boundary, never externally-nullable"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1757,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end (or fixed ETH_ALEN pointer) buffer-pair idiom \u2014 confirmed API05-C paired-bounds/well-known-length FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1761,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR()/pure read-only macro+accessor args in a p2p_dbg() call \u2014 confirmed EXP30-C pure-accessor FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1807,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: p2p.c functions always called with a valid p2p/addr from the same trust boundary, never externally-nullable"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1810,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "dev/cla guaranteed non-NULL by internal calling convention or by a same-function 'found' flag correlation the rule doesn't track \u2014 confirmed EXP34-C internal-invariant FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1865,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "DCL13-C misses mutation via direct param->field write (p2p->intended_addr/p2p->ssid_set/p2p->dev_sae_password) \u2014 confirmed miss-mutation FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1875,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: p2p.c functions always called with a valid p2p/addr from the same trust boundary, never externally-nullable"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1894,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(struct_ptr->fixed_size_member) \u2014 confirmed ARR01-C misclassification (member is a real fixed-size array field, not a decayed parameter)"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1896,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(struct_ptr->fixed_size_member) \u2014 confirmed ARR01-C misclassification (member is a real fixed-size array field, not a decayed parameter)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1903,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: p2p.c functions always called with a valid p2p/addr from the same trust boundary, never externally-nullable"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1948,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Output parameter written by-reference by the callee (os_get_random/parse/p2p_channels_intersect/p2p_dfs_channel_filter) or sizeof(*ptr) idiom \u2014 confirmed EXP33-C output-param/sizeof(*ptr) FP class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 1990,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause chain (the unmatched-condition case needs no action, or is handled by a trailing return) \u2014 confirmed MSC01-C stylistic-pedantry FP class"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 2005,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(struct_ptr->fixed_size_member) \u2014 confirmed ARR01-C misclassification (member is a real fixed-size array field, not a decayed parameter)"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 2007,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(struct_ptr->fixed_size_member) \u2014 confirmed ARR01-C misclassification (member is a real fixed-size array field, not a decayed parameter)"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 2077,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause chain (the unmatched-condition case needs no action, or is handled by a trailing return) \u2014 confirmed MSC01-C stylistic-pedantry FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 2107,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: p2p.c functions always called with a valid p2p/addr from the same trust boundary, never externally-nullable"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 2107,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: p2p.c functions always called with a valid p2p/addr from the same trust boundary, never externally-nullable"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 2154,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop timeout callback dispatch contract (fixed void(*)(void*,void*) typedef) \u2014 confirmed DCL13-C FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 2175,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eloop timeout callback dispatch contract (fixed void(*)(void*,void*) typedef) \u2014 confirmed DCL13-C FP class"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p.c",
+   "line": 2260,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free(p2p->p2ps_prov) sets the field back to NULL, or the wpabuf_dup'd field is freed later in p2p_device_free() \u2014 same interprocedural member-free-misattribution / struct-field-ownership FP class as the MEM30-C entries"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 2273,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: p2p.c functions always called with a valid p2p/addr from the same trust boundary, never externally-nullable"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 2282,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Returned pointer aliases heap memory (os_zalloc/dl_list-tracked device, not local automatic storage) \u2014 confirmed DCL30-C local-variable-vs-local-storage confusion class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 2291,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Returned pointer aliases heap memory (os_zalloc/dl_list-tracked device, not local automatic storage) \u2014 confirmed DCL30-C local-variable-vs-local-storage confusion class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 2307,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: p2p.c functions always called with a valid p2p/addr from the same trust boundary, never externally-nullable"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 2329,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Read-only struct-pointer param, never reassigned nor forwarded to a non-const vtable slot \u2014 genuine low-value const opportunity per 16-40_b6/41plus_b3 clarification"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/p2p/p2p.c",
+   "line": 2337,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Output parameter written by-reference by the callee (os_get_random/parse/p2p_channels_intersect/p2p_dfs_channel_filter) or sizeof(*ptr) idiom \u2014 confirmed EXP33-C output-param/sizeof(*ptr) FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 2415,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Returned pointer aliases heap memory (os_zalloc/dl_list-tracked device, not local automatic storage) \u2014 confirmed DCL30-C local-variable-vs-local-storage confusion class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 2457,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause chain (the unmatched-condition case needs no action, or is handled by a trailing return) \u2014 confirmed MSC01-C stylistic-pedantry FP class"
+  },
+  {
+   "rule": "EXP05-C",
+   "file": "src/p2p/p2p.c",
+   "line": 2506,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ieee802_11_parse_elems()'s own first parameter is already 'const u8 *' \u2014 the cast enables no mutation path, confirmed EXP05-C cast-to-a-const-consumer FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/p2p/p2p.c",
+   "line": 2513,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Output parameter written by-reference by the callee (os_get_random/parse/p2p_channels_intersect/p2p_dfs_channel_filter) or sizeof(*ptr) idiom \u2014 confirmed EXP33-C output-param/sizeof(*ptr) FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 2664,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: p2p.c functions always called with a valid p2p/addr from the same trust boundary, never externally-nullable"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 2664,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: p2p.c functions always called with a valid p2p/addr from the same trust boundary, never externally-nullable"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 2664,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: p2p.c functions always called with a valid p2p/addr from the same trust boundary, never externally-nullable"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/p2p/p2p.c",
+   "line": 2727,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain 'if (ptr == NULL)'/'if (!ptr)' guard already performs the validation \u2014 confirmed MEM10-C stylistic-pedantry FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 2778,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: p2p.c functions always called with a valid p2p/addr from the same trust boundary, never externally-nullable"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 2841,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: p2p.c functions always called with a valid p2p/addr from the same trust boundary, never externally-nullable"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 2841,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: p2p.c functions always called with a valid p2p/addr from the same trust boundary, never externally-nullable"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 2841,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: p2p.c functions always called with a valid p2p/addr from the same trust boundary, never externally-nullable"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/p2p/p2p.c",
+   "line": 2841,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end (or fixed ETH_ALEN pointer) buffer-pair idiom \u2014 confirmed API05-C paired-bounds/well-known-length FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/p2p/p2p.c",
+   "line": 2841,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end (or fixed ETH_ALEN pointer) buffer-pair idiom \u2014 confirmed API05-C paired-bounds/well-known-length FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 2857,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Read-only struct-pointer param, never reassigned nor forwarded to a non-const vtable slot \u2014 genuine low-value const opportunity per 16-40_b6/41plus_b3 clarification"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 2867,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Returned pointer aliases heap memory (os_zalloc/dl_list-tracked device, not local automatic storage) \u2014 confirmed DCL30-C local-variable-vs-local-storage confusion class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 2961,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Returned pointer aliases heap memory (os_zalloc/dl_list-tracked device, not local automatic storage) \u2014 confirmed DCL30-C local-variable-vs-local-storage confusion class"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3020,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause chain (the unmatched-condition case needs no action, or is handled by a trailing return) \u2014 confirmed MSC01-C stylistic-pedantry FP class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3028,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: p2p.c functions always called with a valid p2p/addr from the same trust boundary, never externally-nullable"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3059,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR()/pure read-only macro+accessor args in a p2p_dbg() call \u2014 confirmed EXP30-C pure-accessor FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3087,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Read-only struct-pointer param, never reassigned nor forwarded to a non-const vtable slot \u2014 genuine low-value const opportunity per 16-40_b6/41plus_b3 clarification"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3095,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Read-only struct-pointer param, never reassigned nor forwarded to a non-const vtable slot \u2014 genuine low-value const opportunity per 16-40_b6/41plus_b3 clarification"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3102,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: p2p.c functions always called with a valid p2p/addr from the same trust boundary, never externally-nullable"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3118,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Read-only struct-pointer param, never reassigned nor forwarded to a non-const vtable slot \u2014 genuine low-value const opportunity per 16-40_b6/41plus_b3 clarification"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3174,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Output parameter written by-reference by the callee (os_get_random/parse/p2p_channels_intersect/p2p_dfs_channel_filter) or sizeof(*ptr) idiom \u2014 confirmed EXP33-C output-param/sizeof(*ptr) FP class"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3174,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*cfg) idiom sizing an allocation/memcpy from the pointee's own type \u2014 sizeof(*ptr) rule-bug family, not a decayed-array issue"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3178,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*cfg) idiom sizing an allocation/memcpy from the pointee's own type \u2014 sizeof(*ptr) rule-bug family, not a decayed-array issue"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3230,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Returned pointer aliases heap memory (os_zalloc/dl_list-tracked device, not local automatic storage) \u2014 confirmed DCL30-C local-variable-vs-local-storage confusion class"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3234,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: p2p.c functions always called with a valid p2p/addr from the same trust boundary, never externally-nullable"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3256,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free(p2p->cfg->X)/os_free(p2p->groups) etc. free a *member*, not p2p itself; p2p is freed exactly once at the real os_free(p2p) \u2014 confirmed 'helper frees sub-field, tool thinks *ptr is freed' class extended interprocedurally"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3257,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free(p2p->cfg->X)/os_free(p2p->groups) etc. free a *member*, not p2p itself; p2p is freed exactly once at the real os_free(p2p) \u2014 confirmed 'helper frees sub-field, tool thinks *ptr is freed' class extended interprocedurally"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3258,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free(p2p->cfg->X)/os_free(p2p->groups) etc. free a *member*, not p2p itself; p2p is freed exactly once at the real os_free(p2p) \u2014 confirmed 'helper frees sub-field, tool thinks *ptr is freed' class extended interprocedurally"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3259,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free(p2p->cfg->X)/os_free(p2p->groups) etc. free a *member*, not p2p itself; p2p is freed exactly once at the real os_free(p2p) \u2014 confirmed 'helper frees sub-field, tool thinks *ptr is freed' class extended interprocedurally"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3260,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free(p2p->cfg->X)/os_free(p2p->groups) etc. free a *member*, not p2p itself; p2p is freed exactly once at the real os_free(p2p) \u2014 confirmed 'helper frees sub-field, tool thinks *ptr is freed' class extended interprocedurally"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3261,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free(p2p->cfg->X)/os_free(p2p->groups) etc. free a *member*, not p2p itself; p2p is freed exactly once at the real os_free(p2p) \u2014 confirmed 'helper frees sub-field, tool thinks *ptr is freed' class extended interprocedurally"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3263,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free(p2p->cfg->X)/os_free(p2p->groups) etc. free a *member*, not p2p itself; p2p is freed exactly once at the real os_free(p2p) \u2014 confirmed 'helper frees sub-field, tool thinks *ptr is freed' class extended interprocedurally"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3265,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free(p2p->cfg->X)/os_free(p2p->groups) etc. free a *member*, not p2p itself; p2p is freed exactly once at the real os_free(p2p) \u2014 confirmed 'helper frees sub-field, tool thinks *ptr is freed' class extended interprocedurally"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3266,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free(p2p->cfg->X)/os_free(p2p->groups) etc. free a *member*, not p2p itself; p2p is freed exactly once at the real os_free(p2p) \u2014 confirmed 'helper frees sub-field, tool thinks *ptr is freed' class extended interprocedurally"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3267,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free(p2p->cfg->X)/os_free(p2p->groups) etc. free a *member*, not p2p itself; p2p is freed exactly once at the real os_free(p2p) \u2014 confirmed 'helper frees sub-field, tool thinks *ptr is freed' class extended interprocedurally"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3268,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free(p2p->cfg->X)/os_free(p2p->groups) etc. free a *member*, not p2p itself; p2p is freed exactly once at the real os_free(p2p) \u2014 confirmed 'helper frees sub-field, tool thinks *ptr is freed' class extended interprocedurally"
+  },
+  {
+   "rule": "MEM30-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3270,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free(p2p->cfg->X)/os_free(p2p->groups) etc. free a *member*, not p2p itself; p2p is freed exactly once at the real os_free(p2p) \u2014 confirmed 'helper frees sub-field, tool thinks *ptr is freed' class extended interprocedurally"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3270,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free(p2p->p2ps_prov) sets the field back to NULL, or the wpabuf_dup'd field is freed later in p2p_device_free() \u2014 same interprocedural member-free-misattribution / struct-field-ownership FP class as the MEM30-C entries"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3274,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: p2p.c functions always called with a valid p2p/addr from the same trust boundary, never externally-nullable"
+  },
+  {
+   "rule": "MEM31-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3287,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free(p2p->p2ps_prov) sets the field back to NULL, or the wpabuf_dup'd field is freed later in p2p_device_free() \u2014 same interprocedural member-free-misattribution / struct-field-ownership FP class as the MEM30-C entries"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3393,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: p2p.c functions always called with a valid p2p/addr from the same trust boundary, never externally-nullable"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3393,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Read-only struct-pointer param, never reassigned nor forwarded to a non-const vtable slot \u2014 genuine low-value const opportunity per 16-40_b6/41plus_b3 clarification"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3399,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: p2p.c functions always called with a valid p2p/addr from the same trust boundary, never externally-nullable"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3399,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Read-only struct-pointer param, never reassigned nor forwarded to a non-const vtable slot \u2014 genuine low-value const opportunity per 16-40_b6/41plus_b3 clarification"
+  },
+  {
+   "rule": "MEM10-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3433,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain 'if (ptr == NULL)'/'if (!ptr)' guard already performs the validation \u2014 confirmed MEM10-C stylistic-pedantry FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3451,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Read-only struct-pointer param, never reassigned nor forwarded to a non-const vtable slot \u2014 genuine low-value const opportunity per 16-40_b6/41plus_b3 clarification"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3488,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "API00-C internal-only-API FP class: p2p.c functions always called with a valid p2p/addr from the same trust boundary, never externally-nullable"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3499,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'found' is read in the next loop iteration's 'if (!found) continue;' \u2014 CFG blind spot for loop-carried flags read across dl_list_for_each iterations"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/p2p/p2p.c",
+   "line": 3643,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause chain (the unmatched-condition case needs no action, or is handled by a trailing return) \u2014 confirmed MSC01-C stylistic-pedantry FP class"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 15,
+  "fp": 135,
+  "fn": 0
+ }
+}

@@ -1,0 +1,33 @@
+{
+ "labels": [
+  {"rule": "API02-C", "file": "src/wps/http_client.h", "line": 21, "verdict": "FP", "confidence": "high", "reason": "char **path is an output param, not a bare array needing a size arg"},
+  {"rule": "API05-C", "file": "src/wps/http_client.h", "line": 28, "verdict": "FP", "confidence": "high", "reason": "flags void *cb_ctx opaque callback context, not an array parameter at all"},
+  {"rule": "API05-C", "file": "src/wps/http_client.h", "line": 29, "verdict": "FP", "confidence": "high", "reason": "flags const char *url, an idiomatic NUL-terminated string param, not an array"},
+  {"rule": "API05-C", "file": "src/wps/http_client.h", "line": 34, "verdict": "FP", "confidence": "high", "reason": "flags void *cb_ctx opaque callback context again, not an array parameter"},
+  {"rule": "API02-C", "file": "src/wps/http_client.h", "line": 38, "verdict": "FP", "confidence": "high", "reason": "char *url is a NUL-terminated string, standard idiom, not an unsized array"},
+  {"rule": "INT14-C", "file": "src/wps/ndef.c", "line": 38, "verdict": "FP", "confidence": "high", "reason": "conflates pointer arithmetic on data with bitwise AND on dereferenced data[0]; not same-variable misuse"},
+  {"rule": "DCL31-C", "file": "src/wps/ndef.c", "line": 101, "verdict": "FP", "confidence": "high", "reason": "filter is a local function-pointer parameter being invoked, not an undeclared global function"},
+  {"rule": "DCL30-C", "file": "src/wps/ndef.c", "line": 157, "verdict": "FP", "confidence": "high", "reason": "record is a pointer to heap memory from wpabuf_alloc; not address of automatic-storage object"},
+  {"rule": "DCL13-C", "file": "src/wps/ndef.c", "line": 161, "verdict": "TP", "confidence": "med", "reason": "wifi_filter never modifies record; file-local callback type, const is a safe self-contained fix"},
+  {"rule": "DCL13-C", "file": "src/wps/ndef.c", "line": 187, "verdict": "TP", "confidence": "med", "reason": "p2p_filter never modifies record; same file-local callback, const fix is low-risk"},
+  {"rule": "API05-C", "file": "src/wps/wps_upnp_i.h", "line": 156, "verdict": "FP", "confidence": "high", "reason": "UUID_LEN is a compile-time #define (uuid.h), not a later-declared runtime parameter"},
+  {"rule": "API05-C", "file": "src/wps/wps_upnp_i.h", "line": 159, "verdict": "FP", "confidence": "high", "reason": "UUID_LEN is a compile-time #define, same misapplied ordering rule"},
+  {"rule": "API02-C", "file": "src/wps/wps_upnp_i.h", "line": 161, "verdict": "FP", "confidence": "high", "reason": "unsigned *ip_addr is a single output value, not an array requiring a size argument"},
+  {"rule": "API02-C", "file": "src/wps/wps_upnp_i.h", "line": 161, "verdict": "FP", "confidence": "high", "reason": "char **ip_addr_text is an output string pointer, not an array requiring a size argument"},
+  {"rule": "API05-C", "file": "src/wps/wps_upnp_i.h", "line": 162, "verdict": "FP", "confidence": "high", "reason": "ETH_ALEN is a compile-time #define (=6, common.h), a valid fixed-size array bound, not an out-of-order parameter"},
+  {"rule": "INT14-C", "file": "wpa_supplicant/twt.c", "line": 70, "verdict": "FP", "confidence": "high", "reason": "only bitwise ops (& and <<) on setup_cmd, no arithmetic op present; rule's own precondition unmet"},
+  {"rule": "EXP07-C", "file": "wpa_supplicant/twt.c", "line": 78, "verdict": "FP", "confidence": "med", "reason": "no unjustified constant-value assumption; 0x1f/10 are spec-defined bit-packing offsets"},
+  {"rule": "INT14-C", "file": "wpa_supplicant/twt.c", "line": 78, "verdict": "FP", "confidence": "high", "reason": "exponent masked with & then shifted, both bitwise ops only, no arithmetic operation involved"},
+  {"rule": "EXP30-C", "file": "wpa_supplicant/twt.c", "line": 87, "verdict": "FP", "confidence": "high", "reason": "wpabuf_head/wpabuf_len are pure inline accessors (no side effects); unsequenced order is harmless"},
+  {"rule": "EXP30-C", "file": "wpa_supplicant/twt.c", "line": 131, "verdict": "FP", "confidence": "high", "reason": "same pure accessor pair wpabuf_head/wpabuf_len, no side effects to unsequence"}
+ ],
+ "fns": [
+  {"file": "src/wps/ndef.c", "line": 93, "rule": "INT31-C", "desc": "int len = wpabuf_len(buf) truncates size_t to int; benign for current WPS/NFC buffer sizes but no explicit bound check", "upstream_present": "unknown"}
+ ],
+ "files_clean_for_fn": [
+  "src/wps/http_client.h",
+  "src/wps/wps_upnp_i.h",
+  "wpa_supplicant/twt.c"
+ ],
+ "summary": {"tp": 2, "fp": 18, "fn": 1}
+}

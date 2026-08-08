@@ -1,0 +1,1219 @@
+{
+ "labels": [
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/beacon.c",
+   "line": 17,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Filenames literally share first-8-char prefix 'ieee802_'; low-value but factually true per established header-family convention."
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/beacon.c",
+   "line": 17,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Filenames literally share first-8-char prefix 'ieee802_'; low-value but factually true per established header-family convention."
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/beacon.c",
+   "line": 17,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Filenames literally share first-8-char prefix 'ieee802_'; low-value but factually true per established header-family convention."
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/beacon.c",
+   "line": 18,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Filenames literally share first-8-char prefix 'ieee802_'; low-value but factually true per established header-family convention."
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/beacon.c",
+   "line": 18,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Filenames literally share first-8-char prefix 'ieee802_'; low-value but factually true per established header-family convention."
+  },
+  {
+   "rule": "PRE08-C",
+   "file": "src/ap/beacon.c",
+   "line": 25,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Filenames literally share first-8-char prefix 'ieee802_'; low-value but factually true per established header-family convention."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/beacon.c",
+   "line": 41,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "Plain internal helper, hapd only read (conf fields); genuine if low-value const opportunity."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/beacon.c",
+   "line": 68,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ieee802_11_erp_info's hapd is read-only; genuine low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/beacon.c",
+   "line": 90,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hostapd_eid_ds_params's hapd is read-only; genuine low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/beacon.c",
+   "line": 90,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eid is written through via '*eid++ = ...' in this function; const suggestion is factually wrong."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/beacon.c",
+   "line": 105,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd_eid_erp_info writes '*eid++ = ...' three times; eid is genuinely mutated."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/beacon.c",
+   "line": 129,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hostapd_eid_pwr_constraint's hapd is read-only; genuine low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/beacon.c",
+   "line": 129,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "eid is aliased by local pos and written via '*pos++ = ...' (pos=eid); pointee is mutated."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/beacon.c",
+   "line": 137,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd_eid_pwr_constraint returns its own 'eid' parameter unchanged on early exit, not a local; DCL30-C local-storage-vs-parameter confusion."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/beacon.c",
+   "line": 141,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same as prior: 'return eid;' returns the caller-owned parameter pointer itself, not local storage."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/beacon.c",
+   "line": 149,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same DCL30-C parameter-returned-as-if-local misfire."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/beacon.c",
+   "line": 160,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same DCL30-C parameter-returned-as-if-local misfire."
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "src/ap/beacon.c",
+   "line": 189,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Neither pos nor local_pwr_constraint is const-qualified; EXP40-C 'cast-away-const' phantom, established FP class (neither side const)."
+  },
+  {
+   "rule": "EXP40-C",
+   "file": "src/ap/beacon.c",
+   "line": 191,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same phantom cast-away-const; hapd->iconf->local_pwr_constraint and pos are not const."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/beacon.c",
+   "line": 193,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos is 'eid' advanced within the caller-supplied buffer, not local automatic storage; DCL30-C misfire."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/beacon.c",
+   "line": 197,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hostapd_eid_country_add's hapd only read (op_class check); genuine low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/beacon.c",
+   "line": 197,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos is written via '*pos++ = ...' three times in this function; const suggestion factually wrong."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/beacon.c",
+   "line": 198,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'end' is only compared (end-pos), never written; genuine low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/beacon.c",
+   "line": 199,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'start' fields are only read (start->chan); genuine low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/beacon.c",
+   "line": 200,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'prev' fields are only read (prev->chan); genuine low-value TP."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/beacon.c",
+   "line": 202,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos/end are always passed as a matched bounds pair into the same eid buffer from the caller; established ARR36-C pos/end-paired-buffer FP class."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/beacon.c",
+   "line": 265,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'eid' itself never appears in a bitwise expression; the bitwise op is on the derived '(pos-eid)' difference at line 310. Base-identifier/derived-expression conflation, established INT14-C FP family."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/beacon.c",
+   "line": 270,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'return eid;' returns the function's own parameter, not local storage; DCL30-C misfire."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/beacon.c",
+   "line": 275,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same as #26: 'pos' never used in a raw bitwise expression; only the '(pos-eid)&1' difference is. Established INT14-C conflation FP."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/beacon.c",
+   "line": 312,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'return eid;' returns the parameter itself (bounds check failure path), not local storage; DCL30-C misfire."
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/ap/beacon.c",
+   "line": 316,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "pos-eid is bounded by the tiny country-IE buffer (max_len, a few hundred bytes at most); overflow is not reachable in practice."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/beacon.c",
+   "line": 318,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'return pos;' returns a pointer derived from the caller-owned eid buffer, not local automatic storage; DCL30-C misfire."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/beacon.c",
+   "line": 322,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "hostapd_wpa_ie is an internal-only API; hapd is always non-NULL by the established internal-invariant FP convention."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/beacon.c",
+   "line": 322,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hostapd_wpa_ie's hapd is read-only (hapd->wpa_auth); genuine low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/beacon.c",
+   "line": 335,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hostapd_vendor_wpa_ie's hapd is read-only; genuine low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/beacon.c",
+   "line": 482,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hostapd_eid_csa's hapd is read-only; genuine low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/beacon.c",
+   "line": 482,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "eid is written via '*eid++ = ...' in this function when the CSA condition is met; const suggestion is factually wrong."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/beacon.c",
+   "line": 502,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hostapd_eid_ecsa's hapd is read-only; genuine low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/beacon.c",
+   "line": 502,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "eid is written via '*eid++ = ...' repeatedly when eCSA is added; const suggestion factually wrong."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/beacon.c",
+   "line": 523,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hostapd_eid_max_cs_time's hapd is read-only; genuine low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/beacon.c",
+   "line": 552,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hostapd_eid_supported_op_classes's hapd is read-only; genuine low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/beacon.c",
+   "line": 552,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "eid is written via '*eid++ = ...' four times when the operating-classes element is added; const suggestion factually wrong."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/beacon.c",
+   "line": 625,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd_mbssid_get_tx_bss() (hostapd.c:96) always returns hapd or iface->bss[0], never NULL; internal-invariant-never-null FP."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/ap/beacon.c",
+   "line": 646,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'return 0;' is followed by the 'fail:' goto target, reachable via 'goto fail' earlier in the function; established goto-label-blindness MSC07-C FP."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/beacon.c",
+   "line": 648,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free(NULL) is a standard-guaranteed no-op; established os_free(NULL)-is-safe EXP34-C FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/beacon.c",
+   "line": 656,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hostapd_eid_mbssid_config's hapd is read-only; genuine low-value TP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/beacon.c",
+   "line": 656,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "eid is written via '*eid++ = ...' five times when ENHANCED_MBSSID is enabled; const suggestion factually wrong."
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/beacon.c",
+   "line": 681,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'len +=' is pure size_t/pointer-free integer accumulation for a buffer-length estimate, no pointer operand; established ARR39-C pure-integer-sum FP class."
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/beacon.c",
+   "line": 681,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'len +=' is pure size_t/pointer-free integer accumulation for a buffer-length estimate, no pointer operand; established ARR39-C pure-integer-sum FP class."
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/beacon.c",
+   "line": 681,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'len +=' is pure size_t/pointer-free integer accumulation for a buffer-length estimate, no pointer operand; established ARR39-C pure-integer-sum FP class."
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/beacon.c",
+   "line": 686,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'len +=' is pure size_t/pointer-free integer accumulation for a buffer-length estimate, no pointer operand; established ARR39-C pure-integer-sum FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/beacon.c",
+   "line": 740,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hostapd_probe_resp_elems_len's params is read-only throughout (params->mld_ap/known_bss etc.); genuine low-value TP."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/beacon.c",
+   "line": 749,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hapd was just reassigned via hostapd_mbssid_get_tx_bss(hapd), which never returns NULL; internal-invariant FP."
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/beacon.c",
+   "line": 767,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'buflen +='/'tail_len +=' is pure size_t integer accumulation for a length estimate, no pointer operand; established ARR39-C pure-integer-sum FP class."
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/beacon.c",
+   "line": 767,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'buflen +='/'tail_len +=' is pure size_t integer accumulation for a length estimate, no pointer operand; established ARR39-C pure-integer-sum FP class."
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/beacon.c",
+   "line": 767,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'buflen +='/'tail_len +=' is pure size_t integer accumulation for a length estimate, no pointer operand; established ARR39-C pure-integer-sum FP class."
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/beacon.c",
+   "line": 777,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'buflen +='/'tail_len +=' is pure size_t integer accumulation for a length estimate, no pointer operand; established ARR39-C pure-integer-sum FP class."
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/beacon.c",
+   "line": 779,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'buflen +='/'tail_len +=' is pure size_t integer accumulation for a length estimate, no pointer operand; established ARR39-C pure-integer-sum FP class."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/beacon.c",
+   "line": 793,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard-clause if/else-if on mutually exclusive mld_ap flags; missing final else correctly means 'no additional element'. Established MSC01-C guard-clause FP."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/beacon.c",
+   "line": 837,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hapd was reassigned via hostapd_mbssid_get_tx_bss(hapd), never NULL; internal-invariant FP."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/beacon.c",
+   "line": 848,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'epos - pos' subtracts two pointers into the same output buffer (epos = pos + len, set at function start); sqc's cited 'cca_pos' name doesn't even appear on this line -- misattribution extension of the established ARR36-C pos/end same-buffer FP class."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/beacon.c",
+   "line": 867,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'epos - pos' subtracts two pointers into the same output buffer (epos = pos + len, set at function start); sqc's cited 'cca_pos' name doesn't even appear on this line -- misattribution extension of the established ARR36-C pos/end same-buffer FP class."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/beacon.c",
+   "line": 868,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'epos - pos' subtracts two pointers into the same output buffer (epos = pos + len, set at function start); sqc's cited 'cca_pos' name doesn't even appear on this line -- misattribution extension of the established ARR36-C pos/end same-buffer FP class."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/beacon.c",
+   "line": 873,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'epos - pos' subtracts two pointers into the same output buffer (epos = pos + len, set at function start); sqc's cited 'cca_pos' name doesn't even appear on this line -- misattribution extension of the established ARR36-C pos/end same-buffer FP class."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/beacon.c",
+   "line": 874,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'epos - pos' subtracts two pointers into the same output buffer (epos = pos + len, set at function start); sqc's cited 'cca_pos' name doesn't even appear on this line -- misattribution extension of the established ARR36-C pos/end same-buffer FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/beacon.c",
+   "line": 903,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_memcpy(pos, wpabuf_head(x), wpabuf_len(x)) -- both are pure read-only accessors with no side effects to unsequence; established EXP30-C pure-accessor FP class."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/beacon.c",
+   "line": 932,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'epos - pos' subtracts two pointers into the same output buffer (epos = pos + len, set at function start); sqc's cited 'cca_pos' name doesn't even appear on this line -- misattribution extension of the established ARR36-C pos/end same-buffer FP class."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/beacon.c",
+   "line": 966,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Same mutually-exclusive mld_ap if/else-if chain as line 793; missing final else is a deliberate guard clause. Established MSC01-C guard-clause FP."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/beacon.c",
+   "line": 986,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'epos - pos' subtracts two pointers into the same output buffer (epos = pos + len, set at function start); sqc's cited 'cca_pos' name doesn't even appear on this line -- misattribution extension of the established ARR36-C pos/end same-buffer FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/beacon.c",
+   "line": 993,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_memcpy(pos, wpabuf_head(x), wpabuf_len(x)) -- both are pure read-only accessors with no side effects to unsequence; established EXP30-C pure-accessor FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/beacon.c",
+   "line": 1002,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_memcpy(pos, wpabuf_head(x), wpabuf_len(x)) -- both are pure read-only accessors with no side effects to unsequence; established EXP30-C pure-accessor FP class."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/beacon.c",
+   "line": 1017,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'epos - pos' subtracts two pointers into the same output buffer (epos = pos + len, set at function start); sqc's cited 'cca_pos' name doesn't even appear on this line -- misattribution extension of the established ARR36-C pos/end same-buffer FP class."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/beacon.c",
+   "line": 1018,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'epos - pos' subtracts two pointers into the same output buffer (epos = pos + len, set at function start); sqc's cited 'cca_pos' name doesn't even appear on this line -- misattribution extension of the established ARR36-C pos/end same-buffer FP class."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/beacon.c",
+   "line": 1019,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'epos - pos' subtracts two pointers into the same output buffer (epos = pos + len, set at function start); sqc's cited 'cca_pos' name doesn't even appear on this line -- misattribution extension of the established ARR36-C pos/end same-buffer FP class."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/beacon.c",
+   "line": 1021,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'epos - pos' subtracts two pointers into the same output buffer (epos = pos + len, set at function start); sqc's cited 'cca_pos' name doesn't even appear on this line -- misattribution extension of the established ARR36-C pos/end same-buffer FP class."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/beacon.c",
+   "line": 1022,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'epos - pos' subtracts two pointers into the same output buffer (epos = pos + len, set at function start); sqc's cited 'cca_pos' name doesn't even appear on this line -- misattribution extension of the established ARR36-C pos/end same-buffer FP class."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/beacon.c",
+   "line": 1023,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'epos - pos' subtracts two pointers into the same output buffer (epos = pos + len, set at function start); sqc's cited 'cca_pos' name doesn't even appear on this line -- misattribution extension of the established ARR36-C pos/end same-buffer FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/beacon.c",
+   "line": 1026,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_memcpy(pos, wpabuf_head(x), wpabuf_len(x)) -- both are pure read-only accessors with no side effects to unsequence; established EXP30-C pure-accessor FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/beacon.c",
+   "line": 1033,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_memcpy(pos, wpabuf_head(x), wpabuf_len(x)) -- both are pure read-only accessors with no side effects to unsequence; established EXP30-C pure-accessor FP class."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/beacon.c",
+   "line": 1069,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hapd was reassigned via hostapd_mbssid_get_tx_bss(hapd) earlier in this function, never NULL; internal-invariant FP."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/beacon.c",
+   "line": 1101,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*params->mld_info) is the correct sizeof(*ptr) allocation-sizing idiom, unrelated to any array/pointer decay of 'params'; established ARR01-C misattribution FP class."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/beacon.c",
+   "line": 1141,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(hapd->partner_links[mld_link_id]) sizes one real fixed-size array element, not a decayed pointer; established ARR01-C sizeof(ptr->member) FP class."
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/ap/beacon.c",
+   "line": 1157,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'return;' is followed by the 'fail:' goto target reached via 'goto fail' above; established goto-label-blindness MSC07-C FP."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/beacon.c",
+   "line": 1172,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "ssid_match's hapd is read-only; genuine low-value TP."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/beacon.c",
+   "line": 1258,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "info is assigned by 'while ((info = dl_list_first(...)))', which guards every access in the loop body against NULL; established EXP34-C while-condition-guard FP class."
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/beacon.c",
+   "line": 1280,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "info walks hapd->iface->sta_seen, a heap-owned dl_list (nodes from os_zalloc in sta_track_add); not local automatic storage. Established DCL30-C heap-vs-stack FP class."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/beacon.c",
+   "line": 1286,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only sta_track_* API, called only from this file's own tracking logic with already-validated pointers; established API00-C internal-invariant FP class."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/beacon.c",
+   "line": 1286,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only sta_track_* API, called only from this file's own tracking logic with already-validated pointers; established API00-C internal-invariant FP class."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/beacon.c",
+   "line": 1320,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only sta_track_* API, called only from this file's own tracking logic with already-validated pointers; established API00-C internal-invariant FP class."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/beacon.c",
+   "line": 1347,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only sta_track_* API, called only from this file's own tracking logic with already-validated pointers; established API00-C internal-invariant FP class."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/beacon.c",
+   "line": 1347,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only sta_track_* API, called only from this file's own tracking logic with already-validated pointers; established API00-C internal-invariant FP class."
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/beacon.c",
+   "line": 1365,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Idiomatic 'T *ptr, size_t len' shape (ml/ml_len); established API05-C conformant-array-syntax FP class."
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/beacon.c",
+   "line": 1410,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'len = ml_len - len - sizeof(...)' is pure size_t integer arithmetic, no pointer operand; established ARR39-C pure-integer-sum FP class."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/beacon.c",
+   "line": 1474,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'mgmt' itself is never used bitwise; the bitwise ops are on 'mgmt->da[0]'/'mgmt->bssid[0]' member bytes elsewhere in the function. Established INT14-C base-identifier/member-conflation FP."
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/beacon.c",
+   "line": 1479,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd_allowed_address unconditionally os_memset(out,0,sizeof(*out)) as its first statement before any read; established EXP33-C output-param-memset-first FP class."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/beacon.c",
+   "line": 1582,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard clause (do nothing if neither an associated STA nor a tracked entry matches); established MSC01-C guard-clause FP."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/beacon.c",
+   "line": 1616,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR()/wpa_ssid_txt() are pure read accessors with no side effects to unsequence; established EXP30-C pure-accessor/macro-arg FP class."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/beacon.c",
+   "line": 1635,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'elems' itself is never used bitwise; the bitwise op is on 'elems.interworking[0]' (a member array element), and the arithmetic is on the same member via '+1'. Established INT14-C base-identifier/member-conflation FP."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/ap/beacon.c",
+   "line": 1649,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'elems.interworking' is a bare 'const u8 *' pointer field (ieee802_11_common.h:72) into a wire buffer sized by interworking_len (guarded 7 or 9 here), not a 1-element array; ARR00-C misidentifies the pointer field's bound."
+  },
+  {
+   "rule": "ARR00-C",
+   "file": "src/ap/beacon.c",
+   "line": 1651,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'elems.interworking' is a bare 'const u8 *' pointer field (ieee802_11_common.h:72) into a wire buffer sized by interworking_len (guarded 7 or 9 here), not a 1-element array; ARR00-C misidentifies the pointer field's bound."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/beacon.c",
+   "line": 1654,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR()/wpa_ssid_txt() are pure read accessors with no side effects to unsequence; established EXP30-C pure-accessor/macro-arg FP class."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/beacon.c",
+   "line": 1880,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "Internal-only sta_track_* API, called only from this file's own tracking logic with already-validated pointers; established API00-C internal-invariant FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/beacon.c",
+   "line": 1916,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hostapd_gen_fils_discovery_nss's mode is read-only; genuine low-value TP."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/beacon.c",
+   "line": 1947,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'i' is only used arithmetically (i*2, i++); the bitwise '<<' operates on the constant 0x3 shifted by that arithmetic result, not on 'i' itself. Established INT14-C conflation FP."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/beacon.c",
+   "line": 1974,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate two-branch dispatch on phy_index; missing final else correctly leaves nss unmodified. Established MSC01-C guard-clause FP."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/beacon.c",
+   "line": 1990,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "rx_nss/max_nss are plain u8 scalars, not pointers at all, and the cited names 'mcs[3*i]'/'tx_nss' don't even appear on this line; category-error misattribution, not a real pointer comparison."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/beacon.c",
+   "line": 2004,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'nss' is only used arithmetically (nss-1, nss>4); the bitwise '<<' operates on that arithmetic result, not on 'nss' itself. Established INT14-C conflation FP."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/beacon.c",
+   "line": 2021,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "chwidth is pre-initialized to a sane default before the switch; a missing default case is a deliberate no-op. Established MSC01-C guard-clause FP."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/beacon.c",
+   "line": 2076,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "'ctl = 0' at declaration is unconditionally overwritten by the very next statement before any read; genuine (trivial) dead initial assignment."
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/beacon.c",
+   "line": 2083,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'hapd' itself never appears in a bitwise expression; the bitwise ops are on the sizeof-derived constant OR'd with flag macros, hapd only reached via '->' member access. Established INT14-C conflation FP."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/beacon.c",
+   "line": 2083,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(hapd->conf->ssid.short_ssid) sizes a real fixed u32 struct field, unrelated to any pointer/array decay of 'hapd'; established ARR01-C misattribution FP class."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/beacon.c",
+   "line": 2152,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(hapd->conf->ssid.short_ssid) sizes a real fixed u32 struct field, unrelated to any pointer/array decay of 'hapd'; established ARR01-C misattribution FP class."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/beacon.c",
+   "line": 2181,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "FD_FRAME_CTL_MD_PRESENT is only ever set (line 2108) when mobility_domain was non-NULL; the flag-guarded access at line 2181 is provably safe -- correlated-flag/pointer guard sqc doesn't track."
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/beacon.c",
+   "line": 2229,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "ieee802_11_build_ap_params is an internal hostapd entry point always called with a validated hapd; established API00-C internal-invariant FP class."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/beacon.c",
+   "line": 2243,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*params) is the correct sizeof(*ptr) idiom sizing the pointed-to struct, unrelated to array/pointer decay; established ARR01-C misattribution FP class."
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/beacon.c",
+   "line": 2267,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tail_len += ... is pure size_t integer accumulation, no pointer operand; established ARR39-C pure-integer-sum FP class."
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/beacon.c",
+   "line": 2267,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tail_len += ... is pure size_t integer accumulation, no pointer operand; established ARR39-C pure-integer-sum FP class."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/beacon.c",
+   "line": 2312,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free(NULL) is a standard-guaranteed no-op (this is exactly the branch where one of head/tail may be NULL); established os_free(NULL)-is-safe EXP34-C FP class."
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/beacon.c",
+   "line": 2313,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_free(NULL) is a standard-guaranteed no-op (this is exactly the branch where one of head/tail may be NULL); established os_free(NULL)-is-safe EXP34-C FP class."
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/ap/beacon.c",
+   "line": 2314,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tail (and its alias tailpos) is freed at the immediately preceding os_free(tail) on this same error path; MEM12-C alias-blindness, not a real leak."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/beacon.c",
+   "line": 2357,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'tail'/'tailend'/'tailpos' all point into the single os_malloc'd tail buffer; sqc's cited 'cca_pos' name doesn't even appear on these lines -- ARR36-C same-buffer misattribution FP."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/beacon.c",
+   "line": 2374,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'tail'/'tailend'/'tailpos' all point into the single os_malloc'd tail buffer; sqc's cited 'cca_pos' name doesn't even appear on these lines -- ARR36-C same-buffer misattribution FP."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/beacon.c",
+   "line": 2375,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'tail'/'tailend'/'tailpos' all point into the single os_malloc'd tail buffer; sqc's cited 'cca_pos' name doesn't even appear on these lines -- ARR36-C same-buffer misattribution FP."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/beacon.c",
+   "line": 2377,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'tail'/'tailend'/'tailpos' all point into the single os_malloc'd tail buffer; sqc's cited 'cca_pos' name doesn't even appear on these lines -- ARR36-C same-buffer misattribution FP."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/beacon.c",
+   "line": 2378,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'tail'/'tailend'/'tailpos' all point into the single os_malloc'd tail buffer; sqc's cited 'cca_pos' name doesn't even appear on these lines -- ARR36-C same-buffer misattribution FP."
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/ap/beacon.c",
+   "line": 2396,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "tail (aliased by tailpos) is freed at the immediately preceding os_free(tail) on this same error path; MEM12-C alias-blindness, not a real leak."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/beacon.c",
+   "line": 2417,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_memcpy(tailpos, wpabuf_head(x), wpabuf_len(x)) -- both are pure read-only accessors; established EXP30-C pure-accessor FP class."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/beacon.c",
+   "line": 2446,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'tail'/'tailend'/'tailpos' all point into the single os_malloc'd tail buffer; sqc's cited 'cca_pos' name doesn't even appear on these lines -- ARR36-C same-buffer misattribution FP."
+  },
+  {
+   "rule": "ARR36-C",
+   "file": "src/ap/beacon.c",
+   "line": 2490,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'tail'/'tailend'/'tailpos' all point into the single os_malloc'd tail buffer; sqc's cited 'cca_pos' name doesn't even appear on these lines -- ARR36-C same-buffer misattribution FP."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/beacon.c",
+   "line": 2497,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_memcpy(tailpos, wpabuf_head(x), wpabuf_len(x)) -- both are pure read-only accessors; established EXP30-C pure-accessor FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/beacon.c",
+   "line": 2505,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_memcpy(tailpos, wpabuf_head(x), wpabuf_len(x)) -- both are pure read-only accessors; established EXP30-C pure-accessor FP class."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/beacon.c",
+   "line": 2533,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "os_memcpy(tailpos, wpabuf_head(x), wpabuf_len(x)) -- both are pure read-only accessors; established EXP30-C pure-accessor FP class."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/beacon.c",
+   "line": 2551,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard clause: missing else means no PSK is configured for offload, which is the intended default. Established MSC01-C guard-clause FP."
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/ap/beacon.c",
+   "line": 2571,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "Genuine leak: head/tail/resp (allocated earlier) are never freed nor assigned into params before this early 'return -1;' inside the SAE-offload block -- params->head/tail/proberesp assignment only happens later at line 2589-2593."
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/ap/beacon.c",
+   "line": 2577,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "Same genuine leak as line 2571: head/tail/resp are allocated but not yet stored into params or freed on this early SAE-offload-error return."
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/ap/beacon.c",
+   "line": 2584,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "Same genuine leak: head/tail/resp allocated earlier are neither freed nor transferred to params before this 'return -1;' when sae_password is unavailable."
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/beacon.c",
+   "line": 2608,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Deliberate guard clause: missing else on the wpa/rsn pairwise-cipher chain leaves params->pairwise_ciphers at its zero-initialized default, the intended behavior. Established MSC01-C guard-clause FP."
+  },
+  {
+   "rule": "MEM12-C",
+   "file": "src/ap/beacon.c",
+   "line": 2684,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "This is the function's success path: tail is assigned to params->tail at line 2591 (ownership transferred), not leaked. Established MEM12-C ownership-transfer FP."
+  },
+  {
+   "rule": "DCL37-C",
+   "file": "src/ap/beacon.c",
+   "line": 2717,
+   "verdict": "TP",
+   "confidence": "high",
+   "reason": "'__ieee802_11_set_beacon' is a genuine double-underscore-prefixed identifier authored by hostapd itself (not mirroring an external header); matches the confirmed DCL37-C reserved-identifier TP precedent (__ieee802_11_parse_elems/__AKM)."
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/beacon.c",
+   "line": 2798,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "hostapd_get_oper_chwidth/_centr_freq_seg0_idx/_centr_freq_seg1_idx/hostapd_get_punct_bitmap are pure read-only config accessors with no side effects; established EXP30-C pure-accessor FP class."
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/beacon.c",
+   "line": 2856,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*params) is the correct sizeof(*ptr) idiom, unrelated to array/pointer decay; established ARR01-C misattribution FP class."
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/beacon.c",
+   "line": 2904,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "hostapd_add_sta_profile's own_fdata is read-only (only own_fdata->u.probe_resp.variable is read); genuine low-value TP."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/beacon.c",
+   "line": 2919,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "This variable is read later in the function after the for_each_element loop completes (e.g. non_inherit_ele_list_len/_ext_list_len read+copied at lines 3132-3149, num_link_elem_vendor_ies compared at 3104); MSC13-C misses reads across the loop/function-scope boundary, an established FP shape."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/beacon.c",
+   "line": 2920,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "This variable is read later in the function after the for_each_element loop completes (e.g. non_inherit_ele_list_len/_ext_list_len read+copied at lines 3132-3149, num_link_elem_vendor_ies compared at 3104); MSC13-C misses reads across the loop/function-scope boundary, an established FP shape."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/beacon.c",
+   "line": 2921,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "This variable is read later in the function after the for_each_element loop completes (e.g. non_inherit_ele_list_len/_ext_list_len read+copied at lines 3132-3149, num_link_elem_vendor_ies compared at 3104); MSC13-C misses reads across the loop/function-scope boundary, an established FP shape."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/beacon.c",
+   "line": 2922,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "This variable is read later in the function after the for_each_element loop completes (e.g. non_inherit_ele_list_len/_ext_list_len read+copied at lines 3132-3149, num_link_elem_vendor_ies compared at 3104); MSC13-C misses reads across the loop/function-scope boundary, an established FP shape."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/beacon.c",
+   "line": 2923,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "This variable is read later in the function after the for_each_element loop completes (e.g. non_inherit_ele_list_len/_ext_list_len read+copied at lines 3132-3149, num_link_elem_vendor_ies compared at 3104); MSC13-C misses reads across the loop/function-scope boundary, an established FP shape."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/beacon.c",
+   "line": 2924,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "add_vendor_ies/is_identical_vendor_ies are read later at lines 3043/3103 after the loop; MSC13-C loop-boundary read-blindness, established FP shape."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/beacon.c",
+   "line": 2924,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "add_vendor_ies/is_identical_vendor_ies are read later at lines 3043/3103 after the loop; MSC13-C loop-boundary read-blindness, established FP shape."
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/beacon.c",
+   "line": 2950,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ie_found=false is read at 'if (!ie_found)' later in the very same loop iteration (line 3049); MSC13-C loop-boundary read-blindness, established FP shape."
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/ap/beacon.c",
+   "line": 3252,
+   "rule": "MEM31-C",
+   "desc": "hostapd_gen_per_sta_profiles: when hostapd_gen_sta_profile() fails, loop does 'continue;' without os_free(link_params.resp); the only free (:3277) is on the success path only -- leaks the per-link probe-response template buffer.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 30,
+  "fp": 120,
+  "fn": 1
+ }
+}

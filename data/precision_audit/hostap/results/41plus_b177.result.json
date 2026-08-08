@@ -1,0 +1,925 @@
+{
+  "labels": [
+    {
+      "rule": "PRE08-C",
+      "file": "src/ap/ap_config.c",
+      "line": 15,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "categorical: PRE08-C 8.3-legacy-filesystem header-family FP, harmless shared prefix"
+    },
+    {
+      "rule": "MSC13-C",
+      "file": "src/ap/ap_config.c",
+      "line": 33,
+      "verdict": "TP",
+      "confidence": "med",
+      "reason": "genuine dead store: prev=NULL overwritten/unread on every path, low severity"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "src/ap/ap_config.c",
+      "line": 157,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "categorical: INT14-C bitwise+arithmetic stylistic pedantry, not a real defect"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/ap/ap_config.c",
+      "line": 217,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*conf) is not a dereference; conf is the alloc target"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/ap/ap_config.c",
+      "line": 218,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*bss) is not a dereference"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "src/ap/ap_config.c",
+      "line": 222,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "os_free(NULL) is safe; conf only freed here because alloc failed"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "src/ap/ap_config.c",
+      "line": 223,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "os_free(NULL) is safe"
+    },
+    {
+      "rule": "INT10-C",
+      "file": "src/ap/ap_config.c",
+      "line": 290,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "os_random() returns unsigned long; modulo operands are unsigned"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 316,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "conf is os_zalloc'd heap memory, not automatic/local storage"
+    },
+    {
+      "rule": "ERR00-C",
+      "file": "src/ap/ap_config.c",
+      "line": 344,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "fopen() return IS checked on the very next line (if (!f))"
+    },
+    {
+      "rule": "FIO05-C",
+      "file": "src/ap/ap_config.c",
+      "line": 344,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "fname is an admin-configured wpa_psk_file path, not attacker-controlled"
+    },
+    {
+      "rule": "WIN03-C",
+      "file": "src/ap/ap_config.c",
+      "line": 344,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "hostapd AP-side file has no Windows-specific handling anywhere"
+    },
+    {
+      "rule": "ARR30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 350,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "fgets(buf,sizeof(buf),f) is itself bounds-capped, not unbounded"
+    },
+    {
+      "rule": "EXP05-C",
+      "file": "src/ap/ap_config.c",
+      "line": 350,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "no cast is present on this line at all; 'f' used directly as fgets arg"
+    },
+    {
+      "rule": "ARR30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 359,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "walks a fgets-bounded NUL-terminated buffer, cannot run past bound"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/ap/ap_config.c",
+      "line": 361,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*pos='\\0' is plain char-to-char assignment, no widening occurs"
+    },
+    {
+      "rule": "EXP20-C",
+      "file": "src/ap/ap_config.c",
+      "line": 381,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "os_strcmp()'s 0=equal contract is exact; !os_strcmp(...) is a clear idiom"
+    },
+    {
+      "rule": "EXP20-C",
+      "file": "src/ap/ap_config.c",
+      "line": 383,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "same os_strcmp idiom"
+    },
+    {
+      "rule": "ERR07-C",
+      "file": "src/ap/ap_config.c",
+      "line": 384,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "atoi(value) on wps flag with no range/error check"
+    },
+    {
+      "rule": "ERR34-C",
+      "file": "src/ap/ap_config.c",
+      "line": 384,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "atoi(value) on wps flag with no range/error check"
+    },
+    {
+      "rule": "EXP20-C",
+      "file": "src/ap/ap_config.c",
+      "line": 385,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "os_strcmp idiom, exact 0=equal contract"
+    },
+    {
+      "rule": "ERR07-C",
+      "file": "src/ap/ap_config.c",
+      "line": 386,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "atoi(value) on vlan_id with no range/error check"
+    },
+    {
+      "rule": "ERR34-C",
+      "file": "src/ap/ap_config.c",
+      "line": 386,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "atoi(value) on vlan_id with no range/error check"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/ap/ap_config.c",
+      "line": 409,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*psk) is not a dereference"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/ap/ap_config.c",
+      "line": 435,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "deliberate: !ok is checked and handled right after the if/else-if chain"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/ap/ap_config.c",
+      "line": 443,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "mutually exclusive branch: this os_free(psk) is followed by break"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/ap/ap_config.c",
+      "line": 454,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "mutually exclusive branch: this os_free(psk) is followed by break"
+    },
+    {
+      "rule": "ERR00-C",
+      "file": "src/ap/ap_config.c",
+      "line": 466,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "fclose() return ignored on a read stream, low severity"
+    },
+    {
+      "rule": "MSC41-C",
+      "file": "src/ap/ap_config.c",
+      "line": 481,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "hexdump title string is a log label, not the embedded secret"
+    },
+    {
+      "rule": "MSC41-C",
+      "file": "src/ap/ap_config.c",
+      "line": 490,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "hexdump title string is a log label, not the embedded secret"
+    },
+    {
+      "rule": "ARR02-C",
+      "file": "src/ap/ap_config.c",
+      "line": 502,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "array sized only by its own 3-element initializer, explicit bound clearer"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/ap/ap_config.c",
+      "line": 592,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "internal-only API; attr NULL-safe via loop condition/caller-guaranteed"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/ap_config.c",
+      "line": 593,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "factually wrong: attr IS modified via 'attr = attr->next' in the for loop"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/ap/ap_config.c",
+      "line": 603,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "internal-only config-parsing helper, no external callers"
+    },
+    {
+      "rule": "EXP33-C",
+      "file": "src/ap/ap_config.c",
+      "line": 610,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(*attr) is not a dereference"
+    },
+    {
+      "rule": "ERR07-C",
+      "file": "src/ap/ap_config.c",
+      "line": 614,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "atoi(value) for attr->type with no range/error check"
+    },
+    {
+      "rule": "ERR34-C",
+      "file": "src/ap/ap_config.c",
+      "line": 614,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "atoi(value) for attr->type with no range/error check"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 624,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "attr is os_zalloc'd heap memory, not automatic/local storage"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/ap/ap_config.c",
+      "line": 624,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "attr->val ownership transferred to caller via returned attr, not leaked"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/ap/ap_config.c",
+      "line": 630,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "attr->val never allocated on this early-return path, nothing to leak"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/ap/ap_config.c",
+      "line": 632,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "syntax = *pos++ is plain char-to-char assignment, no widening"
+    },
+    {
+      "rule": "STR34-C",
+      "file": "src/ap/ap_config.c",
+      "line": 632,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "syntax = *pos++ is plain char-to-char assignment, no widening (duplicate)"
+    },
+    {
+      "rule": "INT14-C",
+      "file": "src/ap/ap_config.c",
+      "line": 641,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "categorical: INT14-C bitwise+arithmetic stylistic pedantry (len&1 / len/=2)"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/ap/ap_config.c",
+      "line": 654,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "attr->val ownership transferred to caller via return at line 668"
+    },
+    {
+      "rule": "ERR07-C",
+      "file": "src/ap/ap_config.c",
+      "line": 656,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "atoi(pos) in case 'd' with no range/error check"
+    },
+    {
+      "rule": "ERR34-C",
+      "file": "src/ap/ap_config.c",
+      "line": 656,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "atoi(pos) in case 'd' with no range/error check"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/ap/ap_config.c",
+      "line": 660,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "default: branch, attr->val never allocated, nothing to leak"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 663,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "mutually exclusive branches: every path that frees attr also returns"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 664,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "mutually exclusive branches: every path that frees attr also returns"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/ap/ap_config.c",
+      "line": 664,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "mutually exclusive branches: every path that frees attr also returns"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 668,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "attr is os_zalloc'd heap memory, not automatic/local storage"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 668,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "mutually exclusive branches: every path that frees attr also returns"
+    },
+    {
+      "rule": "MEM31-C",
+      "file": "src/ap/ap_config.c",
+      "line": 668,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "attr->val ownership transferred to caller via return, not leaked"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/ap/ap_config.c",
+      "line": 672,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "while(attr) loop already handles NULL gracefully, no-op"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/ap_config.c",
+      "line": 672,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "factually wrong: attr IS modified via 'attr = attr->next' in the while loop"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/ap/ap_config.c",
+      "line": 685,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "sole caller (config_file.c:562) guards with if(user) before calling"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/ap/ap_config.c",
+      "line": 695,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "while(user) loop already handles NULL gracefully, no-op"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/ap_config.c",
+      "line": 695,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "factually wrong: user IS modified via 'user = user->next' in the while loop"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "src/ap/ap_config.c",
+      "line": 765,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "while-condition (dl_list_first) already guards elem for NULL before use"
+    },
+    {
+      "rule": "EXP34-C",
+      "file": "src/ap/ap_config.c",
+      "line": 779,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "while-condition (dl_list_first) already guards realm for NULL before use"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/ap_config.c",
+      "line": 811,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "factually wrong: conf IS modified via 'conf = conf->next' in the while loop"
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/ap/ap_config.c",
+      "line": 830,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "categorical: MEM10-C ad-hoc-NULL-check stylistic pedantry"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 895,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "conf is not freed anywhere before this line; os_free(conf) is at line 1020"
+    },
+    {
+      "rule": "MEM10-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1032,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "categorical: MEM10-C ad-hoc-NULL-check stylistic pedantry"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1061,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "internal-only API; list only reached via hapd->conf->accept_mac/deny_mac"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1061,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "internal-only API; num_entries always a small internally-tracked count"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1061,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "list is read-only in this function, never reassigned"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1114,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "internal-only API; vlan always caller-supplied valid list head"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1114,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "walks via local copy v=vlan; vlan itself is never reassigned"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1126,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "internal-only API; conf always a valid bss config from caller"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1137,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "MAC2STR is a pure side-effect-free macro (array indexing), not unsequenced"
+    },
+    {
+      "rule": "FLP30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1147,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "factually wrong: psk is a struct pointer list cursor, not floating point"
+    },
+    {
+      "rule": "MSC21-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1147,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "misapplied to pointer/linked-list traversal terminated by NULL, not a step"
+    },
+    {
+      "rule": "PRE32-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1181,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "flatly wrong: no fclose() call anywhere near this line"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1246,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "conf is only read in this function, never reassigned"
+    },
+    {
+      "rule": "EXP20-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1250,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "hostapd_config_check_bss_6g returns bool; !f() is the clear idiom"
+    },
+    {
+      "rule": "EXP30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1323,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "MAC2STR is a pure side-effect-free macro, not unsequenced"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1536,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "conf is only read in this function, never reassigned"
+    },
+    {
+      "rule": "ARR00-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1538,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "static helper; sole caller loops queue over [0,NUM_TX_QUEUES) matching array size"
+    },
+    {
+      "rule": "ARR30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1538,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "static helper; sole caller loops queue over [0,NUM_TX_QUEUES) matching array size"
+    },
+    {
+      "rule": "ARR00-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1539,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "static helper; sole caller loops queue over [0,NUM_TX_QUEUES) matching array size"
+    },
+    {
+      "rule": "ARR30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1539,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "static helper; sole caller loops queue over [0,NUM_TX_QUEUES) matching array size"
+    },
+    {
+      "rule": "ARR00-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1540,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "static helper; sole caller loops queue over [0,NUM_TX_QUEUES) matching array size"
+    },
+    {
+      "rule": "ARR30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1540,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "static helper; sole caller loops queue over [0,NUM_TX_QUEUES) matching array size"
+    },
+    {
+      "rule": "ARR00-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1541,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "static helper; sole caller loops queue over [0,NUM_TX_QUEUES) matching array size"
+    },
+    {
+      "rule": "ARR30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1541,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "static helper; sole caller loops queue over [0,NUM_TX_QUEUES) matching array size"
+    },
+    {
+      "rule": "MSC01-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1674,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "cipher is pre-initialized to WPA_CIPHER_NONE before the if/else-if chain"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1710,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "internal-only API; conf always a valid bss config from caller"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1710,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "conf is only read in this function, never reassigned"
+    },
+    {
+      "rule": "API00-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1733,
+      "verdict": "FP",
+      "confidence": "med",
+      "reason": "internal-only API; conf always a valid bss config from caller"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1733,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "conf is only read in this function, never reassigned"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1749,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "conf is only read in this function, never reassigned"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1781,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*acl not yet freed here; this line IS the realloc call itself"
+    },
+    {
+      "rule": "ARR01-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1781,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(**acl) is the correct idiom for the pointed-to struct size"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1781,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*acl not yet freed here; this line IS the realloc call itself"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1781,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*acl not yet freed here; this line IS the realloc call itself"
+    },
+    {
+      "rule": "DCL30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1787,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "newacl is heap memory from os_realloc_array, not local/automatic storage"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1787,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "'*acl = newacl' is the correct pointer update, not a write to freed memory"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1788,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*acl was reassigned to newacl on the previous line; tracker misses the update"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1788,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*acl was reassigned to newacl on the previous line; tracker misses the update"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1788,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*acl was reassigned to newacl on the previous line; tracker misses the update"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1789,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*acl was reassigned to newacl two lines above; tracker misses the update"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1789,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*acl was reassigned to newacl two lines above; tracker misses the update"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1789,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*acl was reassigned to newacl two lines above; tracker misses the update"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1789,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*acl was reassigned to newacl two lines above; tracker misses the update"
+    },
+    {
+      "rule": "ARR01-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1789,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof((*acl)[*num].vlan_id) is a correct struct-field sizeof idiom"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1789,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*acl was reassigned to newacl two lines above; tracker misses the update"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1789,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*acl was reassigned to newacl two lines above; tracker misses the update"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1790,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*acl was reassigned to newacl earlier; tracker misses the update"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1790,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*acl was reassigned to newacl earlier; tracker misses the update"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1791,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*acl was reassigned to newacl earlier; tracker misses the update"
+    },
+    {
+      "rule": "MEM30-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1791,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "*acl was reassigned to newacl earlier; tracker misses the update"
+    },
+    {
+      "rule": "DCL13-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1798,
+      "verdict": "TP",
+      "confidence": "low",
+      "reason": "acl (the T** param itself) is never reassigned in this function"
+    },
+    {
+      "rule": "ARR01-C",
+      "file": "src/ap/ap_config.c",
+      "line": 1805,
+      "verdict": "FP",
+      "confidence": "high",
+      "reason": "sizeof(**acl) is the correct idiom for the pointed-to struct size"
+    }
+  ],
+  "fns": [],
+  "files_clean_for_fn": [
+    "src/ap/ap_config.c"
+  ],
+  "summary": {
+    "tp": 19,
+    "fp": 95,
+    "fn": 0
+  }
+}

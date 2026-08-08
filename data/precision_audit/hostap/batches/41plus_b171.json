@@ -1,0 +1,1129 @@
+{
+ "src/drivers/ndis_events.c": [
+  {
+   "column": 9,
+   "file": "src/drivers/ndis_events.c",
+   "line": 9,
+   "message": "Reserved identifier '_WIN32_WINNT' should not be used as a macro name",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Use a non-reserved macro name"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/ndis_events.c",
+   "line": 21,
+   "message": "Shared variable 'wmi_refcnt' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/ndis_events.c",
+   "line": 22,
+   "message": "Shared variable 'wmi_first' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/ndis_events.c",
+   "line": 38,
+   "message": "Function-like macro 'BstrAlloc' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/ndis_events.c",
+   "line": 38,
+   "message": "Macro evaluates parameter 'x' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/ndis_events.c",
+   "line": 39,
+   "message": "Function-like macro 'BstrFree' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/ndis_events.c",
+   "line": 39,
+   "message": "Macro evaluates parameter 'x' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/ndis_events.c",
+   "line": 43,
+   "message": "Function 'call_IWbemServices_ExecQuery' does not validate pointer parameter 'pSvc' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pSvc' at the start of the function, e.g., 'if (!pSvc) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/ndis_events.c",
+   "line": 43,
+   "message": "Function 'call_IWbemServices_ExecQuery' does not validate pointer parameter 'pCtx' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pCtx' at the start of the function, e.g., 'if (!pCtx) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/ndis_events.c",
+   "line": 43,
+   "message": "Function 'call_IWbemServices_ExecQuery' should be declared static if it doesn't need external linkage",
+   "rule_id": "DCL15-C",
+   "severity": "Low",
+   "suggestion": "Add 'static' storage-class specifier: static HRESULT call_IWbemServices_ExecQuery"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/ndis_events.c",
+   "line": 43,
+   "message": "Function 'call_IWbemServices_ExecQuery' is only used within this file. It should be declared static to minimize scope.",
+   "rule_id": "DCL19-C",
+   "severity": "Low",
+   "suggestion": "Add 'static' storage class to function 'call_IWbemServices_ExecQuery'"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/ndis_events.c",
+   "line": 53,
+   "message": "Function 'IWbemServices_ExecQuery' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/ndis_events.c",
+   "line": 63,
+   "message": "Function 'call_IWbemServices_ExecNotificationQueryAsync' does not validate pointer parameter 'pSvc' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pSvc' at the start of the function, e.g., 'if (!pSvc) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/ndis_events.c",
+   "line": 63,
+   "message": "Function 'call_IWbemServices_ExecNotificationQueryAsync' does not validate pointer parameter 'pCtx' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pCtx' at the start of the function, e.g., 'if (!pCtx) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/ndis_events.c",
+   "line": 63,
+   "message": "Function 'call_IWbemServices_ExecNotificationQueryAsync' should be declared static if it doesn't need external linkage",
+   "rule_id": "DCL15-C",
+   "severity": "Low",
+   "suggestion": "Add 'static' storage-class specifier: static HRESULT call_IWbemServices_ExecNotificationQueryAsync"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/ndis_events.c",
+   "line": 63,
+   "message": "Function 'call_IWbemServices_ExecNotificationQueryAsync' is only used within this file. It should be declared static to minimize scope.",
+   "rule_id": "DCL19-C",
+   "severity": "Low",
+   "suggestion": "Add 'static' storage class to function 'call_IWbemServices_ExecNotificationQueryAsync'"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/ndis_events.c",
+   "line": 73,
+   "message": "Function 'IWbemServices_ExecNotificationQueryAsync' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/ndis_events.c",
+   "line": 84,
+   "message": "Function 'call_IWbemLocator_ConnectServer' does not validate pointer parameter 'pLoc' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pLoc' at the start of the function, e.g., 'if (!pLoc) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/ndis_events.c",
+   "line": 84,
+   "message": "Function 'call_IWbemLocator_ConnectServer' does not validate pointer parameter 'pCtx' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'pCtx' at the start of the function, e.g., 'if (!pCtx) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/ndis_events.c",
+   "line": 84,
+   "message": "Function 'call_IWbemLocator_ConnectServer' should be declared static if it doesn't need external linkage",
+   "rule_id": "DCL15-C",
+   "severity": "Low",
+   "suggestion": "Add 'static' storage-class specifier: static HRESULT call_IWbemLocator_ConnectServer"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/ndis_events.c",
+   "line": 84,
+   "message": "Function 'call_IWbemLocator_ConnectServer' is only used within this file. It should be declared static to minimize scope.",
+   "rule_id": "DCL19-C",
+   "severity": "Low",
+   "suggestion": "Add 'static' storage class to function 'call_IWbemLocator_ConnectServer'"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/ndis_events.c",
+   "line": 98,
+   "message": "Function 'IWbemLocator_ConnectServer' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 24,
+   "file": "src/drivers/ndis_events.c",
+   "line": 128,
+   "message": "Function 'CreateEvent' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/ndis_events.c",
+   "line": 141,
+   "message": "Function 'ndis_events_destructor' performs compound operation on shared static variable 'wmi_refcnt' without synchronization",
+   "rule_id": "CON07-C",
+   "severity": "Medium",
+   "suggestion": "Use mutex locks (mtx_lock/mtx_unlock) or atomic operations to ensure atomicity"
+  },
+  {
+   "column": 60,
+   "file": "src/drivers/ndis_events.c",
+   "line": 141,
+   "message": "Pointer parameter 'events' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *events'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/ndis_events.c",
+   "line": 146,
+   "message": "Function 'IWbemServices_Release' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/ndis_events.c",
+   "line": 147,
+   "message": "Function 'IWbemLocator_Release' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 149,
+   "message": "Function 'CoUninitialize' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/ndis_events.c",
+   "line": 158,
+   "message": "Function 'IsEqualIID' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/ndis_events.c",
+   "line": 159,
+   "message": "Function 'IsEqualIID' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 161,
+   "message": "Function 'IWbemObjectSink_AddRef' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 59,
+   "file": "src/drivers/ndis_events.c",
+   "line": 192,
+   "message": "Pointer parameter 'events' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *events'"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/ndis_events.c",
+   "line": 194,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/ndis_events.c",
+   "line": 197,
+   "message": "File-scope identifier '_type' should not start with underscore",
+   "rule_id": "DCL37-C",
+   "severity": "Medium",
+   "suggestion": "Remove the leading underscore or rename the identifier"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/ndis_events.c",
+   "line": 200,
+   "message": "Variable 'buf' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'buf' before use, e.g., at its declaration"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/ndis_events.c",
+   "line": 206,
+   "message": "Variable 'data_len' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 211,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 212,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 41,
+   "file": "src/drivers/ndis_events.c",
+   "line": 217,
+   "message": "Signed integer subtraction 'pos - buf' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b < 0 && a > INT_MAX + b) || (b > 0 && a < INT_MIN + b)) { /* handle error */ }"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/ndis_events.c",
+   "line": 253,
+   "message": "Function 'IWbemClassObject_Get' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/ndis_events.c",
+   "line": 262,
+   "message": "Function 'SafeArrayGetLBound' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/ndis_events.c",
+   "line": 263,
+   "message": "Function 'SafeArrayGetUBound' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 269,
+   "message": "Function 'VariantClear' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 275,
+   "message": "Function 'SafeArrayGetElement' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 276,
+   "message": "Pointer dereference '*pos++' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 47,
+   "file": "src/drivers/ndis_events.c",
+   "line": 278,
+   "message": "Casting from char * (alignment 1) to u8 * (alignment 4) may cause alignment issues",
+   "rule_id": "EXP36-C",
+   "severity": "Low",
+   "suggestion": "Use memcpy or ensure proper alignment before casting"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/ndis_events.c",
+   "line": 280,
+   "message": "Function 'VariantClear' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 35,
+   "file": "src/drivers/ndis_events.c",
+   "line": 304,
+   "message": "Pointer parameter 'ppObjArray' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ppObjArray'"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/ndis_events.c",
+   "line": 322,
+   "message": "Function 'IWbemClassObject_Get' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/ndis_events.c",
+   "line": 331,
+   "message": "Function 'IWbemClassObject_Get' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/ndis_events.c",
+   "line": 336,
+   "message": "Function 'VariantClear' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/ndis_events.c",
+   "line": 353,
+   "message": "Function 'VariantClear' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/ndis_events.c",
+   "line": 354,
+   "message": "Function 'VariantClear' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 357,
+   "message": "Function 'VariantClear' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 380,
+   "message": "Function 'VariantClear' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 40,
+   "file": "src/drivers/ndis_events.c",
+   "line": 388,
+   "message": "Pointer parameter 'this' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *this'"
+  },
+  {
+   "column": 52,
+   "file": "src/drivers/ndis_events.c",
+   "line": 389,
+   "message": "Pointer parameter 'pObjParam' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pObjParam'"
+  },
+  {
+   "column": 14,
+   "file": "src/drivers/ndis_events.c",
+   "line": 421,
+   "message": "Array declaration 'class_list[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/ndis_events.c",
+   "line": 439,
+   "message": "Function 'ndis_events_deinit' does not validate pointer parameter 'events' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'events' at the start of the function, e.g., 'if (!events) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/ndis_events.c",
+   "line": 442,
+   "message": "Function 'IWbemServices_CancelAsyncCall' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/ndis_events.c",
+   "line": 443,
+   "message": "Function 'IWbemObjectSink_Release' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 5,
+   "file": "src/drivers/ndis_events.c",
+   "line": 457,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 470,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/ndis_events.c",
+   "line": 478,
+   "message": "Function '_snwprintf' called with potentially invalid size parameter",
+   "rule_id": "ARR38-C",
+   "severity": "High",
+   "suggestion": "Ensure size parameter does not exceed buffer size"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/ndis_events.c",
+   "line": 490,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 528,
+   "message": "Function 'IWbemServices_Release' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/ndis_events.c",
+   "line": 533,
+   "message": "Function 'IEnumWbemClassObject_Next' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 539,
+   "message": "Function 'IEnumWbemClassObject_Release' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 540,
+   "message": "Function 'IWbemServices_Release' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/ndis_events.c",
+   "line": 543,
+   "message": "Function 'IEnumWbemClassObject_Release' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/ndis_events.c",
+   "line": 545,
+   "message": "Function 'VariantInit' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/ndis_events.c",
+   "line": 546,
+   "message": "Function 'IWbemClassObject_Get' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 551,
+   "message": "Function 'IWbemServices_Release' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/ndis_events.c",
+   "line": 560,
+   "message": "Function 'VariantClear' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/ndis_events.c",
+   "line": 561,
+   "message": "Function 'IWbemClassObject_Release' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 570,
+   "message": "Function 'IWbemServices_Release' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/ndis_events.c",
+   "line": 575,
+   "message": "Function 'IEnumWbemClassObject_Next' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 580,
+   "message": "Function 'IEnumWbemClassObject_Release' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 580,
+   "message": "Double free detected: 'pEnumerator' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate IEnumWbemClassObject_Release() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 581,
+   "message": "Function 'IWbemServices_Release' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/ndis_events.c",
+   "line": 584,
+   "message": "Function 'IEnumWbemClassObject_Release' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/ndis_events.c",
+   "line": 584,
+   "message": "Double free detected: 'pEnumerator' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate IEnumWbemClassObject_Release() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/ndis_events.c",
+   "line": 586,
+   "message": "Function 'IWbemClassObject_Get' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 590,
+   "message": "Function 'IWbemClassObject_Release' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 590,
+   "message": "Double free detected: 'pObj' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate IWbemClassObject_Release() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 591,
+   "message": "Function 'IWbemServices_Release' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/ndis_events.c",
+   "line": 598,
+   "message": "Function 'VariantClear' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/ndis_events.c",
+   "line": 607,
+   "message": "Function 'IWbemClassObject_Get' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 611,
+   "message": "Function 'IWbemClassObject_Release' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 611,
+   "message": "Double free detected: 'pObj' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate IWbemClassObject_Release() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 612,
+   "message": "Function 'IWbemServices_Release' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 624,
+   "message": "Function 'VariantClear' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 625,
+   "message": "Function 'IWbemClassObject_Release' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 625,
+   "message": "Double free detected: 'pObj' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate IWbemClassObject_Release() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 626,
+   "message": "Function 'IWbemServices_Release' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/ndis_events.c",
+   "line": 643,
+   "message": "Function 'VariantClear' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/ndis_events.c",
+   "line": 644,
+   "message": "Function 'IWbemClassObject_Release' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/ndis_events.c",
+   "line": 644,
+   "message": "Double free detected: 'pObj' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate IWbemClassObject_Release() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 654,
+   "message": "Function 'IWbemServices_Release' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/ndis_events.c",
+   "line": 661,
+   "message": "Function 'IEnumWbemClassObject_Next' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 666,
+   "message": "Function 'IEnumWbemClassObject_Release' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 666,
+   "message": "Double free detected: 'pEnumerator' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate IEnumWbemClassObject_Release() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 667,
+   "message": "Function 'IWbemServices_Release' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/ndis_events.c",
+   "line": 672,
+   "message": "Function 'IEnumWbemClassObject_Release' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/ndis_events.c",
+   "line": 672,
+   "message": "Double free detected: 'pEnumerator' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate IEnumWbemClassObject_Release() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/ndis_events.c",
+   "line": 674,
+   "message": "Function 'IWbemClassObject_Get' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 678,
+   "message": "Function 'IWbemClassObject_Release' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 678,
+   "message": "Double free detected: 'pObj' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate IWbemClassObject_Release() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 679,
+   "message": "Function 'IWbemServices_Release' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/ndis_events.c",
+   "line": 689,
+   "message": "Function 'VariantClear' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/ndis_events.c",
+   "line": 691,
+   "message": "Function 'IWbemClassObject_Release' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/ndis_events.c",
+   "line": 691,
+   "message": "Double free detected: 'pObj' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate IWbemClassObject_Release() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/ndis_events.c",
+   "line": 693,
+   "message": "Function 'IWbemServices_Release' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/ndis_events.c",
+   "line": 702,
+   "message": "Function 'ndis_events_init' does not validate pointer parameter 'read_pipe' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'read_pipe' at the start of the function, e.g., 'if (!read_pipe) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/ndis_events.c",
+   "line": 702,
+   "message": "Function 'ndis_events_init' does not validate pointer parameter 'event_avail' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'event_avail' at the start of the function, e.g., 'if (!event_avail) { return error_code; }'"
+  },
+  {
+   "column": 28,
+   "file": "src/drivers/ndis_events.c",
+   "line": 710,
+   "message": "Dereference of uninitialized pointer 'events'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'events' before dereferencing"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/ndis_events.c",
+   "line": 722,
+   "message": "Function 'CoInitializeEx' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/ndis_events.c",
+   "line": 735,
+   "message": "Value assigned to 'wmi_first' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/ndis_events.c",
+   "line": 737,
+   "message": "Function 'CoInitializeSecurity' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 8,
+   "file": "src/drivers/ndis_events.c",
+   "line": 737,
+   "message": "Function 'CoInitializeSecurity' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/ndis_events.c",
+   "line": 749,
+   "message": "Function 'CoCreateInstance' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 755,
+   "message": "Function 'CoUninitialize' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 761,
+   "message": "Function 'CoUninitialize' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/ndis_events.c",
+   "line": 774,
+   "message": "Function 'CoUninitialize' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/ndis_events.c",
+   "line": 802,
+   "message": "Function returns pointer to local variable 'events' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  }
+ ]
+}

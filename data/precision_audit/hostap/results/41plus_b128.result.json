@@ -1,0 +1,40 @@
+{
+  "labels": [
+    {"rule": "EXP33-C", "file": "src/drivers/driver_ndis.c", "line": 2470, "verdict": "FP", "confidence": "high", "reason": "devname is the RegQueryValueEx output buffer (write target), not read uninitialized"},
+    {"rule": "EXP33-C", "file": "src/drivers/driver_ndis.c", "line": 2490, "verdict": "FP", "confidence": "high", "reason": "hnd's address passed as RegQueryValueEx output param; sizeof(hnd) is compile-time, no read of hnd"},
+    {"rule": "WIN00-C", "file": "src/drivers/driver_ndis.c", "line": 2529, "verdict": "TP", "confidence": "med", "reason": "LoadLibrary(TEXT(\"wzcsapi.dll\")) with no search-path restriction, genuine DLL-hijack pattern"},
+    {"rule": "DCL13-C", "file": "src/drivers/driver_ndis.c", "line": 2672, "verdict": "TP", "confidence": "low", "reason": "non-Windows #else stub of wpa_driver_ndis_set_wzc; drv genuinely unused in this compiled arm, matches header-stub TP class extended to a .c-file mutually-exclusive #ifdef stub"},
+    {"rule": "CON03-C", "file": "src/drivers/driver_ndis.c", "line": 2687, "verdict": "FP", "confidence": "high", "reason": "no pthread usage in file; wpa_supplicant/driver layer is single-threaded eloop, established CON03-C no-thread FP class"},
+    {"rule": "MSC37-C", "file": "src/drivers/driver_ndis.c", "line": 2696, "verdict": "FP", "confidence": "high", "reason": "wpa_driver_ndis_adapter_init returns on every path in both compiled #ifdef arms, preprocessor-branch-blind misfire"},
+    {"rule": "MSC37-C", "file": "src/drivers/driver_ndis.c", "line": 2733, "verdict": "FP", "confidence": "high", "reason": "wpa_driver_ndis_adapter_open returns on every path in both compiled #ifdef arms"},
+    {"rule": "STR31-C", "file": "src/drivers/driver_ndis.c", "line": 2733, "verdict": "FP", "confidence": "high", "reason": "ifname[i]='\\0' after loop is a bounds-checked null-terminate idiom; len already clamped < MAX_NDIS_DEVICE_NAME_LEN by earlier guard"},
+    {"rule": "ENV01-C", "file": "src/drivers/driver_ndis.c", "line": 2738, "verdict": "FP", "confidence": "high", "reason": "no getenv() call anywhere in this file; wholesale ENV01-C misfire"},
+    {"rule": "INT32-C", "file": "src/drivers/driver_ndis.c", "line": 2753, "verdict": "FP", "confidence": "high", "reason": "i and pos are both size_t, not signed int; loop invariant i>=pos, no overflow/underflow possible"},
+    {"rule": "ARR30-C", "file": "src/drivers/driver_ndis.c", "line": 2754, "verdict": "FP", "confidence": "high", "reason": "cross-#ifdef-branch name conflation: real buffer is WCHAR ifname[256] bounded by len<256; cited size-128 buffer is an unrelated local in the mutually exclusive #else arm"},
+    {"rule": "DCL13-C", "file": "src/drivers/driver_ndis.c", "line": 2785, "verdict": "TP", "confidence": "low", "reason": "plain internal helper only reads drv->ndisuio/drv->adapter, never forwards drv to a non-const consumer"},
+    {"rule": "EXP33-C", "file": "src/drivers/driver_ndis.c", "line": 2817, "verdict": "FP", "confidence": "high", "reason": "sizeof(*drv) is a non-evaluating context, not a dereference; established sizeof(*ptr)-not-a-deref FP class"},
+    {"rule": "MSC01-C", "file": "src/drivers/driver_ndis.c", "line": 2829, "verdict": "FP", "confidence": "high", "reason": "no-final-else guard-clause pedantry; leaving ifname unmodified when neither known prefix matches is the intended behavior"},
+    {"rule": "MEM31-C", "file": "src/drivers/driver_ndis.c", "line": 2840, "verdict": "FP", "confidence": "high", "reason": "mutually exclusive early-return branches in wpa_driver_ndis_init, not a real double free"},
+    {"rule": "MEM31-C", "file": "src/drivers/driver_ndis.c", "line": 2848, "verdict": "FP", "confidence": "high", "reason": "mutually exclusive early-return branches in wpa_driver_ndis_init, not a real double free"},
+    {"rule": "MEM31-C", "file": "src/drivers/driver_ndis.c", "line": 2857, "verdict": "FP", "confidence": "high", "reason": "mutually exclusive early-return branches in wpa_driver_ndis_init, not a real double free"},
+    {"rule": "MSC01-C", "file": "src/drivers/driver_ndis.c", "line": 2916, "verdict": "FP", "confidence": "high", "reason": "no-final-else guard-clause pedantry; the unhandled case correctly requires no action"},
+    {"rule": "DCL30-C", "file": "src/drivers/driver_ndis.c", "line": 2931, "verdict": "FP", "confidence": "high", "reason": "drv is heap-allocated via os_zalloc, not automatic storage; heap-vs-stack confusion"},
+    {"rule": "MEM31-C", "file": "src/drivers/driver_ndis.c", "line": 2969, "verdict": "FP", "confidence": "med", "reason": "no earlier os_free(drv) exists in wpa_driver_ndis_deinit; likely cross-function name/type conflation with the unrelated drv freed in wpa_driver_ndis_init"},
+    {"rule": "DCL13-C", "file": "src/drivers/driver_ndis.c", "line": 2974, "verdict": "TP", "confidence": "low", "reason": "global_priv param is entirely unused in wpa_driver_ndis_get_interfaces' body, trivially const-able"},
+    {"rule": "EXP33-C", "file": "src/drivers/driver_ndis.c", "line": 2980, "verdict": "FP", "confidence": "high", "reason": "sizeof(*b) is non-evaluating, not a dereference of uninitialized b"},
+    {"rule": "FIO24-C", "file": "src/drivers/driver_ndis.c", "line": 3011, "verdict": "FP", "confidence": "high", "reason": "mutually exclusive early-return branches, each with its own CloseHandle, not a real double close"},
+    {"rule": "ARR30-C", "file": "src/drivers/driver_ndis.c", "line": 3035, "verdict": "FP", "confidence": "high", "reason": "len already clamped to sizeof(name)-1 immediately before the write; bounded-clamp-guarantees-safety idiom"},
+    {"rule": "EXP33-C", "file": "src/drivers/driver_ndis.c", "line": 3047, "verdict": "FP", "confidence": "high", "reason": "sizeof(*niface) is non-evaluating, not a dereference"},
+    {"rule": "FIO24-C", "file": "src/drivers/driver_ndis.c", "line": 3065, "verdict": "FP", "confidence": "high", "reason": "final success-path close, only reached when the two earlier error-path closes (mutually exclusive) never executed"},
+    {"rule": "DCL37-C", "file": "src/drivers/driver_ndis.c", "line": 3067, "verdict": "FP", "confidence": "high", "reason": "_names is a block-scope local inside wpa_driver_ndis_get_interfaces, not a file-scope identifier"},
+    {"rule": "STR34-C", "file": "src/drivers/driver_ndis.c", "line": 3111, "verdict": "FP", "confidence": "high", "reason": "both pos and pos2 are char*, plain char-to-char assignment, no widening/sign-extension involved"},
+    {"rule": "EXP43-C", "file": "src/drivers/driver_ndis.c", "line": 3114, "verdict": "FP", "confidence": "high", "reason": "dest range [pos+2, ...) starts strictly after src range [names, pos) ends; provably disjoint, no overlap"},
+    {"rule": "MEM31-C", "file": "src/drivers/driver_ndis.c", "line": 3193, "verdict": "FP", "confidence": "high", "reason": "conflated with the unrelated os_free(niface) in the mutually exclusive NDISUIO #ifdef branch of the same function"}
+  ],
+  "fns": [
+    {"file": "src/drivers/driver_ndis.c", "line": 3106, "rule": "ARR30-C", "desc": "UNICODE-adapter-name conversion loop reads pos2[1]/pos2[2]/pos2[3] checking only pos2 < names+len, not the individual +1/+2/+3 offsets; 1-3 byte heap over-read possible when pos2 is near the buffer end", "upstream_present": "unknown"},
+    {"file": "src/drivers/driver_ndis.c", "line": 3114, "rule": "ARR30-C", "desc": "os_memcpy(pos+2, names, pos-names) can write up to ~len+2 bytes into a names buffer allocated with exactly len bytes (os_zalloc(len)), a potential 1-2 byte heap buffer overflow; legacy Win9x/Packet.dll UNICODE-workaround code path", "upstream_present": "unknown"}
+  ],
+  "files_clean_for_fn": [],
+  "summary": {"tp": 4, "fp": 26, "fn": 2}
+}

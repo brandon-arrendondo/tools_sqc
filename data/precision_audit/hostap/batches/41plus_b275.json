@@ -1,0 +1,879 @@
+{
+ "wpa_supplicant/pasn_supplicant.c": [
+  {
+   "column": 1,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 13,
+   "message": "Header file 'ieee802_11_defs.h' has the same first 8 characters (case-insensitive) as 'ieee802_11_common.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_defs.h' -> unique name)"
+  },
+  {
+   "column": 37,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 43,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 63,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 60,
+   "message": "Pointer parameter 'timeout_ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *timeout_ctx'"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 96,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 107,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 41,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 117,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 119,
+   "message": "Sensitive buffer 'password' not cleared before function exit",
+   "rule_id": "MEM03-C",
+   "severity": "Medium",
+   "suggestion": "Call SecureZeroMemory(password, size) or memset(password, 0, size) before the buffer goes out of scope"
+  },
+  {
+   "column": 31,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 173,
+   "message": "Signed integer addition '*(rsne + 1) + 2' may overflow without proper checking",
+   "rule_id": "INT32-C",
+   "severity": "High",
+   "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 185,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 201,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 14,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 219,
+   "message": "Bitwise operator '&' used on signed operand 'sel' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'sel' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 14,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 235,
+   "message": "Bitwise operator '&' used on signed operand 'sel' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'sel' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 14,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 241,
+   "message": "Bitwise operator '&' used on signed operand 'sel' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'sel' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 249,
+   "message": "Bitwise operator '&' used on signed operand 'sel' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'sel' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 252,
+   "message": "Bitwise operator '&' used on signed operand 'sel' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'sel' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 14,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 257,
+   "message": "Bitwise operator '&' used on signed operand 'sel' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'sel' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 270,
+   "message": "Bitwise operator '&' used on signed operand 'sel' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'sel' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 13,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 274,
+   "message": "Bitwise operator '&' used on signed operand 'sel' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'sel' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 306,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 55,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 325,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 352,
+   "message": "Function returns pointer to local variable 'ssid' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 367,
+   "message": "Function returns pointer to local variable 'bss' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 70,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 371,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 28,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 372,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 388,
+   "message": "Function returns pointer to local variable 'ssid' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 19,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 402,
+   "message": "Variable 'bss' may be used uninitialized (not assigned on all paths)",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'bss' before use, e.g., at its declaration"
+  },
+  {
+   "column": 7,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 440,
+   "message": "Function 'wpas_pasn_get_params_from_bss' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 4,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 462,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 58,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 519,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 25,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 520,
+   "message": "Pointer parameter 'pasn_params' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pasn_params'"
+  },
+  {
+   "column": 29,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 604,
+   "message": "Bitwise operator '&' used on signed operand 'akmp' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'akmp' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 36,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 605,
+   "message": "Bitwise operator '&' used on signed operand 'cipher' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'cipher' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 611,
+   "message": "Function returns pointer to local variable 'bss' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 803,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 810,
+   "message": "Function 'wpas_pasn_auth_start' does not validate pointer parameter 'own_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'own_addr' at the start of the function, e.g., 'if (!own_addr) { return error_code; }'"
+  },
+  {
+   "column": 27,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 849,
+   "message": "Dereference of uninitialized pointer 'awork'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'awork' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 888,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 38,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 899,
+   "message": "Pointer parameter 'params' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *params'"
+  },
+  {
+   "column": 58,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 923,
+   "message": "Pointer parameter 'entry' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *entry'"
+  },
+  {
+   "column": 65,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 937,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 964,
+   "message": "Function 'wpas_pasn_auth_rx' does not validate pointer parameter 'mgmt' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'mgmt' at the start of the function, e.g., 'if (!mgmt) { return error_code; }'"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 978,
+   "message": "Passing pointer to uninitialized variable 'pasn_data' to 'wpa_pasn_auth_rx' which reads the value",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'pasn_data' before passing its address to 'wpa_pasn_auth_rx'"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 980,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 25,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 1011,
+   "message": "Pointer parameter 'pasn_auth' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pasn_auth'"
+  },
+  {
+   "column": 9,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 1077,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 1083,
+   "message": "Function 'wpas_pasn_auth_tx_status' does not validate pointer parameter 'data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'data' at the start of the function, e.g., 'if (!data) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 1105,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 1115,
+   "message": "Function 'wpas_pasn_deauthenticate' does not validate pointer parameter 'own_addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'own_addr' at the start of the function, e.g., 'if (!own_addr) { return error_code; }'"
+  },
+  {
+   "column": 8,
+   "file": "wpa_supplicant/pasn_supplicant.c",
+   "line": 1165,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  }
+ ],
+ "src/tls/tlsv1_client.c": [
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 17,
+   "message": "Header file 'tlsv1_client.h' has the same first 8 characters (case-insensitive) as 'tlsv1_client_i.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'tlsv1_client.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 25,
+   "message": "Function 'tls_alert' does not validate pointer parameter 'conn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conn' at the start of the function, e.g., 'if (!conn) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 32,
+   "message": "Function 'tlsv1_client_free_dh' does not validate pointer parameter 'conn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conn' at the start of the function, e.g., 'if (!conn) { return error_code; }'"
+  },
+  {
+   "column": 48,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 41,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 64,
+   "message": "Function 'tls_derive_pre_master_secret' does not validate pointer parameter 'conn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conn' at the start of the function, e.g., 'if (!conn) { return error_code; }'"
+  },
+  {
+   "column": 41,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 75,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 78,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 79,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 35,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 166,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 262,
+   "message": "Double free detected: 'in_msg' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 9,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 271,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 330,
+   "message": "Function 'tlsv1_client_decrypt' does not validate pointer parameter 'conn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conn' at the start of the function, e.g., 'if (!conn) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 330,
+   "message": "Function 'tlsv1_client_decrypt' does not validate pointer parameter 'in_data' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'in_data' at the start of the function, e.g., 'if (!in_data) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 330,
+   "message": "Function 'tlsv1_client_decrypt' does not validate integer parameter 'in_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'in_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 14,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 332,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 4,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 388,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 425,
+   "message": "Function returns pointer to local variable 'buf' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 427,
+   "message": "Unreachable code after unconditional 'return'.",
+   "rule_id": "MSC07-C",
+   "severity": "Low",
+   "suggestion": "Remove the unreachable code or restructure the control flow"
+  },
+  {
+   "column": 26,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 471,
+   "message": "Dereference of uninitialized pointer 'conn'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'conn' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 502,
+   "message": "Function returns pointer to local variable 'conn' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 510,
+   "message": "Function 'tlsv1_client_deinit' does not validate pointer parameter 'conn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conn' at the start of the function, e.g., 'if (!conn) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 522,
+   "message": "Double-free: 'conn' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 531,
+   "message": "Function 'tlsv1_client_established' does not validate pointer parameter 'conn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conn' at the start of the function, e.g., 'if (!conn) { return error_code; }'"
+  },
+  {
+   "column": 50,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 531,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 549,
+   "message": "Function 'tlsv1_client_prf' does not validate pointer parameter 'out' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'out' at the start of the function, e.g., 'if (!out) { return error_code; }'"
+  },
+  {
+   "column": 42,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 549,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 60,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 549,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 604,
+   "message": "Function 'tlsv1_client_get_cipher' does not validate pointer parameter 'conn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conn' at the start of the function, e.g., 'if (!conn) { return error_code; }'"
+  },
+  {
+   "column": 49,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 604,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 61,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 604,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 46,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 716,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 730,
+   "message": "Function 'tlsv1_client_hello_ext' does not validate pointer parameter 'conn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conn' at the start of the function, e.g., 'if (!conn) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 733,
+   "message": "Variable 'pos' should be declared volatile - modified around function calls that may have external side effects",
+   "rule_id": "DCL22-C",
+   "severity": "Low",
+   "suggestion": "Declare as 'volatile' to prevent compiler optimizations that assume variable state is unchanged across function calls"
+  },
+  {
+   "column": 3,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 745,
+   "message": "Function returns without releasing all resources. Leaked: pos, conn->client_hello_ext. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 2,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 759,
+   "message": "Function returns without releasing all resources. Leaked: pos, conn->client_hello_ext. Consider using goto chain for proper resource cleanup.",
+   "rule_id": "MEM12-C",
+   "severity": "Low",
+   "suggestion": "Use goto chain pattern with cleanup labels to ensure all resources are released"
+  },
+  {
+   "column": 21,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 771,
+   "message": "sizeof applied to pointer/array parameter 'keys' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*keys)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 56,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 793,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 14,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 798,
+   "message": "Scaled integer arithmetic with pointer: 'conn->rl.hash_size + conn->rl.key_material_len +\n\t\t    conn->rl.iv_size'. This results in double scaling",
+   "rule_id": "ARR39-C",
+   "severity": "High",
+   "suggestion": "Remove sizeof() or use unscaled integer arithmetic"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 810,
+   "message": "Function 'tlsv1_client_set_cipher_list' does not validate pointer parameter 'conn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conn' at the start of the function, e.g., 'if (!conn) { return error_code; }'"
+  },
+  {
+   "column": 64,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 810,
+   "message": "Pointer parameter 'ciphers' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ciphers'"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 854,
+   "message": "Function 'tlsv1_client_set_cred' does not validate pointer parameter 'conn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conn' at the start of the function, e.g., 'if (!conn) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 854,
+   "message": "Function 'tlsv1_client_set_cred' does not validate pointer parameter 'cred' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cred' at the start of the function, e.g., 'if (!cred) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 868,
+   "message": "Function 'tlsv1_client_set_flags' does not validate pointer parameter 'conn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conn' at the start of the function, e.g., 'if (!conn) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 875,
+   "message": "Function 'tlsv1_client_set_session_ticket_cb' does not validate pointer parameter 'conn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conn' at the start of the function, e.g., 'if (!conn) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 886,
+   "message": "Function 'tlsv1_client_set_cb' does not validate pointer parameter 'conn' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'conn' at the start of the function, e.g., 'if (!conn) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 886,
+   "message": "Function 'tlsv1_client_set_cb' does not validate pointer parameter 'event_cb' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'event_cb' at the start of the function, e.g., 'if (!event_cb) { return error_code; }'"
+  },
+  {
+   "column": 50,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 898,
+   "message": "Pointer parameter 'conn' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *conn'"
+  },
+  {
+   "column": 62,
+   "file": "src/tls/tlsv1_client.c",
+   "line": 898,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ]
+}

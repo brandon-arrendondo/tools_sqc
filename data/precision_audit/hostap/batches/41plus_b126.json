@@ -1,0 +1,274 @@
+{
+ "src/ap/wps_hostapd.c#part2of2": [
+  {
+   "column": 8,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1955,
+   "message": "Variable 'if' shadows variable from outer scope (line 1943:7)",
+   "rule_id": "DCL01-C",
+   "severity": "Low",
+   "suggestion": "Rename variable 'if' to avoid shadowing"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1958,
+   "message": "Variable 'return' is declared but never used.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Use the variable or remove it"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1958,
+   "message": "Variable 'return' shadows variable from outer scope (line 1946:3)",
+   "rule_id": "DCL01-C",
+   "severity": "Low",
+   "suggestion": "Rename variable 'return' to avoid shadowing"
+  },
+  {
+   "column": 59,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 1988,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 2030,
+   "message": "Variable 'attr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'attr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 2038,
+   "message": "Function 'hostapd_wps_nfc_tag_read' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 2055,
+   "message": "Local variable 'tmp' assigned to global/static variable 'wps' - creates dangling pointer",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage for local variable or copy data instead of assigning pointer"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 2083,
+   "message": "Function returns pointer to local variable 'ret' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 2102,
+   "message": "Memory allocated with 'wpabuf_dup' for variable 'wps->ap_nfc_dh_pubkey' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(wps->ap_nfc_dh_pubkey)' before the variable goes out of scope"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 2104,
+   "message": "Memory allocated with 'wpabuf_dup' for variable 'wps->ap_nfc_dh_privkey' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(wps->ap_nfc_dh_privkey)' before the variable goes out of scope"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 2107,
+   "message": "Memory leak: 'wps->ap_nfc_dh_pubkey' allocated with 'wpabuf_dup' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'wps->ap_nfc_dh_pubkey' before this return statement"
+  },
+  {
+   "column": 4,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 2107,
+   "message": "Memory leak: 'wps->ap_nfc_dh_privkey' allocated with 'wpabuf_dup' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'wps->ap_nfc_dh_privkey' before this return statement"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 2124,
+   "message": "Function returns pointer to local variable 'ret' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 2124,
+   "message": "Memory leak: 'wps->ap_nfc_dh_pubkey' allocated with 'wpabuf_dup' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'wps->ap_nfc_dh_pubkey' before this return statement"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 2124,
+   "message": "Memory leak: 'wps->ap_nfc_dh_privkey' allocated with 'wpabuf_dup' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'wps->ap_nfc_dh_privkey' before this return statement"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 2128,
+   "message": "Function 'hostapd_wps_nfc_report_handover' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 57,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 2128,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 2181,
+   "message": "Variable 'attr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'attr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 26,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 2257,
+   "message": "Memory allocated with 'wpabuf_dup' for variable 'wps->ap_nfc_dh_pubkey' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(wps->ap_nfc_dh_pubkey)' before the variable goes out of scope"
+  },
+  {
+   "column": 27,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 2258,
+   "message": "Memory allocated with 'wpabuf_dup' for variable 'wps->ap_nfc_dh_privkey' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(wps->ap_nfc_dh_privkey)' before the variable goes out of scope"
+  },
+  {
+   "column": 23,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 2260,
+   "message": "Memory allocated with 'wpabuf_alloc' for variable 'wps->ap_nfc_dev_pw' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(wps->ap_nfc_dev_pw)' before the variable goes out of scope"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 2263,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 2273,
+   "message": "Memory leak: 'wps->ap_nfc_dh_privkey' allocated with 'wpabuf_dup' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'wps->ap_nfc_dh_privkey' before this return statement"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 2273,
+   "message": "Memory leak: 'wps->ap_nfc_dh_pubkey' allocated with 'wpabuf_dup' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'wps->ap_nfc_dh_pubkey' before this return statement"
+  },
+  {
+   "column": 3,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 2273,
+   "message": "Memory leak: 'wps->ap_nfc_dev_pw' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'wps->ap_nfc_dev_pw' before this return statement"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 2276,
+   "message": "Memory leak: 'wps->ap_nfc_dh_privkey' allocated with 'wpabuf_dup' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'wps->ap_nfc_dh_privkey' before this return statement"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 2276,
+   "message": "Memory leak: 'wps->ap_nfc_dh_pubkey' allocated with 'wpabuf_dup' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'wps->ap_nfc_dh_pubkey' before this return statement"
+  },
+  {
+   "column": 2,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 2276,
+   "message": "Memory leak: 'wps->ap_nfc_dev_pw' allocated with 'wpabuf_alloc' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'wps->ap_nfc_dev_pw' before this return statement"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 2280,
+   "message": "Function 'hostapd_wps_nfc_token_disable' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 56,
+   "file": "src/ap/wps_hostapd.c",
+   "line": 2280,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  }
+ ]
+}

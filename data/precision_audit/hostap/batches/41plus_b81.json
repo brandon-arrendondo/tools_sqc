@@ -1,0 +1,1354 @@
+{
+ "src/drivers/driver_nl80211_event.c#part2of3": [
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2401,
+   "message": "Accessing union 'data' member 'ibss_rsn_start' after writing to 'deauth_info' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 70,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2406,
+   "message": "Pointer parameter 'drv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *drv'"
+  },
+  {
+   "column": 27,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2407,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 25,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2408,
+   "message": "Pointer parameter 'tb' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tb'"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2428,
+   "message": "Accessing union 'data' member 'ibss_peer_lost' after writing to 'deauth_info' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 72,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2433,
+   "message": "Pointer parameter 'drv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *drv'"
+  },
+  {
+   "column": 20,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2434,
+   "message": "Pointer parameter 'tb' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tb'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2437,
+   "message": "Shared variable 'rekey_policy' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 23,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2455,
+   "message": "Variable 'rekey_info' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'rekey_info' before use, e.g., at its declaration"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2457,
+   "message": "Potentially unsafe array access with variable index 'NL80211_REKEY_DATA_REPLAY_CTR': Buffer 'rekey_info' with size 5 (allocated at line 2436)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2461,
+   "message": "Accessing union 'data' member 'driver_gtk_rekey' after writing to 'deauth_info' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2465,
+   "message": "Potentially unsafe array access with variable index 'NL80211_REKEY_DATA_REPLAY_CTR': Buffer 'rekey_info' with size 5 (allocated at line 2436)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 74,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2472,
+   "message": "Pointer parameter 'drv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *drv'"
+  },
+  {
+   "column": 22,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2473,
+   "message": "Pointer parameter 'tb' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tb'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2476,
+   "message": "Shared variable 'cand_policy' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 23,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2489,
+   "message": "Variable 'cand' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'cand' before use, e.g., at its declaration"
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2491,
+   "message": "Potentially unsafe array access with variable index 'NL80211_PMKSA_CANDIDATE_INDEX': Buffer 'cand' with size 4 (allocated at line 2475)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 7,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2492,
+   "message": "Potentially unsafe array access with variable index 'NL80211_PMKSA_CANDIDATE_BSSID': Buffer 'cand' with size 4 (allocated at line 2475)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2496,
+   "message": "Accessing union 'data' member 'pmkid_candidate' after writing to 'deauth_info' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 14,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2497,
+   "message": "Potentially unsafe array access with variable index 'NL80211_PMKSA_CANDIDATE_BSSID': Buffer 'cand' with size 4 (allocated at line 2475)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 15,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2499,
+   "message": "Potentially unsafe array access with variable index 'NL80211_PMKSA_CANDIDATE_INDEX': Buffer 'cand' with size 4 (allocated at line 2475)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2501,
+   "message": "Potentially unsafe array access with variable index 'NL80211_PMKSA_CANDIDATE_PREAUTH': Buffer 'cand' with size 4 (allocated at line 2475)",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+   "column": 71,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2506,
+   "message": "Pointer parameter 'drv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *drv'"
+  },
+  {
+   "column": 26,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2507,
+   "message": "Pointer parameter 'tb' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tb'"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2526,
+   "message": "Accessing union 'data' member 'client_poll' after writing to 'deauth_info' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 68,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2531,
+   "message": "Pointer parameter 'drv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *drv'"
+  },
+  {
+   "column": 23,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2532,
+   "message": "Pointer parameter 'tb' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tb'"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2542,
+   "message": "Accessing union 'data' member 'tdls' after writing to 'deauth_info' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 65,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2574,
+   "message": "Pointer parameter 'tb' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tb'"
+  },
+  {
+   "column": 9,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2592,
+   "message": "Potential null pointer dereference in member access of variable 'mld_link'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'mld_link' is not NULL before member access"
+  },
+  {
+   "column": 73,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2602,
+   "message": "Pointer parameter 'drv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *drv'"
+  },
+  {
+   "column": 21,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2603,
+   "message": "Pointer parameter 'tb' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tb'"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2614,
+   "message": "Accessing union 'data' member 'connect_failed_reason' after writing to 'deauth_info' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 57,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2639,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 6,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2645,
+   "message": "Accessing union 'data' member 'dfs_event' after writing to 'deauth_info' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 49,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2679,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 69,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2679,
+   "message": "Pointer parameter 'tb' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tb'"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2700,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  },
+  {
+   "column": 72,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2785,
+   "message": "Pointer parameter 'tb' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tb'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2795,
+   "message": "Accessing union 'event' member 'rx_from_unknown' after writing to 'auth' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 52,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2807,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 15,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2815,
+   "message": "Casting from char * (alignment 1) to const struct qca_avoid_freq_list * (alignment 4) may cause alignment issues",
+   "rule_id": "EXP36-C",
+   "severity": "Low",
+   "suggestion": "Use memcpy or ensure proper alignment before casting"
+  },
+  {
+   "column": 22,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2835,
+   "message": "Accessing union 'event' member 'freq_range' after writing to 'auth' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 65,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2873,
+   "message": "Pointer parameter 'drv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *drv'"
+  },
+  {
+   "column": 55,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2919,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2922,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 16,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2930,
+   "message": "Variable 'tb' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb' before use, e.g., at its declaration"
+  },
+  {
+   "column": 9,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2931,
+   "message": "Do not cast away const qualification: '(struct nlattr *) data'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 9,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2931,
+   "message": "Casting from char * (alignment 1) to struct nlattr * (alignment 4) may cause alignment issues",
+   "rule_id": "EXP36-C",
+   "severity": "Low",
+   "suggestion": "Use memcpy or ensure proper alignment before casting"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 2939,
+   "message": "Accessing union 'event' member 'acs_selected_channels' after writing to 'auth' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3018,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 16,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3024,
+   "message": "Variable 'tb' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb' before use, e.g., at its declaration"
+  },
+  {
+   "column": 9,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3025,
+   "message": "Do not cast away const qualification: '(struct nlattr *) data'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 9,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3025,
+   "message": "Casting from char * (alignment 1) to struct nlattr * (alignment 4) may cause alignment issues",
+   "rule_id": "EXP36-C",
+   "severity": "Low",
+   "suggestion": "Use memcpy or ensure proper alignment before casting"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3086,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 16,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3091,
+   "message": "Variable 'tb' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb' before use, e.g., at its declaration"
+  },
+  {
+   "column": 9,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3108,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3121,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  },
+  {
+   "column": 60,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3177,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3180,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3181,
+   "message": "Value assigned to 'cookie' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 16,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3186,
+   "message": "Variable 'tb' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb' before use, e.g., at its declaration"
+  },
+  {
+   "column": 9,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3187,
+   "message": "Casting from char * (alignment 1) to struct nlattr * (alignment 4) may cause alignment issues",
+   "rule_id": "EXP36-C",
+   "severity": "Low",
+   "suggestion": "Use memcpy or ensure proper alignment before casting"
+  },
+  {
+   "column": 52,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3208,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 22,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3209,
+   "message": "Pointer parameter 'tb' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tb'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3215,
+   "message": "Fixed-size buffer may be used with environment variable",
+   "rule_id": "ENV01-C",
+   "severity": "High",
+   "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3246,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3255,
+   "message": "Value assigned to 'pos' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3273,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3274,
+   "message": "Value assigned to 'cookie' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 16,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3279,
+   "message": "Variable 'tb' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb' before use, e.g., at its declaration"
+  },
+  {
+   "column": 9,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3280,
+   "message": "Casting from char * (alignment 1) to struct nlattr * (alignment 4) may cause alignment issues",
+   "rule_id": "EXP36-C",
+   "severity": "Low",
+   "suggestion": "Use memcpy or ensure proper alignment before casting"
+  },
+  {
+   "column": 74,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3311,
+   "message": "Pointer parameter 'drv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *drv'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3314,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 16,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3320,
+   "message": "Variable 'tb' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb' before use, e.g., at its declaration"
+  },
+  {
+   "column": 9,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3321,
+   "message": "Casting from char * (alignment 1) to struct nlattr * (alignment 4) may cause alignment issues",
+   "rule_id": "EXP36-C",
+   "severity": "Low",
+   "suggestion": "Use memcpy or ensure proper alignment before casting"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3326,
+   "message": "Accessing union 'event' member 'p2p_lo_stop' after writing to 'auth' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 51,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3338,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3340,
+   "message": "Value assigned to 'ret' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3342,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3343,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 16,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3350,
+   "message": "Variable 'tb' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb' before use, e.g., at its declaration"
+  },
+  {
+   "column": 9,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3351,
+   "message": "Casting from char * (alignment 1) to struct nlattr * (alignment 4) may cause alignment issues",
+   "rule_id": "EXP36-C",
+   "severity": "Low",
+   "suggestion": "Use memcpy or ensure proper alignment before casting"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3362,
+   "message": "Accessing union 'event' member 'pasn_auth' after writing to 'auth' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 26,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3385,
+   "message": "Variable 'cfg' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'cfg' before use, e.g., at its declaration"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3414,
+   "message": "Sensitive buffer 'password' not cleared before function exit",
+   "rule_id": "MEM03-C",
+   "severity": "Medium",
+   "suggestion": "Call SecureZeroMemory(password, size) or memset(password, 0, size) before the buffer goes out of scope"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3464,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 71,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3516,
+   "message": "Pointer parameter 'drv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *drv'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3519,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 16,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3525,
+   "message": "Variable 'tb' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb' before use, e.g., at its declaration"
+  },
+  {
+   "column": 47,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3525,
+   "message": "Do not cast away const qualification: '(struct nlattr *) data'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 47,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3525,
+   "message": "Casting from char * (alignment 1) to struct nlattr * (alignment 4) may cause alignment issues",
+   "rule_id": "EXP36-C",
+   "severity": "Low",
+   "suggestion": "Use memcpy or ensure proper alignment before casting"
+  },
+  {
+   "column": 70,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3595,
+   "message": "Pointer parameter 'tb' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tb'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3642,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 69,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3657,
+   "message": "Pointer parameter 'drv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *drv'"
+  },
+  {
+   "column": 24,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3658,
+   "message": "Pointer parameter 'tb' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tb'"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3673,
+   "message": "Accessing union 'data' member 'channel_list_changed' after writing to 'deauth_info' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3690,
+   "message": "switch statement has no default label and no fallback statement follows it -- an unanticipated value is silently unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a default label, or a fallback statement after the switch, to handle values not covered by the existing case labels"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3723,
+   "message": "Shared variable 'freq_policy' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3723,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3730,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3733,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3733,
+   "message": "Variable 'tb' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb' before use, e.g., at its declaration"
+  },
+  {
+   "column": 74,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3760,
+   "message": "Pointer parameter 'drv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *drv'"
+  },
+  {
+   "column": 23,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3761,
+   "message": "Pointer parameter 'tb' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tb'"
+  },
+  {
+   "column": 66,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3782,
+   "message": "Pointer parameter 'drv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *drv'"
+  },
+  {
+   "column": 21,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3783,
+   "message": "Pointer parameter 'tb' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tb'"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3799,
+   "message": "Accessing union 'event' member 'external_auth' after writing to 'auth' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3826,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 68,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3837,
+   "message": "Pointer parameter 'drv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *drv'"
+  },
+  {
+   "column": 23,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3838,
+   "message": "Pointer parameter 'tb' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tb'"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3854,
+   "message": "Accessing union 'event' member 'port_authorized' after writing to 'auth' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 9,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3858,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3864,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 76,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3885,
+   "message": "Pointer parameter 'drv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *drv'"
+  },
+  {
+   "column": 24,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3886,
+   "message": "Pointer parameter 'tb' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tb'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3897,
+   "message": "Accessing union 'ed' member 'sta_opmode' after writing to 'low_ack' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 56,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3958,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 76,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3958,
+   "message": "Pointer parameter 'tb' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tb'"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 3987,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 54,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4003,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 24,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4005,
+   "message": "Pointer parameter 'ack' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ack'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4018,
+   "message": "Accessing union 'event' member 'eapol_tx_status' after writing to 'auth' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 67,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4071,
+   "message": "Pointer parameter 'drv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *drv'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4076,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 54,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4084,
+   "message": "Pointer parameter 'bss' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *bss'"
+  },
+  {
+   "column": 24,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4086,
+   "message": "Pointer parameter 'tb' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tb'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4092,
+   "message": "Accessing union 'data' member 'bss_color_collision' after writing to 'deauth_info' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 65,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4148,
+   "message": "Pointer parameter 'drv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *drv'"
+  },
+  {
+   "column": 20,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4149,
+   "message": "Pointer parameter 'tb' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tb'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4160,
+   "message": "Accessing union 'data' member 'nan_cluster_join_info' after writing to 'deauth_info' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 70,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4168,
+   "message": "Pointer parameter 'drv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *drv'"
+  },
+  {
+   "column": 25,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4169,
+   "message": "Pointer parameter 'tb' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *tb'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4180,
+   "message": "Accessing union 'data' member 'nan_next_dw_info' after writing to 'deauth_info' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 11,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4196,
+   "message": "Function 'nl80211_command_to_string' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 4,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4427,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4433,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4442,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4457,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 3,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4458,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4491,
+   "message": "Function 'process_global_event' does not validate pointer parameter 'msg' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'msg' at the start of the function, e.g., 'if (!msg) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4491,
+   "message": "Function 'process_global_event' does not validate pointer parameter 'arg' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'arg' at the start of the function, e.g., 'if (!arg) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4495,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4533,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 12,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4533,
+   "message": "Variable 'tb' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'tb' before use, e.g., at its declaration"
+  },
+  {
+   "column": 9,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4541,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 17,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4601,
+   "message": "Function 'nl80211_command_to_string' is called without prior declaration",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Declare the function before calling it or include the appropriate header"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4608,
+   "message": "Function 'process_bss_event' does not validate pointer parameter 'msg' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'msg' at the start of the function, e.g., 'if (!msg) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4608,
+   "message": "Function 'process_bss_event' does not validate pointer parameter 'arg' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'arg' at the start of the function, e.g., 'if (!arg) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver_nl80211_event.c",
+   "line": 4612,
+   "message": "Variable-length array with runtime-sized allocation; use malloc instead",
+   "rule_id": "MEM05-C",
+   "severity": "Medium",
+   "suggestion": "Use malloc/calloc for dynamic allocation"
+  }
+ ]
+}

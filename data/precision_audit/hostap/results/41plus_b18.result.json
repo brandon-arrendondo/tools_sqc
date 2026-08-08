@@ -1,0 +1,1211 @@
+{
+ "labels": [
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13270,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: '-ret' where ret comes from send_and_recv_cmd/send_and_recv_resp (send_and_recv_glb), which returns small negative libnl/errno-range values (-NLE_*/-E*), never INT_MIN - recurs 10x this batch, promoting to confirmed"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13310,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nl80211_bss_msg idiom '!(msg=...) || nla_put_...(msg,...) || ...' - each || is a sequence point (C11 6.5.14p4); msg assigned once then only read, no unsequenced access"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13310,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nl80211_bss_msg idiom '!(msg=...) || nla_put_...(msg,...) || ...' - each || is a sequence point (C11 6.5.14p4); msg assigned once then only read, no unsequenced access"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13310,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nl80211_bss_msg idiom '!(msg=...) || nla_put_...(msg,...) || ...' - each || is a sequence point (C11 6.5.14p4); msg assigned once then only read, no unsequenced access"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13310,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nl80211_bss_msg idiom '!(msg=...) || nla_put_...(msg,...) || ...' - each || is a sequence point (C11 6.5.14p4); msg assigned once then only read, no unsequenced access"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13310,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nl80211_bss_msg idiom '!(msg=...) || nla_put_...(msg,...) || ...' - each || is a sequence point (C11 6.5.14p4); msg assigned once then only read, no unsequenced access"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13310,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Assignment is wrapped in its own parens inside '!(msg = nl80211_bss_msg(...)) || ...' - CONFIRMED EXP45-C already-parenthesized-mitigation FP pattern (ctrl_iface.c:2475 precedent)"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13314,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Assignment is wrapped in its own parens inside '!(msg = nl80211_bss_msg(...)) || ...' - CONFIRMED EXP45-C already-parenthesized-mitigation FP pattern (ctrl_iface.c:2475 precedent)"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13328,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() in driver-wrapper error-log path; hostap driver layer (driver_nl80211.c) is single-threaded/eloop-driven, no pthread_create/mutex anywhere - CONFIRMED CON33/34-C strerror FP class, extends to all hostap driver-wrapper code"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13328,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() in driver-wrapper error-log path; hostap driver layer (driver_nl80211.c) is single-threaded/eloop-driven, no pthread_create/mutex anywhere - CONFIRMED CON33/34-C strerror FP class, extends to all hostap driver-wrapper code"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13328,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: '-ret' where ret comes from send_and_recv_cmd/send_and_recv_resp (send_and_recv_glb), which returns small negative libnl/errno-range values (-NLE_*/-E*), never INT_MIN - recurs 10x this batch, promoting to confirmed"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13339,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "get_pcl_attr_values' nl[] param is genuinely read-only (nla_get_u32/u8 accept const), a plain internal helper not bound to any dispatch contract - real (low-severity) const opportunity"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13365,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "struct nlattr *tb[SOME_ATTR_MAX + 1] / policy[...] / bssid_str[ETH_ALEN*3] are fixed-size arrays sized by compile-time enum/macro constants, not VLAs - CONFIRMED ENV01/MEM05-C fixed-macro-array FP class (sae_pk_gen.c precedent), extends to netlink attribute-table idiom"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13370,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "struct nlattr *tb[SOME_ATTR_MAX + 1] / policy[...] / bssid_str[ETH_ALEN*3] are fixed-size arrays sized by compile-time enum/macro constants, not VLAs - CONFIRMED ENV01/MEM05-C fixed-macro-array FP class (sae_pk_gen.c precedent), extends to netlink attribute-table idiom"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13371,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "struct nlattr *tb[SOME_ATTR_MAX + 1] / policy[...] / bssid_str[ETH_ALEN*3] are fixed-size arrays sized by compile-time enum/macro constants, not VLAs - CONFIRMED ENV01/MEM05-C fixed-macro-array FP class (sae_pk_gen.c precedent), extends to netlink attribute-table idiom"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13375,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_parse(tb,...,genlmsg_attrdata(gnlh,0),genlmsg_attrlen(gnlh,0),NULL)/nla_data+nla_len args are pure read accessors, no side effects - extends confirmed EXP30-C pure-accessor-args FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13375,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nla_parse(tb, MAX, data, len, NULL) unconditionally fills tb[] through the pointer param (write-only output-param), same as the confirmed wps_parse_msg/ieee802_11_parse_elems unconditional-memset-first FP family - sqc doesn't see nla_parse's callee-side fill"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13382,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_parse(tb,...,genlmsg_attrdata(gnlh,0),genlmsg_attrlen(gnlh,0),NULL)/nla_data+nla_len args are pure read accessors, no side effects - extends confirmed EXP30-C pure-accessor-args FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13382,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nla_parse(tb, MAX, data, len, NULL) unconditionally fills tb[] through the pointer param (write-only output-param), same as the confirmed wps_parse_msg/ieee802_11_parse_elems unconditional-memset-first FP family - sqc doesn't see nla_parse's callee-side fill"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13408,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_parse(tb,...,genlmsg_attrdata(gnlh,0),genlmsg_attrlen(gnlh,0),NULL)/nla_data+nla_len args are pure read accessors, no side effects - extends confirmed EXP30-C pure-accessor-args FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13408,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nla_parse(tb, MAX, data, len, NULL) unconditionally fills tb[] through the pointer param (write-only output-param), same as the confirmed wps_parse_msg/ieee802_11_parse_elems unconditional-memset-first FP family - sqc doesn't see nla_parse's callee-side fill"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13507,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nl80211_bss_msg idiom '!(msg=...) || nla_put_...(msg,...) || ...' - each || is a sequence point (C11 6.5.14p4); msg assigned once then only read, no unsequenced access"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13507,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nl80211_bss_msg idiom '!(msg=...) || nla_put_...(msg,...) || ...' - each || is a sequence point (C11 6.5.14p4); msg assigned once then only read, no unsequenced access"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13507,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nl80211_bss_msg idiom '!(msg=...) || nla_put_...(msg,...) || ...' - each || is a sequence point (C11 6.5.14p4); msg assigned once then only read, no unsequenced access"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13507,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nl80211_bss_msg idiom '!(msg=...) || nla_put_...(msg,...) || ...' - each || is a sequence point (C11 6.5.14p4); msg assigned once then only read, no unsequenced access"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13507,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nl80211_bss_msg idiom '!(msg=...) || nla_put_...(msg,...) || ...' - each || is a sequence point (C11 6.5.14p4); msg assigned once then only read, no unsequenced access"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13507,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Assignment is wrapped in its own parens inside '!(msg = nl80211_bss_msg(...)) || ...' - CONFIRMED EXP45-C already-parenthesized-mitigation FP pattern (ctrl_iface.c:2475 precedent)"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13512,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Assignment is wrapped in its own parens inside '!(msg = nl80211_bss_msg(...)) || ...' - CONFIRMED EXP45-C already-parenthesized-mitigation FP pattern (ctrl_iface.c:2475 precedent)"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13538,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "freq_list is a driver-op out-buffer parameter; every real call site (ctrl_iface.c/p2p_supplicant.c) passes a fixed non-NULL stack array sized to match *num, and the preceding 'if (freq_list) os_memset(...)' shows the *num==0 convention whenever freq_list could be NULL - closed call-site set, no realistic null-deref path (extends API00-C internal-closed-API FP reasoning to EXP34-C)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13561,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nl80211_bss_msg idiom '!(msg=...) || nla_put_...(msg,...) || ...' - each || is a sequence point (C11 6.5.14p4); msg assigned once then only read, no unsequenced access"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13561,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nl80211_bss_msg idiom '!(msg=...) || nla_put_...(msg,...) || ...' - each || is a sequence point (C11 6.5.14p4); msg assigned once then only read, no unsequenced access"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13561,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nl80211_bss_msg idiom '!(msg=...) || nla_put_...(msg,...) || ...' - each || is a sequence point (C11 6.5.14p4); msg assigned once then only read, no unsequenced access"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13561,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nl80211_bss_msg idiom '!(msg=...) || nla_put_...(msg,...) || ...' - each || is a sequence point (C11 6.5.14p4); msg assigned once then only read, no unsequenced access"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13561,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nl80211_bss_msg idiom '!(msg=...) || nla_put_...(msg,...) || ...' - each || is a sequence point (C11 6.5.14p4); msg assigned once then only read, no unsequenced access"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13561,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Assignment is wrapped in its own parens inside '!(msg = nl80211_bss_msg(...)) || ...' - CONFIRMED EXP45-C already-parenthesized-mitigation FP pattern (ctrl_iface.c:2475 precedent)"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13565,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Assignment is wrapped in its own parens inside '!(msg = nl80211_bss_msg(...)) || ...' - CONFIRMED EXP45-C already-parenthesized-mitigation FP pattern (ctrl_iface.c:2475 precedent)"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13592,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer parameter immediately paired with its own size parameter (device_types/dev_types_len, match/match_len) - CONFIRMED API05-C ptr+len-idiom FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13611,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nl80211_bss_msg idiom '!(msg=...) || nla_put_...(msg,...) || ...' - each || is a sequence point (C11 6.5.14p4); msg assigned once then only read, no unsequenced access"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13611,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nl80211_bss_msg idiom '!(msg=...) || nla_put_...(msg,...) || ...' - each || is a sequence point (C11 6.5.14p4); msg assigned once then only read, no unsequenced access"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13611,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Assignment is wrapped in its own parens inside '!(msg = nl80211_bss_msg(...)) || ...' - CONFIRMED EXP45-C already-parenthesized-mitigation FP pattern (ctrl_iface.c:2475 precedent)"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13646,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'return ...;' immediately followed by a 'fail:'/'error:' goto-target label reached from earlier goto statements in the same function - CONFIRMED MSC07-C goto-target-label FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13663,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nl80211_bss_msg idiom '!(msg=...) || nla_put_...(msg,...) || ...' - each || is a sequence point (C11 6.5.14p4); msg assigned once then only read, no unsequenced access"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13663,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nl80211_bss_msg idiom '!(msg=...) || nla_put_...(msg,...) || ...' - each || is a sequence point (C11 6.5.14p4); msg assigned once then only read, no unsequenced access"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13663,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Assignment is wrapped in its own parens inside '!(msg = nl80211_bss_msg(...)) || ...' - CONFIRMED EXP45-C already-parenthesized-mitigation FP pattern (ctrl_iface.c:2475 precedent)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13694,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nl80211_bss_msg idiom '!(msg=...) || nla_put_...(msg,...) || ...' - each || is a sequence point (C11 6.5.14p4); msg assigned once then only read, no unsequenced access"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13694,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nl80211_bss_msg idiom '!(msg=...) || nla_put_...(msg,...) || ...' - each || is a sequence point (C11 6.5.14p4); msg assigned once then only read, no unsequenced access"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13694,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Assignment is wrapped in its own parens inside '!(msg = nl80211_bss_msg(...)) || ...' - CONFIRMED EXP45-C already-parenthesized-mitigation FP pattern (ctrl_iface.c:2475 precedent)"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13715,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() in driver-wrapper error-log path; hostap driver layer (driver_nl80211.c) is single-threaded/eloop-driven, no pthread_create/mutex anywhere - CONFIRMED CON33/34-C strerror FP class, extends to all hostap driver-wrapper code"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13715,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() in driver-wrapper error-log path; hostap driver layer (driver_nl80211.c) is single-threaded/eloop-driven, no pthread_create/mutex anywhere - CONFIRMED CON33/34-C strerror FP class, extends to all hostap driver-wrapper code"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13715,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: '-ret' where ret comes from send_and_recv_cmd/send_and_recv_resp (send_and_recv_glb), which returns small negative libnl/errno-range values (-NLE_*/-E*), never INT_MIN - recurs 10x this batch, promoting to confirmed"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13719,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'return ...;' immediately followed by a 'fail:'/'error:' goto-target label reached from earlier goto statements in the same function - CONFIRMED MSC07-C goto-target-label FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13749,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "nl80211_parse_btm_candidate_info's tb[] param is read-only via const-accepting nla_data/nla_get_u32, plain internal helper not itself a vtable/callback signature - real low-severity opportunity"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13779,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "struct nlattr *tb[SOME_ATTR_MAX + 1] / policy[...] / bssid_str[ETH_ALEN*3] are fixed-size arrays sized by compile-time enum/macro constants, not VLAs - CONFIRMED ENV01/MEM05-C fixed-macro-array FP class (sae_pk_gen.c precedent), extends to netlink attribute-table idiom"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13780,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "struct nlattr *tb[SOME_ATTR_MAX + 1] / policy[...] / bssid_str[ETH_ALEN*3] are fixed-size arrays sized by compile-time enum/macro constants, not VLAs - CONFIRMED ENV01/MEM05-C fixed-macro-array FP class (sae_pk_gen.c precedent), extends to netlink attribute-table idiom"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13781,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "struct nlattr *tb[SOME_ATTR_MAX + 1] / policy[...] / bssid_str[ETH_ALEN*3] are fixed-size arrays sized by compile-time enum/macro constants, not VLAs - CONFIRMED ENV01/MEM05-C fixed-macro-array FP class (sae_pk_gen.c precedent), extends to netlink attribute-table idiom"
+  },
+  {
+   "rule": "CON03-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13782,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'static struct nla_policy policy[...]' is a read-only lookup table fully initialized at declaration inside a single eloop-driven callback; hostap's driver/wpa_supplicant core has no pthread_create/mutex anywhere - extends the confirmed CON32-C/POS49-C 'no pthread boundary in wpa_supplicant core' FP class to CON03-C"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13782,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "struct nlattr *tb[SOME_ATTR_MAX + 1] / policy[...] / bssid_str[ETH_ALEN*3] are fixed-size arrays sized by compile-time enum/macro constants, not VLAs - CONFIRMED ENV01/MEM05-C fixed-macro-array FP class (sae_pk_gen.c precedent), extends to netlink attribute-table idiom"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13798,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_parse(tb,...,genlmsg_attrdata(gnlh,0),genlmsg_attrlen(gnlh,0),NULL)/nla_data+nla_len args are pure read accessors, no side effects - extends confirmed EXP30-C pure-accessor-args FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13798,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nla_parse(tb, MAX, data, len, NULL) unconditionally fills tb[] through the pointer param (write-only output-param), same as the confirmed wps_parse_msg/ieee802_11_parse_elems unconditional-memset-first FP family - sqc doesn't see nla_parse's callee-side fill"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13802,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nla_parse(tb, MAX, data, len, NULL) unconditionally fills tb[] through the pointer param (write-only output-param), same as the confirmed wps_parse_msg/ieee802_11_parse_elems unconditional-memset-first FP family - sqc doesn't see nla_parse's callee-side fill"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13814,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nla_parse(tb, MAX, data, len, NULL) unconditionally fills tb[] through the pointer param (write-only output-param), same as the confirmed wps_parse_msg/ieee802_11_parse_elems unconditional-memset-first FP family - sqc doesn't see nla_parse's callee-side fill"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13845,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*info) inside os_zalloc(sizeof(*info)) - sizeof never evaluates its operand for non-VLA types, not a real dereference - CONFIRMED EXP33-C sizeof(*ptr) FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13864,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nl80211_bss_msg idiom '!(msg=...) || nla_put_...(msg,...) || ...' - each || is a sequence point (C11 6.5.14p4); msg assigned once then only read, no unsequenced access"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13864,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nl80211_bss_msg idiom '!(msg=...) || nla_put_...(msg,...) || ...' - each || is a sequence point (C11 6.5.14p4); msg assigned once then only read, no unsequenced access"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13864,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Assignment is wrapped in its own parens inside '!(msg = nl80211_bss_msg(...)) || ...' - CONFIRMED EXP45-C already-parenthesized-mitigation FP pattern (ctrl_iface.c:2475 precedent)"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13908,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() in driver-wrapper error-log path; hostap driver layer (driver_nl80211.c) is single-threaded/eloop-driven, no pthread_create/mutex anywhere - CONFIRMED CON33/34-C strerror FP class, extends to all hostap driver-wrapper code"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13908,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() in driver-wrapper error-log path; hostap driver layer (driver_nl80211.c) is single-threaded/eloop-driven, no pthread_create/mutex anywhere - CONFIRMED CON33/34-C strerror FP class, extends to all hostap driver-wrapper code"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13908,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: '-ret' where ret comes from send_and_recv_cmd/send_and_recv_resp (send_and_recv_glb), which returns small negative libnl/errno-range values (-NLE_*/-E*), never INT_MIN - recurs 10x this batch, promoting to confirmed"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13911,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'info' is a local pointer *variable* but points to heap memory from os_zalloc() - not automatic/local storage - CONFIRMED DCL30-C local-variable-vs-local-storage FP class (comeback_token.c precedent)"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13913,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'return ...;' immediately followed by a 'fail:'/'error:' goto-target label reached from earlier goto statements in the same function - CONFIRMED MSC07-C goto-target-label FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13938,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nl80211_bss_msg idiom '!(msg=...) || nla_put_...(msg,...) || ...' - each || is a sequence point (C11 6.5.14p4); msg assigned once then only read, no unsequenced access"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13938,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nl80211_bss_msg idiom '!(msg=...) || nla_put_...(msg,...) || ...' - each || is a sequence point (C11 6.5.14p4); msg assigned once then only read, no unsequenced access"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13938,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Assignment is wrapped in its own parens inside '!(msg = nl80211_bss_msg(...)) || ...' - CONFIRMED EXP45-C already-parenthesized-mitigation FP pattern (ctrl_iface.c:2475 precedent)"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13961,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() in driver-wrapper error-log path; hostap driver layer (driver_nl80211.c) is single-threaded/eloop-driven, no pthread_create/mutex anywhere - CONFIRMED CON33/34-C strerror FP class, extends to all hostap driver-wrapper code"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13961,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() in driver-wrapper error-log path; hostap driver layer (driver_nl80211.c) is single-threaded/eloop-driven, no pthread_create/mutex anywhere - CONFIRMED CON33/34-C strerror FP class, extends to all hostap driver-wrapper code"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13961,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: '-ret' where ret comes from send_and_recv_cmd/send_and_recv_resp (send_and_recv_glb), which returns small negative libnl/errno-range values (-NLE_*/-E*), never INT_MIN - recurs 10x this batch, promoting to confirmed"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13975,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: extends confirmed DCL13-C dispatch-contract FP family to struct wpa_driver_ops vtable implementations - param type is pinned by the non-const function-pointer field declared in driver.h (verified send_pasn_resp/set_secure_ranging_ctx/nan_publish/nan_subscribe/get_ext_capab/get_mld_capab/send_external_auth_status/setup_link_reconfig all declared with non-const pointer params)"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 13979,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "struct nl_msg *msg = NULL; initializer is immediately overwritten by 'msg = nl80211_bss_msg(...)' a few lines later with no intervening goto/read - genuine (harmless) dead assignment, matches confirmed MSC13-C dead-NULL-init detection-working-correctly precedent (p2p_invitation.c)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14036,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR(...) macro-expanded logging args are pure array-index reads, no side effects - CONFIRMED EXP30-C macro-arg FP class"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14052,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'return ...;' immediately followed by a 'fail:'/'error:' goto-target label reached from earlier goto statements in the same function - CONFIRMED MSC07-C goto-target-label FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14071,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: extends confirmed DCL13-C dispatch-contract FP family to struct wpa_driver_ops vtable implementations - param type is pinned by the non-const function-pointer field declared in driver.h (verified send_pasn_resp/set_secure_ranging_ctx/nan_publish/nan_subscribe/get_ext_capab/get_mld_capab/send_external_auth_status/setup_link_reconfig all declared with non-const pointer params)"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14076,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "struct nl_msg *msg = NULL; initializer is immediately overwritten by 'msg = nl80211_bss_msg(...)' a few lines later with no intervening goto/read - genuine (harmless) dead assignment, matches confirmed MSC13-C dead-NULL-init detection-working-correctly precedent (p2p_invitation.c)"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14150,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() in driver-wrapper error-log path; hostap driver layer (driver_nl80211.c) is single-threaded/eloop-driven, no pthread_create/mutex anywhere - CONFIRMED CON33/34-C strerror FP class, extends to all hostap driver-wrapper code"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14150,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() in driver-wrapper error-log path; hostap driver layer (driver_nl80211.c) is single-threaded/eloop-driven, no pthread_create/mutex anywhere - CONFIRMED CON33/34-C strerror FP class, extends to all hostap driver-wrapper code"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14150,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: '-ret' where ret comes from send_and_recv_cmd/send_and_recv_resp (send_and_recv_glb), which returns small negative libnl/errno-range values (-NLE_*/-E*), never INT_MIN - recurs 10x this batch, promoting to confirmed"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14152,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'return ...;' immediately followed by a 'fail:'/'error:' goto-target label reached from earlier goto statements in the same function - CONFIRMED MSC07-C goto-target-label FP class"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14192,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'return ...;' immediately followed by a 'fail:'/'error:' goto-target label reached from earlier goto statements in the same function - CONFIRMED MSC07-C goto-target-label FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14203,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: extends confirmed DCL13-C dispatch-contract FP family to struct wpa_driver_ops vtable implementations - param type is pinned by the non-const function-pointer field declared in driver.h (verified send_pasn_resp/set_secure_ranging_ctx/nan_publish/nan_subscribe/get_ext_capab/get_mld_capab/send_external_auth_status/setup_link_reconfig all declared with non-const pointer params)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14236,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_len(x), wpabuf_head(x) sibling args - CONFIRMED pure-accessor EXP30-C FP class (wpabuf.c precedent)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14238,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_len(x), wpabuf_head(x) sibling args - CONFIRMED pure-accessor EXP30-C FP class (wpabuf.c precedent)"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14259,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'return ...;' immediately followed by a 'fail:'/'error:' goto-target label reached from earlier goto statements in the same function - CONFIRMED MSC07-C goto-target-label FP class"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14300,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'return ...;' immediately followed by a 'fail:'/'error:' goto-target label reached from earlier goto statements in the same function - CONFIRMED MSC07-C goto-target-label FP class"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14333,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_len(x), wpabuf_head(x) sibling args - CONFIRMED pure-accessor EXP30-C FP class (wpabuf.c precedent)"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14344,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'return ...;' immediately followed by a 'fail:'/'error:' goto-target label reached from earlier goto statements in the same function - CONFIRMED MSC07-C goto-target-label FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14355,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: extends confirmed DCL13-C dispatch-contract FP family to struct wpa_driver_ops vtable implementations - param type is pinned by the non-const function-pointer field declared in driver.h (verified send_pasn_resp/set_secure_ranging_ctx/nan_publish/nan_subscribe/get_ext_capab/get_mld_capab/send_external_auth_status/setup_link_reconfig all declared with non-const pointer params)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14389,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_len(x), wpabuf_head(x) sibling args - CONFIRMED pure-accessor EXP30-C FP class (wpabuf.c precedent)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14391,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpabuf_len(x), wpabuf_head(x) sibling args - CONFIRMED pure-accessor EXP30-C FP class (wpabuf.c precedent)"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14411,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'return ...;' immediately followed by a 'fail:'/'error:' goto-target label reached from earlier goto statements in the same function - CONFIRMED MSC07-C goto-target-label FP class"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14450,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'return ...;' immediately followed by a 'fail:'/'error:' goto-target label reached from earlier goto statements in the same function - CONFIRMED MSC07-C goto-target-label FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14462,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: extends confirmed DCL13-C dispatch-contract FP family to struct wpa_driver_ops vtable implementations - param type is pinned by the non-const function-pointer field declared in driver.h (verified send_pasn_resp/set_secure_ranging_ctx/nan_publish/nan_subscribe/get_ext_capab/get_mld_capab/send_external_auth_status/setup_link_reconfig all declared with non-const pointer params)"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14478,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Assignment is wrapped in its own parens inside '!(msg = nl80211_bss_msg(...)) || ...' - CONFIRMED EXP45-C already-parenthesized-mitigation FP pattern (ctrl_iface.c:2475 precedent)"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14502,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() in driver-wrapper error-log path; hostap driver layer (driver_nl80211.c) is single-threaded/eloop-driven, no pthread_create/mutex anywhere - CONFIRMED CON33/34-C strerror FP class, extends to all hostap driver-wrapper code"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14502,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() in driver-wrapper error-log path; hostap driver layer (driver_nl80211.c) is single-threaded/eloop-driven, no pthread_create/mutex anywhere - CONFIRMED CON33/34-C strerror FP class, extends to all hostap driver-wrapper code"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14535,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nl80211_get_bss_transition_status: the '#if defined(WPA_TRACE_BFD)&&defined(CONFIG_TESTING_OPTIONS)' testing block falls through (when TEST_FAIL_TAG is false) into the '#ifdef CONFIG_DRIVER_NL80211_QCA return ...; #else return NULL; #endif' block, which always returns on every compiled configuration - CONFIRMED MSC37-C preprocessor-branch-blind FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14544,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*info) inside os_zalloc(sizeof(*info)) - sizeof never evaluates its operand for non-VLA types, not a real dereference - CONFIRMED EXP33-C sizeof(*ptr) FP class"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14557,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "struct nlattr *tb[SOME_ATTR_MAX + 1] / policy[...] / bssid_str[ETH_ALEN*3] are fixed-size arrays sized by compile-time enum/macro constants, not VLAs - CONFIRMED ENV01/MEM05-C fixed-macro-array FP class (sae_pk_gen.c precedent), extends to netlink attribute-table idiom"
+  },
+  {
+   "rule": "FIO05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14594,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "name is built from a fixed '/proc/sys/net/ipv{4,6}/conf/%s/...' prefix with %s=bss->ifname (a local, kernel-known interface name, not remote/attacker-controlled); procfs sysctl entries under /proc/sys/net aren't attacker-writable - extends the confirmed POS01-C hardcoded-root-owned-path FP class (rfkill.c precedent) from a fully-hardcoded path to a locally-parameterized procfs path"
+  },
+  {
+   "rule": "POS01-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14594,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "name is built from a fixed '/proc/sys/net/ipv{4,6}/conf/%s/...' prefix with %s=bss->ifname (a local, kernel-known interface name, not remote/attacker-controlled); procfs sysctl entries under /proc/sys/net aren't attacker-writable - extends the confirmed POS01-C hardcoded-root-owned-path FP class (rfkill.c precedent) from a fully-hardcoded path to a locally-parameterized procfs path"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14609,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() in driver-wrapper error-log path; hostap driver layer (driver_nl80211.c) is single-threaded/eloop-driven, no pthread_create/mutex anywhere - CONFIRMED CON33/34-C strerror FP class, extends to all hostap driver-wrapper code"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14609,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() in driver-wrapper error-log path; hostap driver layer (driver_nl80211.c) is single-threaded/eloop-driven, no pthread_create/mutex anywhere - CONFIRMED CON33/34-C strerror FP class, extends to all hostap driver-wrapper code"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14618,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() in driver-wrapper error-log path; hostap driver layer (driver_nl80211.c) is single-threaded/eloop-driven, no pthread_create/mutex anywhere - CONFIRMED CON33/34-C strerror FP class, extends to all hostap driver-wrapper code"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14618,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() in driver-wrapper error-log path; hostap driver layer (driver_nl80211.c) is single-threaded/eloop-driven, no pthread_create/mutex anywhere - CONFIRMED CON33/34-C strerror FP class, extends to all hostap driver-wrapper code"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14699,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: extends confirmed DCL13-C dispatch-contract FP family to struct wpa_driver_ops vtable implementations - param type is pinned by the non-const function-pointer field declared in driver.h (verified send_pasn_resp/set_secure_ranging_ctx/nan_publish/nan_subscribe/get_ext_capab/get_mld_capab/send_external_auth_status/setup_link_reconfig all declared with non-const pointer params)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14732,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: extends confirmed DCL13-C dispatch-contract FP family to struct wpa_driver_ops vtable implementations - param type is pinned by the non-const function-pointer field declared in driver.h (verified send_pasn_resp/set_secure_ranging_ctx/nan_publish/nan_subscribe/get_ext_capab/get_mld_capab/send_external_auth_status/setup_link_reconfig all declared with non-const pointer params)"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14813,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() in driver-wrapper error-log path; hostap driver layer (driver_nl80211.c) is single-threaded/eloop-driven, no pthread_create/mutex anywhere - CONFIRMED CON33/34-C strerror FP class, extends to all hostap driver-wrapper code"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14813,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() in driver-wrapper error-log path; hostap driver layer (driver_nl80211.c) is single-threaded/eloop-driven, no pthread_create/mutex anywhere - CONFIRMED CON33/34-C strerror FP class, extends to all hostap driver-wrapper code"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14813,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: '-ret' where ret comes from send_and_recv_cmd/send_and_recv_resp (send_and_recv_glb), which returns small negative libnl/errno-range values (-NLE_*/-E*), never INT_MIN - recurs 10x this batch, promoting to confirmed"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14822,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: extends confirmed DCL13-C dispatch-contract FP family to struct wpa_driver_ops vtable implementations - param type is pinned by the non-const function-pointer field declared in driver.h (verified send_pasn_resp/set_secure_ranging_ctx/nan_publish/nan_subscribe/get_ext_capab/get_mld_capab/send_external_auth_status/setup_link_reconfig all declared with non-const pointer params)"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14826,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "struct nl_msg *msg = NULL; initializer is immediately overwritten by 'msg = nl80211_bss_msg(...)' a few lines later with no intervening goto/read - genuine (harmless) dead assignment, matches confirmed MSC13-C dead-NULL-init detection-working-correctly precedent (p2p_invitation.c)"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14856,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() in driver-wrapper error-log path; hostap driver layer (driver_nl80211.c) is single-threaded/eloop-driven, no pthread_create/mutex anywhere - CONFIRMED CON33/34-C strerror FP class, extends to all hostap driver-wrapper code"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14856,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() in driver-wrapper error-log path; hostap driver layer (driver_nl80211.c) is single-threaded/eloop-driven, no pthread_create/mutex anywhere - CONFIRMED CON33/34-C strerror FP class, extends to all hostap driver-wrapper code"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14856,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: '-ret' where ret comes from send_and_recv_cmd/send_and_recv_resp (send_and_recv_glb), which returns small negative libnl/errno-range values (-NLE_*/-E*), never INT_MIN - recurs 10x this batch, promoting to confirmed"
+  },
+  {
+   "rule": "EXP20-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14893,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "nl80211_get_4addr() returns data.use_4addr set directly from nla_get_u8(tb[NL80211_ATTR_4ADDR]) with no masking to strict 0/1 - comparing '== 1' rather than '!= 0' is technically fragile against a non-conformant driver reporting a non-1 truthy byte"
+  },
+  {
+   "rule": "MSC09-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14929,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "\"\\x04\\x09\\x50\\x6f\\x9a\\x1a\" is a 6-byte binary DPP/Wi-Fi-Alliance OUI+subtype protocol constant cast to (u8 *), not human-readable text - MSC09-C's ASCII-portability concern doesn't apply to binary wire-protocol byte literals"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14984,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() in driver-wrapper error-log path; hostap driver layer (driver_nl80211.c) is single-threaded/eloop-driven, no pthread_create/mutex anywhere - CONFIRMED CON33/34-C strerror FP class, extends to all hostap driver-wrapper code"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14984,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() in driver-wrapper error-log path; hostap driver layer (driver_nl80211.c) is single-threaded/eloop-driven, no pthread_create/mutex anywhere - CONFIRMED CON33/34-C strerror FP class, extends to all hostap driver-wrapper code"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 14984,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: '-ret' where ret comes from send_and_recv_cmd/send_and_recv_resp (send_and_recv_glb), which returns small negative libnl/errno-range values (-NLE_*/-E*), never INT_MIN - recurs 10x this batch, promoting to confirmed"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 15022,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nl80211_bss_msg idiom '!(msg=...) || nla_put_...(msg,...) || ...' - each || is a sequence point (C11 6.5.14p4); msg assigned once then only read, no unsequenced access"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 15022,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nl80211_bss_msg idiom '!(msg=...) || nla_put_...(msg,...) || ...' - each || is a sequence point (C11 6.5.14p4); msg assigned once then only read, no unsequenced access"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 15022,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Assignment is wrapped in its own parens inside '!(msg = nl80211_bss_msg(...)) || ...' - CONFIRMED EXP45-C already-parenthesized-mitigation FP pattern (ctrl_iface.c:2475 precedent)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 15030,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR(...) macro-expanded logging args are pure array-index reads, no side effects - CONFIRMED EXP30-C macro-arg FP class"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 15033,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() in driver-wrapper error-log path; hostap driver layer (driver_nl80211.c) is single-threaded/eloop-driven, no pthread_create/mutex anywhere - CONFIRMED CON33/34-C strerror FP class, extends to all hostap driver-wrapper code"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 15033,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() in driver-wrapper error-log path; hostap driver layer (driver_nl80211.c) is single-threaded/eloop-driven, no pthread_create/mutex anywhere - CONFIRMED CON33/34-C strerror FP class, extends to all hostap driver-wrapper code"
+  },
+  {
+   "rule": "INT32-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 15033,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: '-ret' where ret comes from send_and_recv_cmd/send_and_recv_resp (send_and_recv_glb), which returns small negative libnl/errno-range values (-NLE_*/-E*), never INT_MIN - recurs 10x this batch, promoting to confirmed"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 15039,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_driver_get_wiphy_name_handler matches libnl's fixed nl_recvmsg_msg_cb_t callback signature int(*)(struct nl_msg*,void*) registered via send_and_recv_resp - extends dispatch-contract DCL13-C FP family to libnl netlink callback handlers"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 15041,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "struct nlattr *tb[SOME_ATTR_MAX + 1] / policy[...] / bssid_str[ETH_ALEN*3] are fixed-size arrays sized by compile-time enum/macro constants, not VLAs - CONFIRMED ENV01/MEM05-C fixed-macro-array FP class (sae_pk_gen.c precedent), extends to netlink attribute-table idiom"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 15045,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nla_parse(tb,...,genlmsg_attrdata(gnlh,0),genlmsg_attrlen(gnlh,0),NULL)/nla_data+nla_len args are pure read accessors, no side effects - extends confirmed EXP30-C pure-accessor-args FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 15045,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nla_parse(tb, MAX, data, len, NULL) unconditionally fills tb[] through the pointer param (write-only output-param), same as the confirmed wps_parse_msg/ieee802_11_parse_elems unconditional-memset-first FP family - sqc doesn't see nla_parse's callee-side fill"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 15067,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: nl80211_bss_msg idiom '!(msg=...) || nla_put_...(msg,...) || ...' - each || is a sequence point (C11 6.5.14p4); msg assigned once then only read, no unsequenced access"
+  },
+  {
+   "rule": "EXP45-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 15067,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Assignment is wrapped in its own parens inside '!(msg = nl80211_bss_msg(...)) || ...' - CONFIRMED EXP45-C already-parenthesized-mitigation FP pattern (ctrl_iface.c:2475 precedent)"
+  },
+  {
+   "rule": "EXP43-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 15074,
+   "verdict": "FP",
+   "confidence": "med",
+   "reason": "send_and_recv_resp(drv, msg, handler, drv) passes the same drv pointer as the driver-context arg and as opaque callback userdata (by design, so the handler can fill drv->phyname) - neither parameter is restrict-qualified, so there's no real aliasing hazard - extends confirmed EXP43-C no-restrict-qualifier FP class"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 15092,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "drv2 is a dl_list_for_each loop pointer into the global drv->global->interfaces list of heap-allocated wpa_driver_nl80211_data nodes, not a local automatic-storage object - CONFIRMED DCL30-C local-variable-vs-local-storage FP class"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 15113,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sizeof(*drv) inside os_zalloc(sizeof(*drv)) at drv = os_zalloc(sizeof(*drv)) - CONFIRMED EXP33-C sizeof(*ptr) FP class"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 15158,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "NEW: extends confirmed DCL13-C dispatch-contract FP family to struct wpa_driver_ops vtable implementations - param type is pinned by the non-const function-pointer field declared in driver.h (verified send_pasn_resp/set_secure_ranging_ctx/nan_publish/nan_subscribe/get_ext_capab/get_mld_capab/send_external_auth_status/setup_link_reconfig all declared with non-const pointer params)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 15193,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "link_id is the loop variable of for_each_link() macro (src/utils/common.h:626: 'for((__i)=0;(__i)<MAX_NUM_MLD_LINKS;(__i)++) if((__links)&BIT(__i))') which initializes it in the loop header - CONFIRMED for-loop-macro-init uninitialized-variable FP class"
+  },
+  {
+   "rule": "CON33-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 15214,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() in driver-wrapper error-log path; hostap driver layer (driver_nl80211.c) is single-threaded/eloop-driven, no pthread_create/mutex anywhere - CONFIRMED CON33/34-C strerror FP class, extends to all hostap driver-wrapper code"
+  },
+  {
+   "rule": "CON34-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 15214,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "strerror() in driver-wrapper error-log path; hostap driver layer (driver_nl80211.c) is single-threaded/eloop-driven, no pthread_create/mutex anywhere - CONFIRMED CON33/34-C strerror FP class, extends to all hostap driver-wrapper code"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 15219,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'return ...;' immediately followed by a 'fail:'/'error:' goto-target label reached from earlier goto statements in the same function - CONFIRMED MSC07-C goto-target-label FP class"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 15231,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pointer parameter immediately paired with its own size parameter (device_types/dev_types_len, match/match_len) - CONFIRMED API05-C ptr+len-idiom FP class"
+  },
+  {
+   "rule": "MSC07-C",
+   "file": "src/drivers/driver_nl80211.c",
+   "line": 15415,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "'return ...;' immediately followed by a 'fail:'/'error:' goto-target label reached from earlier goto statements in the same function - CONFIRMED MSC07-C goto-target-label FP class"
+  }
+ ],
+ "fns": [],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 6,
+  "fp": 144,
+  "fn": 0
+ }
+}

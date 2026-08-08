@@ -1,0 +1,1354 @@
+{
+ "src/crypto/crypto_openssl.c#part1of4": [
+  {
+   "column": 25,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 59,
+   "message": "Dereference of uninitialized pointer 'ctx'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ctx' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 62,
+   "message": "Function returns pointer to local variable 'ctx' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 71,
+   "message": "Double free detected: 'ctx' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate bin_clear_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 22,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 71,
+   "message": "sizeof applied to pointer/array parameter 'ctx' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*ctx)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 25,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 79,
+   "message": "Dereference of uninitialized pointer 'ctx'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ctx' before dereferencing"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 82,
+   "message": "Function returns pointer to local variable 'ctx' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 91,
+   "message": "Double free detected: 'ctx' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate bin_clear_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 22,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 91,
+   "message": "sizeof applied to pointer/array parameter 'ctx' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(*ctx)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 47,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 97,
+   "message": "Pointer parameter 'pkey' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *pkey'"
+  },
+  {
+   "column": 26,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 126,
+   "message": "Do not cast away const qualification: '(ASN1_STRING *) x'",
+   "rule_id": "EXP05-C",
+   "severity": "Medium",
+   "suggestion": "Ensure const-qualified objects are not modified through cast-away pointers"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 193,
+   "message": "Shared variable 'done' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 197,
+   "message": "Value assigned to 'done' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 213,
+   "message": "Shared variable 'openssl_legacy_provider' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 214,
+   "message": "Shared variable 'openssl_default_provider' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+   "rule_id": "CON03-C",
+   "severity": "Medium",
+   "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 217,
+   "message": "Function 'openssl_load_legacy_provider' should be declared static if it doesn't need external linkage",
+   "rule_id": "DCL15-C",
+   "severity": "Low",
+   "suggestion": "Add 'static' storage-class specifier: static void openssl_load_legacy_provider"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 217,
+   "message": "Function 'openssl_load_legacy_provider' is only used within this file. It should be declared static to minimize scope.",
+   "rule_id": "DCL19-C",
+   "severity": "Low",
+   "suggestion": "Add 'static' storage class to function 'openssl_load_legacy_provider'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 223,
+   "message": "Value assigned to 'openssl_legacy_provider' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 233,
+   "message": "Value assigned to 'openssl_legacy_provider' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 263,
+   "message": "Value assigned to 'openssl_default_provider' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 271,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 29,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 278,
+   "message": "Array declaration 'RFC3526_PRIME_1536[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 29,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 303,
+   "message": "Array declaration 'RFC3526_ORDER_1536[]' has implicit bounds; specify explicit size",
+   "rule_id": "ARR02-C",
+   "severity": "Medium",
+   "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+   "column": 13,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 403,
+   "message": "Variable 'i' used with both bitwise and arithmetic operations (reduces code readability)",
+   "rule_id": "INT14-C",
+   "severity": "Medium",
+   "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+   "column": 21,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 403,
+   "message": "Bitwise operator '>>' used on signed operand 'i' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'i' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 10,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 404,
+   "message": "Output operation on file stream 'tmp' follows input without intervening positioning call (fseek, fsetpos, or rewind)",
+   "rule_id": "FIO50-C",
+   "severity": "Low",
+   "suggestion": "Insert a positioning function (fseek, fsetpos, rewind) between input and output operations, unless input encountered EOF"
+  },
+  {
+   "column": 10,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 404,
+   "message": "Output operation on file stream 'tmp' follows input without intervening positioning call (fseek, fsetpos, or rewind)",
+   "rule_id": "FIO50-C",
+   "severity": "Low",
+   "suggestion": "Insert a positioning function (fseek, fsetpos, rewind) between input and output operations, unless input encountered EOF"
+  },
+  {
+   "column": 17,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 404,
+   "message": "Bitwise operator '<<' used on signed operand 'i' of type 'int'. Use unsigned types for bitwise operations",
+   "rule_id": "INT13-C",
+   "severity": "Medium",
+   "suggestion": "Change 'i' to an unsigned type (e.g., 'unsigned int' instead of 'int')"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 408,
+   "message": "Memory allocated with 'EVP_CIPHER_CTX_new' for variable 'ctx' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(ctx)' before the variable goes out of scope"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 410,
+   "message": "Testing 'EVP_EncryptInit_ex(ctx, EVP_des_ecb(), NULL, pkey, NULL)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: EVP_EncryptInit_ex(ctx, EVP_des_ecb(), NULL, pkey, NULL) != 0"
+  },
+  {
+   "column": 30,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 410,
+   "message": "Use of weak cryptographic function 'EVP_des_ecb'. Use a modern algorithm such as AES instead.",
+   "rule_id": "MSC42-C",
+   "severity": "High",
+   "suggestion": "Replace with a strong algorithm (e.g., EVP_aes_256_cbc, AES-256)"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 411,
+   "message": "Testing 'EVP_CIPHER_CTX_set_padding(ctx, 0)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: EVP_CIPHER_CTX_set_padding(ctx, 0) != 0"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 412,
+   "message": "Testing 'EVP_EncryptUpdate(ctx, cypher, &plen, clear, 8)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: EVP_EncryptUpdate(ctx, cypher, &plen, clear, 8) != 0"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 413,
+   "message": "Testing 'EVP_EncryptFinal_ex(ctx, &cypher[plen], &plen)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: EVP_EncryptFinal_ex(ctx, &cypher[plen], &plen) != 0"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 420,
+   "message": "Memory leak: 'ctx' allocated with 'EVP_CIPHER_CTX_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'ctx' before this return statement"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 425,
+   "message": "Function 'rc4_skip' does not validate integer parameter 'skip' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'skip' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 425,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 438,
+   "message": "Memory allocated with 'EVP_CIPHER_CTX_new' for variable 'ctx' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(ctx)' before the variable goes out of scope"
+  },
+  {
+   "column": 30,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 440,
+   "message": "Use of weak cryptographic function 'EVP_rc4'. Use a modern algorithm such as AES instead.",
+   "rule_id": "MSC42-C",
+   "severity": "High",
+   "suggestion": "Replace with a strong algorithm (e.g., EVP_aes_256_cbc, AES-256)"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 461,
+   "message": "Memory leak: 'ctx' allocated with 'EVP_CIPHER_CTX_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'ctx' before this return statement"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 476,
+   "message": "Function 'sha1_vector' does not validate pointer parameter 'addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'addr' at the start of the function, e.g., 'if (!addr) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 476,
+   "message": "Function 'sha1_vector' does not validate pointer parameter 'len' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'len' at the start of the function, e.g., 'if (!len) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 476,
+   "message": "Function 'sha1_vector' does not validate pointer parameter 'mac' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'mac' at the start of the function, e.g., 'if (!mac) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 547,
+   "message": "Function returns pointer to local variable 'ctx' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 553,
+   "message": "Variable 'c' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const c = ..."
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 566,
+   "message": "Variable 'c' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const c = ..."
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 604,
+   "message": "Function returns pointer to local variable 'ctx' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 610,
+   "message": "Variable 'c' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const c = ..."
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 623,
+   "message": "Variable 'c' is initialized but never modified, consider const-qualifying it",
+   "rule_id": "DCL00-C",
+   "severity": "Medium",
+   "suggestion": "Add 'const' qualifier: const c = ..."
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 658,
+   "message": "Function 'aes_wrap' does not validate integer parameter 'kek_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'kek_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 658,
+   "message": "Function 'aes_wrap' does not validate integer parameter 'n' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'n' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 658,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 677,
+   "message": "Testing 'EVP_EncryptInit_ex(ctx, type, NULL, kek, NULL)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: EVP_EncryptInit_ex(ctx, type, NULL, kek, NULL) != 0"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 678,
+   "message": "Testing 'EVP_CIPHER_CTX_set_padding(ctx, 0)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: EVP_CIPHER_CTX_set_padding(ctx, 0) != 0"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 679,
+   "message": "Testing 'EVP_EncryptUpdate(ctx, cipher, &len, plain, n * 8)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: EVP_EncryptUpdate(ctx, cipher, &len, plain, n * 8) != 0"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 681,
+   "message": "Testing 'EVP_EncryptFinal_ex(ctx, buf, &len)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: EVP_EncryptFinal_ex(ctx, buf, &len) != 0"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 701,
+   "message": "Function 'aes_unwrap' does not validate pointer parameter 'cipher' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cipher' at the start of the function, e.g., 'if (!cipher) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 701,
+   "message": "Function 'aes_unwrap' does not validate integer parameter 'kek_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'kek_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 701,
+   "message": "Function 'aes_unwrap' does not validate integer parameter 'n' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'n' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 701,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 721,
+   "message": "Testing 'EVP_DecryptInit_ex(ctx, type, NULL, kek, NULL)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: EVP_DecryptInit_ex(ctx, type, NULL, kek, NULL) != 0"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 722,
+   "message": "Testing 'EVP_CIPHER_CTX_set_padding(ctx, 0)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: EVP_CIPHER_CTX_set_padding(ctx, 0) != 0"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 723,
+   "message": "Testing 'EVP_DecryptUpdate(ctx, plain, &len, cipher, (n + 1) * 8)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: EVP_DecryptUpdate(ctx, plain, &len, cipher, (n + 1) * 8) != 0"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 725,
+   "message": "Testing 'EVP_DecryptFinal_ex(ctx, buf, &len)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: EVP_DecryptFinal_ex(ctx, buf, &len) != 0"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 763,
+   "message": "Testing 'EVP_EncryptInit_ex(ctx, EVP_aes_128_cbc(), NULL, key, iv)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: EVP_EncryptInit_ex(ctx, EVP_aes_128_cbc(), NULL, key, iv) != 0"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 764,
+   "message": "Testing 'EVP_CIPHER_CTX_set_padding(ctx, 0)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: EVP_CIPHER_CTX_set_padding(ctx, 0) != 0"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 765,
+   "message": "Testing 'EVP_EncryptUpdate(ctx, data, &clen, data, data_len)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: EVP_EncryptUpdate(ctx, data, &clen, data, data_len) != 0"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 767,
+   "message": "Testing 'EVP_EncryptFinal_ex(ctx, buf, &len)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: EVP_EncryptFinal_ex(ctx, buf, &len) != 0"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 790,
+   "message": "Testing 'EVP_DecryptInit_ex(ctx, EVP_aes_128_cbc(), NULL, key, iv)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: EVP_DecryptInit_ex(ctx, EVP_aes_128_cbc(), NULL, key, iv) != 0"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 791,
+   "message": "Testing 'EVP_CIPHER_CTX_set_padding(ctx, 0)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: EVP_CIPHER_CTX_set_padding(ctx, 0) != 0"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 792,
+   "message": "Testing 'EVP_DecryptUpdate(ctx, data, &plen, data, data_len)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: EVP_DecryptUpdate(ctx, data, &plen, data, data_len) != 0"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 794,
+   "message": "Testing 'EVP_DecryptFinal_ex(ctx, buf, &len)' for equality with 1. Functions may return values > 1. Use '!= 0' for boolean-like tests.",
+   "rule_id": "EXP20-C",
+   "severity": "Medium",
+   "suggestion": "Consider using: EVP_DecryptFinal_ex(ctx, buf, &len) != 0"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 803,
+   "message": "Function 'crypto_dh_init' does not validate integer parameter 'prime_len' for overflow before arithmetic operations",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add overflow validation for 'prime_len' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 829,
+   "message": "Function 'crypto_dh_derive_secret' does not validate pointer parameter 'prime' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'prime' at the start of the function, e.g., 'if (!prime) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 829,
+   "message": "Function 'crypto_dh_derive_secret' does not validate pointer parameter 'privkey' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'privkey' at the start of the function, e.g., 'if (!privkey) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 872,
+   "message": "Function 'crypto_mod_exp' does not validate pointer parameter 'power' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'power' at the start of the function, e.g., 'if (!power) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 872,
+   "message": "Function 'crypto_mod_exp' does not validate pointer parameter 'modulus' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'modulus' at the start of the function, e.g., 'if (!modulus) { return error_code; }'"
+  },
+  {
+   "column": 25,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 924,
+   "message": "Dereference of uninitialized pointer 'ctx'",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize pointer 'ctx' before dereferencing"
+  },
+  {
+   "column": 12,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 932,
+   "message": "Use of weak cryptographic function 'EVP_rc4'. Use a modern algorithm such as AES instead.",
+   "rule_id": "MSC42-C",
+   "severity": "High",
+   "suggestion": "Replace with a strong algorithm (e.g., EVP_aes_256_cbc, AES-256)"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 939,
+   "message": "case section falls through to the next label with no break/return/continue/goto and no comment marking it intentional",
+   "rule_id": "MSC17-C",
+   "severity": "Medium",
+   "suggestion": "Add a break statement, or a comment such as \"/* fall through */\" if the fallthrough is intentional"
+  },
+  {
+   "column": 12,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 958,
+   "message": "Use of weak cryptographic function 'EVP_des_ede3_cbc'. Use a modern algorithm such as AES instead.",
+   "rule_id": "MSC42-C",
+   "severity": "High",
+   "suggestion": "Replace with a strong algorithm (e.g., EVP_aes_256_cbc, AES-256)"
+  },
+  {
+   "column": 12,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 961,
+   "message": "Use of weak cryptographic function 'EVP_des_cbc'. Use a modern algorithm such as AES instead.",
+   "rule_id": "MSC42-C",
+   "severity": "High",
+   "suggestion": "Replace with a strong algorithm (e.g., EVP_aes_256_cbc, AES-256)"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 974,
+   "message": "Assignment in if statement condition: 'ctx->enc = EVP_CIPHER_CTX_new()'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 975,
+   "message": "Use-after-free: passing freed pointer 'ctx' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 26,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 975,
+   "message": "Use-after-free: accessing member of freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 976,
+   "message": "Use-after-free: passing freed pointer 'ctx' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 34,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 976,
+   "message": "Use-after-free: accessing member of freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 977,
+   "message": "Use-after-free: passing freed pointer 'ctx' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 37,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 977,
+   "message": "Use-after-free: accessing member of freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 978,
+   "message": "Use-after-free: passing freed pointer 'ctx' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 26,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 978,
+   "message": "Use-after-free: accessing member of freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 979,
+   "message": "Use-after-free: accessing member of freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 981,
+   "message": "Double-free: 'ctx' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 981,
+   "message": "Double free detected: 'ctx' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 985,
+   "message": "Assignment in if statement condition: 'ctx->dec = EVP_CIPHER_CTX_new()'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 986,
+   "message": "Use-after-free: passing freed pointer 'ctx' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 26,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 986,
+   "message": "Use-after-free: accessing member of freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 987,
+   "message": "Use-after-free: passing freed pointer 'ctx' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 34,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 987,
+   "message": "Use-after-free: accessing member of freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 988,
+   "message": "Use-after-free: passing freed pointer 'ctx' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 37,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 988,
+   "message": "Use-after-free: accessing member of freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 989,
+   "message": "Use-after-free: passing freed pointer 'ctx' to function",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not pass freed memory to functions."
+  },
+  {
+   "column": 26,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 989,
+   "message": "Use-after-free: accessing member of freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 7,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 991,
+   "message": "Use-after-free: accessing member of freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not access members of freed memory."
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 993,
+   "message": "Double-free: 'ctx' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 993,
+   "message": "Double free detected: 'ctx' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate os_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 997,
+   "message": "Function returns pointer to local variable 'ctx' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 997,
+   "message": "Use-after-free: returning freed pointer 'ctx'",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Do not return freed memory from functions."
+  },
+  {
+   "column": 48,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1001,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 48,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1011,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1086,
+   "message": "Value assigned to 'privkey' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1092,
+   "message": "Double free detected: 'publ' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1106,
+   "message": "Variable(s) 'priv_len', 'pubkey' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1106,
+   "message": "Variable(s) 'priv_len' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1117,
+   "message": "Assignment in if statement condition: 'pubkey = wpabuf_alloc(pub_len)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1118,
+   "message": "Assignment in if statement condition: 'privkey = wpabuf_alloc(priv_len)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1125,
+   "message": "Double free detected: 'pubkey' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 3,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1126,
+   "message": "Double free detected: 'privkey' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_clear_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 21,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1126,
+   "message": "Passing null pointer 'privkey' to 'wpabuf_clear_free' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'privkey' is not NULL before passing to 'wpabuf_clear_free'"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1147,
+   "message": "Double free detected: 'publ' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate wpabuf_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1154,
+   "message": "Memory allocated with 'BN_new' for variable 'g@1154:6' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(g@1154:6)' before the variable goes out of scope"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1182,
+   "message": "Memory leak: 'g' allocated with 'BN_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'g' before this return statement"
+  },
+  {
+   "column": 20,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1189,
+   "message": "Passing null pointer 'privkey' to 'wpabuf_clear_free' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'privkey' is not NULL before passing to 'wpabuf_clear_free'"
+  },
+  {
+   "column": 17,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1213,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 16,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1217,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 9,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1236,
+   "message": "Function 'EVP_PKEY_CTX_new_from_name' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 13,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1237,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 12,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1238,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1240,
+   "message": "Variable(s) 'params' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1247,
+   "message": "Assignment in if statement condition: 'params = OSSL_PARAM_BLD_to_param(bld)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1264,
+   "message": "Value assigned to 'p' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1270,
+   "message": "Memory allocated with 'BN_new' for variable 'g@1270:6' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(g@1270:6)' before the variable goes out of scope"
+  },
+  {
+   "column": 13,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1278,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 12,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1279,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1288,
+   "message": "Memory leak: 'g' allocated with 'BN_new' is not freed before return",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Free 'g' before this return statement"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1293,
+   "message": "Double free detected: 'pub_key' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate BN_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1294,
+   "message": "Double free detected: 'priv_key' was already freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Remove this duplicate BN_clear_free() call or set the pointer to NULL after first free"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1301,
+   "message": "Non-void function may reach end without returning a value. Ensure all execution paths have explicit return statements.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add return statements to ensure all execution paths return a value"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1312,
+   "message": "Variable(s) 'res', 'dctx' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1312,
+   "message": "Variable(s) 'dctx' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1312,
+   "message": "Variable(s) 'dctx' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1312,
+   "message": "Variable(s) 'dctx' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1312,
+   "message": "Variable(s) 'dctx' modified and accessed without sequence point",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Separate the modification into a separate statement"
+  },
+  {
+   "column": 6,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1314,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1316,
+   "message": "Assignment in if statement condition: 'dctx = EVP_PKEY_CTX_new(pkey, NULL)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 8,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1320,
+   "message": "Assignment in if statement condition: 'res = wpabuf_alloc(len)'",
+   "rule_id": "EXP45-C",
+   "severity": "Medium",
+   "suggestion": "Use == for comparison, or move assignment outside if condition"
+  },
+  {
+   "column": 41,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1321,
+   "message": "Passing null pointer 'res' to 'wpabuf_mhead' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'res' is not NULL before passing to 'wpabuf_mhead'"
+  },
+  {
+   "column": 1,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1335,
+   "message": "Value assigned to 'res' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 5,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1340,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 12,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1343,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "src/crypto/crypto_openssl.c",
+   "line": 1362,
+   "message": "Double-free: 'pub_key' freed multiple times",
+   "rule_id": "MEM30-C",
+   "severity": "Critical",
+   "suggestion": "Set pointer to NULL after freeing to prevent double-free."
+  }
+ ]
+}

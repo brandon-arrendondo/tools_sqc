@@ -1,0 +1,1114 @@
+{
+ "src/wps/wps_upnp_ap.c": [
+  {
+   "column": 1,
+   "file": "src/wps/wps_upnp_ap.c",
+   "line": 15,
+   "message": "Header file 'wps_upnp.h' has the same first 8 characters (case-insensitive) as 'wps_upnp_i.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'wps_upnp.h' -> unique name)"
+  },
+  {
+   "column": 35,
+   "file": "src/wps/wps_upnp_ap.c",
+   "line": 44,
+   "message": "sizeof applied to pointer/array parameter 's' which has decayed to a pointer",
+   "rule_id": "ARR01-C",
+   "severity": "High",
+   "suggestion": "Do not use 'sizeof(s->authorized_macs)'. Array/pointer parameters decay to pointers. Pass the array size as a separate parameter instead."
+  },
+  {
+   "column": 6,
+   "file": "src/wps/wps_upnp_ap.c",
+   "line": 45,
+   "message": "Variable 'attr' is used uninitialized",
+   "rule_id": "EXP33-C",
+   "severity": "High",
+   "suggestion": "Initialize 'attr' before use, e.g., at its declaration"
+  },
+  {
+   "column": 16,
+   "file": "src/wps/wps_upnp_ap.c",
+   "line": 56,
+   "message": "Floating-point division without error checking (consider using feclearexcept/fetestexcept)",
+   "rule_id": "FLP03-C",
+   "severity": "Low",
+   "suggestion": "Use feclearexcept(FE_ALL_EXCEPT) before and fetestexcept(FE_ALL_EXCEPT) after floating-point operations"
+  },
+  {
+   "column": 10,
+   "file": "src/wps/wps_upnp_ap.c",
+   "line": 61,
+   "message": "if / else-if chain has no final else clause -- the case where none of the conditions hold is unhandled",
+   "rule_id": "MSC01-C",
+   "severity": "Medium",
+   "suggestion": "Add a final else clause to handle the case where none of the preceding conditions hold"
+  },
+  {
+   "column": 1,
+   "file": "src/wps/wps_upnp_ap.c",
+   "line": 76,
+   "message": "Function 'upnp_er_remove_notification' does not validate pointer parameter 's' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 's' at the start of the function, e.g., 'if (!s) { return error_code; }'"
+  },
+  {
+   "column": 21,
+   "file": "src/wps/wps_upnp_ap.c",
+   "line": 79,
+   "message": "Potential null pointer dereference in member access of variable 's'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 's' is not NULL before member access"
+  }
+ ],
+ "wpa_supplicant/bgscan.h": [
+  {
+   "column": 53,
+   "file": "wpa_supplicant/bgscan.h",
+   "line": 53,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 26,
+   "file": "wpa_supplicant/bgscan.h",
+   "line": 54,
+   "message": "Pointer parameter 'ssid' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ssid'"
+  },
+  {
+   "column": 56,
+   "file": "wpa_supplicant/bgscan.h",
+   "line": 59,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 60,
+   "file": "wpa_supplicant/bgscan.h",
+   "line": 63,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 34,
+   "file": "wpa_supplicant/bgscan.h",
+   "line": 64,
+   "message": "Pointer parameter 'scan_res' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *scan_res'"
+  },
+  {
+   "column": 68,
+   "file": "wpa_supplicant/bgscan.h",
+   "line": 69,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  },
+  {
+   "column": 70,
+   "file": "wpa_supplicant/bgscan.h",
+   "line": 73,
+   "message": "Pointer parameter 'wpa_s' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *wpa_s'"
+  }
+ ],
+ "wpa_supplicant/binder/iface.h": [
+  {
+   "column": 1,
+   "file": "wpa_supplicant/binder/iface.h",
+   "line": 21,
+   "message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add a return statement on all execution paths of this function"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/binder/iface.h",
+   "line": 28,
+   "message": "Variable 'public' is declared but never used.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Use the variable or remove it"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/binder/iface.h",
+   "line": 31,
+   "message": "Declaration is missing an explicit type specifier",
+   "rule_id": "DCL31-C",
+   "severity": "Low",
+   "suggestion": "Add an explicit type specifier to the declaration"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/binder/iface.h",
+   "line": 32,
+   "message": "Value assigned to 'Iface' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 11,
+   "file": "wpa_supplicant/binder/iface.h",
+   "line": 32,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 16,
+   "file": "wpa_supplicant/binder/iface.h",
+   "line": 32,
+   "message": "Function has empty parameter list () - should explicitly specify (void) to indicate no arguments",
+   "rule_id": "DCL20-C",
+   "severity": "Medium",
+   "suggestion": "Change () to (void) to explicitly indicate function takes no arguments"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/binder/iface.h",
+   "line": 37,
+   "message": "Variable 'wpa_s_' is declared but never used.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Use the variable or remove it"
+  }
+ ],
+ "wpa_supplicant/config.h": [
+  {
+   "column": 1,
+   "file": "wpa_supplicant/config.h",
+   "line": 46,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (-75)"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/config.h",
+   "line": 54,
+   "message": "Header file 'ieee802_11_defs.h' has the same first 8 characters (case-insensitive) as 'ieee802_11_common.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_defs.h' -> unique name)"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/config.h",
+   "line": 857,
+   "message": "String buffer placed before pointer in struct 'wpa_config': 'char country[2];' before 'char *p2p_ssid_postfix;' - Buffer overflow could corrupt pointer",
+   "rule_id": "API01-C",
+   "severity": "High",
+   "suggestion": "Move the string buffer 'char country' after the pointer field 'char *p2p_ssid_postfix;', or use a char* pointer instead of a char array"
+  },
+  {
+   "column": 60,
+   "file": "wpa_supplicant/config.h",
+   "line": 1942,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 37,
+   "file": "wpa_supplicant/config.h",
+   "line": 1944,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 10,
+   "file": "wpa_supplicant/config.h",
+   "line": 1945,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/config.h",
+   "line": 1991,
+   "message": "Function has pointer parameter without size argument: 'const char * wpa_config_get_global_field_name(unsigned int i, int *no_var);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'int *no_var' to specify the maximum number of elements in the array"
+  }
+ ],
+ "wpa_supplicant/config_none.c": [
+  {
+   "column": 73,
+   "file": "wpa_supplicant/config_none.c",
+   "line": 20,
+   "message": "Pointer parameter 'cfgp' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *cfgp'"
+  },
+  {
+   "column": 5,
+   "file": "wpa_supplicant/config_none.c",
+   "line": 25,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 12,
+   "file": "wpa_supplicant/config_none.c",
+   "line": 30,
+   "message": "Function 'wpa_config_alloc_empty' called with same pointer for output and input parameters. If output parameter is non-const restrict, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure output restrict parameter receives a unique pointer"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/config_none.c",
+   "line": 34,
+   "message": "Function returns pointer to local variable 'config' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/config_none.c",
+   "line": 38,
+   "message": "Function 'wpa_config_write' does not validate pointer parameter 'name' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'name' at the start of the function, e.g., 'if (!name) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/config_none.c",
+   "line": 38,
+   "message": "Function 'wpa_config_write' does not validate pointer parameter 'config' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'config' at the start of the function, e.g., 'if (!config) { return error_code; }'"
+  },
+  {
+   "column": 58,
+   "file": "wpa_supplicant/config_none.c",
+   "line": 38,
+   "message": "Pointer parameter 'config' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *config'"
+  }
+ ],
+ "wpa_supplicant/config_ssid.h": [
+  {
+   "column": 1,
+   "file": "wpa_supplicant/config_ssid.h",
+   "line": 31,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (-1)"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/config_ssid.h",
+   "line": 41,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (-1)"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/config_ssid.h",
+   "line": 42,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (-1)"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/config_ssid.h",
+   "line": 43,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (-1)"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/config_ssid.h",
+   "line": 44,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (-1)"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/config_ssid.h",
+   "line": 45,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (-1)"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/config_ssid.h",
+   "line": 47,
+   "message": "Macro replacement list should be parenthesized to prevent operator precedence issues.",
+   "rule_id": "PRE02-C",
+   "severity": "Medium",
+   "suggestion": "Wrap the entire replacement list in parentheses: (-1)"
+  }
+ ],
+ "wpa_supplicant/nfc_pw_token.c": [
+  {
+   "column": 5,
+   "file": "wpa_supplicant/nfc_pw_token.c",
+   "line": 23,
+   "message": "Direct NULL check for pointer validation. Define and use a dedicated pointer validation function instead of ad-hoc NULL checks. This centralizes validation logic and allows platform-specific enhancements.",
+   "rule_id": "MEM10-C",
+   "severity": "Medium",
+   "suggestion": "Create a validation function like 'int valid(void *ptr)' and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+  },
+  {
+   "column": 3,
+   "file": "wpa_supplicant/nfc_pw_token.c",
+   "line": 24,
+   "message": "main() returns without calling fclose(stdout) - data may be unflushed",
+   "rule_id": "FIO23-C",
+   "severity": "Medium",
+   "suggestion": "Call fclose(stdout) before return to ensure data is flushed"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/nfc_pw_token.c",
+   "line": 37,
+   "message": "Program arguments (argv) used without validating argc or checking for null pointers",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Validate argc and argv[0] before use: const char *prog = (argc && argv[0]) ? argv[0] : \"\""
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/nfc_pw_token.c",
+   "line": 61,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/nfc_pw_token.c",
+   "line": 63,
+   "message": "Type mismatch in printf(): format specifier '%s' expects Pointer but argument 1 ('txt') is Integer",
+   "rule_id": "FIO47-C",
+   "severity": "High",
+   "suggestion": "Ensure format specifiers match argument types"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/nfc_pw_token.c",
+   "line": 65,
+   "message": "Multiple function calls with potential side effects in unsequenced arguments",
+   "rule_id": "EXP30-C",
+   "severity": "High",
+   "suggestion": "Evaluate function calls in separate statements to guarantee ordering"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/nfc_pw_token.c",
+   "line": 67,
+   "message": "Type mismatch in printf(): format specifier '%s' expects Pointer but argument 1 ('txt') is Integer",
+   "rule_id": "FIO47-C",
+   "severity": "High",
+   "suggestion": "Ensure format specifiers match argument types"
+  }
+ ],
+ "wpa_supplicant/wpa_gui-qt4/addinterface.h": [
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_gui-qt4/addinterface.h",
+   "line": 20,
+   "message": "Non-void function has no return statement. Control reaching the end of a non-void function without returning a value is undefined behavior.",
+   "rule_id": "MSC37-C",
+   "severity": "Medium",
+   "suggestion": "Add a return statement on all execution paths of this function"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_gui-qt4/addinterface.h",
+   "line": 25,
+   "message": "Value assigned to 'AddInterface' is never read on any execution path before being overwritten or the function returning.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Remove the dead assignment or use its value before it is overwritten"
+  },
+  {
+   "column": 2,
+   "file": "wpa_supplicant/wpa_gui-qt4/addinterface.h",
+   "line": 25,
+   "message": "Function pointer stored without encryption; consider using EncodePointer()",
+   "rule_id": "WIN04-C",
+   "severity": "High",
+   "suggestion": "Use EncodePointer() to encrypt the function pointer before storage"
+  },
+  {
+   "column": 20,
+   "file": "wpa_supplicant/wpa_gui-qt4/addinterface.h",
+   "line": 31,
+   "message": "Function has empty parameter list () - should explicitly specify (void) to indicate no arguments",
+   "rule_id": "DCL20-C",
+   "severity": "Medium",
+   "suggestion": "Change () to (void) to explicitly indicate function takes no arguments"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_gui-qt4/addinterface.h",
+   "line": 34,
+   "message": "Variable 'vboxLayout' is declared but never used.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Use the variable or remove it"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_gui-qt4/addinterface.h",
+   "line": 35,
+   "message": "Variable 'interfaceWidget' is declared but never used.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Use the variable or remove it"
+  },
+  {
+   "column": 1,
+   "file": "wpa_supplicant/wpa_gui-qt4/addinterface.h",
+   "line": 36,
+   "message": "Variable 'wpagui' is declared but never used.",
+   "rule_id": "MSC13-C",
+   "severity": "Low",
+   "suggestion": "Use the variable or remove it"
+  }
+ ],
+ "hostapd/nt_password_hash.c": [
+  {
+   "column": 1,
+   "file": "hostapd/nt_password_hash.c",
+   "line": 15,
+   "message": "Function 'main' does not validate pointer parameter 'argv' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'argv' at the start of the function, e.g., 'if (!argv) { return error_code; }'"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/nt_password_hash.c",
+   "line": 17,
+   "message": "Sensitive buffer 'password_hash' not cleared before function exit",
+   "rule_id": "MEM03-C",
+   "severity": "Medium",
+   "suggestion": "Call SecureZeroMemory(password_hash, size) or memset(password_hash, 0, size) before the buffer goes out of scope"
+  },
+  {
+   "column": 2,
+   "file": "hostapd/nt_password_hash.c",
+   "line": 19,
+   "message": "Sensitive buffer 'password' not cleared before function exit",
+   "rule_id": "MEM03-C",
+   "severity": "Medium",
+   "suggestion": "Call SecureZeroMemory(password, size) or memset(password, 0, size) before the buffer goes out of scope"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/nt_password_hash.c",
+   "line": 24,
+   "message": "Buffer 'buf' not reset after fgets() failure - buffer contents are indeterminate and must be reset",
+   "rule_id": "FIO40-C",
+   "severity": "Low",
+   "suggestion": "Reset buffer in failure branch: 'buf[0] = '\\0';'"
+  },
+  {
+   "column": 7,
+   "file": "hostapd/nt_password_hash.c",
+   "line": 24,
+   "message": "fgets() without truncation check. Input may be silently truncated.",
+   "rule_id": "FIO20-C",
+   "severity": "Medium",
+   "suggestion": "Check for newline character to detect truncation: if (strchr(buf, '\\n') == NULL) { /* handle truncation */ }"
+  },
+  {
+   "column": 4,
+   "file": "hostapd/nt_password_hash.c",
+   "line": 26,
+   "message": "main() returns without calling fclose(stdout) - data may be unflushed",
+   "rule_id": "FIO23-C",
+   "severity": "Medium",
+   "suggestion": "Call fclose(stdout) before return to ensure data is flushed"
+  },
+  {
+   "column": 3,
+   "file": "hostapd/nt_password_hash.c",
+   "line": 30,
+   "message": "Unbounded while loop with pointer increment. Loop increments 'pos' without size/length bounds checking.",
+   "rule_id": "ARR30-C",
+   "severity": "High",
+   "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+   "column": 5,
+   "file": "hostapd/nt_password_hash.c",
+   "line": 32,
+   "message": "Pointer dereference '*pos' (char type) assigned without cast to 'unsigned char' - may cause sign extension",
+   "rule_id": "STR34-C",
+   "severity": "Medium",
+   "suggestion": "Cast to 'unsigned char' before assignment to larger type"
+  }
+ ],
+ "src/ap/accounting.h": [
+  {
+   "column": 61,
+   "file": "src/ap/accounting.h",
+   "line": 13,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 22,
+   "file": "src/ap/accounting.h",
+   "line": 14,
+   "message": "Pointer parameter 'sta' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sta'"
+  },
+  {
+   "column": 61,
+   "file": "src/ap/accounting.h",
+   "line": 19,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 22,
+   "file": "src/ap/accounting.h",
+   "line": 20,
+   "message": "Pointer parameter 'sta' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sta'"
+  },
+  {
+   "column": 60,
+   "file": "src/ap/accounting.h",
+   "line": 24,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 28,
+   "file": "src/ap/accounting.h",
+   "line": 25,
+   "message": "Pointer parameter 'sta' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sta'"
+  },
+  {
+   "column": 55,
+   "file": "src/ap/accounting.h",
+   "line": 29,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 58,
+   "file": "src/ap/accounting.h",
+   "line": 34,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  }
+ ],
+ "src/ap/utils.c": [
+  {
+   "column": 1,
+   "file": "src/ap/utils.c",
+   "line": 18,
+   "message": "Function 'hostapd_register_probereq_cb' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/utils.c",
+   "line": 18,
+   "message": "Function 'hostapd_register_probereq_cb' does not validate pointer parameter 'cb' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'cb' at the start of the function, e.g., 'if (!cb) { return error_code; }'"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/utils.c",
+   "line": 27,
+   "message": "Function 'os_realloc_array' called with overlapping memory regions. If parameters are restrict-qualified, this causes undefined behavior.",
+   "rule_id": "EXP43-C",
+   "severity": "High",
+   "suggestion": "Ensure memory regions do not overlap when using restrict pointers"
+  },
+  {
+   "column": 52,
+   "file": "src/ap/utils.c",
+   "line": 49,
+   "message": "Pointer parameter 'iface' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *iface'"
+  },
+  {
+   "column": 65,
+   "file": "src/ap/utils.c",
+   "line": 49,
+   "message": "Pointer parameter 'ctx' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *ctx'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/utils.c",
+   "line": 99,
+   "message": "Function 'hostapd_prune_associations' does not validate pointer parameter 'hapd' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'hapd' at the start of the function, e.g., 'if (!hapd) { return error_code; }'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/utils.c",
+   "line": 99,
+   "message": "Function 'hostapd_prune_associations' does not validate pointer parameter 'addr' before use",
+   "rule_id": "API00-C",
+   "severity": "Medium",
+   "suggestion": "Add validation check for 'addr' at the start of the function, e.g., 'if (!addr) { return error_code; }'"
+  },
+  {
+   "column": 6,
+   "file": "src/ap/utils.c",
+   "line": 108,
+   "message": "Potential null pointer dereference in member access of variable 'hapd'",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'hapd' is not NULL before member access"
+  }
+ ],
+ "src/ap/x_snoop.h": [
+  {
+   "column": 52,
+   "file": "src/ap/x_snoop.h",
+   "line": 29,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 43,
+   "file": "src/ap/x_snoop.h",
+   "line": 35,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 1,
+   "file": "src/ap/x_snoop.h",
+   "line": 43,
+   "message": "Incompatible declarations of function 'x_snoop_mcast_to_ucast_convert_send': parameter types differ",
+   "rule_id": "DCL40-C",
+   "severity": "High",
+   "suggestion": "Ensure all declarations of the same function have identical signatures"
+  },
+  {
+   "column": 57,
+   "file": "src/ap/x_snoop.h",
+   "line": 44,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  },
+  {
+   "column": 25,
+   "file": "src/ap/x_snoop.h",
+   "line": 45,
+   "message": "Pointer parameter 'sta' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sta'"
+  },
+  {
+   "column": 36,
+   "file": "src/ap/x_snoop.h",
+   "line": 45,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 36,
+   "file": "src/ap/x_snoop.h",
+   "line": 45,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 55,
+   "file": "src/ap/x_snoop.h",
+   "line": 50,
+   "message": "Pointer parameter 'hapd' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *hapd'"
+  }
+ ],
+ "src/drivers/driver.h": [
+  {
+   "column": 1,
+   "file": "src/drivers/driver.h",
+   "line": 23,
+   "message": "Header file 'ieee802_11_defs.h' has the same first 8 characters (case-insensitive) as 'ieee802_1x_kay.h'. This may cause ambiguity on systems with limited filename support.",
+   "rule_id": "PRE08-C",
+   "severity": "Medium",
+   "suggestion": "Rename one of the headers to ensure the first 8 characters differ (e.g., 'ieee802_11_defs.h' -> unique name)"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/driver.h",
+   "line": 2446,
+   "message": "Macro parameter 'drv_flags' is not parenthesized in replacement text. This can cause operator precedence issues.",
+   "rule_id": "PRE01-C",
+   "severity": "Medium",
+   "suggestion": "Wrap parameter 'drv_flags' in parentheses: (drv_flags) instead of drv_flags"
+  },
+  {
+   "column": 21,
+   "file": "src/drivers/driver.h",
+   "line": 2713,
+   "message": "Character array too small to hold any string data plus null terminator",
+   "rule_id": "STR31-C",
+   "severity": "Medium",
+   "suggestion": "Increase array size to accommodate expected string length plus null terminator"
+  },
+  {
+   "column": 41,
+   "file": "src/drivers/driver.h",
+   "line": 7311,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver.h",
+   "line": 7333,
+   "message": "Accessing union 'event' member 'disassoc_info' after writing to 'assoc_info' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 44,
+   "file": "src/drivers/driver.h",
+   "line": 7337,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 2,
+   "file": "src/drivers/driver.h",
+   "line": 7342,
+   "message": "Accessing union 'event' member 'eapol_rx' after writing to 'assoc_info' relies on data memory layout (byte-order, alignment, packing)",
+   "rule_id": "EXP39-C",
+   "severity": "Medium",
+   "suggestion": "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning."
+  },
+  {
+   "column": 45,
+   "file": "src/drivers/driver.h",
+   "line": 7350,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  }
+ ],
+ "src/drivers/priv_netlink.h": [
+  {
+   "column": 1,
+   "file": "src/drivers/priv_netlink.h",
+   "line": 54,
+   "message": "Function-like macro 'NLMSG_NEXT' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/priv_netlink.h",
+   "line": 54,
+   "message": "Macro evaluates parameter 'nlh' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/priv_netlink.h",
+   "line": 57,
+   "message": "Function-like macro 'NLMSG_OK' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/priv_netlink.h",
+   "line": 57,
+   "message": "Macro evaluates parameter 'nlh' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/priv_netlink.h",
+   "line": 64,
+   "message": "Function-like macro 'RTA_OK' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/priv_netlink.h",
+   "line": 64,
+   "message": "Macro evaluates parameter 'rta' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/priv_netlink.h",
+   "line": 67,
+   "message": "Function-like macro 'RTA_NEXT' evaluates parameter(s) multiple times; prefer inline or static functions for type safety",
+   "rule_id": "PRE00-C",
+   "severity": "Low",
+   "suggestion": null
+  },
+  {
+   "column": 1,
+   "file": "src/drivers/priv_netlink.h",
+   "line": 67,
+   "message": "Macro evaluates parameter 'rta' multiple times; use inline function instead",
+   "rule_id": "PRE12-C",
+   "severity": "Medium",
+   "suggestion": "Replace macro with inline function to avoid multiple evaluation"
+  }
+ ],
+ "src/eap_peer/eap_md5.c": [
+  {
+   "column": 42,
+   "file": "src/eap_peer/eap_md5.c",
+   "line": 16,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 9,
+   "file": "src/eap_peer/eap_md5.c",
+   "line": 20,
+   "message": "Unsafe integer-to-pointer conversion from '1' (may result in misalignment or invalid pointer)",
+   "rule_id": "INT36-C",
+   "severity": "Low",
+   "suggestion": "Use uintptr_t/intptr_t for integer values, or ensure value is obtained from a valid pointer"
+  },
+  {
+   "column": 42,
+   "file": "src/eap_peer/eap_md5.c",
+   "line": 24,
+   "message": "Pointer parameter 'sm' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *sm'"
+  },
+  {
+   "column": 52,
+   "file": "src/eap_peer/eap_md5.c",
+   "line": 24,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 64,
+   "file": "src/eap_peer/eap_md5.c",
+   "line": 29,
+   "message": "Pointer parameter 'priv' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *priv'"
+  },
+  {
+   "column": 7,
+   "file": "src/eap_peer/eap_md5.c",
+   "line": 49,
+   "message": "Passing null pointer 'pos' to 'wpa_printf' which does not check for NULL",
+   "rule_id": "EXP34-C",
+   "severity": "High",
+   "suggestion": "Check if 'pos' is not NULL before passing to 'wpa_printf'"
+  },
+  {
+   "column": 2,
+   "file": "src/eap_peer/eap_md5.c",
+   "line": 98,
+   "message": "Function returns pointer to local variable 'resp' with automatic storage duration",
+   "rule_id": "DCL30-C",
+   "severity": "High",
+   "suggestion": "Use static storage, allocated memory, or pass output buffer as parameter"
+  },
+  {
+   "column": 8,
+   "file": "src/eap_peer/eap_md5.c",
+   "line": 106,
+   "message": "Memory allocated with 'eap_peer_method_alloc' for variable 'eap' is not freed",
+   "rule_id": "MEM31-C",
+   "severity": "High",
+   "suggestion": "Add 'free(eap)' before the variable goes out of scope"
+  }
+ ],
+ "src/eap_peer/eap_methods.h": [
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap_methods.h",
+   "line": 16,
+   "message": "Function has pointer parameter without size argument: 'const struct eap_method * eap_peer_get_methods(size_t *count);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *count' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap_methods.h",
+   "line": 26,
+   "message": "Function has pointer parameter without size argument: 'enum eap_type eap_peer_get_type(const char *name, int *vendor);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'int *vendor' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 27,
+   "file": "src/eap_peer/eap_methods.h",
+   "line": 28,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 1,
+   "file": "src/eap_peer/eap_methods.h",
+   "line": 29,
+   "message": "Function has pointer parameter without size argument: 'char ** eap_get_names_as_string_array(size_t *num);' - Add size_t parameter to specify array capacity",
+   "rule_id": "API02-C",
+   "severity": "High",
+   "suggestion": "Add a size_t parameter after 'size_t *num' to specify the maximum number of elements in the array"
+  },
+  {
+   "column": 41,
+   "file": "src/eap_peer/eap_methods.h",
+   "line": 45,
+   "message": "Pointer parameter should use conformant array syntax",
+   "rule_id": "API05-C",
+   "severity": "High",
+   "suggestion": "Use conformant array parameter syntax (e.g., 'char p[n]') with the size parameter declared before the array"
+  },
+  {
+   "column": 41,
+   "file": "src/eap_peer/eap_methods.h",
+   "line": 45,
+   "message": "Pointer parameter 'buf' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *buf'"
+  },
+  {
+   "column": 60,
+   "file": "src/eap_peer/eap_methods.h",
+   "line": 59,
+   "message": "Pointer parameter 'num' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *num'"
+  },
+  {
+   "column": 60,
+   "file": "src/eap_peer/eap_methods.h",
+   "line": 79,
+   "message": "Pointer parameter 'method' is not modified and should be declared const",
+   "rule_id": "DCL13-C",
+   "severity": "Low",
+   "suggestion": "Declare parameter as 'const <type> *method'"
+  }
+ ]
+}

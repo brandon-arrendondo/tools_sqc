@@ -1,0 +1,1219 @@
+{
+ "labels": [
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5619,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "State-machine guard-clause else-if chain; default is intentional no-op (established MSC01-C pattern)"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5677,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_auth_logger call with plain descriptive protocol-state string, no secret data (MSC41-C log-string FP)"
+  },
+  {
+   "rule": "ARR39-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5766,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "Plain integer length subtraction (last_rx_eapol_key_len minus sizeof consts), not pointer arithmetic; category error"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5766,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "length already validated >= sizeof(hdr)+sizeof(key)+mic_len+2 at wpa_receive():1680 (cross-function guard)"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5766,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same cross-function guard at wpa_receive():1680 makes subtraction safe"
+  },
+  {
+   "rule": "INT30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5766,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same cross-function guard at wpa_receive():1680 makes subtraction safe"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5772,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain debug log string, no secret data"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5844,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "SM_STEP macro (state_machine.h:126) expands to `static void`; sqc doesn't expand macro so misjudges return type"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5864,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "state-machine guard-clause else-if chain, default is intentional no-op"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5877,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper (wpa_gtk_update), wpa_auth read-only, never forwarded to a mutator"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5948,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "group->GTK is a genuine member array reached via ->, not a decayed pointer param (established ARR01-C pattern)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5960,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx pinned by wpa_auth_for_each_sta's callback dispatch contract (dispatch-bound-callback FP family)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 5968,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "g is unconditionally assigned immediately after declaration, before the one read; no uninitialized path"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6001,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain debug log string, no secret data"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6013,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain debug log string, no secret data"
+  },
+  {
+   "rule": "EXP34-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6028,
+   "verdict": "TP",
+   "confidence": "med",
+   "reason": "wpa_select_vlan_wpa_group can return NULL (if gsm param NULL); partner_group dereferenced with no check"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6057,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper, sm read-only, never forwarded to a mutator"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6069,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT14-C matches base id gsm; GTK_len arithmetic and GN bitwise are different member uses (established pattern)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6097,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper, sm read-only"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6136,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain internal helper, sm/wpa_auth read-only"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6274,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx pinned by wpa_auth_for_each_sta's callback dispatch contract"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6329,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "state-machine guard-clause else-if chain, default is intentional no-op"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6332,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "nested guard-clause else-if inside same state-machine step function"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6438,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "matches eloop_timeout_handler typedef exactly (confirmed eloop-callback DCL13-C FP family)"
+  },
+  {
+   "rule": "PRE00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6488,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "RSN_SUITE_ARG(s) expands to 4 comma-separated printf args; s is always a side-effect-free field/var read at every call site"
+  },
+  {
+   "rule": "PRE02-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6488,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wrapping the whole macro body in parens (PRE02-C's fix) would collapse 4 variadic args into 1, breaking every call site"
+  },
+  {
+   "rule": "PRE12-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6488,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same non-evaluating-context reasoning as PRE00-C above"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6491,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buflen only used in bounded os_snprintf/os_snprintf_error arithmetic; no realistic overflow (established API00-C overflow-flag FP)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6491,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, wpa_auth read-only"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6491,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf+buflen is the idiomatic ptr+size pair (established API05-C FP)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6491,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is the output buffer written via os_snprintf; const suggestion would break the function's purpose"
+  },
+  {
+   "rule": "MEM05-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6495,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "PMKID_LEN*2+1 is a compile-time constant expression, not a VLA (established MEM05-C FP)"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6506,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_bool_txt() is a pure accessor with no side effects to unsequence (established EXP30-C pure-accessor FP)"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6512,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT14-C matches base id conf; wpa (bitwise) and wpa_group (arithmetic) are different member fields"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6521,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "RSN_SUITE_ARG/wpa_cipher_key_len are pure, side-effect-free reads"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6582,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same bounded buflen-arithmetic FP as wpa_get_mib"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6582,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, sm read-only"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6582,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf+buflen ptr+size idiom"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6582,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf is the output buffer written via os_snprintf; const would break its purpose"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6600,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "MAC2STR/RSN_SUITE_ARG are pure macro expansions, no side effects"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6647,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "factually wrong: body is `return sm && sm->pairwise_set;` -- sm is null-checked inline"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6647,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, sm read-only"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6653,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only accessor (station state machine), never externally-nullable"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6653,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, sm read-only"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6659,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, sm read-only"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6668,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, sm read-only"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6676,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, sm read-only"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6684,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, sm read-only"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6692,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, sm read-only"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6700,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, sm read-only"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6709,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "entry only compared (!=), never modified"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6718,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "factually wrong: body is `return sm ? sm->pmksa : NULL;` -- sm is null-checked inline"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6719,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, sm read-only"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6732,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, wpa_auth read-only"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6761,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "guard-clause clamp else-if; default (already in range) needs no action"
+  },
+  {
+   "rule": "EXP30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6766,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "wpa_auth_get_aa/wpa_auth_get_spa (line 94-111) are pure accessors, no side effects"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6777,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, wpa_auth read-only"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6797,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API; all 3 call sites pass live sta->addr, never attacker-nullable"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6797,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API; pmkid always a live local buffer at all call sites"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6797,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, wpa_auth read-only"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6830,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API, single caller (ieee802_11.c:4778) always passes live sm/pmkid"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6830,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API, single caller always passes live sm/pmkid"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6837,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, wpa_auth read-only"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6870,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API; sta_addr always the station's own hw address"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6870,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, wpa_auth read-only"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6901,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "len only used in bounded os_snprintf/end-pos pointer arithmetic, no realistic overflow"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6901,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, wpa_auth read-only"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6901,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf+len ptr+size idiom"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6928,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, wpa_auth read-only"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6943,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only API (CONFIG_PMKSA_CACHE_EXTERNAL/MESH), addr always live"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6943,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, wpa_auth read-only"
+  },
+  {
+   "rule": "API05-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6944,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "buf+len ptr+size idiom"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6953,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only mesh/external-PMKSA feature, aa always a live local MAC pointer"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6953,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "expiration is a small local int added to a reltime; not attacker-controlled, no realistic overflow"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6968,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "entry comes from pmksa_cache_auth_create_entry -> os_zalloc (heap), not automatic storage (established DCL30-C confusion pattern)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6972,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, wpa_auth read-only"
+  },
+  {
+   "rule": "MSC37-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6993,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "both #ifdef/#else branches return a value; sqc's preprocessor-branch-blindness misses that exactly one is compiled and always returns (extends confirmed MSC37-C ifdef-blind family)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 6994,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, wpa_auth read-only"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7006,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pmkid is a deliberately-optional filter argument by design (internal-only API)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7007,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, wpa_auth read-only"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7036,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only helper (CONFIG_PMKSA_CACHE_EXTERNAL/MESH), pmksa always live"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7036,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only helper, wpa_auth always live"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7036,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only helper, pmkid always live"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7036,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only helper, pmk always live"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7038,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "factually wrong: wpa_auth IS modified via os_memcpy into wpa_auth->dot11RSNAPMKIDUsed (established struct-field-write miss)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7057,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, wpa_auth read-only"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7079,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, wpa_auth read-only (only compares wpa_auth->group)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7138,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "group comes from wpa_group_init -> os_zalloc (heap), not automatic storage"
+  },
+  {
+   "rule": "INT10-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7305,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "timeout_ms is copied from `const u32 eapol_key_timeout_subseq = 1000`, a fixed positive compile-time constant; can never be negative"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7319,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, sm read-only"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7327,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, sm read-only"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7337,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, sm read-only (only copies FROM sm->ip_addr into output addr)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7347,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only, single caller (hostapd.c:1196) always passes live hapd->wpa_auth"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7347,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "attr is a stack-allocated struct passed by address from radius_das.c, never NULL"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7347,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, wpa_auth read-only (only reads wpa_auth->pmksa)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7376,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "a pinned by wpa_auth_for_each_auth's callback dispatch contract (same family as wpa_auth_for_each_sta)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7389,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only FILS API, sta_addr always live"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7389,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only FILS API, pmkid always live"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7408,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only, single caller (ieee802_11.c:2495) always passes live wpa_auth"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7408,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only, single caller always passes live sm"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7408,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only, single caller always passes a live stack buffer"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7408,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, wpa_auth read-only (only takes &wpa_auth->conf)"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7409,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, sm read-only"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7421,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only FILS helper, sm always live at call site"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7421,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only FILS helper, fils_anonce always a live output buffer"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7421,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only FILS helper, fils_snonce always a live output buffer"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7421,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only FILS helper, fils_kek always a live output buffer"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7421,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, sm read-only"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7432,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only FILS helper, sm always live at call site"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7432,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only FILS helper, pmk always a live buffer"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7432,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only FILS helper, pmkid always a live buffer"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7461,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "guard-clause else-if chain (pmk_len==32/48/64); default (any other length) intentionally leaves hash_alg unchanged"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7480,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "guard-clause else-if chain (ie[0] selectors); default intentionally does nothing"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7518,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only CONFIG_TESTING_OPTIONS ctrl_iface test API, sm always live"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7520,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx1 pinned by the generic void(*cb)(void*,void*) parameter's callback-context contract"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7520,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx2 pinned by the same cb callback-context contract"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7532,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain debug log string, no secret data"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7542,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx1 pinned by the generic cb callback-context contract"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7542,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ctx2 pinned by the same cb callback-context contract"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7574,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain debug log string, no secret data"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7650,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "gtkidx is only read inside `if (gtk)`, and gtk/gtkidx are always assigned together in the same WPA2 branch (coupled invariant sqc doesn't track)"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7655,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ieee80211w_kde_add is a static FUNCTION (defined wpa_auth.c:4237), not a variable; sqc misidentifies the call as an uninitialized-static-variable use (category error, recurs 3x in this batch)"
+  },
+  {
+   "rule": "INT13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7709,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "secure is only a ternary condition (`secure ? X : 0`); the `|` operators combine the WPA_KEY_INFO_* results, not secure itself -- category error"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7720,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only CONFIG_TESTING_OPTIONS test API, sm always live"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7720,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "cb is only stored (sm->eapol_status_cb = cb) and later invoked behind an explicit null check elsewhere, never called directly here"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7737,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain debug log string, no secret data"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7739,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT14-C matches base id gsm; GTK[GN-1] arithmetic vs GN&0x03 bitwise are established identifier-match FP"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7747,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos and kde_buf are both locals in the same function (not global/static); kde_buf is heap from os_malloc, not automatic storage -- two factual errors"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7753,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ieee80211w_kde_add is a static function, not a variable (same category error as above)"
+  },
+  {
+   "rule": "MSC41-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7804,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "plain debug log string, no secret data"
+  },
+  {
+   "rule": "MSC01-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7824,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "switch is exhaustive over all 4 values of enum wpa_auth_ocv_override_frame; no unhandled-value risk"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7868,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only, single caller always passes live sm"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7869,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "info is null-checked and read-only afterward"
+  },
+  {
+   "rule": "ARR01-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7877,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "sm->mld_links is a genuine member array reached via ->, not decayed"
+  },
+  {
+   "rule": "DCL13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7929,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "plain helper, sm read-only"
+  },
+  {
+   "rule": "ENV01-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7934,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "no getenv/environment-variable code anywhere in this function (established ENV01-C rule-logic-bug pattern)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7977,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only, eid always a live caller buffer at the sole call site"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7977,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only, sm already null-checked by its sole caller wpa_auth_write_assoc_resp_eppke before this is invoked"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7980,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "kde_len=0 initializer is always overwritten in both branches of if(is_ml)/else before any read -- genuine dead store"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 7997,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "value assigned to kde here is never read again (only kde_len/ptr matter downstream) -- genuine dead store, harmless by design"
+  },
+  {
+   "rule": "INT14-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 8000,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "INT14-C matches base id gsm; GTK[GN-1] arithmetic vs GN&0x03 bitwise, established identifier-match FP"
+  },
+  {
+   "rule": "MSC13-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 8005,
+   "verdict": "TP",
+   "confidence": "low",
+   "reason": "same genuine dead-store pattern as the kde assignment above"
+  },
+  {
+   "rule": "EXP33-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 8005,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "ieee80211w_kde_add is a static function, not a variable (same category error)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 8048,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only, pos always a live buffer; sm already null-checked by caller"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 8048,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "max_len is not validated for overflow risk here; the real gap is that the callee ignores it entirely (see FN)"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 8055,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "pos is a caller-supplied buffer pointer parameter (reassigned via pos+=res), not automatic storage"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 8059,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same parameter-reassignment confusion as above"
+  },
+  {
+   "rule": "DCL30-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 8063,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "same parameter-reassignment confusion as above"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 8069,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only, single caller (assoc_sm always live)"
+  },
+  {
+   "rule": "API00-C",
+   "file": "src/ap/wpa_auth.c",
+   "line": 8069,
+   "verdict": "FP",
+   "confidence": "high",
+   "reason": "internal-only, single caller (wpa_auth always live)"
+  }
+ ],
+ "fns": [
+  {
+   "file": "src/ap/wpa_auth.c",
+   "line": 7977,
+   "rule": "ARR30-C",
+   "desc": "wpa_auth_eid_key_delivery() takes a max_len parameter (remaining space in the association-response buffer) but never references it anywhere in the body -- it writes the Key Delivery element (header + fragmented KDE data, size driven by GTK/IGTK/BIGTK/ieee80211w KDE lengths) with no bound check against max_len at all. Upstream's own comment at line 7989 flags this: \"TODO: Make sure there is sufficient length for the element.\" Caller wpa_auth_write_assoc_resp_eppke passes end-pos as max_len but that value is silently dropped, so a sufficiently large KDE payload can overflow the caller's association-response buffer.",
+   "upstream_present": "unknown"
+  }
+ ],
+ "files_clean_for_fn": [],
+ "summary": {
+  "tp": 42,
+  "fp": 108,
+  "fn": 1
+ }
+}
